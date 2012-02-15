@@ -840,27 +840,30 @@ int mxSource::GetIndentLevel(int l, bool *segun) {
 						}
 	//					else if (word==_T("HACER")) cur+=4;
 						else if (word==_T("PARA")) cur+=4;
-						else if (word==_T("REPETIR")) cur+=4;
+						else if (first_word && word==_T("REPETIR")) cur+=4;
+						else if (first_word && word==_T("HACER")) cur+=4;
 						else if (word==_T("FIN")) { /*cur-=4; */ignore_next=true; }
-						else if (!first_word) {
-							if (word==_T("DE") && i+10<n && line.SubString(wstart,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
-							else if (word==_T("HASTA") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
-							else if (word==_T("MIENTRAS ") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
-							else if (word==_T("FINSEGUN")) cur-=8;
-							else if (word==_T("FINMIENTRAS")) cur-=4;
-							else if (word==_T("FINPARA")) cur-=4;
-							else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
-							else if (word==_T("FINSI")) cur-=4;
-							else if (word==_T("FINPROCESO")) cur-=4;
-	//						else if (word==_T("FIN")) cur-=4;
-							else 
-								if (segun) *segun=old_segun;
-						} else 
-							if (segun) *segun=old_segun;
+//						else if (!first_word) { /// para que estaba esto?
+//							if (word==_T("DE") && i+10<n && line.SubString(wstart,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
+//							else if (word==_T("HASTA") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
+//							else if (word==_T("MIENTRAS ") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
+//							else if (word==_T("FINSEGUN")) cur-=8;
+//							else if (word==_T("FINMIENTRAS")) 
+//								cur-=4;
+//							else if (word==_T("FINPARA")) cur-=4;
+//							else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
+//							else if (word==_T("FINSI")) cur-=4;
+//							else if (word==_T("FINPROCESO")) cur-=4;
+//	//						else if (word==_T("FIN")) cur-=4;
+//							else 
+//								if (segun) *segun=old_segun;
+//						} else 
+						if (first_word && segun) *segun=old_segun;
 						first_word=false;
 					}
 				}
 				wstart=i+1;
+				if (c==';') first_word=true;
 			}
 		}
 	}

@@ -513,12 +513,14 @@
   El conjunto de instrucciones que repite la estructura repetitiva REPETIR-HASTA QUE esta delimitado por la palabra clave HASTA QUE y la condicion de salida al final del mismo. Esta instruccion REPETIR que no tiene su correspondiente HASTA QUE (o esta mal ubicado).
   * Verifique que exista el HASTA QUE correspondiente a este PARA y que este bien escrito.
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
+  * Si su perfil de lenguaje admite sintaxis flexible, recuerde que las palabras REPETIR y HACER marcan el comienzo de un bucle que debe finalizar con las construcciones HASTA QUE... o MIENTRAS QUE...
 
 116
   El conjunto de instrucciones que repite la estructura repetitiva MIENTRAS esta delimitado por la palabra clave FINMIENTRAS al final del mismo. Esta instruccion MIENTRAS que no tiene su correspondiente FINMIENTRAS (o esta mal ubicado).
   * Verifique que exista el FINMIENTRAS correspondiente a este MIENTRAS y que este bien escrito.
   * Recuerde que FINMIENTRAS va todo junto (no FIN MIENTRAS).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este MIENTRAS.
+  * Si estaba intentando utilizar la palabra "MIENTRAS" para cerrar un bucle REPETIR...MIENTRAS QUE o HACER...MIENTRAS QUE, debe reemplazarla por "MIENTRAS QUE" para evitar la ambigüedad que se produce con el bucle MIENTRAS...FINMINETRAS. Esto solo es posible si su perfil admite sintaxis flexible.
 
 117
   El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SI-ENTONCES esta delimitado por la palabra clave FINSI al final del mismo. Esta instruccion SI que no tiene su correspondiente FINSI (o esta mal ubicado).

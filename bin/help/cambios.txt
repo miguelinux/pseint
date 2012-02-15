@@ -1,3 +1,6 @@
+20120215
+	Ahora se acepta la construcción HACER...MIENTRAS QUE... o HACER...HASTA QUE si está habilitada la sintaxis flexible (es decir, se puede escribir HACER en lugar de REPETIR).
+
 >>RELEASE 20120210<<
 
 20120210

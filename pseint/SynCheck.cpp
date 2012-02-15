@@ -445,6 +445,8 @@ int SynCheck() {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
 			} else if (LeftCompareNC(cadena,"REPETIR ")) {
 				instruccion="REPETIR "; cadena.erase(0,8);
+			} else if (lazy_syntax && LeftCompareNC(cadena,"HACER ")) {
+				instruccion="REPETIR "; cadena.erase(0,6);
 			} else if (LeftCompareNC(cadena,"DEFINIR ")) {
 				instruccion="DEFINIR "; cadena.erase(0,8);
 			} else {
