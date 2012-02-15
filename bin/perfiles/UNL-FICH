@@ -1,0 +1,12 @@
+#ver Flexible para una descripción de los campos y el formato
+desc=Esta es la configuración que se utiliza en la asignatura "Fundamentos de Programación" de la carrera "Ingeniería en Informática" de la "Facultad de Ingeniería y Ciencias Hídricas" de la "Universidad Nacional del Litoral".
+allow_dinamyc_dimensions=0
+allow_concatenation=0
+force_init_vars=1
+force_dot_and_comma=1
+allow_word_operators=1
+lazy_syntax=1
+base_zero_arrays=0
+overload_equal=0
+coloquial_conditions=0
+force_define_vars=0

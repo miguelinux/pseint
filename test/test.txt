@@ -1,0 +1,6 @@
+Este directorio 2 scripts de bash y muchos archivos correspondientes a los tests:
+  
+  run: un script para correr un caso de prueba. Recibe el nombre del archivo pero sin la extensión psc. Si no existe el archivo .out, ejecuta el .psc y guarda la salida en el .out. Si existe, ejecuta el .psc y compara la salida con el .out, mostrando las diferencias (si no muestra nada es porque pasó el test). Corre el intérprete con las opciones --rawerrors, --nouser y las opciones que contenga el archivo .arg de igual nombre que el test, si es que existe. Además, si existe un archivo .in, utiliza su contenido de entrada.
+
+  runall: este script compila el interprete y corre los test utilizando el script run con todos los archivos .psc del directorio.
+

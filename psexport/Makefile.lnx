@@ -1,0 +1,18 @@
+OBJS_DIR=../temp/exp_lnx_rls
+GPP=g++
+FLAGS= -O2 -I../pseint 
+LIBS= -s -lpng -ljpeg
+
+all: ${OBJS_DIR} ../bin/psexport
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psexport
+
+../bin/psexport: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+

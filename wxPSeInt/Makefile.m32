@@ -1,0 +1,20 @@
+OBJS_DIR=../temp/wx_m32_rls
+GPP=i686-apple-darwin8-g++
+FLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=i686-apple-darwin8`
+LIBS= `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8` -lwx_mac_stc-2.8-i686-apple-darwin8
+
+all: ${OBJS_DIR} ../bin/wxPSeInt ../bin/mac-terminal-wrapper.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/wxPSeInt ../bin/mac-terminal-wrapper.bin
+
+../bin/wxPSeInt: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+
+../bin/mac-terminal-wrapper.bin: mac-terminal-wrapper.cpp
+	${GPP} -O2 mac-terminal-wrapper.cpp -o $@

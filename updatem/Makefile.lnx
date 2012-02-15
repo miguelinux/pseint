@@ -1,0 +1,17 @@
+OBJS_DIR=../temp/upd_lnx_rls
+GPP=g++
+FLAGS=-O2
+LIBS=
+
+all: ../temp/upd_lnx_rls ../bin/updatem.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/updatem.bin
+
+../bin/updatem.bin: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}

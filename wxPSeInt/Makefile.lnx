@@ -1,0 +1,22 @@
+OBJS_DIR=../temp/wx_lnx_rls
+GPP=g++
+GCC=gcc
+FLAGS= -O2 `wx-config --cppflags --unicode=no`
+LIBS= -s  `wx-config --libs --unicode=no` -lwx_gtk2_stc-2.8 
+
+all: ${OBJS_DIR} ../bin/wxPSeInt.bin ../bin/wxPSeInt
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/wxPSeInt.bin ../bin/wxPSeInt
+
+../bin/wxPSeInt.bin: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+../bin/wxPSeInt: launcher.cpp
+	${GPP} launcher.cpp -O2 -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+

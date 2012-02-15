@@ -1,0 +1,17 @@
+OBJS_DIR=../temp/upd_m32_rls
+GPP=i686-apple-darwin8-g++
+FLAGS=-O2
+LIBS=
+
+all: ../temp/upd_m32_rls ../bin/updatem.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/updatem.bin
+
+../bin/updatem.bin: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}

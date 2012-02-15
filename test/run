@@ -1,0 +1,35 @@
+#!/bin/sh
+if [ "$1" = "" ]; then
+  echo use: $1 testname
+else
+  if ! test -e $1.psc; then
+    echo File $1.psc not found
+    exit 1
+  fi
+  if test -e $1.arg; then
+    ARGS=$(cat $1.arg)
+  else
+    ARGS=
+  fi
+  if test -e $1.in; then
+      if test -e $1.out; then
+	  cat $1.in | ../bin/pseint --rawerrors --nouser $ARGS $1.psc | diff - $1.out
+      else
+	  cat $1.psc
+	  echo === input:
+	  cat $1.in
+	  echo === running, args=$ARGS
+	  cat $1.in | ../bin/pseint --rawerrors --nouser $ARGS $1.psc > $1.out
+	  cat $1.out
+      fi
+  else
+      if test -e $1.out; then
+	  ../bin/pseint --rawerrors --nouser $ARGS $1.psc | diff - $1.out
+      else
+	  cat $1.psc
+	  echo === running, args=$ARGS
+	  ../bin/pseint --rawerrors --nouser $ARGS $1.psc > $1.out
+	  cat $1.out
+      fi
+  fi
+fi

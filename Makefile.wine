@@ -1,0 +1,15 @@
+all: exes
+
+exes:
+	make -C pseint -f Makefile.wine
+	make -C psdraw -f Makefile.wine
+	make -C psexport -f Makefile.wine
+	make -C wxPSeInt -f Makefile.wine
+	make -C updatem -f Makefile.wine
+
+clean: 
+	make -C pseint -f Makefile.wine clean
+	make -C psdraw -f Makefile.wine clean
+	make -C psexport -f Makefile.wine clean
+	make -C wxPSeInt -f Makefile.wine clean
+	make -C updatem -f Makefile.wine clean

@@ -1,0 +1,18 @@
+GPP=i686-apple-darwin8-g++
+FLAGS=-O2 -fpermissive
+LIBS=-lpthread -lX11 -L/opt/mac/SDKs/MacOSX10.4u.sdk/usr/X11R6/lib
+OBJS=../temp/drw_m32_rls/main.o
+
+all: ../temp/drw_m32_rls ../bin/psdraw
+
+clean:
+	rm -rf ${OBJS} ../bin/psdraw
+
+../bin/psdraw: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+../temp/drw_m32_rls:
+	mkdir -p ../temp/drw_m32_rls
+
+../temp/drw_m32_rls/main.o: main.cpp version.h draw.h CImg.h
+	${GPP} ${FLAGS} -c main.cpp -o $@

@@ -1,0 +1,2 @@
+sftp zaskar_,pseint@frs.sourceforge.net
+cd /home/pfs/project/p/ps/pseint

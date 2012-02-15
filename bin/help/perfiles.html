@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<TITLE>PIPEH PSeudo Intérprete</TITLE>
+</HEAD>
+<BODY>
+<B> Personalización del Lenguaje </B>
+<BR><BR>
+Hay ciertas características del pseudocódigo que pueden personalizarse para adaptarse a las preferencias de cada docente. Por defecto, PSeInt utiliza la configuración más flexible y natural posible, pero ofrece una lista de configuraciones predefinidas denominadas "perfiles". Se puede acceder a la lista de perfiles desde el ítem "Opciones del Lenguaje..." del menú "Configurar".<BR>
+<BR>Si ninguno de los perfiles resulta adecuado se puede utilizar el botón "Personalizar" ubicado debajo de la lista de perfiles para definir una por una las siguientes posibles personalizaciones:<BR>
+<BR><UL>
+
+
+<LI><B>No permitir utilizar variables o posiciones de arreglos sin inicializar</B>: Si esta opción está deshabilitada se puede utilizar variables sin incializar (que nunca fueron leidas o asignadas en expresiones o para mostrar en pantalla. En este caso asumen el valor por defecto 0, "", o FALSO segun el tipo que corresponda. Si esta opción está seleccionada escribir o evaluar una expresión que involucra una variable sin inicializar genera un error en tiempo de ejecución.</LI><BR>
+<LI><B>Obligar a definir los tipos de variables</B>: Si esta opción está deshabilitada no se puede utilizar una variable sin previamente definir su tipo. Para esto se debe utilizar la palabra clave DEFINIR. Ej: "DEFINIR X COMO REAL". Los tipos posibles son ENTERO, NUMERICO/REAL, LOGICO, CARACTER/TEXTO.</LI><BR>
+<LI><B>Controlar el uso de ; al final de sentencias secuenciales</B>: Si esta opción está activada obliga a colocar punto y coma (;) al final de las instrucciones secuenciales, como se hace en lenguajes como C++ o Pascal (util para acostumbrarse antes de dar el salto desde el pseudocódigo a un lenguaje real). si está desactivada el uso del punto y coma es opcional.</LI><BR>
+<LI><B>Permitir concatenar variables de texto con el operador +</B>: Si esta opción esta activada se puede concatenar el contenido de dos variables de tipo caracter con el operador +. Por ejemplo: NombreCompleto <- Nombre+" "+Apellido;</LI><BR>
+<LI><B>Permitir las palabras Y, O, NO y MOD para los operadores &amp;, |, ~ y %</B>: Con esta opción habilitada PSeInt acepta las palabras clave Y, O, NO, y MOD como sinónimos de los operadores &amp;, |, ~ y % respectivamente. Notar que en este caso estas palabras serán palabras reservadas y no se podrán utilizar como nombres de variables.</LI><BR>
+<LI><B>Utilizar arreglos en base 0</B>: Si esta opción esta activada, el primer elemento de un arreglo de N elementos será el 0 y el último el N-1, mientras que en caso contrario el primero será el 1 y el último el N</LI><BR>
+<LI><B>Permitir utilizar variables para dimensionar arreglos</B>: Si esta opción está seleccionada se puede utilizar una variable o una expresión que involucre variables para dimensionar un arreglo (por ejemplo, se puede pedir al usuario del programa el tamaño leyendo un numero y utilizarlo luego para crear el arreglo). Este suele ser el caso de los lenguajes interpretados, mientras que los lenguajes compilados suelen exigir que el tamaño de los arreglos estáticos sea una constante (por ejemplo, C y C++).</LI><BR>
+<LI><B>Permitir asignar con el signo igual (=)</B>: Esta opcion habilita la asignación con el signo igual (Ej: x=0;). En muchos casos esta sintaxis de asignación no se permite, ya que en muchos lenguajes no se utilia el mismo operador para asignar y comparar, como sucede al activar esta opción. En cualquier caso, las otras dos sintaxis de asignación (con <- y con :=) siguen siendo válidas.</LI><BR>
+<LI><B>Sintaxis flexible</B>: Esta opcion habilita variaciones opcionales en la sintaxis: omitir la palabra HACER en un bucle MIENTRAS o PARA, utilizar la palabra DESDE para indicar el valor de inicio de un ciclo PARA, separar la expresiones/variables en una lectura/escritura con espacios en lugar de comas, agregar la palabra OPCION, CASO o SI ES antes de un caso en un SEGUN, separar los valores para un mismo caso en un segun con la palabra O, utilizar la estructura REPETIR-MIENTRAS QUE como variante de REPETIR-HASTA QUE, etc. Muchas de las variaciones de la sintaxis resultan en construcciones más naturales en un verdadero pseudocódigo, pero no son posibles o son incompletas en un lenguaje de programación real.</LI><BR>
+<LI><B>Permitir condiciones en lenguaje coloquial</B>: Esta opcion permite expresar las condiciones en un lenguaje más coloquial con construcciones como "X ES PAR", "X NO ES MULTIPLO DE 5", "X ES IGUAL A Y", "X ES ENTERO", etc. Esta opción activa además el uso de palabras clave para reemplazar operadores.</LI><BR>
+
+</ul><BR><BR>
+		A continuación incluyo un pseudocódigo de ejemplo escrito Para los perfiles Estricto y Flexible, ilustrando algunas diferencias entre configuraciones:<BR><BR>
+<CENTER><TABLE>
+<TR><TD><CODE>
+Proceso <B>Estricto</B><BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;<B>Definir VAL_MAYOR,ARREGLO,CANT,I Como Enteros<B>;</B></B><BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Dimension ARREGLO[<B>100</B>]<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;Escribir "Ingrese la cantidad de numeros:"<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;Leer CANT<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Para <B>I&lt;-01 Hasta CANT-1 Hacer</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "Ingrese un numero:"<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leer <B>ARREGLO[I];</B><BR>
+&nbsp;&nbsp;&nbsp;FinPara<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;VAL_MAYOR&lt;-0<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;Para <B>I&lt;-0 Hasta CANT-1 Hacer</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si <B>ARREGLO[I]&gt;VAL_MAYOR Entonces</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VAL_MAYOR&lt;-<B>ARREGLO[i];</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FinSi<BR>
+&nbsp;&nbsp;&nbsp;FinPara<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Si <B>VAL_MAYOR % 2 = 0 Entonces</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "El mayor es "<B>,</B>VAL_MAYOR<B>,</B>" y es par"<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;Sino<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "El mayor es "<B>,</B>VAL_MAYOR<B>,</B>" y es impar"<B>;</B><BR>
+&nbsp;&nbsp;&nbsp;FinSi<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+FinProceso<BR>
+</CODE></TD><TD>&nbsp;&nbsp;</TD><TD><CODE>
+Proceso <B>Flexible</B><BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Escribir "Ingrese la cantidad de numeros:"<BR>
+&nbsp;&nbsp;&nbsp;Leer CANT<BR>
+&nbsp;&nbsp;&nbsp;Dimension ARREGLO[<B>CANT</B>]<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Para <B>Cada Elemento de ARREGLO</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "Ingrese un numero:"<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leer <B>ELEMENTO</B><BR>
+&nbsp;&nbsp;&nbsp;Fin Para<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;VAL_MAYOR&lt;-0<BR>
+&nbsp;&nbsp;&nbsp;Para <B>Cada ELEMENTO de ARREGLO</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si <B>ELEMENTO Es Mayor Que VAL_MAYOR</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VAL_MAYOR&lt;-<B>ELEMENTO</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fin Si<BR>
+&nbsp;&nbsp;&nbsp;Fin Para<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;Si <B>VAL_MAYOR Es Par</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "El mayor es " VAL_MAYOR " y es par"<BR>
+&nbsp;&nbsp;&nbsp;Sino <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Escribir "El mayor es " VAL_MAYOR " y es impar"<BR>
+&nbsp;&nbsp;&nbsp;Fin Si<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+FinProceso<BR>
+</CODE></TD></TR>
+</TABLE></CENTER>
+<BR><BR>
+</HTML></BODY>

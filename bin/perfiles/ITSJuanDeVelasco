@@ -1,0 +1,12 @@
+#ver Flexible para una descripción de los campos y el formato
+desc=Perfil enviado por "Edgar Francisco Merino Villa" para utilizar en las cátedras "Módulo de Diseño y Realización (Programación Lenguaje C++)", "Programación Estrucutrada" y "Diseño de Algoritmos" del "Instituto Tecnológico Superior Juan de Velasco".
+allow_dinamyc_dimensions=1
+allow_concatenation=1
+force_init_vars=1
+force_dot_and_comma=0
+allow_word_operators=1
+lazy_syntax=1
+base_zero_arrays=1
+overload_equal=0
+coloquial_conditions=0
+force_define_vars=0

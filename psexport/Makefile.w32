@@ -1,0 +1,18 @@
+MINGW_DIR=D:\\mingw
+OBJS_DIR=..\temp\exp_w32_rls
+GPP=wine ${MINGW_DIR}\\bin\\mingw32-g++.exe
+FLAGS=-O2 -I../pseint 
+LIBS=-s -static-libgcc -static-libstdc++
+
+all: ../temp/exp_w32_rls ../bin/psexport.exe
+
+include Makefile.common
+
+clean:
+	del ${OBJS} ../bin/psexport.exe
+
+../bin/psexport.exe: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+../temp/exp_w32_rls:
+	mkdir -p ../temp/exp_w32_rls

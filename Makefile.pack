@@ -1,0 +1,107 @@
+all: 
+	@echo "Targets are: src (solo fuentes), w32(windows installer with wine), lnx (linux version, current architecture), m32 (apple-i686), ppc (apple-powerpc)"
+
+src:
+	make -f Makefile.pack clean
+	rm -f bin/core
+	cd .. && tar -czvf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psexport pseint/psdraw pseint/bin pseint/dist/license.txt pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-src-`cat bin/version`.tgz
+	@echo
+
+w32:
+	make -f Makefile.pack clean
+	make -f Makefile.wine
+	rm -rf dist/pseint 
+	mkdir dist/pseint 
+	cp -r bin/* dist/pseint/
+	cp -r dist/*.dll dist/pseint/ 
+	cd dist && nsis /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-w32-`cat bin/version`.exe
+	@echo
+
+lnx:
+	make -f Makefile.pack clean
+	make -f Makefile.`dist/get_arch` -C wxPSeInt
+	make -f Makefile.`dist/get_arch` -C psdraw
+	make -f Makefile.lnx -C pseint
+	make -f Makefile.lnx -C psexport
+	make -f Makefile.lnx -C updatem
+	rm -rf dist/pseint 
+	mkdir dist/pseint 
+	cp -r bin/* dist/pseint/ 
+	cd dist && tar -czvf pseint-`./get_arch`-`cat pseint/version`.tgz pseint 
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-`dist/get_arch`-`cat bin/version`.tgz
+	@echo
+
+dist/mnt:
+	mkdir -f dist/mnt
+
+m32: dist/mnt
+	make -f Makefile.pack clean
+	make -f Makefile.m32
+	rm -rf dist/pseint.app
+	mkdir dist/pseint.app
+	mkdir dist/pseint.app/Contents
+	mkdir dist/pseint.app/Contents/MacOS
+	mkdir dist/pseint.app/Contents/Resources
+	cp -r bin/* dist/pseint.app/Contents/Resources
+	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
+	cp dist/Info.plist dist/pseint.app/Contents/
+	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
+
+	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
+	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=17
+	mkfs.hfsplus -v PSeInt dist/pseint-m32-`cat bin/version`.dmg
+	sudo mount -o loop dist/pseint-m32-`cat bin/version`.dmg dist/mnt
+	sudo cp -r dist/pseint.app dist/mnt
+	sudo umount dist/mnt
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-m32-`cat bin/version`.dmg
+	@echo
+
+ppc: dist/mnt
+	make -f Makefile.pack clean
+	make -f Makefile.ppc
+	rm -rf dist/pseint.app
+	mkdir dist/pseint.app
+	mkdir dist/pseint.app/Contents
+	mkdir dist/pseint.app/Contents/MacOS
+	mkdir dist/pseint.app/Contents/Resources
+	cp -r bin/* dist/pseint.app/Contents/Resources
+	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
+	cp dist/Info.plist dist/pseint.app/Contents/
+	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
+
+	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
+	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=17
+	mkfs.hfsplus -v PSeInt dist/pseint-ppc-`cat bin/version`.dmg
+	sudo mount -o loop dist/pseint-ppc-`cat bin/version`.dmg dist/mnt
+	sudo cp -r dist/pseint.app dist/mnt
+	sudo umount dist/mnt
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-ppc-`cat bin/version`.dmg
+	@echo
+
+clean:
+	rm -f bin/updatem.bin
+	rm -f bin/updatem.exe
+	rm -f bin/pseint
+	rm -f bin/pseint.exe
+	rm -f bin/wxPSeInt
+	rm -f bin/wxPSeInt.bin
+	rm -f bin/wxPSeInt.exe
+	rm -f bin/psdraw
+	rm -f bin/psdraw.exe
+	rm -f bin/psexport
+	rm -f bin/psexport.exe
+	rm -f bin/mac-terminal-wrapper.bin
+	rm -f bin/core
+	rm -f bin/*.dll
