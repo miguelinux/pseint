@@ -25,7 +25,7 @@ bool mxApplication::OnInit() {
 	wxFileName f_zpath = f_cmd.GetPathWithSep();
 	f_zpath.MakeAbsolute();
 	wxString zpath(f_zpath.GetPathWithSep());
-	bool flag;
+	bool flag=false;
 	if (f_zpath!=f_path) {
 		if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("pseint.dir"))) || wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("PSeInt.dir")))) ) )
 			wxSetWorkingDirectory(zpath);

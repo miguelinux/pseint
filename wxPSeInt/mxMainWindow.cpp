@@ -444,8 +444,7 @@ void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnHelpExamples(wxCommandEvent &evt) {
-	if (!helpw)
-		helpw = new mxHelpWindow();
+	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("ejemplos.html"));
 //	wxFileDialog dlg (this, _T("Abrir Archivo"), DIR_PLUS_FILE(wxGetCwd(),	config->examples_dir), _T(""), _T("Ejemplos|*.psc"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 //	if (dlg.ShowModal() == wxID_OK) {
@@ -943,6 +942,7 @@ void mxMainWindow::OnEditReplace (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnHelpAbout(wxCommandEvent &evt) {
+	// cppcheck-suppress unusedScopedObject
 	mxAboutWindow(this,wxID_ANY);
 }
 
@@ -1174,8 +1174,7 @@ void mxMainWindow::OnDebugEvaluate(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnDebugHelp(wxCommandEvent &evt) {
-	if (!helpw)
-		helpw = new mxHelpWindow();
+	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("debug.html"));
 }
 
@@ -1310,8 +1309,10 @@ void mxMainWindow::OnLink (wxHtmlLinkEvent &event) {
 		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),false)->SetExample();
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
-	} else 
-		event.Skip();
+	} else {
+		if (!helpw) helpw = new mxHelpWindow();
+		helpw->ShowHelp(event.GetLinkInfo().GetHref());
+	}
 }
 
 void mxMainWindow::SetWordsForSources() {

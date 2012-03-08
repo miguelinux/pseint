@@ -539,6 +539,9 @@
   * Recuerde que FINPROCESO va todo junto (no FIN PROCESO).
   * Si no lo escribió, agregue la palabra clave FINPROCESO al final del algoritmo.    
 
+124
+  Está intentando definir el tipo de una variable que ya ha sido inicializada (puede ser mediante una lectura, asignación, o mediante la dimensión si es un arreglo). Debe definir las variables antes de utilizarlas por primera vez.
+
 134
   La cantidad de subindices o parametros que utilizo en la expresion para un arreglo no coincide con las dimensiones declaradas para el mismo. Si se trata de una funcion:
   * Verifique que sea una funcion valida y que este correctamente escrita.
@@ -588,17 +591,17 @@
   * Compruebe que todas las expresiones que se utilizan como indice de arreglos sean de tipo numerico.
 
 200
-  El identificador de variable que produjo el error el error corresponde a un como <A href="arreglos.html>arreglo</A> (esta declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizandola sin los correspondientes subindices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
+  El identificador de variable que produjo el error el error corresponde a un <A href="arreglos.html">arreglo</A> (esta declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizandola sin los correspondientes subindices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
   * Agregue los subíndices que indican qué posición del arreglo utilizar colocandolos entre paréntesis a continuación del nombre del mismo.
   * Si no quiere que esta variable se comporte como arreglo, elimine la declaración del mismo (busque la directiva DIMENSION).
 
 201
-  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html>arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
+  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
 
 202
-  La variable que produjo el error no corresponde a un <A href="arreglos.html>arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
+  La variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
   * Si su intención fue utilizar una <A href="funciones.html">función</A> verifique que el nombre de la misma esté correctamente escrito.
@@ -631,3 +634,12 @@
      * Verifique el correcto uso de paréntesis en la expresión.
   * Puede darse este error en una comparación implícita:
      * Si esta en un caso de la estructura SEGUN, verifique que la expresión candidata del caso (antes de los dos puntos) y la expresión de control (a continuación de la palabra SEGUN) sean del mismo tipo.
+
+208
+  Esta intentando crear una nueva variable, mediante su lectura, sin antes haber explicitado de qué tipo será la misma. Su perfil de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
+  * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de variable (CARACTER, NUMERICA, LOGICA) antes de utilizarla por primera vez.
+  * Si se trata de un arreglo, el tipo se define una vez y para todo el arreglo, antes de dimensionarlo.
+
+209
+  Esta intentando crear un arreglo sin antes haber explicitado de qué tipo será el mismo. Su perfil de lenguaje actual obliga a definir todas las variables y arreglos antes de utilizarlas:
+  * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de dato que almacenará en el arreglo (CARACTER, NUMERICA, LOGICA) antes de dimensionarlo.

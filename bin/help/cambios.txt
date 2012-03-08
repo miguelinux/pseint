@@ -1,3 +1,10 @@
+20120307
+	Se genera un error al intentar dimensionar un arreglo sin haber definido su tipo si la definición es obligatoria.
+	Ahora los enlaces en las ayudas rápidas para los errores se abren correctamente y en la ventana de ayuda.
+	
+20120217
+	Corregidos algunos errores y warnings detectados por CppCheck en el intérprete y la GUI.
+
 20120215
 	Ahora se acepta la construcción HACER...MIENTRAS QUE... o HACER...HASTA QUE si está habilitada la sintaxis flexible (es decir, se puede escribir HACER en lugar de REPETIR).
 

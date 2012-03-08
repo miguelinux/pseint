@@ -70,7 +70,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					tmp2-=aux2.size();
 
 					if (force_var_definition && !memoria->EstaDefinida(aux2)) {
-						ExeError(999,"Variable no definida ("+aux2+").");
+						ExeError(208,"Variable no definida ("+aux2+").");
 					}
 					tipo=memoria->LeerTipo(aux2);
 					size_t pp=aux2.find("(");
@@ -154,9 +154,10 @@ void Ejecutar(int LineStart, int LineEnd){
 					}
 					tmp3++; last=tmp1+1; tmp1++;
 				}
-				if (memoria->EstaInicializada(aux1) || memoria->EstaInicializada(aux1)) {
+				if (force_var_definition && !memoria->EstaDefinida(aux1))
+					ExeError(209,"Variable no definida.");
+				if (memoria->EstaInicializada(aux1) || memoria->EstaInicializada(aux1))
 					ExeError(123,"Identificador en uso.");
-				}
 				if (dim!=0) memoria->AgregarArreglo(aux1, dim);
 				if (otro!="") { // si hay otro, inicilizarlo tambien
 					programa[line]=otro;

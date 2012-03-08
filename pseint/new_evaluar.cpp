@@ -275,8 +275,6 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	static int tabs=0;
 	tabs+=2;
 	cerr<<setw(tabs)<<""<<"EVALUAR: *"<<expresion.substr(p1,p2-p1+1)<<"*\n";
-	if (expresion.substr(p1,p2-p1+1)=="((-B)+RC(DISC))/(2*A)")
-		cerr<<"LALA"<<endl;
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
@@ -394,8 +392,8 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						}
 						ev_return(memoria->LeerValor(aux));
 					} else {
-						ev_return("");
 						tipo=vt_error;
+						ev_return("");
 					}
 				}
 			}

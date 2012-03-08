@@ -16,14 +16,14 @@ struct tipo_var {
 	bool rounded; // para cuando se definen como enteras
 	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false) {}
 	tipo_var(bool l, bool n, bool c):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(false) {}
-	bool set(const tipo_var v) {
+	bool set(const tipo_var &v) {
 		enabled=true;
 		cb_log=cb_log&&v.cb_log;
 		cb_num=cb_num&&v.cb_num;
 		cb_car=cb_car&&v.cb_car;
 		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)!=0;
 	}
-	bool set(const tipo_var v, bool) {
+	bool set(const tipo_var &v, bool) {
 		enabled=true;
 		bool error = ((cb_log&&v.cb_log)?1:0)+((cb_num&&v.cb_num)?1:0)+((cb_car&&v.cb_car)?1:0)==0;
 		if (!error) {

@@ -69,8 +69,8 @@ int ParseExpression(string &cadena) {
 			cadena[y]=cadena[y]+('A'-'a');
 		act=cadena[y];
 		// Checkear correctos nombres de variables
-		if (comillas<0) {
-			if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='-' || act=='%'
+		if (!comillas) {
+			if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='%'
 				|| act=='&' || act=='=' || act=='^' || act=='~' || act==')' || act=='(' ||act=='<' || act=='>' ) Numero=0;
 			if (Numero==0 && act>='A' && act<='Z') Numero=-1;
 			if (Numero==0 && act>='.' && act<='9' && act!='/') Numero=1;
@@ -157,7 +157,7 @@ int ParseExpression(string &cadena) {
 				if (last>=65 && last<=90 && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
 				if (last=='.' && y!=0)
 					if (act=='<' || act=='>' || act=='(' || act==')' || 
-					act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
+					act=='/' || act=='*' || act=='^' || act=='&' || 
 					act=='|' || act=='~' || act=='.' || act==',' ||
 					act=='%' || act=='+' || act=='-' || act=='=') {SynError (15,"Operador incorrecto."); errores++;}
 				if (last==',')
@@ -253,9 +253,7 @@ int SynCheck() {
 	for (x=1;x<(int)programa.size();x++){
 		
 		Inter.SetLineNumber(LineNumber);
-		char last='.',act,lastb='.';
-		int comillas=-1, parentesis=0;
-		int Numero=0; // Para controlar los correctos nombres de variables
+		char last='.',lastb='.';
 		cadena=programa[x];
 		Lerrores=errores;
 		
@@ -270,6 +268,9 @@ int SynCheck() {
 //		if (cadena[0]=='/' && cadena[1]=='/')
 //			cadena="";
 		{
+			char act;
+			int comillas=-1, parentesis=0;
+			int Numero=0; // Para controlar los correctos nombres de variables
 			instruccion="";
 			// Pasar todo a mayusculas, cambiar comillas y corchetes
 			comillas=-1;
@@ -451,7 +452,7 @@ int SynCheck() {
 				instruccion="DEFINIR "; cadena.erase(0,8);
 			} else {
 				int flag_segun=0;
-				if (bucles.size()>0) {
+				if (!bucles.empty()) {
 					if (bucles.top()=="SEGUN") { // si esta en segun comprobar la condicion
 						int pos_dp=PSeudoFind(cadena,':');
 						if (pos_dp!=-1 && cadena[pos_dp+1]!='=') {
@@ -463,9 +464,9 @@ int SynCheck() {
 									cadena=cadena.substr(5);
 								else if (cadena.size()>7 && cadena.substr(0,6)=="SI ES ")
 									cadena=cadena.substr(6);
-								else if (cadena.size()>8 && cadena.substr(0,8)=="OPCION ")
+								else if (cadena.size()>8 && cadena.substr(0,7)=="OPCION ")
 									cadena=cadena.substr(7);
-								else if (cadena.size()>8 && cadena.substr(0,8)=="OPCIÓN ")
+								else if (cadena.size()>8 && cadena.substr(0,7)=="OPCIÓN ")
 									cadena=cadena.substr(7);
 							}
 							instruccion=":";
@@ -690,7 +691,7 @@ int SynCheck() {
 				act=cadena[y];
 				// Checkear correctos nombres de variables
 				if (comillas<0) {
-					if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='-' || act=='%'
+					if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='%'
 						|| act=='&' || act=='=' || act=='^' || act=='~' || act==')' || act=='(' ||act=='<' || act=='>' ) Numero=0;
 					if (Numero==0 && act>='A' && act<='Z') Numero=-1;
 					if (Numero==0 && act>='.' && act<='9' && act!='/') Numero=1;
@@ -792,7 +793,7 @@ int SynCheck() {
 						if (last>=65 && last<=90 && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
 						if (last=='.' && y!=0)
 							if (act=='<' || act=='>' || act=='(' || act==')' || 
-								act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
+								act=='/' || act=='*' || act=='^' || act=='&' || 
 								act=='|' || act=='~' || act=='.' || act==',' ||
 								act=='%' || act=='+' || act=='-' || act=='=') 
 									{SynError (15,"Operador incorrecto."); errores++;}
@@ -889,7 +890,7 @@ int SynCheck() {
 						{SynError (32,"Se esperaba ENTONCES"); errores++;}
 				}
 			// si entro en segun comprobar que haya condicion
-			if (bucles.size()>0) {
+			if (!bucles.empty()) {
 				if (bucles.top()=="SEGUN" && LeftCompare(programa[x-1],"SEGUN") && cadena!="") {
 					if (instruccion!=":") SynError (33,"Se esperaba <opcion>:."); errores++;
 				}
@@ -1536,7 +1537,7 @@ int SynCheck() {
 		prog_lines.erase(prog_lines.begin()+x,prog_lines.begin()+x+1);
 	
 	// Controlar Cierre de Bucles
-	while (bucles.size()>0)	{
+	while (!bucles.empty())	{
 		if (bucles.top()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles_line.top()); errores++;}
 		if (bucles.top()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles_line.top()); errores++;}
 		if (bucles.top()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles_line.top()); errores++;}
