@@ -542,6 +542,9 @@
 124
   Está intentando definir el tipo de una variable que ya ha sido inicializada (puede ser mediante una lectura, asignación, o mediante la dimensión si es un arreglo). Debe definir las variables antes de utilizarlas por primera vez.
 
+125
+  Está intentando asignar en una variable de cierto tipo de dato de otro tipo (por ejemplo, una cadena de texto en una variable numérica). Verifique que los tipos de datos a ambos lados de la asignación coincidan. Recuerde que el tipo de dato de una variable se define explícitamente con la instrucción <A href="definir.html">DEFINIR</A> o se deduce a partir de los operadores y operandos que interactúan con la variable en las expresiones, o a partir de los valores asignados o leídos en la misma.
+  
 134
   La cantidad de subindices o parametros que utilizo en la expresion para un arreglo no coincide con las dimensiones declaradas para el mismo. Si se trata de una funcion:
   * Verifique que sea una funcion valida y que este correctamente escrita.
@@ -655,3 +658,11 @@
 
 212
   En la instrucción definir, los identificadores de arreglos se deben colocar sin subindices, ya que se define un único tipo para todos los elementos del mismo.
+
+213
+  Esta intentando untilizar un operador matemático (+,-,*,/,^,% o MOD) con dos operandos que no son de tipo numérico.
+  * Busque estos operadores en las expresiones de esta línea y verifique que los operandos sobre los que actúan sean de tipo numérico.
+  * Si está intentando concatenar cadenas con el signo +, la configuración actual del lenguaje no lo permite.
+
+214
+  Se está ejecutando el algoritmo con una entrada (valores ingresados para la acción LEER) predefinida, pero esta entrada contiene menos valores de los que el algoritmo en realidad necesita leer.

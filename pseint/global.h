@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <queue>
 using namespace std;
 
 // *********************** Variables Globales ****************************
-
+extern queue <string> predef_input;
 extern vector <string> programa; // programa con sintaxis reorganizada para ejecutar
 extern vector <int> prog_lines;  // correspondencia con el código original (por numeros de lineas)
 extern ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno
@@ -25,6 +26,7 @@ extern bool allow_dinamyc_dimensions; // permitir usar variables para dimensiona
 extern bool lazy_syntax; // no generar error si se omite las palabras hacer o entonces
 extern bool overload_equal; // permite asignar con un solo igual
 extern bool raw_errors; // salida para test automatico, sin mensajes explicativos ni adornos
+extern bool noinput; // no pedir entradas al usuario, tomar de los argumentos
 
 #define COLOR_INFO COLOR_LBLUE
 #define COLOR_ERROR COLOR_LRED

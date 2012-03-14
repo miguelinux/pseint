@@ -11,25 +11,12 @@ else
   else
     ARGS=
   fi
-  if test -e $1.in; then
-      if test -e $1.out; then
-	  cat $1.in | ../bin/pseint --rawerrors --nouser $ARGS $1.psc | diff - $1.out
-      else
-	  cat $1.psc
-	  echo === input:
-	  cat $1.in
-	  echo === running, args=$ARGS
-	  cat $1.in | ../bin/pseint --rawerrors --nouser $ARGS $1.psc > $1.out
-	  cat $1.out
-      fi
+  if test -e $1.out; then
+      ../bin/pseint --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
   else
-      if test -e $1.out; then
-	  ../bin/pseint --rawerrors --nouser $ARGS $1.psc | diff - $1.out
-      else
-	  cat $1.psc
-	  echo === running, args=$ARGS
-	  ../bin/pseint --rawerrors --nouser $ARGS $1.psc > $1.out
-	  cat $1.out
-      fi
+      cat $1.psc
+      echo === running, args=$ARGS
+      ../bin/pseint --rawerrors --nouser --noinput $ARGS $1.psc > $1.out
+      cat $1.out
   fi
 fi

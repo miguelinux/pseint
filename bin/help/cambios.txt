@@ -1,3 +1,9 @@
+20120314
+	Se agregó un argumento a la linea de comandos del intérprete para especificar la entrada del algoritmo.
+	Se corrgieron algunos errores en la verificación de tipos.
+	Ahora se verifica correctamente si se intenta volver a dimensionar un arreglo ya dimensionado.
+	Ahora se puede definir el tipo de un arreglo antes o despues de dimensionarlo.
+
 20120307
 	Se genera un error al intentar dimensionar un arreglo sin haber definido su tipo si la definición es obligatoria.
 	Ahora los enlaces en las ayudas rápidas para los errores se abren correctamente y en la ventana de ayuda.

@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
 			string str(argv[i]);
 			if (str.substr(0,8)=="--delay=")
 				delay=atoi(str.substr(8,str.size()-8).c_str());
+			else if (str.substr(0,8)=="--input=")
+				predef_input.push(str.substr(8,str.size()-8));
 			else if (str.substr(0,7)=="--port=")
 				Inter.SetPort(atoi(str.substr(7,str.size()-7).c_str()));
 			else if (str=="--rawerrors")
@@ -78,6 +80,8 @@ int main(int argc, char* argv[]) {
 				check=false;
 			else if (str=="--nouser")
 				user=false;
+			else if (str=="--noinput")
+				noinput=true;
 			else if (str=="--nolazysyntax")
 				lazy_syntax=false;
 			else if (str=="--forceinitvars")
@@ -128,7 +132,9 @@ int main(int argc, char* argv[]) {
 		cout<<"      --delay=<num>          define el retardo entre instrucciones para la ejecucion paso a paso"<<endl;
 		cout<<"      --forcevardefinition   obliga a definir explicitamente los tipos de variable"<<endl;
 		cout<<"      --port=<num>           define el puerto tpc para comunicar controlar la depuracion"<<endl;
-		cout<<"      --rawerrors               muestra los errores sin descripcion, para testing automatizado"<<endl;
+		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
+		cout<<"      --noinput              en lugar realizar las lecturas desde el teclado, lo hace desde los argumentos"<<endl;
+		cout<<"      --input=<str>          sirve para definir una o mas entradas cuando se usa --noinput"<<endl;
 		exit(1);
 	}
 	

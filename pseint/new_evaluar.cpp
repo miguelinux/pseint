@@ -573,7 +573,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			// los operandos deben ser numericos
 			if ((t1!=vt_numerica && !AplicarTipo(expresion,p1a,p1b,vt_numerica)) ||
 				(t2!=vt_numerica && !AplicarTipo(expresion,p2a,p2b,vt_numerica))) {
-					WriteError(999,"No coinciden los tipos (+, -, *, /, ^, % o MOD). Los operandos deben ser numericos.");
+					WriteError(213,"No coinciden los tipos (+, -, *, /, ^, % o MOD). Los operandos deben ser numericos.");
 					tipo=vt_error;
 					ev_return("");
 				}

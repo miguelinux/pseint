@@ -177,6 +177,7 @@ void SynError(int num,string s, int line) {
 	if (line==-1) line=Inter.GetLineNumber();
 	if (raw_errors) {
 		cout<<"=== Line "<<line+1<<": SynError "<<num<<endl;
+		SynErrores++;
 		return;
 	}
 	if (Inter.EvaluatingForDebug()) {

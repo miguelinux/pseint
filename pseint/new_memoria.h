@@ -97,16 +97,22 @@ public:
 		tipo_var &v = var_info[nombre];
 		v.dims=dims;
 	}
+	// esta version de definir tipo se usa en las definiciones implicitas
 	bool DefinirTipo(string nombre, const tipo_var &tipo) {
 		QuitarIndices(nombre);
 		var_info[nombre].defined=true;
 		return var_info[nombre].set(tipo,true);
 	}
-	bool DefinirTipo(string nombre, const tipo_var &tipo, bool rounded) {
+	// esta version de definir tipo se usa en las definiciones explictas
+	void DefinirTipo(string nombre, const tipo_var &tipo, bool rounded) {
 		QuitarIndices(nombre);
-		if (rounded) var_info[nombre].rounded=true;
-		var_info[nombre].defined=true;
-		return var_info[nombre].set(tipo,true);
+		tipo_var &t=var_info[nombre];
+		if (rounded) t.rounded=true;
+		t.defined=true;
+		t.cb_car=tipo.cb_car;
+		t.cb_log=tipo.cb_log;
+		t.cb_num=tipo.cb_num;
+//		return var_info[nombre].set(tipo,true);
 	}
 	void EscribirValor(string nombre, string valor) {
 		string nom=nombre; QuitarIndices(nom);

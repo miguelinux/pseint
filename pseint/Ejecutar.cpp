@@ -83,7 +83,12 @@ void Ejecutar(int LineStart, int LineEnd){
 					if (colored_output) setForeColor(COLOR_INFO);
 					cout<<"> "<<flush;
 					if (colored_output) setForeColor(COLOR_INPUT);
-					getline(cin,aux1);  // Leer dato
+					// Leer dato
+					if (noinput) {
+						if (predef_input.empty()) ExeError(214,"Sin entradas disponibles.");
+						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
+					} else
+						getline(cin,aux1);  
 					if (toUpper(aux1)=="VERDADERO" || toUpper(aux1)=="FALSO") aux1=toUpper(aux1);
 					
 					if (tipo==vt_logica && aux1.size()==1 && (toupper(aux1[0])=='F'||aux1[0]=='0')) aux1=FALSO;
