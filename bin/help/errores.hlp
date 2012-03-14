@@ -666,3 +666,4 @@
 
 214
   Se está ejecutando el algoritmo con una entrada (valores ingresados para la acción LEER) predefinida, pero esta entrada contiene menos valores de los que el algoritmo en realidad necesita leer.
+  * Modifique la entrada con el ítem "Predefinir Entrada" del Menú "Ejecutar".

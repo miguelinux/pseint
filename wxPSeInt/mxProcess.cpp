@@ -7,6 +7,7 @@
 #include <wx/textfile.h>
 #include "DebugManager.h"
 #include <wx/filename.h>
+#include "mxInputDialog.h"
 using namespace std;
 
 mxProcess *proc_list;
@@ -127,8 +128,8 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors)
 		command<<_T(" --color");
-	command<<GetProfileArgs();
-	
+	command<<GetProfileArgs()<<" "<<GetInputArgs();
+	cerr<<command<<endl;
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -150,7 +151,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors)
 		command<<_T(" --color");
-	command<<GetProfileArgs();
+	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	debug->Start(this,source,port);
 	was_readonly = source->GetReadOnly();
 	if (pid) source->SetReadOnly(true);
@@ -256,4 +257,18 @@ wxString mxProcess::GetProfileArgs() {
 	if (config->lang.base_zero_arrays)
 		command<<_T(" --basezeroarrays");
 	return command;
+}
+
+wxString mxProcess::GetInputArgs() {
+	if (!source->input || !source->input->HasInput()) return "";
+	wxString args(source->input->IsPartial()?"":"--noinput ");
+	wxString values=source->input->GetInput();
+	if (!values.Len()) return args;
+	values.Replace("\r","");
+	if (values.EndsWith("\n")) values.RemoveLast();
+	values.Replace("\\","\\\\");
+	values.Replace("\"","\\\"");
+	values.Replace("\n","\" \"--input=");
+	args<<"\"--input="<<values<<"\"";
+	return args;
 }

@@ -78,6 +78,7 @@ public:
 	void OnRunCheck(wxCommandEvent &evt);
 	void OnRunDrawFlow(wxCommandEvent &evt);
 	void OnRunSaveFlow(wxCommandEvent &evt);
+	void OnRunSetInput(wxCommandEvent &evt);
 	void OnHelpAbout(wxCommandEvent &evt);
 	void OnHelpIndex(wxCommandEvent &evt);
 	void OnHelpQuickHelp(wxCommandEvent &evt);

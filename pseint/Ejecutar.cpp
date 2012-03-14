@@ -84,7 +84,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					cout<<"> "<<flush;
 					if (colored_output) setForeColor(COLOR_INPUT);
 					// Leer dato
-					if (noinput) {
+					if (!predef_input.empty() || noinput) {
 						if (predef_input.empty()) ExeError(214,"Sin entradas disponibles.");
 						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
 					} else

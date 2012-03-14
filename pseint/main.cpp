@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
 		cout<<"      --port=<num>           define el puerto tpc para comunicar controlar la depuracion"<<endl;
 		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
 		cout<<"      --noinput              en lugar realizar las lecturas desde el teclado, lo hace desde los argumentos"<<endl;
-		cout<<"      --input=<str>          sirve para definir una o mas entradas cuando se usa --noinput"<<endl;
+		cout<<"      --input=<str>          sirve para predefinir uno o más valores de entrada para acciones LEER"<<endl;
 		exit(1);
 	}
 	

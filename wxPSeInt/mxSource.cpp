@@ -54,6 +54,8 @@ int mxSource::comp_count=-1;
 
 mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+	input=NULL;
+	
 	last_s1=last_s2=0;
 	is_example=ais_example;
 	

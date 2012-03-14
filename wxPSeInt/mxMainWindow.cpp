@@ -36,6 +36,7 @@
 
 #define IF_THERE_IS_SOURCE if (notebook->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook->GetPage(notebook->GetSelection()))
+#include "mxInputDialog.h"
 
 mxMainWindow *main_window;
 
@@ -68,6 +69,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_CHECK, mxMainWindow::OnRunCheck)
 	EVT_MENU(mxID_RUN_DRAW_FLOW, mxMainWindow::OnRunDrawFlow)
 	EVT_MENU(mxID_RUN_SAVE_FLOW, mxMainWindow::OnRunSaveFlow)
+	EVT_MENU(mxID_RUN_SET_INPUT, mxMainWindow::OnRunSetInput)
 	EVT_MENU(mxID_EDIT_TOGGLE_LINES_UP, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_TOGGLE_LINES_DOWN, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_INDENT_SELECTION, mxMainWindow::OnEdit)
@@ -257,6 +259,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(run,mxID_RUN_CHECK, _T("Verificar Sintaxis\tShift+F9"),_T(""),_T("verificar.png"));
 	utils->AddItemToMenu(run,mxID_RUN_DRAW_FLOW, _T("Dibujar Diagrama de Flujo\tF7"),_T(""),_T("flujo.png"));
 	utils->AddItemToMenu(run,mxID_RUN_SAVE_FLOW, _T("Guardar Diagrama de Flujo\tShift+F7"),_T(""),_T("guardar.png"));
+	utils->AddItemToMenu(run,mxID_RUN_SET_INPUT, _T("Predefinir Entrada...\tCtrl+F9"),_T(""),_T("input.png"));
 	menu->Append(run, _T("E&jecutar"));
 	
 //	wxMenu *config = new wxMenu;
@@ -1321,3 +1324,12 @@ void mxMainWindow::SetWordsForSources() {
 		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());
 	}
 }
+
+void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
+	IF_THERE_IS_SOURCE {
+		mxSource *src=CURRENT_SOURCE;
+		if (!src->input) src->input=new mxInputDialog(this);
+		src->input->Show();
+	}
+}
+

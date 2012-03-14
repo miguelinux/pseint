@@ -8,6 +8,7 @@
 #define mxSOURCE_HIDDEN 8
 
 #define MAX_COMP_SIZE 100
+class mxInputDialog;
 
 class mxSource : public wxStyledTextCtrl {
 private:
@@ -18,6 +19,7 @@ private:
 	static int comp_count;
 	bool is_example;
 public:
+	mxInputDialog *input;
 	bool sin_titulo;
 	wxString filename;
 	void SetFileName(wxString afilename);

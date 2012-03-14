@@ -1,4 +1,5 @@
 20120314
+	Se agregó un item en el menú "Ejecutar" de la GUI para predefinir la entrada que va a tener un algoritmo (los valores que va a leer).
 	Se agregó un argumento a la linea de comandos del intérprete para especificar la entrada del algoritmo.
 	Se corrgieron algunos errores en la verificación de tipos.
 	Ahora se verifica correctamente si se intenta volver a dimensionar un arreglo ya dimensionado.
