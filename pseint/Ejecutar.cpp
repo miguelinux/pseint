@@ -154,9 +154,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					}
 					tmp3++; last=tmp1+1; tmp1++;
 				}
-				if (force_var_definition && !memoria->EstaDefinida(aux1))
-					ExeError(209,"Variable no definida.");
-				if (memoria->EstaInicializada(aux1) || memoria->EstaInicializada(aux1))
+				if (memoria->HaSidoUsada(aux1)||memoria->LeerDims(aux1))
 					ExeError(123,"Identificador en uso.");
 				if (dim!=0) memoria->AgregarArreglo(aux1, dim);
 				if (otro!="") { // si hay otro, inicilizarlo tambien
@@ -182,7 +180,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					aux2.erase(tmp2,cadena.size()-tmp2);
 					cadena.erase(0,aux2.size()+1);
 					tmp2-=aux2.size();
-					if (memoria->Existe(aux2)) 
+					if (memoria->EstaDefinida(aux2)) 
 						ExeError(124,string("La variable (")+aux2+") ya estaba definida.");
 					memoria->DefinirTipo(aux2,tipo,rounded);
 //								memoria->EscribirValor(aux2,aux1);
@@ -194,10 +192,10 @@ void Ejecutar(int LineStart, int LineEnd){
 				tmp1=cadena.find("<-",0);
 				aux1=cadena.substr(0,tmp1);  
 				aux2=cadena.substr(tmp1+3,cadena.size()-tmp1-5); // ignorar flecha, punto y como y parentesis extras
-				// verificar indices si es arreglo
 				if (force_var_definition && !memoria->EstaDefinida(aux1)) {
-					ExeError(999,string("La variable (")+aux1+") no esta definida.");
+					ExeError(211,string("La variable (")+aux1+") no esta definida.");
 				}
+				// verificar indices si es arreglo
 				if (memoria->LeerTipo(aux1).dims) {
 					if (aux1.find("(",0)==string::npos)
 						ExeError(200,"Faltan subindices para el arreglo ("+aux1+").");

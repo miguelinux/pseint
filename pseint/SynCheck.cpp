@@ -999,29 +999,7 @@ int SynCheck() {
 									;;
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
-									if (!CheckVariable(str)) {SynError (49,"Identificador no valido."); errores++;}
-									str=cadena;
-									str.erase(tmp1,str.size()-tmp1);
-									str.erase(0,tmp3);
-									str.erase(0,str.find("(",0));
-									if (str[str.size()-1]==')')
-										str.erase(str.size()-1,1);
-									str.erase(0,1);
-									str=str+",";
-									string str2;
-									// comprobar los indices
-									while (str.find(",",0)>=0 && str.find(",",0)<str.size()){
-										str2=str;
-										str2.erase(str.find(",",0),str.size()-str.find(",",0));
-										// if (str2=="") {SynError (50,"Parametro nulo."); errores++;}
-										if (Lerrores==errores) Evaluar(str2,tipo);
-										if (!tipo.cb_num)
-//											if (tipo<'c')
-//											{ ExpError(tipo,0); errores++;}
-//											else
-												{ SynError (52,"No coinciden los tipos."); errores++; }
-										str.erase(0,str2.size()+1);
-									}
+									SynError (212,string("No debe utilizar subindices (")+str+")."); errores++;
 								}
 								tmp3=tmp1+1;
 							}

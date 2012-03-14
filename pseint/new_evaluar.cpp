@@ -323,7 +323,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return("");
 				}
 				if (force_var_definition && !memoria->EstaDefinida(nombre)) {
-					WriteError(999,string("Variable no definida (")+nombre+")");
+					WriteError(210,string("Variable no definida (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
@@ -379,7 +379,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						ev_return("");
 					}
 					if (force_var_definition && !memoria->EstaDefinida(nombre)) {
-						WriteError(999,string("Variable no definida (")+nombre+")");
+						WriteError(209,string("Variable no definida (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					}

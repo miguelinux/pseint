@@ -10,12 +10,14 @@
 using namespace std;
 
 struct tipo_var {
-	int *dims;
+	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
 	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran
-	bool cb_log,cb_num,cb_car;
+	bool cb_log,cb_num,cb_car; // si puede ser logica, numerica o caracter
 	bool rounded; // para cuando se definen como enteras
-	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false) {}
-	tipo_var(bool l, bool n, bool c):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(false) {}
+	bool defined; // para saber si fueron definidas explicitamente (definir...)
+	bool used; // para saber si fue usada, asignada, leida, algo que no sea dimensionada o definida explicitamente, lo setean Escribir y LeerValor
+	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false),defined(false),used(false) {}
+	tipo_var(bool l, bool n, bool c):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(false),defined(false),used(false) {}
 	bool set(const tipo_var &v) {
 		enabled=true;
 		cb_log=cb_log&&v.cb_log;
@@ -56,6 +58,9 @@ struct tipo_var {
 		dims=t.dims;
 		return *this;
 	}
+	void reset() { // para borrar la información que genera el analisis sintáctico antes de la ejecución y que no debe pasar a la ejecución
+		defined=used=enabled=false;
+	}
 };
 
 extern tipo_var vt_error;
@@ -69,7 +74,6 @@ extern tipo_var vt_caracter_o_logica;
 class Memoria {
 	map<string,tipo_var> var_info;
 	map<string,string> var_value;
-	set<string> var_defined;
 	friend void declarar_variables(list<string> &prog, bool &use_sin_tipo, bool &use_string);
 	void QuitarIndices(string &str) {
 		for (int i=0;i<int(str.size());i++)
@@ -81,8 +85,9 @@ class Memoria {
 public:
 	void FakeReset() {
 		map<string,tipo_var>::iterator it = var_info.begin();
-		while (it!=var_info.end()) (it++)->second.enabled=false;
-		var_defined.clear(); var_value.clear();
+		while (it!=var_info.end())
+			(it++)->second.reset();
+		var_value.clear();
 	}
 	void Agregartipo_var(string nombre, const tipo_var &tipo=vt_desconocido) {
 		tipo_var &v = var_info[nombre];
@@ -94,12 +99,13 @@ public:
 	}
 	bool DefinirTipo(string nombre, const tipo_var &tipo) {
 		QuitarIndices(nombre);
+		var_info[nombre].defined=true;
 		return var_info[nombre].set(tipo,true);
 	}
 	bool DefinirTipo(string nombre, const tipo_var &tipo, bool rounded) {
 		QuitarIndices(nombre);
 		if (rounded) var_info[nombre].rounded=true;
-		var_defined.insert(nombre);
+		var_info[nombre].defined=true;
 		return var_info[nombre].set(tipo,true);
 	}
 	void EscribirValor(string nombre, string valor) {
@@ -109,6 +115,7 @@ public:
 			size_t p=valor.find(".");
 			if (p!=string::npos) valor.erase(p);
 		}
+		var_info[nombre].used=true;
 		var_value[nombre]=valor;
 	}
 	int *LeerDims(string nombre) {
@@ -124,20 +131,25 @@ public:
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
 		return it_info!=var_info.end() && it_info->second.enabled;
 	}
+	bool HaSidoUsada(string nombre) {
+		QuitarIndices(nombre);
+		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
+		return it_info!=var_info.end() && it_info->second.enabled && it_info->second.used;
+	}
 	bool EstaInicializada(string nombre) {
 		map<string,string>::iterator it_value = var_value.find(nombre);
 		return it_value!=var_value.end();
 	}
 	bool EstaDefinida(string nombre) {
 		QuitarIndices(nombre);
-		return var_defined.find(nombre)!=var_defined.end();
+		return var_info.find(nombre)!=var_info.end() && var_info[nombre].defined;
 	}
 	string LeerValor(string nombre) {
-		// verificar aca si esta inicializada??
 		string ret=var_value[nombre];
 		if (ret.size()==0) {
 			string tnombre=nombre; QuitarIndices(tnombre);
 			tipo_var &t = var_info[tnombre];
+			t.used=true; // fuera del if no hace falta porque si ret!=0 es porque paso por EscribirValor, y entonces ya esta used=true
 			if (t==vt_numerica)
 				return "0";
 			else if (t==vt_logica)
