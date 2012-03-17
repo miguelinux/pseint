@@ -1,3 +1,6 @@
+20120316
+	Corregido un error en la evaluación de algunas expresiones algebraicas con más de un término (por ejemplo, la resolvente).
+	
 20120314
 	Se agregó un item en el menú "Ejecutar" de la GUI para predefinir la entrada que va a tener un algoritmo (los valores que va a leer).
 	Se agregó un argumento a la linea de comandos del intérprete para especificar la entrada del algoritmo.

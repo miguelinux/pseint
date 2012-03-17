@@ -18,7 +18,7 @@ mxInputDialog::mxInputDialog(wxWindow *parent):wxDialog(parent,wxID_ANY,"Predefi
 		"Puede utilizar esta ventana para ingresar los valores que quiere\n"
 		"que reciba su algoritmo cuando realice acciones de lectura al\n"
 		"ejecutarse, para evitar así tener que ingresarlos en cada ejecución.\n"
-		"Para ello, debe ingresar en el cuadro de texto los valores que \n"
+		"Para ello, debe escribir en el cuadro de texto los valores que\n"
 		"ingresaría al algoritmo por teclado, uno por linea. Es decir, cada\n"
 		"linea se corresponderá con la lectura de una variable o de una\n"
 		"posición de un arreglo."

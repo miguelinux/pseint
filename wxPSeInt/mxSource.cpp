@@ -143,6 +143,7 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 	SetDropTarget(new mxDropTarget());
 	
 	if (is_example) SetReadOnly(true);
+	
 }
 
 mxSource::~mxSource() {

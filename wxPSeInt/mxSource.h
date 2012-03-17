@@ -56,7 +56,7 @@ public:
 	void IndentLine(int l);
 	void OnEditIndentSelection(wxCommandEvent &evt);
 	void OnEditBeautifyCode(wxCommandEvent &evt);
-		
+	
 	DECLARE_EVENT_TABLE();
 };
 

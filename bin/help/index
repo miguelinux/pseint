@@ -1,26 +1,26 @@
 	0 interfaz.html Interfaz
-		0 configuracion.html Configuracion
+		0 configuracion.html Configuración
 	0 debug.html Seguimiento de algoritmos
-	0 pseudocodigo.html PSeudoCodigo
+	0 pseudocodigo.html PSeudoCódigo
 		0 forma.html Forma general de un algoritmo
 		0 variables.html Variables
 		0 tipos.html Tipos de datos
 			0 simples.html Tipos simples
 			0 arreglos.html Arreglos
-			0 definir.html Definición Explícita
+			0 definir.html Definición explícita
 		0 expresiones.html Expresiones
 			0 operadores.html Operadores
 			0 funciones.html Funciones
 			0 colcond.html Expresiones coloquiales
 		0 secuenciales.html Acciones secuenciales
-			0 asignacion.html Asignacion
+			0 asignacion.html Asignación
 			0 lectura.html Lectura
 			0 escritura.html Escritura
 			0 secotras.html Otras
 		0 estructuras.html Estructuras de control
 			0 condicionales.html Condicionales
 				0 si.html Si-Entonces
-				0 segun.html Segun
+				0 segun.html Según
 			0 repetitivas.html Repetitivas
 				0 mientras.html Mientras
 				0 repetir.html Repetir

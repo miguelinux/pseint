@@ -129,7 +129,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	if (config->use_colors)
 		command<<_T(" --color");
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
-	cerr<<command<<endl;
+//	cerr<<command<<endl;
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 

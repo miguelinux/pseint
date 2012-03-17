@@ -161,9 +161,15 @@ int BuscarOperador(string &expresion, int &p1, int &p2) {
 			p1++; p2--;
 		}
 	}
-	if (posicion_operador!=-1 && operadores[indice_operador]!=' ')
+	if (posicion_operador!=-1 && operadores[indice_operador]!=' ') {
+		if (operadores[indice_operador]=='-') {
+			int np1
+				=posicion_operador+1;
+			int aux=BuscarOperador(expresion,np1,p2);
+			if (aux!=-1 && (expresion[aux]=='-' || expresion[aux]=='+')) return aux;
+		}
 		return posicion_operador;
-	else
+	} else
 		return -1;
 }
 
