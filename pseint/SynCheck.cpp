@@ -251,7 +251,6 @@ int SynCheck() {
 	
 	// Checkear sintaxis y reorganizar el codigo
 	for (x=1;x<(int)programa.size();x++){
-		
 		Inter.SetLineNumber(LineNumber);
 		char last='.',lastb='.';
 		cadena=programa[x];
@@ -458,16 +457,17 @@ int SynCheck() {
 						if (pos_dp!=-1 && cadena[pos_dp+1]!='=') {
 							// ver ademas si dise "OPCION o CASO al principio"
 							if (lazy_syntax) {
-								if (cadena.size()>6 && cadena.substr(0,5)=="CASO ")
-									cadena=cadena.substr(5);
-								else if (cadena.size()>6 && cadena.substr(0,5)=="SIES ")
-									cadena=cadena.substr(5);
-								else if (cadena.size()>7 && cadena.substr(0,6)=="SI ES ")
-									cadena=cadena.substr(6);
-								else if (cadena.size()>8 && cadena.substr(0,7)=="OPCION ")
-									cadena=cadena.substr(7);
-								else if (cadena.size()>8 && cadena.substr(0,7)=="OPCIÓN ")
-									cadena=cadena.substr(7);
+								if (cadena.size()>6 && cadena.substr(0,5)=="CASO ") {
+									cadena=cadena.substr(5); pos_dp-=5;
+								} else if (cadena.size()>6 && cadena.substr(0,5)=="SIES ") {
+									cadena=cadena.substr(5); pos_dp-=5;
+								} else if (cadena.size()>7 && cadena.substr(0,6)=="SI ES ") {
+									cadena=cadena.substr(6); pos_dp-=6;
+								} else if (cadena.size()>8 && cadena.substr(0,7)=="OPCION ") {
+									cadena=cadena.substr(7); pos_dp-=7;
+								} else if (cadena.size()>8 && cadena.substr(0,7)=="OPCIÓN ") {
+									cadena=cadena.substr(7); pos_dp-=7;
+								}
 							}
 							instruccion=":";
 							programa.insert(programa.begin()+x+1,cadena);
