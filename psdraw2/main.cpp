@@ -1,7 +1,8 @@
 // Para probar este programa hay que generar un archivo .psd con wxPSeInt y pasarlo como argumento a este ejecutable
 // Este archivo se genera al visualizar el diagrama viejo en $home/.pseint/temp.psd
+//
 // El menú no funciona, el botón de ayuda en realidad imprime el pseudocódigo en la consola
-// Las estructuras para y segun todavía no se dibujan
+// La estructura para no escribe lo que va en el circulo
 // Hay muchos errores cuando se carga el código de un archivo .psd
 
 #include <GL/glut.h>
@@ -19,6 +20,8 @@ enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PA
 
 class Entity;
 
+bool edit_on=true; // indica si se puede editar el diagrama
+
 Entity *edit=NULL; // entidad seleccionado para editar su texto
 Entity *mouse=NULL; // entidad seleccionado por el mouse
 Entity *start=NULL; // entidad donde comienza el algoritmo
@@ -28,6 +31,7 @@ int m_x0=0; // click del mouse, para referencia en el motion, se setea en el mou
 int m_y0=0; // click del mouse, para referencia en el motion, se setea en el mouse
 bool panning=false; // indica si se esta moviendo el dibujo, para el motion
 bool shapebar=false; // indica si el mouse esta sobre la barra de formas
+bool selecting_zoom=false; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
 int shapebar_size=0; // ancho para dibujo de la shapebar
 #define shapebar_size_min 25
 #define shapebar_size_max 150
@@ -109,7 +113,7 @@ struct Entity {
 		}
 		fx=x=0; fy=y=0; flecha_in=0;
 		d_fx=d_fy=d_y=d_x=100;
-		d_w=d_bh=d_h=d_bwl=d_bwr=0;
+		d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=0;
 		nolink=NULL;
 		SetLabel(label);
 		parent=prev=next=NULL; child=NULL;
@@ -254,8 +258,12 @@ struct Entity {
 		if (next) next->prev=prev;
 		if (prev) prev->next=next;
 		if (parent) {
-			if (parent->child[child_id]==this)
-				parent->child[child_id]=next;
+			if (type==ET_OPCION) {
+				parent->RemoveChild(child_id);
+			} else {
+				if (parent->child[child_id]==this)
+					parent->child[child_id]=next;
+			}
 		}
 		parent=next=prev=NULL;
 	}
@@ -267,6 +275,15 @@ struct Entity {
 		e->child_id=child_id;
 	}
 	
+	void RemoveChild(int j) { // elimina un hijo de la lista, reduciendo n_child
+		for (int i=j;i<n_child-1;i++) {
+			child[i]=child[i+1];
+			child_dx[i]=child_dx[i+1];
+			child_bh[i]=child_bh[i+1];
+			if (child[i]) child[i]->child_id=i;
+		}
+		n_child--;
+	}
 	void InsertChild(int i, Entity *e) { // similar a LinkChild, pero agrega un hijo, no reemplaza a uno que ya estaba
 		LinkChild(n_child,e); // agrega al final
 		MoveChild(n_child-1,i);
@@ -403,6 +420,9 @@ struct Entity {
 		} else {
 			glVertex2i(x-w/2,y); glVertex2i(x+w/2,y);
 			glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
+			if (edit_on && type==ET_OPCION && mouse!=this) {
+				glVertex2i(x-w/2,y); glVertex2i(x-w/2+flecha_w,y); glVertex2i(x-w/2+flecha_w,y-h); glVertex2i(x-w/2,y-h);
+			}
 		}
 		glEnd();
 	}
@@ -440,14 +460,17 @@ struct Entity {
 			glColor3fv(color_arrow);
 			if (!nolink) {
 				if (type==ET_OPCION) {
-					if (!next) glVertex2i(d_x,d_y-d_h); glVertex2i(d_x,d_y-d_h-flecha_h);
+					glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
 				} else if (type==ET_SEGUN) {
 					for(int i=0;i<n_child;i++) {
 						if (!child[i]->child[0]) {
 							DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-child[i]->bh);
 							DrawFlechaDown(d_x+child_dx[i],d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
-						} else 
+						}
+						else if (child[i]!=mouse) {
 							DrawFlechaDown(child[i]->child[0]->d_x,d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
+							DrawFlechaDownHead(child[i]->child[0]->d_x,child[i]->child[0]->d_y-child[i]->child[0]->d_bh); 
+						}
 					}
 					// linea horizontal de abajo
 					glVertex2d(d_x+child_dx[0],d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1],d_y-d_bh+flecha_h);
@@ -492,7 +515,7 @@ struct Entity {
 				// punta de flecha que viene del anterior
 				if (prev||parent) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
 				// linea de flecha que va al siguiente
-				if (next||parent) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+				if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
 			} else if (mouse==this && (next||parent)) {
 				// flecha que va al siguiente item cuando este esta flotando
 				glVertex2i(d_dx+x,d_dy+y-bh); glVertex2i(d_dx+x,d_dy+y-bh+flecha_h);
@@ -504,11 +527,19 @@ struct Entity {
 		// borde de la forma
 		DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
 		
+		if (type==ET_OPCION) { // + para agregar opciones
+			if (edit_on && mouse!=this) {
+				glBegin(GL_LINES);
+				glColor3fv(color_label);
+				glVertex2i(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2); glVertex2i(d_x-d_bwl+1*flecha_w/4,d_y-d_h/2);
+				glVertex2i(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3); glVertex2i(d_x-d_bwl+flecha_w/2,d_y-2*d_h/3);
+				glEnd();
+			}
+		} else 
 		if (!nolink && (type==ET_ESCRIBIR||type==ET_LEER) ) { // flecha en la esquina
 			glBegin(GL_LINES);
 			glColor3fv(color_label);
 			glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2+margin,d_y+margin);
-			
 			if (type==ET_LEER) {
 				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin+margin,d_y-margin);
 				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin,d_y-margin+margin);
@@ -522,7 +553,7 @@ struct Entity {
 		// texto;
 		glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
 		glPushMatrix();
-		glTranslated(d_fx-t_w/2,d_fy-(type==ET_SEGUN?d_h-2*margin:d_h/2+margin),0);
+		glTranslated(d_fx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0),d_fy-(type==ET_SEGUN?d_h-2*margin:d_h/2+margin),0);
 		glScaled((.105*d_w)/w,(.15*d_h)/h,.1);
 		for (unsigned int i=0;i<label.size();i++)
 			dibujar_caracter(label[i]);
@@ -555,9 +586,11 @@ struct Entity {
 		// si son estructuras de control, es un viaje
 		if (!nolink && n_child) {
 			if (type==ET_OPCION) {
+				bwr=bwl=(w=t_w+2*margin)/2;
+				if (edit_on) 
+					{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
 				child_dx[0]=0; child_bh[0]=0;
 				if (child[0]) {
-					bwr=bwl=(w=t_w+2*margin)/2; // porque mas abajo se cambia el w
 					child[0]->x=x; child[0]->y=y-bh;
 					int cwl=0,cwr=0,ch=0;
 					child[0]->Calculate(cwl,cwr,ch);
@@ -567,9 +600,9 @@ struct Entity {
 					bwr+=flecha_w/2;
 					child_dx[0]-=(cwr-cwl)/2;
 					child[0]->MoveX(child_dx[0]);
-					w=bwl+bwr;
-					// el ancho se lo define el segun padre
 				}
+				// el ancho se lo define el segun padre
+				w=bwl+bwr;
 			} else if (type==ET_SEGUN) {
 				bwr=bwl=(w=t_w*2)/2;
 //				w=bwr=bwl=0; // todo: ver como corregir esto
@@ -588,6 +621,15 @@ struct Entity {
 				for (int i=0;i<n_child;i++) {
 					child_dx[i]-=w/2;
 					child[i]->MoveX(child_dx[i]);
+				}
+				Entity *dom=child[n_child-1];
+				if (dom->x+dom->bwr<x+bwr) {
+					int dif=(x+bwr)-(dom->x+dom->bwr);
+					dom->bwl+= dif/2;
+					dom->bwr+= dif/2;
+					dom->w+= dif;
+					dom->MoveX(dif/2);
+					child_dx[n_child-1]+=dif/2;
 				}
 			} if (type==ET_SI) {
 				int c1l=0,c1r=0,c1h=0;
@@ -647,8 +689,23 @@ struct Entity {
 		if (gwl<bwl) gwl=bwl;
 		if (gwr<bwr) gwr=bwr;
 	}
+	void CopyPos(Entity *o) {
+		x=o->x; y=o->y;
+		fx=o->fx; fy=o->fy;
+		d_x=o->d_x; d_y=o->d_y;
+		d_fx=o->d_fx; d_fy=o->d_fy;
+	}
 	bool CheckMouse(int x, int y) {
-		if (type==ET_OPCION && child_id==parent->n_child-1) return false;
+		if (!edit_on) return false;
+		if (type==ET_OPCION) {
+			if (x>=d_fx-d_w/2 && x<=d_fx-d_w/2+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
+				parent->InsertChild(child_id,new Entity(ET_OPCION,""));
+				parent->child[child_id-1]->SetEdit();
+				parent->child[child_id-1]->CopyPos(this);
+				return false;
+			}
+			if (child_id==parent->n_child-1) return false;
+		}
 		if (x>=d_fx-d_w/2 && x<=d_fx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
 			m_x=x-d_fx;
 			m_y=y-d_fy;
@@ -692,7 +749,7 @@ struct Entity {
 			out<<tab<<"FinSegun"<<endl;
 		} else if (type==ET_OPCION) {
 			add_tab=true;
-			out<<tab<<(child_id==parent->n_child-1?"":"Opcion ")<<label<<":"<<endl;
+			out<<tab<<label<<":"<<endl;
 			if (child[0]) child[0]->Print(out,tab+"   ");
 		} else if (type==ET_SI) {
 			out<<tab<<"Si "<<label<<" Entonces"<<endl;
@@ -799,31 +856,32 @@ void Load() {
 	d_dx=300; d_dy=680;
 	
 	start = new Entity(ET_PROCESO,"Inicio");
-	Entity *aux1 = new Entity(ET_SEGUN,"VARIABLE DE DESICION"); start->LinkNext(aux1);
-	Entity *aux1a = new Entity(ET_OPCION,"1"); aux1->InsertChild(0,aux1a);
-	Entity *aux1aa = new Entity(ET_ESCRIBIR,"1"); aux1a->LinkChild(0,aux1aa);
-	Entity *aux1b = new Entity(ET_OPCION,"2"); aux1->InsertChild(1,aux1b);
-	Entity *aux1ba = new Entity(ET_ESCRIBIR,"1"); aux1b->LinkChild(0,aux1ba);
-	Entity *aux1c = new Entity(ET_OPCION,"3"); aux1->InsertChild(2,aux1c);
-	Entity *aux1ca = new Entity(ET_ESCRIBIR,"1"); aux1c->LinkChild(0,aux1ca);
-	Entity *aux2 = new Entity(ET_PROCESO,"Fin"); aux1->LinkNext(aux2);
-//	Entity *aux1 = new Entity(ET_LEER,"A,B"); start->LinkNext(aux1);
-//	Entity *aux2 = new Entity(ET_ASIGNAR,"C<-RC(A^2+B^2)"); aux1->LinkNext(aux2);
-//	Entity *aux3 = new Entity(ET_ESCRIBIR,"'Hipotenusa=',C"); aux2->LinkNext(aux3);
-//	Entity *aux4 = new Entity(ET_SI,"SI"); aux3->LinkNext(aux4);
-//	Entity *aux4a = new Entity(ET_ESCRIBIR,"LALA LALA"); aux4->LinkChild(0,aux4a);
-//	Entity *aux4b = new Entity(ET_ESCRIBIR,"BOOGA"); aux4a->LinkNext(aux4b);
-//	Entity *aux4c = new Entity(ET_ESCRIBIR,"FOO FOO FOO"); aux4->LinkChild(1,aux4c);
-//	Entity *aux5 = new Entity(ET_PARA,"PARA"); aux4->LinkNext(aux5);
-//	Entity *aux5a = new Entity(ET_ESCRIBIR,"HOLA"); aux5->LinkChild(0,aux5a);
-//	Entity *aux6 = new Entity(ET_MIENTRAS,"MIENTRAS"); aux5->LinkNext(aux6);
-//	Entity *aux6a = new Entity(ET_ESCRIBIR,"HOLA"); aux6->LinkChild(0,aux6a);
-//	Entity *aux7 = new Entity(ET_REPETIR,"REPETIR"); aux6->LinkNext(aux7);
-//	Entity *aux7a = new Entity(ET_ESCRIBIR,"HOLA"); aux7->LinkChild(0,aux7a);
-//	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); aux7->LinkNext(aux8);
-//	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); start->LinkNext(aux8);
+	
+//	Entity *aux1 = new Entity(ET_SEGUN,"VARIABLE DE DESICION"); start->LinkNext(aux1);
+//	Entity *aux1a = new Entity(ET_OPCION,"1"); aux1->InsertChild(0,aux1a);
+//	Entity *aux1aa = new Entity(ET_ESCRIBIR,"1"); aux1a->LinkChild(0,aux1aa);
+//	Entity *aux1b = new Entity(ET_OPCION,"2"); aux1->InsertChild(1,aux1b);
+//	Entity *aux1ba = new Entity(ET_ESCRIBIR,"1"); aux1b->LinkChild(0,aux1ba);
+//	Entity *aux1c = new Entity(ET_OPCION,"3"); aux1->InsertChild(2,aux1c);
+////	Entity *aux1ca = new Entity(ET_PARA,"1aslkfj asklhdskhfakjfhdskjfhdslkjhldsfa"); aux1c->LinkChild(0,aux1ca);
+//	Entity *aux2 = new Entity(ET_PROCESO,"Fin"); aux1->LinkNext(aux2);
+	
+	Entity *aux1 = new Entity(ET_LEER,"A,B"); start->LinkNext(aux1);
+	Entity *aux2 = new Entity(ET_ASIGNAR,"C<-RC(A^2+B^2)"); aux1->LinkNext(aux2);
+	Entity *aux3 = new Entity(ET_ESCRIBIR,"'Hipotenusa=',C"); aux2->LinkNext(aux3);
+	Entity *aux4 = new Entity(ET_SI,"SI"); aux3->LinkNext(aux4);
+	Entity *aux4a = new Entity(ET_ESCRIBIR,"LALA LALA"); aux4->LinkChild(0,aux4a);
+	Entity *aux4b = new Entity(ET_ESCRIBIR,"BOOGA"); aux4a->LinkNext(aux4b);
+	Entity *aux4c = new Entity(ET_ESCRIBIR,"FOO FOO FOO"); aux4->LinkChild(1,aux4c);
+	Entity *aux5 = new Entity(ET_PARA,"PARA"); aux4->LinkNext(aux5);
+	Entity *aux5a = new Entity(ET_ESCRIBIR,"HOLA"); aux5->LinkChild(0,aux5a);
+	Entity *aux6 = new Entity(ET_MIENTRAS,"MIENTRAS"); aux5->LinkNext(aux6);
+	Entity *aux6a = new Entity(ET_ESCRIBIR,"HOLA"); aux6->LinkChild(0,aux6a);
+	Entity *aux7 = new Entity(ET_REPETIR,"REPETIR"); aux6->LinkNext(aux7);
+	Entity *aux7a = new Entity(ET_ESCRIBIR,"HOLA"); aux7->LinkChild(0,aux7a);
+	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); aux7->LinkNext(aux8);
 	start->Calculate();
-//	ProcessMenu(1);
+	ProcessMenu(1);
 }
 
 void reshape_cb (int w, int h) {
@@ -1072,10 +1130,19 @@ void display_cb() {
 			mouse->parent->Calculate();
 		}
 	}
+	if (selecting_zoom) {
+		glColor3fv(color_menu);
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(m_x0,m_y0);
+		glVertex2i(m_x0,cur_y);
+		glVertex2i(cur_x,cur_y);
+		glVertex2i(cur_x,m_y0);
+		glEnd();
+	}
 	glPopMatrix();
 	// dibujar menues y demases
 	glLineWidth(2);
-	DrawMenus();
+	if (edit_on) DrawMenus();
 	// dibujar la seleccion para que quede delante de todo
 	if (mouse) {
 		glLineWidth(zoom*2);
@@ -1113,7 +1180,7 @@ void idle_func() {
 }
 
 void passive_motion_cb(int x, int y) {
-	if (!win_h) return;
+	if (!win_h || !edit_on) return;
 	if (mouse) {
 		shapebar=false; menu=false;
 		return;
@@ -1137,6 +1204,10 @@ void motion_cb(int x, int y) {
 	y=win_h-y; 
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
+	if (selecting_zoom) {
+		cur_x=x; cur_y=y;
+		return;
+	}
 	if (panning) { 
 		d_dx+=x-m_x0; m_x0=x;
 		d_dy+=y-m_y0; m_y0=y;
@@ -1148,24 +1219,30 @@ void motion_cb(int x, int y) {
 		mouse->d_fy=y-mouse->m_y;
 	}
 	if (trash && mouse) {
-		if (mouse->parent||mouse->prev) {
+		if (mouse->type!=ET_OPCION && (mouse->parent||mouse->prev)) {
 			mouse->UnLink();
 			start->Calculate();
 		}
 	}
 }
 
+void ZoomExtend(int x0, int y0, int x1, int y1) {
+	if (x1<x0) { int aux=x1; x1=x0; x0=aux; }
+	if (y0<y1) { int aux=y1; y1=y0; y0=aux; }
+	if (x1-x0<10||y0-y1<10) return;
+	int h=y0-y1, w=x1-x0;
+	double zh=float(win_h-2*flecha_w)/h; // zoom para ajustar alto
+	double zw=float(win_w-shapebar_size_min-2*flecha_w)/w; // zoom para ajustar ancho
+	if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
+	d_dx=win_w/zoom/2-(x1+x0)/2;
+	d_dy=win_h/zoom/2-(y1+y0)/2/*+h/2/zoom*/;
+}
+
 void ProcessMenu(int op) {
 	if (op==1) {
 		int h=0,wl=0,wr=0;
 		start->Calculate(wl,wr,h); // calcular tamaño total
-		double zh=float(win_h)/h; // zoom para ajustar alto
-		double zw=float(win_w-shapebar_size_min-2*flecha_w)/(wl+wr); // zoom para ajustar ancho
-		if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
-		d_dy=win_h/zoom-flecha_w; // que empieze arriba
-		if (win_h>h*zoom) 
-			d_dy-=h*zoom/2; // centrar en y si el alto no cubre la ventana
-		d_dx=((win_w-shapebar_size_min)/2)/zoom-(wr-wl)/2; // centrar en x
+		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h);
 	} else if (op==4) {
 		exit(0);
 	} else if (op==5) {
@@ -1197,10 +1274,15 @@ void mouse_cb(int button, int state, int x, int y) {
 		d_dx-=x*f-x;
 		d_dy-=y*f-y;
 	} else if (state==GLUT_DOWN) {
+		if (button==GLUT_MIDDLE_BUTTON) { // click en el menu
+			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
+			return;
+		}
 		if (menu && button==GLUT_LEFT_BUTTON) { // click en el menu
 			if (menu_sel) ProcessMenu(menu_sel);
 			return;
-		} if (shapebar && button==GLUT_LEFT_BUTTON) { // click en la barra de entidades
+		}
+		if (shapebar && button==GLUT_LEFT_BUTTON) { // click en la barra de entidades
 			if (!shapebar_sel) return;
 			shapebar=false;
 			Entity*aux=NULL;
@@ -1245,11 +1327,19 @@ void mouse_cb(int button, int state, int x, int y) {
 			m_x0=x; m_y0=y; panning=true;
 //		}
 	} else {
+		if (button==GLUT_MIDDLE_BUTTON) {
+			ZoomExtend(m_x0-d_dx,m_y0-d_dy,x-d_dx,y-d_dy);
+			selecting_zoom=false;
+			return;
+		}
 		panning=false;
 		if (mouse) {
-//			if (trash) delete mouse;
-//			else 
-				mouse->UnSetMouse();
+			if (trash && mouse->type==ET_OPCION) {
+				Entity *p=mouse->parent;
+				mouse->UnLink(); 
+				p->Calculate();
+			} 
+			mouse->UnSetMouse();
 		}
 		start->Calculate();
 	}
@@ -1293,9 +1383,14 @@ int main(int argc, char **argv) {
 	sinx[circle_steps]=sinx[0];
 	glutInit (&argc, argv);
 	initialize();
-//	if (argc==1) 
-		Load();
-//	else Load(argv[1]);
+	string fin;
+	for(int i=1;i<argc;i++) { 
+		string a(argv[i]);
+		if (a=="--noedit") edit_on=false;
+		else fin=a;
+	}
+	if (fin.length()) Load(fin.c_str());
+	else Load();
 	glutMainLoop();
 	return 0;
 }
