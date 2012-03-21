@@ -29,6 +29,7 @@ public:
 	bool Run(wxString file, bool check_first=false);
 	bool Debug(wxString file, bool check_first=false);
 	bool Draw(wxString file, bool check_first=false);
+	bool DrawAndEdit(wxString file, bool check_first=false);
 	bool SaveDraw(wxString file, bool check_first=false);
 	bool ExportCpp(wxString file, bool check_first=false);
 	void ReadOut();

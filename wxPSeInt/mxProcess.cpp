@@ -12,7 +12,7 @@ using namespace std;
 
 mxProcess *proc_list;
 
-enum { mxPW_NULL=0, mxPW_RUN, mxPW_DEBUG, mxPW_CHECK, mxPW_CHECK_AND_RUN, mxPW_CHECK_AND_DEBUG, mxPW_DRAW, mxPW_CHECK_AND_DRAW, mxPW_EXPORT, mxPW_CHECK_AND_EXPORT, mxPW_CHECK_AND_SAVEDRAW, mxPW_SAVEDRAW };
+enum { mxPW_NULL=0, mxPW_RUN, mxPW_DEBUG, mxPW_CHECK, mxPW_CHECK_AND_RUN, mxPW_CHECK_AND_DEBUG, mxPW_DRAW, mxPW_CHECK_AND_DRAW, mxPW_DRAWEDIT, mxPW_CHECK_AND_DRAWEDIT, mxPW_EXPORT, mxPW_CHECK_AND_EXPORT, mxPW_CHECK_AND_SAVEDRAW, mxPW_SAVEDRAW };
 	
 mxProcess *proc_for_killing=NULL;
 
@@ -51,6 +51,9 @@ void mxProcess::OnTerminate(int pid, int status) {
 		main_window->SetDebugState(DS_STOPPED);
 		source->SetReadOnly(was_readonly);
 		debug->process=NULL;
+	}
+	if (what==mxPW_DRAWEDIT) {
+		source->EditFlow(false);
 	}
 	if (what==mxPW_RUN) {
 		ReadOut();
@@ -104,6 +107,8 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 			return Debug(file,false);
 		else if (what==mxPW_CHECK_AND_DRAW)
 			return Draw(file,false);
+		else if (what==mxPW_CHECK_AND_DRAWEDIT)
+			return DrawAndEdit(file,false);
 		else if (what==mxPW_CHECK_AND_SAVEDRAW)
 			return SaveDraw(file,false);
 		else if (what==mxPW_CHECK_AND_EXPORT)
@@ -163,7 +168,16 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
 	if (check_first) return CheckSyntax(file,config->temp_draw);
 	wxString command;
-	command<<config->psdraw_command<<_T(" \"")<<config->temp_draw<<_T("\"");
+	command<<config->psdraw2_command<<_T(" --noedit \"")<<config->temp_draw<<_T("\"");
+	if (config->high_res_flows) command<<_T(" +");
+	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
+}
+
+bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
+	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
+	if (check_first) return CheckSyntax(file,config->temp_draw);
+	wxString command;
+	command<<config->psdraw2_command<<_T(" \"")<<config->temp_draw<<_T("\"");
 	if (config->high_res_flows) command<<_T(" +");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }

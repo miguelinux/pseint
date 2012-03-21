@@ -88,11 +88,12 @@ void ConfigManager::LoadDefaults() {
 #if defined(_WIN32) || defined(__WIN32__)
 	pseint_command = _T("pseint.exe");
 	psdraw_command = _T("psdraw.exe");
+	psdraw2_command = _T("psdraw2.exe");
 	psexport_command = _T("psexport.exe");
 	tty_command = _T("");
 #else
 	pseint_command = _T("./pseint");
-	psdraw_command = _T("./psdraw");
+	psdraw2_command = _T("./psdraw2");
 	psexport_command = _T("./psexport");
 	tty_command = _T("<<sin configurar>>");
 #endif
@@ -122,6 +123,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
 	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
 	fil.AddLine(wxString(_T("psdraw_command="))<<psdraw_command);
+	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
 	if (have_tty_command) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
 	fil.AddLine(wxString(_T("temp_draw="))<<temp_draw);
@@ -230,6 +232,7 @@ void ConfigManager::Read() {
 			else if (key==_T("pseint_command")) pseint_command=value;
 			else if (key==_T("psexport_command")) psexport_command=value;
 			else if (key==_T("psdraw_command")) psdraw_command=value;
+			else if (key==_T("psdraw2_command")) psdraw2_command=value;
 			else if (key==_T("terminal")) { tty_command=value; have_tty_command=true; }
 			else if (key==_T("history")) last_files.Add(value);
 		}

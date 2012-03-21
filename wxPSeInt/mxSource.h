@@ -9,6 +9,7 @@
 
 #define MAX_COMP_SIZE 100
 class mxInputDialog;
+class mxProcess;
 
 class mxSource : public wxStyledTextCtrl {
 private:
@@ -18,6 +19,7 @@ private:
 	int last_s1,last_s2;
 	static int comp_count;
 	bool is_example;
+	mxProcess *flow;
 public:
 	mxInputDialog *input;
 	bool sin_titulo;
@@ -57,6 +59,7 @@ public:
 	void OnEditIndentSelection(wxCommandEvent &evt);
 	void OnEditBeautifyCode(wxCommandEvent &evt);
 	
+	void EditFlow(mxProcess *proc);
 	DECLARE_EVENT_TABLE();
 };
 

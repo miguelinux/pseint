@@ -5,6 +5,7 @@
 #include "DebugManager.h"
 #include <wx/clipbrd.h>
 #include <iostream>
+#include <wx/process.h>
 using namespace std;
 
 const wxChar *mxSourceWords1 =
@@ -54,6 +55,7 @@ int mxSource::comp_count=-1;
 
 mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+	flow=NULL;
 	input=NULL;
 	
 	last_s1=last_s2=0;
@@ -659,7 +661,8 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 void mxSource::MessageReadOnly() {
-	if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
+	if (flow) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
+	else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
 	else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
 }
 
@@ -891,3 +894,9 @@ void mxSource::SetWords() {
 	SetKeyWords (0, s1.c_str());
 	SetKeyWords (1, mxSourceWords2);
 }
+
+void mxSource::EditFlow ( mxProcess *proc ) {
+	flow=proc;
+	SetReadOnly(proc!=NULL);
+}
+

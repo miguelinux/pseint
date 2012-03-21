@@ -15,10 +15,11 @@ current_source=main.cpp
 path_char=/
 [source]
 path=main.cpp
-cursor=20884
-breakpoint=650
-breakpoint=1166
-marker=1195
+cursor=3354
+breakpoint=1329
+marker=1271
+marker=516
+marker=514
 open=true
 [source]
 path=uglyfont.cpp
@@ -121,6 +122,8 @@ dont_generate_exe=0
 enable_profiling=0
 [inspections]
 name=<current_inspections>
-expr=type
-expr=child_id
+expr=start->x-start->bwl
+expr=x0
+expr=x1
+expr=d_dx
 [end]

@@ -64,6 +64,7 @@ public:
 	void OnFileSave(wxCommandEvent &evt);
 	void OnFileSaveAs(wxCommandEvent &evt);
 	void OnFilePrint(wxCommandEvent &event);
+	void OnFileEditFlow(wxCommandEvent &evt);
 	void OnFileExportCpp(wxCommandEvent &evt);
 	void OnFileClose(wxCommandEvent &evt);
 	void OnFileExit(wxCommandEvent &evt);

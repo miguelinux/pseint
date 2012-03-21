@@ -54,6 +54,7 @@ public:
 	wxString images_path;
 	wxString pseint_command;
 	wxString psdraw_command;
+	wxString psdraw2_command;
 	wxString psexport_command;
 	bool have_tty_command;
 	wxString tty_command;

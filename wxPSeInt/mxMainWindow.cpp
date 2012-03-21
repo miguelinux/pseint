@@ -45,6 +45,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FILE_NEW, mxMainWindow::OnFileNew)
 	EVT_MENU(mxID_FILE_OPEN, mxMainWindow::OnFileOpen)
 	EVT_MENU(mxID_FILE_SAVE, mxMainWindow::OnFileSave)
+	EVT_MENU(mxID_FILE_EDIT_FLOW, mxMainWindow::OnFileEditFlow)
 	EVT_MENU(mxID_FILE_EXPORT_CPP, mxMainWindow::OnFileExportCpp)
 	EVT_MENU(mxID_FILE_CLOSE, mxMainWindow::OnFileClose)
 	EVT_MENU(mxID_FILE_SAVE_AS, mxMainWindow::OnFileSaveAs)
@@ -197,6 +198,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_OPEN, _T("&Abrir...\tCtrl+O"),_T(""),_T("abrir.png"));
 	utils->AddItemToMenu(file,mxID_FILE_SAVE, _T("&Guardar\tCtrl+S"),_T(""),_T("guardar.png"));
 	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _T("Guardar &Como...\tCtrl+Shift+S"),_T(""),_T("guardar_como.png"));
+	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _T("Editar Diagra de Flujo..."),_T(""),_T("edit_flow.png"));
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _T("Imprimir..."),_T(""),_T("imprimir.png"));
 	utils->AddItemToMenu(file,mxID_FILE_EXPORT_CPP, _T("Exportar a Cpp..."),_T(""),_T("cpp.png"));
 	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _T("&Cerrar...\tCtrl+W"),_T(""),_T("cerrar.png"));
@@ -623,7 +625,7 @@ void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
 			debug->Stop();
 		else
 			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->Draw(config->temp_file,true);
-	}	
+	}
 }
 
 void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
@@ -1331,5 +1333,20 @@ void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
 		if (!src->input) src->input=new mxInputDialog(this);
 		src->input->Show();
 	}
+}
+
+void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
+	IF_THERE_IS_SOURCE {
+		mxSource *source = CURRENT_SOURCE;
+		bool mod = source->GetModify();
+		source->SaveFile(config->temp_file);
+		source->SetModify(mod);
+		if (debug->debugging)
+			debug->Stop();
+		else {
+			mxProcess *flow=new mxProcess(source,notebook->GetPageText(notebook->GetSelection()));
+			if (flow->DrawAndEdit(config->temp_file,true)) source->EditFlow(flow); else delete flow;
+		}
+	}	
 }
 
