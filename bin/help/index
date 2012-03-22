@@ -1,5 +1,6 @@
 	0 interfaz.html Interfaz
 		0 configuracion.html Configuración
+		0 flow.html Edición de Diagramas de Flujo
 	0 debug.html Seguimiento de algoritmos
 	0 pseudocodigo.html PSeudoCódigo
 		0 forma.html Forma general de un algoritmo
