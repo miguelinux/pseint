@@ -1,5 +1,10 @@
 20120321
+	La ejecución paso a paso ya no consume el 100% de la CPU.
+	Agregada una opción para editar diagramas de flujo en el menú Archivo.
 	Corregido un error al analizar las opciones de un segun cuando se usa una palabra clave (CASO, OPCION, etc) antes del valor.
+
+20120320
+	Agregado un nuevo visualizador y editor para diagramas de flujo, que será invocado desde wxPSeInt.
 
 20120316
 	Corregido un error en la evaluación de algunas expresiones algebraicas con más de un término (por ejemplo, la resolvente).

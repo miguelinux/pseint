@@ -37,6 +37,9 @@
 #define IF_THERE_IS_SOURCE if (notebook->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook->GetPage(notebook->GetSelection()))
 #include "mxInputDialog.h"
+#include "FlowEditionManager.h"
+#include <iostream>
+using namespace std;
 
 mxMainWindow *main_window;
 
@@ -198,7 +201,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_OPEN, _T("&Abrir...\tCtrl+O"),_T(""),_T("abrir.png"));
 	utils->AddItemToMenu(file,mxID_FILE_SAVE, _T("&Guardar\tCtrl+S"),_T(""),_T("guardar.png"));
 	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _T("Guardar &Como...\tCtrl+Shift+S"),_T(""),_T("guardar_como.png"));
-	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _T("Editar Diagra de Flujo..."),_T(""),_T("edit_flow.png"));
+	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _T("Editar Diagrama de Flujo..."),_T(""),_T("edit_flow.png"));
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _T("Imprimir..."),_T(""),_T("imprimir.png"));
 	utils->AddItemToMenu(file,mxID_FILE_EXPORT_CPP, _T("Exportar a Cpp..."),_T(""),_T("cpp.png"));
 	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _T("&Cerrar...\tCtrl+W"),_T(""),_T("cerrar.png"));
@@ -305,7 +308,7 @@ void mxMainWindow::CreateToolbars() {
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_RUN_RUN,_T("Ejecutar..."),_T("ejecutar.png"),_T(""));
 	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_T("Ejecutar paso a paso..."),_T("pasos.png"),_T(""));
-	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
+	utils->AddTool(toolbar,mxID_FILE_EDIT_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_HELP_INDEX,_T("Ayuda..."),_T("ayuda.png"),_T(""));
 //	utils->AddTool(toolbar,mxID_FILE_EXIT,_T("Salir"),_T("salir.png"),_T(""));
@@ -1125,7 +1128,10 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 }
 
 void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
-	debug->SocketEvent(&event);
+	if (debug && debug->HasSocket(event.GetEventObject()))
+		debug->SocketEvent(&event);
+	else if (flow_editor && flow_editor->HasSocket(event.GetEventObject()) )
+		flow_editor->SocketEvent(&event);
 }
 
 void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
@@ -1337,7 +1343,12 @@ void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
 
 void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 	IF_THERE_IS_SOURCE {
+		if (!flow_editor) new FlowEditionManager(config->flow_port);
 		mxSource *source = CURRENT_SOURCE;
+		if (source->GetFlowSocket()) { 
+			source->GetFlowSocket()->Write("raise",5); 
+			return;
+		}
 		bool mod = source->GetModify();
 		source->SaveFile(config->temp_file);
 		source->SetModify(mod);
@@ -1345,8 +1356,31 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			debug->Stop();
 		else {
 			mxProcess *flow=new mxProcess(source,notebook->GetPageText(notebook->GetSelection()));
-			if (flow->DrawAndEdit(config->temp_file,true)) source->EditFlow(flow); else delete flow;
+			int id=flow_editor->GetNextId();
+			if (flow->DrawAndEdit(config->temp_file,id,true)) source->EditFlow(flow,id); else delete flow;
 		}
 	}	
+}
+
+mxSource * mxMainWindow::FindFlowId (int id) {
+	if (id<=0) return NULL;
+	for(unsigned int i=0;i<notebook->GetPageCount();i++)
+		if (((mxSource*)(notebook->GetPage(i)))->GetFlowId()==id) 
+			return ((mxSource*)(notebook->GetPage(i)));
+	return NULL;
+}
+
+mxSource * mxMainWindow::FindFlowSocket (wxObject *s) {
+	if (!s) return NULL;
+	for(unsigned int i=0;i<notebook->GetPageCount();i++)
+		if (((mxSource*)(notebook->GetPage(i)))->GetFlowSocket()==s) 
+			return ((mxSource*)(notebook->GetPage(i)));
+	return NULL;
+}
+
+void mxMainWindow::SelectSource (mxSource * s) {
+	for(unsigned int i=0;i<notebook->GetPageCount();i++)
+		if (notebook->GetPage(i)==s) 
+			notebook->SetSelection(i);
 }
 

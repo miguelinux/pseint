@@ -33,7 +33,6 @@ private:
 	wxStaticText *debug_status;
 	wxScrollBar *debug_speed;
 	wxStatusBar *status_bar;
-	wxAuiNotebook *notebook;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
 	wxPanel *commands;
@@ -49,7 +48,9 @@ private:
 	void CreateCommandsPanel();
 	void CreateDebugControlsPanel();
 	wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
+	wxAuiNotebook *notebook; 
 public:
+	
 	mxSource *NewProgram();
 	mxSource *OpenProgram(wxString file, bool history=true);
 	
@@ -158,6 +159,10 @@ public:
 	void OnLink (wxHtmlLinkEvent &event);
 		
 	void SetWordsForSources();
+	
+	mxSource *FindFlowId(int id);
+	mxSource *FindFlowSocket(wxObject *s);
+	void SelectSource(mxSource *s);
 	
 	DECLARE_EVENT_TABLE();
 };

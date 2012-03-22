@@ -53,7 +53,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 		debug->process=NULL;
 	}
 	if (what==mxPW_DRAWEDIT) {
-		source->EditFlow(false);
+		source->EditFlow(NULL);
 	}
 	if (what==mxPW_RUN) {
 		ReadOut();
@@ -65,7 +65,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 	proc_for_killing=this;
 }
 
-bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
+bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 	
 	if (what==mxPW_NULL) what=mxPW_CHECK;
 	
@@ -97,6 +97,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 		wxTreeItemId item(main_window->results_tree->GetFirstChild(main_window->results_root,v));
 		wxTreeEvent evt(0,main_window->results_tree,item);
 		main_window->OnSelectError(evt);
+		main_window->Raise();
 	} else
 		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
 		
@@ -108,7 +109,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 		else if (what==mxPW_CHECK_AND_DRAW)
 			return Draw(file,false);
 		else if (what==mxPW_CHECK_AND_DRAWEDIT)
-			return DrawAndEdit(file,false);
+			return DrawAndEdit(file,id,false);
 		else if (what==mxPW_CHECK_AND_SAVEDRAW)
 			return SaveDraw(file,false);
 		else if (what==mxPW_CHECK_AND_EXPORT)
@@ -149,7 +150,6 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	}
 	temp = config->temp_out;
 	temp<<_T(".")<<cont;
-//	int port=20000+rand()%10000;
 	int port=config->debug_port;
 	int delay=250+750*(2-config->stepstep_speed);
 	main_window->debug_speed->SetThumbPosition(debug->GetSpeed(delay));
@@ -169,16 +169,17 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	if (check_first) return CheckSyntax(file,config->temp_draw);
 	wxString command;
 	command<<config->psdraw2_command<<_T(" --noedit \"")<<config->temp_draw<<_T("\"");
-	if (config->high_res_flows) command<<_T(" +");
+//	if (config->high_res_flows) command<<_T(" +");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
-bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
+bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,config->temp_draw);
+	if (check_first) return CheckSyntax(file,config->temp_draw,id);
 	wxString command;
-	command<<config->psdraw2_command<<_T(" \"")<<config->temp_draw<<_T("\"");
-	if (config->high_res_flows) command<<_T(" +");
+	command<<config->psdraw2_command;
+	command<<" --port="<<config->flow_port<<" --id="<<id;
+	command<<_T(" \"")<<config->temp_draw<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 

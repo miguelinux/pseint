@@ -12,6 +12,8 @@
 #include <cmath>
 #include <fstream>
 #include <stack>
+#include "../pseint/zockets.h"
+#include <sstream>
 using namespace std;
 
 void dibujar_caracter(const char chr);
@@ -21,6 +23,8 @@ enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PA
 class Entity;
 
 bool edit_on=true; // indica si se puede editar el diagrama
+string fname; // archivo que recibe como argumento
+ZOCKET zocket=ZOCKET_ERROR; // para comunicarse con wxPSeInt
 
 Entity *edit=NULL; // entidad seleccionado para editar su texto
 Entity *mouse=NULL; // entidad seleccionado por el mouse
@@ -73,10 +77,21 @@ const float color_menu_back[3]={.7,.9,.9};
 const int circle_steps=20; // cantidad de tramos en los que aproximo el circulo para dibujarlo como poligonal
 double cosx[circle_steps+1], sinx[circle_steps+1];
 
+int win_h=400,win_w=600; // tamaño de la ventana
+int cur_x, cur_y; // ubicacion del raton (en coord del dibujo)
+
+
 // para interpolar en las animaciones
 #define interpolate(a,b) a=(2*a+b)/3
 //#define interpolate_good(a,b) a=(2*a+b)/3
 #define interpolate_good(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
+
+void Salir() {
+	if (zocket!=ZOCKET_ERROR) {
+		zocket_cerrar(zocket);
+	}
+	exit(0);
+}
 
 struct Entity {
 	Entity *all_next, *all_prev;
@@ -102,6 +117,7 @@ struct Entity {
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	string label,lini,lfin,lpaso;
 	Entity(ETYPE _type, string _label) :type(_type),label(_label) {
+		if (label.size() && label[label.size()-1]==';') label=label.substr(0,label.size()-1);
 		if (!all_any) { 
 			all_any=this; 
 			all_next=all_prev=this;
@@ -212,6 +228,7 @@ struct Entity {
 		}
 	}
 	void SetLabel(string _label, bool recalc=false) {
+		for (int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 		label=_label; GetTextSize(t_w,t_h); w=t_w; h=t_h;
 		if (!w) w=margin*6;
 		h+=2*margin; if (type!=ET_PROCESO) w+=2*margin;
@@ -765,11 +782,6 @@ struct Entity {
 };
 Entity *Entity::all_any=NULL;
 
-
-
-int win_h=600,win_w=800;
-int cur_x, cur_y;
-
 bool StartsWith(const string &s1, string s2) {
 	if (s1.length()<s2.length()) return false;
 	else return s1.substr(0,s2.length())==s2;
@@ -1075,11 +1087,12 @@ void DrawMenus() {
 		}
 	glEnd();
 	// menu
-	DrawText(menu_sel==1?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+220,"Auto-ajustar Zoom");
-	DrawText(menu_sel==2?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+180,"Guardar Cambios");
-	DrawText(menu_sel==3?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+140,"Guardar y Cerrar");
-	DrawText(menu_sel==4?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+100,"Cerrar Sin Guardar");
-	DrawText(menu_sel==5?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+60,"Ayuda...");
+	DrawText(menu_sel==1?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+260,"Auto-ajustar Zoom");
+	DrawText(menu_sel==2?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+220,"Guardar Cambios");
+	DrawText(menu_sel==3?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+180,"Guardar y Ejecutar");
+	DrawText(menu_sel==4?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+140,"Guardar y Cerrar");
+	DrawText(menu_sel==5?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+100,"Cerrar Sin Guardar");
+	DrawText(menu_sel==6?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+60,"Ayuda...");
 	DrawText(color_menu,menu_size_w-70,win_h-menu_size_h+10,"Menu");
 	// shapebar
 	if (shapebar) {
@@ -1154,7 +1167,20 @@ void display_cb() {
 	glutSwapBuffers();
 }
 
+void Raise() {
+	glutHideWindow();
+	glutShowWindow();
+}
+
 void idle_func() {
+	static char *rec=new char[256];
+	int cant=256;
+	if (zocket!=ZOCKET_ERROR && zocket_leer(zocket,rec,cant)) {
+		rec[cant]=0;
+		if (string(rec)=="edit") { edit_on=true; Raise(); }
+		else if (string(rec)=="noedit") { edit_on=false; Raise(); }
+		else if (string(rec)=="raise") Raise();
+	}
 	usleep(25000);
 	Entity *aux=start;
 	do {
@@ -1171,7 +1197,7 @@ void idle_func() {
 	} else {
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
-		if (menu) { interpolate(menu_size_h,250); interpolate(menu_size_w,260); }
+		if (menu) { interpolate(menu_size_h,290); interpolate(menu_size_w,260); }
 		else { interpolate(menu_size_h,30); interpolate(menu_size_w,80); }
 		interpolate(trash_size,0); trash=false;
 	}
@@ -1189,11 +1215,12 @@ void passive_motion_cb(int x, int y) {
 	shapebar=x>win_w-shapebar_size;
 	if (menu) {
 		y=win_h-y;
-		if (y>win_h-menu_size_h+205) menu_sel=1;
-		else if (y>win_h-menu_size_h+165) menu_sel=2;
-		else if (y>win_h-menu_size_h+125) menu_sel=3;
-		else if (y>win_h-menu_size_h+85) menu_sel=4;
-		else if (y>win_h-menu_size_h+45) menu_sel=5;
+		if (y>win_h-menu_size_h+245) menu_sel=1;
+		else if (y>win_h-menu_size_h+205) menu_sel=2;
+		else if (y>win_h-menu_size_h+165) menu_sel=3;
+		else if (y>win_h-menu_size_h+125) menu_sel=4;
+		else if (y>win_h-menu_size_h+85) menu_sel=5;
+		else if (y>win_h-menu_size_h+45) menu_sel=6;
 		else menu_sel=0;
 	} else if (shapebar) {
 		shapebar_sel=y/(win_h/8)+1;
@@ -1238,17 +1265,25 @@ void ZoomExtend(int x0, int y0, int x1, int y1) {
 	d_dy=win_h/zoom/2-(y1+y0)/2/*+h/2/zoom*/;
 }
 
+bool SendUpdate(bool run=false);
+bool SendHelp();
+bool SendRun();
+
 void ProcessMenu(int op) {
 	if (op==1) {
 		int h=0,wl=0,wr=0;
 		start->Calculate(wl,wr,h); // calcular tamaño total
 		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h);
+	} else if (op==2) {
+		SendUpdate();
+	} else if (op==3) {
+		SendUpdate(true);
 	} else if (op==4) {
-		exit(0);
+		SendUpdate(); Salir();
 	} else if (op==5) {
-		cout<<endl;
-		start->Print(cout);
-		cout<<endl;
+		Salir();
+	} else if (op==6) {
+		SendHelp();
 	}
 }
 
@@ -1347,7 +1382,7 @@ void mouse_cb(int button, int state, int x, int y) {
 
 void keyboard_cb(unsigned char key, int x, int y) {
 	if (!edit) {
-		if (key==27) exit(0);
+		if (key==27) Salir();
 		return;
 	} else {
 		edit->EditLabel(key);
@@ -1374,6 +1409,38 @@ void initialize() {
 	glClearColor(color_back[0],color_back[1],color_back[2],1.f);
 }
 
+bool Connect(int port, int id) {
+	zocket = zocket_llamar(port,"127.0.0.1");
+	if (zocket==ZOCKET_ERROR) return false;
+	stringstream ss;
+	ss<<"hello "<<id<<"\n";
+	string s=ss.str();
+	zocket_escribir(zocket,s.c_str(),s.size());
+	if (zocket==ZOCKET_ERROR) return false;
+	
+}
+
+bool SendUpdate(bool run) {
+	ofstream fout(fname.c_str());
+	if (!fout.is_open()) return false;
+	start->Print(fout);
+	fout.close();
+	if (zocket==ZOCKET_ERROR) return false;
+	if (run)
+		zocket_escribir(zocket,"run\n",4);
+	else
+		zocket_escribir(zocket,"reload\n",7);
+	if (zocket==ZOCKET_ERROR) return false;
+	return true;
+}
+
+bool SendHelp() {
+	if (zocket==ZOCKET_ERROR) return false;
+	zocket_escribir(zocket,"help\n",5);
+	if (zocket==ZOCKET_ERROR) return false;
+	return true;
+}
+
 int main(int argc, char **argv) {
 	for (int i=0;i<circle_steps;i++) {
 		cosx[i]=cos((i*2*M_PI)/circle_steps);
@@ -1383,13 +1450,19 @@ int main(int argc, char **argv) {
 	sinx[circle_steps]=sinx[0];
 	glutInit (&argc, argv);
 	initialize();
-	string fin;
+	int id=-1, port=-1;
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--noedit") edit_on=false;
-		else fin=a;
+		else if (a.size()>=5 && a.substr(0,5)=="--id=") {
+			id=atoi(a.substr(5).c_str());
+		} else if (a.size()>=7 && a.substr(0,7)=="--port=") {
+			port=atoi(a.substr(7).c_str());
+		}
+		else fname=a;
 	}
-	if (fin.length()) Load(fin.c_str());
+	if (port!=-1 && id!=-1) Connect(port,id);
+	if (fname.length()) Load(fname.c_str());
 	else Load();
 	glutMainLoop();
 	return 0;

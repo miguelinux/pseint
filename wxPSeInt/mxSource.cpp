@@ -57,6 +57,7 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 
 	flow=NULL;
 	input=NULL;
+	socket=NULL;
 	
 	last_s1=last_s2=0;
 	is_example=ais_example;
@@ -533,9 +534,12 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 void mxSource::SetModify (bool modif) {
 	if (is_example) return;
 	if (modif) {
+		bool ro=GetReadOnly();
+		if (ro) SetReadOnly(false);
 		SetTargetStart(0); 
 		SetTargetEnd(1);
 		ReplaceTarget(GetTextRange(0,1));
+		if (ro) SetReadOnly(true);
 	} else 
 		SetSavePoint();
 }
@@ -895,8 +899,27 @@ void mxSource::SetWords() {
 	SetKeyWords (1, mxSourceWords2);
 }
 
-void mxSource::EditFlow ( mxProcess *proc ) {
-	flow=proc;
+void mxSource::EditFlow ( mxProcess *proc, int id ) {
+	flow=proc; flow_id=id;
 	SetReadOnly(proc!=NULL);
+}
+
+int mxSource::GetFlowId() { 
+	return flow_id; 
+}
+
+void mxSource::ReloadTemp (wxString file) {
+	bool isro=GetReadOnly();
+	if (isro) SetReadOnly(false);
+	LoadFile(file);
+	SetModify(true);
+	if (isro) SetReadOnly(true);
+}
+
+wxSocketBase * mxSource::GetFlowSocket ( ) {
+	return socket;
+}
+void mxSource::SetFlowSocket ( wxSocketBase *s ) {
+	socket=s;
 }
 

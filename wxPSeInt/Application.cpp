@@ -10,6 +10,7 @@
 #include "mxProfile.h"
 #include "mxArt.h"
 #include "mxUpdatesChecker.h"
+#include <wx/socket.h>
 using namespace std;
 
 wxSplashScreen *splash;
@@ -48,6 +49,8 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxXPMHandler);
 	
 	config = new ConfigManager;
+	
+	wxSocketBase::Initialize();
 	
 	bitmaps = new mxArt(config->images_path);
 	utils = new mxUtils;

@@ -45,6 +45,7 @@ struct LangSettings {
 class ConfigManager {
 private:
 public:
+	int flow_port;
 	int debug_port;
 	bool fixed_port;
 	bool check_for_updates;

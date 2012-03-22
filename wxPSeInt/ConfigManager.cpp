@@ -22,8 +22,8 @@ ConfigManager::ConfigManager() {
 		filename = DIR_PLUS_FILE(home_dir,_T("config"));
 	LoadDefaults();
 	Read();
-	if (!fixed_port)
-		debug_port+=rand()%100;
+	if (!fixed_port) debug_port+=rand()%100;
+	if (!fixed_port) flow_port+=100+rand()%100;
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
 	tty_command=_T("./mac-terminal-wrapper.bin");
@@ -81,6 +81,7 @@ void ConfigManager::LoadDefaults() {
 	tabw = 4;
 	stepstep_speed=1;
 	debug_port=55374;
+	flow_port=55375;
 	check_for_updates=true;
 	fixed_port=false;
 	smart_indent = true;
@@ -165,6 +166,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("pos_y="))<<pos_y);
 	fil.AddLine(wxString(_T("maximized="))<<maximized);	
 	fil.AddLine(wxString(_T("debug_port="))<<debug_port);	
+	fil.AddLine(wxString(_T("flow_port="))<<flow_port);	
 	fil.AddLine(wxString(_T("check_for_updates="))<<(check_for_updates?1:0));	
 	fil.AddLine(wxString(_T("fixed_port="))<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
@@ -195,6 +197,7 @@ void ConfigManager::Read() {
 			else if (key==_T("pos_x")) { value.ToLong(&l); pos_x=l; }
 			else if (key==_T("pos_y")) { value.ToLong(&l); pos_y=l; }
 			else if (key==_T("debug_port")) { value.ToLong(&l); debug_port=l; }
+			else if (key==_T("flow_port")) { value.ToLong(&l); flow_port=l; }
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
 			else if (key==_T("stepstep_speed")) { value.ToLong(&l); stepstep_speed=l; }
