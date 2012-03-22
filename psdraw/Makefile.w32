@@ -1,5 +1,5 @@
 MINGW_DIR=D:\\mingw
-GPP=wine ${MINGW_DIR}\\bin\\mingw32-g++.exe
+GPP=${MINGW_DIR}\\bin\\mingw32-g++.exe
 FLAGS=-O2 -I${MINGW_DIR}/misc/include
 LIBS=-s -mwindows -L${MINGW_DIR}/misc/lib -ljpeg -llibpng -lz -static-libgcc -static-libstdc++
 OBJS=../temp/drw_w32_rls/main.o

@@ -6,8 +6,15 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include "Draw.h"
+#include <cstdlib>
+using namespace std;
 
 extern const int margin; // para los botones de confirm
+
+#ifdef __WIN32__
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#endif
 
 static Entity *DuplicateEntity(Entity *orig) {
 	Entity *nueva=new Entity(orig->type,orig->label);

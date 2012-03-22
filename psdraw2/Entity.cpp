@@ -3,6 +3,7 @@
 #include "Draw.h"
 #include "GL/glut.h"
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -16,6 +17,10 @@ static const int shadow_delta_x=4; // diferencia entre la posicion de un objeto 
 static const int shadow_delta_y=5; // diferencia entre la posicion de un objeto y su sombra
 int margin=6; // margen entre cuadro y texto en un bloque (y para los botones de confirm, por eso no es static, ¿ni const?)
 
+#ifdef DrawText
+// maldito windows.h
+#undef DrawText
+#endif
 
 Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_label) {
 	if (reg_in_all) {
