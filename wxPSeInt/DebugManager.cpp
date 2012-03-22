@@ -39,7 +39,7 @@ void DebugManager::Start(mxProcess *proc, mxSource *src, int port) {
 	wxIPV4address adrs;
 	adrs.Hostname(_T("127.0.0.1"));
 	adrs.Service(port);
-	server = new wxSocketServer(adrs);
+	server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
 	server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
 	server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 	server->Notify(true);
@@ -172,3 +172,8 @@ void DebugManager::SendEvaluation(wxString exp) {
 	str<<exp<<_T("\n");
 	socket->Write(str.c_str(),str.Len());	
 }
+
+bool DebugManager::HasSocket (wxObject *s) {
+	return s && (s==socket||s==server);
+}
+

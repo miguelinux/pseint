@@ -9,6 +9,7 @@ class wxSocketEvent;
 class mxProcess;
 class mxDesktopTest;
 class mxEvaluateDialog;
+class wxObject;
 
 class DebugManager {
 private:
@@ -38,6 +39,7 @@ public:
 	void Stop();
 	void SetDoDesktopTest(bool val);
 	void SendEvaluation(wxString exp);
+	bool HasSocket(wxObject *s);
 	~DebugManager();
 };
 
