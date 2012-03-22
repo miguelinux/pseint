@@ -69,10 +69,10 @@ const float color_arrow[3]={.9,0,0};
 const float color_selection[3]={0,.4,0};
 const float color_shape[3]={1,1,.9};
 const float color_shadow[3]={.7,.7,.7};
-const float color_back[3]={.9,1,.9};
+const float color_back[3]={.95,1,.95};
 const float color_ghost[3]={.7,.7,.7};
 const float color_menu[3]={.7,.2,.2};
-const float color_menu_back[3]={.7,.9,.9};
+const float color_menu_back[3]={.8,.95,.95};
 
 const int circle_steps=20; // cantidad de tramos en los que aproximo el circulo para dibujarlo como poligonal
 double cosx[circle_steps+1], sinx[circle_steps+1];
@@ -117,7 +117,6 @@ struct Entity {
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	string label,lini,lfin,lpaso;
 	Entity(ETYPE _type, string _label) :type(_type),label(_label) {
-		if (label.size() && label[label.size()-1]==';') label=label.substr(0,label.size()-1);
 		if (!all_any) { 
 			all_any=this; 
 			all_next=all_prev=this;
@@ -807,6 +806,15 @@ void Load(const char *fname) {
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(file,str)) {
+		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
+		bool comillas=false;
+		for (unsigned int i=0;i<str.size();i++) {
+			if (str[i]=='\''||str[i]=='\"') comillas=!comillas;
+			else if (!comillas) {
+				if (str[i]=='&') { str.replace(i,1," & "); i+=2; }
+				else if (str[i]=='|') { str.replace(i,1," | "); i+=2; }
+			}
+		}
 		if (!str.size()||StartsWith(str,"PROCESO ")||str=="FINPROCESO"||str=="ENTONCES") {
 			continue;
 		}

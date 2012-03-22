@@ -23,6 +23,7 @@ private:
 	mxProcess *flow;
 	wxSocketBase *socket;
 	int flow_id;
+	int debug_line, debug_line_handler_1, debug_line_handler_2;
 public:
 	mxInputDialog *input;
 	bool sin_titulo;
@@ -67,6 +68,8 @@ public:
 	wxSocketBase *GetFlowSocket();
 	void ReloadTemp(wxString file);
 	void SetFlowSocket(wxSocketBase *s);
+	
+	void SetDebugLine(int l=-1);
 	DECLARE_EVENT_TABLE();
 };
 

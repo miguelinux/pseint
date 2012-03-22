@@ -50,6 +50,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 		debug->debugging=false;
 		main_window->SetDebugState(DS_STOPPED);
 		source->SetReadOnly(was_readonly);
+		source->SetDebugLine();
 		debug->process=NULL;
 	}
 	if (what==mxPW_DRAWEDIT) {
@@ -179,6 +180,7 @@ bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
 	wxString command;
 	command<<config->psdraw2_command;
 	command<<" --port="<<config->flow_port<<" --id="<<id;
+	if (source->GetReadOnly()) command<<" --noedit";
 	command<<_T(" \"")<<config->temp_draw<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }

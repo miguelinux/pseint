@@ -52,7 +52,8 @@ void DebugManager::ProcData(wxString data) {
 		long l=-1;
 		data.Mid(6).ToLong(&l);
 		if (l>=0 && source!=NULL)
-			source->SetSelection(source->GetLineEndPosition(l),source->GetLineIndentPosition(l));
+			source->SetDebugLine(l);
+//			source->SetSelection(source->GetLineEndPosition(l),source->GetLineIndentPosition(l));
 		if (do_desktop_test)
 			desktop_test->SetLine(l+1);
 	} else if (data.StartsWith(_T("autoevaluacion "))) {

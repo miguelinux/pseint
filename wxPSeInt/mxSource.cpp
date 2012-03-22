@@ -143,6 +143,10 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 	IndicatorSetForeground (0, 0x0000ff);
 	IndicatorSetForeground (1, 0x005555);
 	
+	MarkerDefine(0,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
+	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
+	debug_line=-1;
+	
 	SetDropTarget(new mxDropTarget());
 	
 	if (is_example) SetReadOnly(true);
@@ -923,3 +927,13 @@ void mxSource::SetFlowSocket ( wxSocketBase *s ) {
 	socket=s;
 }
 
+void mxSource::SetDebugLine(int l) {
+	if (debug_line!=-1) {
+		MarkerDeleteHandle(debug_line_handler_1);
+		MarkerDeleteHandle(debug_line_handler_2);
+	}
+	if ((debug_line=l)!=-1) {
+		debug_line_handler_1=MarkerAdd(l,0);
+		debug_line_handler_2=MarkerAdd(l,1);
+	}
+}

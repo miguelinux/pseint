@@ -335,9 +335,9 @@ void mxMainWindow::CreateCommandsPanel() {
 
 	panel->SetSizerAndFit(sizer);
 	if (config->show_commands)
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Show());
+		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Show().Row(2));
 	else
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Hide());
+		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Hide().Row(2));
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
