@@ -54,7 +54,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 		debug->process=NULL;
 	}
 	if (what==mxPW_DRAWEDIT) {
-		source->EditFlow(NULL);
+		if (source) source->EditFlow(NULL);
 	}
 	if (what==mxPW_RUN) {
 		ReadOut();
@@ -244,6 +244,7 @@ void mxProcess::ReadOut() {
 			wxTreeItemId item(main_window->results_tree->GetFirstChild(main_window->results_root,v));
 			wxTreeEvent evt(0,main_window->results_tree,item);
 			main_window->OnSelectError(evt);
+			main_window->Raise();
 		} else {
 			if (main_window->notebook->GetPageCount()) main_window->notebook->GetPage(main_window->notebook->GetSelection())->SetFocus();
 		}
@@ -289,3 +290,8 @@ wxString mxProcess::GetInputArgs() {
 	args<<"\"--input="<<values<<"\"";
 	return args;
 }
+
+void mxProcess::SetSourceDeleted ( ) {
+	source=NULL;
+}
+

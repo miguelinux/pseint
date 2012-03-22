@@ -37,6 +37,7 @@ public:
 	wxString GetInputArgs();
 	~mxProcess();
 	void OnTerminate(int pid, int status);
+	void SetSourceDeleted();
 };
 
 extern mxProcess *proc_list;

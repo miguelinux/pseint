@@ -1,9 +1,9 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxProcess.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxDesktopTest.o ${OBJS_DIR}/mxDesktopVarsEditor.o ${OBJS_DIR}/mxEvaluateDialog.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/mxProfile.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxInputDialog.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxProcess.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxDesktopTest.o ${OBJS_DIR}/mxDesktopVarsEditor.o ${OBJS_DIR}/mxEvaluateDialog.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/mxProfile.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxInputDialog.o ${OBJS_DIR}/FlowEditionManager.o 
 
 ${OBJS_DIR}/Application.o: Application.cpp Application.h mxMainWindow.h mxSource.h mxUtils.h ConfigManager.h HelpManager.h DebugManager.h mxProfile.h mxArt.h mxUpdatesChecker.h
 	${GPP} ${FLAGS} -c Application.cpp -o $@
 
-${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h ids.h ConfigManager.h mxProcess.h version.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTest.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h ids.h ConfigManager.h mxProcess.h version.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTest.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h
 	${GPP} ${FLAGS} -c mxMainWindow.cpp -o $@
 
 ${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h mxBitmapButton.h
@@ -12,7 +12,7 @@ ${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h mxBitmapButton.h
 ${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxUtils.h version.h
 	${GPP} ${FLAGS} -c ConfigManager.cpp -o $@
 
-${OBJS_DIR}/mxSource.o: mxSource.cpp mxSource.h ConfigManager.h ids.h mxDropTarget.h DebugManager.h
+${OBJS_DIR}/mxSource.o: mxSource.cpp mxSource.h ConfigManager.h ids.h mxProcess.h mxDropTarget.h DebugManager.h
 	${GPP} ${FLAGS} -c mxSource.cpp -o $@
 
 ${OBJS_DIR}/mxProcess.o: mxProcess.cpp mxProcess.h mxSource.h ConfigManager.h mxUtils.h mxMainWindow.h DebugManager.h mxInputDialog.h
@@ -65,4 +65,7 @@ ${OBJS_DIR}/mxPrintOut.o: mxPrintOut.cpp mxPrintOut.h mxSource.h mxMainWindow.h
 
 ${OBJS_DIR}/mxInputDialog.o: mxInputDialog.cpp mxInputDialog.h mxBitmapButton.h mxArt.h
 	${GPP} ${FLAGS} -c mxInputDialog.cpp -o $@
+
+${OBJS_DIR}/FlowEditionManager.o: FlowEditionManager.cpp FlowEditionManager.h mxMainWindow.h mxSource.h ConfigManager.h mxHelpWindow.h mxUtils.h
+	${GPP} ${FLAGS} -c FlowEditionManager.cpp -o $@
 

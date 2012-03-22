@@ -1,11 +1,13 @@
 #include "mxSource.h"
 #include "ConfigManager.h"
 #include "ids.h"
+#include "mxProcess.h"
 #include "mxDropTarget.h"
 #include "DebugManager.h"
 #include <wx/clipbrd.h>
 #include <iostream>
 #include <wx/process.h>
+#include <wx/socket.h>
 using namespace std;
 
 const wxChar *mxSourceWords1 =
@@ -155,6 +157,11 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 
 mxSource::~mxSource() {
 	debug->Close(this);
+	if (socket) {
+		socket->Write("quit",4);
+		flow->SetSourceDeleted();
+		socket=NULL; flow_id=-1;
+	}
 }
 
 void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle){

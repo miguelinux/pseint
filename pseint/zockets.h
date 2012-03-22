@@ -20,7 +20,6 @@ ZOCKET zocket_llamar(short int port, const char *host=NULL);
 
 ZOCKET zocket_esperar_llamada(short int port);
 
-
 bool zocket_leer(ZOCKET z, char *data, int &cant); 
 
 bool zocket_escribir(ZOCKET z, const char *data, int cant); 

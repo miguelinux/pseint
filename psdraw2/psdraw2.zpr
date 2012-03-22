@@ -4,7 +4,7 @@ project_name=psDraw2
 autocodes_file=
 macros_file=
 autocomp_extra=OpenGL_gl OpenGL_glu OpenGL_glut OpenGL_glx
-active_configuration=Release_Linux
+active_configuration=Debug_Linux
 version_saved=20120308
 version_required=0
 custom_tabs=0
@@ -15,14 +15,21 @@ current_source=main.cpp
 path_char=/
 [source]
 path=main.cpp
-cursor=924
-marker=1274
-marker=519
-marker=517
+cursor=46341
+breakpoint=1136
+marker=606
 open=true
 [source]
 path=uglyfont.cpp
-cursor=12688
+cursor=11469
+marker=566
+open=true
+[source]
+path=../pseint/zockets.cpp
+cursor=2990
+[header]
+path=../pseint/zockets.h
+cursor=582
 [config]
 name=Debug_Linux
 working_folder=
@@ -51,7 +58,7 @@ enable_profiling=0
 name=Release_Linux
 working_folder=
 always_ask_args=0
-args=
+args=/home/zaskar/.pseint/temp.psd
 wait_for_key=2
 temp_folder=release.lnx
 output_file=../bin/psdraw2
@@ -125,4 +132,10 @@ expr=start->x-start->bwl
 expr=x0
 expr=x1
 expr=d_dx
+expr=key
+expr=(unsigned char)chr
+expr=delta
+expr=delta_y
+expr=y0
+expr=y1
 [end]
