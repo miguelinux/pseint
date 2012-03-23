@@ -6,8 +6,9 @@ using namespace std;
 class Entity;
 
 // comunicacion con wxPseInt
-extern string fname; // archivo que recibe como argumento
 extern bool edit_on; // indica si se puede editar el diagrama
+extern string fname; // archivo que recibe como argumento
+extern string pname; // nombre original del proceso
 
 // cuadro de confirmacion al salir sin guardar
 extern bool modified; // para saber si hay que preguntar antes de salir sin guardar
@@ -35,6 +36,12 @@ extern int menu_size_h; // ancho para dibujo de la shapebar
 extern int menu_size_w; // ancho para dibujo de la shapebar
 extern bool menu; // indica si el mouse esta sobre la papelera
 extern int menu_sel; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
+#define menu_w_max 240
+#define menu_h_min 30
+#define menu_w_min 70
+#define menu_line_width 1
+#define menu_option_height 30
+
 
 // papelera
 extern bool trash; // indica si el mouse esta sobre la papelera

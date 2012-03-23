@@ -1,8 +1,9 @@
 // comunicacion con wxPseInt
 #include "Global.h"
 
-string fname; // archivo que recibe como argumento
 bool edit_on=true; // indica si se puede editar el diagrama
+string fname; // archivo que recibe como argumento
+string pname; // nombre original del proceso
 
 // cuadro de confirmacion al salir sin guardar
 bool modified=false; // para saber si hay que preguntar antes de salir sin guardar

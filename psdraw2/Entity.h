@@ -7,17 +7,17 @@ using namespace std;
 Las entidades se relacionan como pseudo-arbol, empezando por start que es "Inicio".
 Ademas, todas forman una gran lista enlazada (atributos all_*) para recorrerlas en los eventos
 Tipos de entidades:
-ET_LEER: leer, no tiene hijos
-ET_ESCRIBIR: escribir, no tiene hijos
-ET_ASIGNAR: asignar, dimension, definir, no tiene hijos
-ET_PROCESO: inicio y fin, se distinguen por prev y next
-ET_SI: si, dos hijos, el primero es el izquierdo, el segundo el derecho
-ET_SEGUN: 1 o mas hijos, el ultimo siempre es "De Otro Modo"
-ET_OPCION: 1 hijo, hijos de segun con las opciones, el hijo tiene las acciones para esa opcion
-ET_MIENTRAS: mientras, un solo hijo con el contenido del bucle
-ET_REPETIR: repetir, un solo hijo con el contenido del bucle
-ET_PARA: para, 4 hijos, el 0 es el contenido del bucle, el 1,2,3 son val inicial, paso y final, estan fijos, los crea el ctor
-ET_AUX_PARA: hijos 1,2,3 y de para
+	ET_LEER: leer, no tiene hijos
+	ET_ESCRIBIR: escribir, no tiene hijos
+	ET_ASIGNAR: asignar, dimension, definir, no tiene hijos
+	ET_PROCESO: inicio y fin, se distinguen por prev y next
+	ET_SI: si, dos hijos, el primero es el izquierdo, el segundo el derecho
+	ET_SEGUN: 1 o mas hijos, el ultimo siempre es "De Otro Modo"
+	ET_OPCION: 1 hijo, hijos de segun con las opciones, el hijo tiene las acciones para esa opcion
+	ET_MIENTRAS: mientras, un solo hijo con el contenido del bucle
+	ET_REPETIR: repetir, un solo hijo con el contenido del bucle, el default es repetir hasta que, la variante es repetir-mientras que
+	ET_PARA: para, 4 hijos, el 0 es el contenido del bucle, el 1,2,3 son val inicial, paso y final, estan fijos, los crea el ctor, la variante es para cada, donde hijo 2 tiene el arreglo
+	ET_AUX_PARA: hijos 1,2,3 y de para
 */
 enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_ASIGNAR, ET_AUX_PARA };
 
@@ -43,6 +43,7 @@ struct Entity {
 	int n_child; // cantidad de hijos
 	int flecha_in; // si las flechas de entrada son mas largas que lo normal (ej, entrada en un repetitivo), se pone aca la diferencia (esto se podria sacar, no?)
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
+	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
 	string label;
 	Entity(ETYPE _type, string _label, bool reg_in_all=true);
 	~Entity();
@@ -52,6 +53,7 @@ struct Entity {
 	void SetNolink(Entity *m,bool n);
 	void EditSpecialLabel(unsigned char key);
 	void EditLabel(unsigned char key);
+	void GetTextSize(const string &label, int &w, int &h);
 	void SetLabel(string _label, bool recalc=false);
 	int CheckLinkChild(int x, int y);
 	int CheckLinkOpcion(int x, int y);
@@ -65,11 +67,6 @@ struct Entity {
 	void Tick();
 	void DrawShapeSolid(const float *color,int x, int y, int w, int h);
 	void DrawShapeBorder(const float *color,int x, int y, int w, int h);
-	void DrawFlechaDown(int x, int y1, int y2);
-	void DrawFlechaDownHead(int x, int y2);
-	void DrawFlechaUp(int x, int y1, int y2);
-	void DrawFlechaR(int x1, int x2, int y);
-	void DrawFlechaL(int x1, int x2, int y);
 	void DrawText();
 	void Draw(bool force=false);
 	void Calculate(bool also_parent=false);

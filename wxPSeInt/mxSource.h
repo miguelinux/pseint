@@ -68,8 +68,10 @@ public:
 	wxSocketBase *GetFlowSocket();
 	void ReloadTemp(wxString file);
 	void SetFlowSocket(wxSocketBase *s);
+	bool HaveComments();
 	
 	void SetDebugLine(int l=-1);
+	
 	DECLARE_EVENT_TABLE();
 };
 

@@ -944,3 +944,11 @@ void mxSource::SetDebugLine(int l) {
 		debug_line_handler_2=MarkerAdd(l,1);
 	}
 }
+
+bool mxSource::HaveComments() {
+	for (int j,i=0;i<GetLength();i++) {
+		j=GetStyleAt(i);
+		if (j==wxSTC_C_COMMENT||j==wxSTC_C_COMMENTDOC||j==wxSTC_C_COMMENTLINE) return true;
+	}
+	return false;
+}

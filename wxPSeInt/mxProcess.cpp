@@ -27,16 +27,15 @@ mxProcess::mxProcess(mxSource *src, wxString aname) {
 	filename = aname;
 	cont++;
 	source = src;
-	if (proc_for_killing) {
+	if (proc_for_killing) 
 		delete proc_for_killing;
-		proc_for_killing=NULL;
-	}
 	what = mxPW_NULL;
 	input = NULL;
 	output = NULL;
 }
 
 mxProcess::~mxProcess() {
+	if (this==proc_for_killing) proc_for_killing=NULL;
 	if (prev)
 		prev->next=next;
 	else

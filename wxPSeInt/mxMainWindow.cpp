@@ -1348,6 +1348,8 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		if (source->GetFlowSocket()) { 
 			source->GetFlowSocket()->Write("raise",5); 
 			return;
+		} else if (source->GetReadOnly() && source->HaveComments()) {
+			wxMessageBox("Su código contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios","Advertencia",wxOK|wxICON_EXCLAMATION,this);
 		}
 		bool mod = source->GetModify();
 		source->SaveFile(config->temp_file);

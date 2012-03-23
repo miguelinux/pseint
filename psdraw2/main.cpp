@@ -2,7 +2,6 @@
 // Este archivo se genera al visualizar el diagrama viejo en $home/.pseint/temp.psd
 
 // Todo:
-// Testear como se carga el codigo desde un psd (explota con bucles vacios)
 // Agregar letras v y f en condicionales y repetitivas
 
 #include <GL/glut.h>
@@ -25,6 +24,7 @@ int main(int argc, char **argv) {
 	cosx[circle_steps]=cosx[0];
 	sinx[circle_steps]=sinx[0];
 	int id=-1, port=-1;
+	string fname;
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--version") {
@@ -36,8 +36,7 @@ int main(int argc, char **argv) {
 			id=atoi(a.substr(5).c_str());
 		} else if (a.size()>=7 && a.substr(0,7)=="--port=") {
 			port=atoi(a.substr(7).c_str());
-		}
-		else fname=a;
+		} else fname=a;
 	}
 	if (port!=-1 && id!=-1) Connect(port,id);
 	if (fname.length()) Load(fname.c_str());

@@ -1,3 +1,6 @@
+20120323
+	Mejoras varias en el editor de diagramas de flujo.
+
 20120321
 	La ejecución paso a paso ya no consume el 100% de la CPU.
 	Agregada una opción para editar diagramas de flujo en el menú Archivo.

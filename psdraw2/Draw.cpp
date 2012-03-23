@@ -8,21 +8,22 @@
 extern const int margin; // para los botones de confirm
 
 void GetTextSize(const string &label, int &w, int &h) {
-	w=label.size()*12;
-	h=18;
+	w=label.size()*10;
+	h=15;
 }
 
 void DrawText(const float *color, int x, int y, const char *t) {
 	glColor3fv(color);
 	glPushMatrix();
 	glTranslated(x,y,0);
-	glScaled(.1,.15,.1);
+	glScaled(.08,.12,.1);
 	while (*t) 
 		dibujar_caracter(*(t++));
 	glPopMatrix();
 }
 
 static void DrawMenus() {
+	glLineWidth(menu_line_width);
 	glColor3fv(color_menu_back);
 	glBegin(GL_QUADS);
 	// shapebar
@@ -192,13 +193,14 @@ static void DrawMenus() {
 	}
 	glEnd();
 	// menu
-	DrawText(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+260,"Auto-ajustar Zoom");
-	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+220,"Guardar Cambios");
-	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+180,"Guardar y Ejecutar");
-	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+140,"Guardar y Cerrar");
-	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+100,"Cerrar Sin Guardar");
-	DrawText(menu_sel==MO_HELP       ?color_selection:color_menu,menu_size_w-240,win_h-menu_size_h+60,"Ayuda...");
-	DrawText(color_menu,menu_size_w-70,win_h-menu_size_h+10,"Menu");
+	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-220;
+	DrawText(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
+	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Cambios"); top-=menu_option_height;
+	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Ejecutar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Cerrar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar Sin Guardar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
+	DrawText(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
 	// shapebar
 	if (shapebar) {
 		if (shapebar_sel==1) DrawText(color_selection,10,10,"Asiganacion/Dimension/Definicion");
@@ -214,7 +216,7 @@ static void DrawMenus() {
 
 static void DrawConfirm() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLineWidth(2);
+	glLineWidth(menu_line_width);
 	int h,w;
 	const char *text1="Hay cambios sin guardar.";
 	const char *text2="¿Cerrar el editor y perder los cambios?";

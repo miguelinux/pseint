@@ -7,6 +7,7 @@
 #include <GL/glut.h>
 #include "Draw.h"
 #include <cstdlib>
+#include <iostream>
 using namespace std;
 
 extern const int margin; // para los botones de confirm
@@ -78,8 +79,8 @@ static void idle_func() {
 	} else {
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
-		if (menu) { interpolate(menu_size_h,290); interpolate(menu_size_w,260); }
-		else { interpolate(menu_size_h,30); interpolate(menu_size_w,80); }
+		if (menu) { interpolate(menu_size_h,menu_option_height*(MO_HELP+2)); interpolate(menu_size_w,menu_w_max); }
+		else { interpolate(menu_size_h,menu_h_min); interpolate(menu_size_w,menu_w_min); }
 		interpolate(trash_size,0); trash=false;
 	}
 	interpolate(d_zoom,zoom);
@@ -105,14 +106,17 @@ static void passive_motion_cb(int x, int y) {
 	menu=x<menu_size_w&&y<menu_size_h;
 	shapebar=x>win_w-shapebar_size;
 	if (menu) {
-		y=win_h-y;
-		if (y>win_h-menu_size_h+245) menu_sel=1;
-		else if (y>win_h-menu_size_h+205) menu_sel=2;
-		else if (y>win_h-menu_size_h+165) menu_sel=3;
-		else if (y>win_h-menu_size_h+125) menu_sel=4;
-		else if (y>win_h-menu_size_h+85) menu_sel=5;
-		else if (y>win_h-menu_size_h+45) menu_sel=6;
-		else menu_sel=0;
+//		y=win_h-y;
+		y=y-10;
+		menu_sel=y/menu_option_height+1;
+		if (menu_sel<1 || menu_sel>MO_HELP) menu_sel=0;
+//		if (y>win_h-menu_size_h+245) menu_sel=1;
+//		else if (y>win_h-menu_size_h+205) menu_sel=2;
+//		else if (y>win_h-menu_size_h+165) menu_sel=3;
+//		else if (y>win_h-menu_size_h+125) menu_sel=4;
+//		else if (y>win_h-menu_size_h+85) menu_sel=5;
+//		else if (y>win_h-menu_size_h+45) menu_sel=6;
+//		else menu_sel=0;
 	} else if (shapebar) {
 		shapebar_sel=y/(win_h/8)+1;
 		if (y==9) y=0;
@@ -264,10 +268,25 @@ static void mouse_cb(int button, int state, int x, int y) {
 
 static void keyboard_cb(unsigned char key, int x, int y) {
 	if (!edit) {
-//		if (key==27) Salir();
+		if (key==27) Salir();
 		return;
 	} else {
 		edit->EditLabel(key);
+	}
+}
+
+void ToggleFullScreen() {
+	static bool fullscreen=false;
+	static int w_win_h,w_win_w, win_x,win_y; // estado antes de pasar a pantalla completa
+	if ((fullscreen=!fullscreen)) {
+		win_x = glutGet((GLenum)GLUT_WINDOW_X);
+		win_y = glutGet((GLenum)GLUT_WINDOW_Y); 
+		w_win_h=win_h; w_win_w=win_w;
+		glutFullScreen();
+	} else {
+		glutReshapeWindow(w_win_w,w_win_h);
+		glutPositionWindow(win_x,win_y);
+		glutPositionWindow(100,100);
 	}
 }
 
@@ -276,6 +295,7 @@ static void keyboard_esp_cb(int key, int x, int y) {
 	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
 	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
+	else if (key==GLUT_KEY_F11) ToggleFullScreen();
 	else if (key==GLUT_KEY_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);
 }

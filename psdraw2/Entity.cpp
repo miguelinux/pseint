@@ -16,13 +16,20 @@ static const int selection_tolerance_x=30; // tolerancia en x para la seleccion 
 static const int shadow_delta_x=4; // diferencia entre la posicion de un objeto y su sombra
 static const int shadow_delta_y=5; // diferencia entre la posicion de un objeto y su sombra
 int margin=6; // margen entre cuadro y texto en un bloque (y para los botones de confirm, por eso no es static, ¿ni const?)
+static const int vf_size=5;
 
 #ifdef DrawText
 // maldito windows.h
 #undef DrawText
 #endif
 
+void Entity::GetTextSize(const string &label, int &w, int &h) {
+	w=label.size()*12;
+	h=18;
+}
+
 Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_label) {
+	variante=false;
 	if (reg_in_all) {
 		if (!all_any) { 
 			all_any=this; 
@@ -52,9 +59,9 @@ Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_
 		child_dx=(int*)malloc(sizeof(int)*4);
 		child=(Entity**)malloc(sizeof(Entity*)*4);
 		child[0]=child[1]=child[2]=child[3]=NULL;
-		LinkChild(1,new Entity(ET_AUX_PARA,"0"));
-		LinkChild(2,new Entity(ET_AUX_PARA,"1"));
-		LinkChild(3,new Entity(ET_AUX_PARA,"N"));
+		LinkChild(1,new Entity(ET_AUX_PARA,""));
+		LinkChild(2,new Entity(ET_AUX_PARA,""));
+		LinkChild(3,new Entity(ET_AUX_PARA,""));
 	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
 		n_child=1;
 		child_bh=(int*)malloc(sizeof(int)*1);
@@ -154,7 +161,7 @@ void Entity::EditLabel(unsigned char key) {
 
 void Entity::SetLabel(string _label, bool recalc) {
 	modified=true;
-	for (int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
+	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 	label=_label; GetTextSize(label,t_w,t_h); w=t_w; h=t_h;
 	if (!w) w=margin*6;
 	h+=2*margin; if (type!=ET_PROCESO) w+=2*margin;
@@ -385,30 +392,41 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 	glEnd();
 }
 
-void Entity::DrawFlechaDown(int x, int y1, int y2) {
+inline void DrawTrue(int x, int y) {
+	glVertex2d(x,y); glVertex2d(x-margin/2,y+2*vf_size);
+	glVertex2d(x,y); glVertex2d(x+margin/2,y+2*vf_size);
+}
+
+inline void DrawFalse(int x, int y) {
+	glVertex2d(x-vf_size/2,y); glVertex2d(x-vf_size/2,y+2*vf_size);
+	glVertex2d(x-vf_size/2,y+2*vf_size); glVertex2d(x+vf_size/2,y+2*vf_size);
+	glVertex2d(x-vf_size/2,y+vf_size); glVertex2d(x+vf_size/2,y+vf_size);
+}
+
+inline void DrawFlechaDown(int x, int y1, int y2) {
 	glVertex2d(x,y1); glVertex2d(x,y2);
 	glVertex2d(x-flecha_d,y2+flecha_d); glVertex2d(x,y2);
 	glVertex2d(x+flecha_d,y2+flecha_d); glVertex2d(x,y2);
 }
 
-void Entity::DrawFlechaDownHead(int x, int y2) {
+inline void DrawFlechaDownHead(int x, int y2) {
 	glVertex2d(x-flecha_d,y2+flecha_d); glVertex2d(x,y2);
 	glVertex2d(x+flecha_d,y2+flecha_d); glVertex2d(x,y2);
 }
 
-void Entity::DrawFlechaUp(int x, int y1, int y2) {
+inline void DrawFlechaUp(int x, int y1, int y2) {
 	glVertex2d(x,y1); glVertex2d(x,y2);
 	glVertex2d(x-flecha_d,y2-flecha_d); glVertex2d(x,y2);
 	glVertex2d(x+flecha_d,y2-flecha_d); glVertex2d(x,y2);
 }
 
-void Entity::DrawFlechaR(int x1, int x2, int y) {
+inline void DrawFlechaR(int x1, int x2, int y) {
 	glVertex2d(x1,y); glVertex2d(x2,y);
 	glVertex2d(x2-flecha_d,y-flecha_d); glVertex2d(x2,y);
 	glVertex2d(x2-flecha_d,y+flecha_d); glVertex2d(x2,y);
 }
 
-void Entity::DrawFlechaL(int x1, int x2, int y) {
+inline void DrawFlechaL(int x1, int x2, int y) {
 	glVertex2d(x1,y); glVertex2d(x2,y);
 	glVertex2d(x2+flecha_d,y-flecha_d); glVertex2d(x2,y);
 	glVertex2d(x2+flecha_d,y+flecha_d); glVertex2d(x2,y);
@@ -427,7 +445,7 @@ void Entity::DrawText() {
 		if (blink<10) {
 			glBegin(GL_LINES);
 			int lz=label.size(); if (!lz) lz=1;
-			lz= d_fx-t_w/2+ t_w*edit_pos*d_w/lz/w;
+			lz= d_fx-t_w/2+ t_w*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
 			glVertex2i(lz,d_fy-h/2-t_h/2-margin/2+t_dy);
 			glVertex2i(lz,d_fy-h/2+t_h/2+margin/2+t_dy);
 			glEnd();
@@ -459,8 +477,11 @@ void Entity::Draw(bool force) {
 				}
 			}
 			// linea horizontal de abajo
-			glVertex2d(d_x+child_dx[0],d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1],d_y-d_bh+flecha_h);
+			glVertex2d(d_x+child_dx[0]+(child[0]?child[0]->child_dx[0]:0),d_y-d_bh+flecha_h); glVertex2d(d_x,d_y-d_bh+flecha_h);
+			glVertex2d(d_x,d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1]+(child[n_child-1]?child[n_child-1]->child_dx[0]:0),d_y-d_bh+flecha_h);
 		} else if (type==ET_MIENTRAS) {
+			DrawTrue(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
+			DrawFalse(d_fx+d_w/2+2*vf_size,d_fy-d_h/2+vf_size);
 			glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-flecha_in); // flecha que entra
 			glVertex2d(d_x,d_y-d_bh+3*flecha_h); glVertex2d(d_x,d_y-d_bh+2*flecha_h); // sale de la ultima instruccion
 			DrawFlechaL(d_x,d_x-d_bwl,d_y-d_bh+2*flecha_h); // sigue a la izquierda
@@ -479,12 +500,21 @@ void Entity::Draw(bool force) {
 			DrawFlechaUp(d_fx,d_y-d_bh+flecha_h,d_fy-d_h); // flecha que entra al circulo
 			glVertex2i(d_fx,d_y-d_bh+flecha_h); glVertex2i(d_x,d_y-d_bh+flecha_h);
 		} else if (type==ET_REPETIR) {
+			if (variante) {
+				DrawFalse(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
+				DrawTrue(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);
+			} else {
+				DrawTrue(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
+				DrawFalse(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);
+			}
 			glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-flecha_in); // flecha que entra
 			DrawFlechaL(d_x,d_x-d_bwl,d_fy-d_h/2); // sigue a la izquierda
 			DrawFlechaUp(d_x-d_bwl,d_fy-d_h/2,d_y); // sube
 			DrawFlechaR(d_x-d_bwl,d_x,d_y); // entra arriba de la condicion
 			glVertex2i(d_fx,d_fy+flecha_h); glVertex2i(d_fx,d_fy); // flecha a la siguiente instruccion
 		} else if (type==ET_SI) {
+			DrawTrue(d_fx+d_w/2+2*vf_size,d_fy-d_h/2+vf_size);
+			DrawFalse(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);
 			// linea horizontal de arriba
 			glVertex2d(d_x+child_dx[0],d_y-d_h/2); glVertex2d(d_x+child_dx[1],d_y-d_h/2);
 			// flechas que bajan por el verdadero
@@ -499,7 +529,7 @@ void Entity::Draw(bool force) {
 			glVertex2d(d_x+child_dx[0],d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[1],d_y-d_bh+flecha_h);
 		}
 		// punta de flecha que viene del anterior
-		if (prev||parent) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
+		if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
 		// linea de flecha que va al siguiente
 		if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
 	} else if (mouse==this && (next||parent)) {
@@ -546,12 +576,19 @@ void Entity::Draw(bool force) {
 		glColor3fv(color_border);
 		glBegin(GL_LINES);
 		glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
-		glVertex2i(d_dx+child_dx[1],d_fy-d_h/2); glVertex2i(d_dx+child_dx[1],d_fy-d_h+margin);
-		glVertex2i(d_dx+child_dx[2],d_fy-d_h/2); glVertex2i(d_dx+child_dx[2],d_fy-d_h+margin);
-		glEnd();
-		child[1]->DrawText();
-		child[2]->DrawText();
-		child[3]->DrawText();
+		if (!variante) {
+			glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
+			glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
+			glEnd();
+			child[1]->DrawText();
+			child[2]->DrawText();
+			child[3]->DrawText();
+		} else {
+			glEnd();
+//			child[1]->DrawText();
+			child[2]->DrawText();
+//			child[3]->DrawText();
+		}
 	}
 }
 
@@ -660,6 +697,7 @@ void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y man
 			int v2=vl+vr; vl=vr=0;
 			child[3]->Calculate(vl,vr,vh); 
 			int v3=vl+vr;
+			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
 			
 			// calcular el acnho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;
@@ -683,9 +721,9 @@ void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y man
 			
 			// acomodar las tres etiquetas
 			int cy=fy-h/2-margin/2;
-			child[1]->fy=cy; child[1]->MoveX(fx-x+(-v+v1)/2); child_dx[1]=child[1]->x+v1/2;
-			child[2]->fy=cy; child[2]->MoveX(fx-x+(-v+v2)/2+v1); child_dx[2]=child[2]->x+v2/2;
-			child[3]->fy=cy; child[3]->MoveX(fx-x+(v-v3)/2); child_dx[3]=child[3]->x+v3/2;
+			child[1]->fy=cy; child[1]->MoveX(fx-x+(-v+v1)/2); child_dx[1]=child[1]->fx+v1/2;
+			child[2]->fy=cy; child[2]->MoveX(fx-x+(-v+v2)/2+v1); child_dx[2]=child[2]->fx+v2/2;
+			child[3]->fy=cy; child[3]->MoveX(fx-x+(v-v3)/2); child_dx[3]=child[3]->fx+v3/2;
 		}
 	}
 	// pasar a la siguiente entidad
@@ -731,7 +769,7 @@ void Entity::Print(ostream &out, string tab) {
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
-			out<<tab<<"Proceso SinTitulo"<<endl;
+			out<<tab<<"Proceso "<<pname<<endl;
 			if (next) next->Print(out,add_tab?tab+"   ":tab);
 			out<<tab<<"FinProceso"<<endl;
 			return;

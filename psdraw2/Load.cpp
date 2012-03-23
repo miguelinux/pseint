@@ -5,7 +5,9 @@
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
+#include <iostream>
 using namespace std;
+
 
 static bool StartsWith(const string &s1, string s2) {
 	if (s1.length()<s2.length()) return false;
@@ -15,23 +17,58 @@ static bool StartsWith(const string &s1, string s2) {
 static Entity *Add(stack<int> &ids, Entity *vieja, Entity *nueva, int id=-1) {
 	int mid=ids.top(); 
 	ids.pop(); 
+	if (nueva->type==ET_OPCION) ids.push(mid+(nueva->label=="De Otro Modo"?0:1)); 
 	ids.push(-1);
-	if (mid==-1) 
+	if (mid==-1) {
+//		cerr<<"LinkNext( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 		vieja->LinkNext(nueva);
-	else 
-		vieja->LinkChild(mid,nueva);
+	} else { 
+		if (nueva->type==ET_OPCION) {
+			if (nueva->label=="De Otro Modo") {
+//				cerr<<"ChildExists( "<<vieja->n_child-1<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
+				delete nueva; nueva=vieja->child[vieja->n_child-1]; // porque el child para dom se crea ya en el ctor del segun
+			} else {
+//				cerr<<"InsertChild( "<<mid<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
+				vieja->InsertChild(mid,nueva);
+			}
+		} else {
+			vieja->LinkChild(mid,nueva);
+//			cerr<<"LinkChild( "<<vieja->label<<" , "<<nueva->label<<" )\n";
+		}
+	}
 	if (id!=-1) 
 		ids.push(id);
 	return nueva;
 }
 
-void Load(const char *fname) {
-	ifstream file(fname);
+static Entity *Up(stack<int> &ids, Entity *vieja) {
+//	cerr<<"Up: "<<vieja->label<<endl;
+	int oid=ids.top();
+	ids.pop(); 
+	if (oid==-1) {
+		return vieja->parent;
+	} else { // si esperaba un hijo pero no vino nada (bucle vacio)
+		if (vieja->type!=ET_OPCION && vieja->type!=ET_SEGUN) ids.push(-1); 
+		return vieja;
+	}
+}
+
+bool Load(const char *filename) {
+	if (filename) fname=filename;
+	else { New(); return false; }
+	ifstream file(filename);
+	if (!file.is_open()) { New(); return false; }
 	string str;
 	start = new Entity(ET_PROCESO,"Inicio");
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(file,str)) {
+//		stack<int> saux;
+//		cerr<<"ids:";
+//		while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
+//		while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
+//		cerr<<endl;
+//		cerr<<str<<endl;
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
 		bool comillas=false;
 		for (unsigned int i=0;i<str.size();i++) {
@@ -41,7 +78,11 @@ void Load(const char *fname) {
 				else if (str[i]=='|') { str.replace(i,1," | "); i+=2; }
 			}
 		}
-		if (!str.size()||StartsWith(str,"PROCESO ")||str=="FINPROCESO"||str=="ENTONCES") {
+		if (StartsWith(str,"PROCESO ")) {
+			pname = str.substr(8);
+			continue;
+		}
+		if (!str.size()||str=="FINPROCESO"||str=="ENTONCES") {
 			continue;
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
@@ -49,6 +90,13 @@ void Load(const char *fname) {
 		}
 		else if (StartsWith(str,"LEER ")) {
 			aux=Add(ids,aux,new Entity(ET_LEER,str.substr(5)));
+		}
+		else if (StartsWith(str,"HASTA QUE ")) {
+			aux=Up(ids,aux); aux->SetLabel(str.substr(10),false);
+		}
+		else if (StartsWith(str,"MIENTRAS QUE ")) {
+			aux=Up(ids,aux); aux->SetLabel(str.substr(13),false);
+			aux->variante=true;
 		}
 		else if (StartsWith(str,"MIENTRAS ")) {
 			aux=Add(ids,aux,new Entity(ET_MIENTRAS,str.substr(9)),0);
@@ -58,7 +106,7 @@ void Load(const char *fname) {
 		}
 		else if (StartsWith(str,"PARA ")) {
 			str=str.substr(5,str.size()-11);
-			int i=str.find("<-");
+			size_t i=str.find("<-");
 			string var=str.substr(0,i);
 			str=str.substr(i+2);
 			i=str.find(" HASTA ");
@@ -74,7 +122,7 @@ void Load(const char *fname) {
 				if (paso.size()&&paso[0]==' ') paso=paso.substr(1); // a veces viene con doble espacio
 			}
 			if (ini.size()&&ini[0]=='(') { // suele venir envuelta en parentesis
-				int par=1,i=0;
+				int par=1;
 				for(unsigned int i=1;i<ini.size();i++) { 
 					if (ini[i]=='(') par++;
 					else if (ini[i]==')') { 
@@ -90,32 +138,43 @@ void Load(const char *fname) {
 			aux->child[2]->SetLabel(paso);
 			aux->child[3]->SetLabel(fin);
 		}
+		else if (StartsWith(str,"PARACADA ")) {
+			str=str.substr(9,str.size()-15);
+			size_t i=str.find(" ");
+			string var=str.substr(0,i);
+			str=str.substr(i+1);
+			i=str.find(" ");
+			string ini=str.substr(0,i);
+			str=str.substr(i+1);
+			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
+			aux->variante=true;
+//			aux->child[1]->SetLabel("");
+			aux->child[2]->SetLabel(str);
+//			aux->child[3]->SetLabel("");
+		}
 		else if (StartsWith(str,"SI ")) {
-			aux=Add(ids,aux,new Entity(ET_SI,str.substr(3)),0);
+			aux=Add(ids,aux,new Entity(ET_SI,str.substr(3)),1);
 		}
 		else if (StartsWith(str,"SINO")) {
-			aux=aux->parent; ids.pop(); ids.push(1);
+			aux=aux->parent; ids.pop(); ids.push(0);
 		}
 		else if (StartsWith(str,"SEGUN ")) {
-			aux=Add(ids,aux,new Entity(ET_SEGUN,str.substr(6)),0);
+			aux=Add(ids,aux,new Entity(ET_SEGUN,str.substr(6,str.size()-6-5)),0);
 		}
-		else if (StartsWith(str,"OPCION ")) {
+		else if (str.size() && str[str.size()-1]==':') {
+			str.erase(str.size()-1,1);
 			if (aux->type==ET_SEGUN) { // si esta despues del segun, es el primer hijo
-				aux=Add(ids,aux,new Entity(ET_OPCION,str.substr(7)),0);
-			} else if (aux->type==ET_OPCION) {  // si esta despues de una opcion vacia, subir al segun
-				aux=aux->parent; ids.pop();
-				aux=Add(ids,aux,new Entity(ET_OPCION,str.substr(7)),aux->n_child);
-			} else if (aux->type==ET_OPCION) { // si esta despues de una instruccion comun, subir a la opcion, subir al segun
-				aux=aux->parent; ids.pop();
-				aux=aux->parent; ids.pop();
-				aux=Add(ids,aux,new Entity(ET_OPCION,str.substr(7)),aux->n_child);
+				aux=Add(ids,aux,new Entity(ET_OPCION,str),0);
+			} else {
+				aux=Up(ids,aux); // sube a la opcion
+				aux=Up(ids,aux); // sube al segun
+				if (str=="DE OTRO MODO") str="De Otro Modo";
+				aux=Add(ids,aux,new Entity(ET_OPCION,str),0);
 			}
 		}
-		else if (StartsWith(str,"HASTA QUE ")) {
-			aux=aux->parent; ids.pop(); aux->SetLabel(str.substr(10),false);
-		}
 		else if (str=="FINPARA"||str=="FINSI"||str=="FINMIENTRAS"||str=="FINSEGUN") {
-			aux=aux->parent; ids.pop();
+			if (str=="FINSEGUN" && aux->type!=ET_SEGUN) { aux=Up(ids,aux); aux=Up(ids,aux); }
+			aux=Up(ids,aux);
 		}
 		else { // asignacion, dimension, definicion
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
@@ -125,37 +184,23 @@ void Load(const char *fname) {
 	start->Calculate();
 	ProcessMenu(MO_ZOOM_EXTEND);
 	modified=false;
+	return true;
 }
 
 
-void Load() {
-	d_dx=300; d_dy=680;
-	
+bool Save(const char *filename) {
+	if (filename) fname=filename;
+	ofstream fout(fname.c_str());
+	if (!fout.is_open()) return false;
+	start->Print(fout);
+	fout.close();
+	modified=false;
+	return true;
+}
+
+void New() {
+	fname="temp.psd"; pname="SinTitulo";
 	start = new Entity(ET_PROCESO,"Inicio");
-	
-//	Entity *aux1 = new Entity(ET_SEGUN,"VARIABLE DE DESICION"); start->LinkNext(aux1);
-//	Entity *aux1a = new Entity(ET_OPCION,"1"); aux1->InsertChild(0,aux1a);
-//	Entity *aux1aa = new Entity(ET_ESCRIBIR,"1"); aux1a->LinkChild(0,aux1aa);
-//	Entity *aux1b = new Entity(ET_OPCION,"2"); aux1->InsertChild(1,aux1b);
-//	Entity *aux1ba = new Entity(ET_ESCRIBIR,"1"); aux1b->LinkChild(0,aux1ba);
-//	Entity *aux1c = new Entity(ET_OPCION,"3"); aux1->InsertChild(2,aux1c);
-	////	Entity *aux1ca = new Entity(ET_PARA,"1aslkfj asklhdskhfakjfhdskjfhdslkjhldsfa"); aux1c->LinkChild(0,aux1ca);
-//	Entity *aux2 = new Entity(ET_PROCESO,"Fin"); aux1->LinkNext(aux2);
-	
-//	Entity *aux1 = new Entity(ET_LEER,"A,B"); start->LinkNext(aux1);
-//	Entity *aux2 = new Entity(ET_ASIGNAR,"C<-RC(A^2+B^2)"); aux1->LinkNext(aux2);
-//	Entity *aux3 = new Entity(ET_ESCRIBIR,"'Hipotenusa=',C"); aux2->LinkNext(aux3);
-//	Entity *aux4 = new Entity(ET_SI,"SI"); aux3->LinkNext(aux4);
-//	Entity *aux4a = new Entity(ET_ESCRIBIR,"LALA LALA"); aux4->LinkChild(0,aux4a);
-//	Entity *aux4b = new Entity(ET_ESCRIBIR,"BOOGA"); aux4a->LinkNext(aux4b);
-//	Entity *aux4c = new Entity(ET_ESCRIBIR,"FOO FOO FOO"); aux4->LinkChild(1,aux4c);
-//	Entity *aux5 = new Entity(ET_PARA,"PARA"); aux4->LinkNext(aux5);
-//	Entity *aux5a = new Entity(ET_ESCRIBIR,"HOLA"); aux5->LinkChild(0,aux5a);
-//	Entity *aux6 = new Entity(ET_MIENTRAS,"MIENTRAS"); aux5->LinkNext(aux6);
-//	Entity *aux6a = new Entity(ET_ESCRIBIR,"HOLA"); aux6->LinkChild(0,aux6a);
-//	Entity *aux7 = new Entity(ET_REPETIR,"REPETIR"); aux6->LinkNext(aux7);
-//	Entity *aux7a = new Entity(ET_ESCRIBIR,"HOLA"); aux7->LinkChild(0,aux7a);
-//	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); aux7->LinkNext(aux8);
 	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); start->LinkNext(aux8);
 	start->Calculate();
 	ProcessMenu(MO_ZOOM_EXTEND);

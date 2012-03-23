@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=zockets.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp
@@ -110,7 +110,7 @@ path=new_funciones.h
 cursor=208
 [other]
 path=../bin/help/cambios.txt
-cursor=133
+cursor=60
 open=true
 [other]
 path=../bin/help/errores.hlp

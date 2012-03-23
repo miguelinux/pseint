@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include <fstream>
 #include "Events.h"
+#include "Load.h"
 using namespace std;
 
 ZOCKET zocket=ZOCKET_ERROR; // para comunicarse con wxPSeInt
@@ -18,14 +19,11 @@ bool Connect(int port, int id) {
 	string s=ss.str();
 	zocket_escribir(zocket,s.c_str(),s.size());
 	if (zocket==ZOCKET_ERROR) return false;
-	
+	return true;
 }
 
 bool SendUpdate(bool run) {
-	ofstream fout(fname.c_str());
-	if (!fout.is_open()) return false;
-	start->Print(fout);
-	fout.close();
+	if (!Save()) return false;
 	if (zocket==ZOCKET_ERROR) return false;
 	if (run)
 		zocket_escribir(zocket,"run\n",4);
