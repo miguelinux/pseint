@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=Entity.h
+current_source=Entity.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -26,7 +26,7 @@ path=../pseint/zockets.cpp
 cursor=2990
 [source]
 path=Entity.cpp
-cursor=27739
+cursor=27426
 open=true
 [source]
 path=Events.cpp
@@ -36,7 +36,7 @@ path=Draw.cpp
 cursor=250
 [source]
 path=Load.cpp
-cursor=4431
+cursor=5833
 open=true
 [source]
 path=Comm.cpp
