@@ -804,9 +804,9 @@ void Entity::Print(ostream &out, string tab) {
 		if (child[0]) child[0]->Print(out,tab+"   ");
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<label<<" Entonces"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
-		if (child[1]) out<<tab<<"Sino"<<endl;
 		if (child[1]) child[1]->Print(out,tab+"   ");
+		if (child[0]) out<<tab<<"Sino"<<endl;
+		if (child[0]) child[0]->Print(out,tab+"   ");
 		out<<tab<<"FinSi"<<endl;
 	} else if (type==ET_ASIGNAR) {
 		out<<tab<<label<<";"<<endl;
