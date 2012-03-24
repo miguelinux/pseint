@@ -13,8 +13,8 @@ Proceso Matematicas
    Repetir
       Escribir ' '{;}
       Escribir 'Presione una tecla para continuar'{;}
-	  Esperar Tecla{;}
-	  Limpiar Pantalla{;}
+          Esperar Tecla{;}
+          Limpiar Pantalla{;}
       Escribir 'Elija una opción:'{;}
       Escribir '  1 - Seno, Coseno, ArcoTangente'{;}
       Escribir '  2 - Lograritmo Natural, Funcion Exponencial'{;}
@@ -68,35 +68,34 @@ Proceso Matematicas
                   FinSi
             FinSi
          8: 
-            Si N<>Trunc(N)
-               Entonces
-                  Escribir 'El numero debe ser entero!'{;}
+            Si N<>Trunc(N) Entonces
+               Escribir 'El numero debe ser entero!'{;}
+            Sino
+               Si N<0  entonces 
+                  Nu<-N*-1{;}
+               sino
+                  Nu<-N{;}
+               FinSi
+               Si N/2=trunc(Nu/2) Entonces 
+                  Escribir 'Numero Primo:',Nu=2{;}
+                  Si Nu<>2 Entonces
+                     Escribir N,'=2x',N/2{;}
+                  FinSi
                Sino
-                  EsPrimo<-Verdadero{;} 
-                  Si N/2=trunc(N/2)
-                     Entonces 
-                        EsPrimo<-Falso{;}
-                  FinSi
-                  Si N<0 
-                     entonces Nu<-N*-1{;}
-                     sino Nu<-N{;}
-                  FinSi
+                  EsPrimo<-Nu<>1{;} 
                   Nu<-RC(Nu){;}
                   f<-3{;}
                   Mientras f<=Nu {&} EsPrimo Hacer
-                     Si N/F=trunc(N/F)
-                        Entonces EsPrimo<-Falso{;}
+                     Si N/F=trunc(N/F) Entonces 
+                        EsPrimo<-Falso{;}
                      FinSi
                      f<-f+2{;}
                   FinMientras
                   Escribir 'Numero Primo:',EsPrimo{;}
-                  Si f=3
-                     Entonces F<-4{;}
+                  Si N>1 {&} {~} EsPrimo Entonces 
+                     Escribir N,'=',f-2,'x',N/(f-2){;}
                   FinSi
-                  Si {~} EsPrimo
-                     Entonces 
-                        Escribir N,'=',f-2,'x',N/(f-2){;}
-                  FinSi
+               FinSi
             FinSi
          9:
             Escribir 'Ingrese Numero:'{;}
