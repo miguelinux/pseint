@@ -57,9 +57,9 @@ public:
 	void SetModify(bool);
 	void MessageReadOnly();
 	
-	int GetIndentLevel(int l, bool *segun=NULL);
+	int GetIndentLevel(int l, bool goup, bool *segun=NULL);
 	void Indent(int l1, int l2);
-	void IndentLine(int l);
+	void IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);
 	void OnEditBeautifyCode(wxCommandEvent &evt);
 
@@ -70,7 +70,9 @@ public:
 	void SetFlowSocket(wxSocketBase *s);
 	bool HaveComments();
 	
-	void SetDebugLine(int l=-1);
+	void SetDebugLine(int l=-1); // para marcar donde va el paso a paso, -1 para desmarcar
+	
+	bool LineHasSomething(int l); // false si esta vacia o tiene solo comentarios
 	
 	DECLARE_EVENT_TABLE();
 };

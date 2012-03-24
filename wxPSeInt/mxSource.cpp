@@ -762,18 +762,18 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 	if (pb>pe) { int a=pb; pb=pe; pe=a; }
 	int b=LineFromPosition(pb);
 	int e=LineFromPosition(pe);
-	for (int i=b;i<=e;i++)
-		IndentLine(i);
+	Indent(b,e);
 	if (pb==pe) {
 		int p=GetLineIndentPosition(b);
 		if (pb<p) SetSelection(p,p);
 	}
 }
 
-void mxSource::IndentLine(int l) {
+void mxSource::IndentLine(int l, bool goup) {
 	bool segun=false,ignore_next=false;
-	int cur=GetIndentLevel(l,&segun);
+	int cur=GetIndentLevel(l,goup,&segun);
 	wxString line=GetLine(l);
+	if (line.StartsWith("//")) return;
 	line<<_T(" "); int i=0,n=line.Len();
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
@@ -826,8 +826,9 @@ void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
 		IndentLine(i);
 }
 
-int mxSource::GetIndentLevel(int l, bool *segun) {
+int mxSource::GetIndentLevel(int l, bool goup, bool *segun) {
 	if (segun) *segun=false;
+	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
 	if (l<1) return 0;
 	wxString line=GetLine(l-1);
 	line<<_T(" ");
@@ -893,8 +894,11 @@ int mxSource::GetIndentLevel(int l, bool *segun) {
 }
 
 void mxSource::Indent(int l1, int l2) {
-	for (int i=l1;i<=l2;i++) 
-		IndentLine(i);
+	bool goup=true;
+	for (int i=l1;i<=l2;i++) {
+		IndentLine(i,goup);
+		if (goup && LineHasSomething(i)) goup=false;
+	}
 }
 
 void mxSource::UnExample() {
@@ -948,7 +952,19 @@ void mxSource::SetDebugLine(int l) {
 bool mxSource::HaveComments() {
 	for (int j,i=0;i<GetLength();i++) {
 		j=GetStyleAt(i);
-		if (j==wxSTC_C_COMMENT||j==wxSTC_C_COMMENTDOC||j==wxSTC_C_COMMENTLINE) return true;
+		if (j==wxSTC_C_COMMENT||j==wxSTC_C_COMMENTDOC||j==wxSTC_C_COMMENTLINE||j==wxSTC_C_COMMENTLINEDOC) return true;
 	}
 	return false;
 }
+
+bool mxSource::LineHasSomething ( int l ) {
+	int i1=PositionFromLine(l);
+	int i2=GetLineEndPosition(l);
+	int s; char c;
+	for (int i=i1;i<=i2;i++) {
+		c=GetCharAt(i); s=GetStyleAt(i);
+		if (c!='\n' && c!=' ' && c!='\r' && c!='\t' && s!=wxSTC_C_COMMENT && s!=wxSTC_C_COMMENTDOC && s!=wxSTC_C_COMMENTLINE && s!=wxSTC_C_COMMENTLINEDOC && s!=wxSTC_C_COMMENTDOCKEYWORD && s!=wxSTC_C_COMMENTDOCKEYWORDERROR) return true;
+	}
+	return false;
+}
+
