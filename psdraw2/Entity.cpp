@@ -785,9 +785,12 @@ void Entity::Print(ostream &out, string tab) {
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<endl;
 		if (child[0]) child[0]->Print(out,tab+"   ");
-		out<<tab<<"Hasta Que "<<label<<endl;
+		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<endl;
 	} else if (type==ET_PARA) {
-		out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<endl;
+		if (variante)
+			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<endl;
+		else
+			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<endl;
 		if (child[0]) child[0]->Print(out,tab+"   ");
 		out<<tab<<"FinPara"<<endl;
 	} else if (type==ET_SEGUN) {

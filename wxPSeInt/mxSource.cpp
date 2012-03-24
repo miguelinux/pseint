@@ -431,7 +431,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		int s=GetStyleAt(p2-1);
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2-1,true);
-		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()=="FIN") {
+		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("FIN")) {
 			wxString res;
 			for (int i=0;i<comp_count;i++) {
 				if (comp_list[i][0]=='F'&&comp_list[i][1]=='i'&&comp_list[i][2]=='n'&&comp_list[i][3]==' ') {
@@ -449,7 +449,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			int s=GetStyleAt(p2-1);
 			if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 			int p1=comp_from=WordStartPosition(p2-1,true);
-			if (p2-p1==3 && GetTextRange(p1,p2-1).Upper()=="ES") {
+			if (p2-p1==3 && GetTextRange(p1,p2-1).Upper()==_T("ES")) {
 				wxString res;
 				for (int i=0;i<comp_count;i++) {
 					if (comp_list[i][0]=='E'&&comp_list[i][1]=='s'&&comp_list[i][2]==' ') {
@@ -505,7 +505,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			while (p>0 && !(GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
 				p--;
 			wxString text = GetTextRange(p+1,p2).MakeLower();
-			if (GetTextRange(p-3,p+1).Upper()=="FIN ") return;
+			if (GetTextRange(p-3,p+1).Upper()==_T("FIN ")) return;
 			if (text==_T("leer")||text==_T("definir"))
 				CallTipShow(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
 			else if (text==_T("escribir")||text==_T("mostrar")||text==_T("imprimir"))
@@ -564,7 +564,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		while (comp_list[i]!=what) i++;
 		wxString text(comp_text[i]);
 		if (!config->lang.force_dot_and_comma && text.Last()==';') text.RemoveLast();
-		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
+		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()==_T("FIN "))
 			text.Last()='\n';
 		ReplaceTarget(text);
 		SetSelection(comp_from+text.Len(),comp_from+text.Len());

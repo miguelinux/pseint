@@ -90,7 +90,7 @@ public:
 	void OnViewNotebookNext (wxCommandEvent &event);
 	void OnViewNotebookPrev (wxCommandEvent &event);
 	
-	void OnConfigHighRes(wxCommandEvent &evt);
+//	void OnConfigHighRes(wxCommandEvent &evt);
 	void OnConfigShowToolbar(wxCommandEvent &evt);
 	void OnConfigCalltipHelps(wxCommandEvent &evt);
 	void OnConfigAutoComp(wxCommandEvent &evt);
@@ -113,7 +113,7 @@ public:
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
 	
 	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_quickhelp, /* *mi_results, *mi_sintax,*/ *mi_smart_indent, *mi_debug_panel, *mi_calltip_helps,
-		*mi_init_vars, *mi_dot_and_comma,  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, *mi_word_operators, *mi_use_colors, *mi_high_res;
+		*mi_init_vars, *mi_dot_and_comma,  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, *mi_word_operators, *mi_use_colors/*, *mi_high_res*/;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];

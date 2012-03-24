@@ -94,7 +94,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
-	EVT_MENU(mxID_CONFIG_HIGHRES, mxMainWindow::OnConfigHighRes)
+//	EVT_MENU(mxID_CONFIG_HIGHRES, mxMainWindow::OnConfigHighRes)
 
 	EVT_BUTTON(mxID_CMD_ASIGNAR, mxMainWindow::OnCmdAsignar)
 	EVT_BUTTON(mxID_CMD_LEER, mxMainWindow::OnCmdLeer)
@@ -148,15 +148,15 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	
 //	SetIcon(wxIcon(icon_xpm));
 	wxIconBundle bundle;
-	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap("imgs/icon16.png",wxBITMAP_TYPE_PNG));
+	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap(_T("imgs/icon16.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon16));
-	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/icon32.png",wxBITMAP_TYPE_PNG));
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap(_T("imgs/icon32.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon32));
-	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap("imgs/icon48.png",wxBITMAP_TYPE_PNG));
+	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap(_T("imgs/icon48.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon48));
-	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap("imgs/icon64.png",wxBITMAP_TYPE_PNG));
+	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap(_T("imgs/icon64.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon64));
-	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap("imgs/icon128.png",wxBITMAP_TYPE_PNG));
+	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap(_T("imgs/icon128.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon128));
 	SetIcons(bundle);
 	
@@ -248,7 +248,7 @@ void mxMainWindow::CreateMenus() {
 	mi_commands = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_COMMANDS, _T("Mostrar Panel de Comandos"),_T(""),config->show_commands);
 	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
 	cfg->AppendSeparator();
-	mi_high_res = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHRES, _T("Diagramas de Flujo de Alta Resolucion"),_T(""),config->high_res_flows);
+//	mi_high_res = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHRES, _T("Diagramas de Flujo de Alta Resolucion"),_T(""),config->high_res_flows);
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje..."),_T(""),_T("lenguaje.png"));
@@ -1069,15 +1069,15 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 	}
 }
 
-void mxMainWindow::OnConfigHighRes(wxCommandEvent &evt) {
-	if (!mi_high_res->IsChecked()) {
-		mi_high_res->Check(false);
-		config->high_res_flows=false;
-	} else {
-		mi_high_res->Check(true);
-		config->high_res_flows=true;
-	}
-}
+//void mxMainWindow::OnConfigHighRes(wxCommandEvent &evt) {
+//	if (!mi_high_res->IsChecked()) {
+//		mi_high_res->Check(false);
+//		config->high_res_flows=false;
+//	} else {
+//		mi_high_res->Check(true);
+//		config->high_res_flows=true;
+//	}
+// }
 
 void mxMainWindow::OnConfigStepStepL(wxCommandEvent &evt) {
 	mi_stepstep_l->Check(true);
@@ -1294,7 +1294,7 @@ void mxMainWindow::OnDoThat (wxCommandEvent &event) {
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {
-		config->profile="<personalizado>";
+		config->profile=_T("<personalizado>");
 		SetWordsForSources();
 	}
 }
@@ -1349,7 +1349,7 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			source->GetFlowSocket()->Write("raise",5); 
 			return;
 		} else if (!source->GetReadOnly() && source->HaveComments()) {
-			wxMessageBox("Su código contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!","Advertencia",wxOK|wxICON_EXCLAMATION,this);
+			wxMessageBox(_T("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
 		bool mod = source->GetModify();
 		source->SaveFile(config->temp_file);

@@ -74,7 +74,7 @@ public:
 	
 	bool use_colors;
 	bool colour_sintax;
-	bool high_res_flows;
+//	bool high_res_flows;
 	bool show_toolbar;
 	bool show_commands;
 	bool show_debug_panel;

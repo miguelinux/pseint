@@ -57,7 +57,7 @@ void ConfigManager::LoadDefaults() {
 	use_colors=true;
 	show_debug_panel = false;
 	maximized = false;
-	high_res_flows = false;
+//	high_res_flows = false;
 	colour_sintax = true;
 	smart_indent = false;
 	show_commands = true;
@@ -137,7 +137,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("profile="))<<profile);
 	fil.AddLine(wxString(_T("examples_dir="))<<examples_dir);
 	fil.AddLine(wxString(_T("smart_indent="))<<(smart_indent?1:0));
-	fil.AddLine(wxString(_T("high_res_flows="))<<(high_res_flows?1:0));
+//	fil.AddLine(wxString(_T("high_res_flows="))<<(high_res_flows?1:0));
 	fil.AddLine(wxString(_T("colour_sintax="))<<(colour_sintax?1:0));
 	fil.AddLine(wxString(_T("show_commands="))<<(show_commands?1:0));
 	fil.AddLine(wxString(_T("show_debug_panel="))<<(show_debug_panel?1:0));
@@ -208,7 +208,7 @@ void ConfigManager::Read() {
 			else if (key==_T("auto_quickhelp")) auto_quickhelp=utils->IsTrue(value);
 			else if (key==_T("calltip_helps")) calltip_helps=utils->IsTrue(value);
 			else if (key==_T("autocomp")) autocomp=utils->IsTrue(value);
-			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
+//			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);
 			else if (key==_T("use_colors")) use_colors=utils->IsTrue(value);
 			else if (key==_T("allow_dinamyc_dimensions")) lang.allow_dinamyc_dimensions=utils->IsTrue(value);

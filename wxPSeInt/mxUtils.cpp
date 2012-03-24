@@ -86,7 +86,7 @@ wxString mxUtils::GetOutput(wxString command) {
 * @retval La cadena en formato HTML
 **/
 wxString mxUtils::ToHtml(wxString text) {
-	wxString tabs="&nbsp;&nbsp;&nbsp;";
+	wxString tabs=_T("&nbsp;&nbsp;&nbsp;");
 	text.Replace(_T("&"),_T("&amp;"));
 	text.Replace(_T("\t"),tabs);
 	text.Replace(_T("<"),_T("&lt;"));

@@ -197,7 +197,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	if (fname.Len()<4 || fname.Right(4).MakeLower()!=wxString(_T("."))+ext)
 		fname<<_T(".")<<ext;
 	command<<config->psdraw_command<<_T(" \"")<<config->temp_draw<<_T("\" ");
-	if (config->high_res_flows) command<<_T(" +");
+	/*if (config->high_res_flows)*/ command<<_T(" +");
 	command<<ext<<_T(" \"")<<fname<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
