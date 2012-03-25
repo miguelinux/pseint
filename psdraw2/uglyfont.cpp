@@ -1,3 +1,5 @@
+// este fuente fue tomado de http://wwwe.ysflight.com/, pero le agregué algunas letras que faltaban (ñs y acentos)
+
 // uglyfont.cpp
 //
 // Copyright: Soji Yamakawa (CaptainYS, E-Mail: PEB01130*nifty+com  <- Replace * with @, + with .)
@@ -26,7 +28,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-
 // The following integer arrays define the ugly font geometry
 // Coordinate ranges in the arrays are 0<=x<=100 and 0<=y<=100.
 const double YsUglyFontWid=100.0;
@@ -41,6 +42,12 @@ static int Ptn033[]={   /* ! */
 	33,
 		0,3,50,100,75,100,50,25,
 		0,4,50,16,62,16,62,0,50,0,
+		-1
+};
+static int Ptn161[]={   /* ! */
+	161,
+		0,3,50,100-100,75,100-100,50,100-25,
+		0,4,50,100-16,62,100-16,62,100-0,50,100-0,
 		-1
 };
 static int Ptn034[]={   /* " */
@@ -205,7 +212,7 @@ static int Ptn063[]={   /* ? */
 };
 static int Ptn191[]={   /* ¿ */
 	191,
-		1,8,12,100-83,100-37,100-100,100-75,100-100,100-100,100-83,100-100,100-66,100-75,100-50,100-50,100-50,100-50,100-25,
+		1,8,100-12,100-83,100-37,100-100,100-75,100-100,100-100,100-83,100-100,100-66,100-75,100-50,100-50,100-50,100-50,100-25,
 		0,4,100-50,100-16,100-62,100-16,100-62,100-8,100-50,100-8,
 		-1
 };
@@ -218,6 +225,13 @@ static int Ptn065[]={   /* A */
 	65,
 		1,3,0,0,50,100,100,0,
 		1,2,25,50,75,50,
+		-1
+};
+static int Ptn193[]={   /* Á */
+	193,
+		1,3,0,0,50,100,100,0,
+		1,2,25,50,75,50,
+		1,2,50,105,70,120,
 		-1
 };
 static int Ptn066[]={   /* B */
@@ -242,6 +256,13 @@ static int Ptn069[]={   /* E */
 		1,2,0,50,87,50,
 		-1
 };
+static int Ptn201[]={   /* É */
+	201,
+		1,4,100,100,0,100,0,0,100,0,
+		1,2,0,50,87,50,
+		1,2,50,105,70,120,
+		-1
+};
 static int Ptn070[]={   /* F */
 	70,
 		1,3,100,100,0,100,0,0,
@@ -261,6 +282,12 @@ static int Ptn072[]={   /* H */
 static int Ptn073[]={   /* I */
 	73,
 		2,6,37,100,62,100,37,0,62,0,50,0,50,100,
+		-1
+};
+static int Ptn205[]={   /* Í */
+	205,
+		2,6,37,100,62,100,37,0,62,0,50,0,50,100,
+		1,2,50,105,70,120,
 		-1
 };
 static int Ptn074[]={   /* J */
@@ -291,9 +318,21 @@ static int Ptn078[]={   /* N */
 		1,4,0,0,0,100,100,0,100,100,
 		-1
 };
+static int Ptn209[]={   /* Ñ */
+	209,
+		1,4,0,0,0,90,100,0,100,90,
+		1,4,20,95,40,105,60,95,80,105,
+		-1
+};
 static int Ptn079[]={   /* O */
 	79,
 		1,9,0,83,25,100,75,100,100,83,100,16,75,0,25,0,0,16,0,83,
+		-1
+};
+static int Ptn211[]={   /* Ó */
+	211,
+		1,9,0,83,25,100,75,100,100,83,100,16,75,0,25,0,0,16,0,83,
+		1,2,50,105,70,120,
 		-1
 };
 static int Ptn080[]={   /* P */
@@ -326,6 +365,12 @@ static int Ptn084[]={   /* T */
 static int Ptn085[]={   /* U */
 	85,
 		1,6,0,100,0,16,25,0,75,0,100,16,100,100,
+		-1
+};
+static int Ptn218[]={   /* Ú */
+	218,
+		1,6,0,100,0,16,25,0,75,0,100,16,100,100,
+		1,2,50,105,70,120,
 		-1
 };
 static int Ptn086[]={   /* V */
@@ -390,6 +435,13 @@ static int Ptn097[]={   /* a */
 		1,7,87,33,25,33,12,25,12,8,25,0,75,0,87,8,
 		-1
 };
+static int Ptn225[]={   /* á */
+	225,
+		1,5,12,50,25,58,75,58,87,50,87,0,
+		1,7,87,33,25,33,12,25,12,8,25,0,75,0,87,8,
+		1,2,50,75,70,90,
+		-1
+};
 static int Ptn098[]={   /* b */
 	98,
 		1,7,12,100,12,0,75,0,87,8,87,50,75,58,12,58,
@@ -408,6 +460,12 @@ static int Ptn100[]={   /* d */
 static int Ptn101[]={   /* e */
 	101,
 		1,10,12,33,87,33,87,50,75,58,25,58,12,50,12,8,25,0,75,0,87,8,
+		-1
+};
+static int Ptn233[]={   /* é */
+	233,
+		1,10,12,33,87,33,87,50,75,58,25,58,12,50,12,8,25,0,75,0,87,8,
+		1,2,50,75,70,90,
 		-1
 };
 static int Ptn102[]={   /* f */
@@ -432,6 +490,13 @@ static int Ptn105[]={   /* i */
 	105,
 		1,2,50,75,50,66,
 		1,2,50,58,50,0,
+		-1
+};
+static int Ptn237[]={   /* í */
+	237,
+//		1,2,50,75,50,66,
+		1,2,50,58,50,0,
+		1,2,50,75,70,90,
 		-1
 };
 static int Ptn106[]={   /* j */
@@ -462,9 +527,21 @@ static int Ptn110[]={   /* n */
 		1,5,12,0,12,58,75,58,87,50,87,0,
 		-1
 };
+static int Ptn241[]={   /* ñ */
+	241,
+		1,5,12,0,12,58,75,58,87,50,87,0,
+		1,4,20,75,40,90,60,75,80,90,
+		-1
+};
 static int Ptn111[]={   /* o */
 	111,
 		1,9,25,0,12,8,12,50,25,58,75,58,87,50,87,8,75,0,25,0,
+		-1
+};
+static int Ptn243[]={   /* ó */
+	243,
+		1,9,25,0,12,8,12,50,25,58,75,58,87,50,87,8,75,0,25,0,
+		1,2,50,75,70,90,
 		-1
 };
 static int Ptn112[]={   /* p */
@@ -500,6 +577,13 @@ static int Ptn117[]={   /* u */
 	117,
 		1,5,12,58,12,8,25,0,62,0,87,8,
 		1,2,87,58,87,0,
+		-1
+};
+static int Ptn250[]={   /* ú */
+	250,
+		1,5,12,58,12,8,25,0,62,0,87,8,
+		1,2,87,58,87,0,
+		1,2,50,75,70,90,
 		-1
 };
 static int Ptn118[]={   /* v */
@@ -562,12 +646,12 @@ static int *YsUglyFontSet[]=
 			Ptn112,Ptn113,Ptn114,Ptn115,Ptn116,Ptn117,Ptn118,Ptn119,Ptn120,Ptn121,Ptn122,Ptn123,Ptn124,Ptn125,Ptn126,NULL  ,
 			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
 			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+			NULL  ,Ptn161,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
 			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn191,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  
+			NULL  ,Ptn193,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn201,NULL  ,NULL  ,NULL  ,Ptn205,NULL  ,NULL  ,
+			NULL  ,Ptn209,NULL  ,Ptn211,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn218,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+			NULL  ,Ptn225,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn233,NULL  ,NULL  ,NULL  ,Ptn237,NULL  ,NULL  ,
+			NULL  ,Ptn241,NULL  ,Ptn243,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn250,NULL  ,NULL  ,NULL  ,NULL  ,NULL  
 	};
 
 
