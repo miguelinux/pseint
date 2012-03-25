@@ -1,5 +1,8 @@
 
->>RELEASE 20120324<<
+>>RELEASE 20120325<<
+
+20120324
+	Se actualizaron los makefiles y scripts para generar los instaladores.
 
 20120323
 	Mejoras en el indentado automático cuando hay comentarios.

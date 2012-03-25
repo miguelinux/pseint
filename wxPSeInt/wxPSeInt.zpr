@@ -43,8 +43,8 @@ open=true
 [source]
 path=ConfigManager.cpp
 cursor=0
-marker=95
 marker=34
+marker=95
 [source]
 path=mxSource.cpp
 cursor=2443
@@ -77,7 +77,7 @@ path=mxDropTarget.cpp
 cursor=0
 [source]
 path=DebugManager.cpp
-cursor=631
+cursor=0
 open=true
 [source]
 path=mxDesktopTest.cpp

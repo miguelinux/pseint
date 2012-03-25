@@ -15,17 +15,18 @@ Desde allí puede ejecutar wxPSeInt para comenzar a utilizar el programa.
  Requisitos para compilar PSeInt
 =================================
 
-Para compilar pseint se requieren las bibliotecas wxWidgets-2.8, zlib, libpng y libjpeg. 
-En la mayoría de los sistemas GNU/Linux estas se pueden conseguir facilmente a través del 
-repositorio de la distribución (aunque usualmente la versión disponible de wx es Unicode 
-mientras que la que utilizo en mis compilaciones es ANSI, se requiere editar las variables 
-LIBS Y CFLAGS en el archivo wxPSeInt/Makefile.lnx para utilizar la version Unicode). 
-Si utiliza Windows puede descargar el IDE ZinjaI que incluye el compilador gcc y la 
-biblioteca wxWidgets en su versión correcta. Solo hace falta agregar las bibliotecas zlib,
-llibpng y libjpeg que puede descargar desde gnuwin32.sourceforge.net. Para ello debe descargar 
-"development files" y descomprimir en una nueva carpeta misc dentro de mingw para compilar, 
-y "binaries" y copiar los .dll a la carpeta de pseint para ejecutar, o dist para usar los 
-scripts que generan el instalador desde GNU/Linux mediante wine.
+Para compilar pseint se requieren las bibliotecas wxWidgets-2.8, zlib, libpng, libjpeg, y 
+glut (con sus dependencias). En la mayoría de los sistemas GNU/Linux estas se pueden 
+conseguir facilmente a través del repositorio de la distribución (aunque usualmente 
+la versión disponible de wx es Unicode mientras que la que utilizo en mis compilaciones 
+es ANSI, se requiere editar las variables LIBS Y CFLAGS en el archivo wxPSeInt/Makefile.lnx
+para utilizar la version Unicode). Si utiliza Windows puede descargar el IDE ZinjaI que 
+incluye el compilador gcc y la biblioteca wxWidgets en su versión correcta. Solo hace falta 
+agregar las bibliotecas zlib, llibpng y libjpeg que puede descargar desde 
+gnuwin32.sourceforge.net. Para ello debe descargar "development files" y descomprimir en una 
+nueva carpeta misc dentro de mingw para compilar, y "binaries" y copiar los .dll a la carpeta 
+de pseint para ejecutar, o dist para usar los scripts que generan el instalador desde 
+GNU/Linux mediante wine.
 
 
 

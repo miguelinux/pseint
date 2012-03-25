@@ -18,8 +18,8 @@ path=main.cpp
 cursor=211
 [source]
 path=uglyfont.cpp
-cursor=12442
-marker=566
+cursor=14946
+marker=530
 open=true
 [source]
 path=../pseint/zockets.cpp
