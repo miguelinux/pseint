@@ -1,3 +1,6 @@
+
+>>RELEASE 20120324<<
+
 20120323
 	Mejoras en el indentado automático cuando hay comentarios.
 	Mejoras varias en el editor de diagramas de flujo.

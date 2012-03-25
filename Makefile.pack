@@ -25,8 +25,9 @@ w32:
 
 lnx:
 	make -f Makefile.pack clean
-	make -f Makefile.`dist/get_arch` -C wxPSeInt
-	make -f Makefile.lnx -C psdraw2
+	make -f Makefile.lnx -C wxPSeInt
+	make -f Makefile.`./dist/get_arch` -C psdraw
+	make -f Makefile.`./dist/get_arch` -C psdraw2
 	make -f Makefile.lnx -C pseint
 	make -f Makefile.lnx -C psexport
 	make -f Makefile.lnx -C updatem

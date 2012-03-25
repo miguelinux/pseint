@@ -1,0 +1,19 @@
+OBJS_DIR=../temp/drw2_lnx_rls
+GPP=g++ -fshow-column
+GCC=gcc
+FLAGS= -O2
+LIBS= -s -lGL -lGLU /usr/lib64/libglut.a
+
+all: ${OBJS_DIR} ../bin/psdraw2
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psdraw2
+
+../bin/psdraw2: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+

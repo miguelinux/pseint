@@ -83,8 +83,10 @@ void DebugManager::ProcData(wxString data) {
 			main_window->SetDebugState(DS_STEP);
 		else if (state==_T("ejecutando"))
 			main_window->SetDebugState(DS_RESUMED);
-		else 
+		else {
+			source->SetDebugLine();
 			main_window->SetDebugState(DS_NONE);
+		}
 	} else if (data.StartsWith(_T("evaluacion "))) {
 		evaluate_dialog->SetEvaluationValue(data.Mid(11));
 	}	
