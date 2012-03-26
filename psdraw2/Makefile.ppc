@@ -1,0 +1,19 @@
+OBJS_DIR=../temp/drw2_ppc_rls
+GPP=powerpc-apple-darwin8-g++
+GCC=gcc
+FLAGS= -O2
+LIBS= -s -lGL -lGLU -lglut  
+
+all: ${OBJS_DIR} ../bin/psdraw2
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psdraw2
+
+../bin/psdraw2: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+
