@@ -77,7 +77,7 @@ path=mxDropTarget.cpp
 cursor=0
 [source]
 path=DebugManager.cpp
-cursor=0
+cursor=260
 open=true
 [source]
 path=mxDesktopTest.cpp

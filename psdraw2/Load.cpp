@@ -99,7 +99,7 @@ bool Load(const char *filename) {
 			aux->variante=true;
 		}
 		else if (StartsWith(str,"MIENTRAS ")) {
-			aux=Add(ids,aux,new Entity(ET_MIENTRAS,str.substr(9)),0);
+			aux=Add(ids,aux,new Entity(ET_MIENTRAS,str.substr(9,str.size()-14)),0);
 		}
 		else if (str=="REPETIR") {
 			aux=Add(ids,aux,new Entity(ET_REPETIR,""),0);

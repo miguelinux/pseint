@@ -1,6 +1,9 @@
 
->>RELEASE 20120325<<
+>>RELEASE 20120326<<
 
+20120326
+	Ahora al editar un pseudocódigo con la estructura mientras en el editor de diagramas de flujo la condición se lee correctamente.
+	
 20120324
 	Se actualizaron los makefiles y scripts para generar los instaladores.
 

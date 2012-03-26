@@ -1,7 +1,7 @@
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
-#include "GL/glut.h"
+#include <GL/glut.h>
 #include <iostream>
 #include <cstdlib>
 using namespace std;
@@ -568,26 +568,28 @@ void Entity::Draw(bool force) {
 		}
 	// texto;
 	DrawText();
-	if (type==ET_SEGUN) {
-		for(int i=0;i<n_child;i++) { 
-			child[i]->Draw(true);
-		}
-	} else  if (type==ET_PARA && !nolink) {
-		glColor3fv(color_border);
-		glBegin(GL_LINES);
-		glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
-		if (!variante) {
-			glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
-			glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
-			glEnd();
-			child[1]->DrawText();
-			child[2]->DrawText();
-			child[3]->DrawText();
-		} else {
-			glEnd();
-//			child[1]->DrawText();
-			child[2]->DrawText();
-//			child[3]->DrawText();
+	if (!nolink) {
+		if (type==ET_SEGUN) {
+			for(int i=0;i<n_child;i++) { 
+				child[i]->Draw(true);
+			}
+		} else  if (type==ET_PARA) {
+			glColor3fv(color_border);
+			glBegin(GL_LINES);
+			glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
+			if (!variante) {
+				glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
+				glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
+				glEnd();
+				child[1]->DrawText();
+				child[2]->DrawText();
+				child[3]->DrawText();
+			} else {
+				glEnd();
+	//			child[1]->DrawText();
+				child[2]->DrawText();
+	//			child[3]->DrawText();
+			}
 		}
 	}
 }
