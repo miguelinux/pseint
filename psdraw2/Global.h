@@ -80,6 +80,5 @@ extern const float color_menu_back[3]; // fondo de los menues
 #define interpolate(a,b) a=(2*a+b)/3
 #define interpolate_good(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
 
-
 #endif
 

@@ -1,7 +1,11 @@
-
->>RELEASE 20120326<<
+>>RELEASE 20120327<<
 
 20120326
+	Al analizar un pseudocódigo sin errores se esconde el panel de ayuda rápida.
+	Ya no cambia de pestaña al ejecutar un pseudocódigo correcto luego de intentar ejecutar otro incorrecto en otra pestaña.
+	Ahora se puede invertir el orden del "CON PASO" y el "HASTA" en un PARA si se activa la sintaxis flexible.
+	Corregida la verificación de sintaxis en la estructura PARA.
+	Corregido un error con la estructura PARA cuando el paso es negativo.
 	Ahora al editar un pseudocódigo con la estructura mientras en el editor de diagramas de flujo la condición se lee correctamente.
 	
 20120324

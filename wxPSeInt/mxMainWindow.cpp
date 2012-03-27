@@ -122,7 +122,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_PREV, mxMainWindow::OnViewNotebookPrev)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_NEXT, mxMainWindow::OnViewNotebookNext)
 
-//	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxMainWindow::OnSelectError)
+	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxMainWindow::OnSelectError)
 	EVT_TREE_SEL_CHANGED(wxID_ANY, mxMainWindow::OnSelectError)
 	EVT_AUI_PANE_CLOSE(mxMainWindow::OnPaneClose)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, mxMainWindow::OnNotebookPageClose)
@@ -761,6 +761,13 @@ void mxMainWindow::ShowQuickHelp(wxString text) {
 		aui_manager.Update();
 	} else
 		quick_html->SetPage(text);
+}
+
+void mxMainWindow::HideQuickHelp() {
+	if (aui_manager.GetPane(quick_html).IsShown()) {
+		aui_manager.GetPane(quick_html).Hide();
+		aui_manager.Update();
+	} 
 }
 
 void mxMainWindow::CreateQuickHelp() {

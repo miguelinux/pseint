@@ -122,6 +122,7 @@ public:
 	void OnSelectError(wxTreeEvent &evt);
 	void ShowResults(bool error=false);
 	void ShowQuickHelp(wxString text);
+	void HideQuickHelp();
 
 	void OnCmdEscribir(wxCommandEvent &evt);
 	void OnDebugButton(wxCommandEvent &evt);

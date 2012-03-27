@@ -13,6 +13,5 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max=10);
 
 void ProcessMenu(int op);
 
-
 #endif
 

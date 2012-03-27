@@ -356,6 +356,8 @@
   Falta el valor final entre las palabras claves HASTA y HACER.
   * Agregue el valor final luego de la asignación inicial.
   * Recuerde que este valor debe ser una constante o expresión de tipo numérica.
+  * Si la instrucción contiene la palabra HASTA, verifique que no incluya ninguna otra palabra entre el valor inicial y la misma.
+  * Si la instrucción contiene la palabra HASTA, verifique que la expresión para el valor inicial sea correcta.
 
 79
   La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
@@ -667,3 +669,12 @@
 214
   Se está ejecutando el algoritmo con una entrada (valores ingresados para la acción LEER) predefinida, pero esta entrada contiene menos valores de los que el algoritmo en realidad necesita leer.
   * Modifique la entrada con el ítem "Predefinir Entrada" del Menú "Ejecutar".
+
+215
+  Está intentando utilizar el valor de la variable señalada entre paréntesis para mostrar en pantalla o como parte de una expresión, pero esta variable no tiene ningún valor aún.
+  * Verifique que el nombre de la variable esté escrito correctamente.
+  * Utilice la instrucción LEER o la asignación para inicializar el contenido de la variable antes de utilizarla.
+
+216
+  En la estructura <A href="para.html">PARA</A>, el paso va después del valor final indicado con "HASTA &lt;val_final&gt;".
+  * Reordene la instrucción siguiendo la forma: PARA <I>contador</I>&lt;-<I>val_inicial</I> HASTA <I>val_final</I> CON PASO <I>paso</I> HACER

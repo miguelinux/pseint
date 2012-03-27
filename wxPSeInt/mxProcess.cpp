@@ -80,9 +80,11 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 	wxArrayString output;
 	wxExecute(command,output,wxEXEC_SYNC);
 	
+	main_window->last_source=NULL; // para evitar que al modificar el arbol actúe el evento de seleccionar un item
 	main_window->results_tree->DeleteChildren(main_window->results_root);
 	for (unsigned int i=0;i<output.GetCount();i++)
 		main_window->results_tree->AppendItem(main_window->results_root,output[i],1);
+	main_window->last_source=source;
 	
 	main_window->last_source = source;
 	
@@ -98,8 +100,10 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 		wxTreeEvent evt(0,main_window->results_tree,item);
 		main_window->OnSelectError(evt);
 		main_window->Raise();
-	} else
+	} else {
 		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
+		main_window->HideQuickHelp();
+	}
 		
 	if (!output.GetCount()) {
 		if (what==mxPW_CHECK_AND_RUN)

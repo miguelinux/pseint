@@ -53,12 +53,16 @@ Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_
 		child_dx=(int*)malloc(sizeof(int)*2);
 		child=(Entity**)malloc(sizeof(Entity*)*2);
 		child[0]=child[1]=NULL;
-	} else if (type==ET_PARA) { // dos hijos
+		child_bh[0]=child_bh[1]=0;
+		child_dx[0]=child_dx[1]=0;
+	} else if (type==ET_PARA) { // cuatro hijos
 		n_child=4; flecha_in=flecha_h;
 		child_bh=(int*)malloc(sizeof(int)*4);
 		child_dx=(int*)malloc(sizeof(int)*4);
 		child=(Entity**)malloc(sizeof(Entity*)*4);
 		child[0]=child[1]=child[2]=child[3]=NULL;
+		child_bh[0]=child_bh[1]=child_bh[2]=child_bh[3]=0;
+		child_dx[0]=child_dx[1]=child_dx[2]=child_dx[3]=0;
 		LinkChild(1,new Entity(ET_AUX_PARA,""));
 		LinkChild(2,new Entity(ET_AUX_PARA,""));
 		LinkChild(3,new Entity(ET_AUX_PARA,""));
@@ -67,7 +71,7 @@ Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_
 		child_bh=(int*)malloc(sizeof(int)*1);
 		child_dx=(int*)malloc(sizeof(int)*1);
 		child=(Entity**)malloc(sizeof(Entity*)*1);
-		child[0]=NULL;
+		child[0]=NULL; child_dx[0]=child_bh[0]=0;
 		if (type!=ET_OPCION && type!=ET_SEGUN) flecha_in=flecha_h; 
 		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo"));
 	} else {
@@ -99,7 +103,7 @@ Entity::~Entity() {
 }
 
 void Entity::SetEdit() {
-	edit=this;
+	edit=this; EditLabel(0);
 	edit_pos=label.size();
 }
 
@@ -141,6 +145,22 @@ void Entity::EditSpecialLabel(unsigned char key) {
 }
 
 void Entity::EditLabel(unsigned char key) {
+	static bool acento=false; // para emular el acento como dead key
+	if (acento) {
+		if (key=='a') key='á';
+		else if (key=='e') key='é';
+		else if (key=='i') key='í';
+		else if (key=='o') key='ó';
+		else if (key=='u') key='ú';
+		else if (key=='A') key='Á';
+		else if (key=='E') key='É';
+		else if (key=='I') key='Í';
+		else if (key=='O') key='Ó';
+		else if (key=='U') key='Ú';
+		acento=false;
+	}
+	if (key==0) return;
+	if (key==180) { acento=true; return; }
 	if (key=='\b') {
 		if (edit_pos>0) {
 			label.erase(--edit_pos,1);

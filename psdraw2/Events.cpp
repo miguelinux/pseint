@@ -290,11 +290,23 @@ void ToggleFullScreen() {
 	}
 }
 
+void ToggleEditable() {
+	static bool old_edit_on;
+	if (edit_on) {
+		old_edit_on=true;
+		edit_on=false; edit=false;
+	} else {
+		edit_on=old_edit_on;
+	}
+	start->Calculate();
+}
+
 static void keyboard_esp_cb(int key, int x, int y) {
 	if (key==GLUT_KEY_F5) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
 	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
+	else if (key==GLUT_KEY_F7) ToggleEditable();
 	else if (key==GLUT_KEY_F11) ToggleFullScreen();
 	else if (key==GLUT_KEY_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);

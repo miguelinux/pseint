@@ -63,7 +63,3 @@ const float color_menu[3]={.7,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.8,.95,.95}; // fondo de los menues
 
 
-// para interpolar en las animaciones
-#define interpolate(a,b) a=(2*a+b)/3
-//#define interpolate_good(a,b) a=(2*a+b)/3
-#define interpolate_good(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3

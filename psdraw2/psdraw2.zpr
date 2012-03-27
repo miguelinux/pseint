@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/cambios.txt
+current_source=Entity.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -25,10 +25,12 @@ path=../pseint/zockets.cpp
 cursor=2990
 [source]
 path=Entity.cpp
-cursor=27415
+cursor=9117
+open=true
 [source]
 path=Events.cpp
-cursor=2288
+cursor=7372
+open=true
 [source]
 path=Draw.cpp
 cursor=250
@@ -40,7 +42,7 @@ path=Comm.cpp
 cursor=529
 [source]
 path=Global.cpp
-cursor=205
+cursor=3173
 [header]
 path=../pseint/zockets.h
 cursor=313
@@ -49,7 +51,7 @@ path=Entity.h
 cursor=3010
 [header]
 path=Events.h
-cursor=199
+cursor=292
 [header]
 path=Draw.h
 cursor=165
@@ -61,14 +63,13 @@ path=Comm.h
 cursor=15
 [header]
 path=Global.h
-cursor=257
+cursor=3664
 [header]
 path=Version.h
 cursor=61
 [other]
 path=../bin/help/cambios.txt
 cursor=33
-open=true
 [config]
 name=Debug_Linux
 working_folder=

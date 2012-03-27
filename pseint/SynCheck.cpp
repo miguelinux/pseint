@@ -426,10 +426,10 @@ int SynCheck() {
 				if (lazy_syntax && cadena.find("<-",0)==string::npos && cadena.find(" DESDE ")!=string::npos) 
 					cadena.replace(cadena.find(" DESDE "),7,"<-");
 				if (cadena.find("<-",0)!=string::npos) {
-					// se agregan parentesis al valor inicial para evitar problemas mas adelante
+					// se agregan parentesis al valor inicial para evitar problemas mas adelante (porque si el valor es negativo, con la flecha de asignacion queda un --)
 					for (int y=cadena.find("<-",0)+3; y<(int)cadena.size();y++) {
 						if(cadena[y]=='\"' || cadena[y]=='\'') comillas=-comillas;
-						if (comillas<1 && MidCompareNC(" HASTA ",cadena,y)) {
+						if (comillas<1 && (MidCompareNC(" HASTA ",cadena,y) || MidCompareNC(" CON PASO ",cadena,y))) {
 							cadena.insert(y,")");
 							cadena.insert(cadena.find("<-",0)+2,"(");
 							break;
@@ -922,7 +922,7 @@ int SynCheck() {
 				cadena.erase(cadena.size()-1,1);
 			// arreglar problemas con valores negativos en para y mientras
 			ReplaceIfFound(cadena," HASTA-"," HASTA -");
-			ReplaceIfFound(cadena," PASO-"," PASO  -");
+			ReplaceIfFound(cadena," PASO-"," PASO -");
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if (Proceso==0) {
@@ -1176,50 +1176,54 @@ int SynCheck() {
 					if (str.find("<-",0)<0 || str.find("<-",0)>=str.size()) // Comprobar asignacion
 					{SynError (72,"Se esperaba asignacion."); errores++;}
 					else
-						if (RightCompare(str,"<-HASTA") || LeftCompare(str,"<-"))
+						if (RightCompare(str,"<-HASTA") || RightCompare(str,"<-CON PASO") || LeftCompare(str,"<-"))
 						{SynError (73,"Asignacion incompleta."); errores++;}
 						else {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
 							if (!CheckVariable(str)) {SynError (74,"Identificador no valido."); errores++;}
 							else {
 								if (Lerrores==errores) Evaluar(str,tipo);
-//								if (tipo<'c')
-//								{ ExpError(tipo,0); errores++;}
-//								else
-									if (!tipo.cb_num)
+								if (!tipo.cb_num)
 									{SynError (76,"No coinciden los tipos."); errores++;}
 								str=cadena;
 								str.erase(0,str.find("<-")+2);
 								str.erase(str.find(" "),str.size()-str.find(" ",0));
 								if (Lerrores==errores) Evaluar(str,tipo);
-//								if (tipo<'c')
-//								{ ExpError(tipo,0); errores++;}
-								else
+//								else
 									if (!tipo.cb_num)
-									{SynError (77,"No coinciden los tipos."); errores++;}
+										{SynError (77,"No coinciden los tipos."); errores++;}
 									else { // comprobar hasta y variable final
 										str=cadena;
-										str.erase(0,str.find(" ",8));
-										if (!LeftCompare(str," HASTA "))
-										{SynError (78,"Falta HASTA."); errores++;}
-										else if (LeftCompare(str," HASTA HACER"))
-										{SynError (79,"Falta el valor final del PARA."); errores++;}
+										size_t pos_hasta=str.find(" ",8);
+										str.erase(0,pos_hasta);
+										if (lazy_syntax && LeftCompare(str," CON PASO ")) { // si esta el "CON PASO" antes del "HASTA", dar vuelta
+											size_t e=str.find(" ",10);
+											if (e!=string::npos) { // si hay algo despues del "CON PASO"
+												str.erase(e); // corta la parte de "CON PASO X"
+												cadena=cadena.substr(0,pos_hasta)+cadena.substr(pos_hasta+e); // rearma la cadena sin el paso
+												cadena.insert(cadena.size()-6,str); // inserta el paso
+												str=cadena; // pone str como si no hubiese pasado nada
+												str.erase(0,pos_hasta);
+											}
+										}
+										if (!LeftCompare(str," HASTA ")) {
+											if (LeftCompare(str," CON PASO ")) { 
+												SynError (216,"CON PASO va despues de HASTA."); errores++;
+											} else {
+												SynError (78,"Falta HASTA."); errores++;
+											}
+										} else if (LeftCompare(str," HASTA HACER"))
+											{SynError (79,"Falta el valor final del PARA."); errores++;}
 										else {
 											str.erase(0,7); str.erase(str.size()-6,6);
 											if (str.find(" ",0)<0 || str.find(" ",0)>str.size()) {
 												if (Lerrores==errores) Evaluar(str,tipo);
-//												if (tipo<'c')
-//												{ ExpError(tipo,0); errores++;}
-//												else
-													if (!tipo.cb_num)
+												if (!tipo.cb_num)
 													{SynError (80,"No coinciden los tipos."); errores++;}
 											} else {
 												str.erase(str.find(" ",0),str.size()-str.find(" ",0));
 												if (Lerrores==errores) Evaluar(str,tipo);
-//												if (tipo<'c')
-//												{ ExpError(tipo,0); errores++;}
-//												else
-													if (!tipo.cb_num)
+												if (!tipo.cb_num)
 													{SynError (81,"No coinciden los tipos."); errores++;}
 												str=cadena; // comprobar con paso
 												str.erase(0,str.find("HASTA",6)+6);
@@ -1230,11 +1234,8 @@ int SynCheck() {
 												else {
 													str.erase(0,9);
 													Evaluar(str,tipo);
-//													if (tipo<'c')
-//													{ ExpError(tipo,0); errores++;}
-//													else 
 													if (!tipo.cb_num)
-													{SynError (84,"No coinciden los tipos."); errores++;}
+														{SynError (84,"No coinciden los tipos."); errores++;}
 												}
 											}
 										}
