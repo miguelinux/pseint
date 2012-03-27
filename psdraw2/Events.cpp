@@ -234,10 +234,12 @@ static void mouse_cb(int button, int state, int x, int y) {
 					if (aux->type==ET_AUX_PARA) aux=aux->parent;
 					if (glutGetModifiers()==GLUT_ACTIVE_SHIFT) {
 						aux=DuplicateEntity(aux);
+						aux->SetEdit();
+					} else {
+						edit=NULL;
 					}
 					aux->SetMouse();
 					start->Calculate();
-					edit=NULL;
 					return;
 				}
 				break;

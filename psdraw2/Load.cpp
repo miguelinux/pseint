@@ -53,6 +53,21 @@ static Entity *Up(stack<int> &ids, Entity *vieja) {
 	}
 }
 
+static void RemoveParentesis(string &ini) {
+	if (ini.size()&&ini[0]=='(') { // suele venir envuelta en parentesis
+		int par=1;
+		for(unsigned int i=1;i<ini.size();i++) { 
+			if (ini[i]=='(') par++;
+			else if (ini[i]==')') {
+				par--;
+				if (par==0 && i==ini.size()-1)
+					ini=ini.substr(1,ini.size()-2);
+				if (par==0) break;
+			}
+		}
+	}
+}
+
 bool Load(const char *filename) {
 	if (filename) fname=filename;
 	else { New(); return false; }
@@ -121,18 +136,7 @@ bool Load(const char *filename) {
 				paso=str.substr(i+10);
 				if (paso.size()&&paso[0]==' ') paso=paso.substr(1); // a veces viene con doble espacio
 			}
-			if (ini.size()&&ini[0]=='(') { // suele venir envuelta en parentesis
-				int par=1;
-				for(unsigned int i=1;i<ini.size();i++) { 
-					if (ini[i]=='(') par++;
-					else if (ini[i]==')') { 
-						par--;
-						if (par==0 && i==ini.size()-1)
-							ini=ini.substr(1,ini.size()-2);
-						break;
-					}
-				}
-			}
+			RemoveParentesis(ini);
 			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
 			aux->child[1]->SetLabel(ini);
 			aux->child[2]->SetLabel(paso);
@@ -177,6 +181,14 @@ bool Load(const char *filename) {
 			aux=Up(ids,aux);
 		}
 		else { // asignacion, dimension, definicion
+			int i=0,l=str.size();
+			while (i<l && (str[i]>='a'&&str[i]<='z')||(str[i]>='A'&&str[i]<='Z')||(str[i]>='0'&&str[i]<='9')||str[i]=='_') i++;
+			if (i+2<l && str.substr(i,2)=="<-") {
+				string s1=str.substr(0,i+2);
+				string s2=str.substr(i+2);
+				RemoveParentesis(s2);
+				str=s1+s2;
+			}
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
 		}
 	}
