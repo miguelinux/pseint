@@ -226,9 +226,10 @@ static void mouse_cb(int button, int state, int x, int y) {
 			if (!aux) return;
 			aux->m_x=0; aux->m_y=0;
 			to_set_mouse=aux;
-			mouse_setted=mouse_setted_time;
-//			aux->SetMouse();
+//			mouse_setted=mouse_setted_time;
+			aux->SetMouse();
 			aux->SetEdit();
+			aux->SetPosition(x,y);
 			return;
 		}
 		// click en una entidad? izquierdo=mover, derecho=editar label
