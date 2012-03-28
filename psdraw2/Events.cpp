@@ -306,7 +306,8 @@ void ToggleFullScreen() {
 	} else {
 		glutReshapeWindow(w_win_w,w_win_h);
 		glutPositionWindow(win_x,win_y);
-		glutPositionWindow(100,100);
+		glutReshapeWindow(w_win_w,w_win_h);
+		glutPositionWindow(win_x,win_y);
 	}
 }
 

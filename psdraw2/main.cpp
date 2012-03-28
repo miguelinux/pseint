@@ -1,9 +1,3 @@
-// Para probar este programa hay que generar un archivo .psd con wxPSeInt y pasarlo como argumento a este ejecutable
-// Este archivo se genera al visualizar el diagrama viejo en $home/.pseint/temp.psd
-
-// Todo:
-// Agregar letras v y f en condicionales y repetitivas
-
 #include <GL/glut.h>
 #include <iostream>
 #include <cstdlib>
