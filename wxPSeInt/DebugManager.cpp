@@ -5,6 +5,7 @@
 #include "mxDesktopTest.h"
 #include <iostream>
 #include "mxEvaluateDialog.h"
+#include "ConfigManager.h"
 using namespace std;
 
 DebugManager *debug;
@@ -15,13 +16,14 @@ DebugManager::DebugManager(mxDesktopTest *dt, mxEvaluateDialog *ed) {
 	do_desktop_test=false;
 	debugging=false;
 	server=NULL;
+	port=-1;
 }
 
 DebugManager::~DebugManager() {
 	
 }
 
-void DebugManager::Start(mxProcess *proc, mxSource *src, int port) {
+void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	
 	process = proc;
 	main_window->debug_status->SetLabel(_T("iniciando..."));
@@ -36,13 +38,16 @@ void DebugManager::Start(mxProcess *proc, mxSource *src, int port) {
 	
 	if (server!=NULL) return;
 	
-	wxIPV4address adrs;
-	adrs.Hostname(_T("127.0.0.1"));
-	adrs.Service(port);
-	server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
-	server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-	server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-	server->Notify(true);
+	do {
+		if (server) delete server;
+		wxIPV4address adrs;
+		adrs.Hostname(_T("127.0.0.1"));
+		adrs.Service(port=config->GetDebugPort());
+		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
+		server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
+		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
+		server->Notify(true);
+	} while (!server->IsOk());
 	return;
 	
 }
@@ -178,5 +183,9 @@ void DebugManager::SendEvaluation(wxString exp) {
 
 bool DebugManager::HasSocket (wxObject *s) {
 	return s && (s==socket||s==server);
+}
+
+int DebugManager::GetPort ( ) {
+	return port;
 }
 

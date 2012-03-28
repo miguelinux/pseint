@@ -520,6 +520,7 @@ void Entity::Draw(bool force) {
 			DrawFlechaUp(d_fx,d_y-d_bh+flecha_h,d_fy-d_h); // flecha que entra al circulo
 			glVertex2i(d_fx,d_y-d_bh+flecha_h); glVertex2i(d_x,d_y-d_bh+flecha_h);
 		} else if (type==ET_REPETIR) {
+			DrawFlechaDownHead(d_fx,d_fy);
 			if (variante) {
 				DrawFalse(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
 				DrawTrue(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);

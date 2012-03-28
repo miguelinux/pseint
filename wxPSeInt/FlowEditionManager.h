@@ -13,12 +13,14 @@ private:
 	wxSocketBase *socket;
 	wxString sbuffer;
 	int last_id;
+	int port;
 public:
-	FlowEditionManager(int port);
+	FlowEditionManager();
 	void SocketEvent(wxSocketEvent *event);
 	void ProcData(wxSocketBase *s, wxString data);
 	bool HasSocket(wxObject *s);
 	int GetNextId();
+	int GetPort();
 	~FlowEditionManager();
 };
 

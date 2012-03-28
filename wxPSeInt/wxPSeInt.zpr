@@ -11,13 +11,15 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
+current_source=FlowEditionManager.cpp
 path_char=/
 [source]
 path=Application.cpp
 cursor=431
 [source]
 path=mxMainWindow.cpp
-cursor=33121
+cursor=45391
+breakpoint=1137
 marker=1301
 marker=679
 marker=678
@@ -32,6 +34,7 @@ marker=670
 marker=669
 marker=668
 marker=590
+open=true
 [source]
 path=mxUtils.cpp
 cursor=2015
@@ -101,7 +104,8 @@ path=mxInputDialog.cpp
 cursor=892
 [source]
 path=FlowEditionManager.cpp
-cursor=2345
+cursor=544
+open=true
 [header]
 path=Application.h
 cursor=200

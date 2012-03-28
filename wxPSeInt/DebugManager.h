@@ -25,10 +25,11 @@ private:
 	friend class mxMainWindow;
 	friend class mxDesktopTest;
 	bool should_pause;
+	int port;
 public:
 	bool debugging, paused;
 	DebugManager(mxDesktopTest *dt, mxEvaluateDialog *ed);
-	void Start(mxProcess *process, mxSource *src, int port=24377);
+	void Start(mxProcess *process, mxSource *src);
 	void Close(mxSource *src);
 	void ProcData(wxString data);
 	void SocketEvent(wxSocketEvent *event);
@@ -41,6 +42,7 @@ public:
 	void SendEvaluation(wxString exp);
 	bool HasSocket(wxObject *s);
 	~DebugManager();
+	int GetPort();
 };
 
 extern DebugManager *debug;

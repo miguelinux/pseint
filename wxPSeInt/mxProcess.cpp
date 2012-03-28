@@ -8,6 +8,7 @@
 #include "DebugManager.h"
 #include <wx/filename.h>
 #include "mxInputDialog.h"
+#include "FlowEditionManager.h"
 using namespace std;
 
 mxProcess *proc_list;
@@ -154,14 +155,14 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	}
 	temp = config->temp_out;
 	temp<<_T(".")<<cont;
-	int port=config->debug_port;
+	debug->Start(this,source);
+	int port=debug->GetPort();
 	int delay=250+750*(2-config->stepstep_speed);
 	main_window->debug_speed->SetThumbPosition(debug->GetSpeed(delay));
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors)
 		command<<_T(" --color");
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
-	debug->Start(this,source,port);
 	was_readonly = source->GetReadOnly();
 	if (pid) source->SetReadOnly(true);
 	pid = wxExecute(command, wxEXEC_ASYNC, this);
@@ -182,7 +183,7 @@ bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
 	if (check_first) return CheckSyntax(file,config->temp_draw,id);
 	wxString command;
 	command<<config->psdraw2_command;
-	command<<" --port="<<config->flow_port<<" --id="<<id;
+	command<<" --port="<<flow_editor->GetPort()<<" --id="<<id;
 	if (source->GetReadOnly()) command<<" --noedit";
 	command<<_T(" \"")<<config->temp_draw<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;

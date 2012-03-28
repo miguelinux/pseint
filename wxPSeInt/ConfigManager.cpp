@@ -22,8 +22,6 @@ ConfigManager::ConfigManager() {
 		filename = DIR_PLUS_FILE(home_dir,_T("config"));
 	LoadDefaults();
 	Read();
-	if (!fixed_port) debug_port+=rand()%100;
-	if (!fixed_port) flow_port+=100+rand()%100;
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
 	tty_command=_T("./mac-terminal-wrapper.bin");
@@ -165,8 +163,10 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("pos_x="))<<pos_x);
 	fil.AddLine(wxString(_T("pos_y="))<<pos_y);
 	fil.AddLine(wxString(_T("maximized="))<<maximized);	
-	fil.AddLine(wxString(_T("debug_port="))<<debug_port);	
-	fil.AddLine(wxString(_T("flow_port="))<<flow_port);	
+	if (fixed_port) {
+		fil.AddLine(wxString(_T("debug_port="))<<debug_port);	
+		fil.AddLine(wxString(_T("flow_port="))<<flow_port);	
+	}
 	fil.AddLine(wxString(_T("check_for_updates="))<<(check_for_updates?1:0));	
 	fil.AddLine(wxString(_T("fixed_port="))<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
@@ -280,3 +280,12 @@ wxString ConfigManager::LoadProfile(wxString pname) {
 		return desc;
 	}
 }
+
+int ConfigManager::GetFlowPort ( ) {
+	if (fixed_port) return flow_port; else return flow_port+rand()%150+150;
+}
+
+int ConfigManager::GetDebugPort ( ) {
+	if (fixed_port) return debug_port; else return debug_port+rand()%150;
+}
+

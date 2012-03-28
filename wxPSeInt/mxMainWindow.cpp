@@ -1350,7 +1350,7 @@ void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
 
 void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 	IF_THERE_IS_SOURCE {
-		if (!flow_editor) new FlowEditionManager(config->flow_port);
+		if (!flow_editor) new FlowEditionManager();
 		mxSource *source = CURRENT_SOURCE;
 		if (source->GetFlowSocket()) { 
 			source->GetFlowSocket()->Write("raise",5); 

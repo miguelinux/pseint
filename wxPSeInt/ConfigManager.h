@@ -96,6 +96,9 @@ public:
 	void Save();
 	~ConfigManager();
 	
+	int GetFlowPort();
+	int GetDebugPort();
+	
 };
 
 extern ConfigManager *config;

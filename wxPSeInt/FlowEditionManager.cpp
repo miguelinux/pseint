@@ -8,16 +8,20 @@ using namespace std;
 
 FlowEditionManager *flow_editor=NULL;
 
-FlowEditionManager::FlowEditionManager(int port) {
-	last_id=0;
-	wxIPV4address adrs;
-	adrs.Hostname(_T("127.0.0.1"));
-	adrs.Service(port);
-	server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
-	server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-	server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-	server->Notify(true);
+FlowEditionManager::FlowEditionManager() {
+	last_id=0; port=-1;
 	flow_editor=this;
+	do {
+		wxIPV4address adrs;
+		adrs.Hostname(_T("127.0.0.1"));
+		adrs.Service(port=config->GetFlowPort());
+		server=NULL;
+		if (server) delete server;
+		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
+		server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
+		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
+		server->Notify(true);
+	} while (!server->IsOk());
 }
 
 void FlowEditionManager::SocketEvent(wxSocketEvent *event) {
@@ -93,5 +97,9 @@ int FlowEditionManager::GetNextId ( ) {
 
 bool FlowEditionManager::HasSocket (wxObject * s) {
 	return s && (s==server||s==socket||main_window->FindFlowSocket(s));
+}
+
+int FlowEditionManager::GetPort ( ) {
+	return port;
 }
 
