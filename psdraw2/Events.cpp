@@ -17,6 +17,10 @@ extern const int margin; // para los botones de confirm
 #define usleep(x) Sleep((x)/1000)
 #endif
 
+#define mouse_setted_time 10
+static int mouse_setted=0; // frames que pasan desde el click derecho hasta que efectivamente la gui reacciona (para evitar pasos en falso en click simples y dobles click)
+static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el contador de frames llegue a cer
+
 static Entity *DuplicateEntity(Entity *orig) {
 	Entity *nueva=new Entity(orig->type,orig->label);
 	nueva->m_x=orig->m_x; nueva->m_y=orig->m_y;
@@ -77,6 +81,7 @@ static void idle_func() {
 		else interpolate(trash_size,trash_size_min);
 		menu=shapebar=false;
 	} else {
+		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
 		if (menu) { interpolate(menu_size_h,menu_option_height*(MO_HELP+2)); interpolate(menu_size_w,menu_w_max); }
@@ -124,6 +129,7 @@ static void passive_motion_cb(int x, int y) {
 }
 static void motion_cb(int x, int y) {
 	if (confirm) return;
+	if (mouse_setted && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
 	y=win_h-y; 
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
@@ -183,6 +189,7 @@ void ProcessMenu(int op) {
 }
 
 static void mouse_cb(int button, int state, int x, int y) {
+	mouse_setted=0;
 	if (confirm) {
 		if (confirm_sel==1) confirm=false;
 		else if (confirm_sel==2) Salir();
@@ -218,7 +225,9 @@ static void mouse_cb(int button, int state, int x, int y) {
 			}
 			if (!aux) return;
 			aux->m_x=0; aux->m_y=0;
-			aux->SetMouse();
+			to_set_mouse=aux;
+			mouse_setted=mouse_setted_time;
+//			aux->SetMouse();
 			aux->SetEdit();
 			return;
 		}
@@ -239,14 +248,15 @@ static void mouse_cb(int button, int state, int x, int y) {
 					if (edit!=aux) {
 						edit=NULL;
 					}
-					aux->SetMouse();
-					start->Calculate();
+//					aux->SetMouse();
+					to_set_mouse=aux;
+					mouse_setted=mouse_setted_time;
 					// doble click
 					static int last_click_time=0;
 					static Entity *last_click_mouse=NULL;
 					int click_time=glutGet(GLUT_ELAPSED_TIME);
-					if (click_time-last_click_time<500 && last_click_mouse==mouse) mouse->SetEdit();
-					last_click_mouse=mouse; last_click_time=click_time;
+					if (click_time-last_click_time<500 && last_click_mouse==aux) aux->SetEdit();
+					last_click_mouse=aux; last_click_time=click_time;
 					return;
 				}
 				break;
@@ -311,6 +321,7 @@ void ToggleEditable() {
 }
 
 static void keyboard_esp_cb(int key, int x, int y) {
+	if (confirm) return;
 	if (key==GLUT_KEY_F5) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);

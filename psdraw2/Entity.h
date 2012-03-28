@@ -45,7 +45,7 @@ struct Entity {
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
 	string label;
-	Entity(ETYPE _type, string _label, bool reg_in_all=true);
+	Entity(ETYPE _type, string _label);
 	~Entity();
 	void SetEdit();
 	void SetMouse();
@@ -75,6 +75,7 @@ struct Entity {
 	void CopyPos(Entity *o);
 	bool CheckMouse(int x, int y);
 	void Print(ostream &out, string tab="");
+	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
 };
 
 #endif

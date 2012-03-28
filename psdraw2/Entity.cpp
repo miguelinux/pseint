@@ -32,22 +32,20 @@ void Entity::GetTextSize(const string &label, int &w, int &h) {
 	h=char_h;
 }
 
-Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_label) {
+Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	variante=false;
-	if (reg_in_all) {
-		if (!all_any) { 
-			all_any=this; 
-			all_next=all_prev=this;
-		} else { 
-			all_next=all_any->all_next; 
-			if (all_next) all_next->all_prev=this;
-			all_any->all_next=this; 
-			all_prev=all_any;
-		}
+	if (!all_any) { 
+		all_any=this; 
+		all_next=all_prev=this;
+	} else { 
+		all_next=all_any->all_next; 
+		if (all_next) all_next->all_prev=this;
+		all_any->all_next=this; 
+		all_prev=all_any;
 	}
 	fx=x=0; fy=y=0; flecha_in=0;
 	d_fx=d_fy=d_y=d_x=100;
-	d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=0;
+	d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=bh=0;
 	nolink=NULL;
 	SetLabel(label);
 	parent=prev=next=NULL; child=NULL;
@@ -850,3 +848,12 @@ void Entity::Print(ostream &out, string tab) {
 }
 
 Entity *Entity::all_any=NULL;
+
+void Entity::SetPosition (int x0, int y0) {
+	d_fx=d_x=x0; 
+	d_fy=d_y=y0;
+	fx=x=x0-d_dx;
+	fy=y=y0-d_dy;
+//	Calculate();
+}
+
