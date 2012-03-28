@@ -38,7 +38,9 @@ int main(int argc, char **argv) {
 			port=atoi(a.substr(7).c_str());
 		} else fname=a;
 	}
-	if (port!=-1 && id!=-1) Connect(port,id);
+	if (port!=-1 && id!=-1) {
+		if (!Connect(port,id)) edit_on=false;
+	}
 	if (fname.length()) Load(fname.c_str());
 	else Load();
 	glutInit (&argc, argv);
