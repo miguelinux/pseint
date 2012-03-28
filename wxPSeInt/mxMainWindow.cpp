@@ -94,6 +94,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
+	EVT_MENU(mxID_CONFIG_STEPSTEP_H, mxMainWindow::OnConfigStepStepH)
 //	EVT_MENU(mxID_CONFIG_HIGHRES, mxMainWindow::OnConfigHighRes)
 
 	EVT_BUTTON(mxID_CMD_ASIGNAR, mxMainWindow::OnCmdAsignar)
