@@ -23,9 +23,13 @@ static const int vf_size=5;
 #undef DrawText
 #endif
 
+// tamaño de las letras
+#define char_w 12
+#define char_h 18
+
 void Entity::GetTextSize(const string &label, int &w, int &h) {
-	w=label.size()*12;
-	h=18;
+	w=label.size()*char_w;
+	h=char_h;
 }
 
 Entity::Entity(ETYPE _type, string _label, bool reg_in_all) :type(_type),label(_label) {
@@ -782,6 +786,11 @@ bool Entity::CheckMouse(int x, int y) {
 	if (x>=d_fx-d_w/2 && x<=d_fx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
 		m_x=x-d_fx;
 		m_y=y-d_fy;
+		if (this==edit) {
+			int bt=d_fx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0);
+			edit_pos=(x-bt+char_w/2)/char_w;
+			if (edit_pos<0) edit_pos=0; else if (edit_pos>label.size()) edit_pos=label.size();
+		}
 		return true;
 	}
 	return false;

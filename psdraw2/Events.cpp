@@ -235,11 +235,18 @@ static void mouse_cb(int button, int state, int x, int y) {
 					if (glutGetModifiers()==GLUT_ACTIVE_SHIFT) {
 						aux=DuplicateEntity(aux);
 						aux->SetEdit();
-					} else {
+					} 
+					if (edit!=aux) {
 						edit=NULL;
 					}
 					aux->SetMouse();
 					start->Calculate();
+					// doble click
+					static int last_click_time=0;
+					static Entity *last_click_mouse=NULL;
+					int click_time=glutGet(GLUT_ELAPSED_TIME);
+					if (click_time-last_click_time<500 && last_click_mouse==mouse) mouse->SetEdit();
+					last_click_mouse=mouse; last_click_time=click_time;
 					return;
 				}
 				break;
