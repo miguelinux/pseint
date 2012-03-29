@@ -11,6 +11,8 @@ class mxDesktopTest;
 class mxEvaluateDialog;
 class wxObject;
 
+#define _calc_delay(speed) 25+(100-speed)*20
+
 class DebugManager {
 private:
 	mxEvaluateDialog *evaluate_dialog;

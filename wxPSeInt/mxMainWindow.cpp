@@ -43,6 +43,10 @@ using namespace std;
 
 mxMainWindow *main_window;
 
+#define _debug_speed_h 80
+#define _debug_speed_m 55
+#define _debug_speed_l 20
+
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_CLOSE(mxMainWindow::OnClose)
 	EVT_MENU(mxID_FILE_NEW, mxMainWindow::OnFileNew)
@@ -1091,20 +1095,23 @@ void mxMainWindow::OnConfigStepStepL(wxCommandEvent &evt) {
 	mi_stepstep_l->Check(true);
 	mi_stepstep_h->Check(false);
 	mi_stepstep_m->Check(false);
-	config->stepstep_speed=0;
+	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_l);
+	debug->SetSpeed(config->stepstep_speed);
 }
 
 void mxMainWindow::OnConfigStepStepH(wxCommandEvent &evt) {
 	mi_stepstep_h->Check(true);
 	mi_stepstep_l->Check(false);
 	mi_stepstep_m->Check(false);
-	config->stepstep_speed=2;
+	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_h);
+	debug->SetSpeed(config->stepstep_speed);
 }
 void mxMainWindow::OnConfigStepStepM(wxCommandEvent &evt) {
 	mi_stepstep_m->Check(true);
 	mi_stepstep_l->Check(false);
 	mi_stepstep_h->Check(false);
-	config->stepstep_speed=1;
+	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_m);
+	debug->SetSpeed(config->stepstep_speed);
 }
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
@@ -1143,7 +1150,11 @@ void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
 }
 
 void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
-	debug->SetSpeed(evt.GetInt());
+	int speed=evt.GetInt();
+	mi_stepstep_l->Check(speed==0);
+	mi_stepstep_m->Check(speed==1);
+	mi_stepstep_h->Check(speed==2);
+	debug->SetSpeed(speed);
 }
 
 void mxMainWindow::OnDebugDesktopVars(wxCommandEvent &evt) {

@@ -1,3 +1,14 @@
+>>RELEASE 20120328<<
+
+20120328
+	Algunas mejoras visuales en el editor al arrastrar o clickear una entidad.
+	Mejorada la forma en que se inicia la comunicación entre la GUI y el editor de diagramas.
+	Ahora el editor de diagrama de flujo permite editar un texto con doble click.
+
+20120327
+	Ahora funciona correctamente la opción del menú Configurar para definar la velocidad alta de ejecución paso a paso.
+	Ahora se quitan los parentesis adicionales en las asignaciones al pasar del pseucódigo al diagrama de flujo.
+
 >>RELEASE 20120327<<
 
 20120326

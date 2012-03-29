@@ -334,7 +334,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return("");
 				}
 				if (!allow_undef_vars && !memoria->EstaInicializada(nombre)) {
-					WriteError(999,string("Variable no inicializada (")+nombre+")");
+					WriteError(215,string("Variable no inicializada (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}

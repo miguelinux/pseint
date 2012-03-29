@@ -136,9 +136,8 @@ void DebugManager::SocketEvent(wxSocketEvent *event) {
 }
 
 void DebugManager::SetSpeed(int speed) {
-//	wxMessageBox(wxString()<<speed);
-	int sp = 25+(100-speed)*20;
 	if (debugging && socket) {
+		int sp = _calc_delay(speed);
 		wxString str(_T("delay "));
 		str<<sp<<'\n';
 		socket->Write(str.c_str(),str.Len());

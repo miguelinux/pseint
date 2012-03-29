@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=Version.h
+current_source=main.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -27,13 +27,12 @@ path=../pseint/zockets.cpp
 cursor=2990
 [source]
 path=Entity.cpp
-cursor=28943
+cursor=0
 marker=788
 open=true
 [source]
 path=Events.cpp
-cursor=5243
-breakpoint=325
+cursor=8370
 marker=253
 open=true
 [source]
@@ -75,7 +74,7 @@ cursor=61
 open=true
 [other]
 path=../bin/help/cambios.txt
-cursor=33
+cursor=46
 open=true
 [config]
 name=Debug_Linux
