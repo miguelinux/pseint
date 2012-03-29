@@ -71,6 +71,7 @@ public:
 	bool HaveComments();
 	
 	void SetDebugLine(int l=-1); // para marcar donde va el paso a paso, -1 para desmarcar
+	void SetDebugPause(); // cambia de marcador usando la ultima linea que recibio en SetDebugLine
 	
 	bool LineHasSomething(int l); // false si esta vacia o tiene solo comentarios
 	

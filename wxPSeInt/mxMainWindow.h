@@ -15,7 +15,7 @@ class wxScrollBar;
 class mxDesktopTest;
 class mxEvaluateDialog;
 
-enum ds_enum {DS_NONE,DS_STEP,DS_STARTING,DS_PAUSED,DS_RESUMED,DS_STOPPED};
+enum ds_enum {DS_NONE,DS_STEP,DS_STARTING,DS_PAUSED,DS_RESUMED,DS_FINALIZED,DS_STOPPED};
 
 class mxMainWindow : public wxFrame {
 private:

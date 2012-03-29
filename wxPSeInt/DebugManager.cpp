@@ -82,13 +82,17 @@ void DebugManager::ProcData(wxString data) {
 				wxString str(_T("comenzar\n"));
 				socket->Write(str.c_str(),str.Len());
 			}
-		} else if (state==_T("pausa"))
+		} else if (state==_T("pausa")) {
 			main_window->SetDebugState(DS_PAUSED);
-		else if (state==_T("paso"))
+			source->SetDebugPause();
+		} else if (state==_T("paso"))
 			main_window->SetDebugState(DS_STEP);
 		else if (state==_T("ejecutando"))
 			main_window->SetDebugState(DS_RESUMED);
-		else {
+		else if (state==_T("finalizado")) {
+			main_window->SetDebugState(DS_FINALIZED);
+			source->SetDebugLine();
+		} else {
 			source->SetDebugLine();
 			main_window->SetDebugState(DS_NONE);
 		}

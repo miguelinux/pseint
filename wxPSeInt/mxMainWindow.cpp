@@ -1225,7 +1225,7 @@ void mxMainWindow::SetDebugState(ds_enum state) {
 		dp_button_step->SetLabel(_T("Avanzar un Paso"));
 		dp_button_desktop_vars->Enable(false);
 		break;
-	case DS_STOPPED:
+	case DS_STOPPED: 
 		dp_button_run->SetLabel(_T("Comenzar"));
 		dp_button_step->SetLabel(_T("Primer Paso"));
 		dp_button_step->Enable();
@@ -1234,6 +1234,12 @@ void mxMainWindow::SetDebugState(ds_enum state) {
 		dp_button_step->Enable();
 		dp_button_pause->Disable();
 		debug_status->SetLabel(_T("No Iniciada"));
+		break;
+	case DS_FINALIZED:
+		dp_button_run->SetLabel(_T("Cerrar"));
+		dp_button_pause->Disable();
+		dp_button_step->Disable();
+		debug_status->SetLabel(_T("Finalizada"));
 		break;
 	case DS_PAUSED:
 		dp_button_step->Enable(true);

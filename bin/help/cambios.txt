@@ -1,6 +1,8 @@
 >>RELEASE 20120328<<
 
 20120328
+	Ahora se indica con una flecha en el márgen y un fondo de color la linea actual durante la ejecución paso a paso.
+	Ahora se evaluan las inspecciones en la ejecución paso a paso exáctamente igual que las un pseudocódigo.
 	Algunas mejoras visuales en el editor al arrastrar o clickear una entidad.
 	Mejorada la forma en que se inicia la comunicación entre la GUI y el editor de diagramas.
 	Ahora el editor de diagrama de flujo permite editar un texto con doble click.

@@ -147,6 +147,8 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 	
 	MarkerDefine(0,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
 	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
+	MarkerDefine(2,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
+	MarkerDefine(3,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
 	debug_line=-1;
 	
 	SetDropTarget(new mxDropTarget());
@@ -938,6 +940,15 @@ void mxSource::SetFlowSocket ( wxSocketBase *s ) {
 	socket=s;
 }
 
+void mxSource::SetDebugPause() {
+	if (debug_line!=-1) {
+		MarkerDeleteHandle(debug_line_handler_1);
+		MarkerDeleteHandle(debug_line_handler_2);
+		debug_line_handler_1=MarkerAdd(debug_line,2);
+		debug_line_handler_2=MarkerAdd(debug_line,3);
+	}
+}
+
 void mxSource::SetDebugLine(int l) {
 	if (debug_line!=-1) {
 		MarkerDeleteHandle(debug_line_handler_1);
@@ -946,6 +957,7 @@ void mxSource::SetDebugLine(int l) {
 	if ((debug_line=l)!=-1) {
 		debug_line_handler_1=MarkerAdd(l,0);
 		debug_line_handler_2=MarkerAdd(l,1);
+		EnsureVisibleEnforcePolicy(l);
 	}
 }
 
