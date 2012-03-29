@@ -4,7 +4,7 @@
 using namespace std;
 
 int SynCheck();
-int ParseExpression(string &exp);
+int ParseInspection(string &exp);
 
 #endif
 

@@ -82,17 +82,17 @@
 
 17
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo mayor (&gt;) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ ; , &amp; | ~ ) ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 18
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menor (&lt;) seguido de otro caracter que no corresponde ( &lt; / * ^ ; , &amp; | ~ ) ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 19
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo igual (=) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; , ; | ~ = ) ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 20
@@ -109,32 +109,32 @@
   
 22
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay una negación (~ ó NO) seguida de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; | , ; ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 23
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo más (+) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
 
 24
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menos (-) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 25
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo asterisco (*) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 26
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo barra (/) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 27
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo (^) seguido de otro caracter que no corresponde ( &lt; &gt; + / * ^ &amp; | , ; ) ). 
-  * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando y que los operadores sean válidos).
+  * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
   * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
   
 28

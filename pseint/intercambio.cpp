@@ -59,21 +59,24 @@ void Intercambio::ProcData(string order) {
 		evaluating_for_debug=true;
 		string exp = order.substr(8);
 		string res,str="evaluacion ";
-		ParseExpression(exp);
+		ParseInspection(exp);
 		tipo_var tipo;
 		if (!is_evaluation_error)
 			res = Evaluar(exp,tipo);
 		if (is_evaluation_error) 
 			str+=evaluation_error+"\n";
-		else
+		else {
+			if (tipo==vt_numerica)
+				res=DblToStr(StrToDbl(res),10);
 			str+=res+"\n";
+		}
 		zocket_escribir(zocket,str.c_str(),str.size());
 		evaluating_for_debug=false;
 	} else if (order.substr(0,12)=="autoevaluar ") {
 		string exp = order.substr(12);
 		evaluating_for_debug=true;
 		is_evaluation_error=false;
-		ParseExpression(exp);
+		ParseInspection(exp);
 		if (is_evaluation_error) {
 			autoevaluaciones_valid.push_back(false);
 			autoevaluaciones.push_back(evaluation_error);
@@ -98,12 +101,12 @@ void Intercambio::SetLineNumber(int x){
 				tipo_var tipo;
 				is_evaluation_error=false;
 				string res = Evaluar(autoevaluaciones[i],tipo);
-//				if (tipo<'c')
-//					ExpError(tipo,0,LineNumber);
 				if (is_evaluation_error)
 					autoevaluacion<<"autoevaluacion "<<i+1<<' '<<evaluation_error<<'\n';
-				else
+				else {
+					if (tipo==vt_numerica) res=DblToStr(StrToDbl(res),10);
 					autoevaluacion<<"autoevaluacion "<<i+1<<' '<<res<<'\n';
+				}
 				str = autoevaluacion.str();
 				zocket_escribir(zocket,str.c_str(),str.size());
 			} else {
