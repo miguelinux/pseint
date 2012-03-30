@@ -490,11 +490,11 @@ int SynCheck() {
 			instruccion="";
 			// Pasar todo a mayusculas, cambiar comillas y corchetes
 			comillas=-1;
-			int len = cadena.size();
 
 			// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
 			SynCheckAux1(cadena);
 			
+			int len = cadena.size();
 			if (LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
 			if (LeftCompare(cadena,"BORRAR ")) { cadena="BORRAR"+cadena.substr(7); len--; }
 			// si hay un ; pegado a finalgo puede traer problema

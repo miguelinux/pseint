@@ -508,7 +508,7 @@
 114
   El conjunto de instrucciones que repite la estructura repetitiva PARA esta delimitado por la palabra clave FINPARA al final del mismo. Esta instruccion PARA que no tiene su correspondiente FINPARA (o esta mal ubicado).
   * Verifique que exista el FINPARA correspondiente a este PARA y que este bien escrito.
-  * Recuerde que FINPARA va todo junto (no FIN PARA).
+  * Recuerde que FINPARA va todo junto si su perfil no admite sintaxis flexible (no FIN PARA).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
 
 115
@@ -520,25 +520,25 @@
 116
   El conjunto de instrucciones que repite la estructura repetitiva MIENTRAS esta delimitado por la palabra clave FINMIENTRAS al final del mismo. Esta instruccion MIENTRAS que no tiene su correspondiente FINMIENTRAS (o esta mal ubicado).
   * Verifique que exista el FINMIENTRAS correspondiente a este MIENTRAS y que este bien escrito.
-  * Recuerde que FINMIENTRAS va todo junto (no FIN MIENTRAS).
+  * Recuerde que FINMIENTRAS va todo junto si su perfil no admite sintaxis flexible (no FIN MIENTRAS).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este MIENTRAS.
   * Si estaba intentando utilizar la palabra "MIENTRAS" para cerrar un bucle REPETIR...MIENTRAS QUE o HACER...MIENTRAS QUE, debe reemplazarla por "MIENTRAS QUE" para evitar la ambigüedad que se produce con el bucle MIENTRAS...FINMINETRAS. Esto solo es posible si su perfil admite sintaxis flexible.
 
 117
   El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SI-ENTONCES esta delimitado por la palabra clave FINSI al final del mismo. Esta instruccion SI que no tiene su correspondiente FINSI (o esta mal ubicado).
   * Verifique que exista el FINSI correspondiente a este SI y que este bien escrito.
-  * Recuerde que FINSI va todo junto (no FIN SI).
+  * Recuerde que FINSI va todo junto si su perfil no admite sintaxis flexible (no FIN SI).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este SI.
 
 118
   El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SEGUN esta delimitado por la palabra clave FINSEGUN al final del mismo. Esta instrucción SEGUN que no tiene su correspondiente FINSEGUN (o esta mal ubicado).
   * Verifique que exista el FINSEGUN correspondiente a este SEGUN y que este bien escrito.
-  * Recuerde que FINSEGUN va todo junto (no FIN SEGUN).
+  * Recuerde que FINSEGUN va todo junto si su perfil no admite sintaxis flexible (no FIN SEGUN).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este SEGUN.
 
 119
   El conjunto de instrucciones que conforman el proceso debe estar delimitado por las palabras claves PROCESO seguida del nombre de este al principio del mismo y FINPROCESO al final de este.
-  * Recuerde que FINPROCESO va todo junto (no FIN PROCESO).
+  * Recuerde que FINPROCESO va todo junto si su perfil no admite sintaxis flexible (no FIN PROCESO).
   * Si no lo escribió, agregue la palabra clave FINPROCESO al final del algoritmo.    
 
 120

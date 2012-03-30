@@ -794,13 +794,15 @@ bool Entity::CheckMouse(int x, int y) {
 	return false;
 }
 
+#define _tabs "    "
+
 void Entity::Print(ostream &out, string tab) {
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
 			out<<tab<<"Proceso "<<pname<<endl;
-			if (next) next->Print(out,add_tab?tab+"   ":tab);
+			if (next) next->Print(out,add_tab?tab+_tabs:tab);
 			out<<tab<<"FinProceso"<<endl;
 			return;
 		}
@@ -810,41 +812,41 @@ void Entity::Print(ostream &out, string tab) {
 		out<<tab<<"Leer "<<label<<";"<<endl;
 	} else if (type==ET_MIENTRAS) {
 		out<<tab<<"Mientras "<<label<<" Hacer"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
+		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinMientras"<<endl;
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
+		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<endl;
 	} else if (type==ET_PARA) {
 		if (variante)
 			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<endl;
 		else
 			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
+		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinPara"<<endl;
 	} else if (type==ET_SEGUN) {
 		out<<tab<<"Segun "<<label<<" Hacer"<<endl;
 		for(int i=0;i<n_child-1;i++) { 
-			child[i]->Print(out,tab+"   ");
+			child[i]->Print(out,tab+_tabs);
 		}
 		if (child[n_child-1]->child[0]) // de otro modo
-			child[n_child-1]->Print(out,tab+"   ");
+			child[n_child-1]->Print(out,tab+_tabs);
 		out<<tab<<"FinSegun"<<endl;
 	} else if (type==ET_OPCION) {
 		add_tab=true;
 		out<<tab<<label<<":"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
+		if (child[0]) child[0]->Print(out,tab+_tabs);
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<label<<" Entonces"<<endl;
-		if (child[1]) child[1]->Print(out,tab+"   ");
+		if (child[1]) child[1]->Print(out,tab+_tabs);
 		if (child[0]) out<<tab<<"Sino"<<endl;
-		if (child[0]) child[0]->Print(out,tab+"   ");
+		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinSi"<<endl;
 	} else if (type==ET_ASIGNAR) {
 		out<<tab<<label<<";"<<endl;
 	}
-	if (next) next->Print(out,add_tab?tab+"   ":tab);
+	if (next) next->Print(out,add_tab?tab+_tabs:tab);
 }
 
 Entity *Entity::all_any=NULL;

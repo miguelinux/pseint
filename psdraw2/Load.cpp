@@ -68,6 +68,19 @@ static void RemoveParentesis(string &ini) {
 	}
 }
 
+static void ReemplazarOperadores(string &str) {
+	bool comillas=false;
+	for(unsigned int i=0;i<str.size();i++) { 
+		if (str[i]=='\'' || str[i]=='\"') comillas=!comillas;
+		else if (!comillas) {
+			if (str[i]=='&') str.replace(i,1," Y ");
+			else if (str[i]=='|') str.replace(i,1," O ");
+			else if (str[i]=='~') str.replace(i,1," NO ");
+			else if (str[i]=='%') str.replace(i,1," MOD ");
+		}
+	}
+}
+
 bool Load(const char *filename) {
 	if (filename) fname=filename;
 	else { New(); return false; }
@@ -85,6 +98,7 @@ bool Load(const char *filename) {
 //		cerr<<endl;
 //		cerr<<str<<endl;
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
+		if (word_operators) ReemplazarOperadores(str);
 		bool comillas=false;
 		for (unsigned int i=0;i<str.size();i++) {
 			if (str[i]=='\''||str[i]=='\"') comillas=!comillas;

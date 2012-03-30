@@ -62,4 +62,4 @@ const float color_ghost[3]={.7,.7,.7}; // borde fantasma cuando se arrastra una 
 const float color_menu[3]={.7,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.8,.95,.95}; // fondo de los menues
 
-
+bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras

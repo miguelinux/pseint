@@ -1,6 +1,10 @@
->>RELEASE 20120328<<
+>>RELEASE 20120329<<
+
+20120329
+	En el diagrama de flujo se utilizan palabras en lugar de algunos operadores si el perfil del lenguaje lo permite.
 
 20120328
+	Corregido el estado en que queda el panel de ejecución paso a paso cuando finaliza el algoritmo.
 	Ahora se indica con una flecha en el márgen y un fondo de color la linea actual durante la ejecución paso a paso.
 	Ahora se evaluan las inspecciones en la ejecución paso a paso exáctamente igual que las un pseudocódigo.
 	Algunas mejoras visuales en el editor al arrastrar o clickear una entidad.
