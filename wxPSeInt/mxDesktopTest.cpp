@@ -98,9 +98,20 @@ void mxDesktopTest::SetDesktopVars(const wxArrayString &vars) {
 	created=true;
 }
 
+static const wxColour back_colour(245,245,245);
+static const wxColour change_colour(196,0,0);
+static const wxColour normal_colour(0,0,0);
+static const wxColour error_colour(128,128,128);
+
 void mxDesktopTest::SetAutoevaluation(long l, wxString value) {
-	if (l>0 && rows_num)
-		SetCellValue(rows_num-1,l,value);
+	if (l>0 && rows_num) SetCellValue(rows_num-1,l,value);
+	if (value.StartsWith("<<"))
+		SetCellTextColour(rows_num-1,l,error_colour);
+	else if (rows_num==1 || GetCellValue(rows_num-2,l)!=value) 
+		SetCellTextColour(rows_num-1,l,change_colour);
+	else
+		SetCellTextColour(rows_num-1,l,normal_colour);
+	SetCellBackgroundColour(rows_num-1,l,back_colour);
 }
 
 void mxDesktopTest::SetLine(long line) {

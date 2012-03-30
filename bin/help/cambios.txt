@@ -1,4 +1,7 @@
->>RELEASE 20120329<<
+>>RELEASE 2012030<<
+
+20120330
+	Ahora se utilizan colores para marcar las expresiones que cambiaron o que no pudieron ser evaluadas en la prueba de escritorio
 
 20120329
 	En el diagrama de flujo se utilizan palabras en lugar de algunos operadores si el perfil del lenguaje lo permite.
