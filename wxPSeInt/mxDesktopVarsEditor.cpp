@@ -29,7 +29,7 @@ mxDesktopVarsEditor::mxDesktopVarsEditor(wxWindow *parent) : wxDialog(parent, wx
 	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	
-	list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxSize(300,300));
+	list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxSize(300,200));
 	mid_sizer->Add(list,wxSizerFlags().Border(wxALL,5).Proportion(1).Expand());
 	wxButton *button_up = new wxButton(this,mxID_DESKTOP_LIST_UP,_T("Mover Arriba"));
 	wxButton *button_down = new wxButton(this,mxID_DESKTOP_LIST_DOWN,_T("Mover Abajo"));
@@ -60,6 +60,7 @@ mxDesktopVarsEditor::mxDesktopVarsEditor(wxWindow *parent) : wxDialog(parent, wx
 	list->InsertItems(main_window->GetDesktopVars(),0);
 	list->SetFocus();
 	SetSizerAndFit(main_sizer);
+	CenterOnParent();
 	ShowModal();
 	
 }
