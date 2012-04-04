@@ -338,7 +338,7 @@ void initialize() {
 	glutInitDisplayMode (GLUT_RGBA|GLUT_DOUBLE);
 	glutInitWindowSize (win_w,win_h);
 	glutInitWindowPosition (100,100);
-	glutCreateWindow ("PSDraw v2");
+	glutCreateWindow ((string("PSDraw v2 - ")+pname).c_str());
 	glutIdleFunc (idle_func);
 	glutDisplayFunc (display_cb);
 	glutReshapeFunc (reshape_cb);
