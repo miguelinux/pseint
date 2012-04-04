@@ -36,7 +36,7 @@ path=Draw.cpp
 cursor=262
 [source]
 path=Load.cpp
-cursor=5473
+cursor=3877
 open=true
 [source]
 path=Comm.cpp
@@ -70,7 +70,8 @@ path=Version.h
 cursor=61
 [other]
 path=../bin/help/cambios.txt
-cursor=46
+cursor=131
+open=true
 [config]
 name=Debug_Linux
 working_folder=../bin

@@ -932,7 +932,7 @@ void mxSource::SetWords() {
 
 void mxSource::EditFlow ( mxProcess *proc, int id ) {
 	flow=proc; flow_id=id;
-	SetReadOnly(proc!=NULL);
+	SetReadOnly(proc!=NULL||is_example);
 }
 
 int mxSource::GetFlowId() { 
