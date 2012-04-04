@@ -24,6 +24,7 @@ private:
 	wxSocketBase *socket;
 	int flow_id;
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
+	wxString page_text;
 public:
 	mxInputDialog *input;
 	bool sin_titulo;
@@ -35,7 +36,7 @@ public:
 	void SetIndicator(int indic, int p1, int p2);
 	void UnExample();
 	void SetExample();
-	mxSource(wxWindow *parent, wxString afilename=wxEmptyString, bool ais_example=false);
+	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString, bool ais_example=false);
 	~mxSource();
 	
 	void OnEditCut(wxCommandEvent &evt);
@@ -74,6 +75,13 @@ public:
 	void SetDebugPause(); // cambia de marcador usando la ultima linea que recibio en SetDebugLine
 	
 	bool LineHasSomething(int l); // false si esta vacia o tiene solo comentarios
+	
+	
+	void SetPageText(wxString ptext);
+	wxString GetPageText();
+	void OnSavePointReached(wxStyledTextEvent &evt);
+	void OnSavePointLeft(wxStyledTextEvent &evt);
+	
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -395,7 +395,7 @@ wxStatusBar* mxMainWindow::OnCreateStatusBar(int number, long style, wxWindowID 
 }
 
 mxSource *mxMainWindow::NewProgram() {
-	mxSource *source = new mxSource(notebook);
+	mxSource *source = new mxSource(notebook,_T("<sin_titulo>"));
 	notebook->AddPage(source,_T("<sin_titulo>"),true);
 	source->SetText(_T("Proceso sin_titulo\n\t\nFinProceso\n"));
 	source->SetIndicator(1,8,18);
@@ -419,7 +419,7 @@ void mxMainWindow::OnFileExportCpp(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->ExportCpp(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->ExportCpp(config->temp_file,true);
 	}	
 }
 
@@ -517,7 +517,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool history) {
 	if (history) 
 		RegenFileMenu(path);
 	
-	mxSource *source = new mxSource(notebook,path);
+	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
 	source->LoadFile(path);
 	return source;
@@ -545,7 +545,7 @@ void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
 			config->last_dir=dlg.GetDirectory();
 			source->SaveFile(file.GetFullPath());
 			source->SetFileName(file.GetFullPath());
-			notebook->SetPageText(notebook->GetSelection(),file.GetFullName());
+			source->SetPageText(file.GetFullName());
 			RegenFileMenu(file.GetFullPath());
 		}
 	}	
@@ -569,7 +569,7 @@ void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->Run(config->temp_file, true);
+			(new mxProcess(source,source->GetPageText()))->Run(config->temp_file, true);
 	}
 }
 
@@ -606,7 +606,7 @@ void mxMainWindow::StartDebugging(mxSource *source, bool paused) {
 	source->SaveFile(config->temp_file);
 	source->SetModify(mod);
 	debug->should_pause = paused;
-	if ( (new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->Debug(config->temp_file, true) )
+	if ( (new mxProcess(source,source->GetPageText()))->Debug(config->temp_file, true) )
 		SetDebugState(DS_STARTING);
 }
 
@@ -619,7 +619,7 @@ void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->CheckSyntax(config->temp_file);
+			(new mxProcess(source,source->GetPageText()))->CheckSyntax(config->temp_file);
 	}
 }
 
@@ -632,7 +632,7 @@ void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->Draw(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->Draw(config->temp_file,true);
 	}
 }
 
@@ -645,7 +645,7 @@ void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,notebook->GetPageText(notebook->GetSelection())))->SaveDraw(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->SaveDraw(config->temp_file,true);
 	}		
 }
 
@@ -1329,7 +1329,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		if (!printDialogData) printDialogData=new wxPrintDialogData;
 		mxSource *src=CURRENT_SOURCE;
 		wxPrinter printer(printDialogData);
-		mxPrintOut printout(src,notebook->GetPageText(notebook->GetSelection()));
+		mxPrintOut printout(src,src->GetPageText());
 		src->SetPrintMagnification(-2);
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
 		if (!printer.Print(this, &printout, true)) {
@@ -1382,7 +1382,7 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else {
-			mxProcess *flow=new mxProcess(source,notebook->GetPageText(notebook->GetSelection()));
+			mxProcess *flow=new mxProcess(source,source->GetPageText());
 			int id=flow_editor->GetNextId();
 			if (flow->DrawAndEdit(config->temp_file,id,true)) source->EditFlow(flow,id); else delete flow;
 		}

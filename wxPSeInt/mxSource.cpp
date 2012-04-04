@@ -8,6 +8,7 @@
 #include <iostream>
 #include <wx/process.h>
 #include <wx/socket.h>
+#include "mxMainWindow.h"
 using namespace std;
 
 const wxChar *mxSourceWords1 =
@@ -49,17 +50,21 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
 	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
+	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
+	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
 END_EVENT_TABLE()
 
 const wxChar *mxSource::comp_list[MAX_COMP_SIZE];
 const wxChar *mxSource::comp_text[MAX_COMP_SIZE];
 int mxSource::comp_count=-1;
 
-mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
+mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
 	flow=NULL;
 	input=NULL;
 	socket=NULL;
+	
+	page_text=ptext;
 	
 	last_s1=last_s2=0;
 	is_example=ais_example;
@@ -551,12 +556,14 @@ void mxSource::SetModify (bool modif) {
 		if (ro) SetReadOnly(false);
 		int p=GetLength()?GetSelectionStart()-1:0;
 		if (GetLength()&&p<1) p=1;
+		BeginUndoAction();
 		SetTargetStart(p); 
 		SetTargetEnd(p);
 		ReplaceTarget(_T(" "));
 		SetTargetStart(p); 
 		SetTargetEnd(p+1);
 		ReplaceTarget(_T(""));
+		EndUndoAction();
 		if (ro) SetReadOnly(true);
 	} else 
 		SetSavePoint();
@@ -985,5 +992,21 @@ bool mxSource::LineHasSomething ( int l ) {
 		if (c!='\n' && c!=' ' && c!='\r' && c!='\t' && s!=wxSTC_C_COMMENT && s!=wxSTC_C_COMMENTDOC && s!=wxSTC_C_COMMENTLINE && s!=wxSTC_C_COMMENTLINEDOC && s!=wxSTC_C_COMMENTDOCKEYWORD && s!=wxSTC_C_COMMENTDOCKEYWORDERROR) return true;
 	}
 	return false;
+}
+
+void mxSource::SetPageText (wxString ptext) {
+	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),(page_text=ptext)+(GetModify()?"*":""));
+}
+
+wxString mxSource::GetPageText ( ) {
+	return page_text;
+}
+
+void mxSource::OnSavePointReached (wxStyledTextEvent & evt) {
+	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),page_text);	
+}
+
+void mxSource::OnSavePointLeft (wxStyledTextEvent & evt) {
+	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),page_text+_T("*"));	
 }
 

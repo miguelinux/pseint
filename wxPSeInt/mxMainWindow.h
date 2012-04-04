@@ -23,6 +23,7 @@ private:
 	mxEvaluateDialog *evaluate_window;
 	friend class DebugManager;
 	mxFindDialog *find_replace_dialog;
+	friend class mxSource; // para el page_text
 	friend class mxProcess;
 	friend class mxFindDialog;
 	friend class mxDebugManager;
