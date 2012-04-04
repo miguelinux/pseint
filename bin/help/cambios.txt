@@ -1,3 +1,5 @@
+>>RELEASE 20120404<<
+
 20120403
 	Al presionar Ctrl+Z luego de indentar un bloque se deshace todo el indentado como una sola acción.
 	Al guardar para editar el diagrama o ejecutar y luego presionar Ctrl+Z ya no se mueve el cursor al comienzo del pseudocódigo.
