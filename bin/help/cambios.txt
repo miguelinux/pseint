@@ -1,3 +1,8 @@
+20120403
+	Al presionar Ctrl+Z luego de indentar un bloque se deshace todo el indentado como una sola acción.
+	Al guardar para editar el diagrama o ejecutar y luego presionar Ctrl+Z ya no se mueve el cursor al comienzo del pseudocódigo.
+	Corregido un error al dibujar diagramas de flujo con estructuras SEGUN anidadas.
+
 >>RELEASE 2012030<<
 
 20120330

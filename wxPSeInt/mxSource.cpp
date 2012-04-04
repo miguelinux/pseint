@@ -115,7 +115,7 @@ mxSource::mxSource (wxWindow *parent, wxString afilename, bool ais_example) : wx
 		comp_list[comp_count]=_T("Fin Para"); comp_text[comp_count++]=_T("Fin Para\n");
 		comp_list[comp_count]=_T("Fin Proceso"); comp_text[comp_count++]=_T("Fin Proceso\n");
 		comp_list[comp_count]=_T("Fin Segun"); comp_text[comp_count++]=_T("Fin Segun\n");
-		comp_list[comp_count]=_T("FinSi"); comp_text[comp_count++]=_T("FinSi\n");
+		comp_list[comp_count]=_T("Fin Si"); comp_text[comp_count++]=_T("Fin Si\n");
 		comp_list[comp_count]=_T("FinMientras"); comp_text[comp_count++]=_T("FinMientras\n");
 		comp_list[comp_count]=_T("FinPara"); comp_text[comp_count++]=_T("FinPara\n");
 		comp_list[comp_count]=_T("FinProceso"); comp_text[comp_count++]=_T("FinProceso\n");
@@ -549,9 +549,14 @@ void mxSource::SetModify (bool modif) {
 	if (modif) {
 		bool ro=GetReadOnly();
 		if (ro) SetReadOnly(false);
-		SetTargetStart(0); 
-		SetTargetEnd(1);
-		ReplaceTarget(GetTextRange(0,1));
+		int p=GetLength()?GetSelectionStart()-1:0;
+		if (GetLength()&&p<1) p=1;
+		SetTargetStart(p); 
+		SetTargetEnd(p);
+		ReplaceTarget(_T(" "));
+		SetTargetStart(p); 
+		SetTargetEnd(p+1);
+		ReplaceTarget(_T(""));
 		if (ro) SetReadOnly(true);
 	} else 
 		SetSavePoint();
@@ -896,11 +901,13 @@ int mxSource::GetIndentLevel(int l, bool goup, bool *segun) {
 }
 
 void mxSource::Indent(int l1, int l2) {
+	BeginUndoAction();
 	bool goup=true;
 	for (int i=l1;i<=l2;i++) {
 		IndentLine(i,goup);
 		if (goup && LineHasSomething(i)) goup=false;
 	}
+	EndUndoAction();
 }
 
 void mxSource::UnExample() {
