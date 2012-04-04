@@ -20,20 +20,20 @@ static Entity *Add(stack<int> &ids, Entity *vieja, Entity *nueva, int id=-1) {
 	if (nueva->type==ET_OPCION) ids.push(mid+(nueva->label=="De Otro Modo"?0:1)); 
 	ids.push(-1);
 	if (mid==-1) {
-cerr<<"LinkNext( "<<vieja->label<<" , "<<nueva->label<<" )\n";
+//cerr<<"LinkNext( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 		vieja->LinkNext(nueva);
 	} else { 
 		if (nueva->type==ET_OPCION) {
 			if (nueva->label=="De Otro Modo") {
-cerr<<"ChildExists( "<<vieja->n_child-1<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
+//cerr<<"ChildExists( "<<vieja->n_child-1<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
 				delete nueva; nueva=vieja->child[vieja->n_child-1]; // porque el child para dom se crea ya en el ctor del segun
 			} else {
-cerr<<"InsertChild( "<<mid<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
+//cerr<<"InsertChild( "<<mid<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
 				vieja->InsertChild(mid,nueva);
 			}
 		} else {
 			vieja->LinkChild(mid,nueva);
-cerr<<"LinkChild( "<<vieja->label<<" , "<<nueva->label<<" )\n";
+//cerr<<"LinkChild( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 		}
 	}
 	if (id!=-1) 
@@ -42,7 +42,7 @@ cerr<<"LinkChild( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 }
 
 static Entity *Up(stack<int> &ids, Entity *vieja) {
-cerr<<"Up: "<<vieja->label<<endl;
+//cerr<<"Up: "<<vieja->label<<endl;
 	int oid=ids.top();
 	ids.pop(); 
 	if (oid==-1) {
@@ -91,12 +91,12 @@ bool Load(const char *filename) {
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(file,str)) {
-stack<int> saux;
-cerr<<"ids:";
-while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
-while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
-cerr<<endl;
-cerr<<str<<endl;
+//stack<int> saux;
+//cerr<<"ids:";
+//while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
+//while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
+//cerr<<endl;
+//cerr<<str<<endl;
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
 		if (word_operators) ReemplazarOperadores(str);
 		bool comillas=false;
