@@ -31,8 +31,8 @@ mxDesktopTest::mxDesktopTest(wxWindow *parent, wxWindowID id ):wxGrid(parent,id,
 //	SetColLabelSize(wxGrid::wxGridAutoSize);
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 	SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
-	SetSelectionMode(wxGrid::wxGridSelectRows);
-	SetCellHighlightPenWidth(0);
+//	SetSelectionMode(wxGrid::wxGridSelectRows);
+//	SetCellHighlightPenWidth(0);
 	old_size=100;
 	cols_sizes=NULL;
 	created=true;
@@ -68,7 +68,8 @@ void mxDesktopTest::OnResize(wxSizeEvent &evt) {
 
 void mxDesktopTest::OnColResize(wxGridSizeEvent &evt) {
 	if (!created) return;
-	if (old_size) cols_sizes[evt.GetRowOrCol()]=GetColSize(evt.GetRowOrCol());
+	int col=evt.GetRowOrCol();
+	if (old_size && col>0) { evt.Skip(); cols_sizes[col-1]=GetColSize(col); }
 }
 
 const wxArrayString &mxDesktopTest::GetDesktopVars() {
@@ -118,6 +119,7 @@ void mxDesktopTest::SetLine(long line) {
 	InsertRows(rows_num);
 	SetCellValue(rows_num,0,wxString()<<line);
 	SelectRow(rows_num);
+	SelectCol(0);
 	MakeCellVisible(rows_num,sel_col);
 	rows_num++;
 }
@@ -128,5 +130,5 @@ void mxDesktopTest::ResetTest() {
 }
 
 void mxDesktopTest::OnSelectCell(wxGridEvent &evt) {
-	sel_col = evt.GetCol();
+	sel_col = evt.GetCol(); evt.Skip();
 }
