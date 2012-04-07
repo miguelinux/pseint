@@ -1,3 +1,7 @@
+20120407
+	Actualizada la información en la ventana de Acerda De...
+	Corregido un problema al evaluar expresiones con restas donde los operandos tienen paréntesis.
+
 20120406
 	Agregada una varianta para la instrucción Eperar para esperar un tiempo dado en segundos o milisegundos.
 	Corregido el comportamiento extraño al redimiensionar las columnas de la tabla de Prueba de Escritorio.

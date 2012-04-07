@@ -519,7 +519,7 @@ int main(int argc, char *argv[]){
 			cout<<"OK";
 			return 0;
 		} else if (string(argv[i])=="--version") {
-			cout<<"PIPEH PSExport "<<VERSION<<"-"<<ARCHITECTURE<<"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n"; 
+			cout<<"PSExport "<<VERSION<<"-"<<ARCHITECTURE<<"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n"; 
 			return 0;
 		} else if (string(argv[i])=="--help") {
 			cerr<<"Use: "<<argv[0]<<" [--basezeroarrays] <in_file.drw> <out_file.cpp>\n";

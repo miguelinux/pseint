@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "PSeInt"
 #!define PRODUCT_VERSION "20090421"
-!define PRODUCT_PUBLISHER "PIPEH"
+;!define PRODUCT_PUBLISHER "PIPEH"
 !define PRODUCT_WEB_SITE "http://pseint.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\wxPSeInt.exe"
 

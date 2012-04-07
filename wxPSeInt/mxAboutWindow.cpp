@@ -54,7 +54,7 @@ wxString mxAboutWindow::MakePageText() {
 	text<<_T("<IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("logo.png"))<<_T("\"/>");
 	text<<_T("</TD><TD>");
 	
-	text<<_T("<CENTER><B>Copyleft 2003-2011<BR>por Pablo Novara<BR>");
+	text<<_T("<CENTER><B>Copyleft 2003-2012<BR>por Pablo Novara<BR>");
 	text<<_T("zaskar_84@yahoo.com.ar<BR><BR>");
 	text<<_T("Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL<BR>(General Public License)");
 	text<<_T("<BR><BR>http://pseint.sourceforge.net</B><BR></CENTER>");
@@ -62,16 +62,19 @@ wxString mxAboutWindow::MakePageText() {
 	text<<_T("</TD></TR></TABLE></CENTER><HR><BR>");
 	
 	text<<_T("Version de la interface: ")<<VERSION<<_T("-"ARCHITECTURE"<BR><BR>");
-	wxArrayString out_int, out_drw, out_exp;
-	wxString command_int, command_drw, command_exp;
+	wxArrayString out_int, out_drw, out_exp, out_drw2;
+	wxString command_int, command_drw, command_exp, command_drw2;
 	command_int<<config->pseint_command<<_T(" --version");
 	command_drw<<config->psdraw_command<<_T(" --version");
+	command_drw2<<config->psdraw2_command<<_T(" --version");
 	command_exp<<config->psexport_command<<_T(" --version");
 	wxExecute(command_int, out_int, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_drw, out_drw, wxEXEC_SYNC|wxEXEC_NODISABLE);
+	wxExecute(command_drw2, out_drw2, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_exp, out_exp, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	text<<_T("Version del interprete: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_int.GetCount()>0?out_int[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
 	text<<_T("Version del graficador: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw.GetCount()>0?out_drw[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
+	text<<_T("Version del editor de diagramas: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw2.GetCount()>0?out_drw2[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
 	text<<_T("Version del exportador: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_exp.GetCount()>0?out_exp[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
 	
 	text<<_T("<BR><BR>");

@@ -1,4 +1,4 @@
-PIPEH Pseudo Interprete se distribuye bajo GNU General Public License. 
+Pseudo Interprete se distribuye bajo GNU General Public License. 
 
 		   GNU GENERAL PUBLIC LICENSE
 

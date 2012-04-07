@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--version") {
-			cerr<<"psedraw v2 "<<VERSION<<endl;
+			cout<<"psedraw v2 "<<VERSION<<endl;
 			return 0;
 		}
 		else if (a=="--noedit") edit_on=false;

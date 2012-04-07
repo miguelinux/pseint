@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 	if (argc==2 && string(argv[1])=="--version") {
-		cout<<"PIPEH PSDraw "<<VERSION<<"-"<<ARCHITECTURE<<"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n"; 
+		cout<<"PSDraw "<<VERSION<<"-"<<ARCHITECTURE<<"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n"; 
 		return 0;
 	}
 	
