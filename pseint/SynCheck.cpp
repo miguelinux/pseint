@@ -1297,8 +1297,8 @@ int SynCheck() {
 					SynError (105,"La instruccion no debe tener parametros."); errores++;
 					cadena.erase(cadena.find(" ",0),cadena.size()-cadena.find(" ",0));
 				}
-			if (instruccion=="BORRARPANTALLA")
-				cadena=cadena+";";
+//			if (instruccion=="BORRARPANTALLA")
+//				cadena=cadena+";";
 //			if (instruccion=="ESPERARTECLA")
 //				cadena=cadena+";";
 			if (instruccion=="Error?" && cadena!="" && cadena!=";") {
