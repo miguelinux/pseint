@@ -16,7 +16,7 @@ const wxChar *mxSourceWords1 =
 	_T("repetir mientras de otro modo escribir finpara ")
 	_T("fin finproceso finsi finmientras finsegun ")
 	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros reales enteras numericos numericas cadenas logicos logicas ")
-	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla imprimir mostrar esperar tecla esperartecla");
+	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla imprimir mostrar esperar tecla esperartecla segundos milisegundos segundo milisegundo");
 //	_T("según finsegún opción ") // scintilla no funciona con los acentos
 
 const wxChar *mxSourceWords1_op =
@@ -110,6 +110,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count]=_T("Es Par"); comp_text[comp_count++]=_T("Es Par");
 		comp_list[comp_count]=_T("Es Positivo"); comp_text[comp_count++]=_T("Es Positivo");
 		comp_list[comp_count]=_T("Escribir"); comp_text[comp_count++]=_T("Escribir ");
+		comp_list[comp_count]=_T("Esperar"); comp_text[comp_count++]=_T("Esperar ");
 		comp_list[comp_count]=_T("Esperar Tecla"); comp_text[comp_count++]=_T("Esperar Tecla;");
 		comp_list[comp_count]=_T("Hacer"); comp_text[comp_count++]=_T("Hacer\n");
 		comp_list[comp_count]=_T("Hasta"); comp_text[comp_count++]=_T("Hasta ");
@@ -130,12 +131,14 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count]=_T("Limpiar Pantalla"); comp_text[comp_count++]=_T("Limpiar Pantalla;");
 		comp_list[comp_count]=_T("Mientras"); comp_text[comp_count++]=_T("Mientras ");
 		comp_list[comp_count]=_T("Mientras Que"); comp_text[comp_count++]=_T("Mientras Que ");
+		comp_list[comp_count]=_T("Milisegundos"); comp_text[comp_count++]=_T("Milisegundos;");
 		comp_list[comp_count]=_T("Opcion "); comp_text[comp_count++]=_T("Opcion ");
 		comp_list[comp_count]=_T("Otro Modo:"); comp_text[comp_count++]=_T("Otro Modo:\n");
 		comp_list[comp_count]=_T("Para"); comp_text[comp_count++]=_T("Para ");
 		comp_list[comp_count]=_T("Proceso"); comp_text[comp_count++]=_T("Proceso ");
 		comp_list[comp_count]=_T("Repetir"); comp_text[comp_count++]=_T("Repetir\n");
 		comp_list[comp_count]=_T("Segun"); comp_text[comp_count++]=_T("Segun ");
+		comp_list[comp_count]=_T("Segundos"); comp_text[comp_count++]=_T("Segundos;");
 		comp_list[comp_count]=_T("Sin Saltar"); comp_text[comp_count++]=_T("Sin Saltar");
 		comp_list[comp_count]=_T("Sino"); comp_text[comp_count++]=_T("Sino\n");
 		comp_list[comp_count]=_T("Verdadero"); comp_text[comp_count++]=_T("Verdadero");
@@ -515,6 +518,8 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			if (GetTextRange(p-3,p+1).Upper()==_T("FIN ")) return;
 			if (text==_T("leer")||text==_T("definir"))
 				CallTipShow(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
+			else if (text==_T("esperar"))
+				CallTipShow(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
 			else if (text==_T("escribir")||text==_T("mostrar")||text==_T("imprimir"))
 				CallTipShow(GetCurrentPos(),_T("{una o mas expresiones, separadas por comas}"));
 			else if (text==_T("mientras"))

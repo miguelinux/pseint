@@ -191,6 +191,18 @@ void Ejecutar(int LineStart, int LineEnd){
 //								memoria->EscribirValor(aux2,aux1);
 //								EscribirVar(aux2,tipo,aux1); // Escribir el Dato en Memoria
 				}
+			} else
+			// ------------- ESPERAR un tiempo --------------- //
+			if (LeftCompare(cadena,"ESPERAR ")) {
+				aux2=cadena.substr(8); 
+				int factor=1;
+				if (RightCompare(aux2," SEGUNDO;")) { factor=1000; aux2.erase(aux2.size()-9); }
+				else if (RightCompare(aux2," SEGUNDOS;")) { factor=1000; aux2.erase(aux2.size()-10); }
+				if (RightCompare(aux2," MILISEGUNDO;")) { factor=1; aux2.erase(aux2.size()-13); }
+				else if (RightCompare(aux2," MILISEGUNDOS;")) { factor=1; aux2.erase(aux2.size()-14); }
+				aux2=Evaluar(aux2,tipo);
+				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
+				else Sleep(StrToDbl(aux2)*factor);
 			} else {
 				// ------------- ASIGNACION --------------- //
 				// separar variable y expresion en aux1 y aux2

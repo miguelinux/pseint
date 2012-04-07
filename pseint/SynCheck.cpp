@@ -32,16 +32,16 @@ static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 	return -1;
 }
 
-static int PSeudoFind(const string &s, string x, int from=0, int to=-1) {
-	if (to==-1) to=x.size();
-	to-=x.size()-1;
-	int p=PSeudoFind(s,x[0],from,to);
-	while (p!=-1) {
-		if (s.substr(p,x.size())==x) return p;
-		p=PSeudoFind(s,x[0],p+1,to);
-	}
-	return -1;
-}
+//static int PSeudoFind(const string &s, string x, int from=0, int to=-1) {
+//	if (to==-1) to=x.size();
+//	to-=x.size()-1;
+//	int p=PSeudoFind(s,x[0],from,to);
+//	while (p!=-1) {
+//		if (s.substr(p,x.size())==x) return p;
+//		p=PSeudoFind(s,x[0],p+1,to);
+//	}
+//	return -1;
+//}
 
 
 static bool IsNumericConstant(string &str) {
@@ -586,17 +586,21 @@ int SynCheck() {
 			} else if (LeftCompareNC(cadena,"FINSEGUN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompareNC(cadena,"ESPERARTECLA ")) {
-				instruccion="ESPERARTECLA"; cadena.erase(0,15);
+				instruccion="ESPERARTECLA"; cadena.erase(0,13);
+			} else if (LeftCompareNC(cadena,"ESPERAR UNA TECLA ")) {
+				instruccion="ESPERARTECLA"; cadena.erase(0,18);
 			} else if (LeftCompareNC(cadena,"ESPERAR TECLA ")) {
-				instruccion="ESPERARTECLA"; cadena.erase(0,16);
+				instruccion="ESPERARTECLA"; cadena.erase(0,14);
+			} else if (LeftCompareNC(cadena,"ESPERAR ")) {
+				instruccion="ESPERAR "; cadena.erase(0,8);
 			} else if (LeftCompareNC(cadena,"LIMPIARPANTALLA ")) {
-				instruccion="BORRARPANTALLA"; cadena.erase(0,17);
-			} else if (LeftCompareNC(cadena,"BORRAR PANTALLA ")) {
-				instruccion="BORRARPANTALLA"; cadena.erase(0,17);
-			} else if (LeftCompareNC(cadena,"LIMPIAR PANTALLA ")) {
-				instruccion="BORRARPANTALLA"; cadena.erase(0,18);
-			} else if (LeftCompareNC(cadena,"BORRARPANTALLA ")) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,16);
+			} else if (LeftCompareNC(cadena,"BORRAR PANTALLA ")) {
+				instruccion="BORRARPANTALLA"; cadena.erase(0,16);
+			} else if (LeftCompareNC(cadena,"LIMPIAR PANTALLA ")) {
+				instruccion="BORRARPANTALLA"; cadena.erase(0,17);
+			} else if (LeftCompareNC(cadena,"BORRARPANTALLA ")) {
+				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompareNC(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
 				if (!Proceso) bucles.push("PROCESO");bucles_line.push(LineNumber);
@@ -720,7 +724,7 @@ int SynCheck() {
 			
 			if (cadena.size()&&cadena[cadena.size()-1]==',')
 			{ SynError (31,"Parametro nulo."); errores++; }
-			while (cadena[0]==';' && cadena.size()!=0) cadena.erase(0,1);
+			while (cadena[0]==';' && cadena.size()>1) cadena.erase(0,1); // para que caso esta esto?
 			// Controlar que el si siempre tenga un entonces
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && cadena!="") {
@@ -737,7 +741,7 @@ int SynCheck() {
 			}
 			
 			// Controlar el punto y coma
-			bool lleva_pyc=instruccion=="DIMENSION " || instruccion=="DEFINIR " || instruccion=="ESCRIBIR "|| instruccion=="ESCRIBNL " || instruccion=="<-"  || instruccion=="LEER ";
+			bool lleva_pyc=instruccion=="DIMENSION " || instruccion=="DEFINIR " || instruccion=="ESCRIBIR "|| instruccion=="ESCRIBNL " || instruccion=="<-"  || instruccion=="LEER " || instruccion=="ESPERAR " || instruccion=="ESPERARTECLA" || instruccion=="BORRARPANTALLA";
 			if (lleva_pyc) {
 				if (cadena[cadena.size()-1]!=';') {
 					if (force_dot_and_comma)
@@ -752,7 +756,7 @@ int SynCheck() {
 			}
 			// Pegar la instrucción
 			if (instruccion!="." && instruccion!="Error?" && instruccion!="<-" && instruccion!=":")
-					cadena=instruccion+cadena;
+				cadena=instruccion+cadena;
 			if (cadena.size()&&cadena[cadena.size()-1]==' ') cadena.erase(cadena.size()-1,1); // Borrar espacio en blanco al final
 			// Cortar instrucciones despues de sino o entonces
 			while (cadena.size()&&cadena[cadena.size()-1]==' ') // Borrar espacios en blanco al final
@@ -877,6 +881,20 @@ int SynCheck() {
 						}
 					}
 					cadena[cadena.size()-1]=';';
+				}
+			}
+			if (instruccion=="ESPERAR "){  // ------------ ESCRIBIR -----------//
+				if (cadena=="ESPERAR" || cadena=="ESPERAR ;")
+					{SynError (217,"Faltan parametros."); errores++;}
+				else {
+					string str=cadena;
+					if (!RightCompare(cadena," SEGUNDOS")) str.erase(str.size()-9);
+					else if (!RightCompare(cadena," SEGUNDO")) str.erase(str.size()-8);
+					else if (!RightCompare(cadena," MILISEGUNDOS")) str.erase(str.size()-13);
+					else if (!RightCompare(cadena," MILISEGUNDO")) str.erase(str.size()-12);
+					else {SynError (218,"Unidad no reconocida."); errores++;}
+					Evaluar(str,tipo);
+					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;}
 				}
 			}
 			if (instruccion=="DIMENSION "){  // ------------ DIMENSION -----------//
@@ -1279,9 +1297,9 @@ int SynCheck() {
 				}
 			if (instruccion=="BORRARPANTALLA")
 				cadena=cadena+";";
-			if (instruccion=="ESPERARTECLA")
-				cadena=cadena+";";
-			if (instruccion=="Error?" && cadena!="") {
+//			if (instruccion=="ESPERARTECLA")
+//				cadena=cadena+";";
+			if (instruccion=="Error?" && cadena!="" && cadena!=";") {
 				if (LeftCompare(cadena,"FIN "))
 				{SynError (99,"Instruccion no valida."); errores++;}
 				else
@@ -1345,7 +1363,7 @@ int SynCheck() {
 			
 			if (flag_pyc==0) LineNumber++; else flag_pyc-=1;
 			// Borra cadenas vacias
-			if (cadena.size()==0) {programa.erase(programa.begin()+x,programa.begin()+x+1);x--;}
+			if (cadena.size()==0 || cadena==";") {programa.erase(programa.begin()+x,programa.begin()+x+1);x--;}
 		}
 	}
 	// Borrar lineas vacias

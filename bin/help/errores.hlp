@@ -683,3 +683,15 @@
 216
   En la estructura <A href="para.html">PARA</A>, el paso va después del valor final indicado con "HASTA &lt;val_final&gt;".
   * Reordene la instrucción siguiendo la forma: PARA <I>contador</I>&lt;-<I>val_inicial</I> HASTA <I>val_final</I> CON PASO <I>paso</I> HACER
+
+217
+  Faltan parametros para la instrucción ESPERAR. Debe colocar a continuación de la palabra clave ESPERAR un intervalo de tiempo o la palabra clave TECLA para esperar a que el usuario presone una tecla. El intervalo de tiempo debe ser un número seguido de la unidad (SEGUNDOS o MILISEGUNDOS).
+  
+218
+  Debe colocar a continuación de la palabra clave ESPERAR un intervalo de tiempo (constante, variable o expresión numérica) seguido de la unidad (SEGUNDOS o MILISEGUNDOS).
+  * Verifique que a continuación de la expresión numérica se encuentre la unidad deseada.
+  * Verifique que el nombre de la unidad de tiempo esté escrito correctamente.
+
+219
+  La cantidad de segundos/milisengundos a esperar debe ser numérica. 
+  * Verifique que la variable o expresión utilizada sea de tipo numérica.
