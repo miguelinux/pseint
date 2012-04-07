@@ -1,3 +1,10 @@
+20120406
+	Agregada una varianta para la instrucción Eperar para esperar un tiempo dado en segundos o milisegundos.
+	Corregido el comportamiento extraño al redimiensionar las columnas de la tabla de Prueba de Escritorio.
+
+20120404
+	Ya no deja de ser de solo lectura un ejemplo luego de visualizar su diagrama de flujo
+
 >>RELEASE 20120404<<
 
 20120403

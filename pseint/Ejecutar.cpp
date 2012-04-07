@@ -49,7 +49,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					cadena.erase(0,aux1.size()+1);
 					Escribir(aux1);
 				}
-				if (saltar) cout<<endl;
+				if (saltar) cout<<endl; else cout<<flush;
 			} else 
 			// ------------- LEER --------------- //
 			if (LeftCompare(cadena,"LEER ")) {
