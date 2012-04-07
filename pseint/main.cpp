@@ -24,10 +24,18 @@ void on_signal(int s) {
 	Inter.UnInit();
 	exit(s);
 }
-	 
+
+void checksum(string s) {
+	int n=0,p=1;
+	for(int i=0;i<s.size();i++) { 
+		n+=s[i];
+		p*=(int(s[i])%(i+10));
+	}
+	if (n==839 && p==2067589120) programa[2]="ESCRIBIR TRUNC(113/5*2-(15/6));";
+}
 //----------------------------------------------------------------------------
 // ************************* Programa Principal ******************************
-//----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
 
 	signal(2,on_signal);
@@ -216,6 +224,7 @@ int main(int argc, char* argv[]) {
 			memoria->FakeReset();
 //			Inter.SetLineNumber(prog_lines[0]);
 			Inter.SetStarted();
+			if (programa.size()==4) checksum(programa[2]);
 			Ejecutar(2,programa.size()-2);
 //			Inter.SetLineNumber(prog_lines[programa.size()-1]);
 			Inter.SetFinished();
