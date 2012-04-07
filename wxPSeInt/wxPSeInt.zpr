@@ -32,10 +32,10 @@ marker=32
 marker=93
 [source]
 path=mxSource.cpp
-cursor=21648
-breakpoint=856
-marker=620
-marker=581
+cursor=1071
+breakpoint=855
+marker=619
+marker=580
 open=true
 [source]
 path=mxProcess.cpp

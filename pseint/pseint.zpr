@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/errores.hlp
+current_source=SynCheck.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -20,15 +20,15 @@ cursor=2708
 [source]
 path=intercambio.cpp
 cursor=3478
-marker=37
 marker=190
+marker=37
 [source]
 path=SynCheck.cpp
-cursor=38267
-breakpoint=1305
+cursor=38316
+breakpoint=869
 breakpoint=590
-marker=722
-marker=248
+breakpoint=1307
+marker=895
 open=true
 [source]
 path=Ejecutar.cpp
@@ -52,14 +52,14 @@ cursor=2812
 [source]
 path=new_evaluar.cpp
 cursor=10064
-breakpoint=336
-breakpoint=485
-breakpoint=449
-breakpoint=685
-breakpoint=427
-breakpoint=445
-breakpoint=464
 breakpoint=581
+breakpoint=464
+breakpoint=445
+breakpoint=427
+breakpoint=685
+breakpoint=449
+breakpoint=485
+breakpoint=336
 marker=633
 marker=632
 open=true
@@ -117,7 +117,7 @@ open=true
 name=Linux_Debug
 working_folder=../bin
 always_ask_args=0
-args=/home/zaskar/.pseint/temp.psc --color  --forceinitvars --noinput --input=1
+args=/home/zaskar/.pseint/temp.psc --color  --noinput --input=1
 wait_for_key=1
 temp_folder=../temp/int_lnx_dbg
 output_file=../temp/int_lnx_dbg/pseint

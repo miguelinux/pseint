@@ -887,14 +887,16 @@ int SynCheck() {
 				if (cadena=="ESPERAR" || cadena=="ESPERAR ;")
 					{SynError (217,"Faltan parametros."); errores++;}
 				else {
-					string str=cadena;
-					if (!RightCompare(cadena," SEGUNDOS")) str.erase(str.size()-9);
-					else if (!RightCompare(cadena," SEGUNDO")) str.erase(str.size()-8);
-					else if (!RightCompare(cadena," MILISEGUNDOS")) str.erase(str.size()-13);
-					else if (!RightCompare(cadena," MILISEGUNDO")) str.erase(str.size()-12);
-					else {SynError (218,"Unidad no reconocida."); errores++;}
+					string str=cadena.substr(8);
+					if (RightCompare(cadena," SEGUNDOS;")) str.erase(str.size()-10);
+					else if (RightCompare(cadena," SEGUNDO;")) str.erase(str.size()-9);
+					else if (RightCompare(cadena," MILISEGUNDOS;")) str.erase(str.size()-14);
+					else if (RightCompare(cadena," MILISEGUNDO;")) str.erase(str.size()-13);
+					else {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
 					Evaluar(str,tipo);
-					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;}
+					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
+						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (120,"Se esperaba una sola expresión."); errores++;}
+					}
 				}
 			}
 			if (instruccion=="DIMENSION "){  // ------------ DIMENSION -----------//
