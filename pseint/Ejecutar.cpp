@@ -154,7 +154,7 @@ void Ejecutar(int LineStart, int LineEnd){
 //								else
 							ExeError(122,"No coinciden los tipos.");
 					dim[tmp3]=(int)StrToDbl(cadena);
-					if (dim[tmp3]<=1) {
+					if (dim[tmp3]<=0) {
 						ExeError(999,"Las dimensiones deben ser mayores a 0.");
 					}
 					tmp3++; last=tmp1+1; tmp1++;

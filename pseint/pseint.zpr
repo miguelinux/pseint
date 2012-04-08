@@ -12,11 +12,11 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=main.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp
-cursor=0
+cursor=817
 open=true
 [source]
 path=intercambio.cpp
@@ -32,7 +32,7 @@ breakpoint=869
 marker=895
 [source]
 path=Ejecutar.cpp
-cursor=0
+cursor=5407
 marker=355
 marker=161
 open=true
@@ -110,7 +110,7 @@ path=new_funciones.h
 cursor=208
 [other]
 path=../bin/help/cambios.txt
-cursor=0
+cursor=57
 open=true
 [other]
 path=../bin/help/errores.hlp
