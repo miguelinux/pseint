@@ -1,3 +1,6 @@
+20120409
+	Parcheados los makefiles para Mac para que momentáneamente se compile sin el editor de diagramas de flujo hasta que logre compilar las dependencias.
+	
 20120408
 	Ahora se permiten arreglos de un solo elemento.
 

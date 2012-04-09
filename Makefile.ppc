@@ -1,7 +1,7 @@
 all: 
 	make -C pseint -f Makefile.ppc
 	make -C psdraw -f Makefile.ppc
-	make -C psdraw2 -f Makefile.ppc
+#	make -C psdraw2 -f Makefile.ppc
 	make -C psexport -f Makefile.ppc
 	make -C wxPSeInt -f Makefile.ppc
 	make -C updatem -f Makefile.ppc
@@ -9,7 +9,7 @@ all:
 clean: 
 	make -C pseint -f Makefile.ppc clean
 	make -C psdraw -f Makefile.ppc clean
-	make -C psdraw2 -f Makefile.ppc clean
+#	make -C psdraw2 -f Makefile.ppc clean
 	make -C psexport -f Makefile.ppc clean
 	make -C wxPSeInt -f Makefile.ppc clean
 	make -C updatem -f Makefile.ppc clean

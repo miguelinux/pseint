@@ -202,7 +202,7 @@ void Ejecutar(int LineStart, int LineEnd){
 				else if (RightCompare(aux2," MILISEGUNDOS;")) { factor=1; aux2.erase(aux2.size()-14); }
 				aux2=Evaluar(aux2,tipo);
 				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
-				else Sleep(StrToDbl(aux2)*factor);
+				else Sleep(int(StrToDbl(aux2)*factor));
 			} else {
 				// ------------- ASIGNACION --------------- //
 				// separar variable y expresion en aux1 y aux2
