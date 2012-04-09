@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=main.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp

@@ -19,7 +19,7 @@ path=Application.cpp
 cursor=431
 [source]
 path=mxMainWindow.cpp
-cursor=8880
+cursor=17086
 breakpoint=1144
 marker=1314
 marker=597
@@ -118,7 +118,7 @@ path=mxProcess.h
 cursor=0
 [header]
 path=version.h
-cursor=0
+cursor=24
 open=true
 [header]
 path=ids.h
