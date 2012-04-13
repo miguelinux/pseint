@@ -9,6 +9,7 @@ tipo_var DeterminarTipo(string &expresion, int p1, int p2);
 bool AplicarTipo(string &expresion, int &p1, int &p2, tipo_var tipo);
 string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo);
 string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo=vt_desconocido);
+string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo=vt_desconocido);
 
 #endif
 

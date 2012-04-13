@@ -883,7 +883,7 @@ int SynCheck() {
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
 							if (Lerrores==errores) 
-								Evaluar(str,tipo);
+								EvaluarSC(str,tipo);
 //							if (tipo<'c')
 //							{ ExpError(tipo,0); errores++;}
 							tmp3=tmp1+1;
@@ -902,7 +902,7 @@ int SynCheck() {
 					else if (RightCompare(cadena," MILISEGUNDOS;")) str.erase(str.size()-14);
 					else if (RightCompare(cadena," MILISEGUNDO;")) str.erase(str.size()-13);
 					else {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
-					Evaluar(str,tipo);
+					EvaluarSC(str,tipo);
 					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
 						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (120,"Se esperaba una sola expresión."); errores++;}
 					}
@@ -952,7 +952,7 @@ int SynCheck() {
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
 									{SynError (61,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) Evaluar(str2,tipo);
+									if (Lerrores==errores) EvaluarSC(str2,tipo);
 									if (!tipo.cb_num)
 //										if (tipo<'c')
 //										{ ExpError(tipo,0); errores++;}
@@ -1013,7 +1013,7 @@ int SynCheck() {
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) Evaluar(str2,tipo);
+									if (Lerrores==errores) EvaluarSC(str2,tipo);
 									if (!tipo.cb_num)
 //										if (tipo<'c')
 //										{ ExpError(tipo,0); errores++;}
@@ -1048,13 +1048,13 @@ int SynCheck() {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
 							if (!CheckVariable(str)) {SynError (74,"Identificador no valido."); errores++;}
 							else {
-								if (Lerrores==errores) Evaluar(str,tipo);
+								if (Lerrores==errores) EvaluarSC(str,tipo);
 								if (!tipo.cb_num)
 									{SynError (76,"No coinciden los tipos."); errores++;}
 								str=cadena;
 								str.erase(0,str.find("<-")+2);
 								str.erase(str.find(" "),str.size()-str.find(" ",0));
-								if (Lerrores==errores) Evaluar(str,tipo);
+								if (Lerrores==errores) EvaluarSC(str,tipo);
 //								else
 									if (!tipo.cb_num)
 										{SynError (77,"No coinciden los tipos."); errores++;}
@@ -1083,12 +1083,12 @@ int SynCheck() {
 										else {
 											str.erase(0,7); str.erase(str.size()-6,6);
 											if (str.find(" ",0)<0 || str.find(" ",0)>str.size()) {
-												if (Lerrores==errores) Evaluar(str,tipo);
+												if (Lerrores==errores) EvaluarSC(str,tipo);
 												if (!tipo.cb_num)
 													{SynError (80,"No coinciden los tipos."); errores++;}
 											} else {
 												str.erase(str.find(" ",0),str.size()-str.find(" ",0));
-												if (Lerrores==errores) Evaluar(str,tipo);
+												if (Lerrores==errores) EvaluarSC(str,tipo);
 												if (!tipo.cb_num)
 													{SynError (81,"No coinciden los tipos."); errores++;}
 												str=cadena; // comprobar con paso
@@ -1099,7 +1099,7 @@ int SynCheck() {
 												{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
 												else {
 													str.erase(0,9);
-													Evaluar(str,tipo);
+													EvaluarSC(str,tipo);
 													if (!tipo.cb_num)
 														{SynError (84,"No coinciden los tipos."); errores++;}
 												}
@@ -1140,7 +1140,7 @@ int SynCheck() {
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',p+1))!=-1) {
 					tipo=vt_caracter_o_numerica;
-					Evaluar(cadena.substr(i,p-i-1),tipo);
+					EvaluarSC(cadena.substr(i,p-i-1),tipo);
 					if (!tipo.cb_num&&(!tipo.cb_car||!lazy_syntax))
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
@@ -1173,7 +1173,7 @@ int SynCheck() {
 					{SynError (89,"Asignacion incompleta."); errores++;}
 					else {
 						str.erase(str.size()-1,1);
-						if (Lerrores==errores) Evaluar(str,tipo);
+						if (Lerrores==errores) EvaluarSC(str,tipo);
 						if (!memoria->LeerTipo(vname).can_be(tipo))
 						{ SynError(125,"No coinciden los tipos."); errores++; }
 						memoria->DefinirTipo(vname,tipo);
@@ -1201,7 +1201,7 @@ int SynCheck() {
 						}
 				}
 				tipo=vt_logica;
-				if (Lerrores==errores) Evaluar(str,tipo);
+				if (Lerrores==errores) EvaluarSC(str,tipo);
 				if (!tipo.cb_log) /// porque estaba comentado este if?????
 						{ SynError (92,"No coinciden los tipos."); errores++; }
 			}
@@ -1223,7 +1223,7 @@ int SynCheck() {
 						str=str.substr(0,str.size()-1);
 						cadena=cadena.substr(0,cadena.size()-1);
 					}
-					if (Lerrores==errores) Evaluar(str,tipo);
+					if (Lerrores==errores) EvaluarSC(str,tipo);
 	//				if (!tipo.cb_log)
 	////					if (tipo<'c')
 	////					{ ExpError(tipo,0); errores++;}
@@ -1252,7 +1252,7 @@ int SynCheck() {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|')
 								{SynError (98,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (Lerrores==errores) Evaluar(str,tipo);
+						if (Lerrores==errores) EvaluarSC(str,tipo);
 						if (!tipo.cb_num)
 //							if (tipo<'c')
 //							{ ExpError(tipo,0); errores++;}
@@ -1292,7 +1292,7 @@ int SynCheck() {
 								}
 						}
 						if (Lerrores==errores) {
-							Evaluar(str,tipo);
+							EvaluarSC(str,tipo);
 							if (tipo!=vt_error && !tipo.cb_log)
 //							if (tipo<'c')
 //							{ ExpError(tipo,0); errores++;}

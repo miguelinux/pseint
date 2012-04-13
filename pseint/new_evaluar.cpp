@@ -625,6 +625,21 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	ev_return("");
 }
 
+// wrapper para llamar al Evaluar que sigue desde SynCheck, para que verifique que no falten operandos al principio o al final
+string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
+	if (expresion.size()) {
+		char c0=expresion[0];
+		char c1=expresion[expresion.size()-1];
+		if (c0=='*'||c0=='='||c0=='<'||c0=='/'||c0=='&'||c0=='%'||c0=='>'||c0=='|'||c0=='^') {
+			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
+		}
+		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^') {
+			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
+		}
+	}
+	return Evaluar(expresion,tipo,forced_tipo);
+}
+
 // recibe la expresion a evaluar y el tipo con la info de que puede llegar a ser
 // devuelve el resultado si se pudo evaluar y el tipo en tipo, sino "" y vt_error
 string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
