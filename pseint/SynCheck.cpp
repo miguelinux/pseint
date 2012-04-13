@@ -53,15 +53,15 @@ static bool IsNumericConstant(string &str) {
 
 // pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
 static void SynCheckAux1(string &cadena) {
-	int comillas=-1;
+	bool comillas=false;
 	int len = cadena.size();
 	for (int tmp=0;tmp<len;tmp++) {
-		if (comillas<0 && tmp>0 && cadena[tmp]=='/' && cadena[tmp-1]=='/')
+		if (!comillas && tmp>0 && cadena[tmp]=='/' && cadena[tmp-1]=='/')
 			{ cadena=cadena.substr(0,tmp-1); len=tmp-1; break; }
 		if (cadena[tmp]=='\"') cadena[tmp]='\'';
 		if (cadena[tmp]=='\'')
-			comillas=-comillas;
-		else if (comillas<0) {
+			comillas=!comillas;
+		else if (!comillas) {
 			if (cadena[tmp]=='[') cadena[tmp]='(';
 			if (cadena[tmp]==']') cadena[tmp]=')';
 			if (cadena[tmp]==9) cadena[tmp]=' ';
@@ -81,6 +81,15 @@ static void SynCheckAux1(string &cadena) {
 	// Borrar espacios en blanco al principio y al final
 	while (cadena.size() && cadena[0]==' ') {cadena.erase(0,1); len--;}
 	while (cadena.size() && cadena[cadena.size()-1]==' ') {cadena.erase(cadena.size()-1,1);; len--;}
+	// agregar espacios para evitar que cosas como "SI(x<2)ENTONCES" generen un error
+	comillas=false;
+	for(int i=0;i<len;i++) { 
+		if (cadena[i]=='\'') comillas=!comillas;
+		else if (!comillas) {
+			if (cadena[i]=='(' && i>0 && cadena[i-1]>='A' && cadena[i-1]<='Z') { cadena.insert(i," "); len++; }
+			if (cadena[i]==')' && i+2<len && cadena[i+1]>='A' && cadena[i+1]<='Z') { cadena.insert(i+1," "); len++; }
+		}
+	}
 }
 
 // reescribir condiciones coloquiales
