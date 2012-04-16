@@ -89,6 +89,9 @@ void Ejecutar(int LineStart, int LineEnd){
 						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
 					} else
 						getline(cin,aux1);  
+					
+					fixwincharset(aux1,true); // "descorrige" para que al corregir no traiga problemas
+					
 					if (toUpper(aux1)=="VERDADERO" || toUpper(aux1)=="FALSO") aux1=toUpper(aux1);
 					
 					if (tipo==vt_logica && aux1.size()==1 && (toupper(aux1[0])=='F'||aux1[0]=='0')) aux1=FALSO;

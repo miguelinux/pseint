@@ -44,6 +44,7 @@ static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 //}
 
 
+// para checkear que las dimensiones de los arreglos no involucren variables
 static bool IsNumericConstant(string &str) {
 	for (unsigned int i=0;i<str.size();i++)
 		if ( str[i]>='A' && str[i]<='Z' )
@@ -56,25 +57,34 @@ static void SynCheckAux1(string &cadena) {
 	bool comillas=false;
 	int len = cadena.size();
 	for (int tmp=0;tmp<len;tmp++) {
-		if (!comillas && tmp>0 && cadena[tmp]=='/' && cadena[tmp-1]=='/')
+		char &c=cadena[tmp];
+		if (!comillas && tmp>0 && c=='/' && cadena[tmp-1]=='/')
 			{ cadena=cadena.substr(0,tmp-1); len=tmp-1; break; }
-		if (cadena[tmp]=='\"') cadena[tmp]='\'';
-		if (cadena[tmp]=='\'')
+		if (c=='\"') c='\'';
+		if (c=='\'')
 			comillas=!comillas;
 		else if (!comillas) {
-			if (cadena[tmp]=='[') cadena[tmp]='(';
-			if (cadena[tmp]==']') cadena[tmp]=')';
-			if (cadena[tmp]==9) cadena[tmp]=' ';
-			if (cadena[tmp]>96 && cadena[tmp]<123) cadena[tmp]-=32;
+			if (c=='[') c='(';
+			else if (c==']') c=')';
+			else if (c==9) c=' ';
+			// pasar a mayusculas (solo importa la ú por el según, las otras importarán cuando permita variables con ñs y acentos
+			else if (c>96 && c<123) c-=32;
+			else if (c=='á') c='á';
+			else if (c=='é') c='é';
+			else if (c=='í') c='í';
+			else if (c=='ó') c='ó';
+			else if (c=='ú') c='ú';
+			else if (c=='ü') c='Ü';
+			else if (c=='ñ') c='Ñ';
 			if (word_operators) {
-				if (cadena[tmp]=='Y' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
-					cadena[tmp]='&';
-				if (cadena[tmp]=='O' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
-					cadena[tmp]='|';
-				if (cadena[tmp]=='O' && tmp>0 && cadena[tmp-1]=='N' && (tmp-1==0 || !parteDePalabra(cadena[tmp-2])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
-				{ cadena[tmp-1]=' '; cadena[tmp]='~'; }
-				if (cadena[tmp]=='D' && tmp>1 && cadena[tmp-1]=='O' && cadena[tmp-2]=='M' && (tmp-2==0 || !parteDePalabra(cadena[tmp-3])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
-				{ cadena[tmp]='%'; cadena[tmp-1]=' '; cadena[tmp-2]=' '; }
+				if (c=='Y' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
+					c='&';
+				if (c=='O' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
+					c='|';
+				if (c=='O' && tmp>0 && cadena[tmp-1]=='N' && (tmp-1==0 || !parteDePalabra(cadena[tmp-2])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
+				{ cadena[tmp-1]=' '; c='~'; }
+				if (c=='D' && tmp>1 && cadena[tmp-1]=='O' && cadena[tmp-2]=='M' && (tmp-2==0 || !parteDePalabra(cadena[tmp-3])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
+				{ c='%'; cadena[tmp-1]=' '; cadena[tmp-2]=' '; }
 			}
 		}
 	}

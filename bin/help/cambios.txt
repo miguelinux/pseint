@@ -1,3 +1,11 @@
+2012040416
+	Agregado un argumento especial al intérprete para corregir la codificación de acentos y eñes para la consola de Windows.
+	Agregadas en el coloreado y en el autocompletado algunas diferencias entre sintaxis flexible activada y desactivada.
+
+2012040414
+	Ahora se verifica correctamente que no falten operandos al comienzo o al final de una expresión.
+	Corregido el problema de las palabras claves pegadas a las expresiones con parentesis.
+
 >>RELEASE 20120409<<
 
 20120409

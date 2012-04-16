@@ -102,6 +102,8 @@ int main(int argc, char* argv[]) {
 				force_dot_and_comma=true;
 			else if (str=="--coloquialconditions")
 				coloquial_conditions=word_operators=true;
+			else if (str=="--fixwincharset")
+				fix_win_charset=true;
 			else if (str=="--draw") {
 				draw=true;
 				run=false;
@@ -147,6 +149,8 @@ int main(int argc, char* argv[]) {
 		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
 		cout<<"      --noinput              en lugar realizar las lecturas desde el teclado, lo hace desde los argumentos"<<endl;
 		cout<<"      --input=<str>          sirve para predefinir uno o más valores de entrada para acciones LEER"<<endl;
+		cout<<"      --fixwincharset        corrige la codificación de algunos caracteres para que se muestren correctamente"<<endl;
+		cout<<"                             en la consola de Windows"<<endl;
 		exit(1);
 	}
 	

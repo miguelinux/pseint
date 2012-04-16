@@ -137,8 +137,10 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	temp = config->temp_out;
 	temp<<_T(".")<<cont;
 	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
-	if (config->use_colors)
-		command<<_T(" --color");
+	if (config->use_colors) command<<_T(" --color");
+#ifdef __WIN32__
+	command<<" --fixwincharset";
+#endif
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 //	cerr<<command<<endl;
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;

@@ -514,9 +514,12 @@ void Escribir(string aux1) {
 	if (x!=vt_error) {
 		if (x==vt_numerica)
 			aux1=DblToStr(StrToDbl(aux1),10);
-		else if (aux1[0]=='\'') {
-			aux1.erase(0,1);
-			aux1.erase(aux1.size()-1,1);
+		else {
+			fixwincharset(aux1);
+//			if (aux1[0]=='\'') { // esto no debería pasar nunca
+//				aux1.erase(0,1);
+//				aux1.erase(aux1.size()-1,1);
+//			}
 		}
 		cout<<aux1; // Si es variable, muestra el contenido
 	}
@@ -678,4 +681,49 @@ string CutString(string s, int a, int b){
 // determina si una letra puede ser parte de una palabra clave o identificador
 bool parteDePalabra(char c) {
 	return ((c>='a' && c<='z') || (c>='A' && c<='Z') || c=='_' || (c>='0' && c<='9'));
+}
+
+void fixwincharset(string &s, bool reverse) {
+	if (!fix_win_charset) return;
+	if (reverse) {
+		for(unsigned int i=0;i<s.size();i++) { 
+			char &c=s[i];
+			if (c==-96) c='á';
+			if (c==-126) c='é';
+			if (c==-95) c='í';
+			if (c==-94) c='ó';
+			if (c==-93) c='ú';
+			if (c==-75) c='Á';
+			if (c==-112) c='É';
+			if (c==-42) c='Í';
+			if (c==-32) c='Ó';
+			if (c==-23) c='Ú';
+			if (c==-92) c='ñ';
+			if (c==-91) c='Ñ';
+			if (c==-83) c='¡';
+			if (c==-88) c='¿';
+			if (c==-127) c='ü';
+			if (c==-102) c='Ü';
+		}
+	} else {
+		for(unsigned int i=0;i<s.size();i++) { 
+			char &c=s[i];
+			if (c=='á') c=-96;
+			if (c=='é') c=-126;
+			if (c=='í') c=-95;
+			if (c=='ó') c=-94;
+			if (c=='ú') c=-93;
+			if (c=='Á') c=-75;
+			if (c=='É') c=-112;
+			if (c=='Í') c=-42;
+			if (c=='Ó') c=-32;
+			if (c=='Ú') c=-23;
+			if (c=='ñ') c=-92;
+			if (c=='Ñ') c=-91;
+			if (c=='¡') c=-83;
+			if (c=='¿') c=-88;
+			if (c=='ü') c=-127;
+			if (c=='Ü') c=-102;
+		}
+	}
 }

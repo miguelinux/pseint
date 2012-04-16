@@ -15,15 +15,15 @@ const wxChar *mxSourceWords1 =
 	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
 	_T("repetir mientras de otro modo escribir finpara ")
 	_T("fin finproceso finsi finmientras finsegun ")
-	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros reales enteras numericos numericas cadenas logicos logicas ")
-	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla imprimir mostrar esperar tecla esperartecla segundos milisegundos segundo milisegundo");
+	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros real reales enteras numericos numericas cadenas logicos logicas ")
+	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ");
 //	_T("según finsegún opción ") // scintilla no funciona con los acentos
 
 const wxChar *mxSourceWords1_op =
 	_T(" y no o mod ");
 
 const wxChar *mxSourceWords1_extra =
-	_T("es sies sinsaltar sin saltar sinbajar bajar opcion caso desde imprimir cada ");
+	_T("es sies opcion caso desde imprimir cada mostrar ");
 
 const wxChar *mxSourceWords1_conds =
 	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor");

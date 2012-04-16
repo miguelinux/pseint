@@ -136,4 +136,7 @@ string CutString(string s, int a, int b=0);
 // determina si una letra puede ser parte de una palabra clave o identificador
 bool parteDePalabra(char c) ;
 
+// corrige diferencias entre la codificación que usa pseint (ascii pelado) y la de la consola de windows
+void fixwincharset(string &s, bool reverse=false);
+
 #endif
