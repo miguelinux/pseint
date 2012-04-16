@@ -206,7 +206,7 @@ bool Load(const char *filename) {
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
 		}
 	}
-	aux->LinkNext(new Entity(ET_PROCESO,"FinProceso"));
+	aux->LinkNext(new Entity(ET_PROCESO,"Fin"));
 	start->Calculate();
 	ProcessMenu(MO_ZOOM_EXTEND);
 	modified=false;

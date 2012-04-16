@@ -54,7 +54,7 @@ bool CheckVariable(string str) ;
 // ------------------------------------------------------------
 //    Comprueba que sea un identificador correcto y unico
 // ------------------------------------------------------------
-bool CheckVariableForW(string str) ;
+//bool CheckVariableForW(string str) ;
 
 
 // *********************** Funciones Auxiliares **************************

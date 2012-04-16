@@ -373,6 +373,13 @@ static int Ptn218[]={   /* Ú */
 		1,2,50,105,70,120,
 		-1
 };
+static int Ptn220[]={   /* Ú */
+	220,
+		1,6,0,100,0,16,25,0,75,0,100,16,100,100,
+		1,2,70,105,70,120,
+		1,2,30,105,30,120,
+		-1
+};
 static int Ptn086[]={   /* V */
 	86,
 		1,3,0,100,50,0,100,100,
@@ -586,6 +593,14 @@ static int Ptn250[]={   /* ú */
 		1,2,50,75,70,90,
 		-1
 };
+static int Ptn252[]={   /* ú */
+	252,
+		1,5,12,58,12,8,25,0,62,0,87,8,
+		1,2,87,58,87,0,
+		1,2,30,75,30,90,
+		1,2,70,75,70,90,
+		-1
+};
 static int Ptn118[]={   /* v */
 	118,
 		1,3,12,58,50,0,87,58,
@@ -649,9 +664,9 @@ static int *YsUglyFontSet[]=
 			NULL  ,Ptn161,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
 			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn191,
 			NULL  ,Ptn193,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn201,NULL  ,NULL  ,NULL  ,Ptn205,NULL  ,NULL  ,
-			NULL  ,Ptn209,NULL  ,Ptn211,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn218,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+			NULL  ,Ptn209,NULL  ,Ptn211,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn218,NULL  ,Ptn220,NULL  ,NULL  ,NULL  ,
 			NULL  ,Ptn225,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn233,NULL  ,NULL  ,NULL  ,Ptn237,NULL  ,NULL  ,
-			NULL  ,Ptn241,NULL  ,Ptn243,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn250,NULL  ,NULL  ,NULL  ,NULL  ,NULL  
+			NULL  ,Ptn241,NULL  ,Ptn243,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn250,NULL  ,Ptn252,NULL  ,NULL  ,NULL  
 	};
 
 
