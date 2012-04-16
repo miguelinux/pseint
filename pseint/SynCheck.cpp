@@ -44,11 +44,11 @@ static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 //}
 
 
+
 // para checkear que las dimensiones de los arreglos no involucren variables
 static bool IsNumericConstant(string &str) {
 	for (unsigned int i=0;i<str.size();i++)
-		if ( str[i]>='A' && str[i]<='Z' )
-			return false;
+		if (EsLetra(str[i])) return false;
 	return true;
 }
 
@@ -56,14 +56,14 @@ static bool IsNumericConstant(string &str) {
 static void SynCheckAux1(string &cadena) {
 	bool comillas=false;
 	int len = cadena.size();
+	// primero, todo a mayúsculas y cambio de comillas y paréntesis
 	for (int tmp=0;tmp<len;tmp++) {
 		char &c=cadena[tmp];
 		if (!comillas && tmp>0 && c=='/' && cadena[tmp-1]=='/')
 			{ cadena=cadena.substr(0,tmp-1); len=tmp-1; break; }
-		if (c=='\"') c='\'';
-		if (c=='\'')
-			comillas=!comillas;
-		else if (!comillas) {
+		if (c=='\"' || c=='\'') { 
+			c='\''; comillas=!comillas;
+		} else if (!comillas) {
 			if (c=='[') c='(';
 			else if (c==']') c=')';
 			else if (c==9) c=' ';
@@ -76,7 +76,15 @@ static void SynCheckAux1(string &cadena) {
 			else if (c=='ú') c='ú';
 			else if (c=='ü') c='Ü';
 			else if (c=='ñ') c='Ñ';
-			if (word_operators) {
+		}
+	}
+	// desues, word_operators
+	if (word_operators) {
+		comillas=false;
+		for (int tmp=0;tmp<len;tmp++) {
+			char &c=cadena[tmp];
+			if (c=='\'') comillas=!comillas;
+			else if (!comillas) {
 				if (c=='Y' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
 					c='&';
 				if (c=='O' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
@@ -96,8 +104,8 @@ static void SynCheckAux1(string &cadena) {
 	for(int i=0;i<len;i++) { 
 		if (cadena[i]=='\'') comillas=!comillas;
 		else if (!comillas) {
-			if (cadena[i]=='(' && i>0 && cadena[i-1]>='A' && cadena[i-1]<='Z') { cadena.insert(i," "); len++; }
-			if (cadena[i]==')' && i+2<len && cadena[i+1]>='A' && cadena[i+1]<='Z') { cadena.insert(i+1," "); len++; }
+			if (cadena[i]=='(' && i>0 && EsLetra(cadena[i-1])) { cadena.insert(i," "); len++; }
+			if (cadena[i]==')' && i+2<len && EsLetra(cadena[i+1])) { cadena.insert(i+1," "); len++; }
 		}
 	}
 }
@@ -280,12 +288,12 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 		if (comillas<0) {
 			if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='%'
 				|| act=='&' || act=='=' || act=='^' || act=='~' || act==')' || act=='(' ||act=='<' || act=='>' ) Numero=0;
-			if (Numero==0 && act>='A' && act<='Z') Numero=-1;
+			if (Numero==0 && EsLetra(act)) Numero=-1;
 			if (Numero==0 && act>='.' && act<='9' && act!='/') Numero=1;
 			if (Numero==2 && act=='.')
 			{SynError (4,"Constante o Identificador no valido."); errores++; Numero=-1;}
 			if (Numero==1 && act=='.') Numero=2;
-			if (Numero>0 && ((act>='A' && act<='Z') || act=='(' || act=='\''))
+			if (Numero>0 && (EsLetra(act) || act=='(' || act=='\''))
 			{SynError (5,"Constante o Identificador no valido."); errores++; Numero=-1;}
 		}
 		// Contar comillas
@@ -297,7 +305,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 				if (last==')' || last=='/' || last=='*' || last=='^' || last=='&' || last=='%' ||
 					last=='|' || last=='~' || (last=='.' && y!=0) || (last=='+'&&!allow_concatenation) || (last=='-' && lastb!='<'))
 					{SynError (6,"Operador incorrecto."); errores++;}
-					if (last>='A' && last<='Z')
+					if (EsLetra(last))
 					{SynError (7,"Se esperaba espacio o coma."); errores++;}
 					if (last>='.' && last<='9' && last!=47 && y!=0)
 					{SynError (8,"Se esperaba espacio o coma."); errores++;}
@@ -308,7 +316,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 						cadena[y+1]=='|' || cadena[y+1]=='~' || cadena[y+1]=='.' || cadena[y+1]=='%' ||
 						(cadena[y+1]=='+'&&!allow_concatenation) || cadena[y+1]=='-' )
 					{SynError (9,"Operador incorrecto."); errores++;}
-				if (cadena[y+1]>='A' && cadena[y+1]<='Z')
+				if (EsLetra(cadena[y+1]))
 				{SynError (10,"Se esperaba espacio o coma."); errores++;}
 				if (cadena[y+1]>='.' && cadena[y+1]<='9' && cadena[y+1]!=47)
 				{SynError (11,"Se esperaba espacio o coma."); errores++;}
@@ -320,13 +328,13 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 				// Corroborar caracteres validos
 				if (act=='{' || act=='}') 
 				{SynError (68,"Caracter no valido."); errores++;}
-				else if ((act<65 || act>90) && act!=' ' && act!='^'
+				else if (!EsLetra(act) && act!=' ' && act!='^'
 					&& act!='+' && act!='(' && act!='\'' && act!='~' && act!='-' && act!=')' 
 					&& act!='|' && act!='&' && act!='*' && act!='=' && act!='<' && act!='>'
 					&& act!='/' && act!='0' && act!='1' && act!='2' && act!='3' && act!='4'
 					&& act!='5' && act!='6' && act!='7' && act!='8' && act!='9' && act!='.'
 					&& act!=',' && act!='[' && act!=']' && act!=':' && act!=';' && act!='_' && act!='%') 
-				{SynError (12,"Caracter no valido."); errores++;}
+				{SynError (12,string("Caracter no valido (")+string(1,act)+")."); errores++;}
 				// Separar lineas compuestas por más de una instrucción
 				if (act==';' && y!=(int)cadena.size()-1) {
 					string str=cadena;
@@ -342,7 +350,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					parentesis-=1;
 				// Borrar espacios innecesarios
 				/// @todo: ver porque no queria sacarle los espacios a & y |
-				if (last=='\'' && act==32 && (cadena[y+1]<'A' || cadena[y+1]>'Z') /*&& cadena[y+1]!='&' &&  cadena[y+1]!='|'*/) {cadena.erase(y,1);y--;}
+				if (last=='\'' && act==32 && !EsLetra(cadena[y+1]) /*&& cadena[y+1]!='&' &&  cadena[y+1]!='|'*/) {cadena.erase(y,1);y--;}
 				if (last==32 && act==32) {cadena.erase(y,1);y--;} // <<<-
 				if (last=='&' && act==32) {cadena.erase(y,1);y--;} // <<<-
 				if (last==32 && act=='&') {cadena.erase(y-1,1);y--;} // <<<-
@@ -376,8 +384,8 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 				if (last==32 && act==';') {cadena.erase(y-1,1);y--;}
 				if (last==32 && act==':') {cadena.erase(y-1,1);y--;}
 				// Buscar operadores incorrectos
-				if (act>=65 && act<=90 && last=='.' && y!=0) {SynError (13,"Operador incorrecto."); errores++;}
-				if (last>=65 && last<=90 && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
+				if (EsLetra(act) && last=='.' && y!=0) {SynError (13,"Operador incorrecto."); errores++;}
+				if (EsLetra(last) && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
 				if (last=='.' && y!=0)
 					if (act=='<' || act=='>' || act=='(' || act==')' || 
 						act=='/' || act=='*' || act=='^' || act=='&' || 
@@ -700,8 +708,8 @@ int SynCheck() {
 					while (i<l && (cadena[i]=='\t'||cadena[i]==' ')) i++;
 					int par=0;
 					while (i<l && (par||
-						(cadena[i]>='a'&&cadena[i]<='z') ||
-						(cadena[i]>='A'&&cadena[i]<='Z') ||
+//						(cadena[i]>='a'&&cadena[i]<='z') || // no deberia hacer falta a esta altura
+						EsLetra(cadena[i]) ||
 						(cadena[i]>='0'&&cadena[i]<='9') ||
 						cadena[i]=='_'||cadena[i]=='(')) {
 							if (cadena[i]=='(') par++;

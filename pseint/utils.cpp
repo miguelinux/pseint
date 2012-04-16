@@ -228,10 +228,10 @@ bool CheckVariable(string str) {
 	if (str.find("(",0)>0 && str.find("(",0)<str.size() && str[str.size()-1]==')')
 		str.erase(str.find("(",0),str.size()-str.find("(",0)); // si es arreglo corta los subindices
 	bool ret=true;
-	if (str[0]<'A' || str[0]>'Z')
+	if (!EsLetra(str[0]))
 		ret=false;
 	for (int x=0;x<(int)str.size();x++) {
-		if ((str[x]>'Z' || str[x]<'A') && (str[x]<'0' || str[x]>'9') && str[x]!='_')
+		if (!EsLetra(str[x]) && (str[x]<'0' || str[x]>'9') && str[x]!='_')
 			ret=false;
 	}
 	// Comprobar que no sea palabra reservada
@@ -680,7 +680,7 @@ string CutString(string s, int a, int b){
 
 // determina si una letra puede ser parte de una palabra clave o identificador
 bool parteDePalabra(char c) {
-	return ((c>='a' && c<='z') || (c>='A' && c<='Z') || c=='_' || (c>='0' && c<='9'));
+	return (EsLetra(c) || c=='_' || (c>='0' && c<='9'));
 }
 
 void fixwincharset(string &s, bool reverse) {
@@ -726,4 +726,8 @@ void fixwincharset(string &s, bool reverse) {
 			if (c=='Ü') c=-102;
 		}
 	}
+}
+
+bool EsLetra(const char &c) {
+	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) );
 }

@@ -139,4 +139,8 @@ bool parteDePalabra(char c) ;
 // corrige diferencias entre la codificación que usa pseint (ascii pelado) y la de la consola de windows
 void fixwincharset(string &s, bool reverse=false);
 
+// determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
+bool EsLetra(const char &c);
+
 #endif
+
