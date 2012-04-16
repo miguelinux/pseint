@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxMainWindow.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=Application.cpp
@@ -30,11 +30,11 @@ cursor=2015
 [source]
 path=ConfigManager.cpp
 cursor=3027
-marker=32
 marker=93
+marker=32
 [source]
 path=mxSource.cpp
-cursor=381
+cursor=1559
 breakpoint=855
 marker=619
 marker=580
@@ -178,7 +178,7 @@ path=FlowEditionManager.h
 cursor=278
 [other]
 path=../bin/help/cambios.txt
-cursor=131
+cursor=42
 open=true
 [other]
 path=../bin/help/errores.hlp

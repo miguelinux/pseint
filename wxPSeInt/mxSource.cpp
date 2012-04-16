@@ -12,7 +12,7 @@
 using namespace std;
 
 const wxChar *mxSourceWords1 =
-	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
+	_T("leer proceso definir como dimension si entonces sino segun según hacer hasta que para con paso ")
 	_T("repetir mientras de otro modo escribir finpara ")
 	_T("fin finproceso finsi finmientras finsegun ")
 	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros real reales enteras numericos numericas cadenas logicos logicas ")
