@@ -250,25 +250,25 @@ bool CheckVariable(string str) {
 // ------------------------------------------------------------
 //    Comprueba que sea un identificador correcto y unico
 // ------------------------------------------------------------
-bool CheckVariableForW(string str) {
-	if (str.find("(",0)>0 && str.find("(",0)<str.size() && str[str.size()-1]==')')
-		str.erase(str.find("(",0),str.size()-str.find("(",0)); // si es arreglo corta los subindices
-	bool ret=true;
-	if (str[0]<'A' || str[0]>'Z')
-		ret=false;
-	for (int x=0;x<(int)str.size();x++) {
-		if ((str[x]>'Z' || str[x]<'A') && (str[x]<'0' || str[x]>'9') && str[x]!='_')
-			ret=false;
-	}
-	// Comprobar que no sea palabra reservada
-	if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
-		ret=false;
-	if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" ||   str=="DIMENSION" || str=="PROCESO")
-		ret=false;
-	if (str=="" || str=="FINSI" ||  str=="FINPARA" || str=="FINSEGUN" || str=="FINPROCESO" || str=="FINMIENTRAS" ||  str=="HASTA" || str=="DEFINIR" || str=="COMO")
-		ret=false;
-	return ret;
-}
+//bool CheckVariableForW(string str) {
+//	if (str.find("(",0)>0 && str.find("(",0)<str.size() && str[str.size()-1]==')')
+//		str.erase(str.find("(",0),str.size()-str.find("(",0)); // si es arreglo corta los subindices
+//	bool ret=true;
+//	if (!EsLetra(str[0])
+//		ret=false;
+//	for (int x=0;x<(int)str.size();x++) {
+//		if (!EsLetra(str[x]) && (str[x]<'0' || str[x]>'9') && str[x]!='_')
+//			ret=false;
+//	}
+//	// Comprobar que no sea palabra reservada
+//	if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
+//		ret=false;
+//	if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" ||   str=="DIMENSION" || str=="PROCESO")
+//		ret=false;
+//	if (str=="" || str=="FINSI" ||  str=="FINPARA" || str=="FINSEGUN" || str=="FINPROCESO" || str=="FINMIENTRAS" ||  str=="HASTA" || str=="DEFINIR" || str=="COMO")
+//		ret=false;
+//	return ret;
+//}
 
 
 // *********************** Funciones Auxiliares **************************
@@ -689,41 +689,41 @@ void fixwincharset(string &s, bool reverse) {
 		for(unsigned int i=0;i<s.size();i++) { 
 			char &c=s[i];
 			if (c==-96) c='á';
-			if (c==-126) c='é';
-			if (c==-95) c='í';
-			if (c==-94) c='ó';
-			if (c==-93) c='ú';
-			if (c==-75) c='Á';
-			if (c==-112) c='É';
-			if (c==-42) c='Í';
-			if (c==-32) c='Ó';
-			if (c==-23) c='Ú';
-			if (c==-92) c='ñ';
-			if (c==-91) c='Ñ';
-			if (c==-83) c='¡';
-			if (c==-88) c='¿';
-			if (c==-127) c='ü';
-			if (c==-102) c='Ü';
+			else if (c==-126) c='é';
+			else if (c==-95) c='í';
+			else if (c==-94) c='ó';
+			else if (c==-93) c='ú';
+			else if (c==-75) c='Á';
+			else if (c==-112) c='É';
+			else if (c==-42) c='Í';
+			else if (c==-32) c='Ó';
+			else if (c==-23) c='Ú';
+			else if (c==-92) c='ñ';
+			else if (c==-91) c='Ñ';
+			else if (c==-83) c='¡';
+			else if (c==-88) c='¿';
+			else if (c==-127) c='ü';
+			else if (c==-102) c='Ü';
 		}
 	} else {
 		for(unsigned int i=0;i<s.size();i++) { 
 			char &c=s[i];
 			if (c=='á') c=-96;
-			if (c=='é') c=-126;
-			if (c=='í') c=-95;
-			if (c=='ó') c=-94;
-			if (c=='ú') c=-93;
-			if (c=='Á') c=-75;
-			if (c=='É') c=-112;
-			if (c=='Í') c=-42;
-			if (c=='Ó') c=-32;
-			if (c=='Ú') c=-23;
-			if (c=='ñ') c=-92;
-			if (c=='Ñ') c=-91;
-			if (c=='¡') c=-83;
-			if (c=='¿') c=-88;
-			if (c=='ü') c=-127;
-			if (c=='Ü') c=-102;
+			else if (c=='é') c=-126;
+			else if (c=='í') c=-95;
+			else if (c=='ó') c=-94;
+			else if (c=='ú') c=-93;
+			else if (c=='Á') c=-75;
+			else if (c=='É') c=-112;
+			else if (c=='Í') c=-42;
+			else if (c=='Ó') c=-32;
+			else if (c=='Ú') c=-23;
+			else if (c=='ñ') c=-92;
+			else if (c=='Ñ') c=-91;
+			else if (c=='¡') c=-83;
+			else if (c=='¿') c=-88;
+			else if (c=='ü') c=-127;
+			else if (c=='Ü') c=-102;
 		}
 	}
 }
