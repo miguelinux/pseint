@@ -1,8 +1,9 @@
 2012040416
+	Se permiten ñs y acentos en las variables cuando se habilita la sintaxis flexible (pero aún no se colorean correctamente en el editor).
 	Agregado un argumento especial al intérprete para corregir la codificación de acentos y eñes para la consola de Windows.
 	Agregadas en el coloreado y en el autocompletado algunas diferencias entre sintaxis flexible activada y desactivada.
 
-2012040414
+20120414
 	Ahora se verifica correctamente que no falten operandos al comienzo o al final de una expresión.
 	Corregido el problema de las palabras claves pegadas a las expresiones con parentesis.
 
