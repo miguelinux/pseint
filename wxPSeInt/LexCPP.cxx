@@ -32,24 +32,24 @@
 // AGREGADO PARA PSEINT
 #define _iuc(x) int((unsigned char)x)
 
-static bool enable_pseint=false;
+static bool enable_pseint=false; // AGREGADO PARA PSEINT
 
 static bool IsOKBeforeRE(int ch) {
 	return (ch == '(') || (ch == '=') || (ch == ',');
 }
 
 static inline bool IsAWordChar(int ch) {
-	return ( (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_') ) || (enable_pseint && (   // MODIFICADO PARA PSEINT
-		ch==_iuc('á') || ch==_iuc('é') || ch==_iuc('í') || ch==_iuc('ó') || ch==_iuc('ú') || ch==_iuc('ñ') || ch==_iuc('ü')  // AGREGADO PARA PSEINT 
-		|| ch==_iuc('Á') || ch==_iuc('É') || ch==_iuc('Í') || ch==_iuc('Ó') || ch==_iuc('Ú') || ch==_iuc('Ñ') || ch==_iuc('Ü')  // AGREGADO PARA PSEINT 
-		) );                                                                          // MODIFICADO PARA PSEINT
+	return ( (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_') ) || (enable_pseint && (                                   // MODIFICADO PARA PSEINT
+		ch==_iuc('á') || ch==_iuc('é') || ch==_iuc('í') || ch==_iuc('ó') || ch==_iuc('ú') || ch==_iuc('ñ') || ch==_iuc('ü')    // AGREGADO PARA PSEINT 
+		|| ch==_iuc('Á') || ch==_iuc('É') || ch==_iuc('Í') || ch==_iuc('Ó') || ch==_iuc('Ú') || ch==_iuc('Ñ') || ch==_iuc('Ü') // AGREGADO PARA PSEINT 
+		) );                                                                                                                   // MODIFICADO PARA PSEINT
 }
 
 static inline bool IsAWordStart(int ch) {
-	return ( (ch < 0x80) && (isalpha(ch) || ch == '_' ) ) || (enable_pseint && (                // MODIFICADO PARA PSEINT
-		ch==_iuc('á') || ch==_iuc('é') || ch==_iuc('í') || ch==_iuc('ó') || ch==_iuc('ú') || ch==_iuc('ñ') || ch==_iuc('ü')  // AGREGADO PARA PSEINT
-		|| ch==_iuc('Á') || ch==_iuc('É') || ch==_iuc('Í') || ch==_iuc('Ó') || ch==_iuc('Ú') || ch==_iuc('Ñ') || ch==_iuc('Ü')  // AGREGADO PARA PSEINT 
-		) );                                                                          // MODIFICADO PARA PSEINT
+	return ( (ch < 0x80) && (isalpha(ch) || ch == '_' ) ) || (enable_pseint && (                                               // MODIFICADO PARA PSEINT
+		ch==_iuc('á') || ch==_iuc('é') || ch==_iuc('í') || ch==_iuc('ó') || ch==_iuc('ú') || ch==_iuc('ñ') || ch==_iuc('ü')    // AGREGADO PARA PSEINT
+		|| ch==_iuc('Á') || ch==_iuc('É') || ch==_iuc('Í') || ch==_iuc('Ó') || ch==_iuc('Ú') || ch==_iuc('Ñ') || ch==_iuc('Ü') // AGREGADO PARA PSEINT 
+		) );                                                                                                                   // MODIFICADO PARA PSEINT
 }
 
 static inline bool IsADoxygenChar(int ch) {
@@ -69,7 +69,7 @@ static bool IsSpaceEquiv(int state) {
 static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, WordList *keywordlists[],
                             Accessor &styler, bool caseSensitive) {
 
-	enable_pseint=!caseSensitive;
+	enable_pseint=!caseSensitive;   // AGREGADO PARA PSEINT
   
 	WordList &keywords = *keywordlists[0];
 	WordList &keywords2 = *keywordlists[1];
@@ -83,6 +83,7 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 	bool lastWordWasUUID = false;
 	int styleBeforeDCKeyword = SCE_C_DEFAULT;
 	bool continuationLine = false;
+	int prevWordCount=0; // AGREGADO PARA PSEINT
 
 	if (initStyle == SCE_C_PREPROCESSOR) {
 		// Set continuationLine if last character of previous line is '\'
@@ -141,7 +142,16 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 			case SCE_C_OPERATOR:
-				sc.SetState(SCE_C_DEFAULT);
+				if (enable_pseint) {                                        // AGREGADO PARA PSEINT
+					char s[3];                                              // AGREGADO PARA PSEINT
+					sc.GetCurrent(s,3);                                     // AGREGADO PARA PSEINT
+					if (prevWordCount==1&&s[0]=='<'&&s[1]=='-'&&s[2]==0) {  // AGREGADO PARA PSEINT
+						sc.ChangeState(SCE_C_WORD); prevWordCount++;        // AGREGADO PARA PSEINT
+					}                                                       // AGREGADO PARA PSEINT
+					if ((sc.chPrev!='<' || sc.ch!='-' || sc.chPrev==' '))   // AGREGADO PARA PSEINT
+						sc.SetState(SCE_C_DEFAULT);                         // AGREGADO PARA PSEINT
+				} else                                                      // AGREGADO PARA PSEINT
+					sc.SetState(SCE_C_DEFAULT);
 				break;
 			case SCE_C_NUMBER:
 				// We accept almost anything because of hex. and number suffixes
@@ -166,6 +176,8 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 						sc.ChangeState(SCE_C_GLOBALCLASS);
 					}
 					sc.SetState(SCE_C_DEFAULT);
+					if (enable_pseint && keywords3.InList(s))  // AGREGADO PARA PSEINT
+						prevWordCount=0; else prevWordCount++; // AGREGADO PARA PSEINT
 				}
 				break;
 			case SCE_C_PREPROCESSOR:
@@ -339,7 +351,15 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 					sc.SetState(SCE_C_DEFAULT);
 				}
 			} else if (isoperator(static_cast<char>(sc.ch))) {
-				sc.SetState(SCE_C_OPERATOR);
+				if (enable_pseint) {                                 // AGREGADO PARA PSEINT
+					if (IsASpace(sc.ch) || IsSpaceEquiv(sc.state)) { // AGREGADO PARA PSEINT
+						sc.SetState(SCE_C_OPERATOR);                 // AGREGADO PARA PSEINT
+					} else {                                         // AGREGADO PARA PSEINT
+						if (sc.ch==';') prevWordCount=0;             // AGREGADO PARA PSEINT
+						sc.ChangeState(SCE_C_OPERATOR);              // AGREGADO PARA PSEINT
+					}                                                // AGREGADO PARA PSEINT
+				} else                                               // AGREGADO PARA PSEINT
+					sc.SetState(SCE_C_OPERATOR);
 			}
 		}
 

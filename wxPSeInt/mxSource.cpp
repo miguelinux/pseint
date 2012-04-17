@@ -12,24 +12,27 @@
 using namespace std;
 
 const wxChar *mxSourceWords1 =
-	_T("leer proceso definir como dimension si entonces sino segun según hacer hasta que para con paso ")
+	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
 	_T("repetir mientras de otro modo escribir finpara ")
 	_T("fin finproceso finsi finmientras finsegun ")
 	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros real reales enteras numericos numericas cadenas logicos logicas ")
-	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ");
-//	_T("según finsegún opción ") // scintilla no funciona con los acentos
+	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ")
+	_T("según finsegún "); // scintilla no funciona con los acentos
 
 const wxChar *mxSourceWords1_op =
 	_T(" y no o mod ");
 
 const wxChar *mxSourceWords1_extra =
-	_T("es sies opcion caso desde imprimir cada mostrar ");
+	_T("es sies opcion caso desde imprimir cada mostrar opción ");
 
 const wxChar *mxSourceWords1_conds =
 	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor");
 
 const wxChar* mxSourceWords2 =
 	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon ");
+
+//const wxChar* mxSourceWords3 = 
+//	_T("hacer entonces para ");
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
@@ -933,6 +936,7 @@ void mxSource::SetWords() {
 	if (config->lang.coloquial_conditions) s1<<mxSourceWords1_conds;
 	SetKeyWords (0, s1.c_str());
 	SetKeyWords (1, mxSourceWords2);
+//	SetKeyWords (2, mxSourceWords3);
 }
 
 void mxSource::EditFlow ( mxProcess *proc, int id ) {

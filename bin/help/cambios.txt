@@ -1,4 +1,5 @@
 20120417
+	Ahora se colorea la flecha de asignación igual que las palabras clave en el editor.
 	Ahora se consideran correctamente acentos y eñes para el coloreado de sintaxis.
 	
 >>RELEASE 20120416<<

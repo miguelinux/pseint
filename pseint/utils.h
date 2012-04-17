@@ -87,7 +87,7 @@ bool LeftCompare(string a, string b) ;
 // ----------------------------------------------------------------------
 //    Compara los comienzos de dos cadenas (case insensitve)
 // ----------------------------------------------------------------------
-bool LeftCompareNC(string a, string b);
+//bool LeftCompareNC(string a, string b);
 
 // ----------------------------------------------------------------------
 //    Compara las terminaciones de dos cadenas (case sensitve)
@@ -97,7 +97,7 @@ bool RightCompare(string a, string b) ;
 // ----------------------------------------------------------------------
 //    Compara las terminaciones de dos cadenas (case insensitve)
 // ----------------------------------------------------------------------
-bool RightCompareNC(string a, string b) ;
+//bool RightCompareNC(string a, string b) ;
 
 // ----------------------------------------------------------------------
 //    Compara parte de una cadena con otra (case insensitve)

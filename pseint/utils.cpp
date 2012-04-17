@@ -539,18 +539,18 @@ bool LeftCompare(string a, string b) {
 // ----------------------------------------------------------------------
 //    Compara los comienzos de dos cadenas (case insensitve)
 // ----------------------------------------------------------------------
-bool LeftCompareNC(string a, string b){  
-	// compara los caracteres de la izquierda de a con b
-	for (int x=0;x<(int)a.size();x++)
-		if (a[x]>96 && a[x]<123) a[x]-=32;
-	for (int x=0;x<(int)b.size();x++)
-		if (b[x]>96 && b[x]<123) b[x]-=32;
-	bool ret;
-	if (a.size()<b.size()) ret=false; else {
-		a.erase(b.size(),a.size()-b.size());
-		if (a==b) ret=true; else ret=false; }
-	return ret; 
-}
+//bool LeftCompareNC(string a, string b){  
+//	// compara los caracteres de la izquierda de a con b
+//	for (int x=0;x<(int)a.size();x++)
+//		if (a[x]>96 && a[x]<123) a[x]-=32;
+//	for (int x=0;x<(int)b.size();x++)
+//		if (b[x]>96 && b[x]<123) b[x]-=32;
+//	bool ret;
+//	if (a.size()<b.size()) ret=false; else {
+//		a.erase(b.size(),a.size()-b.size());
+//		if (a==b) ret=true; else ret=false; }
+//	return ret; 
+//}
 
 // ----------------------------------------------------------------------
 //    Compara las terminaciones de dos cadenas (case sensitve)
@@ -567,18 +567,18 @@ bool RightCompare(string a, string b) {
 // ----------------------------------------------------------------------
 //    Compara las terminaciones de dos cadenas (case insensitve)
 // ----------------------------------------------------------------------
-bool RightCompareNC(string a, string b) { 
-	// compara los caracteres de la derecha de a con b
-	for (int x=0;x<(int)a.size();x++)
-		if (a[x]>96 && a[x]<123) a[x]-=32;
-	for (int x=0;x<(int)b.size();x++)
-		if (b[x]>96 && b[x]<123) b[x]-=32;
-	bool ret;
-	if (a.size()<b.size()) ret=false; else {
-		a.erase(0,a.size()-b.size());
-		if (a==b) ret=true; else ret=false; }
-	return ret; 
-}
+//bool RightCompareNC(string a, string b) { 
+//	// compara los caracteres de la derecha de a con b
+//	for (int x=0;x<(int)a.size();x++)
+//		if (a[x]>96 && a[x]<123) a[x]-=32;
+//	for (int x=0;x<(int)b.size();x++)
+//		if (b[x]>96 && b[x]<123) b[x]-=32;
+//	bool ret;
+//	if (a.size()<b.size()) ret=false; else {
+//		a.erase(0,a.size()-b.size());
+//		if (a==b) ret=true; else ret=false; }
+//	return ret; 
+//}
 
 // ----------------------------------------------------------------------
 //    Compara parte de una cadena con otra (case insensitve)

@@ -100,14 +100,14 @@ static void SynCheckAux1(string &cadena) {
 	while (cadena.size() && cadena[0]==' ') {cadena.erase(0,1); len--;}
 	while (cadena.size() && cadena[cadena.size()-1]==' ') {cadena.erase(cadena.size()-1,1);; len--;}
 	// agregar espacios para evitar que cosas como "SI(x<2)ENTONCES" generen un error
-	comillas=false;
-	for(int i=0;i<len;i++) { 
-		if (cadena[i]=='\'') comillas=!comillas;
-		else if (!comillas) {
-			if (cadena[i]=='(' && i>0 && EsLetra(cadena[i-1])) { cadena.insert(i," "); len++; }
-			if (cadena[i]==')' && i+2<len && EsLetra(cadena[i+1])) { cadena.insert(i+1," "); len++; }
-		}
-	}
+//	comillas=false;
+//	for(int i=0;i<len;i++) {
+//		if (cadena[i]=='\'') comillas=!comillas;
+//		else if (!comillas) {
+//			if (cadena[i]=='(' && i>0 && EsLetra(cadena[i-1])) { cadena.insert(i," "); len++; }
+//			if (cadena[i]==')' && i+2<len && EsLetra(cadena[i+1])) { cadena.insert(i+1," "); len++; }
+//		}
+//	}
 }
 
 // reescribir condiciones coloquiales
@@ -475,8 +475,32 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 	}
 	// Posibles errores encontrados
 	if (parentesis<0) { SynError (35,"Se cerraron parentesis o corchetes demás."); errores++; }
-	if (parentesis>0) { SynError (36,"Falta cerrar parentesis o corchete."); errores++;	}
+	if (parentesis>0) { 
+		SynError (36,"Falta cerrar parentesis o corchete."); errores++;
+	}
 	if (comillas==1) { SynError (37,"Falta cerrar comillas."); errores++; }
+}
+
+static bool RightCompareFix(string &s, string e) {
+	int le=e.size(); int ls=s.size();
+	bool fix=e[0]==' ';
+	if (fix) { le--; e=e.substr(1); }
+	if (ls<le) return false;
+	else if (le==ls) return s==e;
+	else if (s.substr(ls-le,le)!=e) return false;
+	else if (s[ls-le-1]==')') { s.insert(ls-le," "); ls++; };
+	return s[ls-le-1]==' ';
+}
+
+static bool LeftCompareFix(string &s, string e) {
+	int ls=s.size(), le=e.size();
+	bool fix=e[le-1]==' ';
+	if (fix) { le--; e=e.substr(0,le); }
+	if (ls<le) return false;
+	else if (ls==le) return s==e;
+	else if (s.substr(0,le)!=e) return false;
+	else if (s[le]=='(') s.insert(le," ");
+	return s[le]==' ';
 }
 
 //-------------------------------------------------------------------------------------------
@@ -538,7 +562,7 @@ int SynCheck() {
 			{SynError (51,"ENTONCES mal colocado."); errores++;}
 			if (cadena=="SINO" && bucles.top()!="SI" )
 			{SynError (55,"SINO mal colocado."); errores++;}
-			if (LeftCompareNC(cadena,"ENTONCES ")) {
+			if (LeftCompare(cadena,"ENTONCES ")) {
 				if (bucles.top()!="SI")
 				{SynError (1,"ENTONCES mal colocado."); errores++;}
 				str=cadena;
@@ -547,7 +571,7 @@ int SynCheck() {
 				programa.insert(programa.begin()+x+1,str);
 				flag_pyc+=1;
 			}
-			if (LeftCompareNC(cadena,"SINO ")) {
+			if (LeftCompare(cadena,"SINO ")) {
 				if (bucles.top()!="SI")
 				{SynError (2,"SINO mal colocado."); errores++;}
 				str=cadena;
@@ -560,18 +584,18 @@ int SynCheck() {
 			
 			// Cortar la instrucción
 			cadena=cadena+" ";
-			if (LeftCompareNC(cadena,"ESCRIBIR ") || (lazy_syntax && (LeftCompareNC(cadena,"IMPRIMIR ") || LeftCompareNC(cadena,"MOSTRAR ") || LeftCompareNC(cadena,"INFORMAR "))) ) {
+			if (LeftCompare(cadena,"ESCRIBIR ") || (lazy_syntax && (LeftCompare(cadena,"IMPRIMIR ") || LeftCompare(cadena,"MOSTRAR ") || LeftCompare(cadena,"INFORMAR "))) ) {
 				instruccion="ESCRIBIR "; cadena.erase(0,cadena.find(" ")+1);
 				if (ReplaceIfFound(cadena,"SIN SALTAR","",true)||ReplaceIfFound(cadena,"SIN BAJAR","",true)||ReplaceIfFound(cadena,"SINBAJAR","",true)||ReplaceIfFound(cadena,"SINSALTAR","",true))
 					instruccion="ESCRIBNL ";
-			} else if (LeftCompareNC(cadena,"LEER ")) {
+			} else if (LeftCompare(cadena,"LEER ")) {
 				instruccion="LEER "; cadena.erase(0,5);
-			} else if (LeftCompareNC(cadena,"SI ") && !LeftCompareNC(cadena,"SI ES ")) {
+			} else if (LeftCompareFix(cadena,"SI ") && !LeftCompare(cadena,"SI ES ")) {
 				instruccion="SI "; cadena.erase(0,3);
 				bucles.push("SI");bucles_line.push(LineNumber);
 				// cortar el entonces si esta en la misma linea
 				comillas=-1;
-				if (RightCompareNC(cadena," ENTONCES ")) {
+				if (RightCompareFix(cadena," ENTONCES ")) {
 					cadena.erase(cadena.size()-10,10);
 					programa.insert(programa.begin()+x+1,"ENTONCES");
 					flag_pyc+=1;
@@ -589,59 +613,59 @@ int SynCheck() {
 							break;
 						}
 					}
-			} else if (LeftCompareNC(cadena,"MIENTRAS ")&&(!lazy_syntax||!LeftCompareNC(cadena,"MIENTRAS QUE "))) { 
+			} else if (LeftCompareFix(cadena,"MIENTRAS ")&&(!lazy_syntax||!LeftCompareFix(cadena,"MIENTRAS QUE "))) { 
 				instruccion="MIENTRAS "; cadena.erase(0,9);
 				bucles.push("MIENTRAS");bucles_line.push(LineNumber);
-			} else if (LeftCompareNC(cadena,"SEGUN ")) {
+			} else if (LeftCompareFix(cadena,"SEGUN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
 				bucles.push("SEGUN");bucles_line.push(LineNumber);
-			} else if (LeftCompareNC(cadena,"DE OTRO MODO: ") || LeftCompareNC(cadena,"DE OTRO MODO ")) {
+			} else if (LeftCompare(cadena,"DE OTRO MODO: ") || LeftCompare(cadena,"DE OTRO MODO ")) {
 				cadena.erase(0,13); programa.insert(programa.begin()+x+1,cadena); flag_pyc+=1;
 				instruccion="DE OTRO MODO: "; cadena="";
-			} else if (LeftCompareNC(cadena,"DIMENSION ")) {
+			} else if (LeftCompare(cadena,"DIMENSION ")) {
 				instruccion="DIMENSION "; cadena.erase(0,10);
-			} else if (LeftCompareNC(cadena,"HASTA QUE ")) {
+			} else if (LeftCompareFix(cadena,"HASTA QUE ")) {
 				instruccion="HASTA QUE "; cadena.erase(0,10);
-			} else if (lazy_syntax&&LeftCompareNC(cadena,"MIENTRAS QUE ")) {
+			} else if (lazy_syntax&&LeftCompareFix(cadena,"MIENTRAS QUE ")) {
 				instruccion="MIENTRAS QUE "; cadena.erase(0,13);
-			} else if (LeftCompareNC(cadena,"FINSI ")) {
+			} else if (LeftCompare(cadena,"FINSI ")) {
 				instruccion="FINSI "; cadena.erase(0,6);
-			} else if (LeftCompareNC(cadena,"FINPARA ")) {
+			} else if (LeftCompare(cadena,"FINPARA ")) {
 				instruccion="FINPARA "; cadena.erase(0,8);
-			} else if (LeftCompareNC(cadena,"FINMIENTRAS ")) {
+			} else if (LeftCompare(cadena,"FINMIENTRAS ")) {
 				instruccion="FINMIENTRAS "; cadena.erase(0,12);
-			} else if (LeftCompareNC(cadena,"FINSEGUN ")) {
+			} else if (LeftCompare(cadena,"FINSEGUN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
-			} else if (LeftCompareNC(cadena,"ESPERARTECLA ")) {
+			} else if (LeftCompare(cadena,"ESPERARTECLA ")) {
 				instruccion="ESPERARTECLA"; cadena.erase(0,13);
-			} else if (LeftCompareNC(cadena,"ESPERAR UNA TECLA ")) {
+			} else if (LeftCompare(cadena,"ESPERAR UNA TECLA ")) {
 				instruccion="ESPERARTECLA"; cadena.erase(0,18);
-			} else if (LeftCompareNC(cadena,"ESPERAR TECLA ")) {
+			} else if (LeftCompare(cadena,"ESPERAR TECLA ")) {
 				instruccion="ESPERARTECLA"; cadena.erase(0,14);
-			} else if (LeftCompareNC(cadena,"ESPERAR ")) {
+			} else if (LeftCompare(cadena,"ESPERAR ")) {
 				instruccion="ESPERAR "; cadena.erase(0,8);
-			} else if (LeftCompareNC(cadena,"LIMPIARPANTALLA ")) {
+			} else if (LeftCompare(cadena,"LIMPIARPANTALLA ")) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,16);
-			} else if (LeftCompareNC(cadena,"BORRAR PANTALLA ")) {
+			} else if (LeftCompare(cadena,"BORRAR PANTALLA ")) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,16);
-			} else if (LeftCompareNC(cadena,"LIMPIAR PANTALLA ")) {
+			} else if (LeftCompare(cadena,"LIMPIAR PANTALLA ")) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,17);
-			} else if (LeftCompareNC(cadena,"BORRARPANTALLA ")) {
+			} else if (LeftCompare(cadena,"BORRARPANTALLA ")) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
-			} else if (LeftCompareNC(cadena,"PROCESO ")) {
+			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
 				if (!Proceso) bucles.push("PROCESO");bucles_line.push(LineNumber);
-			} else if (LeftCompareNC(cadena,"ENTONCES ")) {
+			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
-			} else if (LeftCompareNC(cadena,"SINO ")) {
+			} else if (LeftCompare(cadena,"SINO ")) {
 				instruccion="SINO "; cadena.erase(0,5);
-			} else if (lazy_syntax && LeftCompareNC(cadena,"PARACADA ")) {
+			} else if (lazy_syntax && LeftCompare(cadena,"PARACADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,9);
 				bucles.push("PARACADA");bucles_line.push(LineNumber);
-			} else if (lazy_syntax && LeftCompareNC(cadena,"PARA CADA ")) {
+			} else if (lazy_syntax && LeftCompare(cadena,"PARA CADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,10);
 				bucles.push("PARACADA");bucles_line.push(LineNumber);
-			} else if (LeftCompareNC(cadena,"PARA ")) {
+			} else if (LeftCompare(cadena,"PARA ")) {
 				instruccion="PARA "; cadena.erase(0,5);
 				bucles.push("PARA");bucles_line.push(LineNumber);
 				// evitar problema de operador incorrecto al poner el signo al numero
@@ -660,18 +684,18 @@ int SynCheck() {
 						}
 					}
 				}
-			} else if (LeftCompareNC(cadena,"SEGÚN ")) {
+			} else if (LeftCompareFix(cadena,"SEGÚN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
 				bucles.push("SEGUN");bucles_line.push(LineNumber);
-			} else if (LeftCompareNC(cadena,"FINSEGÚN ")) {
+			} else if (LeftCompare(cadena,"FINSEGÚN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
-			} else if (LeftCompareNC(cadena,"FINPROCESO ")) {
+			} else if (LeftCompare(cadena,"FINPROCESO ")) {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
-			} else if (LeftCompareNC(cadena,"REPETIR ")) {
+			} else if (LeftCompare(cadena,"REPETIR ")) {
 				instruccion="REPETIR "; cadena.erase(0,8);
-			} else if (lazy_syntax && LeftCompareNC(cadena,"HACER ")) {
+			} else if (lazy_syntax && LeftCompare(cadena,"HACER ")) {
 				instruccion="REPETIR "; cadena.erase(0,6);
-			} else if (LeftCompareNC(cadena,"DEFINIR ")) {
+			} else if (LeftCompare(cadena,"DEFINIR ")) {
 				instruccion="DEFINIR "; cadena.erase(0,8);
 			} else {
 				int flag_segun=0;
@@ -1051,11 +1075,11 @@ int SynCheck() {
 				str.erase(0,5);
 				if ((str.find(" ",0)<0 || str.find(" ",0)>=str.size()))
 				{SynError (70,"Faltan parametros."); errores++;}
-				if (!RightCompare(str," HACER")) {
+				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); errores++;}
 				}
-				if (RightCompare(str," HACER")) { // comprobar asignacion
+				if (RightCompareFix(str," HACER")) { // comprobar asignacion
 					str.erase(str.find(" ",0),str.size()-str.find(" ",0));
 					if (str.find("<-",0)<0 || str.find("<-",0)>=str.size()) // Comprobar asignacion
 					{SynError (72,"Se esperaba asignacion."); errores++;}
@@ -1134,11 +1158,11 @@ int SynCheck() {
 				str.erase(0,9);
 				if ((str.find(" ",0)<0 || str.find(" ",0)>=str.size()))
 				{SynError (70,"Faltan parametros."); errores++;} /// 999
-				if (!RightCompare(str," HACER")) {
+				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); str+=" HACER"; errores++;} /// 999
 				}
-				if (RightCompare(str," HACER")) {
+				if (RightCompareFix(str," HACER")) {
 					int i=0; while (str[i]!=' ') i++;
 					if (!CheckVariable(str.substr(0,i))) { SynError (999,"Identificador no valido."); errores++; }
 					if (str.substr(i,4)==" EN ") cadena.replace(9+i,4," DE ");
@@ -1254,11 +1278,11 @@ int SynCheck() {
 				if (cadena=="SEGUN HACER" || cadena=="SEGUN")
 				{ SynError (96,"Falta condicion."); errores++; }
 				else
-					if (!RightCompare(cadena," HACER")) {
+					if (!RightCompareFix(cadena," HACER")) {
 						if (lazy_syntax) cadena+=" HACER";
 						else { SynError (97,"Falta HACER."); errores++; }
 					}
-					if (RightCompare(str," HACER")) {
+					if (RightCompareFix(str," HACER")) {
 						str=cadena; // Comprobar la condicion
 						str.erase(str.size()-6,6);
 						str.erase(0,6);
@@ -1286,11 +1310,11 @@ int SynCheck() {
 						SynError (999,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++;
 						cadena.erase(cadena.size()-1,1);
 					}
-					if (!RightCompare(cadena," HACER")) {
+					if (!RightCompareFix(cadena," HACER")) {
 						if (lazy_syntax) cadena+=" HACER";
 						else { SynError (102,"Falta HACER."); errores++; }
 					}
-					if (RightCompare(cadena," HACER")) {
+					if (RightCompareFix(cadena," HACER")) {
 						str=cadena; // Comprobar la condicion
 						str.erase(str.size()-6,6);
 						str.erase(0,9);

@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/cambios.txt
+current_source=mxSource.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -34,7 +34,7 @@ marker=93
 marker=32
 [source]
 path=mxSource.cpp
-cursor=1559
+cursor=16739
 breakpoint=855
 marker=619
 marker=580
