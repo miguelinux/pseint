@@ -12,7 +12,8 @@ Proceso TaTeTi
 	{Definir Tab2 Como Caracter}{;}
 	Dimension Tab1[3,3]{;}
 	Dimension Tab2[3,3]{;}
-	{Definir i,j,CantTurnos,Valor,Objetivo Como Entero}{;}
+	{Definir i,j,CantTurnos,Valor,Pos Como Entero}{;}
+	{Definir Objetivo,aux_i,aux_j,aux_d1,aux_d2 Como Entero}{;}
 	{Definir Terminado,Ganador,TurnoJugador1 Como Logico}{;}
 	{Definir Ficha Como Caracter;}{;}
 	Para i<-{1#0} Hasta {3#2} Hacer
@@ -57,16 +58,23 @@ Proceso TaTeTi
 			
 			// pide la posición para colocar la ficha y la valida
 			Escribir "Ingrese la Posición (1-9):"{;}
-			Leer Pos{;}
-			Mientras Pos<0 o Pos>9 Hacer
-				Escribir "Posición incorrecta, ingrese nuevamente: "{;}
-				Leer Pos{;}
-			FinMientras
 			
+			Repetir
+				Leer Pos{;}
+				Si Pos<1 o Pos>9 Entonces
+					Escribir "Posición incorrecta, ingrese nuevamente: "{;}
+					Pos<-99;
+				Sino
+					i<-trunc((Pos-1)/3){+1#}{;}
+					j<-((Pos-1) mod 3){+1#}{;}
+					Si Tab1[i,j]<>0 Entonces
+						pos<-99{;}
+						Escribir "Posición incorrecta, ingrese nuevamente: "{;}
+					FinSi
+				FinSi
+			Hasta Que Pos<>99
 			// guarda la ficha en la matriz tab2 y el valor en tab1
 			CantTurnos<-CantTurnos+1{;}
-			i<-trunc((Pos-1)/3)+1{;}
-			j<-((Pos-1) mod 3)+1{;}
 			Tab1[i,j]<-Valor{;} 
 			Tab2[i,j]<-Ficha{;}
 			
@@ -75,7 +83,7 @@ Proceso TaTeTi
 			Para i<-{1#0} hasta {3#2}
 				aux_i<-1{;} aux_j<-1{;}
 				aux_d1<-aux_d1*Tab1[i,i]{;}
-				aux_d2<-aux_d2*Tab1[i,4-i]{;}
+				aux_d2<-aux_d2*Tab1[i,{4#2}-i]{;}
 				Para j<-{1#0} hasta {3#2}
 					aux_i<-aux_i*Tab1[i,j]{;}
 					aux_j<-aux_j*Tab1[j,i]{;}

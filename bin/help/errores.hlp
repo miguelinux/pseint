@@ -472,7 +472,7 @@
 106
   La instrucción de esta linea no se reconoce como una instrucción válida. Puede haber errores de tipeo.
   * Verifique que la palabra clave este escrita correctamente.
-  * Si es una asignación recuerde utilizar el operador "&lt;-".
+  * Si es una asignación recuerde utilizar el operador "&lt;-" (o alternativamente el operador = si su <A href="perfiles.html">perfil</A> de lenguaje lo permite).
   * Para una lista completa de posibles palabras claves consulte "Referencia Rapida" en el menú "Ayuda".
   
 107
@@ -508,37 +508,37 @@
 114
   El conjunto de instrucciones que repite la estructura repetitiva PARA esta delimitado por la palabra clave FINPARA al final del mismo. Esta instruccion PARA que no tiene su correspondiente FINPARA (o esta mal ubicado).
   * Verifique que exista el FINPARA correspondiente a este PARA y que este bien escrito.
-  * Recuerde que FINPARA va todo junto si su perfil no admite sintaxis flexible (no FIN PARA).
+  * Recuerde que FINPARA va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN PARA).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
 
 115
   El conjunto de instrucciones que repite la estructura repetitiva REPETIR-HASTA QUE esta delimitado por la palabra clave HASTA QUE y la condicion de salida al final del mismo. Esta instruccion REPETIR que no tiene su correspondiente HASTA QUE (o esta mal ubicado).
   * Verifique que exista el HASTA QUE correspondiente a este PARA y que este bien escrito.
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
-  * Si su perfil de lenguaje admite sintaxis flexible, recuerde que las palabras REPETIR y HACER marcan el comienzo de un bucle que debe finalizar con las construcciones HASTA QUE... o MIENTRAS QUE...
+  * Si su <A href="perfiles.html">perfil</A> de lenguaje admite sintaxis flexible, recuerde que las palabras REPETIR y HACER marcan el comienzo de un bucle que debe finalizar con las construcciones HASTA QUE... o MIENTRAS QUE...
 
 116
   El conjunto de instrucciones que repite la estructura repetitiva MIENTRAS esta delimitado por la palabra clave FINMIENTRAS al final del mismo. Esta instruccion MIENTRAS que no tiene su correspondiente FINMIENTRAS (o esta mal ubicado).
   * Verifique que exista el FINMIENTRAS correspondiente a este MIENTRAS y que este bien escrito.
-  * Recuerde que FINMIENTRAS va todo junto si su perfil no admite sintaxis flexible (no FIN MIENTRAS).
+  * Recuerde que FINMIENTRAS va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN MIENTRAS).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este MIENTRAS.
-  * Si estaba intentando utilizar la palabra "MIENTRAS" para cerrar un bucle REPETIR...MIENTRAS QUE o HACER...MIENTRAS QUE, debe reemplazarla por "MIENTRAS QUE" para evitar la ambigüedad que se produce con el bucle MIENTRAS...FINMINETRAS. Esto solo es posible si su perfil admite sintaxis flexible.
+  * Si estaba intentando utilizar la palabra "MIENTRAS" para cerrar un bucle REPETIR...MIENTRAS QUE o HACER...MIENTRAS QUE, debe reemplazarla por "MIENTRAS QUE" para evitar la ambigüedad que se produce con el bucle MIENTRAS...FINMINETRAS. Esto solo es posible si su <A href="perfiles.html">perfil</A> admite sintaxis flexible.
 
 117
   El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SI-ENTONCES esta delimitado por la palabra clave FINSI al final del mismo. Esta instruccion SI que no tiene su correspondiente FINSI (o esta mal ubicado).
   * Verifique que exista el FINSI correspondiente a este SI y que este bien escrito.
-  * Recuerde que FINSI va todo junto si su perfil no admite sintaxis flexible (no FIN SI).
+  * Recuerde que FINSI va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN SI).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este SI.
 
 118
   El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SEGUN esta delimitado por la palabra clave FINSEGUN al final del mismo. Esta instrucción SEGUN que no tiene su correspondiente FINSEGUN (o esta mal ubicado).
   * Verifique que exista el FINSEGUN correspondiente a este SEGUN y que este bien escrito.
-  * Recuerde que FINSEGUN va todo junto si su perfil no admite sintaxis flexible (no FIN SEGUN).
+  * Recuerde que FINSEGUN va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN SEGUN).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este SEGUN.
 
 119
   El conjunto de instrucciones que conforman el proceso debe estar delimitado por las palabras claves PROCESO seguida del nombre de este al principio del mismo y FINPROCESO al final de este.
-  * Recuerde que FINPROCESO va todo junto si su perfil no admite sintaxis flexible (no FIN PROCESO).
+  * Recuerde que FINPROCESO va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN PROCESO).
   * Si no lo escribió, agregue la palabra clave FINPROCESO al final del algoritmo.    
 
 120
@@ -635,7 +635,7 @@
   La expresion colocada a continuacion de la palabra clave segun es de un tipo de dato incorrecto.
   * La expresion puede ser de tipo NUMERICA. 
   * Verifique que las variables que intervienen sean de tipo numérica y los operadores de tipo algebraico.
-  * Solo se puede utilizar expresiones de texto en perfiles de sintaxis flexible, pero su perfil de lenguaje actual no lo permite.
+  * Solo se puede utilizar expresiones de texto en <A href="perfiles.html">perfiles</A> de sintaxis flexible, pero su perfil de lenguaje actual no lo permite.
 
 207
   Esta intentando comparar dos expresiones de diferente tipo.
@@ -646,20 +646,20 @@
      * Si esta en un caso de la estructura SEGUN, verifique que la expresión candidata del caso (antes de los dos puntos) y la expresión de control (a continuación de la palabra SEGUN) sean del mismo tipo.
 
 208
-  Esta intentando crear una nueva variable, mediante su lectura, sin antes haber explicitado de qué tipo será la misma. Su perfil de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
+  Esta intentando crear una nueva variable, mediante su lectura, sin antes haber explicitado de qué tipo será la misma. Su <A href="perfiles.html">perfil</A> de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
   * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de variable (CARACTER, NUMERICA, LOGICA) antes de utilizarla por primera vez.
   * Si se trata de un arreglo, el tipo se define una vez y para todo el arreglo.
 
 209
-  Esta intentando crear un arreglo sin antes haber explicitado de qué tipo será el mismo. Su perfil de lenguaje actual obliga a definir todas las variables y arreglos antes de utilizarlas:
+  Esta intentando crear un arreglo sin antes haber explicitado de qué tipo será el mismo. Su <A href="perfiles.html">perfil</A> de lenguaje actual obliga a definir todas las variables y arreglos antes de utilizarlas:
   * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de dato que almacenará en el arreglo (CARACTER, NUMERICA, LOGICA) antes de dimensionarlo.
 
 210
-  Esta intentando utilizar la variable en una expresión, sin antes haber explicitado de qué tipo es la misma. Su perfil de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
+  Esta intentando utilizar la variable en una expresión, sin antes haber explicitado de qué tipo es la misma. Su <A href="perfiles.html">perfil</A> de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
   * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de variable (CARACTER, NUMERICA, LOGICA) antes de utilizarla por primera vez.
 
 211
-  Esta intentando crear una nueva variable, mediante la asignación, sin antes haber explicitado de qué tipo será la misma. Su perfil de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
+  Esta intentando crear una nueva variable, mediante la asignación, sin antes haber explicitado de qué tipo será la misma. Su <A href="perfiles.html">perfil</A> de lenguaje actual obliga a definir todas las variables antes de utilizarlas:
   * Debe utilizar la instrucción <A href="definir.html">DEFINIR</A> para explicitar el tipo de variable (CARACTER, NUMERICA, LOGICA) antes de utilizarla por primera vez.
   * Si se trata de un arreglo, el tipo se define una vez y para todo el arreglo.
 

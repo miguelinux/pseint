@@ -668,6 +668,12 @@ int SynCheck() {
 			} else if (LeftCompare(cadena,"PARA ")) {
 				instruccion="PARA "; cadena.erase(0,5);
 				bucles.push("PARA");bucles_line.push(LineNumber);
+				// si se puede asignar con igual, reemplazar aca
+				if (overload_equal) {
+					int i=0, l=cadena.size();
+					while (i<l && EsLetra(cadena[i])) i++;
+					if (i<l&& cadena[i]=='=') cadena.replace(i,1,"<-");
+				}
 				// evitar problema de operador incorrecto al poner el signo al numero
 				comillas=-1;
 				// si dice "i desde 1" en lugar de "i<-1" se reemplaza " desde " por "<-"
