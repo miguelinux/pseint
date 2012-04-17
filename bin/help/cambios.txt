@@ -1,9 +1,10 @@
+>>RELEASE 20120417<<
+
 20120417
+	Corregido el problema con las asignaciones en arreglos introducido con los cambios del 20120414
 	Ahora se colorea la flecha de asignación igual que las palabras clave en el editor.
 	Ahora se consideran correctamente acentos y eñes para el coloreado de sintaxis.
 	
->>RELEASE 20120416<<
-
 20120416
 	Se permiten ñs y acentos en las variables cuando se habilita la sintaxis flexible (pero aún no se colorean correctamente en el editor).
 	Agregado un argumento especial al intérprete para corregir la codificación de acentos y eñes para la consola de Windows.
