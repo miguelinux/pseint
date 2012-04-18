@@ -1,3 +1,6 @@
+20120417
+	Corregido el problema al utilizar el igual para la asicación del Para cuando el perfil lo permite.
+
 >>RELEASE 20120417<<
 
 20120417

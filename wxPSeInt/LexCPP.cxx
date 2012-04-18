@@ -83,7 +83,7 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 	bool lastWordWasUUID = false;
 	int styleBeforeDCKeyword = SCE_C_DEFAULT;
 	bool continuationLine = false;
-	int prevWordCount=0; // AGREGADO PARA PSEINT
+
 
 	if (initStyle == SCE_C_PREPROCESSOR) {
 		// Set continuationLine if last character of previous line is '\'
@@ -114,7 +114,7 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 	StyleContext sc(startPos, length, initStyle, styler);
 
 	for (; sc.More(); sc.Forward()) {
-
+		
 		if (sc.atLineStart) {
 			if (sc.state == SCE_C_STRING) {
 				// Prevent SCE_C_STRINGEOL from leaking back to previous line which 
@@ -145,8 +145,8 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 				if (enable_pseint) {                                        // AGREGADO PARA PSEINT
 					char s[3];                                              // AGREGADO PARA PSEINT
 					sc.GetCurrent(s,3);                                     // AGREGADO PARA PSEINT
-					if (prevWordCount==1&&s[0]=='<'&&s[1]=='-'&&s[2]==0) {  // AGREGADO PARA PSEINT
-						sc.ChangeState(SCE_C_WORD); prevWordCount++;        // AGREGADO PARA PSEINT
+					if (s[0]=='<'&&s[1]=='-'&&s[2]==0) {  // AGREGADO PARA PSEINT
+						sc.ChangeState(SCE_C_WORD);       // AGREGADO PARA PSEINT
 					}                                                       // AGREGADO PARA PSEINT
 					if ((sc.chPrev!='<' || sc.ch!='-' || sc.chPrev==' '))   // AGREGADO PARA PSEINT
 						sc.SetState(SCE_C_DEFAULT);                         // AGREGADO PARA PSEINT
@@ -176,8 +176,6 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 						sc.ChangeState(SCE_C_GLOBALCLASS);
 					}
 					sc.SetState(SCE_C_DEFAULT);
-					if (enable_pseint && keywords3.InList(s))  // AGREGADO PARA PSEINT
-						prevWordCount=0; else prevWordCount++; // AGREGADO PARA PSEINT
 				}
 				break;
 			case SCE_C_PREPROCESSOR:
@@ -355,7 +353,6 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 					if (IsASpace(sc.ch) || IsSpaceEquiv(sc.state)) { // AGREGADO PARA PSEINT
 						sc.SetState(SCE_C_OPERATOR);                 // AGREGADO PARA PSEINT
 					} else {                                         // AGREGADO PARA PSEINT
-						if (sc.ch==';') prevWordCount=0;             // AGREGADO PARA PSEINT
 						sc.ChangeState(SCE_C_OPERATOR);              // AGREGADO PARA PSEINT
 					}                                                // AGREGADO PARA PSEINT
 				} else                                               // AGREGADO PARA PSEINT
@@ -369,6 +366,14 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 		}
 		continuationLine = false;
 	}
+	
+	if (enable_pseint && sc.state==SCE_C_IDENTIFIER) {             // AGREGADO PARA PSEINT
+		char s[1000];                                              // AGREGADO PARA PSEINT
+		sc.GetCurrentLowered(s, sizeof(s));                        // AGREGADO PARA PSEINT
+		if (keywords.InList(s)) sc.ChangeState(SCE_C_WORD);        // AGREGADO PARA PSEINT
+		sc.SetState(SCE_C_DEFAULT);                                // AGREGADO PARA PSEINT
+	}                                                              // AGREGADO PARA PSEINT
+	
 	sc.Complete();
 }
 
