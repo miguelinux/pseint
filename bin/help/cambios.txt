@@ -1,9 +1,8 @@
-20120417
-	Corregido el problema al utilizar el igual para la asicación del Para cuando el perfil lo permite.
-
->>RELEASE 20120417<<
+>>RELEASE 20120418<<
 
 20120417
+	Corregido un problema con el anidamiento de estructuras Segun.
+	Corregido el problema al utilizar el igual para la asignación del Para cuando el perfil lo permite.
 	Corregido el problema con las asignaciones en arreglos introducido con los cambios del 20120414
 	Ahora se colorea la flecha de asignación igual que las palabras clave en el editor.
 	Ahora se consideran correctamente acentos y eñes para el coloreado de sintaxis.
