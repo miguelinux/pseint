@@ -1,3 +1,6 @@
+20120420
+	Ahora se marca como error cuando en una instrucción se utilizan varias expresiones separadas por coma donde iría solo una.
+
 >>RELEASE 20120418<<
 
 20120417

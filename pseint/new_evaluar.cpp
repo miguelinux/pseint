@@ -118,7 +118,7 @@ int BuscarComa(string &expresion, int p1, int p2, char coma) {
 	return -1;
 }
 
-int operadores[]={'|','&','~','=','<','>','+','-','*','/','^','%',' '};
+int operadores[]={',','|','&','~','=','<','>','+','-','*','/','^','%',' '};
 
 int BuscarOperador(string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true, comillas;
@@ -282,6 +282,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	cerr<<setw(tabs)<<""<<"EVALUAR: *"<<expresion.substr(p1,p2-p1+1)<<"*\n";
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
+	if (pos_op!=-1 && expresion[pos_op]==',') { WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
 		if (p2<p1) ev_return("");
 		char c = expresion[p1];
