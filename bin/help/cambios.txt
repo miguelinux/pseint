@@ -1,3 +1,7 @@
+20120509
+	Corregido el ejemplo del TaTeTi para algunas configuraciones de lenguaje.
+	Corregido el problema para mostrar elementos de matrices multidimensionales después del cambio del 20120420.
+
 20120420
 	Ahora se marca como error cuando en una instrucción se utilizan varias expresiones separadas por coma donde iría solo una.
 

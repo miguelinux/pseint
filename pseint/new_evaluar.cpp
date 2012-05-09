@@ -282,7 +282,9 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	cerr<<setw(tabs)<<""<<"EVALUAR: *"<<expresion.substr(p1,p2-p1+1)<<"*\n";
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
-	if (pos_op!=-1 && expresion[pos_op]==',') { WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
+	if (pos_op!=-1 && expresion[pos_op]==',') { 
+		WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return "";
+	}
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
 		if (p2<p1) ev_return("");
 		char c = expresion[p1];
@@ -654,23 +656,21 @@ string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 bool CheckDims(string &str) {
 	int pp=str.find("(",0), p2=str.size()-1;
 	if (!Inter.Running()) {
-		int b=pp,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
-		str[str.size()-1]=',';
+		// esto es para cuando esta checkeando sintaxis antes de ejecutar
+		// en este caso no debe verificar si las expresiones dan en los rangos 
+		// del arreglo o si esta dimensionado
+		int b=pp+1,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
+		str[str.size()-1]=','; pp;
 		for (int i=0;i<ca;i++) {
-//			int np=BuscarComa(str,pp+1,p2);
+			int np=BuscarComa(str,++pp,p2)-1;
 			tipo_var t=vt_numerica;
-			string ret = Evaluar(str,pp,p2,t);
+			string ret = Evaluar(str,pp,np,t);
+			pp=np+1;
 			if (!t.is_ok()) return false;
 		}
 		return true;
 	} 
-//	if (pp==string::npos) { // si no es arreglo
-//		if (memoria->LeerDims(str)) {
-//			WriteError(202,string("El identificador ")+str+"no corresponde a un arreglo");
-//			return false;
-//		} else
-//			return true;
-//	}
+	
 	// controlar cantidad de dimensiones
 	string nombre=str.substr(0,pp);
 	int *adims=memoria->LeerDims(str);

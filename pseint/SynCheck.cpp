@@ -1001,7 +1001,7 @@ int SynCheck() {
 									if (str2=="")
 									{SynError (61,"Parametro nulo."); errores++;}
 									if (Lerrores==errores) EvaluarSC(str2,tipo);
-									if (!tipo.cb_num)
+									if (tipo!=vt_error&&!tipo.cb_num)
 //										if (tipo<'c')
 //										{ ExpError(tipo,0); errores++;}
 //										else
@@ -1062,7 +1062,7 @@ int SynCheck() {
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
 									if (Lerrores==errores) EvaluarSC(str2,tipo);
-									if (!tipo.cb_num)
+									if (tipo!=vt_error&&!tipo.cb_num)
 //										if (tipo<'c')
 //										{ ExpError(tipo,0); errores++;}
 //										else
