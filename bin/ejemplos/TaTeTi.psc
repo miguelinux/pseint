@@ -49,10 +49,10 @@ Proceso TaTeTi
 			
 			// carga auxiliares segun a qué jugador le toca
 			Si TurnoJugador1 Entonces
-				Ficha<-'O'{;} Valor<- 1{;} Objetivo<-1{;}
+				Ficha<-'O'; Valor<- 1; Objetivo<-1{;}
 				Escribir "Turno del jugador 1 (X)"{;}
 			Sino
-				Ficha<-'X'{;} Valor<- 2{;} Objetivo<-8{;}
+				Ficha<-'X'; Valor<- 2; Objetivo<-8{;}
 				Escribir "Turno del jugador 2 (O)"{;}
 			FinSi
 			
@@ -75,16 +75,16 @@ Proceso TaTeTi
 			Hasta Que Pos<>99
 			// guarda la ficha en la matriz tab2 y el valor en tab1
 			CantTurnos<-CantTurnos+1{;}
-			Tab1[i,j]<-Valor{;} 
+			Tab1[i,j]<-Valor{;}
 			Tab2[i,j]<-Ficha{;}
 			
 			// verifica si ganó, buscando que el producto de las fichas en el tablero de Objetivo
-			aux_d1<-1{;} aux_d2<-1{;}
-			Para i<-{1#0} hasta {3#2}
-				aux_i<-1{;} aux_j<-1{;}
+			aux_d1<-1; aux_d2<-1{;}
+			Para i<-{1#0} hasta {3#2} hacer
+				aux_i<-1; aux_j<-1{;}
 				aux_d1<-aux_d1*Tab1[i,i]{;}
 				aux_d2<-aux_d2*Tab1[i,{4#2}-i]{;}
-				Para j<-{1#0} hasta {3#2}
+				Para j<-{1#0} hasta {3#2} hacer
 					aux_i<-aux_i*Tab1[i,j]{;}
 					aux_j<-aux_j*Tab1[j,i]{;}
 				FinPara
