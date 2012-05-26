@@ -1,3 +1,6 @@
+20120517
+	Agregado el perfil UDO-Anaco, para la asignatura de "Programación Orientada a Objetos" utilizado en la Universidad de Oriente, Extensión Anaco, Anzoátegui, Venezuela.
+	
 20120509
 	Corregido el ejemplo del TaTeTi para algunas configuraciones de lenguaje.
 	Corregido el problema para mostrar elementos de matrices multidimensionales después del cambio del 20120420.
