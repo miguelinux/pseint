@@ -411,8 +411,7 @@ t_algoritmo cargar(string archivo){
 	}
 	while (!f.eof()) {
 		f.getline(buffer,256); s=buffer;
-		programa.push_back(buffer);
-		prog_lines.push_back(0);
+		programa.PushBack(buffer);
 		for (unsigned int ii=0;ii<s.size();ii++) if(s[ii]=='\t') s[ii]=' ';
 		if (s=="FINPROCESO"){ 
 			break;

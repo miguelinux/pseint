@@ -511,18 +511,15 @@ int SynCheck() {
 	SynErrores=0;
 	programa.PushBack("");
 	programa.Insert(0,"");
-	stack <string> bucles; // Para controlar los bucles que se abren y cierran
-	stack <InstruccionLoc> bucles_line;
-	bucles.push("CHECK");
-	bucles_line.push(InstruccionLoc(1,1));
+	stack <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
+	bucles.push(Instruccion("CHECK",1,1));
 	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
 	int flag_pyc=0, tmp ,Proceso=0;
 	tipo_var tipo;
 	string cadena, instruccion, str;
-//	bool last_was_segun=false;
 	
 	// Checkear sintaxis y reorganizar el codigo
-	for (int x=1;x<(int)programa.GetSize();x++){
+	for (int x=1;x<programa.GetSize();x++){
 		Inter.SetLineAndInstructionNumber(x);
 		cadena=programa[x];
 		Lerrores=errores;
@@ -535,8 +532,6 @@ int SynCheck() {
 		
 		
 		// Ignorar lineas de comentarios
-//		if (cadena[0]=='/' && cadena[1]=='/')
-//			cadena="";
 		{
 			int comillas=-1, parentesis=0;
 			instruccion="";
@@ -560,28 +555,28 @@ int SynCheck() {
 			
 			// Separar si es sino o entonces
 			if (cadena=="ENTONCES" && bucles.top()!="SI" )
-			{SynError (51,"ENTONCES mal colocado."); errores++;}
+				{SynError (51,"ENTONCES mal colocado."); errores++;}
 			if (cadena=="SINO" && bucles.top()!="SI" )
-			{SynError (55,"SINO mal colocado."); errores++;}
+				{SynError (55,"SINO mal colocado."); errores++;}
 			if (LeftCompare(cadena,"ENTONCES ")) {
 				if (bucles.top()!="SI")
-				{SynError (1,"ENTONCES mal colocado."); errores++;}
+					{SynError (1,"ENTONCES mal colocado."); errores++;}
 				str=cadena;
 				str.erase(0,9);
 				cadena="ENTONCES";
-				programa.Insert(x+1,Instruccion(str));
+				programa.Insert(x+1,str);
 				flag_pyc+=1;
 			}
 			if (LeftCompare(cadena,"SINO ")) {
 				if (bucles.top()!="SI")
-				{SynError (2,"SINO mal colocado."); errores++;}
+					{SynError (2,"SINO mal colocado."); errores++;}
 				str=cadena;
 				cadena="SINO";
 				str.erase(0,5);
-				programa.Insert(x+1,Instruccion(str));
+				programa.Insert(x+1,str);
 				flag_pyc+=1;
 			}
-			if (cadena=="FINSEGÚN")cadena="FINSEGUN";
+			if (cadena=="FINSEGÚN") cadena="FINSEGUN";
 			
 			// Cortar la instrucción
 			cadena=cadena+" ";
@@ -593,12 +588,12 @@ int SynCheck() {
 				instruccion="LEER "; cadena.erase(0,5);
 			} else if (LeftCompareFix(cadena,"SI ") && !LeftCompare(cadena,"SI ES ")) {
 				instruccion="SI "; cadena.erase(0,3);
-				bucles.push("SI");bucles_line.push(programa.GetLoc(x));
+				bucles.push(programa.GetLoc(x,"SI"));
 				// cortar el entonces si esta en la misma linea
 				comillas=-1;
 				if (RightCompareFix(cadena," ENTONCES ")) {
 					cadena.erase(cadena.size()-10,10);
-					programa.Insert(x+1,Instruccion("ENTONCES"));
+					programa.Insert(x+1,"ENTONCES");
 					flag_pyc+=1;
 				} else
 					for (int y=0; y<(int)cadena.size()-10;y++) {
@@ -609,19 +604,19 @@ int SynCheck() {
 							// borrar los espacios en medio
 							while (cadena[cadena.size()-1]==' ' && cadena.size()!=0) cadena.erase(cadena.size()-1,1);
 							str.erase(0,y+1);
-							programa.Insert(x+1,Instruccion(str));
+							programa.Insert(x+1,str);
 							flag_pyc+=1;
 							break;
 						}
 					}
 			} else if (LeftCompareFix(cadena,"MIENTRAS ")&&(!lazy_syntax||!LeftCompareFix(cadena,"MIENTRAS QUE "))) { 
 				instruccion="MIENTRAS "; cadena.erase(0,9);
-				bucles.push("MIENTRAS");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"MIENTRAS"));
 			} else if (LeftCompareFix(cadena,"SEGUN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
-				bucles.push("SEGUN");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"SEGUN"));
 			} else if (LeftCompare(cadena,"DE OTRO MODO: ") || LeftCompare(cadena,"DE OTRO MODO ")) {
-				cadena.erase(0,13); programa.Insert(x+1,Instruccion(cadena)); flag_pyc+=1;
+				cadena.erase(0,13); programa.Insert(x+1,cadena); flag_pyc+=1;
 				instruccion="DE OTRO MODO: "; cadena="";
 			} else if (LeftCompare(cadena,"DIMENSION ")) {
 				instruccion="DIMENSION "; cadena.erase(0,10);
@@ -655,20 +650,20 @@ int SynCheck() {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
-				if (!Proceso) bucles.push("PROCESO");programa.GetLoc(x);
+				if (!Proceso) bucles.push(programa.GetLoc(x,"PROCESO"));
 			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"SINO ")) {
 				instruccion="SINO "; cadena.erase(0,5);
 			} else if (lazy_syntax && LeftCompare(cadena,"PARACADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,9);
-				bucles.push("PARACADA");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"PARACADA"));
 			} else if (lazy_syntax && LeftCompare(cadena,"PARA CADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,10);
-				bucles.push("PARACADA");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"PARACADA"));
 			} else if (LeftCompare(cadena,"PARA ")) {
 				instruccion="PARA "; cadena.erase(0,5);
-				bucles.push("PARA");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"PARA"));
 				// si se puede asignar con igual, reemplazar aca
 				if (overload_equal) {
 					int i=0, l=cadena.size();
@@ -693,7 +688,7 @@ int SynCheck() {
 				}
 			} else if (LeftCompareFix(cadena,"SEGÚN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
-				bucles.push("SEGUN");programa.GetLoc(x);
+				bucles.push(programa.GetLoc(x,"SEGUN"));
 			} else if (LeftCompare(cadena,"FINSEGÚN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
@@ -725,7 +720,7 @@ int SynCheck() {
 								}
 							}
 							instruccion=":";
-							programa.Insert(x+1,Instruccion(cadena));
+							programa.Insert(x+1,cadena);
 							programa[x+1].instruccion.erase(0,pos_dp+1);
 							cadena.erase(pos_dp+1,cadena.size()-pos_dp-1);
 							flag_pyc+=1; flag_segun=1;
@@ -780,6 +775,16 @@ int SynCheck() {
 			// verificar operadores
 			SynCheckAux3(x,cadena,errores,instruccion,flag_pyc);
 			
+			// y si hay algo a continuacion del hacer tambien, asi que despues del hacer se corta como si fuera hacer; para que se pueda escribir por ejemplo un mientras en una sola linea
+			comillas=-1; len=cadena.size();
+			for (tmp=0;tmp<len;tmp++) {
+				if (cadena[tmp]=='\'') comillas=-comillas;
+				else if (comillas<0 && tmp+5<len && cadena.substr(tmp,5)=="HACER" && cadena.substr(tmp,6)!="HACER;") {
+					programa.Insert(x+1,cadena.substr(tmp+5));
+					cadena.erase(tmp+5); break;
+				}
+			}
+			
 			if (cadena.size()&&cadena[cadena.size()-1]==',')
 			{ SynError (31,"Parametro nulo."); errores++; }
 			while (cadena[0]==';' && cadena.size()>1) cadena.erase(0,1); // para que caso esta esto?
@@ -787,7 +792,7 @@ int SynCheck() {
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && cadena!="") {
 					if (lazy_syntax) {
-						programa.Insert(x,Instruccion("ENTONCES ")); x++;
+						programa.Insert(x,"ENTONCES "); x++;
 					} else 
 						{SynError (32,"Se esperaba ENTONCES"); errores++;}
 				}
@@ -836,8 +841,7 @@ int SynCheck() {
 					} else
 						if (cadena!="") {
 							SynError (42,"Se esperaba PROCESO <nombre>."); errores++; Proceso=1;
-							bucles.push("PROCESO");
-							bucles_line.push(programa.GetLoc(x));
+							bucles.push(programa.GetLoc(x,"PROCESO"));
 						}
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				SynError (999,"Solo puede haber un proceso."); errores++;
@@ -1366,46 +1370,46 @@ int SynCheck() {
 			}
 			// Controlar Cierre de Bucles
 			if (cadena=="REPETIR") 
-			{bucles.push("REPETIR");programa.GetLoc(x);}
+			{bucles.push(programa.GetLoc(x,"REPETIR"));}
 			if (cadena=="FINSEGUN") {
 				if (bucles.top()=="SEGUN") {
-					bucles_line.pop(); bucles.pop();
+					bucles.pop();
 				} else {
 					SynError (107,"FINSEGUN mal colocado."); errores++;}
 			}
 			if (cadena=="FINPARA") {
 				if (bucles.top()=="PARA"||bucles.top()=="PARACADA") {
-					bucles_line.pop();bucles.pop();
+					bucles.pop();
 				} else {
 					SynError (108,"FINPARA mal colocado."); errores++;}
 			}
 			if (cadena=="FINMIENTRAS") {
 				if (bucles.top()=="MIENTRAS") {
-					bucles_line.pop();bucles.pop();
+					bucles.pop();
 				} else {
 					SynError (109,"FINMIENTRAS mal colocado."); errores++;}
 			}
 			if (cadena=="FINSI") {
 				if (bucles.top()=="SI") {
-					bucles_line.pop();bucles.pop();
+					bucles.pop();
 				} else {
 					SynError (110,"FINSI mal colocado."); errores++;}
 			}
 			if (LeftCompare(cadena,"HASTA QUE ")) {
-				if (bucles.top()=="REPETIR") 
-					{bucles_line.pop();bucles.pop();
+				if (bucles.top()=="REPETIR") {
+					bucles.pop();
 				} else {
 					SynError (111,"HASTA QUE mal colocado."); errores++;}
 			}
 			if (lazy_syntax && LeftCompare(cadena,"MIENTRAS QUE ")) {
-				if (bucles.top()=="REPETIR") 
-					{bucles_line.pop();bucles.pop();
+				if (bucles.top()=="REPETIR") {
+					bucles.pop();
 				} else {
 					SynError (999,"MIENTRAS QUE mal colocado."); errores++;}
 			}
 			if (LeftCompare(cadena,"FINPROCESO")) {
 				if (bucles.top()=="PROCESO") {
-					bucles_line.pop();bucles.pop();
+					bucles.pop();
 //				} else {
 //					SynError (112,"FINPROCESO mal colocado."); errores++;
 				}
@@ -1425,14 +1429,13 @@ int SynCheck() {
 	
 	// Controlar Cierre de Bucles
 	while (!bucles.empty())	{
-		if (bucles.top()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles_line.top()); errores++;}
-		if (bucles.top()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles_line.top()); errores++;}
-		if (bucles.top()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles_line.top()); errores++;}
-		if (bucles.top()=="SI") {SynError (117,"Falta cerrar SI.",bucles_line.top()); errores++;}
-		if (bucles.top()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles_line.top()); errores++;}
-		if (bucles.top()=="PROCESO" && Proceso<2) {SynError (119,"Falta cerrar PROCESO.",bucles_line.top()); errores++;}
+		if (bucles.top()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="SI") {SynError (117,"Falta cerrar SI.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="PROCESO" && Proceso<2) {SynError (119,"Falta cerrar PROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
 		bucles.pop();
-		bucles_line.pop();
 	}
 	
 	return SynErrores;

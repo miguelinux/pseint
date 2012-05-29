@@ -1,26 +1,29 @@
-OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o 
+OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o 
 
-${OBJS_DIR}/psexport.o: psexport.cpp version.h ../pseint/global.h ../pseint/new_funciones.h ../pseint/new_memoria.h exportexp.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_evaluar.h
+${OBJS_DIR}/psexport.o: psexport.cpp version.h ../pseint/global.h ../pseint/new_funciones.h ../pseint/new_memoria.h exportexp.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/new_evaluar.h
 	${GPP} ${FLAGS} -c psexport.cpp -o $@
 
-${OBJS_DIR}/utils.o: ../pseint/utils.cpp ../pseint/global.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/zcurlib.h
+${OBJS_DIR}/utils.o: ../pseint/utils.cpp ../pseint/global.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/zcurlib.h
 	${GPP} ${FLAGS} -c ../pseint/utils.cpp -o $@
 
 ${OBJS_DIR}/global.o: ../pseint/global.cpp ../pseint/global.h
 	${GPP} ${FLAGS} -c ../pseint/global.cpp -o $@
 
-${OBJS_DIR}/intercambio.o: ../pseint/intercambio.cpp ../pseint/intercambio.h ../pseint/zockets.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/SynCheck.h
+${OBJS_DIR}/intercambio.o: ../pseint/intercambio.cpp ../pseint/intercambio.h ../pseint/zockets.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/SynCheck.h
 	${GPP} ${FLAGS} -c ../pseint/intercambio.cpp -o $@
 
 ${OBJS_DIR}/zcurlib.o: ../pseint/zcurlib.cpp ../pseint/zcurlib.h
 	${GPP} ${FLAGS} -c ../pseint/zcurlib.cpp -o $@
 
-${OBJS_DIR}/new_evaluar.o: ../pseint/new_evaluar.cpp ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/global.h ../pseint/new_funciones.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h
+${OBJS_DIR}/new_evaluar.o: ../pseint/new_evaluar.cpp ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/global.h ../pseint/new_funciones.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h
 	${GPP} ${FLAGS} -c ../pseint/new_evaluar.cpp -o $@
 
-${OBJS_DIR}/new_funciones.o: ../pseint/new_funciones.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/intercambio.h ../pseint/zockets.h
+${OBJS_DIR}/new_funciones.o: ../pseint/new_funciones.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h
 	${GPP} ${FLAGS} -c ../pseint/new_funciones.cpp -o $@
 
 ${OBJS_DIR}/new_memoria.o: ../pseint/new_memoria.cpp ../pseint/new_memoria.h
 	${GPP} ${FLAGS} -c ../pseint/new_memoria.cpp -o $@
+
+${OBJS_DIR}/new_programa.o: ../pseint/new_programa.cpp ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h
+	${GPP} ${FLAGS} -c ../pseint/new_programa.cpp -o $@
 

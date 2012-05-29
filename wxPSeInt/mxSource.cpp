@@ -1024,25 +1024,38 @@ void mxSource::OnSavePointLeft (wxStyledTextEvent & evt) {
 vector<int> &mxSource::FillAuxInstr(int _l) {
 	static vector<int> v; v.clear();
 	wxString s=GetLine(_l);
-	int i=0,len=s.Len(),last_ns=0;
+	int i=0,len=s.Len(),last_ns=1;
 	bool starting=true,comillas=false;
 	while (i<len) {
 		if (s[i]=='\''||s[i]=='\"') comillas=!comillas;
+		else if (!comillas && i && s[i]=='/' && s[i-1]=='/') break;
 		if (s[i]!=' '&&s[i]!='\t') {
-			if (!comillas&&starting) { v.push_back(i); starting=false; }
-			if (!comillas&&(s[i]==';'||s[i]=='\n')) { v.push_back(last_ns+1); starting=true; }
-			last_ns=i;
+			if (!comillas) {
+				if (starting) { v.push_back(i); starting=false; }
+				if (s[i]==';'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
+				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && ((s[i+8]|32)<'a'||(s[i+8]|32)>'z') && (s[i+8]<'0'||s[i+8]>'9') && s[i+8]!='_') {
+					v.push_back(last_ns); v.push_back(i); v.push_back(i+7); 
+					i+=7; starting=true;
+				}
+				else if ((s[i]|32)=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && ((s[i+5]|32)<'a'||(s[i+5]|32)>'z') && (s[i+5]<'0'||s[i+5]>'9') && s[i+5]!='_') {
+					v.push_back(last_ns); v.push_back(i); v.push_back(i+4); 
+					i+=4; starting=true;
+				}
+			}
+			last_ns=i+1;
 		}
 		i++;
 	}
-	if (comillas) last_ns=len-1;
-	v.push_back(last_ns+1);
+	if (comillas) last_ns=len;
+	if (v.empty()) v.push_back(last_ns);
+	v.push_back(last_ns);
 	return v;
 }
 
 void mxSource::SelectInstruccion (int _l, int _i) {
 	vector<int> &v=FillAuxInstr(_l);
 	_l=PositionFromLine(_l);
-	SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
+	if (2*_i>v.size()) SetSelection(_l+v[0],_l+v[v.size()-1]);
+	else SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
 }
 
