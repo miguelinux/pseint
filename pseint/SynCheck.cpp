@@ -559,7 +559,7 @@ int SynCheck() {
 			if (cadena=="SINO" && bucles.top()!="SI" )
 				{SynError (55,"SINO mal colocado."); errores++;}
 			if (LeftCompare(cadena,"ENTONCES ")) {
-				if (bucles.top()!="SI")
+				if (bucles.top()!="SI" && programa[x-1]!="SI")
 					{SynError (1,"ENTONCES mal colocado."); errores++;}
 				str=cadena;
 				str.erase(0,9);
