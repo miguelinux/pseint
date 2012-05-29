@@ -30,7 +30,7 @@ public:
 	const wxArrayString &GetDesktopVars();
 	void SetDesktopVars(const wxArrayString &vars);
 	void SetAutoevaluation(long l, wxString value);
-	void SetLine(long line);
+	void SetLine(long line, long i=-1);
 	void ResetTest();
 };
 

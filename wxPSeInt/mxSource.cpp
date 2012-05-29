@@ -9,6 +9,7 @@
 #include <wx/process.h>
 #include <wx/socket.h>
 #include "mxMainWindow.h"
+#include <vector>
 using namespace std;
 
 const wxChar *mxSourceWords1 =
@@ -972,7 +973,7 @@ void mxSource::SetDebugPause() {
 	}
 }
 
-void mxSource::SetDebugLine(int l) {
+void mxSource::SetDebugLine(int l, int i) {
 	if (debug_line!=-1) {
 		MarkerDeleteHandle(debug_line_handler_1);
 		MarkerDeleteHandle(debug_line_handler_2);
@@ -981,6 +982,7 @@ void mxSource::SetDebugLine(int l) {
 		debug_line_handler_1=MarkerAdd(l,0);
 		debug_line_handler_2=MarkerAdd(l,1);
 		EnsureVisibleEnforcePolicy(l);
+		if (i!=-1) SelectInstruccion(l,i);
 	}
 }
 
@@ -1017,5 +1019,30 @@ void mxSource::OnSavePointReached (wxStyledTextEvent & evt) {
 
 void mxSource::OnSavePointLeft (wxStyledTextEvent & evt) {
 	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),page_text+_T("*"));	
+}
+
+vector<int> &mxSource::FillAuxInstr(int _l) {
+	static vector<int> v; v.clear();
+	wxString s=GetLine(_l);
+	int i=0,len=s.Len(),last_ns=0;
+	bool starting=true,comillas=false;
+	while (i<len) {
+		if (s[i]=='\''||s[i]=='\"') comillas=!comillas;
+		if (s[i]!=' '&&s[i]!='\t') {
+			if (!comillas&&starting) { v.push_back(i); starting=false; }
+			if (!comillas&&(s[i]==';'||s[i]=='\n')) { v.push_back(last_ns+1); starting=true; }
+			last_ns=i;
+		}
+		i++;
+	}
+	if (comillas) last_ns=len-1;
+	v.push_back(last_ns+1);
+	return v;
+}
+
+void mxSource::SelectInstruccion (int _l, int _i) {
+	vector<int> &v=FillAuxInstr(_l);
+	_l=PositionFromLine(_l);
+	SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
 }
 

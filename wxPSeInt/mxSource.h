@@ -8,6 +8,8 @@
 #define mxSOURCE_HIDDEN 8
 
 #define MAX_COMP_SIZE 100
+#include <vector>
+using namespace std;
 class mxInputDialog;
 class mxProcess;
 class wxSocketBase;
@@ -71,7 +73,7 @@ public:
 	void SetFlowSocket(wxSocketBase *s);
 	bool HaveComments();
 	
-	void SetDebugLine(int l=-1); // para marcar donde va el paso a paso, -1 para desmarcar
+	void SetDebugLine(int l=-1, int i=-1); // para marcar donde va el paso a paso, -1 para desmarcar
 	void SetDebugPause(); // cambia de marcador usando la ultima linea que recibio en SetDebugLine
 	
 	bool LineHasSomething(int l); // false si esta vacia o tiene solo comentarios
@@ -82,6 +84,9 @@ public:
 	void OnSavePointReached(wxStyledTextEvent &evt);
 	void OnSavePointLeft(wxStyledTextEvent &evt);
 	
+	// retorna las posiciones donde empieza y termina cada instruccion de una linea
+	vector<int> &FillAuxInstr(int _l);
+	void SelectInstruccion(int _l, int _i);
 	
 	DECLARE_EVENT_TABLE();
 };

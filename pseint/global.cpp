@@ -1,8 +1,8 @@
 #include "global.h"
 
 queue <string> predef_input; // entrada predefinida para los tests
-vector <string> programa; // programa con sintaxis reorganizada para ejecutar
-vector <int> prog_lines;  // correspondencia con el código original (por numeros de lineas)
+//vector <string> programa; // programa con sintaxis reorganizada para ejecutar
+//vector <int> prog_lines;  // correspondencia con el código original (por numeros de lineas)
 ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno
 bool ExeInfoOn=false;
 bool wait_key;

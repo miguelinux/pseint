@@ -18,7 +18,7 @@ Intercambio::Intercambio(){
 	evaluating_for_debug=false;
 	zocket = ZOCKET_ERROR;
 #endif
-	LineNumber=-1;delay=0; // Inicializar
+	instNumber=lineNumber=-1;delay=0; // Inicializar
 	port=24377; running=false;
 }
 Intercambio::~Intercambio() {
@@ -88,11 +88,17 @@ void Intercambio::ProcData(string order) {
 	}
 }
 #endif
-void Intercambio::SetLineNumber(int x){
-	LineNumber=x;
+void Intercambio::SetLineAndInstructionNumber(int _i) {
+	SetLineNumber(programa[_i].num_linea,programa[_i].num_instruccion);
+}
+
+void Intercambio::SetLineNumber(int _l, int _i){
+	lineNumber=_l; instNumber=_i;
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR) { // si estamos depurando, informar la linea y esperar
-		string str(string("linea ")+IntToStr(x)+"\n");
+		string str;
+		if (_i>0) str=string("linea ")+IntToStr(_l)+":"+IntToStr(_i)+"\n";
+		else str=string("linea ")+IntToStr(_l)+"\n";
 		zocket_escribir(zocket,str.c_str(),str.size());
 		evaluating_for_debug=true;
 		for (unsigned int i=0;i<autoevaluaciones.size();i++) {
@@ -168,7 +174,11 @@ void Intercambio::SetFinished(bool interrupted) {
 #endif
 }
 int Intercambio::GetLineNumber() {
-	return LineNumber;
+	return lineNumber;
+}
+
+int Intercambio::GetInstNumber() {
+	return instNumber;
 }
 
 bool Intercambio::Running() {

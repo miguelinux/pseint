@@ -7,6 +7,7 @@
 #include "new_evaluar.h"
 #include "new_memoria.h"
 #include "zcurlib.h"
+#include "new_programa.h"
 using namespace std;
 
 // ********************* Ejecutar un Bloque de Instrucciones **************************
@@ -19,8 +20,8 @@ void Ejecutar(int LineStart, int LineEnd){
 	string cadena;
 	// Ejecutar el bloque
 	for (int line=LineStart;line<=LineEnd;line++){
-		cadena=programa[line];
-		Inter.SetLineNumber(prog_lines[line]);
+		cadena=programa[line].instruccion;
+		Inter.SetLineAndInstructionNumber(line);
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			// ----------- ESCRIBIR ------------- //
 			if (cadena=="BORRARPANTALLA;") {
@@ -259,7 +260,7 @@ void Ejecutar(int LineStart, int LineEnd){
 							tmp1++;
 						}
 						line=tmp1;
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 					} else {
 						tmp1=line+1; tmp2=0; // Buscar hasta donde llega el verdadero
 						while (!(tmp2==0 && (programa[tmp1]=="SINO" || programa[tmp1]=="FINSI"))) {
@@ -278,7 +279,7 @@ void Ejecutar(int LineStart, int LineEnd){
 							Ejecutar(line+1,tmp1-1); // ejecutar salida por verdadero
 						}
 						line=tmp1;
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 					}
 				} else {
 					ExeError(999,"No coinciden los tipos.");
@@ -304,11 +305,11 @@ void Ejecutar(int LineStart, int LineEnd){
 		//							if (tipo<'c')
 		//								ExpError(tipo,1);
 						Ejecutar(line+1,tmp1-1);
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 					}
 		//						if (tipo<'c') ExpError(tipo,1);
 					line=tmp1;
-					Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+					Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 				}
 			} else 
 			// ---------------- REPETIR HASTA QUE ------------------ //
@@ -343,10 +344,10 @@ void Ejecutar(int LineStart, int LineEnd){
 					while (Evaluar(cadena,tipo)==valor_verdad) {
 	//								if (tipo<'c') ExpError(tipo,1);
 						Ejecutar(line+1,tmp1-1);
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 					}
 					line=tmp1;
-					Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+					Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 				}
 			} else 
 			// ------------------- PARA --------------------- //
@@ -396,17 +397,17 @@ void Ejecutar(int LineStart, int LineEnd){
 				if (positivo) // si el paso es positivo
 					while (Evaluar(contador+"<="+val_fin,tipo)=="VERDADERO") {
 						Ejecutar(line+1,tmp1-1);
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 						memoria->EscribirValor(contador,Evaluar(contador+"+("+val_paso+")",tipo));
 					}
 				else // si el paso es negativo
 					while (Evaluar(contador+">="+val_fin,tipo)=="VERDADERO"){
 						Ejecutar(line+1,tmp1-1);
-						Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+						Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 						memoria->EscribirValor(contador,Evaluar(contador+"+("+val_paso+")",tipo));
 					}
 				line=tmp1;
-				Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+				Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 			} else 
 			// ------------------- PARA CADA --------------------- //
 			if (LeftCompare(cadena,"PARACADA ")) {
@@ -441,14 +442,14 @@ void Ejecutar(int LineStart, int LineEnd){
 					}
 					elemento=aux2+"("+elemento.substr(1);
 					// asignar el elemento en la variable del bucle
-					Inter.SetLineNumber(prog_lines[line]);
+					Inter.SetLineAndInstructionNumber(line);
 					if (!memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento)))
 						ExeError(999,"No coinciden los tipos.");
 					memoria->EscribirValor(aux1,memoria->LeerValor(elemento));
 					// ejecutar la iteracion
 					Ejecutar(line+1,tmp1-1);
 					// asignar la variable del bucle en el elemento
-					Inter.SetLineNumber(prog_lines[tmp1]);
+					Inter.SetLineAndInstructionNumber(tmp1);
 					memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
@@ -511,7 +512,7 @@ void Ejecutar(int LineStart, int LineEnd){
 					}
 					Ejecutar(x+1,tmp1-1); }
 				line=fin+1;
-				Inter.SetLineNumber(prog_lines[line]); // cambio 20080623 para ejecucion paso a paso
+				Inter.SetLineAndInstructionNumber(line); // cambio 20080623 para ejecucion paso a paso
 			}
 		}
 	}

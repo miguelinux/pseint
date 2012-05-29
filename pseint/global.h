@@ -8,8 +8,8 @@ using namespace std;
 
 // *********************** Variables Globales ****************************
 extern queue <string> predef_input;
-extern vector <string> programa; // programa con sintaxis reorganizada para ejecutar
-extern vector <int> prog_lines;  // correspondencia con el código original (por numeros de lineas)
+//extern vector <string> programa; // programa con sintaxis reorganizada para ejecutar
+//extern vector <int> prog_lines;  // correspondencia con el código original (por numeros de lineas)
 extern ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno
 extern bool ExeInfoOn;
 extern bool wait_key;

@@ -54,13 +54,15 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 
 void DebugManager::ProcData(wxString data) {
 	if (data.StartsWith(_T("linea "))) {
-		long l=-1;
-		data.Mid(6).ToLong(&l);
-		if (l>=0 && source!=NULL)
-			source->SetDebugLine(l);
-//			source->SetSelection(source->GetLineEndPosition(l),source->GetLineIndentPosition(l));
-		if (do_desktop_test)
-			desktop_test->SetLine(l+1);
+		long l=-1,i=-1;
+		if (data.Contains(":")) {
+			data.Mid(6).BeforeFirst(':').ToLong(&l);
+			data.AfterLast(':').ToLong(&i);
+		} else {
+			data.Mid(6).ToLong(&l);
+		}
+		if (l>=0 && source!=NULL) source->SetDebugLine(l-1,i-1);
+		if (do_desktop_test) desktop_test->SetLine(l,i);
 	} else if (data.StartsWith(_T("autoevaluacion "))) {
 		long l=-1;
 		data.Mid(15).BeforeFirst(' ').ToLong(&l);

@@ -150,13 +150,13 @@ void ExeError(int num,string s) {
 		Inter.SetError(string("<<")+s+">>");
 	} else {
 		if (raw_errors) {
-			cout<<"=== Line "<<Inter.GetLineNumber()+1<<": ExeError "<<num<<endl;
+			cout<<"=== Line "<<Inter.GetLineNumber()<<": ExeError "<<num<<endl;
 			exit(0);
 		}
 		if (colored_output) setForeColor(COLOR_ERROR);
-		cout<<"Linea "<<Inter.GetLineNumber()+1<<": ERROR "<<num<<": "<<s<<endl;
+		cout<<"Lin "<<Inter.GetLineNumber()<<" (inst "<<Inter.GetInstNumber()<<"): ERROR "<<num<<": "<<s<<endl;
 		if (ExeInfoOn) {
-			ExeInfo<<"Linea "<<Inter.GetLineNumber()+1<<": ERROR "<<num<<": "<<s<<endl;
+			ExeInfo<<"Lin "<<Inter.GetLineNumber()<<" (inst "<<Inter.GetInstNumber()<<"): ERROR "<<num<<": "<<s<<endl;
 			ExeInfo<<"*** Ejecucion Interrumpida. ***\n";
 		} 
 		if (wait_key) {
@@ -173,10 +173,17 @@ void ExeError(int num,string s) {
 // ------------------------------------------------------------
 //    Informa un error de syntaxis antes de la ejecucion
 // ------------------------------------------------------------
-void SynError(int num,string s, int line) { 
-	if (line==-1) line=Inter.GetLineNumber();
+void SynError(int num,string s, InstruccionLoc il) { 
+	SynError(num,s,il.linea,il.inst);
+}
+
+void SynError(int num,string s, int line, int inst) { 
+	if (line==-1) {
+		line=Inter.GetLineNumber();
+		inst=Inter.GetInstNumber();
+	}
 	if (raw_errors) {
-		cout<<"=== Line "<<line+1<<": SynError "<<num<<endl;
+		cout<<"=== Line "<<line<<": SynError "<<num<<endl;
 		SynErrores++;
 		return;
 	}
@@ -184,8 +191,14 @@ void SynError(int num,string s, int line) {
 		Inter.SetError(string("<<")+s+">>");
 	} else {
 		if (colored_output) setForeColor(COLOR_ERROR);
-		cout<<"Linea "<<line+1<<": ERROR "<<num<<": "<<s<<endl;
-		if (ExeInfoOn) ExeInfo<<"Linea "<<line+1<<": ERROR "<<num<<": "<<s<<endl;
+		cout<<"Lin "<<line;
+		if (inst>0) cout<<" (inst "<<inst<<")";
+		cout<<": ERROR "<<num<<": "<<s<<endl;
+		if (ExeInfoOn) {
+			ExeInfo<<"Lin "<<line;
+			if (inst>0) ExeInfo<<" (inst "<<inst<<")";
+			ExeInfo<<": ERROR "<<num<<": "<<s<<endl;
+		}
 		Inter.AddError(s,line);
 		SynErrores++;
 	}

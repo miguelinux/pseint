@@ -15,7 +15,8 @@ class Intercambio {
 	
 
 	bool running;
-	int LineNumber;          // Numero de linea que se está ejecutando
+	int instNumber;          // Numero de linea que se está ejecutando (base 1)
+	int lineNumber;          // Numero de linea que se está ejecutando (base 1)
 	vector <string> Archivo; // Archivo original
 	vector <string> Errores; // Descripcion de los errores encontrados
 	vector <int> Lineas;     // Numeros de lines correspondientes a los errores	
@@ -48,10 +49,12 @@ public:
 	void ProcInput();
 	void SetDelay(int n);
 #endif
-	void SetLineNumber(int x);
+	void SetLineNumber(int _l, int _i);
+	void SetLineAndInstructionNumber(int _i);
 	void SetStarted();
 	void SetFinished(bool interrupted=false);
 	int GetLineNumber();
+	int GetInstNumber();
 	bool Running();
 	void SetPort(int p);
 	

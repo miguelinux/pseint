@@ -115,9 +115,12 @@ void mxDesktopTest::SetAutoevaluation(long l, wxString value) {
 	SetCellBackgroundColour(rows_num-1,l,back_colour);
 }
 
-void mxDesktopTest::SetLine(long line) {
+void mxDesktopTest::SetLine(long line, long i) {
 	InsertRows(rows_num);
-	SetCellValue(rows_num,0,wxString()<<line);
+	if (i>0)
+		SetCellValue(rows_num,0,wxString()<<line<<"("<<i<<")");
+	else
+		SetCellValue(rows_num,0,wxString()<<line);
 	SelectRow(rows_num);
 	SelectCol(0);
 	MakeCellVisible(rows_num,sel_col);

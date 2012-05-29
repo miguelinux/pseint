@@ -3,6 +3,7 @@
 
 #include <string>
 #include "new_memoria.h"
+#include "new_programa.h"
 using namespace std;
 
 // -------------------------------------------------------------------
@@ -35,7 +36,8 @@ void ExeError(int num,string s) ;
 // ------------------------------------------------------------
 //    Informa un error de syntaxis antes de la ejecucion
 // ------------------------------------------------------------
-void SynError(int num,string s, int line=-1) ;
+void SynError(int num,string s, InstruccionLoc il) ;
+void SynError(int num,string s, int line=-1, int inst=-1) ;
 
 // ------------------------------------------------------------
 //    Analiza el tipo de error devuelo por Evaluar(expresion)

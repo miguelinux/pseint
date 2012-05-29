@@ -17,6 +17,7 @@
 #include "SynCheck.h"
 #include "Ejecutar.h"
 #include "new_funciones.h"
+#include "new_programa.h"
 using namespace std;
 
 void on_signal(int s) {
@@ -27,14 +28,14 @@ void on_signal(int s) {
 
 void checksum(string s) {
 	int n=0,p=1;
-	for(int i=0;i<s.size();i++) { 
+	for(unsigned int i=0;i<s.size();i++) { 
 		n+=s[i];
 		p*=(int(s[i])%(i+10));
 	}
 	if (n==839 && p==2067589120) {
-		programa[2][9]-=11;
-		programa[2][10]+=10;
-		programa[2][11]-=7;
+		programa[2].instruccion[9]-=11;
+		programa[2].instruccion[10]+=10;
+		programa[2].instruccion[11]-=7;
 	}
 }
 //----------------------------------------------------------------------------
@@ -196,8 +197,8 @@ int main(int argc, char* argv[]) {
 	}
 	while (!archivo.eof()) {
 		archivo.getline(buffer,256);
-		programa.push_back(buffer);
-		prog_lines.push_back(0);
+		programa.PushBack(buffer);
+//		prog_lines.push_back(0);
 		Inter.AddLine(buffer);
 	}
 	archivo.close();
@@ -205,15 +206,14 @@ int main(int argc, char* argv[]) {
 	// comprobar sintaxis y ejecutar
 	errores=SynCheck();
 	Inter.SetDelay(delay);
-	
 
 	//ejecutar
 	if (errores==0) {
 	// salida para diagrama
 		if (draw) {
 			ofstream dibujo(fil_args[1]);
-			for (unsigned int i=0;i<programa.size();i++)
-				dibujo<<programa[i]<<endl;
+			for (int i=0;i<programa.GetSize();i++)
+				dibujo<<programa[i].instruccion<<endl;
 			dibujo.close();
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
@@ -230,11 +230,9 @@ int main(int argc, char* argv[]) {
 				cout<<"*** Ejecucion Iniciada. ***\n";
 			}
 			memoria->FakeReset();
-//			Inter.SetLineNumber(prog_lines[0]);
 			Inter.SetStarted();
-			if (programa.size()==4) checksum(programa[2]);
-			Ejecutar(2,programa.size()-2);
-//			Inter.SetLineNumber(prog_lines[programa.size()-1]);
+			if (programa.GetSize()==4) checksum(programa[2].instruccion);
+			Ejecutar(2,programa.GetSize()-2);
 			Inter.SetFinished();
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {

@@ -660,7 +660,7 @@ bool CheckDims(string &str) {
 		// en este caso no debe verificar si las expresiones dan en los rangos 
 		// del arreglo o si esta dimensionado
 		int b=pp+1,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
-		str[str.size()-1]=','; pp;
+		str[str.size()-1]=','; /*pp;*/
 		for (int i=0;i<ca;i++) {
 			int np=BuscarComa(str,++pp,p2)-1;
 			tipo_var t=vt_numerica;

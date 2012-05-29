@@ -792,14 +792,20 @@ void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
 	if (index==wxNOT_FOUND) return;
 	notebook->SetSelection(index);
 	wxString text = results_tree->GetItemText(evt.GetItem());
-	if (text.SubString(0,5)==_T("Linea ")) {
-		long l;
-		text.AfterFirst(' ').BeforeFirst(':').ToLong(&l);
-		l--;
-		last_source->SetSelection(last_source->GetLineIndentPosition(l),last_source->GetLineEndPosition(l));
+	if (text.StartsWith(_T("Lin "))) {
+		long l,i=-1;
+		wxString where=text.AfterFirst(' ').BeforeFirst(':');
+		if (where.Contains(_T("inst "))) {
+			where.BeforeFirst(' ').ToLong(&l); l--;
+			where.AfterLast(' ').BeforeFirst(')').ToLong(&i); i--;
+			last_source->SelectInstruccion(l,i);
+		} else {
+			where.ToLong(&l); l--;
+			last_source->SetSelection(last_source->GetLineIndentPosition(l),last_source->GetLineEndPosition(l));
+		}
 		last_source->SetFocus();
 		text = text.AfterFirst(':');
-		if (text.SubString(0,6)==_T(" ERROR ")) {
+		if (text.StartsWith(_T(" ERROR "))) {
 			long e=0;
 			text.Mid(7).ToLong(&e);
 			if (config->auto_quickhelp) 

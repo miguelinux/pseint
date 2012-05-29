@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "new_evaluar.h"
 #include "intercambio.h"
+#include "new_programa.h"
 using namespace std;
 
 static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
@@ -340,7 +341,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					string str=cadena;
 					cadena.erase(y+1,cadena.size()-y-1);
 					str.erase(0,y+1);
-					programa.insert(programa.begin()+x+1,str);
+					programa.Insert(x+1,str);
 					flag_pyc+=1;
 				}
 				// Contar parentesis
@@ -508,21 +509,21 @@ static bool LeftCompareFix(string &s, string e) {
 //-------------------------------------------------------------------------------------------
 int SynCheck() {
 	SynErrores=0;
-	programa.push_back("");
-	programa.insert(programa.begin(),"");
+	programa.PushBack("");
+	programa.Insert(0,"");
 	stack <string> bucles; // Para controlar los bucles que se abren y cierran
-	stack <int> bucles_line;
+	stack <InstruccionLoc> bucles_line;
 	bucles.push("CHECK");
-	bucles_line.push(0);
+	bucles_line.push(InstruccionLoc(1,1));
 	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
-	int LineNumber=0, x, flag_pyc=0, tmp ,Proceso=0;
+	int flag_pyc=0, tmp ,Proceso=0;
 	tipo_var tipo;
 	string cadena, instruccion, str;
 //	bool last_was_segun=false;
 	
 	// Checkear sintaxis y reorganizar el codigo
-	for (x=1;x<(int)programa.size();x++){
-		Inter.SetLineNumber(LineNumber);
+	for (int x=1;x<(int)programa.GetSize();x++){
+		Inter.SetLineAndInstructionNumber(x);
 		cadena=programa[x];
 		Lerrores=errores;
 		
@@ -568,7 +569,7 @@ int SynCheck() {
 				str=cadena;
 				str.erase(0,9);
 				cadena="ENTONCES";
-				programa.insert(programa.begin()+x+1,str);
+				programa.Insert(x+1,Instruccion(str));
 				flag_pyc+=1;
 			}
 			if (LeftCompare(cadena,"SINO ")) {
@@ -577,7 +578,7 @@ int SynCheck() {
 				str=cadena;
 				cadena="SINO";
 				str.erase(0,5);
-				programa.insert(programa.begin()+x+1,str);
+				programa.Insert(x+1,Instruccion(str));
 				flag_pyc+=1;
 			}
 			if (cadena=="FINSEGÚN")cadena="FINSEGUN";
@@ -592,12 +593,12 @@ int SynCheck() {
 				instruccion="LEER "; cadena.erase(0,5);
 			} else if (LeftCompareFix(cadena,"SI ") && !LeftCompare(cadena,"SI ES ")) {
 				instruccion="SI "; cadena.erase(0,3);
-				bucles.push("SI");bucles_line.push(LineNumber);
+				bucles.push("SI");bucles_line.push(programa.GetLoc(x));
 				// cortar el entonces si esta en la misma linea
 				comillas=-1;
 				if (RightCompareFix(cadena," ENTONCES ")) {
 					cadena.erase(cadena.size()-10,10);
-					programa.insert(programa.begin()+x+1,"ENTONCES");
+					programa.Insert(x+1,Instruccion("ENTONCES"));
 					flag_pyc+=1;
 				} else
 					for (int y=0; y<(int)cadena.size()-10;y++) {
@@ -608,19 +609,19 @@ int SynCheck() {
 							// borrar los espacios en medio
 							while (cadena[cadena.size()-1]==' ' && cadena.size()!=0) cadena.erase(cadena.size()-1,1);
 							str.erase(0,y+1);
-							programa.insert(programa.begin()+x+1,str);
+							programa.Insert(x+1,Instruccion(str));
 							flag_pyc+=1;
 							break;
 						}
 					}
 			} else if (LeftCompareFix(cadena,"MIENTRAS ")&&(!lazy_syntax||!LeftCompareFix(cadena,"MIENTRAS QUE "))) { 
 				instruccion="MIENTRAS "; cadena.erase(0,9);
-				bucles.push("MIENTRAS");bucles_line.push(LineNumber);
+				bucles.push("MIENTRAS");programa.GetLoc(x);
 			} else if (LeftCompareFix(cadena,"SEGUN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
-				bucles.push("SEGUN");bucles_line.push(LineNumber);
+				bucles.push("SEGUN");programa.GetLoc(x);
 			} else if (LeftCompare(cadena,"DE OTRO MODO: ") || LeftCompare(cadena,"DE OTRO MODO ")) {
-				cadena.erase(0,13); programa.insert(programa.begin()+x+1,cadena); flag_pyc+=1;
+				cadena.erase(0,13); programa.Insert(x+1,Instruccion(cadena)); flag_pyc+=1;
 				instruccion="DE OTRO MODO: "; cadena="";
 			} else if (LeftCompare(cadena,"DIMENSION ")) {
 				instruccion="DIMENSION "; cadena.erase(0,10);
@@ -654,20 +655,20 @@ int SynCheck() {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
-				if (!Proceso) bucles.push("PROCESO");bucles_line.push(LineNumber);
+				if (!Proceso) bucles.push("PROCESO");programa.GetLoc(x);
 			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"SINO ")) {
 				instruccion="SINO "; cadena.erase(0,5);
 			} else if (lazy_syntax && LeftCompare(cadena,"PARACADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,9);
-				bucles.push("PARACADA");bucles_line.push(LineNumber);
+				bucles.push("PARACADA");programa.GetLoc(x);
 			} else if (lazy_syntax && LeftCompare(cadena,"PARA CADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,10);
-				bucles.push("PARACADA");bucles_line.push(LineNumber);
+				bucles.push("PARACADA");programa.GetLoc(x);
 			} else if (LeftCompare(cadena,"PARA ")) {
 				instruccion="PARA "; cadena.erase(0,5);
-				bucles.push("PARA");bucles_line.push(LineNumber);
+				bucles.push("PARA");programa.GetLoc(x);
 				// si se puede asignar con igual, reemplazar aca
 				if (overload_equal) {
 					int i=0, l=cadena.size();
@@ -692,7 +693,7 @@ int SynCheck() {
 				}
 			} else if (LeftCompareFix(cadena,"SEGÚN ")) {
 				instruccion="SEGUN "; cadena.erase(0,6);
-				bucles.push("SEGUN");bucles_line.push(LineNumber);
+				bucles.push("SEGUN");programa.GetLoc(x);
 			} else if (LeftCompare(cadena,"FINSEGÚN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
@@ -724,8 +725,8 @@ int SynCheck() {
 								}
 							}
 							instruccion=":";
-							programa.insert(programa.begin()+x+1,cadena);
-							programa[x+1].erase(0,pos_dp+1);
+							programa.Insert(x+1,Instruccion(cadena));
+							programa[x+1].instruccion.erase(0,pos_dp+1);
 							cadena.erase(pos_dp+1,cadena.size()-pos_dp-1);
 							flag_pyc+=1; flag_segun=1;
 						}
@@ -786,7 +787,7 @@ int SynCheck() {
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && cadena!="") {
 					if (lazy_syntax) {
-						programa.insert(programa.begin()+x,"ENTONCES "); x++;
+						programa.Insert(x,Instruccion("ENTONCES ")); x++;
 					} else 
 						{SynError (32,"Se esperaba ENTONCES"); errores++;}
 				}
@@ -836,7 +837,7 @@ int SynCheck() {
 						if (cadena!="") {
 							SynError (42,"Se esperaba PROCESO <nombre>."); errores++; Proceso=1;
 							bucles.push("PROCESO");
-							bucles_line.push(0);
+							bucles_line.push(programa.GetLoc(x));
 						}
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				SynError (999,"Solo puede haber un proceso."); errores++;
@@ -1241,7 +1242,7 @@ int SynCheck() {
 						if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|') {
 							if (lazy_syntax) {
 								string aux=str.substr(tmp1); flag_pyc++;
-								programa.insert(programa.begin()+x+1,aux);
+								programa.Insert(x+1,aux);
 								break;
 							} else
 								SynError (91,"Se esperaba ENTONCES o fin de expresion."); errores++;
@@ -1331,7 +1332,7 @@ int SynCheck() {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|') {
 									if (lazy_syntax) {
 										string aux=str.substr(tmp1); flag_pyc++;
-										programa.insert(programa.begin()+x+1,aux);
+										programa.Insert(x+1,aux);
 										break;
 									} else {
 										SynError (103,"Se esperaba fin de expresion."); errores++;
@@ -1365,7 +1366,7 @@ int SynCheck() {
 			}
 			// Controlar Cierre de Bucles
 			if (cadena=="REPETIR") 
-			{bucles.push("REPETIR");bucles_line.push(LineNumber);}
+			{bucles.push("REPETIR");programa.GetLoc(x);}
 			if (cadena=="FINSEGUN") {
 				if (bucles.top()=="SEGUN") {
 					bucles_line.pop(); bucles.pop();
@@ -1415,18 +1416,12 @@ int SynCheck() {
 			
 			// Actualiza los vectores
 			programa[x]=cadena;
-			if ((int)prog_lines.size()==x)
-				prog_lines.push_back(LineNumber);
-			else prog_lines[x]=LineNumber;
 			
-			if (flag_pyc==0) LineNumber++; else flag_pyc-=1;
+			if (flag_pyc==0) /*LineNumber++*/; else flag_pyc-=1;
 			// Borra cadenas vacias
-			if (cadena.size()==0 || cadena==";") {programa.erase(programa.begin()+x,programa.begin()+x+1);x--;}
+			if (cadena.size()==0 || cadena==";") {programa.Erase(x);x--;}
 		}
 	}
-	// Borrar lineas vacias
-	while ((int)prog_lines.size()>x) 
-		prog_lines.erase(prog_lines.begin()+x,prog_lines.begin()+x+1);
 	
 	// Controlar Cierre de Bucles
 	while (!bucles.empty())	{
