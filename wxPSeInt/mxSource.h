@@ -39,7 +39,7 @@ public:
 	void SetStyling(bool colour=true);
 	void SetWords();
 	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle);
-	void SetIndicator(int indic, int p1, int p2);
+	void SetFieldIndicator(int p1, int p2); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();
 	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString, bool ais_example=false);

@@ -408,7 +408,7 @@ mxSource *mxMainWindow::NewProgram() {
 	mxSource *source = new mxSource(notebook,_T("<sin_titulo>"));
 	notebook->AddPage(source,_T("<sin_titulo>"),true);
 	source->SetText(_T("Proceso sin_titulo\n\t\nFinProceso\n"));
-	source->SetIndicator(1,8,18);
+	source->SetFieldIndicator(8,18);
 	source->SetSelection(20,20);
 	source->SetModify(false);
 	source->SetFocus();
@@ -932,7 +932,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 				} else if (toindic[j]=='}' && p1!=-1) {
 					p2 = j+pos-des;
 					des++;
-					source->SetIndicator(1,p1,p2);
+					source->SetFieldIndicator(p1,p2);
 					p1 = -1;
 				}
 			}

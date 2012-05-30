@@ -159,8 +159,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetStyle(1,wxSTC_INDIC_BOX);
-	IndicatorSetForeground (0, 0x0000ff);
+//	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
+	IndicatorSetForeground (0, 0x0000FF);
 	IndicatorSetForeground (1, 0x005555);
+//	IndicatorSetForeground (2, 0x0011AA);
 	
 	MarkerDefine(0,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
 	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
@@ -618,13 +620,10 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 	OnCharAdded(evt2);
 }
 
-void mxSource::SetIndicator(int indic, int p1, int p2) {
+void mxSource::SetFieldIndicator(int p1, int p2) {
 	int lse = GetEndStyled();
 	StartStyling(p1,wxSTC_INDICS_MASK);
-	if (indic==1)
-		wxStyledTextCtrl::SetStyling(p2-p1,wxSTC_INDIC1_MASK);
-	else
-		wxStyledTextCtrl::SetStyling(p2-p1,wxSTC_INDIC0_MASK);
+	wxStyledTextCtrl::SetStyling(p2-p1,wxSTC_INDIC1_MASK);
 	GotoPos(p1);
 	SetSelection(p1,p2);
 	StartStyling(lse,0x1F);
