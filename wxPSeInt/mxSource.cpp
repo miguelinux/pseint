@@ -1085,7 +1085,7 @@ void mxSource::MarkError(int l, int i, wxString str) {
 	if (l>=GetLineCount()) return;
 	if (l>=int(rt_errors.GetCount())) 
 		rt_errors.Insert(wxEmptyString,rt_errors.GetCount(),GetLineCount()-rt_errors.GetCount());
-	rt_errors[l]+=str+"\n";
+	rt_errors[l]+=wxString("(")<<i+1<<") "<<str+"\n";
 	int lse = GetEndStyled();
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;

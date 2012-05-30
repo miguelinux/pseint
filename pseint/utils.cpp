@@ -237,7 +237,7 @@ void SynError(int num,string s, int line, int inst) {
 //    A diferencia del anterior, no tiene en cuenta las
 //  funciones predefinidas.
 // ------------------------------------------------------------
-bool CheckVariable(string str) { 
+bool CheckVariable(string str, int errcode) { 
 	if (str.find("(",0)>0 && str.find("(",0)<str.size() && str[str.size()-1]==')')
 		str.erase(str.find("(",0),str.size()-str.find("(",0)); // si es arreglo corta los subindices
 	bool ret=true;
@@ -256,6 +256,7 @@ bool CheckVariable(string str) {
 		ret=false;
 	if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO" || str=="ACOS" || str=="ASEN" || str=="TAN")
 		ret=false;
+	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no valido (")+str+")."); 
 	return ret;
 }
 

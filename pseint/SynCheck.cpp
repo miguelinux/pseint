@@ -834,9 +834,7 @@ int SynCheck() {
 				{SynError (40,"Falta nombre de proceso."); errores++; Proceso=1;}
 				else
 					if (LeftCompare(cadena,"PROCESO ")) {
-						if (!CheckVariable(cadena.substr(8,cadena.size()-8))){
-							SynError (41,"Identificador no valido."); errores++; Proceso=1;
-						}
+						if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
 						Proceso=1; // Indica el comienzo
 					} else
 						if (cadena!="") {
@@ -898,8 +896,7 @@ int SynCheck() {
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
 								if (str.find("(",0)<0 || str.find("(",0)>str.size()) {
-									if (!CheckVariable(str)) {SynError (48,"Identificador no valido."); errores++;}
-									;;
+									if (!CheckVariable(str,48)) errores++;
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
 									SynError (212,string("No debe utilizar subindices (")+str+")."); errores++;
@@ -980,16 +977,12 @@ int SynCheck() {
 							str=cadena;
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
-							if (str.find("(",0)<0 || str.find("(",0)>=str.size())
-							{SynError (58,"Faltan subindices."); errores++;
-							if (!CheckVariable(str))
-							{SynError (59,"Identificador no valido."); errores++;}
-							;;
-							}
-							else {
+							if (str.find("(",0)<0 || str.find("(",0)>=str.size()){ 
+								SynError (58,"Faltan subindices."); errores++;
+								if (!CheckVariable(str,59)) errores++;
+							} else {
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
-								if (!CheckVariable(str))
-								{SynError (60,"Identificador no valido."); errores++;}
+								if (!CheckVariable(str,60)) errores++;
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
@@ -1047,11 +1040,10 @@ int SynCheck() {
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
 							if (str.find("(",0)<0 || str.find("(",0)>str.size()) {
-								if (!CheckVariable(str)) {SynError (65,"Identificador no valido."); errores++;}
-								;;
+								if (!CheckVariable(str,65)) errores++;
 							} else {
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
-								if (!CheckVariable(str)) {SynError (66,"Identificador no valido."); errores++;}
+								if (!CheckVariable(str,66)) errores++;
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
@@ -1099,8 +1091,7 @@ int SynCheck() {
 						{SynError (73,"Asignacion incompleta."); errores++;}
 						else {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
-							if (!CheckVariable(str)) {SynError (74,"Identificador no valido."); errores++;}
-							else {
+							if (!CheckVariable(str,74)) errores++; else {
 								if (Lerrores==errores) EvaluarSC(str,tipo);
 								if (!tipo.cb_num)
 									{SynError (76,"No coinciden los tipos."); errores++;}
@@ -1174,10 +1165,10 @@ int SynCheck() {
 				}
 				if (RightCompareFix(str," HACER")) {
 					int i=0; while (str[i]!=' ') i++;
-					if (!CheckVariable(str.substr(0,i))) { SynError (999,"Identificador no valido."); errores++; }
+					if (!CheckVariable(str.substr(0,i),999)) errores++;
 					if (str.substr(i,4)==" EN ") cadena.replace(9+i,4," DE ");
 					else if (str.substr(i,4)!=" DE ") {SynError (999,"Se esperaba DE o EN."); errores++;} 
-					else if (!CheckVariable(str.substr(i+4,str.size()-i-10))) { SynError (999,"Identificador no valido."); errores++; }
+					else if (!CheckVariable(str.substr(i+4,str.size()-i-10),999)) errores++;
 				}
 			}
 			
@@ -1206,7 +1197,7 @@ int SynCheck() {
 				if (str.size()==0)
 				{SynError (85,"Asignacion incompleta."); errores++;}
 				else {
-					if (!CheckVariable(str)) {SynError (86,"Identificador no valido."); errores++;}
+					if (!CheckVariable(str,86)) errores++;
 					string vname=str;
 					str=cadena;
 					str.erase(0,str.find("<-",0)+2);
@@ -1354,7 +1345,7 @@ int SynCheck() {
 					}
 			}
 			if (LeftCompare(instruccion,"FIN") || instruccion=="REPETIR "||instruccion=="BORRARPANTALLA"||instruccion=="ESPERARTECLA")
-				if (cadena.find(" ",0)>=0 && cadena.find(" ",0)<cadena.size()) {
+				if (cadena.find(" ",0)>=0 && cadena.find(" ",0)<cadena.size() && cadena.substr(cadena.find(" ",0))!=" ;") {
 					SynError (105,"La instruccion no debe tener parametros."); errores++;
 					cadena.erase(cadena.find(" ",0),cadena.size()-cadena.find(" ",0));
 				}

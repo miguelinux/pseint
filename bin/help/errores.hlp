@@ -467,7 +467,7 @@
   
 
 105
-  
+  Luego de las instrucciones FINPARA, FINSEGUN, FINSI, FINMIENTRAS, REPETIR, BORRARPANTALLA y ESPERARTECLA no debe colocar ningun parametro. Verifique que a continuación de estas palabras claves se encuentre un salto de linea o un punto, o utilice el punto y coma para indicar el comienzo de una nueva instrucción en la misma linea.
   
 106
   La instrucción de esta linea no se reconoce como una instrucción válida. Puede haber errores de tipeo.

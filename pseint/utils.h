@@ -50,7 +50,7 @@ void SynError(int num,string s, int line=-1, int inst=-1) ;
 //    A diferencia del anterior, no tiene en cuenta las
 //  funciones predefinidas.
 // ------------------------------------------------------------
-bool CheckVariable(string str) ;
+bool CheckVariable(string str, int errcode=-1) ;
 
 
 // ------------------------------------------------------------
