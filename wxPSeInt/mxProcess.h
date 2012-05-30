@@ -33,7 +33,7 @@ public:
 	bool SaveDraw(wxString file, bool check_first=false);
 	bool ExportCpp(wxString file, bool check_first=false);
 	void ReadOut();
-	wxString GetProfileArgs();
+	static wxString GetProfileArgs();
 	wxString GetInputArgs();
 	~mxProcess();
 	void OnTerminate(int pid, int status);

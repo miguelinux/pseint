@@ -103,6 +103,7 @@ public:
 	void OnConfigLanguage(wxCommandEvent &evt);
 //	void OnConfigShowResults(wxCommandEvent &evt);
 //	void OnConfigColourSintax(wxCommandEvent &evt);
+	void OnConfigRealTimeSyntax(wxCommandEvent &evt);
 	void OnConfigSmartIndent(wxCommandEvent &evt);
 	void OnConfigStepStepL(wxCommandEvent &evt);
 	void OnConfigStepStepM(wxCommandEvent &evt);
@@ -113,7 +114,7 @@ public:
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
 	
-	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_quickhelp, /* *mi_results, *mi_sintax,*/ *mi_smart_indent, *mi_debug_panel, *mi_calltip_helps,
+	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_quickhelp, /* *mi_results, *mi_sintax,*/ *mi_smart_indent, *mi_debug_panel, *mi_calltip_helps, *mi_rt_syntax,
 		*mi_init_vars, *mi_dot_and_comma,  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, *mi_word_operators, *mi_use_colors/*, *mi_high_res*/;
 	
 	wxMenu *file_menu;
@@ -165,6 +166,8 @@ public:
 	mxSource *FindFlowId(int id);
 	mxSource *FindFlowSocket(wxObject *s);
 	void SelectSource(mxSource *s);
+	
+	void UpdateRealTimeSyntax();
 	
 	DECLARE_EVENT_TABLE();
 };

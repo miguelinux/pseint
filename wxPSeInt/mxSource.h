@@ -27,6 +27,10 @@ private:
 	int flow_id;
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
 	wxString page_text;
+	wxArrayString rt_errors;
+	wxTimer *rt_timer;
+	bool do_rt_syntax_checking;
+	
 public:
 	mxInputDialog *input;
 	bool sin_titulo;
@@ -87,6 +91,14 @@ public:
 	// retorna las posiciones donde empieza y termina cada instruccion de una linea
 	vector<int> &FillAuxInstr(int _l);
 	void SelectInstruccion(int _l, int _i);
+	
+	void DoRealTimeSyntax();
+	void ClearErrors();
+	void MarkError(int l, int i, wxString str);
+	void StartRTSyntaxChecking();
+	void StopRTSyntaxChecking();
+	void OnRealTimeSyntaxTimer(wxTimerEvent &te);
+	void OnChange(wxStyledTextEvent &event);
 	
 	DECLARE_EVENT_TABLE();
 };

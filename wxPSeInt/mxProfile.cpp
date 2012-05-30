@@ -9,6 +9,7 @@
 #include <wx/textfile.h>
 #include "mxArt.h"
 #include "mxMainWindow.h"
+#include "RTSyntaxManager.h"
 
 BEGIN_EVENT_TABLE(mxProfile,wxDialog)
 	EVT_LISTBOX(wxID_ANY,mxProfile::OnList)
@@ -89,7 +90,8 @@ void mxProfile::OnClose(wxCloseEvent &evt) {
 }
 
 void mxProfile::OnOkButton(wxCommandEvent &evt) {
-	Close();
+	main_window->UpdateRealTimeSyntax();
+	Close(); 
 }
 
 void mxProfile::OnCancelButton(wxCommandEvent &evt) {

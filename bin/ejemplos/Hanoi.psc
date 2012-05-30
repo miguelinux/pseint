@@ -15,7 +15,7 @@ Proceso Hanoi
 	Dimension torres[3,10], cant_discos[3]{;}
 	
 	// pedir y validar cuantos discos colocar en la primer torre
-	Escribir "Ingrese el nro de discos (1-5):"{;}
+	Escribir "Ingrese el nro de discos (1-8):"{;}
 	leer discos{;}
 	mientras discos<1 {|} discos>8 Hacer
 		Escribir "El numero de discos debe ser mayor a 0 y menor a 5:"{;}

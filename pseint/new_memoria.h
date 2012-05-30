@@ -83,6 +83,10 @@ class Memoria {
 			}
 	}
 public:
+	void HardReset() {
+		var_value.clear();
+		var_info.clear();
+	}
 	void FakeReset() {
 		map<string,tipo_var>::iterator it = var_info.begin();
 		while (it!=var_info.end())

@@ -39,6 +39,7 @@
 #include "mxInputDialog.h"
 #include "FlowEditionManager.h"
 #include <iostream>
+#include "RTSyntaxManager.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -95,6 +96,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_REALLY_SHOW_DEBUG_PANEL, mxMainWindow::OnToolbarShowDebugPanel)
 //	EVT_MENU(mxID_CONFIG_SHOW_RESULTS, mxMainWindow::OnConfigShowResults)
 //	EVT_MENU(mxID_CONFIG_COLOUR_SINTAX, mxMainWindow::OnConfigColourSintax)
+	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
@@ -247,6 +249,8 @@ void mxMainWindow::CreateMenus() {
 	mi_autocomp = utils->AddCheckToMenu(cfg,mxID_CONFIG_AUTOCOMP, _T("Utilizar Autocompletado"),_T(""),config->autocomp);
 	mi_calltip_helps = utils->AddCheckToMenu(cfg,mxID_CONFIG_CALLTIP_HELPS, _T("Utilizar Ayudas Emergentes"),_T(""),config->calltip_helps);
 	mi_smart_indent = utils->AddCheckToMenu(cfg,mxID_CONFIG_SMART_INDENT, _T("Utilizar Indentado Inteligente"),_T(""),config->smart_indent);
+	
+	mi_rt_syntax = utils->AddCheckToMenu(cfg,mxID_CONFIG_RT_SYNTAX, _T("Comprobar Sintaxis Mientras Escribe"),_T(""),config->rt_syntax);
 	
 	mi_quickhelp = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
 //	mi_results = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_RESULTS, _T("Mostrar Errores"),_T(""),false);
@@ -525,7 +529,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool history) {
 	
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
-	source->LoadFile(path);
+	source->LoadFile(path); if (config->rt_syntax) source->DoRealTimeSyntax();
 	return source;
 }
 
@@ -1063,6 +1067,20 @@ void mxMainWindow::OnConfigSmartIndent(wxCommandEvent &evt) {
 	}
 }
 
+void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
+	if (!mi_rt_syntax->IsChecked()) {
+		mi_rt_syntax->Check(false);
+		config->rt_syntax=false;
+		for(unsigned int i=0;i<notebook->GetPageCount();i++)
+			((mxSource*)notebook->GetPage(i))->StopRTSyntaxChecking();
+	} else {
+		mi_rt_syntax->Check(true);
+		config->rt_syntax=true;
+		for(unsigned int i=0;i<notebook->GetPageCount();i++)
+			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
+	}
+}
+
 void mxMainWindow::OnConfigCalltipHelps(wxCommandEvent &evt) {
 	if (!mi_calltip_helps->IsChecked()) {
 		mi_calltip_helps->Check(false);
@@ -1328,12 +1346,13 @@ void mxMainWindow::OnViewNotebookPrev(wxCommandEvent &evt){
 }
 
 void mxMainWindow::OnDoThat (wxCommandEvent &event) {
-	LangSettings old=config->lang;
-	new mxConfig(this);
-	if (config->lang!=old) {
-		config->profile=_T("<personalizado>");
-		SetWordsForSources();
-	}
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->StartRTSyntaxChecking();
+//	LangSettings old=config->lang;
+//	new mxConfig(this);
+//	if (config->lang!=old) {
+//		config->profile=_T("<personalizado>");
+//		SetWordsForSources();
+//	}
 }
 
 void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
@@ -1423,3 +1442,11 @@ void mxMainWindow::SelectSource (mxSource * s) {
 			notebook->SetSelection(i);
 }
 
+void mxMainWindow::UpdateRealTimeSyntax() {
+	if (RTSyntaxManager::IsLoaded()) {
+		RTSyntaxManager::Restart();
+		if (config->rt_syntax) 
+			for(unsigned int i=0;i<notebook->GetPageCount();i++)
+				((mxSource*)notebook->GetPage(i))->DoRealTimeSyntax();
+	}
+}

@@ -1,3 +1,11 @@
+20120530
+	Agregada una opción en el menú "Configurar" para que los errores de sintaxis se resalten automáticamente mientras se escribe el pseudocódigo.
+
+20120529
+	Ahora se verifica que el Entonces de la estructura Si se encuentre inmediatamente despues de la condicion.
+	Ahora se puede utilizar Mientras Hacer seguido de las instrucciones a repetir en una misma linea.
+	Al marcar los errores y en el punto actual en la ejecución paso a paso se distinguen distintas instrucciones dentro de una misma linea.
+
 20120517
 	Agregado el perfil UDO-Anaco, para la asignatura de "Programación Orientada a Objetos" utilizado en la Universidad de Oriente, Extensión Anaco, Anzoátegui, Venezuela.
 	

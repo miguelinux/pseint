@@ -28,6 +28,7 @@ extern bool overload_equal; // permite asignar con un solo igual
 extern bool raw_errors; // salida para test automatico, sin mensajes explicativos ni adornos
 extern bool noinput; // no pedir entradas al usuario, tomar de los argumentos
 extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acentos y ñs de las cadenas para que se vean bien en la consola de windows
+extern bool real_time_syntax;
 
 #define COLOR_INFO COLOR_LBLUE
 #define COLOR_ERROR COLOR_LRED

@@ -81,6 +81,7 @@ public:
 	bool auto_quickhelp;
 	bool autocomp;
 	bool calltip_helps;
+	bool rt_syntax;
 	bool smart_indent;
 	int font_size;
 	int tabw;

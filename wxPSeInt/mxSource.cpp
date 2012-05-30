@@ -10,7 +10,10 @@
 #include <wx/socket.h>
 #include "mxMainWindow.h"
 #include <vector>
+#include "RTSyntaxManager.h"
 using namespace std;
+
+#define RT_DELAY 1000
 
 const wxChar *mxSourceWords1 =
 	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
@@ -56,6 +59,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
+	EVT_STC_CHANGE(wxID_ANY, mxSource::OnChange)
 END_EVENT_TABLE()
 
 const wxChar *mxSource::comp_list[MAX_COMP_SIZE];
@@ -67,6 +71,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	flow=NULL;
 	input=NULL;
 	socket=NULL;
+	do_rt_syntax_checking=config->rt_syntax;
 	
 	page_text=ptext;
 	
@@ -166,6 +171,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	SetDropTarget(new mxDropTarget());
 	
 	if (is_example) SetReadOnly(true);
+	
+	rt_timer = new wxTimer(GetEventHandler());
+	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnRealTimeSyntaxTimer),NULL,this);
 	
 }
 
@@ -647,6 +655,9 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 			if (s1>p+1) SetAnchor(p+1);
 		}
 		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
+	} else if (s&wxSTC_INDIC0_MASK) {
+		unsigned int l=GetCurrentLine();
+		if (rt_errors.GetCount()>l && rt_errors[l].Len()) CallTipShow(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1));
 	}
 }
 
@@ -1028,17 +1039,17 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 	bool starting=true,comillas=false;
 	while (i<len) {
 		if (s[i]=='\''||s[i]=='\"') comillas=!comillas;
-		else if (!comillas && i && s[i]=='/' && s[i-1]=='/') break;
+		else if (!comillas && i+1<len && s[i]=='/' && s[i+1]=='/') break;
 		if (s[i]!=' '&&s[i]!='\t') {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
 				if (s[i]==';'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
 				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && ((s[i+8]|32)<'a'||(s[i+8]|32)>'z') && (s[i+8]<'0'||s[i+8]>'9') && s[i+8]!='_') {
-					v.push_back(last_ns); v.push_back(i); v.push_back(i+7); 
+					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
 				}
 				else if ((s[i]|32)=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && ((s[i+5]|32)<'a'||(s[i+5]|32)>'z') && (s[i+5]<'0'||s[i+5]>'9') && s[i+5]!='_') {
-					v.push_back(last_ns); v.push_back(i); v.push_back(i+4); 
+					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+5); 
 					i+=4; starting=true;
 				}
 			}
@@ -1055,7 +1066,51 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 void mxSource::SelectInstruccion (int _l, int _i) {
 	vector<int> &v=FillAuxInstr(_l);
 	_l=PositionFromLine(_l);
-	if (2*_i>v.size()) SetSelection(_l+v[0],_l+v[v.size()-1]);
+	if (2*_i>int(v.size())) SetSelection(_l+v[0],_l+v[v.size()-1]);
 	else SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
 }
 
+void mxSource::DoRealTimeSyntax ( ) {
+	RTSyntaxManager::Process(this);
+}
+
+void mxSource::ClearErrors() {
+	rt_errors.Clear();
+	int lse = GetEndStyled();
+	StartStyling(0,wxSTC_INDIC0_MASK);
+	wxStyledTextCtrl::SetStyling(GetLength(),0);
+	StartStyling(lse,0x1F);
+}
+
+void mxSource::MarkError(int l, int i, wxString str) {
+	if (l>=GetLineCount()) return;
+	if (l>=int(rt_errors.GetCount())) 
+		rt_errors.Insert(wxEmptyString,rt_errors.GetCount(),GetLineCount()-rt_errors.GetCount());
+	rt_errors[l]+=str+"\n";
+	int lse = GetEndStyled();
+	vector<int> &v=FillAuxInstr(l);
+	if (int(v.size())<=2*i+1) return;
+	l=PositionFromLine(l);
+	StartStyling(l+v[2*i],wxSTC_INDIC0_MASK);
+	wxStyledTextCtrl::SetStyling(v[2*i+1]-v[2*i],wxSTC_INDIC0_MASK);
+	StartStyling(lse,0x1F);
+}
+
+void mxSource::StartRTSyntaxChecking ( ) {
+	do_rt_syntax_checking=true;
+	rt_timer->Start(RT_DELAY,true);
+}
+
+void mxSource::StopRTSyntaxChecking ( ) {
+	do_rt_syntax_checking=false;
+	rt_timer->Stop(); ClearErrors();
+}
+
+void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
+	DoRealTimeSyntax();
+}
+
+void mxSource::OnChange(wxStyledTextEvent &event) {
+	if (do_rt_syntax_checking) rt_timer->Start(RT_DELAY,true);
+	event.Skip();
+}

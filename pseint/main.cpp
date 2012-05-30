@@ -111,6 +111,8 @@ int main(int argc, char* argv[]) {
 			} else if (str=="--easteregg") {
 				cerr<<"Bazinga!"<<endl;
 				return 0;
+			} else if (str=="--forrealtimesyntax") {
+				real_time_syntax=true;
 			} else 
 				error=true;
 		} else {
@@ -127,7 +129,7 @@ int main(int argc, char* argv[]) {
 
 	// comprobar parametros
 	string cadena;
-	if (error || fil_count==0) {
+	if (error || (fil_count==0 && !real_time_syntax)) {
 		cout<<"Use: pseint FileName.psc [<options>] [LogFile]\n";
 		cout<<"     pseint FileName.psc --draw DrawFile.psd [LogFile]\n";
 		cout<<" <options> puede ser una o mas de las siguientes:"<<endl;
@@ -172,6 +174,19 @@ int main(int argc, char* argv[]) {
 	memoria = new Memoria;
 	LoadFunciones();
 	srand(time(NULL));
+	
+	if (real_time_syntax) while (true) {
+		memoria->HardReset();
+		programa.HardReset();
+		string line;
+		while (true) {
+			getline(cin,line);
+			if (line=="<!{[END_OF_INPUT]}!>") break;
+			programa.PushBack(line);
+		}
+		SynCheck();
+		cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
+	}
 	
 	// Leer el archivo	
 	char *filename=fil_args[0];

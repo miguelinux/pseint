@@ -57,7 +57,6 @@ void ConfigManager::LoadDefaults() {
 	maximized = false;
 //	high_res_flows = false;
 	colour_sintax = true;
-	smart_indent = false;
 	show_commands = true;
 	show_toolbar = true;
 	lang.force_dot_and_comma = false;
@@ -82,6 +81,8 @@ void ConfigManager::LoadDefaults() {
 	flow_port=55375;
 	check_for_updates=true;
 	fixed_port=false;
+	rt_syntax = true;
+	rt_syntax = false;
 	smart_indent = true;
 	last_dir=wxFileName::GetHomeDir();
 #if defined(_WIN32) || defined(__WIN32__)
@@ -134,6 +135,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("profiles_dir="))<<profiles_dir);
 	fil.AddLine(wxString(_T("profile="))<<profile);
 	fil.AddLine(wxString(_T("examples_dir="))<<examples_dir);
+	fil.AddLine(wxString(_T("rt_syntax="))<<(rt_syntax?1:0));
 	fil.AddLine(wxString(_T("smart_indent="))<<(smart_indent?1:0));
 //	fil.AddLine(wxString(_T("high_res_flows="))<<(high_res_flows?1:0));
 	fil.AddLine(wxString(_T("colour_sintax="))<<(colour_sintax?1:0));
@@ -201,6 +203,7 @@ void ConfigManager::Read() {
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
 			else if (key==_T("stepstep_speed")) { value.ToLong(&l); stepstep_speed=l; }
+			else if (key==_T("rt_syntax")) rt_syntax=utils->IsTrue(value);
 			else if (key==_T("smart_indent")) smart_indent=utils->IsTrue(value);
 			else if (key==_T("show_commands")) show_commands=utils->IsTrue(value);
 			else if (key==_T("show_debug_panel")) show_debug_panel=utils->IsTrue(value);

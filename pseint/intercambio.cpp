@@ -209,13 +209,13 @@ void Intercambio::SetDelay(int n) {
 int Intercambio::Archivo_Size(){return (int)Archivo.size();}
 void Intercambio::AddLine(string s){Archivo.push_back(s);}
 void Intercambio::AddLine(char *s){Archivo.push_back(s);}
-string Intercambio::GetLine(int x){return Archivo[x];}
+//string Intercambio::GetLine(int x){return Archivo[x];}
 
 // Manejo de errores
-int Intercambio::Errores_Size(){return (int)Errores.size();}
-void Intercambio::AddError(string s, int n){Errores.push_back(s);Lineas.push_back(n);}
-string Intercambio::GetErrorDesc(int x){return Errores[x];}
-int Intercambio::GetErrorLine(int x){return Lineas[x];}
+//int Intercambio::Errores_Size(){return (int)Errores.size();}
+//void Intercambio::AddError(string s, int n){Errores.push_back(s);Lineas.push_back(n);}
+//string Intercambio::GetErrorDesc(int x){return Errores[x];}
+//int Intercambio::GetErrorLine(int x){return Lineas[x];}
 
 // *****************************************************************
 

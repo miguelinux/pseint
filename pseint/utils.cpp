@@ -163,7 +163,7 @@ void ExeError(int num,string s) {
 			if (colored_output) setForeColor(COLOR_INFO);
 			cout<<"*** Ejecucion Interrumpida. ***\n";
 		}
-		Inter.AddError(s,Inter.GetLineNumber());
+//		Inter.AddError(s,Inter.GetLineNumber());
 		if (ExeInfoOn) ExeInfo.close();
 		if (wait_key) getKey();
 		exit(0);
@@ -199,7 +199,7 @@ void SynError(int num,string s, int line, int inst) {
 			if (inst>0) ExeInfo<<" (inst "<<inst<<")";
 			ExeInfo<<": ERROR "<<num<<": "<<s<<endl;
 		}
-		Inter.AddError(s,line);
+//		Inter.AddError(s,line);
 		SynErrores++;
 	}
 }
