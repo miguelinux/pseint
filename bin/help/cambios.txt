@@ -1,7 +1,7 @@
 20120601
+	Ahora al exportar a C++ se declaran como int las variables que se usen como índices para arreglos.
 	Ya no se repiten las declaraciones de los contadores de las estructuras Para al exportar a C++.
 	Corregida la traducción a C++ de expresiones que involucra las constantes Verdadero y Falso.
-	
 	
 20120530
 	Al detectarse un identificador no válido en alguna instrucción se incluye ahora el nombre en el mensaje de error.

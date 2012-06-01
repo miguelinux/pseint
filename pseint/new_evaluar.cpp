@@ -653,6 +653,7 @@ string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 	return Evaluar(expresion,p1,p2,tipo);
 }
 
+
 bool CheckDims(string &str) {
 	int pp=str.find("(",0), p2=str.size()-1;
 	if (!Inter.Running()) {
@@ -668,6 +669,31 @@ bool CheckDims(string &str) {
 			pp=np+1;
 			if (!t.is_ok()) return false;
 		}
+		
+		// parche horrible para marcar los indices de arreglos como enteros para que no sean float al exportar a c++
+		if (force_integer_indexes) {
+			string exp=str.substr(str.find("(")+1)+","; int par=0;
+			for (unsigned int i=0,l=0;i<exp.size();i++) {
+				if (exp[i]=='\"') {
+					i++;
+					while (i<exp.size() && exp[i]!='\"')
+						i++;
+					i++;
+					l=i+1;
+				} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+					if (par==0) {
+						string nombre=exp.substr(l,i-l);
+						cerr<<"***"<<nombre<<"***\n";
+						if (memoria->Existe(nombre)) 
+							memoria->DefinirTipo(nombre,vt_numerica,true);
+					}
+					l=i+1;
+					if (exp[i]=='['||exp[i]=='(') par++;
+					else if (exp[i]==']'||exp[i]==')') par--;
+				}
+			}
+		}
+		
 		return true;
 	} 
 	

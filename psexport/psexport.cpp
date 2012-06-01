@@ -125,7 +125,7 @@ void i_dimension(t_programa &prog, string params, string tabs) {
 }
 
 void i_esperar(t_programa &prog, string param, string tabs){
-	insertar(prog,tabs+"cin.get()");
+	insertar(prog,tabs+"cin.get();");
 }
 
 void i_borrar(t_programa &prog, string param, string tabs){
@@ -515,6 +515,7 @@ int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
 	base_zero_arrays=false;
+	force_integer_indexes=true;
 	
 	for (int i=1;i<argc;i++) {
 		if (string(argv[i])=="--install-test") {
