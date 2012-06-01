@@ -264,7 +264,7 @@ void i_repetir(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs
 
 void i_para(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
 
-	memoria->DefinirTipo((*r).par1,vt_numerica);
+	memoria->DefinirTipo(toLower((*r).par1),vt_numerica);
 
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if ((*r).par4[0]=='-') {
