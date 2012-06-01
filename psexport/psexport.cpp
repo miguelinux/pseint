@@ -600,7 +600,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-#ifdef DEBUG
+#ifdef _USE_COUT
 #define fout cout
 #else
 	ofstream fout(argv[2]);
@@ -608,7 +608,7 @@ int main(int argc, char *argv[]){
 	t_programa::iterator it=prog.begin();
 	while (it!=prog.end()) 
 		fout<<*(it++)<<endl;
-#ifndef DEBUG
+#ifndef _USE_COUT
 	fout.close();
 #endif
 	return 0;

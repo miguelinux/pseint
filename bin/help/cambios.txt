@@ -1,3 +1,6 @@
+20120601
+	Corregida la traducción a C++ de expresiones que involucra las constantes Verdadero y Falso.
+	
 20120530
 	Al detectarse un identificador no válido en alguna instrucción se incluye ahora el nombre en el mensaje de error.
 	Agregada una opción en el menú "Configurar" para que los errores de sintaxis se resalten automáticamente mientras se escribe el pseudocódigo.

@@ -67,7 +67,7 @@ string modificarConstante(string s,int diff) {
 	
 	stringstream r;
 	r<<setprecision(10)<<f+diff;
-	return r	.str();
+	return r.str();
 }
 
 string buscarOperando(const string &exp, int comienzo, int direccion){
@@ -158,7 +158,25 @@ string expresion(string exp, tipo_var &tipo){
 		else if (exp[i]=='Ó' || exp[i]=='ó') exp[i]='o';
 		else if (exp[i]=='Ú' || exp[i]=='ú') exp[i]='u';
 	
-	Evaluar(string(" ")+exp+" ",tipo);
+	
+	// cambiar verdadero y falso por VERDADERO y FALSO para que evaluar los reconozca
+	exp=exp+",";
+	for (unsigned int i=0,l=0;i<exp.size();i++) {
+		if (exp[i]=='\"') {
+			i++;
+			while (i<exp.size() && exp[i]!='\"')
+				i++;
+			i++;
+			l=i+1;
+		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+			if (exp.substr(l,i-l)=="verdadero") exp.replace(l,i-l,"VERDADERO");
+			else if (exp.substr(l,i-l)=="falso") exp.replace(l,i-l,"FALSO"); 
+			l=i+1;
+		}
+	}
+	exp=exp.substr(0,exp.size()-1);
+	
+	Evaluar(string(" ")+exp+" ",tipo); // ¿para que los espacios??? 
 	
 	// cambiar VERDADERO y FALSO por true y false
 	exp=exp+",";
