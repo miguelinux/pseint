@@ -142,7 +142,7 @@ string expresion(string exp, tipo_var &tipo){
 //	<<endl;
 
 //	if (!exp.size()) return exp;
-	// pasar todo a minusculas y sacar caracteres no validos
+	// pasar todo a minusculas sacar caracteres no validos
 	for (unsigned int i=0;i<exp.size();i++) 
 		if (exp[i]=='\'') {
 			exp[i]='\"';
@@ -160,7 +160,23 @@ string expresion(string exp, tipo_var &tipo){
 	
 	Evaluar(string(" ")+exp+" ",tipo);
 	
-	// reemplazar operadores y funciones matematicas, y arreglar indices de arreglos
+	// cambiar VERDADERO y FALSO por true y false
+	exp=exp+",";
+	for (unsigned int i=0,l=0;i<exp.size();i++) {
+		if (exp[i]=='\"') {
+			i++;
+			while (i<exp.size() && exp[i]!='\"')
+				i++;
+			i++;
+			l=i+1;
+		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+			if (exp.substr(l,i-l)=="verdadero") { exp.replace(l,i-l,"true"); i=i-5; }
+			else if (exp.substr(l,i-l)=="falso") { exp.replace(l,i-l,"false"); i=i-5; }
+			l=i+1;
+		}
+	}
+	exp=exp.substr(0,exp.size()-1);
+	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	stack<bool> esArreglo;
 	esArreglo.push(false);
 	stack<int> posicion;

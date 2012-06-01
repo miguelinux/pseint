@@ -18,8 +18,11 @@ struct t_instruccion{
 	string par1,par2,par3,par4;
 };
 
+#ifndef _USE_COUT
 #define insertar(prog,text) prog.insert(prog.end(),text)
-//#define insertar(prog,text) cerr<<text<<endl
+#else
+#define insertar(prog,text) cerr<<text<<endl
+#endif
 
 #define t_algoritmo list <t_instruccion>
 #define t_algoritmo_it list <t_instruccion>::iterator
