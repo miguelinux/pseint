@@ -94,11 +94,16 @@ public:
 	
 	void DoRealTimeSyntax();
 	void ClearErrors();
-	void MarkError(int l, int i, wxString str);
+	void MarkError(int l, int i, wxString str, bool special=false);
 	void StartRTSyntaxChecking();
 	void StopRTSyntaxChecking();
 	void OnRealTimeSyntaxTimer(wxTimerEvent &te);
 	void OnChange(wxStyledTextEvent &event);
+	
+	bool current_calltip_is_error;
+	void ShowCalltip(int pos, const wxString &l, bool is_error=false);
+ 	void HideCalltip(bool if_is_error=true,bool if_is_not_error=true);
+	void ShowRealTimeError(int pos, const wxString &l);
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -158,11 +158,12 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
+	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetStyle(1,wxSTC_INDIC_BOX);
 //	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetForeground (0, 0x0000FF);
 	IndicatorSetForeground (1, 0x005555);
-//	IndicatorSetForeground (2, 0x0011AA);
+	IndicatorSetForeground (2, 0x004499);
 	
 	MarkerDefine(0,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
 	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
@@ -241,7 +242,7 @@ void mxSource::OnEditCopy(wxCommandEvent &evt) {
 void mxSource::OnEditPaste(wxCommandEvent &evt) {
 	
 	if (CallTipActive())
-		CallTipCancel();
+		HideCalltip();
 	else if (AutoCompActive())
 		AutoCompCancel();
 	
@@ -531,39 +532,39 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			wxString text = GetTextRange(p+1,p2).MakeLower();
 			if (GetTextRange(p-3,p+1).Upper()==_T("FIN ")) return;
 			if (text==_T("leer")||text==_T("definir"))
-				CallTipShow(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
+				ShowCalltip(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
 			else if (text==_T("esperar"))
-				CallTipShow(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
+				ShowCalltip(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
 			else if (text==_T("escribir")||text==_T("mostrar")||text==_T("imprimir"))
-				CallTipShow(GetCurrentPos(),_T("{una o mas expresiones, separadas por comas}"));
+				ShowCalltip(GetCurrentPos(),_T("{una o mas expresiones, separadas por comas}"));
 			else if (text==_T("mientras"))
-				CallTipShow(GetCurrentPos(),_T("{condicion, expresion logica}"));
+				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
 			else if (text==_T("que"))
-				CallTipShow(GetCurrentPos(),_T("{condicion, expresion logica}"));
+				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
 			else if (text==_T("para"))
-				CallTipShow(GetCurrentPos(),_T("{asignacion inicial: variable<-valor}"));
+				ShowCalltip(GetCurrentPos(),_T("{asignacion inicial: variable<-valor}"));
 			else if (text==_T("desde"))
-				CallTipShow(GetCurrentPos(),_T("{valor inicial}"));
+				ShowCalltip(GetCurrentPos(),_T("{valor inicial}"));
 			else if (text==_T("hasta")) {
 				int l=LineFromPosition(p+1);
 				while (p>0 && (GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
 					p--;
 				if (LineFromPosition(p+1)==l)
-					CallTipShow(GetCurrentPos(),_T("{valor final}"));
+					ShowCalltip(GetCurrentPos(),_T("{valor final}"));
 			} else if (text==_T("paso"))
-				CallTipShow(GetCurrentPos(),_T("{valor del paso}"));
+				ShowCalltip(GetCurrentPos(),_T("{valor del paso}"));
 			else if (text==_T("si"))
-				CallTipShow(GetCurrentPos(),_T("{condicion, expresion logica}"));
+				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
 			else if (text==_T("entonces"))
-				CallTipShow(GetCurrentPos(),_T("{acciones por verdadero}"));
+				ShowCalltip(GetCurrentPos(),_T("{acciones por verdadero}"));
 			else if (text==_T("sino"))
-				CallTipShow(GetCurrentPos(),_T("{acciones por falso}"));
+				ShowCalltip(GetCurrentPos(),_T("{acciones por falso}"));
 			else if (text==_T("segun"))
-				CallTipShow(GetCurrentPos(),_T("{variable o expresion numerica}"));
+				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
 			else if (text==_T("opcion")||text==_T("sies")||text==_T("caso"))
-				CallTipShow(GetCurrentPos(),_T("{variable o expresion numerica}"));
+				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
 			else
-				CallTipCancel();
+				HideCalltip();
 		}
 	}
 }
@@ -654,9 +655,11 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 			if (s1>p+1) SetAnchor(p+1);
 		}
 		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
-	} else if (s&wxSTC_INDIC0_MASK) {
+	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
 		unsigned int l=GetCurrentLine();
-		if (rt_errors.GetCount()>l && rt_errors[l].Len()) CallTipShow(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1));
+		if (rt_errors.GetCount()>l && rt_errors[l].Len()) ShowRealTimeError(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1));
+	} else {
+		HideCalltip(true,false);
 	}
 }
 
@@ -1076,12 +1079,13 @@ void mxSource::DoRealTimeSyntax ( ) {
 void mxSource::ClearErrors() {
 	rt_errors.Clear();
 	int lse = GetEndStyled();
-	StartStyling(0,wxSTC_INDIC0_MASK);
+	StartStyling(0,wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK);
 	wxStyledTextCtrl::SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
 }
 
-void mxSource::MarkError(int l, int i, wxString str) {
+void mxSource::MarkError(int l, int i, wxString str, bool special) {
+	if (l<0) return;
 	if (l>=GetLineCount()) return;
 	if (l>=int(rt_errors.GetCount())) 
 		rt_errors.Insert(wxEmptyString,rt_errors.GetCount(),GetLineCount()-rt_errors.GetCount());
@@ -1090,8 +1094,8 @@ void mxSource::MarkError(int l, int i, wxString str) {
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;
 	l=PositionFromLine(l);
-	StartStyling(l+v[2*i],wxSTC_INDIC0_MASK);
-	wxStyledTextCtrl::SetStyling(v[2*i+1]-v[2*i],wxSTC_INDIC0_MASK);
+	StartStyling(l+v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
+	wxStyledTextCtrl::SetStyling(v[2*i+1]-v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
 	StartStyling(lse,0x1F);
 }
 
@@ -1113,3 +1117,18 @@ void mxSource::OnChange(wxStyledTextEvent &event) {
 	if (do_rt_syntax_checking) rt_timer->Start(RT_DELAY,true);
 	event.Skip();
 }
+
+void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
+	current_calltip_is_error=is_error;
+	CallTipShow(pos,l);
+}
+
+void mxSource::ShowRealTimeError (int pos, const wxString & l) {
+	ShowCalltip(pos,l,true);
+}
+
+void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
+	if (current_calltip_is_error && if_is_error) CallTipCancel();
+	else if (!current_calltip_is_error && if_is_not_error) CallTipCancel();
+}
+
