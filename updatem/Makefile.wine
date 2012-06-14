@@ -1,4 +1,4 @@
-MINGW_DIR=D:\\mingw
+include ../mingw.conf
 OBJS_DIR=../temp/upd_w32_rls
 GPP=wine ${MINGW_DIR}\\bin\\mingw32-g++.exe
 FLAGS=-O2

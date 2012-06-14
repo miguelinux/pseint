@@ -22,7 +22,7 @@ la versión disponible de wx es Unicode mientras que la que utilizo en mis compil
 es ANSI, se requiere editar las variables LIBS Y CFLAGS en el archivo wxPSeInt/Makefile.lnx
 para utilizar la version Unicode). Si utiliza Windows puede descargar el IDE ZinjaI que 
 incluye el compilador gcc y la biblioteca wxWidgets en su versión correcta. Solo hace falta 
-agregar las bibliotecas zlib, llibpng y libjpeg que puede descargar desde 
+agregar las bibliotecas zlib, libpng y libjpeg que puede descargar desde 
 gnuwin32.sourceforge.net. Para ello debe descargar "development files" y descomprimir en una 
 nueva carpeta misc dentro de mingw para compilar, y "binaries" y copiar los .dll a la carpeta 
 de pseint para ejecutar, o dist para usar los scripts que generan el instalador desde 
@@ -49,9 +49,8 @@ Adentro de cada directorio hay tres Makefiles:
   Makefile.wine para compilar las versiones para Windows desde GNU/Linux, con Wine+MinGW
   Makefile.m32 para compilar las versiones para Mac OS X i686 desde GNU/Linux, con IMCROSS
   Makefile.ppc para compilar las versiones para Mac OS X powerpc desde GNU/Linux, con IMCROSS
-Puede que necesite retocar algunas rutas en las variables MINGW_DIR definidas
-al comienzo de los makefiles para adaptarlos a su sistema.
-Los archivos intermedios de la compilación se ubican en temp.
+Para compilar en o para Windows puede que necesite retocar las variables 
+definidas en mingw.conf. Los archivos intermedios de la compilación se ubican en temp.
 Además, hay un archivo Makefile.pack que sirve para generar los paquetes e instaladores
 de todo el software (solo desde GNU/Linux, y requiere wine+mingw+wxwidgets+nsis)
 

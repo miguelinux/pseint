@@ -1,19 +1,20 @@
-MINGW_DIR=D:\\mingw
-GPP=${MINGW_DIR}\\bin\\mingw32-g++.exe
-FLAGS=-O2 -I${MINGW_DIR}/misc/include
-LIBS=-s -mwindows -L${MINGW_DIR}/misc/lib -ljpeg -llibpng -lz -static-libgcc -static-libstdc++
-OBJS=../temp/drw_w32_rls/main.o
-all: ../temp/drw_w32_rls ../bin/psdraw.exe
+include ..\mingw.conf
+FLAGS=-O2 -I${MISC_DIR}\include
+LIBS=-s -mwindows -L${MISC_DIR}\lib -ljpeg -llibpng -lz -static-libgcc -static-libstdc++
+OBJS_DIR=..\temp\drw_w32_rls
+OBJS=${OBJS_DIR}\main.o
+
+all: ${OBJS_DIR} ..\bin\psdraw.exe
 
 clean:
-	del ${OBJS} ../bin/psdraw.exe
+	del ${OBJS} ..\bin\psdraw.exe
 
-../bin/psdraw.exe: ${OBJS}
+..\bin\psdraw.exe: ${OBJS}
 	${GPP} ${OBJS} ${LIBS} -o $@
 
-../temp/drw_w32_rls:
-	mkdir ../temp/drw_w32_rls
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
 
-../temp/drw_w32_rls/main.o: main.cpp version.h draw.h CImg.h
+${OBJS_DIR}\main.o: main.cpp version.h draw.h CImg.h
 	${GPP} ${FLAGS} -c main.cpp -o $@
 
