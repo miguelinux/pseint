@@ -14,6 +14,8 @@ class mxInputDialog;
 class mxProcess;
 class wxSocketBase;
 
+enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_PROCESO};
+
 class mxSource : public wxStyledTextCtrl {
 private:
 	static const wxChar *comp_list[MAX_COMP_SIZE];
@@ -64,7 +66,7 @@ public:
 	void SetModify(bool);
 	void MessageReadOnly();
 	
-	int GetIndentLevel(int l, bool goup, bool *segun=NULL);
+	int GetIndentLevel(int l, bool goup, int *btype=NULL);
 	void Indent(int l1, int l2);
 	void IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);
@@ -104,6 +106,8 @@ public:
 	void ShowCalltip(int pos, const wxString &l, bool is_error=false);
  	void HideCalltip(bool if_is_error=true,bool if_is_not_error=true);
 	void ShowRealTimeError(int pos, const wxString &l);
+	
+	void TryToAutoCloseSomething(int l);
 	
 	DECLARE_EVENT_TABLE();
 };

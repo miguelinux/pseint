@@ -70,6 +70,7 @@ void ConfigManager::LoadDefaults() {
 	lang.lazy_syntax = true;
 	lang.word_operators = true;
 	autocomp = true;
+	autoclose = true;
 	calltip_helps = true;
 	auto_quickhelp = true;
 	size_x = size_y = 0;
@@ -79,10 +80,9 @@ void ConfigManager::LoadDefaults() {
 	stepstep_speed=1;
 	debug_port=55374;
 	flow_port=55375;
-	check_for_updates=true;
-	fixed_port=false;
+	check_for_updates = true;
+	fixed_port = false;
 	rt_syntax = true;
-	rt_syntax = false;
 	smart_indent = true;
 	last_dir=wxFileName::GetHomeDir();
 #if defined(_WIN32) || defined(__WIN32__)
@@ -144,6 +144,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("show_toolbar="))<<(show_toolbar?1:0));
 	fil.AddLine(wxString(_T("calltip_helps="))<<(calltip_helps?1:0));
 	fil.AddLine(wxString(_T("autocomp="))<<(autocomp?1:0));
+	fil.AddLine(wxString(_T("autoclose="))<<(autoclose?1:0));
 	fil.AddLine(wxString(_T("auto_quickhelp="))<<(auto_quickhelp?1:0));
 	fil.AddLine(wxString(_T("use_colors="))<<(use_colors?1:0));
 	fil.AddLine(wxString(_T("base_zero_arrays="))<<(lang.base_zero_arrays?1:0));
@@ -211,6 +212,7 @@ void ConfigManager::Read() {
 			else if (key==_T("auto_quickhelp")) auto_quickhelp=utils->IsTrue(value);
 			else if (key==_T("calltip_helps")) calltip_helps=utils->IsTrue(value);
 			else if (key==_T("autocomp")) autocomp=utils->IsTrue(value);
+			else if (key==_T("autoclose")) autoclose=utils->IsTrue(value);
 //			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);
 			else if (key==_T("use_colors")) use_colors=utils->IsTrue(value);

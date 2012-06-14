@@ -89,6 +89,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
 	EVT_MENU(mxID_CONFIG_SHOW_COMMANDS, mxMainWindow::OnConfigShowCommands)
+	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
 	EVT_MENU(mxID_CONFIG_AUTOCOMP, mxMainWindow::OnConfigAutoComp)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
@@ -247,6 +248,7 @@ void mxMainWindow::CreateMenus() {
 	
 	wxMenu *cfg = new wxMenu;
 	mi_autocomp = utils->AddCheckToMenu(cfg,mxID_CONFIG_AUTOCOMP, _T("Utilizar Autocompletado"),_T(""),config->autocomp);
+	mi_autoclose = utils->AddCheckToMenu(cfg,mxID_CONFIG_AUTOCLOSE, _T("Cerrar Repetitivas/Condicionales"),_T(""),config->autoclose);
 	mi_calltip_helps = utils->AddCheckToMenu(cfg,mxID_CONFIG_CALLTIP_HELPS, _T("Utilizar Ayudas Emergentes"),_T(""),config->calltip_helps);
 	mi_smart_indent = utils->AddCheckToMenu(cfg,mxID_CONFIG_SMART_INDENT, _T("Utilizar Indentado Inteligente"),_T(""),config->smart_indent);
 	
@@ -1098,6 +1100,16 @@ void mxMainWindow::OnConfigAutoComp(wxCommandEvent &evt) {
 	} else {
 		mi_autocomp->Check(true);
 		config->autocomp=true;
+	}
+}
+
+void mxMainWindow::OnConfigAutoClose(wxCommandEvent &evt) {
+	if (!mi_autoclose->IsChecked()) {
+		mi_autoclose->Check(false);
+		config->autoclose=false;
+	} else {
+		mi_autoclose->Check(true);
+		config->autoclose=true;
 	}
 }
 

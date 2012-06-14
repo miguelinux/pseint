@@ -80,6 +80,7 @@ public:
 	bool show_debug_panel;
 	bool auto_quickhelp;
 	bool autocomp;
+	bool autoclose;
 	bool calltip_helps;
 	bool rt_syntax;
 	bool smart_indent;

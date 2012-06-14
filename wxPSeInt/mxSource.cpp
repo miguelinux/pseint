@@ -396,8 +396,8 @@ void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	char chr = event.GetKey();
 	if (chr=='\n') {
+		int currentLine = GetCurrentLine();
 		if (!config->smart_indent) {
-			int currentLine = GetCurrentLine();
 			int lineInd = 0;
 			if (currentLine > 0)
 				lineInd = GetLineIndentation(currentLine - 1);
@@ -405,50 +405,13 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			SetLineIndentation (currentLine, lineInd);
 			GotoPos(GetLineIndentPosition(currentLine));
 		} else {
-//			if (GetCurrentPos()>1&&GetCharAt(GetCurrentPos()-2)==':') {
-//				int p=GetCurrentPos();
-//				if (GetStyleAt(p-2)==wxSTC_C_OPERATOR) {
-//					int l=GetCurrentLine();
-//					IndentLine(l-1);
-//				}
-//			}
-			int currentLine = GetCurrentLine();
 			if (currentLine>0) IndentLine(currentLine-1);
 			IndentLine(currentLine);
-//			int lineInd = 0;
-//			if (currentLine > 0)
-//				lineInd = GetLineIndentation(currentLine - 1);
-//			int p = GetLineIndentPosition(currentLine-1);
-//			
-//			if (GetTextRange(p,p+8).CmpNoCase(_T("proceso "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+5).CmpNoCase(_T("para "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+6).CmpNoCase(_T("segun "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+3).CmpNoCase(_T("si "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+9).CmpNoCase(_T("entonces "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+5).CmpNoCase(_T("sino "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+9).CmpNoCase(_T("mientras "))==0)
-//				lineInd = lineInd + config->tabw;
-//			else if (GetTextRange(p,p+7).CmpNoCase(_T("repetir"))==0)
-//				lineInd = lineInd + config->tabw;
-//			
-//			if (lineInd == 0) return;
-//			SetLineIndentation (currentLine, lineInd);
 			GotoPos(GetLineIndentPosition(currentLine));
 		}
+		if (config->autoclose) TryToAutoCloseSomething(currentLine);
 	} 
-//	else if ((chr==' '||chr=='\t')&&config->smart_indent&&GetCurrentPos()>1&&GetCharAt(GetCurrentPos()-2)==':') {
-//		int p=GetCurrentPos();
-//		if (GetStyleAt(p-2)==wxSTC_C_OPERATOR) {
-//			int l=GetCurrentLine();
-//			IndentLine(l);
-//		}
-//	} 
+
 	if (AutoCompActive()) {
 		comp_to=GetCurrentPos();
 	} else if (chr==' ' && config->autocomp) {
@@ -607,8 +570,9 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 			IndentLine(lfp);
 		if (text.Last()=='\n') {
 			IndentLine(lfp+1);
-			lfp=GetLineIndentPosition(lfp+1);
-			SetSelection(lfp,lfp);
+			int lip=GetLineIndentPosition(lfp+1);
+			SetSelection(lip,lip);
+			if (config->autoclose) TryToAutoCloseSomething(lfp+1);
 		}
 	} else {
 		wxString text = evt.GetText();
@@ -806,8 +770,8 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 }
 
 void mxSource::IndentLine(int l, bool goup) {
-	bool segun=false,ignore_next=false;
-	int cur=GetIndentLevel(l,goup,&segun);
+	int btype,ignore_next=false;
+	int cur=GetIndentLevel(l,goup,&btype);
 	wxString line=GetLine(l);
 	if (line.StartsWith("//")) return;
 	line<<_T(" "); int i=0,n=line.Len();
@@ -846,7 +810,7 @@ void mxSource::IndentLine(int l, bool goup) {
 	//		else if (word=="FIN") cur-=4;
 		}
 	}
-	if (segun && GetLineEndPosition(l)==GetLineIndentPosition(l)) cur-=4;
+	if (btype==BT_SEGUN && GetLineEndPosition(l)==GetLineIndentPosition(l)) cur-=4;
 	if (cur<0) cur=0;
 //	int cp=GetCurrentPos();
 	if (GetCurrentPos()==GetLineIndentPosition(l)) {
@@ -862,16 +826,18 @@ void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
 		IndentLine(i);
 }
 
-int mxSource::GetIndentLevel(int l, bool goup, bool *segun) {
-	if (segun) *segun=false;
+int mxSource::GetIndentLevel(int l, bool goup, int *e_btype) {
+	int btype=BT_NONE;
 	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
 	if (l<1) return 0;
 	wxString line=GetLine(l-1);
 	line<<_T(" ");
 	int cur=GetLineIndentation(l-1);
 	int n=line.Len();
-	bool comillas=false,first_word=true,ignore_next=false;
-	int wstart=0;
+	bool comillas=false;
+	bool first_word=true; // para saber si es la primer palabra de la instruccion
+	bool ignore_next=false; // para que despues de Fin se saltee lo que sigue
+	int wstart=0; // para guardar donde empezaba la palabra
 	char c;
 	for (int i=0;i<n;i++) {
 		c=line[i];
@@ -879,44 +845,29 @@ int mxSource::GetIndentLevel(int l, bool goup, bool *segun) {
 			comillas=!comillas;
 		} else if (!comillas) {
 			if (c=='/' && i+1<n && line[i+1]=='/')  return cur;
-			if (c==':' && line[i+1]!='=') cur+=4;
+			if (c==':' && line[i+1]!='=') { cur+=4; btype=BT_CASO; }
 			else if (c!='_'&&((c|32)<'a'||(c|32)>'z')) {
 				if (wstart+1<i) {
 					if (ignore_next)
 						ignore_next=false;
 					else {
-						bool old_segun=segun?(*segun):false;
-						if (segun) *segun=false;
+//						int old_btype=btype;
+//						if (btype) *btype=BT_NONE;
 						wxString word=line.SubString(wstart,i-1);
 						word.MakeUpper();
-						if (word==_T("SI")) cur+=4;
-						else if (word==_T("SINO")) cur+=4;
-						else if (word==_T("PROCESO")) cur+=4;
+						if (word==_T("SI")) { cur+=4; btype=BT_SI; }
+						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
+						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
 						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) cur+=4;
-						else if (word==_T("SEGUN")) {
-							cur+=8; if (segun) *segun=true;
+						else if (word==_T("SEGUN")) { cur+=8; btype=BT_SEGUN; }
+						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
+						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
+						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
+						else if (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="HASTA"||word=="MIENTRAS"||word=="FINPROCESO") {
+							if (btype==BT_SEGUN) cur-=4;
+							btype=BT_NONE; cur-=4;
 						}
-	//					else if (word==_T("HACER")) cur+=4;
-						else if (word==_T("PARA")) cur+=4;
-						else if (first_word && word==_T("REPETIR")) cur+=4;
-						else if (first_word && word==_T("HACER")) cur+=4;
-						else if (word==_T("FIN")) { /*cur-=4; */ignore_next=true; }
-//						else if (!first_word) { /// para que estaba esto?
-//							if (word==_T("DE") && i+10<n && line.SubString(wstart,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
-//							else if (word==_T("HASTA") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
-//							else if (word==_T("MIENTRAS ") && i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
-//							else if (word==_T("FINSEGUN")) cur-=8;
-//							else if (word==_T("FINMIENTRAS")) 
-//								cur-=4;
-//							else if (word==_T("FINPARA")) cur-=4;
-//							else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
-//							else if (word==_T("FINSI")) cur-=4;
-//							else if (word==_T("FINPROCESO")) cur-=4;
-//	//						else if (word==_T("FIN")) cur-=4;
-//							else 
-//								if (segun) *segun=old_segun;
-//						} else 
-						if (first_word && segun) *segun=old_segun;
+//						if (first_word && btype) *btype=old_btype;
 						first_word=false;
 					}
 				}
@@ -925,7 +876,7 @@ int mxSource::GetIndentLevel(int l, bool goup, bool *segun) {
 			}
 		}
 	}
-//	if (segun) *segun=false;
+	if (e_btype) *e_btype=btype;
 	return cur;
 }
 
@@ -1130,5 +1081,46 @@ void mxSource::ShowRealTimeError (int pos, const wxString & l) {
 void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
 	if (current_calltip_is_error && if_is_error) CallTipCancel();
 	else if (!current_calltip_is_error && if_is_not_error) CallTipCancel();
+}
+
+void mxSource::TryToAutoCloseSomething (int l) {
+	// ver si se abre una estructura
+	int btype;
+	GetIndentLevel(l,false,&btype); 
+	// buscar la siguiente linea no nula
+	int l2=l+1,ln=GetLineCount();
+	if (btype==BT_NONE||btype==BT_SINO||btype==BT_PROCESO||btype==BT_CASO) return;
+	while (l2<ln && GetLineEndPosition(l2)==GetLineIndentPosition(l2)) l2++;
+	// comparar los indentados para ver si la siguiente esta dentro o fuera
+	int i1=GetLineIndentPosition(l-1)-PositionFromLine(l-1);
+	int i2=GetLineIndentPosition(l2)-PositionFromLine(l2);
+	if (l2<ln && i1<i2) return; // si estaba dentro no se hace nada
+	// ver que dice la siguiente para que no coincida con lo que vamos a agregar
+	wxString sl2=GetLine(l2); sl2.MakeUpper(); 
+	int i=0, sl=sl2.Len(); 
+	while (i<sl && sl2[i]==' '||sl2[i]=='\t')i++;
+	if (i) sl2.Remove(0,i);
+	// agregar FinAlgo
+	if (btype==BT_PARA) {
+		if (sl2.StartsWith("FINPARA") || sl2.StartsWith("FIN PARA")) return;
+		InsertText(PositionFromLine(l+1),"FinPara\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_SI) {
+		if (sl2.StartsWith("FINSI") || sl2.StartsWith("FIN SI")) return;
+		InsertText(PositionFromLine(l+1),"FinSi\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_REPETIR) {
+		if (sl2.StartsWith("HASTA QUE") || sl2.StartsWith("MIENTRAS QUE")) return;
+		InsertText(PositionFromLine(l+1),"Hasta Que \n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_MIENTRAS) {
+		if (sl2.StartsWith("FINMIENTRAS") || sl2.StartsWith("FIN MIENTRAS")) return;
+		InsertText(PositionFromLine(l+1),"FinMientras\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_SEGUN) {
+		if (sl2.StartsWith("FINSEG") || sl2.StartsWith("FIN SEG")) return;
+		InsertText(PositionFromLine(l+1),"FinSegun\n");
+		IndentLine(l+1,true);
+	}
 }
 
