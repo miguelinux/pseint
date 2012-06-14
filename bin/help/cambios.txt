@@ -1,5 +1,5 @@
 20120614
-	Ahora al abrir una estructura repetitiva o condicional se agrega solo el "FinXXX" o "Hasta Que ..." si no estaba y el indentado de la siguiente linea no nula coincide.
+	Ahora al abrir una estructura repetitiva o condicional se agrega solo el "Fin..." o "Hasta Que..." si no estaba y el indentado de la siguiente linea no nula coincide.
 	
 20120606
 	Agregado el perfil ITSX, para la asignatura de "Programación I" de la carrera "Ingeniería Electrónica" del "Instituto Tecnológico Superior de Xalapa".
