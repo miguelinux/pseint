@@ -43,6 +43,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
 	EVT_STC_USERLISTSELECTION (wxID_ANY, mxSource::OnUserListSelection)
 	EVT_STC_ROMODIFYATTEMPT (wxID_ANY, mxSource::OnModifyOnRO)
+	EVT_STC_DWELLSTART (wxID_ANY, mxSource::OnToolTipTime)
+	EVT_STC_DWELLEND (wxID_ANY, mxSource::OnToolTipTimeOut)
 	EVT_MENU (mxID_EDIT_CUT, mxSource::OnEditCut)
 	EVT_MENU (mxID_EDIT_COPY, mxSource::OnEditCopy)
 	EVT_MENU (mxID_EDIT_PASTE, mxSource::OnEditPaste)
@@ -177,6 +179,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	
 	rt_timer = new wxTimer(GetEventHandler());
 	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnRealTimeSyntaxTimer),NULL,this);
+	
+	SetMouseDwellTime(500);
 	
 }
 
@@ -1069,13 +1073,14 @@ void mxSource::OnChange(wxStyledTextEvent &event) {
 	event.Skip();
 }
 
-void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
+void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error, bool is_dwell) {
 	current_calltip_is_error=is_error;
+	current_calltip_is_dwell=is_dwell;
 	CallTipShow(pos,l);
 }
 
-void mxSource::ShowRealTimeError (int pos, const wxString & l) {
-	ShowCalltip(pos,l,true);
+void mxSource::ShowRealTimeError (int pos, const wxString & l, bool is_dwell) {
+	ShowCalltip(pos,l,true,is_dwell);
 }
 
 void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
@@ -1124,3 +1129,17 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	}
 }
 
+
+void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
+	if (current_calltip_is_dwell) HideCalltip(true);
+}
+
+void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
+	if (!config->rt_syntax || !main_window->IsActive()) return; 
+	int p = event.GetPosition();
+	int s = GetStyleAt(p);
+	if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
+		unsigned int l=LineFromPosition(p);
+		if (rt_errors.GetCount()>l && rt_errors[l].Len()) ShowRealTimeError(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1),true);
+	}
+}

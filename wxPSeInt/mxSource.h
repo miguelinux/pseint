@@ -102,10 +102,13 @@ public:
 	void OnRealTimeSyntaxTimer(wxTimerEvent &te);
 	void OnChange(wxStyledTextEvent &event);
 	
-	bool current_calltip_is_error;
-	void ShowCalltip(int pos, const wxString &l, bool is_error=false);
+	bool current_calltip_is_error, current_calltip_is_dwell;
+	void ShowCalltip(int pos, const wxString &l, bool is_error=false, bool is_dwell=false);
  	void HideCalltip(bool if_is_error=true,bool if_is_not_error=true);
-	void ShowRealTimeError(int pos, const wxString &l);
+	void ShowRealTimeError(int pos, const wxString &l, bool is_dwell=false);
+	
+	void OnToolTipTime (wxStyledTextEvent &event);
+	void OnToolTipTimeOut (wxStyledTextEvent &event);
 	
 	void TryToAutoCloseSomething(int l);
 	
