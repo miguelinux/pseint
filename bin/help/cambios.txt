@@ -1,4 +1,10 @@
+>>RELEASE 20120618<<
+
+20120615
+	Ahora se muestran los errores de la verificación en tiempo real al colocar el mouse sobre los mismos.
+	
 20120614
+	Corregidos los makefiles para compilar más facilmente desde Windows.
 	Ahora al abrir una estructura repetitiva o condicional se agrega solo el "Fin..." o "Hasta Que..." si no estaba y el indentado de la siguiente linea no nula coincide.
 	
 20120606
