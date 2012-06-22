@@ -683,7 +683,7 @@ bool CheckDims(string &str) {
 				} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
 					if (par==0) {
 						string nombre=exp.substr(l,i-l);
-						cerr<<"***"<<nombre<<"***\n";
+//						cerr<<"***"<<nombre<<"***\n";
 						if (memoria->Existe(nombre)) 
 							memoria->DefinirTipo(nombre,vt_numerica,true);
 					}

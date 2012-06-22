@@ -136,13 +136,10 @@ string restarUno(string exp){
 }
 
 string expresion(string exp, tipo_var &tipo){
-//	cerr<<exp<<endl;
 	for (unsigned int i=0;i<exp.size();i++) if(exp[i]=='\"') exp[i]='\'';
-//	cerr<<
-//	<<endl;
 
 //	if (!exp.size()) return exp;
-	// pasar todo a minusculas sacar caracteres no validos
+	// pasar todo a minusculas y sacar caracteres no validos
 	for (unsigned int i=0;i<exp.size();i++) 
 		if (exp[i]=='\'') {
 			exp[i]='\"';
@@ -187,9 +184,9 @@ string expresion(string exp, tipo_var &tipo){
 				i++;
 			i++;
 			l=i+1;
-		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-			if (exp.substr(l,i-l)=="verdadero") { exp.replace(l,i-l,"true"); i=i-5; }
-			else if (exp.substr(l,i-l)=="falso") { exp.replace(l,i-l,"false"); i=i-5; }
+		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
+			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
 			l=i+1;
 		}
 	}
