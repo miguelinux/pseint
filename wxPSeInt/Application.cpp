@@ -11,12 +11,12 @@
 #include "mxArt.h"
 #include "mxUpdatesChecker.h"
 #include <wx/socket.h>
+#include "mxIconInstaller.h"
 using namespace std;
 
 wxSplashScreen *splash;
 
 bool mxApplication::OnInit() {
-
 	
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();
@@ -48,7 +48,7 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxXPMHandler);
 	
-	config = new ConfigManager;
+	config = new ConfigManager(zpath);
 	
 	wxSocketBase::Initialize();
 	
@@ -71,9 +71,14 @@ bool mxApplication::OnInit() {
 	SetTopWindow(main_window);
 	wxYield();	
 	main_window->Refresh();
+
+#if !defined(__WIN32__) && !defined(__APPLE__)	
+	if (config->version<20120626) 
+		new mxIconInstaller(true);
+#endif
 	
 #ifdef __APPLE__
-	wxMessageBox(_T("Bienvenido a PSeInt para Mac OS X. Esta es la primer beta en este sistema operativo y por lo tanto algunas funcionalidades todavia no se encuentran disponibles: La ejecucion paso a paso no funcionara correctamente y la visualizacion de diagramas de flujo solo sera posible si cuenta con las bibliotecas del servidor X."),_T("Advertencia"));
+	wxMessageBox(_T("Bienvenido a PSeInt para Mac OS X. Esta una de las primeras versiones beta en este sistema operativo y por lo tanto algunas funcionalidades todavia no se encuentran disponibles: La ejecucion paso a paso no funcionara correctamente y la visualizacion de diagramas de flujo solo sera posible si cuenta con las bibliotecas del servidor X."),_T("Advertencia"));
 #endif
 	
 	if (config->profile==_T("...")) {

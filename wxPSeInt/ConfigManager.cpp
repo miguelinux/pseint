@@ -8,7 +8,11 @@ using namespace std;
 
 ConfigManager *config;
 
-ConfigManager::ConfigManager() {
+ConfigManager::ConfigManager(wxString apath) {
+	
+	pseint_dir = apath;
+	version=0; 
+	
 #if defined(_WIN32) || defined(__WIN32__)
 	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("pseint"));
 #else
@@ -119,6 +123,7 @@ void ConfigManager::Save() {
 	fil.Clear();
 	
 	fil.AddLine(wxString(_T("# generado por PSeInt "))<<VERSION<<_T("-"ARCHITECTURE));
+	fil.AddLine(wxString(_T("version="))<<VERSION);
 	fil.AddLine(wxString(_T("images_path="))<<images_path);
 	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
 	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
@@ -193,7 +198,8 @@ void ConfigManager::Read() {
 		} else {
 			key=str.BeforeFirst('=');
 			value=str.AfterFirst('=');
-			if (key==_T("font_size")) { value.ToLong(&l); font_size=l; }
+			if (key==_T("version")) { value.ToLong(&l); version=l; }
+			else if (key==_T("font_size")) { value.ToLong(&l); font_size=l; }
 			else if (key==_T("tabWidth")) { value.ToLong(&l); tabw=l; }
 			else if (key==_T("size_x")) { value.ToLong(&l); size_x=l; }
 			else if (key==_T("size_y")) { value.ToLong(&l); size_y=l; }

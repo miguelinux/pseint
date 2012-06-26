@@ -1,3 +1,12 @@
+20120626
+	Ahora se puede crear un ícono en el escritorio o en el menú del sistema en GNU/Linux durante la primer ejecución.
+	
+20120623
+	Se corrigió la exportación de las palabras clave Verdadero y Falso a C++.
+	
+20120622
+	Se agregó el perfil UNITEC para la "Universidad Tecnológica del Centro", Venezuela.
+	
 >>RELEASE 20120618<<
 
 20120615

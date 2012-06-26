@@ -45,10 +45,12 @@ struct LangSettings {
 class ConfigManager {
 private:
 public:
+	int version; // version del archivo de configuración que se leyó al inicializar
 	int flow_port;
 	int debug_port;
 	bool fixed_port;
 	bool check_for_updates;
+	wxString pseint_dir;
 	wxString home_dir;
 	wxString filename;
 	wxArrayString last_files;
@@ -91,7 +93,7 @@ public:
 	int stepstep_speed;
 	bool maximized;
 	
-	ConfigManager();
+	ConfigManager(wxString apath);
 	void LoadDefaults();
 	wxString LoadProfile(wxString pname);
 	void Read();
