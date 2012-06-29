@@ -22,19 +22,24 @@ Tipos de entidades:
 enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_ASIGNAR, ET_AUX_PARA };
 
 struct Entity {
+	static bool nassi_schneiderman;
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;
-	int x,y; // posiciones reales absolutas, independientes del dibujo, del punto de entrada al bloque completo
-	int fx,fy; // posiciones reales absolutas del punto de entrada a la forma de la entidad
-	int d_fx,d_fy; // posiciones para el dibujo del punto de entrada a la forma de la entidad
+	// cosas definidas por el constructor al setear la etiqueta
 	int w,h; // tamaño real
 	int t_w,t_h,t_dy; // tamaño del texto de la etiqueta y delta_y para el texto (para y segun)
+	int x,y; // posiciones reales absolutas, independientes del dibujo, del punto de entrada al bloque completo
+	// cosas que debe setear la funcion Calculate...
+	int fx,fy; // posiciones reales absolutas del punto de entrada a la forma de la entidad
+	int bwl, bwr,bh; // tamaño del bloque completo real, incluyendo hijos y la cfl
+	// cosas auxiliares para animaciones
+	int d_fx,d_fy; // posiciones para el dibujo del punto de entrada a la forma de la entidad
 	int d_w, d_h; // tamaño de la forma en el dibujo, tiende a w,h con el tiempo
 	int d_x, d_y; // posiciones del dibujo, tienden a x+d_dx,y+d_dy con el tiempo
-	int m_x,m_y; // coordenadas del mouse relativas a x,y, para cuando se arrastra
-	int bwl, bwr,bh; // tamaño del bloque completo real, incluyendo hijos y la cfl
 	int d_bwl, d_bwr,d_bh; // tamaño del bloque completo en el dibujo, incluyendo hijos
+	// otras
+	int m_x,m_y; // coordenadas del mouse relativas a x,y, para cuando se arrastra
 	Entity *next,*prev,*parent;
 	int child_id; // indice de this en el arreglo child del parent
 	Entity **child; // arreglo de hijos (primer entidad de los sub-bloques, 1 para repetitivas, 2 para si, n para segun)
@@ -69,14 +74,29 @@ struct Entity {
 	void DrawShapeBorder(const float *color,int x, int y, int w, int h);
 	void DrawText();
 	void Draw(bool force=false);
+	void DrawNassiSchne(bool force=false);
+	void DrawClasico(bool force=false);
 	void Calculate(bool also_parent=false);
 	void MoveX(int dx);
 	void Calculate(int &gwl, int &gwr, int &gh);
+	void CalculateNassiSchne();
+	void CalculateClasico();
 	void CopyPos(Entity *o);
 	bool CheckMouse(int x, int y);
 	void Print(ostream &out, string tab="");
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
 };
+
+
+static const int flecha_h=25; // separacion entre bloques consecutivos
+static const int flecha_w=20; // separacion entre bloques hermanos
+static const int flecha_d=5; // tamaño de la punta de la flecha
+static const int selection_tolerance_y=12; // tolerancia en y para la seleccion de puntos
+static const int selection_tolerance_x=30; // tolerancia en x para la seleccion de puntos
+static const int margin=6; // margen entre cuadro y texto en un bloque (y para los botones de confirm, por eso no es static, ¿ni const?)
+static const int vf_size=5;
+static const int shadow_delta_x=4; // diferencia entre la posicion de un objeto y su sombra
+static const int shadow_delta_y=5; // diferencia entre la posicion de un objeto y su sombra
 
 #endif
 

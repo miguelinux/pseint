@@ -215,6 +215,7 @@ static void DrawMenus() {
 }
 
 static void DrawConfirm() {
+	
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLineWidth(menu_line_width);
 	int h,w;
@@ -222,16 +223,38 @@ static void DrawConfirm() {
 	const char *text2="¿Cerrar el editor y perder los cambios?";
 	GetTextSize(text1,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
 	GetTextSize(text2,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
+	
 	const char *text3="No";
-	GetTextSize(text3,w,h); DrawText(confirm_sel==1?color_selection:color_menu,win_w/2-w/2-70,win_h/2-h*2,text3);
+	GetTextSize(text3,w,h); 
+	if (confirm_sel==1) {
+		glColor3fv(color_shape);
+		glBegin(GL_QUADS);
+		glVertex2i(win_w/2-100,win_h/2-2*h-2*margin);
+		glVertex2i(win_w/2-40,win_h/2-2*h-2*margin);
+		glVertex2i(win_w/2-40,win_h/2-h+margin);
+		glVertex2i(win_w/2-100,win_h/2-h+margin);
+		glEnd();
+	}
+	DrawText(confirm_sel==1?color_selection:color_menu,win_w/2-w/2-70,win_h/2-h*2,text3);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(win_w/2-100,win_h/2-2*h-2*margin);
 	glVertex2i(win_w/2-40,win_h/2-2*h-2*margin);
 	glVertex2i(win_w/2-40,win_h/2-h+margin);
 	glVertex2i(win_w/2-100,win_h/2-h+margin);
 	glEnd();
+	
 	const char *text4="Si";
-	GetTextSize(text4,w,h); DrawText(confirm_sel==2?color_selection:color_menu,win_w/2-w/2+70,win_h/2-h*2,text4);
+	GetTextSize(text4,w,h); 
+	if (confirm_sel==2) {
+		glColor3fv(color_shape);
+		glBegin(GL_QUADS);
+		glVertex2i(win_w/2+100,win_h/2-2*h-2*margin);
+		glVertex2i(win_w/2+40,win_h/2-2*h-2*margin);
+		glVertex2i(win_w/2+40,win_h/2-h+margin);
+		glVertex2i(win_w/2+100,win_h/2-h+margin);
+		glEnd();
+	}
+	DrawText(confirm_sel==2?color_selection:color_menu,win_w/2-w/2+70,win_h/2-h*2,text4);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(win_w/2+100,win_h/2-2*h-2*margin);
 	glVertex2i(win_w/2+40,win_h/2-2*h-2*margin);
@@ -239,6 +262,7 @@ static void DrawConfirm() {
 	glVertex2i(win_w/2+100,win_h/2-h+margin);
 	glEnd();
 	glutSwapBuffers();
+	
 }
 
 void display_cb() {

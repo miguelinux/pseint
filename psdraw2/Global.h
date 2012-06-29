@@ -79,7 +79,8 @@ extern const float color_menu_back[3]; // fondo de los menues
 extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 
 // para interpolar en las animaciones, good converge pixel perfect, la otra puede que no
-#define interpolate(a,b) a=(2*a+b)/3
+//#define interpolate(a,b) a=(2*a+b)/3
+#define interpolate(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
 #define interpolate_good(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
 
 #endif
