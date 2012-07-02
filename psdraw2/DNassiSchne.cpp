@@ -225,7 +225,7 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			child_bh[0]=0;
 			if (child[0]) child[0]->MoveX(child_dx[0]=20);
 			if (type==ET_REPETIR) t_dy=-c1h;
-			else if (type==ET_PARA) {
+			else if (type==ET_PARA) { // acomodar las etiquetas "desde .. hasta .. con paso .."
 				child[1]->y=child[1]->fy=fy;
 				child[1]->x=child[1]->fx=fx+t_w/2+t_dx+child[1]->t_w/2;
 				child[2]->y=child[2]->fy=fy;

@@ -68,6 +68,7 @@ static void idle_func() {
 		usleep(25000-(now-last));
 		last=now;
 	}
+	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
 	Entity *aux=start;
 	do {
 		aux->Tick();
@@ -88,7 +89,7 @@ static void idle_func() {
 		else { interpolate(menu_size_h,menu_h_min); interpolate(menu_size_w,menu_w_min); }
 		interpolate(trash_size,0); trash=false;
 	}
-	interpolate(d_zoom,zoom);
+	
 	glutPostRedisplay();
 }
 
@@ -198,8 +199,8 @@ static void mouse_cb(int button, int state, int x, int y) {
 	if (button==4||button==3) {
 		double f=button==4?1.05:1.0/1.05;
 		zoom*=f;
-		d_dx-=x*f-x;
-		d_dy-=y*f-y;
+		float dx=x/f-x, dy=y/f-y;
+		d_dx+=dx; d_dy+=dy;
 	} else if (state==GLUT_DOWN) {
 		if (button==GLUT_MIDDLE_BUTTON) { // click en el menu
 			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;

@@ -498,4 +498,3 @@ void Entity::SetPosition (int x0, int y0) {
 	fy=y=y0-d_dy;
 //	Calculate();
 }
-

@@ -272,7 +272,7 @@ void display_cb() {
 	// dibujar el diagrama
 	Entity *aux=start;
 	bool found=false;
-	glLineWidth(zoom*2);
+	glLineWidth(d_zoom*2);
 	glPushMatrix();
 	glScalef(d_zoom,d_zoom,1);
 	do {

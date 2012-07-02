@@ -37,8 +37,8 @@ int trash_size=0; // ancho y alto de dibujo de la papelera
 // zoom y panning
 bool panning=false; // indica si se esta moviendo el dibujo, para el motion
 bool selecting_zoom=false; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
-int d_dx=0; // "paning" del dibujo
-int d_dy=0; // "paning" del dibujo
+float d_dx=0; // "paning" del dibujo
+float d_dy=0; // "paning" del dibujo
 float d_zoom=1; // zoom del dibujo
 float zoom=1; // zoom final
 

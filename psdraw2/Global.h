@@ -53,8 +53,8 @@ extern int trash_size; // ancho y alto de dibujo de la papelera
 extern int win_h,win_w; // tamaño de la ventana
 extern bool panning; // indica si se esta moviendo el dibujo, para el motion
 extern bool selecting_zoom; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
-extern int d_dx; // "paning" del dibujo
-extern int d_dy; // "paning" del dibujo
+extern float d_dx; // "paning" del dibujo
+extern float d_dy; // "paning" del dibujo
 extern float d_zoom; // zoom del dibujo
 extern float zoom; // zoom final
 
@@ -83,6 +83,9 @@ extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos oper
 //#define interpolate(a,b) a=(2*a+b)/3
 #define interpolate(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
 #define interpolate_good(a,b) if ((a)+3>(b) && (a)-3<(b)) a=b; else a=(2*a+b)/3
+
+//#define interpolate(a,b) a=b
+//#define interpolate_good(a,b) a=b
 
 #endif
 
