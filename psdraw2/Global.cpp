@@ -39,8 +39,8 @@ bool panning=false; // indica si se esta moviendo el dibujo, para el motion
 bool selecting_zoom=false; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
 float d_dx=0; // "paning" del dibujo
 float d_dy=0; // "paning" del dibujo
-float d_zoom=1; // zoom del dibujo
-float zoom=1; // zoom final
+float d_zoom=0.1; // zoom del dibujo
+float zoom=0.1; // zoom final
 
 // auxiliares varios
 Entity *entity_to_del=NULL; // para un delayed delete (cuando suelta uno que sale del shapebar y no queda en ningun lado)

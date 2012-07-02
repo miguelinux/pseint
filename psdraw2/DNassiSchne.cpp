@@ -39,13 +39,36 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 void Entity::DrawNassiSchne(bool force) {
 //	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 //	DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh>2*h+margin?2*h+margin:d_bh);
-	if (type!=ET_AUX_PARA)
-		DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
+		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
+			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+	if (this==mouse)
+		DrawRectangle(color_shadow,d_dx+fx,d_dy+fy,bwl,bwr,bh);
 //	// flechas
 	if (!nolink) {
-//		if (type==ET_OPCION) {
+		if (type==ET_OPCION) {
+			glColor3fv(color_border);
+			glBegin(GL_LINES);
+//			if (edit_on) { glVertex2i(d_x-d_bwl+flecha_w,d_y); glVertex2i(d_x-d_bwl+flecha_w,d_y-h); }
+			
+			int px=parent->child_dx[child_id]-bwl;
+			int px0=-parent->bwl, px1=parent->child_dx[parent->n_child-1]-parent->child[parent->n_child-1]->bwl;
+			int ax=px1-px; if (ax<0) ax=-ax;
+			int ah=ax*3*h/(px1-px0);
+			glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x-d_bwl,d_y-h+ah);
+			if (!child[0]) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
+			glEnd();
 //			glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
-//		} else if (type==ET_SEGUN) {
+		} else if (type==ET_SEGUN) {
+			glColor3fv(color_border);
+			glBegin(GL_LINE_STRIP);
+			glVertex2i(d_x-d_bwl,d_y);
+			int px=d_x;
+			px+=child_dx[n_child-1]-child[n_child-1]->d_bwl;
+			glVertex2i(px,d_y-3*h);
+			glVertex2i(d_x+d_bwr,d_y);
+			glEnd();
+			
 //			for(int i=0;i<n_child;i++) {
 //				if (!child[i]->child[0]) {
 //					DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-child[i]->bh);
@@ -59,10 +82,10 @@ void Entity::DrawNassiSchne(bool force) {
 //			// linea horizontal de abajo
 //			glVertex2d(d_x+child_dx[0]+(child[0]?child[0]->child_dx[0]:0),d_y-d_bh+flecha_h); glVertex2d(d_x,d_y-d_bh+flecha_h);
 //			glVertex2d(d_x,d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1]+(child[n_child-1]?child[n_child-1]->child_dx[0]:0),d_y-d_bh+flecha_h);
-//		} else 
+		} else 
 		if (type==ET_SI) {
-			DrawTextNS(color_arrow,d_x-d_bwl+15,d_y-2*h,"Si");
-			DrawTextNS(color_arrow,d_x+d_bwr-55,d_y-2*h,"No");
+			DrawTextNS(color_arrow,d_x-d_bwl+10,d_y-2*h,"Si");
+			DrawTextNS(color_arrow,d_x+d_bwr-35,d_y-2*h,"No");
 			glColor3fv(color_border);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
@@ -72,17 +95,22 @@ void Entity::DrawNassiSchne(bool force) {
 			glVertex2i(px,d_y-2*h-margin);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
+			glBegin(GL_LINES);
+			glVertex2i(d_x-d_bwl,d_y-2*h-margin);
+			glVertex2i(d_x+d_bwr,d_y-2*h-margin);
+			glEnd();
 		}
 	}
 
-//	if (type==ET_OPCION) { // + para agregar opciones
-//		if (edit_on && mouse!=this) {
-//			glBegin(GL_LINES);
-//			glColor3fv(color_label);
-//			glVertex2i(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2); glVertex2i(d_x-d_bwl+1*flecha_w/4,d_y-d_h/2);
-//			glVertex2i(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3); glVertex2i(d_x-d_bwl+flecha_w/2,d_y-2*d_h/3);
-//			glEnd();
-//		}
+	if (type==ET_OPCION) { // + para agregar opciones
+		if (edit_on && mouse!=this) {
+			glBegin(GL_LINES);
+			glColor3fv(color_label);
+			glVertex2i(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2); glVertex2i(d_x-d_bwl+1*flecha_w/4,d_y-d_h/2);
+			glVertex2i(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3); glVertex2i(d_x-d_bwl+flecha_w/2,d_y-2*d_h/3);
+			glEnd();
+		}
+	}
 //	// texto;
 	DrawText();
 //	if (!nolink) {
@@ -118,53 +146,53 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 	t_dy=t_dx=0; fx=x; fy=y; bh=h; bwr=bwl=w/2; // esto es si fuera solo la forma
 	// si son estructuras de control...
 	if (!nolink && n_child) {
-//		if (type==ET_OPCION) {
-//			bwr=bwl=(w=t_w+2*margin)/2;
-//			if (edit_on) 
-//			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
-//			child_dx[0]=0; child_bh[0]=0;
-//			if (child[0]) {
-//				child[0]->x=x; child[0]->y=y-bh;
-//				int cwl=0,cwr=0,ch=0;
-//				child[0]->Calculate(cwl,cwr,ch);
-//				bh+=ch; 
-//				if (cwl+cwr>bwl+bwr) bwl=bwr=(cwl+cwr)/2;
-//				bwl+=flecha_w/2;
-//				bwr+=flecha_w/2;
-//				child_dx[0]-=(cwr-cwl)/2;
-//				child[0]->MoveX(child_dx[0]);
-//			}
-//			// el ancho se lo define el segun padre
-//			w=bwl+bwr;
-//		} else if (type==ET_SEGUN) {
-//			bwr=bwl=(w=t_w*2)/2;
-////				w=bwr=bwl=0; // todo: ver como corregir esto
-//			int sw=0, sh=0;
-//			for (int i=0;i<n_child;i++) {
-//				int cwl=0,cwr=0,ch=0;
-//				child[i]->x=0; child[i]->y=y-h;
-//				child[i]->Calculate(cwl,cwr,ch);
-//				child_bh[i]=ch; child_dx[i]=sw+cwl;
-//				sw+=cwl+cwr-2;
-//				if (ch>sh) sh=ch;
-//			}
-//			if (sw>w) w=sw; 
-//			bwr=bwl=w/2; 
-//			bh+=sh;
-//			for (int i=0;i<n_child;i++) {
-//				child_dx[i]-=w/2;
-//				child[i]->MoveX(child_dx[i]);
-//			}
-//			Entity *dom=child[n_child-1];
-//			if (dom->x+dom->bwr<x+bwr) {
-//				int dif=(x+bwr)-(dom->x+dom->bwr);
-//				dom->bwl+= dif/2;
-//				dom->bwr+= dif/2;
-//				dom->w+= dif;
-//				dom->MoveX(dif/2);
-//				child_dx[n_child-1]+=dif/2;
-//			}
-//		} 
+		if (type==ET_OPCION) {
+			bwr=bwl=(w=t_w+2*margin)/2;
+			if (edit_on) 
+			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
+			child_dx[0]=0; child_bh[0]=0;
+			if (child[0]) {
+				child[0]->x=x; child[0]->y=y-bh;
+				int cwl=0,cwr=0,ch=0;
+				child[0]->Calculate(cwl,cwr,ch);
+				bh+=ch; 
+				if (cwl+cwr>bwl+bwr) bwl=bwr=(cwl+cwr)/2;
+				else child[0]->ResizeW(bwl+bwr,false);
+				child_dx[0]-=(cwr-cwl)/2;
+				child[0]->MoveX(child_dx[0]);
+			}
+			// el ancho se lo define el segun padre
+			w=bwl+bwr;
+		} else
+		if (type==ET_SEGUN) {
+			bh+=h;
+			bwr=bwl=(w=t_w*2)/2;
+			int sw=0, sh=0;
+			for (int i=0;i<n_child;i++) {
+				int cwl=0,cwr=0,ch=0;
+				child[i]->x=0; child[i]->y=y-2*h;
+				child[i]->Calculate(cwl,cwr,ch);
+				child_bh[i]=ch; child_dx[i]=sw+cwl;
+				sw+=cwl+cwr-2;
+				if (ch>sh) sh=ch;
+			}
+			if (sw>w) w=sw; 
+			bwr=bwl=w/2; 
+			bh+=sh;
+			for (int i=0;i<n_child;i++) {
+				child_dx[i]-=w/2;
+				child[i]->MoveX(child_dx[i]);
+			}
+			Entity *dom=child[n_child-1];
+			if (dom->x+dom->bwr<x+bwr) {
+				int dif=(x+bwr)-(dom->x+dom->bwr);
+				dom->bwl+= dif/2;
+				dom->bwr+= dif/2;
+				dom->w+= dif;
+				dom->MoveX(dif/2);
+				child_dx[n_child-1]+=dif/2;
+			}
+		} else 
 		if (type==ET_SI) {
 			bh*=2;
 			bh+=margin;
@@ -199,7 +227,7 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			child_dx[1] = bwr-c2r;
 			if (child[0]) child[0]->MoveX(child_dx[0]);
 			if (child[1]) child[1]->MoveX(child_dx[1]);
-		} 
+		} else
 		if (type==ET_MIENTRAS||type==ET_PARA||type==ET_REPETIR) {
 			if (type==ET_PARA) {
 				child[1]->CalculateNassiSchne();
@@ -228,10 +256,10 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			else if (type==ET_PARA) { // acomodar las etiquetas "desde .. hasta .. con paso .."
 				child[1]->y=child[1]->fy=fy;
 				child[1]->x=child[1]->fx=fx+t_w/2+t_dx+child[1]->t_w/2;
-				child[2]->y=child[2]->fy=fy;
-				child[2]->x=child[2]->fx=child[1]->fx+child[1]->t_w/2+child[1]->t_dx+child[2]->t_w/2;
 				child[3]->y=child[3]->fy=fy;
-				child[3]->x=child[3]->fx=child[2]->fx+child[2]->t_w/2+child[2]->t_dx+child[3]->t_w/2;
+				child[3]->x=child[3]->fx=child[1]->fx+child[1]->t_w/2+child[1]->t_dx+child[3]->t_w/2;
+				child[2]->y=child[2]->fy=fy;
+				child[2]->x=child[2]->fx=child[3]->fx+child[3]->t_w/2+child[3]->t_dx+child[2]->t_w/2;
 			}
 		} 
 	}

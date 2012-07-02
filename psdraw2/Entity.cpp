@@ -347,7 +347,7 @@ void Entity::DrawText() {
 		dibujar_caracter(label[i]);
 	}
 	glPopMatrix();
-	if (edit==this && mouse!=this) {
+	if (edit==this && mouse!=this && w>0) {
 		blink++; if (blink==20) blink=0;
 		if (blink<10) {
 			glBegin(GL_LINES);
