@@ -39,10 +39,9 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 void Entity::DrawNassiSchne(bool force) {
 //	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 //	DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh>2*h+margin?2*h+margin:d_bh);
-	DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+	if (type!=ET_AUX_PARA)
+		DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 //	// flechas
-//	glBegin(GL_LINES); 
-//	glColor3fv(color_arrow);
 	if (!nolink) {
 //		if (type==ET_OPCION) {
 //			glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
@@ -60,44 +59,10 @@ void Entity::DrawNassiSchne(bool force) {
 //			// linea horizontal de abajo
 //			glVertex2d(d_x+child_dx[0]+(child[0]?child[0]->child_dx[0]:0),d_y-d_bh+flecha_h); glVertex2d(d_x,d_y-d_bh+flecha_h);
 //			glVertex2d(d_x,d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1]+(child[n_child-1]?child[n_child-1]->child_dx[0]:0),d_y-d_bh+flecha_h);
-//		} else if (type==ET_MIENTRAS) {
-//			DrawTrue(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
-//			DrawFalse(d_fx+d_w/2+2*vf_size,d_fy-d_h/2+vf_size);
-//			glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-flecha_in); // flecha que entra
-//			glVertex2d(d_x,d_y-d_bh+3*flecha_h); glVertex2d(d_x,d_y-d_bh+2*flecha_h); // sale de la ultima instruccion
-//			DrawFlechaL(d_x,d_x-d_bwl,d_y-d_bh+2*flecha_h); // sigue a la izquierda
-//			DrawFlechaUp(d_x-d_bwl,d_y-d_bh+2*flecha_h,d_y); // sube
-//			DrawFlechaR(d_x-d_bwl,d_x,d_y); // entra arriba de la condicion
-//			glVertex2d(d_x,d_y-flecha_h-d_h/2); glVertex2d(d_x+d_bwr,d_y-flecha_h-d_h/2); // sale de la condicion para la derecha
-//			DrawFlechaDown(d_x+d_bwr,d_y-flecha_h-d_h/2,d_y-d_bh+flecha_h); // baja
-//			glVertex2d(d_x+d_bwr,d_y-d_bh+flecha_h); glVertex2d(d_x,d_y-d_bh+flecha_h); // va al punto de salida
-//			glVertex2i(d_fx,d_fy-d_h); glVertex2i(d_fx,d_fy-d_h-flecha_h);
-//		} else if (type==ET_PARA) {
-//			glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-flecha_in); // flecha que entra del bloque
-//			glVertex2i(d_x,d_y-child_bh[0]-flecha_h); glVertex2i(d_x,d_y-d_bh+flecha_h); // flecha que sale del bloque
-//			glVertex2i(d_fx,d_y); glVertex2i(d_fx,d_fy); // flecha que sale del circulo
-//			DrawFlechaR(d_fx,d_x,d_y); 
-//			glVertex2i(d_fx,d_y); glVertex2i(d_fx,d_fy); // flecha que sale del circulo
-//			DrawFlechaUp(d_fx,d_y-d_bh+flecha_h,d_fy-d_h); // flecha que entra al circulo
-//			glVertex2i(d_fx,d_y-d_bh+flecha_h); glVertex2i(d_x,d_y-d_bh+flecha_h);
-//		} else if (type==ET_REPETIR) {
-//			DrawFlechaDownHead(d_fx,d_fy);
-//			if (variante) {
-//				DrawFalse(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
-//				DrawTrue(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);
-//			} else {
-//				DrawTrue(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
-//				DrawFalse(d_fx-d_w/2-2*vf_size,d_fy-d_h/2+vf_size);
-//			}
-//			glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-flecha_in); // flecha que entra
-//			DrawFlechaL(d_x,d_x-d_bwl,d_fy-d_h/2); // sigue a la izquierda
-//			DrawFlechaUp(d_x-d_bwl,d_fy-d_h/2,d_y); // sube
-//			DrawFlechaR(d_x-d_bwl,d_x,d_y); // entra arriba de la condicion
-//			glVertex2i(d_fx,d_fy+flecha_h); glVertex2i(d_fx,d_fy); // flecha a la siguiente instruccion
 //		} else 
 		if (type==ET_SI) {
-			DrawTextNS(color_arrow,d_x-d_bwl+20,d_y-2*h,"Si");
-			DrawTextNS(color_arrow,d_x+d_bwr-60,d_y-2*h,"No");
+			DrawTextNS(color_arrow,d_x-d_bwl+15,d_y-2*h,"Si");
+			DrawTextNS(color_arrow,d_x+d_bwr-55,d_y-2*h,"No");
 			glColor3fv(color_border);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
@@ -108,42 +73,14 @@ void Entity::DrawNassiSchne(bool force) {
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
 		}
-//		// punta de flecha que viene del anterior
-//		if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
-//		// linea de flecha que va al siguiente
-//		if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
-//	} else if (mouse==this && (next||parent)) {
-//		// flecha que va al siguiente item cuando este esta flotando
-//		glVertex2i(d_dx+x,d_dy+y-bh); glVertex2i(d_dx+x,d_dy+y-bh+flecha_h);
-//		if (type!=ET_OPCION) DrawFlechaDownHead(d_dx+x,d_dy+y); // no en inicio
 	}
-//	glEnd();
-//	// relleno de la forma
-//	DrawShapeSolid(color_shape,d_fx,d_fy,d_w,d_h);
-//	// borde de la forma
-//	DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
-//	
+
 //	if (type==ET_OPCION) { // + para agregar opciones
 //		if (edit_on && mouse!=this) {
 //			glBegin(GL_LINES);
 //			glColor3fv(color_label);
 //			glVertex2i(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2); glVertex2i(d_x-d_bwl+1*flecha_w/4,d_y-d_h/2);
 //			glVertex2i(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3); glVertex2i(d_x-d_bwl+flecha_w/2,d_y-2*d_h/3);
-//			glEnd();
-//		}
-//	} else 
-//		if (!nolink && (type==ET_ESCRIBIR||type==ET_LEER) ) { // flecha en la esquina
-//			glBegin(GL_LINES);
-//			glColor3fv(color_label);
-//			glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2+margin,d_y+margin);
-//			if (type==ET_LEER) {
-//				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin+margin,d_y-margin);
-//				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin,d_y-margin+margin);
-//			} else {
-//				glVertex2d(d_x+d_w/2+margin,d_y+margin); glVertex2d(d_x+d_w/2+margin-margin,d_y+margin);
-//				glVertex2d(d_x+d_w/2+margin,d_y+margin); glVertex2d(d_x+d_w/2+margin,d_y+margin-margin);
-//			}
-//			
 //			glEnd();
 //		}
 //	// texto;
@@ -175,7 +112,10 @@ void Entity::DrawNassiSchne(bool force) {
 }
 
 void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
-	fx=x; fy=y; bh=h; bwr=bwl=w/2; // esto es si fuera solo la forma
+	
+	// calcular tamaños de la forma segun el texto
+	if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; } h=t_h+2*margin; 
+	t_dy=t_dx=0; fx=x; fy=y; bh=h; bwr=bwl=w/2; // esto es si fuera solo la forma
 	// si son estructuras de control...
 	if (!nolink && n_child) {
 //		if (type==ET_OPCION) {
@@ -245,7 +185,13 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 				c2r=c2l=c2h=20;
 			}
 			// ajustar tamaño propio
-			bwl=bwr=(c1r+c1l+c2r+c2l)/2;
+			if (c1r+c1l+c2r+c2l>w)
+				bwl=bwr=(c1r+c1l+c2r+c2l)/2;
+			else  {
+				int dw=(w-c1r+c1l+c2r+c2l)/2;
+				if (child[0]) child[0]->ResizeW(c1r+c1l+dw,false);
+				if (child[1]) child[1]->ResizeW(c2r+c2l+dw,false);
+			}
 			bh += (c1h>c2h?c1h:c2h);
 			child_bh[0]=c1h; child_bh[1]=c2h;
 			// mover hijos horizontalmente
@@ -255,7 +201,13 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			if (child[1]) child[1]->MoveX(child_dx[1]);
 		} 
 		if (type==ET_MIENTRAS||type==ET_PARA||type==ET_REPETIR) {
-			bh+=margin;
+			if (type==ET_PARA) {
+				child[1]->CalculateNassiSchne();
+				child[2]->CalculateNassiSchne();
+				child[3]->CalculateNassiSchne();
+				t_dx=child[1]->t_w+child[2]->t_w+child[3]->t_w;
+				w=w+t_dx; bwr=bwl=w/2; t_dx=-t_dx/2;
+			}
 			// calcular tamaño hijo por verdadero
 			int c1l=0,c1r=0,c1h=0;
 			if (child[0]) {
@@ -265,64 +217,25 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 				c1r=c1l=c1h=20;
 			}
 			// ajustar tamaño propio
-			bwl=bwr=(c1r+c1l)/2;
+			if (c1r+c1l+40>w) 
+				bwl=bwr=(c1r+c1l)/2+20;
+			else
+				if (child[0]) child[0]->ResizeW(w-40,false);
 			bh+=c1h;
 			child_bh[0]=0;
+			if (child[0]) child[0]->MoveX(child_dx[0]=20);
+			if (type==ET_REPETIR) t_dy=-c1h;
+			else if (type==ET_PARA) {
+				child[1]->y=child[1]->fy=fy;
+				child[1]->x=child[1]->fx=fx+t_w/2+t_dx+child[1]->t_w/2;
+				child[2]->y=child[2]->fy=fy;
+				child[2]->x=child[2]->fx=child[1]->fx+child[1]->t_w/2+child[1]->t_dx+child[2]->t_w/2;
+				child[3]->y=child[3]->fy=fy;
+				child[3]->x=child[3]->fx=child[2]->fx+child[2]->t_w/2+child[2]->t_dx+child[3]->t_w/2;
+			}
 		} 
-//			else if (type==ET_MIENTRAS||type==ET_REPETIR) {
-//			int c1l=0,c1r=0,c1h=0;
-//			if (child[0]) {
-//				child[0]->y=y-(type==ET_MIENTRAS?bh+flecha_h:flecha_h); child[0]->x=x;
-//				child[0]->Calculate(c1l,c1r,c1h);
-//			} 
-//			child_dx[0]=0; child_bh[0]=c1h;
-//			if (c1l>bwl) bwl=c1l;
-//			if (c1r>bwr) bwr=c1r;
-//			bwr+=flecha_w; bwl+=flecha_w; bh+=c1h;
-//			fy-= (type==ET_MIENTRAS)?flecha_h:c1h+flecha_h;
-//			bh+= (type==ET_MIENTRAS)?flecha_h*3:flecha_h;
-//		} 
-//			else if (type==ET_PARA) {
-//			
-//			// averiguar cuanto miden las tres etiquetas de abajo en el circulo
-//			child[1]->x=child[2]->x=child[3]->x=x;
-//			int vl=0,vr=0,vh=0;
-//			child[1]->Calculate(vl,vr,vh); 
-//			int v1=vl+vr; vl=vr=0;
-//			child[2]->Calculate(vl,vr,vh); 
-//			int v2=vl+vr; vl=vr=0;
-//			child[3]->Calculate(vl,vr,vh); 
-//			int v3=vl+vr;
-//			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
-//			
-//			// calcular el acnho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
-//			int v=v1+v2+v3-2*margin;
-//			w=(v>t_w?v:t_w)*1.3+2*margin;
-//			v+=2*margin;
-//			
-//			// acomodar el circulo
-//			bwr=0; bwl=w;
-//			int c1l=0,c1r=0,c1h=0;
-//			if (child[0]) {
-//				child[0]->y=y-flecha_h; child[0]->x=x;
-//				child[0]->Calculate(c1l,c1r,c1h);
-//			} 
-//			child_dx[0]=0; child_bh[0]=c1h;
-//			if (c1r>bwr) bwr=c1r;
-//			bwl=bwl+c1l+flecha_w;
-//			if (c1h>bh) bh=c1h;
-//			bh+=2*flecha_h;
-//			fx=-c1l-w/2-flecha_w;
-//			fy=y+(flecha_h-bh+h)/2;
-//			
-//			// acomodar las tres etiquetas
-//			int cy=fy-h/2-margin/2;
-//			child[1]->fy=cy; child[1]->MoveX(fx-x+(-v+v1)/2); child_dx[1]=child[1]->fx+v1/2;
-//			child[2]->fy=cy; child[2]->MoveX(fx-x+(-v+v2)/2+v1); child_dx[2]=child[2]->fx+v2/2;
-//			child[3]->fy=cy; child[3]->MoveX(fx-x+(v-v3)/2); child_dx[3]=child[3]->fx+v3/2;
-//		}
 	}
-	if (!next) {
+	if (!next && prev) {
 		int max=bwl+bwr;
 		Entity *et=prev;
 		while (et) {
@@ -330,12 +243,6 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 				max=et->bwl+et->bwr;
 			et=et->prev;
 		}
-		et=this;
-		while (et) {
-			int old=et->bwl+et->bwr;
-			et->bwl+=(max-old)/2;
-			et->bwr+=(max-old)/2;
-			et=et->prev;
-		}
+		ResizeW(max,true);
 	}
 }

@@ -260,7 +260,21 @@ void Entity::DrawClasico(bool force) {
 }
 
 void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
-	fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
+	
+	// calcular tamaños de la forma segun el texto
+	if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; } h=t_h+2*margin; 
+	if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
+		w*=2; h*=2;
+	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
+		w+=2*margin;
+	} else if (type==ET_PARA) {
+		h=2*h+3*margin; w=1.3*w+2*margin;
+	} else if (type==ET_SEGUN) {
+		h*=2;
+	}
+	
+	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
+	
 	// si son estructuras de control, es un viaje
 	if (!nolink && n_child) {
 		if (type==ET_OPCION) {
@@ -282,6 +296,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			// el ancho se lo define el segun padre
 			w=bwl+bwr;
 		} else if (type==ET_SEGUN) {
+			t_dy=-t_h/2-margin;
 			bwr=bwl=(w=t_w*2)/2;
 //				w=bwr=bwl=0; // todo: ver como corregir esto
 			int sw=0, sh=0;
@@ -341,6 +356,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			fy-= (type==ET_MIENTRAS)?flecha_h:c1h+flecha_h;
 			bh+= (type==ET_MIENTRAS)?flecha_h*3:flecha_h;
 		} else if (type==ET_PARA) {
+			t_dy=(t_h+margin)/2;
 			
 			// averiguar cuanto miden las tres etiquetas de abajo en el circulo
 			child[1]->x=child[2]->x=child[3]->x=x;

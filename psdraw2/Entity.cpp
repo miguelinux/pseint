@@ -25,8 +25,15 @@ void Entity::GetTextSize(const string &label, int &w, int &h) {
 }
 
 Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
+	if (nassi_schneiderman) {
+		if (_type==ET_ESCRIBIR) lpre="ESCRIBIR ";
+		else if (_type==ET_LEER) lpre="LEER ";
+		else if (_type==ET_PARA) lpre="PARA ";
+		else if (_type==ET_REPETIR) lpre="HASTA QUE ";
+		else if (_type==ET_MIENTRAS) lpre="MIENTRAS ";
+	}		
 	variante=false;
-	if (!all_any) { 
+	if (!all_any) {
 		all_any=this; 
 		all_next=all_prev=this;
 	} else { 
@@ -35,7 +42,7 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		all_any->all_next=this; 
 		all_prev=all_any;
 	}
-	fx=x=0; fy=y=0; flecha_in=0;
+	t_dx=t_dy=0; fx=x=0; fy=y=0; flecha_in=0;
 	d_fx=d_fy=d_y=d_x=100;
 	d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=bh=0;
 	nolink=NULL;
@@ -60,6 +67,11 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		LinkChild(1,new Entity(ET_AUX_PARA,""));
 		LinkChild(2,new Entity(ET_AUX_PARA,""));
 		LinkChild(3,new Entity(ET_AUX_PARA,""));
+		if (nassi_schneiderman) {
+			child[1]->lpre=" DESDE ";
+			child[2]->lpre=" CON PASO ";
+			child[3]->lpre=" HASTA ";
+		}
 	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
 		n_child=1;
 		child_bh=(int*)malloc(sizeof(int)*1);
@@ -71,7 +83,6 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	} else {
 		n_child=0;
 	}
-	t_dy=(type==ET_SEGUN?-t_h/2-margin:(type==ET_PARA?(t_h+margin)/2:0));
 }
 
 Entity::~Entity() {
@@ -176,20 +187,8 @@ void Entity::EditLabel(unsigned char key) {
 void Entity::SetLabel(string _label, bool recalc) {
 	modified=true;
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
-	label=_label; GetTextSize(label,t_w,t_h); w=t_w; h=t_h;
-	if (!w) w=margin*6;
-	h+=2*margin; if (type!=ET_PROCESO) w+=2*margin;
-	if (!nassi_schneiderman) {
-		if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
-			w*=2; h*=2;
-		} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-			w+=2*margin;
-		} else if (type==ET_PARA) {
-			h=2*h+3*margin; w=1.3*w+2*margin;
-		} else if (type==ET_SEGUN) {
-			h*=2;
-		}
-	}
+	label=_label; GetTextSize(label,t_w,t_h); t_w; h=t_h;
+	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) Calculate();
 	if (recalc && parent) parent->Calculate(true);
 }
@@ -336,19 +335,24 @@ void Entity::Tick() {
 }
 
 void Entity::DrawText() {
-	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
 	glPushMatrix();
-	glTranslated(d_fx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0),d_fy-(d_h/2+margin)+t_dy,0);
+	glTranslated(d_fx+t_dx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0),d_fy-(d_h/2+margin)+t_dy,0);
 	glScaled((.105*d_w)/w,(.15*d_h)/h,.1);
-	for (unsigned int i=0;i<label.size();i++)
+	glColor3fv(color_label_fix);
+	for (unsigned int i=0;i<lpre.size();i++) {
+		dibujar_caracter(lpre[i]);
+	}
+	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
+	for (unsigned int i=0;i<label.size();i++) {
 		dibujar_caracter(label[i]);
+	}
 	glPopMatrix();
 	if (edit==this && mouse!=this) {
 		blink++; if (blink==20) blink=0;
 		if (blink<10) {
 			glBegin(GL_LINES);
 			int lz=label.size(); if (!lz) lz=1;
-			lz= d_fx-t_w/2+ t_w*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
+			lz= d_fx+t_dx-t_w/2+t_prew+(t_w-t_prew)*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
 			glVertex2i(lz,d_fy-h/2-t_h/2-margin/2+t_dy);
 			glVertex2i(lz,d_fy-h/2+t_h/2+margin/2+t_dy);
 			glEnd();
@@ -372,6 +376,16 @@ void Entity::MoveX(int dx) { // mueve al item y todos sus hijos en x
 	for (int i=0;i<n_child;i++)
 		if (child[i]) child[i]->MoveX(dx);
 	if (next) next->MoveX(dx);
+}
+void Entity:: ResizeW(int aw, bool up) {
+	int old=bwl+bwr;
+	bwl+=(aw-old)/2;
+	bwr+=(aw-old)/2;
+	for (int i=0;i<n_child;i++) {
+		if (child[i]) child[i]->ResizeW(child[i]->bwl+child[i]->bwr+aw-old,false);
+	}
+	if (up && prev) prev->ResizeW(aw,true);
+	if (!up && next) next->ResizeW(aw,false);
 }
 
 void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
@@ -407,11 +421,11 @@ bool Entity::CheckMouse(int x, int y) {
 		}
 		if (child_id==parent->n_child-1) return false;
 	}
-	if (x>=d_fx-d_w/2 && x<=d_fx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
+	if (x>=d_fx+t_dx-d_w/2 && x<=d_fx+t_dx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
 		m_x=x-d_fx;
 		m_y=y-d_fy;
 		if (this==edit) {
-			int bt=d_fx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0);
+			int bt=d_fx+t_dx+t_prew-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0);
 			edit_pos=(x-bt+char_w/2)/char_w;
 			if (edit_pos<0) edit_pos=0; else if (edit_pos>label.size()) edit_pos=label.size();
 		}

@@ -28,7 +28,7 @@ struct Entity {
 	ETYPE type;
 	// cosas definidas por el constructor al setear la etiqueta
 	int w,h; // tamaño real
-	int t_w,t_h,t_dy; // tamaño del texto de la etiqueta y delta_y para el texto (para y segun)
+	int t_w,t_h,t_dy,t_dx,t_prew; // tamaño del texto de la etiqueta, deltapara el texto (para y segun), y tamaño del prefijo no editable
 	int x,y; // posiciones reales absolutas, independientes del dibujo, del punto de entrada al bloque completo
 	// cosas que debe setear la funcion Calculate...
 	int fx,fy; // posiciones reales absolutas del punto de entrada a la forma de la entidad
@@ -49,7 +49,7 @@ struct Entity {
 	int flecha_in; // si las flechas de entrada son mas largas que lo normal (ej, entrada en un repetitivo), se pone aca la diferencia (esto se podria sacar, no?)
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
-	string label;
+	string label, lpre; // rotulo(editable) y prefijo(no editable)
 	Entity(ETYPE _type, string _label);
 	~Entity();
 	void SetEdit();
@@ -78,6 +78,7 @@ struct Entity {
 	void DrawClasico(bool force=false);
 	void Calculate(bool also_parent=false);
 	void MoveX(int dx);
+	void ResizeW(int aw, bool up);
 	void Calculate(int &gwl, int &gwr, int &gh);
 	void CalculateNassiSchne();
 	void CalculateClasico();

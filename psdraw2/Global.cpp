@@ -53,6 +53,7 @@ double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el Dra
 // colores
 const float color_border[3]={0,0,0}; // borde de la forma de una entidad
 const float color_label[3]={0,0,.9}; // texto de la etiqueta de una entidad
+const float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entidad
 const float color_arrow[3]={.9,0,0}; // flechas que guian el flujo y unen entidades
 const float color_selection[3]={0,.4,0}; // texto o borde de forma seleccionada
 const float color_shape[3]={1,1,.9}; // fondo de la forma
