@@ -50,12 +50,11 @@ void Entity::DrawNassiSchne(bool force) {
 			glColor3fv(color_border);
 			glBegin(GL_LINES);
 //			if (edit_on) { glVertex2i(d_x-d_bwl+flecha_w,d_y); glVertex2i(d_x-d_bwl+flecha_w,d_y-h); }
-			
 			int px=parent->child_dx[child_id]-bwl;
 			int px0=-parent->bwl, px1=parent->child_dx[parent->n_child-1]-parent->child[parent->n_child-1]->bwl;
 			int ax=px1-px; if (ax<0) ax=-ax;
-			int ah=ax*3*h/(px1-px0);
-			glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x-d_bwl,d_y-h+ah);
+			int ah=ax*5*h/(px1-px0)/2;
+			glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x-d_bwl,d_y-h/2+ah);
 			if (!child[0]) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
 			glEnd();
 //			glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
@@ -65,7 +64,7 @@ void Entity::DrawNassiSchne(bool force) {
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
 			px+=child_dx[n_child-1]-child[n_child-1]->d_bwl;
-			glVertex2i(px,d_y-3*h);
+			glVertex2i(px,d_y-5*h/2);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
 			

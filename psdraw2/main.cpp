@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include "Entity.h"
 using namespace std;
 
 #include "Global.h"
@@ -25,6 +26,7 @@ int main(int argc, char **argv) {
 			cout<<"psedraw v2 "<<VERSION<<endl;
 			return 0;
 		}
+		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
 		else if (a=="--noedit") edit_on=false;
 		else if (a=="--wordoperators") word_operators=false;
 		else if (a.size()>=5 && a.substr(0,5)=="--id=") {

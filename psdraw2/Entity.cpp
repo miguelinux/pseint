@@ -8,7 +8,7 @@ using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
 
-bool Entity::nassi_schneiderman=true; // alterna el formato entre diagrama de flujo estandar y diagrama de Nassi-Schneiderman
+bool Entity::nassi_schneiderman=false; // alterna el formato entre diagrama de flujo estandar y diagrama de Nassi-Schneiderman
 
 #ifdef DrawText
 // maldito windows.h
@@ -381,8 +381,15 @@ void Entity:: ResizeW(int aw, bool up) {
 	int old=bwl+bwr;
 	bwl+=(aw-old)/2;
 	bwr+=(aw-old)/2;
-	for (int i=0;i<n_child;i++) {
-		if (child[i]) child[i]->ResizeW(child[i]->bwl+child[i]->bwr+aw-old,false);
+	int nc=n_child; if (type==ET_PARA) nc=1;
+	for (int i=0;i<nc;i++)
+		if (child[i]) 
+			child[i]->ResizeW(child[i]->bwl+child[i]->bwr+(aw-old)/nc,false);
+	if (type==ET_SI) {
+		int dx=(aw-old)/4;
+		if (child[0]) child[0]->MoveX(-dx);
+		if (child[1]) child[1]->MoveX(dx);
+		child_dx[0]-=dx; child_dx[1]+=dx;
 	}
 	if (up && prev) prev->ResizeW(aw,true);
 	if (!up && next) next->ResizeW(aw,false);
