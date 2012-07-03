@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 		}
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
 		else if (a=="--noedit") edit_on=false;
-		else if (a=="--wordoperators") word_operators=false;
+		else if (a=="--nowordoperators") word_operators=false;
 		else if (a.size()>=5 && a.substr(0,5)=="--id=") {
 			id=atoi(a.substr(5).c_str());
 		} else if (a.size()>=7 && a.substr(0,7)=="--port=") {

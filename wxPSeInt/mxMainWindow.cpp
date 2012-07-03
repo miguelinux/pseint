@@ -98,6 +98,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 //	EVT_MENU(mxID_CONFIG_SHOW_RESULTS, mxMainWindow::OnConfigShowResults)
 //	EVT_MENU(mxID_CONFIG_COLOUR_SINTAX, mxMainWindow::OnConfigColourSintax)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
+	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
@@ -265,6 +266,7 @@ void mxMainWindow::CreateMenus() {
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje..."),_T(""),_T("lenguaje.png"));
+	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
 	cfg->AppendSeparator();
 	mi_stepstep_l = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_L, _T("Velocidad del paso a paso: Baja"),_T(""),config->stepstep_speed==0);
 	mi_stepstep_m = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_M, _T("Velocidad del paso a paso: Media"),_T(""),config->stepstep_speed==1);
@@ -1459,3 +1461,19 @@ void mxMainWindow::UpdateRealTimeSyntax() {
 			for(unsigned int i=0;i<notebook->GetPageCount();i++)
 				((mxSource*)notebook->GetPage(i))->DoRealTimeSyntax();
 }
+
+void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
+	if (!mi_nassi_schne->IsChecked()) {
+		mi_nassi_schne->Check(false);
+		config->lang.use_nassi_schneiderman=false;
+	} else {
+		mi_nassi_schne->Check(true);
+		config->lang.use_nassi_schneiderman=true;
+	}
+}
+
+void mxMainWindow::ProfileChanged ( ) {
+	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
+	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
+}
+

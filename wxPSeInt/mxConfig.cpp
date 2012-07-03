@@ -65,6 +65,10 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 		"Esta opcion permite expresar las condiciones en un lenguaje más coloquial con construcciones como \"X ES PAR\", "
 		"\"X NO ES MULTIPLO DE 5\", \"X ES IGUAL A Y\", \"X ES ENTERO\", etc. Esta opción activa además el uso de palabras "
 		"clave para reemplazar operadores." );
+	chk_use_nassi_schneiderman= utils->AddCheckBox(opts_sizer,this,_T("Usar diagramas de Nassi-Schneiderman"),config->lang.use_nassi_schneiderman);
+	chk_use_nassi_schneiderman->SetToolTip(
+		"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Schneiderman\n"
+		"en lugar del formato clásico de diagrama de flujo.");
 	
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Aceptar"));
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
@@ -101,6 +105,7 @@ void mxConfig::OnOkButton(wxCommandEvent &evt) {
 	config->lang.lazy_syntax=chk_lazy_syntax->GetValue();
 	config->lang.word_operators=chk_word_operators->GetValue()||chk_coloquial_conditions->GetValue();
 	config->lang.allow_dinamyc_dimensions=chk_allow_dinamyc_dimensions->GetValue();
+	config->lang.use_nassi_schneiderman=chk_use_nassi_schneiderman->GetValue();
 	Close();
 }
 

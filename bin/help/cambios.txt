@@ -1,3 +1,11 @@
+20120703
+	Ya no aparece un error al cambiar el perfil del lenguaje con la verificación de sintaxis en tiempo real activada.
+	Ahora se puede configurar el tipo de diagrama desde el perfil del lenguaje y desde el menú "Configurar".
+	
+20120702
+	Corregido el efecto de desplazamiento al hacer zoom sobre un diagrama de flujo.
+	Ahora el edito puede graficar diagramas Nassi-Scheiderman en lugar de los diagramas de flujo clásicos.
+	
 20120626
 	Ahora se puede crear un ícono en el escritorio o en el menú del sistema en GNU/Linux durante la primer ejecución.
 	

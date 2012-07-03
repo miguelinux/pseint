@@ -68,6 +68,7 @@ void ConfigManager::LoadDefaults() {
 	lang.force_init_vars = true;
 	lang.base_zero_arrays = false;
 	lang.allow_concatenation = true;
+	lang.use_nassi_schneiderman = false;
 	lang.allow_dinamyc_dimensions = false;
 	lang.overload_equal = true;
 	lang.coloquial_conditions = true;
@@ -154,6 +155,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("use_colors="))<<(use_colors?1:0));
 	fil.AddLine(wxString(_T("base_zero_arrays="))<<(lang.base_zero_arrays?1:0));
 	fil.AddLine(wxString(_T("allow_concatenation="))<<(lang.allow_concatenation?1:0));
+	fil.AddLine(wxString(_T("use_nassi_schneiderman="))<<(lang.use_nassi_schneiderman?1:0));
 	fil.AddLine(wxString(_T("allow_dinamyc_dimensions="))<<(lang.allow_dinamyc_dimensions?1:0));
 	fil.AddLine(wxString(_T("force_define_vars="))<<(lang.force_define_vars?1:0));
 	fil.AddLine(wxString(_T("force_init_vars="))<<(lang.force_init_vars?1:0));
@@ -222,6 +224,7 @@ void ConfigManager::Read() {
 //			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);
 			else if (key==_T("use_colors")) use_colors=utils->IsTrue(value);
+			else if (key==_T("use_nassi_schneiderman")) lang.use_nassi_schneiderman=utils->IsTrue(value);
 			else if (key==_T("allow_dinamyc_dimensions")) lang.allow_dinamyc_dimensions=utils->IsTrue(value);
 			else if (key==_T("allow_concatenation")) lang.allow_concatenation=utils->IsTrue(value);
 			else if (key==_T("base_zero_arrays")) lang.base_zero_arrays=utils->IsTrue(value);
@@ -276,6 +279,7 @@ wxString ConfigManager::LoadProfile(wxString pname) {
 			key=str.BeforeFirst('=');
 			value=str.AfterFirst('=');
 			if (key==_T("allow_dinamyc_dimensions")) lang.allow_dinamyc_dimensions=utils->IsTrue(value);
+			else if (key==_T("use_nassi_schneiderman")) lang.use_nassi_schneiderman=utils->IsTrue(value);
 			else if (key==_T("force_define_vars")) lang.force_define_vars=utils->IsTrue(value);
 			else if (key==_T("force_init_vars")) lang.force_init_vars=utils->IsTrue(value);
 			else if (key==_T("allow_concatenation")) lang.allow_concatenation=utils->IsTrue(value);

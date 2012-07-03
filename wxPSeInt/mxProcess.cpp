@@ -175,7 +175,7 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
 	if (check_first) return CheckSyntax(file,config->temp_draw);
 	wxString command;
-	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<"\""<<config->temp_draw<<_T("\"");
+	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<config->temp_draw<<_T("\"");
 //	if (config->high_res_flows) command<<_T(" +");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
@@ -187,6 +187,7 @@ bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
 	command<<config->psdraw2_command;
 	command<<" --port="<<flow_editor->GetPort()<<" --id="<<id;
 	if (source->GetReadOnly()) command<<" --noedit";
+	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
 	command<<_T(" \"")<<config->temp_draw<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;

@@ -9,6 +9,7 @@ struct LangSettings {
 	bool force_dot_and_comma;
 	bool base_zero_arrays;
 	bool allow_concatenation;
+	bool use_nassi_schneiderman;
 	bool allow_dinamyc_dimensions;
 	bool overload_equal;
 	bool coloquial_conditions;
@@ -21,6 +22,7 @@ struct LangSettings {
 			force_dot_and_comma!=o.force_dot_and_comma ||
 			base_zero_arrays!=o.base_zero_arrays ||
 			allow_concatenation!=o.allow_concatenation ||
+			use_nassi_schneiderman!=o.use_nassi_schneiderman ||
 			allow_dinamyc_dimensions!=o.allow_dinamyc_dimensions ||
 			overload_equal!=o.overload_equal ||
 			coloquial_conditions!=o.coloquial_conditions||
@@ -33,6 +35,7 @@ struct LangSettings {
 		force_dot_and_comma=0;
 		base_zero_arrays=0;
 		allow_concatenation=1;
+		use_nassi_schneiderman=0;
 		allow_dinamyc_dimensions=1;
 		overload_equal=1;
 		coloquial_conditions=1;

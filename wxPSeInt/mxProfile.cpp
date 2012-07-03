@@ -90,7 +90,7 @@ void mxProfile::OnClose(wxCloseEvent &evt) {
 }
 
 void mxProfile::OnOkButton(wxCommandEvent &evt) {
-	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
+	main_window->ProfileChanged();
 	Close(); 
 }
 
