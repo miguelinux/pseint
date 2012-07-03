@@ -3,6 +3,11 @@
 #include <string>
 using namespace std;
 
+#ifdef DrawText
+// maldito windows.h
+#undef DrawText
+#endif
+
 /*
 Las entidades se relacionan como pseudo-arbol, empezando por start que es "Inicio".
 Ademas, todas forman una gran lista enlazada (atributos all_*) para recorrerlas en los eventos
