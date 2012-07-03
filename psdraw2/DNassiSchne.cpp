@@ -1,9 +1,9 @@
-#include "Entity.h"
-#include "Global.h"
-#include "Draw.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <cstdlib>
+#include "Entity.h"
+#include "Global.h"
+#include "Draw.h"
 using namespace std;
 
 static void DrawRectangle(const float *color, int x, int y, int wl, int wr, int h) {
