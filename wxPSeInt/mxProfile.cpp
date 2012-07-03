@@ -90,7 +90,7 @@ void mxProfile::OnClose(wxCloseEvent &evt) {
 }
 
 void mxProfile::OnOkButton(wxCommandEvent &evt) {
-	main_window->UpdateRealTimeSyntax();
+	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	Close(); 
 }
 

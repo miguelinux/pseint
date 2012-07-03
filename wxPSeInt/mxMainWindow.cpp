@@ -1455,10 +1455,7 @@ void mxMainWindow::SelectSource (mxSource * s) {
 }
 
 void mxMainWindow::UpdateRealTimeSyntax() {
-	if (RTSyntaxManager::IsLoaded()) {
-		RTSyntaxManager::Restart();
-		if (config->rt_syntax) 
+		if (config->rt_syntax)
 			for(unsigned int i=0;i<notebook->GetPageCount();i++)
 				((mxSource*)notebook->GetPage(i))->DoRealTimeSyntax();
-	}
 }
