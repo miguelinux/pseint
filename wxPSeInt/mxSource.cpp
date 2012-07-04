@@ -64,9 +64,20 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_CHANGE(wxID_ANY, mxSource::OnChange)
 END_EVENT_TABLE()
 
-const wxChar *mxSource::comp_list[MAX_COMP_SIZE];
-const wxChar *mxSource::comp_text[MAX_COMP_SIZE];
-int mxSource::comp_count=-1;
+	
+struct comp_list_item {
+	const wxChar *label;
+	const wxChar *text;
+	bool lazy,coloq;
+	comp_list_item(){}
+	comp_list_item(const wxChar *_label, const wxChar *_text, bool _lazy,bool _coloq):label(_label),text(_text),lazy(_lazy),coloq(_coloq){}
+	operator const wxChar*() { return label; }
+};
+static comp_list_item comp_list[MAX_COMP_SIZE];
+static int comp_count=-1;
+
+//const wxChar *mxSource::comp_list[MAX_COMP_SIZE];
+//const wxChar *mxSource::comp_text[MAX_COMP_SIZE];
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
@@ -97,62 +108,64 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	SetIndentationGuides(true);
 	if (comp_count==-1) {
 		comp_count=0;
-		comp_list[comp_count]=_T("Borrar Pantalla"); comp_text[comp_count++]=_T("Borrar Pantalla;");
-		comp_list[comp_count]=_T("Caso "); comp_text[comp_count++]=_T("Caso ");
-		comp_list[comp_count]=_T("Como Caracter"); comp_text[comp_count++]=_T("Como Caracter;");
-		comp_list[comp_count]=_T("Como Entero"); comp_text[comp_count++]=_T("Como Entero;");
-		comp_list[comp_count]=_T("Como Logico"); comp_text[comp_count++]=_T("Como Logico;");
-		comp_list[comp_count]=_T("Como Real"); comp_text[comp_count++]=_T("Como Real;");
-		comp_list[comp_count]=_T("Con Paso"); comp_text[comp_count++]=_T("Con Paso ");
-		comp_list[comp_count]=_T("Definir"); comp_text[comp_count++]=_T("Definir ");
-		comp_list[comp_count]=_T("Desde"); comp_text[comp_count++]=_T("Desde ");
-		comp_list[comp_count]=_T("Dimension"); comp_text[comp_count++]=_T("Dimension ");
-		comp_list[comp_count]=_T("Entonces"); comp_text[comp_count++]=_T("Entonces\n");
-		comp_list[comp_count]=_T("Es Cero"); comp_text[comp_count++]=_T("Es Cero");
-		comp_list[comp_count]=_T("Es Distinto De"); comp_text[comp_count++]=_T("Es Distinto De ");
-		comp_list[comp_count]=_T("Es Divisible Por"); comp_text[comp_count++]=_T("Es Divisible Por ");
-		comp_list[comp_count]=_T("Es Entero"); comp_text[comp_count++]=_T("Es Entero");
-		comp_list[comp_count]=_T("Es Igual A"); comp_text[comp_count++]=_T("Es Igual A ");
-		comp_list[comp_count]=_T("Es Impar"); comp_text[comp_count++]=_T("Es Impar");
-		comp_list[comp_count]=_T("Es Mayor Que"); comp_text[comp_count++]=_T("Es Mayor Que ");
-		comp_list[comp_count]=_T("Es Menor Que"); comp_text[comp_count++]=_T("Es Menor Que ");
-		comp_list[comp_count]=_T("Es Multiplo De"); comp_text[comp_count++]=_T("Es Multiplo De ");
-		comp_list[comp_count]=_T("Es Negativo"); comp_text[comp_count++]=_T("Es Negativo");
-		comp_list[comp_count]=_T("Es Par"); comp_text[comp_count++]=_T("Es Par");
-		comp_list[comp_count]=_T("Es Positivo"); comp_text[comp_count++]=_T("Es Positivo");
-		comp_list[comp_count]=_T("Escribir"); comp_text[comp_count++]=_T("Escribir ");
-		comp_list[comp_count]=_T("Esperar"); comp_text[comp_count++]=_T("Esperar ");
-		comp_list[comp_count]=_T("Esperar Tecla"); comp_text[comp_count++]=_T("Esperar Tecla;");
-		comp_list[comp_count]=_T("Hacer"); comp_text[comp_count++]=_T("Hacer\n");
-		comp_list[comp_count]=_T("Hasta"); comp_text[comp_count++]=_T("Hasta ");
-		comp_list[comp_count]=_T("Hasta Que"); comp_text[comp_count++]=_T("Hasta Que ");
-		comp_list[comp_count]=_T("Imprimir"); comp_text[comp_count++]=_T("Imprimir ");
-		comp_list[comp_count]=_T("Falso"); comp_text[comp_count++]=_T("Falso");
-		comp_list[comp_count]=_T("Fin Mientras"); comp_text[comp_count++]=_T("Fin Mientras\n");
-		comp_list[comp_count]=_T("Fin Para"); comp_text[comp_count++]=_T("Fin Para\n");
-		comp_list[comp_count]=_T("Fin Proceso"); comp_text[comp_count++]=_T("Fin Proceso\n");
-		comp_list[comp_count]=_T("Fin Segun"); comp_text[comp_count++]=_T("Fin Segun\n");
-		comp_list[comp_count]=_T("Fin Si"); comp_text[comp_count++]=_T("Fin Si\n");
-		comp_list[comp_count]=_T("FinMientras"); comp_text[comp_count++]=_T("FinMientras\n");
-		comp_list[comp_count]=_T("FinPara"); comp_text[comp_count++]=_T("FinPara\n");
-		comp_list[comp_count]=_T("FinProceso"); comp_text[comp_count++]=_T("FinProceso\n");
-		comp_list[comp_count]=_T("FinSegun"); comp_text[comp_count++]=_T("FinSegun\n");
-		comp_list[comp_count]=_T("FinSi"); comp_text[comp_count++]=_T("FinSi\n");
-		comp_list[comp_count]=_T("Leer"); comp_text[comp_count++]=_T("Leer ");
-		comp_list[comp_count]=_T("Limpiar Pantalla"); comp_text[comp_count++]=_T("Limpiar Pantalla;");
-		comp_list[comp_count]=_T("Mientras"); comp_text[comp_count++]=_T("Mientras ");
-		comp_list[comp_count]=_T("Mientras Que"); comp_text[comp_count++]=_T("Mientras Que ");
-		comp_list[comp_count]=_T("Milisegundos"); comp_text[comp_count++]=_T("Milisegundos;");
-		comp_list[comp_count]=_T("Opcion "); comp_text[comp_count++]=_T("Opcion ");
-		comp_list[comp_count]=_T("Otro Modo:"); comp_text[comp_count++]=_T("Otro Modo:\n");
-		comp_list[comp_count]=_T("Para"); comp_text[comp_count++]=_T("Para ");
-		comp_list[comp_count]=_T("Proceso"); comp_text[comp_count++]=_T("Proceso ");
-		comp_list[comp_count]=_T("Repetir"); comp_text[comp_count++]=_T("Repetir\n");
-		comp_list[comp_count]=_T("Segun"); comp_text[comp_count++]=_T("Segun ");
-		comp_list[comp_count]=_T("Segundos"); comp_text[comp_count++]=_T("Segundos;");
-		comp_list[comp_count]=_T("Sin Saltar"); comp_text[comp_count++]=_T("Sin Saltar");
-		comp_list[comp_count]=_T("Sino"); comp_text[comp_count++]=_T("Sino\n");
-		comp_list[comp_count]=_T("Verdadero"); comp_text[comp_count++]=_T("Verdadero");
+		comp_list[comp_count++]=comp_list_item(_T("Borrar Pantalla"),_T("Borrar Pantalla;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Caso "),_T("Caso "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Cada "),_T("Cada "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Como Caracter"),_T("Como Caracter;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Como Entero"),_T("Como Entero;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Como Logico"),_T("Como Logico;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Como Real"),_T("Como Real;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Con Paso"),_T("Con Paso "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Definir"),_T("Definir "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Desde"),_T("Desde "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Dimension"),_T("Dimension "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Es Cero"),_T("Es Cero"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Distinto De"),_T("Es Distinto De "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Divisible Por"),_T("Es Divisible Por "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Igual A"),_T("Es Igual A "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Impar"),_T("Es Impar"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Mayor Que"),_T("Es Mayor Que "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Menor Que"),_T("Es Menor Que "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Multiplo De"),_T("Es Multiplo De "),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Par"),_T("Es Par"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Es Positivo"),_T("Es Positivo"),false,true);
+		comp_list[comp_count++]=comp_list_item(_T("Escribir"),_T("Escribir "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Esperar"),_T("Esperar "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Esperar Tecla"),_T("Esperar Tecla;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Hasta"),_T("Hasta "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Hasta Que"),_T("Hasta Que "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Imprimir"),_T("Imprimir "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Falso"),_T("Falso"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin Mientras"),_T("Fin Mientras\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin Para"),_T("Fin Para\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin Proceso"),_T("Fin Proceso\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinPara"),_T("FinPara\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Mientras Que"),_T("Mientras Que "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Milisegundos"),_T("Milisegundos;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Mostrar"),_T("Mostrar "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Opcion "),_T("Opcion "),true,false);
+		comp_list[comp_count++]=comp_list_item(_T("Otro Modo:"),_T("Otro Modo:\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Para"),_T("Para "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Proceso"),_T("Proceso "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Repetir"),_T("Repetir\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Segundos"),_T("Segundos;"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Sino"),_T("Sino\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"),false,false);
 	}
 	SetMarginType (0, wxSTC_MARGIN_NUMBER);
 	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
@@ -469,6 +482,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			wxString res;
 //			int li = LineFromPosition(p1);
 			for (int j,i=0;i<comp_count;i++) {
+				if (comp_list[i].lazy&&!config->lang.lazy_syntax) continue;
 				for (j=0;j<l;j++)
 					if (str[j]!=(comp_list[i][j]|32))
 						break;
@@ -502,7 +516,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				ShowCalltip(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
 			else if (text==_T("esperar"))
 				ShowCalltip(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
-			else if (text==_T("escribir")||text==_T("mostrar")||text==_T("imprimir"))
+			else if (text==_T("escribir")||(config->lang.lazy_syntax&&(text==_T("mostrar")||text==_T("imprimir"))))
 				ShowCalltip(GetCurrentPos(),_T("{una o mas expresiones, separadas por comas}"));
 			else if (text==_T("mientras"))
 				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
@@ -563,7 +577,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		int i=0;
 		wxString what = evt.GetText();
 		while (comp_list[i]!=what) i++;
-		wxString text(comp_text[i]);
+		wxString text(comp_list[i].text);
 		if (!config->lang.force_dot_and_comma && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()==_T("FIN "))
 			text.Last()='\n';

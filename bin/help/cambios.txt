@@ -1,3 +1,6 @@
+20120704
+	Ahora el autocompletado reconoce mejor las diferencias entre sintaxis flexible y estricta.
+	
 20120703
 	Ya no aparece un error al cambiar el perfil del lenguaje con la verificación de sintaxis en tiempo real activada.
 	Ahora se puede configurar el tipo de diagrama desde el perfil del lenguaje y desde el menú "Configurar".

@@ -18,11 +18,11 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 
 class mxSource : public wxStyledTextCtrl {
 private:
-	static const wxChar *comp_list[MAX_COMP_SIZE];
-	static const wxChar *comp_text[MAX_COMP_SIZE];
+//	static const wxChar *comp_list[MAX_COMP_SIZE];
+//	static const wxChar *comp_text[MAX_COMP_SIZE];
 	int comp_from, comp_to;
 	int last_s1,last_s2;
-	static int comp_count;
+//	static int comp_count;
 	bool is_example;
 	mxProcess *flow;
 	wxSocketBase *socket;
