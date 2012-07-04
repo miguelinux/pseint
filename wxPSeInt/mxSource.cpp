@@ -433,7 +433,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		comp_to=GetCurrentPos();
 	} else if (chr==' ' && config->autocomp) {
 		int p2=comp_to=GetCurrentPos();
-		int s=GetStyleAt(p2-1);
+		int s=GetStyleAt(p2-2);
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2-1,true);
 		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("FIN")) {
@@ -451,7 +451,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			SetCurrentPos(p2);
 		} else
 		if (config->lang.coloquial_conditions) {
-			int s=GetStyleAt(p2-1);
+			int s=GetStyleAt(p2-2);
 			if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 			int p1=comp_from=WordStartPosition(p2-1,true);
 			if (p2-p1==3 && GetTextRange(p1,p2-1).Upper()==_T("ES")) {
