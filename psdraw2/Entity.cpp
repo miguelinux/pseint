@@ -385,6 +385,11 @@ void Entity:: ResizeW(int aw, bool up) {
 		if (child[0]) child[0]->MoveX(-dx);
 		if (child[1]) child[1]->MoveX(dx);
 		child_dx[0]-=dx; child_dx[1]+=dx;
+	} else if (type==ET_SEGUN) {
+		for(int i=0;i<n_child;i++) { 
+			child[i]->MoveX(-child_dx[i]);
+//			child_dx[i]+=dd;
+		}
 	}
 	if (up && prev) prev->ResizeW(aw,true);
 	if (!up && next) next->ResizeW(aw,false);
