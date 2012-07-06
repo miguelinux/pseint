@@ -551,7 +551,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					tipo = vt_error;
 					ev_return("");
 				} else t1.set(vt_caracter_o_numerica);
-				if (t2.can_be(vt_logica) && !AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica)) {
+				if (t2.can_be(vt_logica) && !AplicarTipo(expresion,p2a,p2b,vt_caracter_o_numerica)) {
 					WriteError(999,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
 					tipo = vt_error;
 					ev_return("");
