@@ -41,6 +41,7 @@ private:
 	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
 	mxDesktopTest *desktop_test_grid;
 	void CreateDesktopTestGrid();
+	void CreateVarsPanel();
 	void CreateMenus();
 	void CreateToolbars();
 	void CreateNotebook();
@@ -97,6 +98,7 @@ public:
 	void OnConfigAutoComp(wxCommandEvent &evt);
 	void OnConfigAutoClose(wxCommandEvent &evt);
 	void OnConfigShowCommands(wxCommandEvent &evt);
+	void OnConfigShowVars(wxCommandEvent &evt);
 	void OnToolbarShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowQuickHelp(wxCommandEvent &evt);
@@ -117,7 +119,7 @@ public:
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
 	
 	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_autoclose, *mi_quickhelp, /* *mi_results, *mi_sintax,*/ *mi_smart_indent, *mi_debug_panel, *mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne,
-		*mi_init_vars, *mi_dot_and_comma,  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, *mi_word_operators, *mi_use_colors/*, *mi_high_res*/;
+		/* *mi_init_vars, *mi_dot_and_comma,*/  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m/*, *mi_word_operators*/, *mi_use_colors/*, *mi_high_res*/, *mi_vars_panel;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];
@@ -145,6 +147,7 @@ public:
 	void InsertCode(wxArrayString &toins);
 
 	void OnPaneClose(wxAuiManagerEvent& event);
+	void OnNotebookPageChange(wxAuiNotebookEvent& event);
 	void OnNotebookPageClose(wxAuiNotebookEvent& event);
 	
 	const wxArrayString &GetDesktopVars();
@@ -171,6 +174,8 @@ public:
 	
 	void ProfileChanged(); // lo llama mxConfig para que actualice el menu configurar y reinicie el rtsyntax
 	void UpdateRealTimeSyntax(); // lo llama rtsyntax despues de reiniciarse
+	
+	mxSource *GetCurrentSource();
 	
 	DECLARE_EVENT_TABLE();
 };

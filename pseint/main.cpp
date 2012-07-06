@@ -186,6 +186,8 @@ int main(int argc, char* argv[]) {
 		}
 		SynCheck();
 		cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
+		memoria->ListVars();
+		cout<<"<!{[END_OF_VARS]}!>"<<endl;
 	}
 	
 	// Leer el archivo	

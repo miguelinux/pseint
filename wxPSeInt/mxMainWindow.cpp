@@ -40,6 +40,7 @@
 #include "FlowEditionManager.h"
 #include <iostream>
 #include "RTSyntaxManager.h"
+#include "mxVarWindow.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -88,6 +89,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
+	EVT_MENU(mxID_CONFIG_SHOW_VARS, mxMainWindow::OnConfigShowVars)
 	EVT_MENU(mxID_CONFIG_SHOW_COMMANDS, mxMainWindow::OnConfigShowCommands)
 	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
 	EVT_MENU(mxID_CONFIG_AUTOCOMP, mxMainWindow::OnConfigAutoComp)
@@ -135,6 +137,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_TREE_SEL_CHANGED(wxID_ANY, mxMainWindow::OnSelectError)
 	EVT_AUI_PANE_CLOSE(mxMainWindow::OnPaneClose)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, mxMainWindow::OnNotebookPageClose)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, mxMainWindow::OnNotebookPageChange)
 	EVT_SOCKET(wxID_ANY,mxMainWindow::OnSocketEvent)
 	EVT_COMMAND_SCROLL(wxID_ANY, mxMainWindow::OnScrollDegugSpeed)
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxMainWindow::OnLink)
@@ -175,6 +178,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	
 	CreateMenus();
 	CreateToolbars();
+	CreateVarsPanel();
 	CreateCommandsPanel();
 	CreateDebugControlsPanel();
 	CreateDesktopTestGrid();
@@ -260,6 +264,7 @@ void mxMainWindow::CreateMenus() {
 	mi_toolbar = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_TOOLBAR, _T("Mostrar Barra de Herramientas"),_T(""),config->show_toolbar);
 //	mi_colour = utils->AddCheckToMenu(cfg,mxID_CONFIG_COLOUR_SINTAX, _T("Colorear Sintaxis"),_T(""),config->colour_sintax);
 	mi_commands = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_COMMANDS, _T("Mostrar Panel de Comandos"),_T(""),config->show_commands);
+	mi_vars_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_VARS, _T("Mostrar Panel de Variables"),_T(""),config->show_vars);
 	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
 	cfg->AppendSeparator();
 //	mi_high_res = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHRES, _T("Diagramas de Flujo de Alta Resolucion"),_T(""),config->high_res_flows);
@@ -357,6 +362,14 @@ void mxMainWindow::CreateCommandsPanel() {
 		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Show().Row(2));
 	else
 		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Hide().Row(2));
+}
+
+void mxMainWindow::CreateVarsPanel() {
+	var_window=new mxVarWindow(this);
+	if (config->show_vars)
+		aui_manager.AddPane(var_window, wxAuiPaneInfo().Name(_T("vars")).Caption(_T("Variables")).Left().Show());
+	else
+		aui_manager.AddPane(var_window, wxAuiPaneInfo().Name(_T("vars")).Caption(_T("Variables")).Left().Hide());
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
@@ -702,6 +715,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 	if (proc_for_killing) delete proc_for_killing;
 	
 	config->show_debug_panel = aui_manager.GetPane(debug_panel).IsShown();
+	config->show_vars = aui_manager.GetPane(var_window).IsShown();
 	config->show_commands = aui_manager.GetPane(commands).IsShown();
 	config->show_toolbar = aui_manager.GetPane(toolbar).IsShown();
 	if (IsMaximized()) {
@@ -1015,6 +1029,17 @@ void mxMainWindow::OnConfigShowCommands(wxCommandEvent &evt) {
 	} else {
 		mi_commands->Check(true);
 		aui_manager.GetPane(commands).Show();
+	}
+	aui_manager.Update();	
+}
+	
+void mxMainWindow::OnConfigShowVars(wxCommandEvent &evt) {
+	if (!mi_vars_panel->IsChecked()) {
+		mi_vars_panel->Check(false);
+		aui_manager.GetPane(var_window).Hide();
+	} else {
+		mi_vars_panel->Check(true);
+		aui_manager.GetPane(var_window).Show();
 	}
 	aui_manager.Update();	
 }
@@ -1475,5 +1500,16 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 void mxMainWindow::ProfileChanged ( ) {
 	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
+}
+
+mxSource * mxMainWindow::GetCurrentSource ( ) {
+	if (notebook->GetPageCount()) return (mxSource*)(notebook->GetPage(notebook->GetSelection()));
+	else return NULL;
+}
+
+void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
+	event.Skip(); 
+	// para que se actualice la lista de variables
+	if (config->rt_syntax && notebook->GetPageCount()) ((mxSource*)(notebook->GetPage(notebook->GetSelection())))->StartRTSyntaxChecking();
 }
 

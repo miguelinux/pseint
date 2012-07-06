@@ -169,6 +169,21 @@ public:
 		}
 		return ret;
 	}
+	void ListVars() { // para que el proceso de rt_syntax le pase a la gui la lista de variables
+		map<string,tipo_var>::iterator it=var_info.begin(), it2=var_info.end();
+		while (it!=it2) {
+			cout<<it->first;
+			if (it->second.dims&&it->second.dims[0]>0) {
+				cout<<"[";
+				for (int i=1;i<it->second.dims[0];i++)
+					cout<<it->second.dims[i]<<",";
+				cout<<it->second.dims[it->second.dims[0]]<<"]";
+			}
+			cout<<" "<<(it->second.cb_log?1:0)+(it->second.cb_num?2:0)+(it->second.cb_car?4:0)<<endl;;
+			it++;
+		}
+		
+	}
 };
 
 extern Memoria *memoria;

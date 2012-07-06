@@ -61,6 +61,7 @@ void ConfigManager::LoadDefaults() {
 	maximized = false;
 //	high_res_flows = false;
 	colour_sintax = true;
+	show_vars = false;
 	show_commands = true;
 	show_toolbar = true;
 	lang.force_dot_and_comma = false;
@@ -145,6 +146,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("smart_indent="))<<(smart_indent?1:0));
 //	fil.AddLine(wxString(_T("high_res_flows="))<<(high_res_flows?1:0));
 	fil.AddLine(wxString(_T("colour_sintax="))<<(colour_sintax?1:0));
+	fil.AddLine(wxString(_T("show_vars="))<<(show_vars?1:0));
 	fil.AddLine(wxString(_T("show_commands="))<<(show_commands?1:0));
 	fil.AddLine(wxString(_T("show_debug_panel="))<<(show_debug_panel?1:0));
 	fil.AddLine(wxString(_T("show_toolbar="))<<(show_toolbar?1:0));
@@ -215,6 +217,7 @@ void ConfigManager::Read() {
 			else if (key==_T("rt_syntax")) rt_syntax=utils->IsTrue(value);
 			else if (key==_T("smart_indent")) smart_indent=utils->IsTrue(value);
 			else if (key==_T("show_commands")) show_commands=utils->IsTrue(value);
+			else if (key==_T("show_vars")) show_vars=utils->IsTrue(value);
 			else if (key==_T("show_debug_panel")) show_debug_panel=utils->IsTrue(value);
 			else if (key==_T("show_toolbar")) show_toolbar=utils->IsTrue(value);
 			else if (key==_T("auto_quickhelp")) auto_quickhelp=utils->IsTrue(value);

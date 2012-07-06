@@ -38,13 +38,12 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 
 void Entity::DrawNassiSchne(bool force) {
 //	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
-//	DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh>2*h+margin?2*h+margin:d_bh);
+	if (mouse==this) DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
 		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
 			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (this==mouse)
 		DrawRectangle(color_shadow,d_dx+fx,d_dy+fy,bwl,bwr,bh);
-//	// flechas
 	if (!nolink) {
 		if (type==ET_OPCION) {
 			glColor3fv(color_border);
@@ -68,19 +67,6 @@ void Entity::DrawNassiSchne(bool force) {
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
 			
-//			for(int i=0;i<n_child;i++) {
-//				if (!child[i]->child[0]) {
-//					DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-child[i]->bh);
-//					DrawFlechaDown(d_x+child_dx[i],d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
-//				}
-//				else if (child[i]!=mouse) {
-//					DrawFlechaDown(child[i]->child[0]->d_x,d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
-//					DrawFlechaDownHead(child[i]->child[0]->d_x,child[i]->child[0]->d_y-child[i]->child[0]->d_bh); 
-//				}
-//			}
-//			// linea horizontal de abajo
-//			glVertex2d(d_x+child_dx[0]+(child[0]?child[0]->child_dx[0]:0),d_y-d_bh+flecha_h); glVertex2d(d_x,d_y-d_bh+flecha_h);
-//			glVertex2d(d_x,d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[n_child-1]+(child[n_child-1]?child[n_child-1]->child_dx[0]:0),d_y-d_bh+flecha_h);
 		} else 
 		if (type==ET_SI) {
 			DrawTextNS(color_arrow,d_x-d_bwl+10,d_y-2*h,"Si");
@@ -112,30 +98,6 @@ void Entity::DrawNassiSchne(bool force) {
 	}
 //	// texto;
 	DrawText();
-//	if (!nolink) {
-//		if (type==ET_SEGUN) {
-//			for(int i=0;i<n_child;i++) { 
-//				child[i]->Draw(true);
-//			}
-//		} else  if (type==ET_PARA) {
-//			glColor3fv(color_border);
-//			glBegin(GL_LINES);
-//			glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
-//			if (!variante) {
-//				glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
-//				glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
-//				glEnd();
-//				child[1]->DrawText();
-//				child[2]->DrawText();
-//				child[3]->DrawText();
-//			} else {
-//				glEnd();
-////			child[1]->DrawText();
-//				child[2]->DrawText();
-////			child[3]->DrawText();
-//			}
-//		}
-//	}
 }
 
 void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)

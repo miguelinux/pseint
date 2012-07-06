@@ -239,7 +239,7 @@ void mxSource::SetStyling(bool colour) {
 	SetStyle(wxSTC_C_WORD2,_T(""),config->font_size,_T("DARK BLUE"),_T("WHITE"),0); // extra words
 	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,_T(""),config->font_size,_T("CORNFLOWER BLUE"),_T("WHITE"),0); // doxy keywords
 	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,_T(""),config->font_size,_T("RED"),_T("WHITE"),0); // keywords errors
-	SetStyle(wxSTC_C_GLOBALCLASS,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),0); // keywords errors
+	SetStyle(wxSTC_C_GLOBALCLASS,_T(""),config->font_size,_T("BLACK"),_T("LIGHT BLUE"),0); // keywords errors
 	SetStyle(wxSTC_STYLE_BRACELIGHT,_T(""),config->font_size,_T("RED"),_T("Z LIGHT BLUE"),mxSOURCE_BOLD); 
 	SetStyle(wxSTC_STYLE_BRACEBAD,_T(""),config->font_size,_T("DARK RED"),_T("WHITE"),mxSOURCE_BOLD); 
 	SetLexer(wxSTC_LEX_CPPNOCASE);
@@ -919,7 +919,7 @@ void mxSource::SetWords() {
 	if (config->lang.coloquial_conditions) s1<<mxSourceWords1_conds;
 	SetKeyWords (0, s1.c_str());
 	SetKeyWords (1, mxSourceWords2);
-//	SetKeyWords (2, mxSourceWords3);
+	SetKeyWords (3, ""); // para resaltar las variables
 }
 
 void mxSource::EditFlow ( mxProcess *proc, int id ) {
@@ -1079,6 +1079,7 @@ void mxSource::StopRTSyntaxChecking ( ) {
 }
 
 void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
+	if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
 	DoRealTimeSyntax();
 }
 
@@ -1149,6 +1150,7 @@ void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
 }
 
 void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
+	if (main_window->GetCurrentSource()!=this) return;
 	if (!config->rt_syntax || !main_window->IsActive()) return; 
 	int p = event.GetPosition();
 	int s = GetStyleAt(p);
@@ -1156,4 +1158,9 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		unsigned int l=LineFromPosition(p);
 		if (rt_errors.GetCount()>l && rt_errors[l].Len()) ShowRealTimeError(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1),true);
 	}
+}
+
+void mxSource::HighLight(wxString words) {
+	SetKeyWords(3,words.Lower());
+	Colourise(0,GetLength());
 }

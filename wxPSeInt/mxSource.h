@@ -112,6 +112,8 @@ public:
 	
 	void TryToAutoCloseSomething(int l);
 	
+	void HighLight(wxString words);
+	
 	DECLARE_EVENT_TABLE();
 };
 

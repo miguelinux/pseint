@@ -81,6 +81,7 @@ public:
 	bool colour_sintax;
 //	bool high_res_flows;
 	bool show_toolbar;
+	bool show_vars;
 	bool show_commands;
 	bool show_debug_panel;
 	bool auto_quickhelp;

@@ -1,3 +1,6 @@
+20120706
+	Agregado un panel en wxPSeInt con la lista de variables de un algoritmo.
+	
 20120704
 	Ya no se muestra el menú de autocompletado al escribir Es o Fin en un comentario.
 	Ahora el autocompletado reconoce mejor las diferencias entre sintaxis flexible y estricta.

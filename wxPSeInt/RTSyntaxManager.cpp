@@ -3,6 +3,7 @@
 #include "ConfigManager.h"
 #include <wx/txtstrm.h>
 #include "mxMainWindow.h"
+#include "mxVarWindow.h"
 
 RTSyntaxManager *RTSyntaxManager::the_one=NULL;
 int RTSyntaxManager::lid=0;
@@ -47,6 +48,8 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	}
 	output<<"<!{[END_OF_INPUT]}!>\n";
 	src->ClearErrors();
+	bool fase_one=true;
+	var_window->BeginInput();
 	while (true) {
 		wxString line; char c;
 		while (the_one->IsInputAvailable()) {
@@ -55,16 +58,24 @@ bool RTSyntaxManager::Process (mxSource * src) {
 			if (c!='\r') line<<c;
 		}
 		if (line.Len()) {
-			if (line=="<!{[END_OF_OUTPUT]}!>") break;
-			long l=-1,i=-1;
-			line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
-			line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
-			line=line.AfterFirst(':').AfterFirst(':').Mid(1);
-			src->MarkError(l-1,i-1,line,line.StartsWith("Falta cerrar "));
+			if (line=="<!{[END_OF_OUTPUT]}!>") { 
+				fase_one=false;
+			} else if (line=="<!{[END_OF_VARS]}!>") {
+				break;
+			} else if (fase_one) {
+				long l=-1,i=-1;
+				line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
+				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
+				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
+				src->MarkError(l-1,i-1,line,line.StartsWith("Falta cerrar "));
+			} else {
+				var_window->Add(line.BeforeFirst(' '),line.Last());
+			}
 		} else {
 			wxYield();
 			if (!the_one||the_one->id!=mid) return false;
 		}
+		var_window->EndInput();
 	}	
 	the_one->processing=false;
 	return true;
