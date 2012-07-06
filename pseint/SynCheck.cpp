@@ -1097,14 +1097,15 @@ int SynCheck() {
 						else {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
 							if (!CheckVariable(str,74)) errores++; else {
+								memoria->DefinirTipo(str,vt_numerica); // para que aparezca en la lista de variables
 								if (Lerrores==errores) EvaluarSC(str,tipo);
 								if (!tipo.cb_num)
 									{SynError (76,"No coinciden los tipos."); errores++;}
 								str=cadena;
 								str.erase(0,str.find("<-")+2);
 								str.erase(str.find(" "),str.size()-str.find(" ",0));
-								if (Lerrores==errores) EvaluarSC(str,tipo);
-								if (!tipo.cb_num && tipo!=vt_error)
+								if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
+								if (!tipo.cb_num)
 									{SynError (77,"No coinciden los tipos."); errores++;}
 								else { // comprobar hasta y variable final
 									str=cadena;
@@ -1131,12 +1132,12 @@ int SynCheck() {
 									else {
 										str.erase(0,7); str.erase(str.size()-6,6);
 										if (str.find(" ",0)<0 || str.find(" ",0)>str.size()) {
-											if (Lerrores==errores) EvaluarSC(str,tipo);
+											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
 											if (!tipo.cb_num)
 												{SynError (80,"No coinciden los tipos."); errores++;}
 										} else {
 											str.erase(str.find(" ",0),str.size()-str.find(" ",0));
-											if (Lerrores==errores) EvaluarSC(str,tipo);
+											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
 											if (!tipo.cb_num)
 												{SynError (81,"No coinciden los tipos."); errores++;}
 											str=cadena; // comprobar con paso
@@ -1147,7 +1148,7 @@ int SynCheck() {
 											{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
 											else {
 												str.erase(0,9);
-												EvaluarSC(str,tipo);
+												EvaluarSC(str,tipo,vt_numerica);
 												if (!tipo.cb_num)
 													{SynError (84,"No coinciden los tipos."); errores++;}
 											}
