@@ -877,11 +877,11 @@ int SynCheck() {
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
 						{SynError (46,"Falta tipo de dato o tipo no valido."); errores++;}
 					} else {
-						int largotipo=0;
-						if (RightCompare(cadena," COMO REAL;")) largotipo=11;
-						if (RightCompare(cadena," COMO ENTERO;")) largotipo=13;
-						else if (RightCompare(cadena," COMO LOGICO;")) largotipo=13;
-						else if (RightCompare(cadena," COMO CARACTER;")) largotipo=15;
+						int largotipo=0; tipo_var tipo_def=vt_desconocido;;
+						if (RightCompare(cadena," COMO REAL;")) { largotipo=11; tipo_def=vt_numerica; }
+						if (RightCompare(cadena," COMO ENTERO;")) { largotipo=13; tipo_def=vt_numerica; }
+						else if (RightCompare(cadena," COMO LOGICO;")) { largotipo=13; tipo_def=vt_logica; }
+						else if (RightCompare(cadena," COMO CARACTER;")) { largotipo=15; tipo_def=vt_caracter; }
 						cadena[cadena.size()-largotipo]=',';
 						// evaluar los nombre de variables
 						int tmp1=0,tmp2=0,tmp3=8;
@@ -895,8 +895,9 @@ int SynCheck() {
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
-								if (str.find("(",0)<0 || str.find("(",0)>str.size()) {
+								if (str.find("(",0)==string::npos) {
 									if (!CheckVariable(str,48)) errores++;
+									else memoria->DefinirTipo(str,tipo_def);
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
 									SynError (212,string("No debe utilizar subindices (")+str+")."); errores++;
@@ -980,9 +981,11 @@ int SynCheck() {
 							if (str.find("(",0)<0 || str.find("(",0)>=str.size()){ 
 								SynError (58,"Faltan subindices."); errores++;
 								if (!CheckVariable(str,59)) errores++;
+								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 							} else {
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
 								if (!CheckVariable(str,60)) errores++;
+								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
@@ -1041,9 +1044,11 @@ int SynCheck() {
 							str.erase(0,tmp3);
 							if (str.find("(",0)<0 || str.find("(",0)>str.size()) {
 								if (!CheckVariable(str,65)) errores++;
+								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 							} else {
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
 								if (!CheckVariable(str,66)) errores++;
+								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
@@ -1217,9 +1222,11 @@ int SynCheck() {
 					else {
 						str.erase(str.size()-1,1);
 						if (Lerrores==errores) EvaluarSC(str,tipo);
-						if (!memoria->LeerTipo(vname).can_be(tipo))
-						{ SynError(125,"No coinciden los tipos."); errores++; }
-						memoria->DefinirTipo(vname,tipo);
+						if (!memoria->LeerTipo(vname).can_be(tipo)) {
+							SynError(125,"No coinciden los tipos."); errores++; 
+							if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
+						}
+						else memoria->DefinirTipo(vname,tipo);
 					}
 				}
 			}
