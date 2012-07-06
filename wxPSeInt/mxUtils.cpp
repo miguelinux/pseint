@@ -42,12 +42,14 @@ void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxStr
 	}
 }
 
-void mxUtils::AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id, wxString file, wxString text) {
+wxButton *mxUtils::AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id, wxString file, wxString text) {
 	wxString cfile = DIR_PLUS_FILE(config->images_path,file);
+	wxButton *btn;
 	if (wxFileName::FileExists(cfile))
-		sizer->Add(new mxBitmapButton(parent,id,new wxBitmap(cfile,wxBITMAP_TYPE_PNG),text,wxDefaultSize),wxSizerFlags().Proportion(1).Expand());
+		sizer->Add(btn=new mxBitmapButton(parent,id,new wxBitmap(cfile,wxBITMAP_TYPE_PNG),text,wxDefaultSize),wxSizerFlags().Proportion(1).Expand());
 	else	
-		sizer->Add(new wxButton(parent,id,text),wxSizerFlags().Proportion(1).Expand());
+		sizer->Add(btn=new wxButton(parent,id,text),wxSizerFlags().Proportion(1).Expand());
+	return btn;
 }
 
 wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value) {

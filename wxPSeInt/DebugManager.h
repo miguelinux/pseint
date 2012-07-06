@@ -24,13 +24,13 @@ private:
 	wxSocketServer *server;
 	wxSocketBase *socket;
 	friend class mxProcess;
-	friend class mxMainWindow;
+	friend class mxDebugWindow;
 	friend class mxDesktopTest;
 	bool should_pause;
 	int port;
 public:
 	bool debugging, paused;
-	DebugManager(mxDesktopTest *dt, mxEvaluateDialog *ed);
+	DebugManager(mxDesktopTest *dt);
 	void Start(mxProcess *process, mxSource *src);
 	void Close(mxSource *src);
 	void ProcData(wxString data);

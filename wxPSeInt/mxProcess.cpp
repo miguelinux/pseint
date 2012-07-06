@@ -9,6 +9,7 @@
 #include <wx/filename.h>
 #include "mxInputDialog.h"
 #include "FlowEditionManager.h"
+#include "mxDebugWindow.h"
 using namespace std;
 
 mxProcess *proc_list;
@@ -48,7 +49,7 @@ mxProcess::~mxProcess() {
 void mxProcess::OnTerminate(int pid, int status) {
 	if (this==debug->process) {
 		debug->debugging=false;
-		main_window->SetDebugState(DS_STOPPED);
+		debug_panel->SetState(DS_STOPPED);
 		source->SetReadOnly(was_readonly);
 		source->SetDebugLine();
 		debug->process=NULL;
@@ -160,7 +161,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	debug->Start(this,source);
 	int port=debug->GetPort();
 	int delay=_calc_delay(config->stepstep_speed);
-	main_window->debug_speed->SetThumbPosition(debug->GetSpeed(delay));
+	debug_panel->SetSpeed(debug->GetSpeed(delay));
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors)
 		command<<_T(" --color");

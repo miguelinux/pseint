@@ -6,13 +6,13 @@
 #include <iostream>
 #include "mxEvaluateDialog.h"
 #include "ConfigManager.h"
+#include "mxDebugWindow.h"
 using namespace std;
 
 DebugManager *debug;
 
-DebugManager::DebugManager(mxDesktopTest *dt, mxEvaluateDialog *ed) {
+DebugManager::DebugManager(mxDesktopTest *dt) {
 	desktop_test=dt;
-	evaluate_dialog=ed;
 	do_desktop_test=false;
 	debugging=false;
 	server=NULL;
@@ -26,7 +26,6 @@ DebugManager::~DebugManager() {
 void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	
 	process = proc;
-	main_window->debug_status->SetLabel(_T("iniciando..."));
 	sbuffer=_T("");
 	source=src;
 	debugging=true;
@@ -85,21 +84,21 @@ void DebugManager::ProcData(wxString data) {
 				socket->Write(str.c_str(),str.Len());
 			}
 		} else if (state==_T("pausa")) {
-			main_window->SetDebugState(DS_PAUSED);
+			debug_panel->SetState(DS_PAUSED);
 			source->SetDebugPause();
 		} else if (state==_T("paso"))
-			main_window->SetDebugState(DS_STEP);
+			debug_panel->SetState(DS_STEP);
 		else if (state==_T("ejecutando"))
-			main_window->SetDebugState(DS_RESUMED);
+			debug_panel->SetState(DS_RESUMED);
 		else if (state==_T("finalizado")) {
-			main_window->SetDebugState(DS_FINALIZED);
+			debug_panel->SetState(DS_FINALIZED);
 			source->SetDebugLine();
 		} else {
 			source->SetDebugLine();
-			main_window->SetDebugState(DS_NONE);
+			debug_panel->SetState(DS_NONE);
 		}
 	} else if (data.StartsWith(_T("evaluacion "))) {
-		evaluate_dialog->SetEvaluationValue(data.Mid(11));
+		debug_panel->SetEvaluationValue(data.Mid(11));
 	}	
 }
 

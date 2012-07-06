@@ -41,6 +41,7 @@
 #include <iostream>
 #include "RTSyntaxManager.h"
 #include "mxVarWindow.h"
+#include "mxDebugWindow.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -115,12 +116,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_BUTTON(mxID_CMD_PARA, mxMainWindow::OnCmdPara)
 	EVT_BUTTON(mxID_CMD_SI, mxMainWindow::OnCmdSi)
 	EVT_BUTTON(mxID_CMD_SEGUN, mxMainWindow::OnCmdSegun)
-	EVT_BUTTON(mxID_DEBUG_BUTTON, mxMainWindow::OnDebugButton)
-	EVT_BUTTON(mxID_DEBUG_PAUSE, mxMainWindow::OnDebugPause)
-	EVT_BUTTON(mxID_DEBUG_STEP, mxMainWindow::OnDebugStep)
-	EVT_BUTTON(mxID_DEBUG_HELP, mxMainWindow::OnDebugHelp)
-	EVT_BUTTON(mxID_DEBUG_EVALUATE, mxMainWindow::OnDebugEvaluate)
-	EVT_BUTTON(mxID_DEBUG_DESKTOP_VARS, mxMainWindow::OnDebugDesktopVars)
 //	EVT_MENU(mxID_CONFIG_, mxMainWindow::OnConfig)
 //	EVT_MENU(mxID_HELP_, mxMainWindow::OnHelp)
 	EVT_MENU_RANGE(mxID_FILE_SOURCE_HISTORY_0, mxID_FILE_SOURCE_HISTORY_0+5,mxMainWindow::OnFileSourceHistory)
@@ -193,8 +188,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	SetDropTarget(new mxDropTarget());
 	SetAccelerators();
 	
-	evaluate_window = new mxEvaluateDialog(this);
-	debug = new DebugManager(desktop_test_grid,evaluate_window);
+	debug = new DebugManager(desktop_test_grid);
 	
 }
 
@@ -348,14 +342,16 @@ void mxMainWindow::CreateCommandsPanel() {
 	wxPanel *panel = commands = new wxPanel(this);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,_T("escribir.png"),_T("Escribir"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,_T("leer.png"),_T("Leer"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,_T("asignar.png"),_T("Asignar"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_SI,_T("si.png"),_T("Si-Entonces"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,_T("segun.png"),_T("Segun"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"));
-	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"));
+	wxString tt=_T("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma.");
+	
+	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,_T("escribir.png"),_T("Escribir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,_T("leer.png"),_T("Leer"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,_T("asignar.png"),_T("Asignar"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SI,_T("si.png"),_T("Si-Entonces"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,_T("segun.png"),_T("Segun"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"))->SetToolTip(tt);
 
 	panel->SetSizerAndFit(sizer);
 	if (config->show_commands)
@@ -373,29 +369,11 @@ void mxMainWindow::CreateVarsPanel() {
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
-	wxPanel *panel = debug_panel = new wxPanel(this);
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(new wxStaticText(panel,wxID_ANY,_T(" Estado:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
-	debug_status = new wxStaticText(panel,wxID_ANY,_T("No iniciada"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
-	sizer->Add(debug_status,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_run = new wxButton(panel,mxID_DEBUG_BUTTON,_T("Comenzar")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_pause = new wxButton(panel,mxID_DEBUG_PAUSE,_T("Pausar/Continuar")),wxSizerFlags().Proportion(0).Expand());
-	sizer->Add(dp_button_step = new wxButton(panel,mxID_DEBUG_STEP,_T("Primer Paso")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_desktop_vars = new wxButton(panel,mxID_DEBUG_DESKTOP_VARS,_T("Prueba de Esc...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_evaluate = new wxButton(panel,mxID_DEBUG_EVALUATE,_T("Evaluar...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(new wxStaticText(panel,wxID_ANY,_T(" Velocidad:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
-	debug_speed=new wxScrollBar(panel,mxID_DEBUG_SLIDER);
-	debug_speed->SetScrollbar(0,1,100,10);
-	sizer->Add(debug_speed,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(new wxButton(panel,mxID_DEBUG_HELP,_T("Ayuda...")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
-	dp_button_pause->Disable();
-	dp_button_evaluate->Disable();
-
-	panel->SetSizerAndFit(sizer);
+	debug_panel = new mxDebugWindow(this);
 	if (config->show_debug_panel)
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Show());
+		aui_manager.AddPane(debug_panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Show());
 	else
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Hide());
+		aui_manager.AddPane(debug_panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Hide());
 }
 
 void mxMainWindow::CreateNotebook() {
@@ -601,40 +579,7 @@ void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnRunStepStep(wxCommandEvent &evt) {
-	if (debug->debugging)
-		debug->Stop();
-	else IF_THERE_IS_SOURCE
-		StartDebugging(CURRENT_SOURCE,false);
-}
-
-void mxMainWindow::OnDebugButton(wxCommandEvent &evt) {
-	OnRunStepStep(evt);
-}
-
-void mxMainWindow::OnDebugPause(wxCommandEvent &evt) {
-	if (ds_state==DS_STEP) return;
-	debug->Pause();
-//	if (debug->Pause())
-//		SetDebugState(DS_PAUSED);
-//	else
-//		SetDebugState(DS_RESUMED);
-}
-
-void mxMainWindow::OnDebugStep(wxCommandEvent &evt) {
-	if (ds_state==DS_STEP) return;
-	if (debug->debugging)
-		debug->Step();
-	else IF_THERE_IS_SOURCE
-		StartDebugging(CURRENT_SOURCE,true);
-}
-
-void mxMainWindow::StartDebugging(mxSource *source, bool paused) {
-	bool mod = source->GetModify();
-	source->SaveFile(config->temp_file);
-	source->SetModify(mod);
-	debug->should_pause = paused;
-	if ( (new mxProcess(source,source->GetPageText()))->Debug(config->temp_file, true) )
-		SetDebugState(DS_STARTING);
+	debug_panel->OnDebugButton(evt);
 }
 
 void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
@@ -1164,7 +1109,7 @@ void mxMainWindow::OnConfigStepStepL(wxCommandEvent &evt) {
 	mi_stepstep_l->Check(true);
 	mi_stepstep_h->Check(false);
 	mi_stepstep_m->Check(false);
-	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_l);
+	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_l);
 	debug->SetSpeed(config->stepstep_speed);
 }
 
@@ -1172,14 +1117,14 @@ void mxMainWindow::OnConfigStepStepH(wxCommandEvent &evt) {
 	mi_stepstep_h->Check(true);
 	mi_stepstep_l->Check(false);
 	mi_stepstep_m->Check(false);
-	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_h);
+	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_h);
 	debug->SetSpeed(config->stepstep_speed);
 }
 void mxMainWindow::OnConfigStepStepM(wxCommandEvent &evt) {
 	mi_stepstep_m->Check(true);
 	mi_stepstep_l->Check(false);
 	mi_stepstep_h->Check(false);
-	debug_speed->SetThumbPosition(config->stepstep_speed=_debug_speed_m);
+	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_m);
 	debug->SetSpeed(config->stepstep_speed);
 }
 
@@ -1226,9 +1171,6 @@ void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
 	debug->SetSpeed(speed);
 }
 
-void mxMainWindow::OnDebugDesktopVars(wxCommandEvent &evt) {
-	new mxDesktopVarsEditor(this);
-}
 
 void mxMainWindow::CreateDesktopTestGrid() {
 	desktop_test_grid = new mxDesktopTest(this,wxID_ANY);
@@ -1268,74 +1210,11 @@ void mxMainWindow::OnToolbarShowDebugPanel(wxCommandEvent &evt) {
 		OnRunStepStep(evt);
 }
 
-void mxMainWindow::OnDebugEvaluate(wxCommandEvent &evt) {
-	evaluate_window->Show();
-}
-
-void mxMainWindow::OnDebugHelp(wxCommandEvent &evt) {
-	if (!helpw) helpw = new mxHelpWindow();
-	helpw->ShowHelp(_T("debug.html"));
-}
-
 void mxMainWindow::SelectLine(mxSource *src, int l) {
 	int index = notebook->GetPageIndex(last_source);
 	if (index==wxNOT_FOUND) return;
 	notebook->SetSelection(index);
 	src->SetSelection(src->GetLineIndentPosition(l-1),src->GetLineEndPosition(l-1));
-}
-
-void mxMainWindow::SetDebugState(ds_enum state) {
-	ds_state = state;
-	switch (state) {
-	case DS_STARTING:
-		dp_button_run->SetLabel(_T("Finalizar"));
-		dp_button_step->Disable();
-		debug_status->SetLabel(_T("Iniciando"));
-		dp_button_step->SetLabel(_T("Avanzar un Paso"));
-		dp_button_desktop_vars->Enable(false);
-		break;
-	case DS_STOPPED: 
-		dp_button_run->SetLabel(_T("Comenzar"));
-		dp_button_step->SetLabel(_T("Primer Paso"));
-		dp_button_step->Enable();
-		dp_button_desktop_vars->Enable();
-		dp_button_evaluate->Disable();
-		dp_button_step->Enable();
-		dp_button_pause->Disable();
-		debug_status->SetLabel(_T("No Iniciada"));
-		break;
-	case DS_FINALIZED:
-		dp_button_run->SetLabel(_T("Cerrar"));
-		dp_button_pause->Disable();
-		dp_button_step->Disable();
-		debug_status->SetLabel(_T("Finalizada"));
-		break;
-	case DS_PAUSED:
-		dp_button_step->Enable(true);
-		dp_button_pause->Enable(true);
-		dp_button_pause->SetFocus();
-		dp_button_step->SetFocus();
-		dp_button_pause->SetLabel(_T("Continuar"));
-		dp_button_evaluate->Enable();
-		debug_status->SetLabel(_T("Pausado"));
-		break;
-	case DS_RESUMED:
-		dp_button_step->Enable(false);
-		dp_button_pause->Enable(true);
-		dp_button_pause->SetLabel(_T("Pausar"));
-		dp_button_evaluate->Disable();
-		debug_status->SetLabel(_T("Ejecutando"));
-		break;
-	case DS_STEP:
-//		dp_button_step->Enable(false);
-		dp_button_pause->Disable();
-//		dp_button_pause->SetLabel("Pausar");
-		dp_button_evaluate->Disable();
-		debug_status->SetLabel(_T("Ejecutando"));
-		break;
-	case DS_NONE:
-		debug_status->SetLabel(_T("Desconocido"));
-	}
 }
 
 bool mxMainWindow::SelectFirstError() {

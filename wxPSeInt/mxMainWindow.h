@@ -13,14 +13,9 @@ class mxFindDialog;
 class wxStaticText;
 class wxScrollBar;
 class mxDesktopTest;
-class mxEvaluateDialog;
-
-enum ds_enum {DS_NONE,DS_STEP,DS_STARTING,DS_PAUSED,DS_RESUMED,DS_FINALIZED,DS_STOPPED};
 
 class mxMainWindow : public wxFrame {
 private:
-	ds_enum ds_state;
-	mxEvaluateDialog *evaluate_window;
 	friend class DebugManager;
 	mxFindDialog *find_replace_dialog;
 	friend class mxSource; // para el page_text
@@ -31,14 +26,10 @@ private:
 	wxTreeCtrl *results_tree;
 	wxTreeItemId results_root;
 	int last_proc;
-	wxStaticText *debug_status;
-	wxScrollBar *debug_speed;
 	wxStatusBar *status_bar;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
 	wxPanel *commands;
-	wxPanel *debug_panel;
-	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
 	mxDesktopTest *desktop_test_grid;
 	void CreateDesktopTestGrid();
 	void CreateVarsPanel();
@@ -131,12 +122,6 @@ public:
 	void HideQuickHelp();
 
 	void OnCmdEscribir(wxCommandEvent &evt);
-	void OnDebugButton(wxCommandEvent &evt);
-	void OnDebugPause(wxCommandEvent &evt);
-	void OnDebugStep(wxCommandEvent &evt);
-	void OnDebugDesktopVars(wxCommandEvent &evt);
-	void OnDebugEvaluate(wxCommandEvent &evt);
-	void OnDebugHelp(wxCommandEvent &evt);
 	void OnCmdLeer(wxCommandEvent &evt);
 	void OnCmdAsignar(wxCommandEvent &evt);
 	void OnCmdPara(wxCommandEvent &evt);
@@ -158,7 +143,6 @@ public:
 	void SelectLine(mxSource *src, int line);
 	
 	void StartDebugging(mxSource *source, bool paused);
-	void SetDebugState(ds_enum state);
 	
 	bool SelectFirstError();
 	

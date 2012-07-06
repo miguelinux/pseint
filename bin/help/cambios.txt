@@ -1,5 +1,5 @@
 20120706
-	Mejr
+	Ahora se fija correctamente el tipo de las variables de una estructura Para como numérico durante la verificacion de sintaxis.
 	Corregido un problema por el cual no determinaba correctamente el tipo del segundo operando de una suma.
 	Mejorada la detección de variables y tipos en la etapa de verificación de syntaxis.
 	Agregado un panel en wxPSeInt con la lista de variables de un algoritmo.

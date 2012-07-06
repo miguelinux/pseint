@@ -14,6 +14,7 @@ class wxToolBar;
 class wxSizer;
 class wxWindow;
 class wxBoxSizer;
+class wxButton;
 
 class mxUtils {
 private:
@@ -23,7 +24,7 @@ public:
 	wxMenuItem *AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename);
 	wxString JoinDirAndFile(wxString dir, wxString file);
 	void AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text);
-	void AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id, wxString file, wxString text);
+	wxButton *AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id, wxString file, wxString text);
 	wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value);
 	bool IsTrue(wxString value) const;
 	wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, bool value);
