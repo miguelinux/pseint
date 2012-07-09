@@ -11,8 +11,7 @@ using namespace std;
 
 DebugManager *debug;
 
-DebugManager::DebugManager(mxDesktopTest *dt) {
-	desktop_test=dt;
+DebugManager::DebugManager() {
 	do_desktop_test=false;
 	debugging=false;
 	server=NULL;

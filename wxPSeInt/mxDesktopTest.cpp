@@ -4,6 +4,8 @@
 #include "DebugManager.h"
 using namespace std;
 
+mxDesktopTest *desktop_test=NULL;
+
 BEGIN_EVENT_TABLE(mxDesktopTest, wxGrid)
 //	EVT_KEY_DOWN(mxDesktopTest::OnKey)
 	EVT_GRID_CELL_LEFT_DCLICK(mxDesktopTest::OnDblClick)
@@ -20,6 +22,7 @@ END_EVENT_TABLE()
 	
 
 mxDesktopTest::mxDesktopTest(wxWindow *parent, wxWindowID id ):wxGrid(parent,id, wxDefaultPosition,wxSize(400,300)) {
+	desktop_test=this;
 	created=false;
 	sel_col=0;
 	CreateGrid(cols_num=0,rows_num=0);

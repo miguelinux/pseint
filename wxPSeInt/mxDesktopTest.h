@@ -34,5 +34,7 @@ public:
 	void ResetTest();
 };
 
+extern mxDesktopTest *desktop_test;
+
 #endif
 

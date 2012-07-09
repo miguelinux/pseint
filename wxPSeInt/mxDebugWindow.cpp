@@ -32,14 +32,16 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	sizer->Add(dp_button_pause = new wxButton(this,mxID_DEBUG_PAUSE,_T("Pausar/Continuar")),wxSizerFlags().Proportion(0).Expand());
 	sizer->Add(dp_button_step = new wxButton(this,mxID_DEBUG_STEP,_T("Primer Paso")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	sizer->Add(dp_button_desktop_vars = new wxButton(this,mxID_DEBUG_DESKTOP_VARS,_T("Prueba de Esc...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	dp_button_desktop_vars->SetToolTip(_T("Con este botón puede configurar una tabla con un conjunto de variables o expresiones para que serán evaluadas en cada paso de la ejecución paso a paso y registradas en dicha tabla automáticamente para analizar luego la evolución de los datos y el algoritmo."));
 	sizer->Add(dp_button_evaluate = new wxButton(this,mxID_DEBUG_EVALUATE,_T("Evaluar...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	dp_button_evaluate->SetToolTip(_T("Puede utilizar este botón para evaluar una expresión o conocer el valor de una variable durante la ejecución paso a paso. Para ello debe primero pausar el algoritmo."));
 	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Velocidad:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
 	debug_speed=new wxScrollBar(this,mxID_DEBUG_SLIDER);
 	debug_speed->SetScrollbar(0,1,100,10);
+	debug_speed->SetToolTip(_T("Con este slider puede variar la velocidad con la que avanza automáticamente la ejecución paso a paso."));
 	sizer->Add(debug_speed,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	sizer->Add(new wxButton(this,mxID_DEBUG_HELP,_T("Ayuda...")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
-	dp_button_pause->Disable();
-	dp_button_evaluate->Disable();
+	SetState(DS_STOPPED);
 	this->SetSizerAndFit(sizer);
 	evaluate_window = new mxEvaluateDialog(parent);
 }
@@ -57,14 +59,18 @@ void mxDebugWindow::SetState(ds_enum state) {
 	switch (state) {
 	case DS_STARTING:
 		dp_button_run->SetLabel(_T("Finalizar"));
-		dp_button_step->Disable();
+		dp_button_run->SetToolTip(_T("Utilice este botón para detener definitivamente la ejecución del algoritmo y abandonar el modo de ejecución paso a paso."));
 		debug_status->SetLabel(_T("Iniciando"));
+		dp_button_step->Disable();
 		dp_button_step->SetLabel(_T("Avanzar un Paso"));
+		dp_button_step->SetToolTip(_T("Utilice este botón para avanzar ejecutar solamente la siguiente instrucción del algoritmo."));
 		dp_button_desktop_vars->Enable(false);
 		break;
 	case DS_STOPPED: 
 		dp_button_run->SetLabel(_T("Comenzar"));
+		dp_button_run->SetToolTip(_T("Utilice este botón para que el algoritmo comience a ejecutarse automáticamente y paso a paso, señalando cada instrucción que ejecuta, según la velocidad definida en el menú configuración."));
 		dp_button_step->SetLabel(_T("Primer Paso"));
+		dp_button_step->SetToolTip(_T("Utilice este botón para ejecutar solo la primer instrucción del algoritmo y pausar inmediatamente la ejecución del mismo."));
 		dp_button_step->Enable();
 		dp_button_desktop_vars->Enable();
 		dp_button_evaluate->Disable();
@@ -74,6 +80,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		break;
 	case DS_FINALIZED:
 		dp_button_run->SetLabel(_T("Cerrar"));
+		dp_button_run->SetToolTip(_T("Ha finalizado la ejecución del algoritmo. Utilice este botón para cerrar la ventana de la ejecución del mismo."));
 		dp_button_pause->Disable();
 		dp_button_step->Disable();
 		debug_status->SetLabel(_T("Finalizada"));
@@ -84,6 +91,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_pause->SetFocus();
 		dp_button_step->SetFocus();
 		dp_button_pause->SetLabel(_T("Continuar"));
+		dp_button_pause->SetToolTip(_T("Utilice este botón para que el algoritmo continúe avanzando paso a paso automáticamente."));
 		dp_button_evaluate->Enable();
 		debug_status->SetLabel(_T("Pausado"));
 		break;
@@ -91,13 +99,12 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->Enable(false);
 		dp_button_pause->Enable(true);
 		dp_button_pause->SetLabel(_T("Pausar"));
+		dp_button_pause->SetToolTip(_T("Utilice este botón para detener temporalmente la ejecución del algoritmo. Al detener el algoritmo puede observar el valor de las variables con el botón Evaluar."));
 		dp_button_evaluate->Disable();
 		debug_status->SetLabel(_T("Ejecutando"));
 		break;
 	case DS_STEP:
-//		dp_button_step->Enable(false);
 		dp_button_pause->Disable();
-//		dp_button_pause->SetLabel("Pausar");
 		dp_button_evaluate->Disable();
 		debug_status->SetLabel(_T("Ejecutando"));
 		break;

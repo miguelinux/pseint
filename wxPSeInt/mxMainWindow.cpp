@@ -188,7 +188,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	SetDropTarget(new mxDropTarget());
 	SetAccelerators();
 	
-	debug = new DebugManager(desktop_test_grid);
+	debug = new DebugManager();
 	
 }
 
