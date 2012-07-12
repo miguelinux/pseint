@@ -60,6 +60,7 @@ struct tipo_var {
 	}
 	void reset() { // para borrar la información que genera el analisis sintáctico antes de la ejecución y que no debe pasar a la ejecución
 		defined=used=enabled=false;
+		if (dims) { delete [] dims; dims=NULL; }
 	}
 };
 

@@ -983,34 +983,53 @@ int SynCheck() {
 								if (!CheckVariable(str,59)) errores++;
 								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 							} else {
+								string aname;
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
 								if (!CheckVariable(str,60)) errores++;
-								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
+								else aname=str; // para que aparezca en la lista de variables
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
-								str.erase(0,tmp3);
-								str.erase(0,str.find("(",0));
+								str.erase(0,str.find("(",tmp3)+1);
 								if (str[str.size()-1]==')')
 									str.erase(str.size()-1,1);
-								str.erase(0,1);
 								str=str+",";
-								string str2;
+								
+								// contar dimensiones y reservar espacio para el arreglo dims
+								int parentesis=0, len=str.size(), ndims=0; bool comillas=false;
+								for(int i=0;i<len;i++) { 
+									if (str[i]=='\'') comillas=!comillas;
+									else if (!comillas) {
+										if (str[i]==',') ndims++;
+										else if (str[i]=='(') parentesis++;
+										else if (str[i]==')') parentesis--;
+									}
+								}
+								int *dims=new int[ndims+1], idims=1; dims[0]=ndims;
+								
 								// comprobar los indices
+								string str2,res_eval;
 								while (str.find(",",0)>=0 && str.find(",",0)<str.size()){
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
 									{SynError (61,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) EvaluarSC(str2,tipo);
-									if (tipo!=vt_error&&!tipo.cb_num)
-//										if (tipo<'c')
-//										{ ExpError(tipo,0); errores++;}
-//										else
-											{SynError (62,"No coinciden los tipos."); errores++;}
-									else if (!allow_dinamyc_dimensions && !IsNumericConstant(str2))
-										{SynError (153,"Las dimensiones deben ser constantes."); errores++;}
+									if (Lerrores==errores) res_eval=EvaluarSC(str2,tipo);
+									if (tipo!=vt_error&&!tipo.cb_num) {
+										{SynError (62,"No coinciden los tipos."); errores++;}
+										dims[idims]=-1;
+									} else {
+										if (!IsNumericConstant(str2)) {
+											dims[idims]=-1;
+											if (!allow_dinamyc_dimensions)
+												{SynError (153,"Las dimensiones deben ser constantes."); errores++;}
+										} else {
+											dims[idims]=(int)StrToDbl(res_eval);
+										}
+									}
 									str.erase(0,str2.size()+1);
+									idims++;
 								}
+								if (aname.size()) memoria->AgregarArreglo(aname,dims);
 							}
 							tmp3=tmp1+1;
 						}

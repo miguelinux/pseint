@@ -1,3 +1,7 @@
+20120712
+	Ahora el interprete determina el tamaño de los arreglos en el preproceso para mostrar en la lista de variables del editor.
+	Ahora el tipo de variable se muestra como ícono en lugar de estar como texto entre paréntesis en el panel de variables.
+	
 20120706
 	Ahora se fija correctamente el tipo de las variables de una estructura Para como numérico durante la verificacion de sintaxis.
 	Corregido un problema por el cual no determinaba correctamente el tipo del segundo operando de una suma.
