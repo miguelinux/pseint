@@ -198,6 +198,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 }
 
 mxSource::~mxSource() {
+	rt_timer->Stop();
 	debug->Close(this);
 	if (socket) {
 		socket->Write("quit",4);
