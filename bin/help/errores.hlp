@@ -695,3 +695,11 @@
 219
   La cantidad de segundos/milisengundos a esperar debe ser numérica. 
   * Verifique que la variable o expresión utilizada sea de tipo numérica.
+
+220
+  La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
+  * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.
+
+221
+  La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
+  * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.

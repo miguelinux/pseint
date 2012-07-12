@@ -326,7 +326,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				}
 				tipo = memoria->LeerTipo(nombre);
 				if (tipo.dims) {
-					WriteError(999,string("Faltan subindices para el arreglo (")+nombre+")");
+					WriteError(220,string("Faltan subindices para el arreglo (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
@@ -656,10 +656,18 @@ string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 
 bool CheckDims(string &str) {
 	int pp=str.find("(",0), p2=str.size()-1;
+	// ver que efectivamente sea un arreglo
+	string nombre=str.substr(0,pp);
+	int *adims=memoria->LeerDims(str);
+	if (!adims) {
+		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo"));
+		return false;
+	}
 	if (!Inter.Running()) {
+		
 		// esto es para cuando esta checkeando sintaxis antes de ejecutar
 		// en este caso no debe verificar si las expresiones dan en los rangos 
-		// del arreglo o si esta dimensionado
+		// del arreglo
 		int b=pp+1,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
 		str[str.size()-1]=','; /*pp;*/
 		for (int i=0;i<ca;i++) {
@@ -668,6 +676,11 @@ bool CheckDims(string &str) {
 			string ret = Evaluar(str,pp,np,t);
 			pp=np+1;
 			if (!t.is_ok()) return false;
+		}
+		// controlar cantidad de dimensiones
+		if (adims[0]!=ca) {
+			WriteError(999,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));
+			return false;
 		}
 		
 		// parche horrible para marcar los indices de arreglos como enteros para que no sean float al exportar a c++
@@ -693,17 +706,9 @@ bool CheckDims(string &str) {
 				}
 			}
 		}
-		
 		return true;
 	} 
 	
-	// controlar cantidad de dimensiones
-	string nombre=str.substr(0,pp);
-	int *adims=memoria->LeerDims(str);
-	if (!adims) {
-		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo"));
-		return false;
-	}
 	int b=pp,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
 	if (adims[0]!=ca) {
 		WriteError(999,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));

@@ -1061,13 +1061,18 @@ int SynCheck() {
 							str=cadena;
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
-							if (str.find("(",0)<0 || str.find("(",0)>str.size()) {
+							if (str.find("(",0)==string::npos) {
 								if (!CheckVariable(str,65)) errores++;
-								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
+								else {
+									if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
+									if (memoria->LeerTipo(str).dims) SynError(999,"Faltan subindices para el arreglo ("+str+").");
+								}
 							} else {
-								str.erase(str.find("(",0),str.size()-str.find("(",0));
-								if (!CheckVariable(str,66)) errores++;
-								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
+								bool name_ok=true;
+								string aname=str.substr(0,str.find("(",0));
+								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
+								else if (!memoria->EstaDefinida(aname)) memoria->DefinirTipo(aname,vt_desconocido); // para que aparezca en la lista de variables
+								if (!memoria->LeerTipo(aname).dims) { SynError(999,"La variable ("+aname+") no es un arreglo."); name_ok=false; }
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
@@ -1078,17 +1083,20 @@ int SynCheck() {
 								str=str+",";
 								string str2;
 								// comprobar los indices
+								int ca=0;
 								while (str.find(",",0)>=0 && str.find(",",0)<str.size()){
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
 									if (Lerrores==errores) EvaluarSC(str2,tipo);
 									if (tipo!=vt_error&&!tipo.cb_num)
-//										if (tipo<'c')
-//										{ ExpError(tipo,0); errores++;}
-//										else
-											{SynError (154,"No coinciden los tipos."); errores++;}
+										{SynError (154,"No coinciden los tipos."); errores++;}
 									str.erase(0,str2.size()+1);
+									ca++;
+								}
+								if (name_ok && memoria->LeerTipo(aname).dims[0]!=ca) {
+									SynError(999,string("Cantidad de indices incorrecta para el arreglo (")+aname+(")"));
+									return false;
 								}
 							}
 							tmp3=tmp1+1;
