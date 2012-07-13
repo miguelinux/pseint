@@ -136,6 +136,10 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_SOCKET(wxID_ANY,mxMainWindow::OnSocketEvent)
 	EVT_COMMAND_SCROLL(wxID_ANY, mxMainWindow::OnScrollDegugSpeed)
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxMainWindow::OnLink)
+	
+	EVT_BUTTON(mxID_HELPER_VARS,mxMainWindow::OnHelperVars)
+	EVT_BUTTON(mxID_HELPER_DEBUG,mxMainWindow::OnHelperDebug)
+	EVT_BUTTON(mxID_HELPER_COMMANDS,mxMainWindow::OnHelperCommands)
 END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _T("PSeInt"), pos, size, wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
@@ -353,28 +357,46 @@ void mxMainWindow::CreateCommandsPanel() {
 	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"))->SetToolTip(tt);
-
 	panel->SetSizerAndFit(sizer);
-	if (config->show_commands)
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Show().Row(2));
-	else
-		aui_manager.AddPane(panel, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Comandos")).Right().Hide().Row(2));
+
+	wxAuiPaneInfo info_helper,info_win;
+	info_win.Name(_T("commands")).Caption(_T("Comandos")).Right().Row(2);
+	info_helper.Name(_T("helper_commands")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Row(0);
+	if (config->show_commands) {
+		info_win.Show(); info_helper.Hide();
+	} else {
+		info_win.Hide(); info_helper.Show();
+	}
+	aui_manager.AddPane(commands, info_win);
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_COMMANDS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
 	var_window=new mxVarWindow(this);
-	if (config->show_vars)
-		aui_manager.AddPane(var_window, wxAuiPaneInfo().Name(_T("vars")).Caption(_T("Variables")).Left().Show());
-	else
-		aui_manager.AddPane(var_window, wxAuiPaneInfo().Name(_T("vars")).Caption(_T("Variables")).Left().Hide());
+	wxAuiPaneInfo info_helper,info_win;
+	info_win.Name(_T("vars_panel")).Caption(_T("Variables")).Left().Row(1);
+	info_helper.Name(_T("helper_vars")).CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Row(0);
+	if (config->show_vars) {
+		info_win.Show(); info_helper.Hide();
+	} else {
+		info_win.Hide(); info_helper.Show();
+	}
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_VARS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
+	aui_manager.AddPane(var_window, info_win);
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
 	debug_panel = new mxDebugWindow(this);
-	if (config->show_debug_panel)
-		aui_manager.AddPane(debug_panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Show());
-	else
-		aui_manager.AddPane(debug_panel, wxAuiPaneInfo().Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Hide());
+	wxAuiPaneInfo info_helper,info_win;
+	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Row(1);
+	info_helper.Name(_T("helper_debug")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Row(0);
+	if (config->show_debug_panel) {
+		info_win.Show(); info_helper.Hide();
+	} else {
+		info_win.Hide(); info_helper.Show();
+	}
+	aui_manager.AddPane(debug_panel, info_win);
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_DEBUG,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
@@ -1131,8 +1153,21 @@ void mxMainWindow::OnConfigStepStepM(wxCommandEvent &evt) {
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	if (event.pane->name == _T("toolbar")) mi_toolbar->Check(config->show_toolbar=false);
-	else if (event.pane->name == _T("commands")) mi_commands->Check(config->show_commands=false);
-	else if (event.pane->name == _T("debug_panel")) mi_debug_panel->Check(config->show_debug_panel=false);
+	else if (event.pane->name == _T("commands")) {
+		mi_commands->Check(config->show_commands=false);
+		aui_manager.GetPane("helper_commands").Show();
+		aui_manager.Update();	
+	}
+	else if (event.pane->name == _T("debug_panel")) {
+		mi_debug_panel->Check(config->show_debug_panel=false);
+		aui_manager.GetPane("helper_debug").Show();
+		aui_manager.Update();	
+	}
+	else if (event.pane->name == _T("vars_panel")) { 
+		mi_vars_panel->Check(config->show_vars=false); 
+		aui_manager.GetPane("helper_vars").Show();
+		aui_manager.Update();	
+	}
 }
 
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
@@ -1392,5 +1427,26 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 	event.Skip(); 
 	// para que se actualice la lista de variables
 	if (config->rt_syntax && notebook->GetPageCount()) ((mxSource*)(notebook->GetPage(notebook->GetSelection())))->StartRTSyntaxChecking();
+}
+
+void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
+	mi_vars_panel->Check(true);
+	aui_manager.GetPane(var_window).Show();
+	aui_manager.GetPane("helper_vars").Hide();
+	aui_manager.Update();	
+}
+
+void mxMainWindow::OnHelperDebug (wxCommandEvent & evt) {
+	mi_debug_panel->Check(true);
+	aui_manager.GetPane(debug_panel).Show();
+	aui_manager.GetPane("helper_debug").Hide();
+	aui_manager.Update();	
+}
+
+void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
+	mi_commands->Check(true);
+	aui_manager.GetPane(commands).Show();
+	aui_manager.GetPane("helper_commands").Hide();
+	aui_manager.Update();	
 }
 

@@ -11,7 +11,7 @@ BEGIN_EVENT_TABLE(mxVarWindow,wxPanel)
 	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxVarWindow::OnListClick)
 END_EVENT_TABLE()
 
-mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(100,100)) {
+mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(150,100)) {
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	list =new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxLC_SINGLE_SEL|wxLC_REPORT|wxLC_NO_HEADER|wxLC_HRULES);
 	wxImageList* imglist = new wxImageList(16, 16,true,7);

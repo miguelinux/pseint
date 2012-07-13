@@ -1,4 +1,5 @@
 20120713
+	Se agregaron botones en los márgenes derecho e izquierdo para acceder facilmente a los paneles de Variables, Ejecución Paso a Paso, y Comandos.
 	Correcciones varias en los calculos de tamaños y posiciones en los diagramas Nassi-Schneiderman.
 
 20120712

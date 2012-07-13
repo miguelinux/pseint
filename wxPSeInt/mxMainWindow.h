@@ -142,8 +142,6 @@ public:
 	void HideDesktopTestGrid();
 	void SelectLine(mxSource *src, int line);
 	
-	void StartDebugging(mxSource *source, bool paused);
-	
 	bool SelectFirstError();
 	
 	void SetAccelerators();
@@ -160,6 +158,10 @@ public:
 	void UpdateRealTimeSyntax(); // lo llama rtsyntax despues de reiniciarse
 	
 	mxSource *GetCurrentSource();
+	
+	void OnHelperVars(wxCommandEvent &evt);
+	void OnHelperDebug(wxCommandEvent &evt);
+	void OnHelperCommands(wxCommandEvent &evt);
 	
 	DECLARE_EVENT_TABLE();
 };
