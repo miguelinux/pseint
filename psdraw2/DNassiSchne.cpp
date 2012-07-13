@@ -6,6 +6,8 @@
 #include "Draw.h"
 using namespace std;
 
+static int bk_x0,bk_x1,bk_y0,bk_y1;
+
 static void DrawRectangle(const float *color, int x, int y, int wl, int wr, int h) {
 	glColor3fv(color);
 	glBegin(GL_LINE_LOOP);
@@ -26,6 +28,13 @@ static void DrawSolidRectangle(const float *color, int x, int y, int wl, int wr,
 	glEnd();
 }
 
+static void DrawBackground() {
+	int bk_xm=(bk_x0+bk_x1)/2, bk_w=(bk_x1-bk_x0)/2;
+	DrawSolidRectangle(color_shape,bk_xm,bk_y1,bk_w,bk_w,bk_y1-bk_y0);
+	bk_x0=bk_x1=start->d_x;
+	bk_y0=bk_y1=start->d_y;
+}
+
 static void DrawTextNS(const float *color, int x, int y, string label) {
 	glColor3fv(color);
 	glPushMatrix();
@@ -38,10 +47,16 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 
 void Entity::DrawNassiSchne(bool force) {
 //	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
+	if (this==start) DrawBackground();
 	if (mouse==this) DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
 		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
 			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+	// guardar bb para el gran retangulo blanco de fondo
+	if (d_fy>bk_y1) bk_y1=d_fy;
+	if (d_fy-d_h<bk_y0) bk_y0=d_fy-d_h;
+	if (d_fx-d_bwl<bk_x0) bk_x0=d_fx-d_bwl;
+	if (d_fx+d_bwr>bk_x1) bk_x1=d_fx+d_bwr;
 	if (this==mouse)
 		DrawRectangle(color_shadow,d_dx+fx,d_dy+fy,bwl,bwr,bh);
 	if (!nolink) {
