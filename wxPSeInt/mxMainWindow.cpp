@@ -253,6 +253,7 @@ void mxMainWindow::CreateMenus() {
 	
 	mi_rt_syntax = utils->AddCheckToMenu(cfg,mxID_CONFIG_RT_SYNTAX, _T("Comprobar Sintaxis Mientras Escribe"),_T(""),config->rt_syntax);
 	
+	cfg->AppendSeparator();
 	mi_quickhelp = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
 //	mi_results = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_RESULTS, _T("Mostrar Errores"),_T(""),false);
 	mi_toolbar = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_TOOLBAR, _T("Mostrar Barra de Herramientas"),_T(""),config->show_toolbar);

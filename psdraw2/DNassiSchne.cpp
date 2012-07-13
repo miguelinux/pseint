@@ -177,9 +177,10 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			if (c1r+c1l+c2r+c2l>w)
 				bwl=bwr=(c1r+c1l+c2r+c2l)/2;
 			else  {
-				int dw=(w-c1r+c1l+c2r+c2l)/2;
+				int dw=(w-(c1r+c1l+c2r+c2l))/2;
 				if (child[0]) child[0]->ResizeW(c1r+c1l+dw,false);
 				if (child[1]) child[1]->ResizeW(c2r+c2l+dw,false);
+				c1l+=dw/2; c1r+=dw/2; c2l+=dw/2; c2r+=dw/2;
 			}
 			bh += (c1h>c2h?c1h:c2h);
 			child_bh[0]=c1h; child_bh[1]=c2h;
