@@ -1374,6 +1374,7 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	} else {
 		mi_nassi_schne->Check(true);
 		config->lang.use_nassi_schneiderman=true;
+		wxMessageBox(_T("PSeInt ya puede graficar diagramas de Nassi-Schneiderman, sin embargo algunas operaciones de edición aún no funcionan correctamente."),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 	}
 }
 

@@ -1,3 +1,6 @@
+20120713
+	Correcciones varias en los calculos de tamaños y posiciones en los diagramas Nassi-Schneiderman.
+
 20120712
 	Ahora el interprete determina el tamaño de los arreglos en el preproceso para mostrar en la lista de variables del editor.
 	Ahora el tipo de variable se muestra como ícono en lugar de estar como texto entre paréntesis en el panel de variables.
