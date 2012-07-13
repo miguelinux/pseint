@@ -184,8 +184,14 @@ void Entity::SetLabel(string _label, bool recalc) {
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 	label=_label; GetTextSize(label,t_w,t_h); t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
-	if (recalc) Calculate();
-	if (recalc && parent) parent->Calculate(true);
+	if (recalc) {
+		if (nassi_schneiderman) { 
+			if (start) start->Calculate(); // todo: recalcula demas, parche hasta que analice bien donde esta el problema con el otro metodo
+		} else {
+			Calculate();
+			if (parent) parent->Calculate(true);
+		}
+	}
 }
 
 int Entity::CheckLinkChild(int x, int y) {
@@ -386,9 +392,12 @@ void Entity:: ResizeW(int aw, bool up) {
 		if (child[1]) child[1]->MoveX(dx);
 		child_dx[0]-=dx; child_dx[1]+=dx;
 	} else if (type==ET_SEGUN) {
+		int dx=(aw-old)/2;
+		int dx0=dx-dx/nc;
 		for(int i=0;i<n_child;i++) { 
-			child[i]->MoveX(-child_dx[i]);
-//			child_dx[i]+=dd;
+			int dd=-dx0+2*dx*(i)/nc;
+			child[i]->MoveX(dd);
+			child_dx[i]+=dd;
 		}
 	}
 	if (up && prev) prev->ResizeW(aw,true);

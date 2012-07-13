@@ -66,6 +66,12 @@ void Entity::DrawNassiSchne(bool force) {
 			glVertex2i(px,d_y-5*h/2);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
+			glBegin(GL_LINES);
+			for(int i=0;i<n_child-1;i++) { 
+				glVertex2i(d_x+child_dx[i]+child[i]->bwr,child[i]->d_y-child[i]->d_h);
+				glVertex2i(d_x+child_dx[i]+child[i]->bwr,d_y-d_bh);
+			}
+			glEnd();
 			
 		} else 
 		if (type==ET_SI) {
@@ -134,7 +140,7 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 				child[i]->x=0; child[i]->y=y-2*h;
 				child[i]->Calculate(cwl,cwr,ch);
 				child_bh[i]=ch; child_dx[i]=sw+cwl;
-				sw+=cwl+cwr-2;
+				sw+=cwl+cwr;
 				if (ch>sh) sh=ch;
 			}
 			if (sw>w) w=sw; 
