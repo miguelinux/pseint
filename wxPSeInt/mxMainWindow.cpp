@@ -994,6 +994,7 @@ void mxMainWindow::OnConfigShowCommands(wxCommandEvent &evt) {
 	if (!mi_commands->IsChecked()) {
 		mi_commands->Check(false);
 		aui_manager.GetPane(commands).Hide();
+		aui_manager.GetPane("helper_commands").Show();
 	} else {
 		mi_commands->Check(true);
 		aui_manager.GetPane(commands).Show();
@@ -1007,6 +1008,7 @@ void mxMainWindow::OnConfigShowVars(wxCommandEvent &evt) {
 	if (!mi_vars_panel->IsChecked()) {
 		mi_vars_panel->Check(false);
 		aui_manager.GetPane(var_window).Hide();
+		aui_manager.GetPane("helper_vars").Show();
 	} else {
 		mi_vars_panel->Check(true);
 		aui_manager.GetPane(var_window).Show();
@@ -1019,6 +1021,7 @@ void mxMainWindow::OnConfigShowDebugPanel(wxCommandEvent &evt) {
 	if (!mi_debug_panel->IsChecked()) {
 		mi_debug_panel->Check(false);
 		aui_manager.GetPane(debug_panel).Hide();
+		aui_manager.GetPane("helper_debug").Show();
 	} else {
 		mi_debug_panel->Check(true);
 		aui_manager.GetPane(debug_panel).Show();
