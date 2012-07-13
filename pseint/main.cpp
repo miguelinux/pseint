@@ -192,7 +192,6 @@ int main(int argc, char* argv[]) {
 	
 	// Leer el archivo	
 	char *filename=fil_args[0];
-	char buffer[1024];
 	ifstream archivo(filename);
 	if (!archivo.is_open()) {
 		if (colored_output) setForeColor(COLOR_ERROR);
@@ -212,10 +211,10 @@ int main(int argc, char* argv[]) {
 		if (colored_output) setForeColor(COLOR_INFO);
 		cout<<"Leyendo archivo y comprobando sintaxis...\n";
 	}
+	string buffer;
 	while (!archivo.eof()) {
-		archivo.getline(buffer,256);
+		getline(archivo,buffer);
 		programa.PushBack(buffer);
-//		prog_lines.push_back(0);
 		Inter.AddLine(buffer);
 	}
 	archivo.close();
