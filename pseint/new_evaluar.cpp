@@ -567,7 +567,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 				}
 				if (t1==vt_numerica||t2==vt_numerica) tipo=vt_caracter;
-				if (t1==vt_caracter||t2==vt_caracter) tipo=vt_caracter;
+				else if (t1==vt_caracter||t2==vt_caracter) tipo=vt_caracter;
 				else tipo=vt_caracter_o_numerica;
 				s1 = Evaluar(expresion,p1a,p1b,t1);
 				s2 = Evaluar(expresion,p2a,p2b,t2);
