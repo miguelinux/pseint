@@ -542,7 +542,7 @@ int SynCheck() {
 			SynCheckAux1(cadena);
 			
 			int len = cadena.size();
-			if (LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
+			if (lazy_syntax && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
 			if (LeftCompare(cadena,"BORRAR ")) { cadena="BORRAR"+cadena.substr(7); len--; }
 			// si hay un ; pegado a finalgo puede traer problema
 			comillas=-1;

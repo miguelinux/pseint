@@ -178,8 +178,8 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	CreateMenus();
 	CreateToolbars();
 	CreateVarsPanel();
-	CreateCommandsPanel();
 	CreateDebugControlsPanel();
+	CreateCommandsPanel();
 	CreateDesktopTestGrid();
 	CreateNotebook();
 	CreateResultsTree();
@@ -353,7 +353,7 @@ void mxMainWindow::CreateCommandsPanel() {
 	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,_T("leer.png"),_T("Leer"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,_T("asignar.png"),_T("Asignar"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_SI,_T("si.png"),_T("Si-Entonces"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,_T("segun.png"),_T("Segun"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,_T("segun.png"),_T("Según"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"))->SetToolTip(tt);
@@ -999,7 +999,6 @@ void mxMainWindow::OnConfigShowCommands(wxCommandEvent &evt) {
 		mi_commands->Check(true);
 		aui_manager.GetPane(commands).Show();
 		aui_manager.GetPane("helper_commands").Hide();
-		
 	}
 	aui_manager.Update();	
 }
