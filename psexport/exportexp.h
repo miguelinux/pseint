@@ -343,6 +343,9 @@ string expresion(string exp, tipo_var &tipo){
 			exp.insert(i,"&");
 			i++;
 		}
+		else if (exp[i]=='~'){
+			exp.insert(i,"!");
+		}
 	}
 	return exp;
 }

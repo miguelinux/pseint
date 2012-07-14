@@ -1,3 +1,6 @@
+20120714
+	Ahora se reemplaza correctamente el operador de negación al exportar a C++.
+	
 >>RELEASE 20120713<<
 
 20120713
