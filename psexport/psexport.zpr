@@ -48,7 +48,7 @@ path=../pseint/new_programa.cpp
 cursor=0
 [header]
 path=exportexp.h
-cursor=3849
+cursor=3903
 marker=169
 marker=168
 open=true
@@ -76,13 +76,13 @@ cursor=0
 [header]
 path=../pseint/new_memoria.h
 cursor=3651
-breakpoint=105
+breakpoint=96
+breakpoint_condition=nombre._M_dataplus._M_p[0]>='A'&&nombre._M_dataplus._M_p[0]<='Z'
+breakpoint=100
 breakpoint_condition=nombre._M_dataplus._M_p[0]>='A'&&nombre._M_dataplus._M_p[0]<='Z'
 breakpoint=157
 breakpoint_condition=nombre._M_dataplus._M_p[0]>='A'&&nombre._M_dataplus._M_p<='Z'
-breakpoint=100
-breakpoint_condition=nombre._M_dataplus._M_p[0]>='A'&&nombre._M_dataplus._M_p[0]<='Z'
-breakpoint=96
+breakpoint=105
 breakpoint_condition=nombre._M_dataplus._M_p[0]>='A'&&nombre._M_dataplus._M_p[0]<='Z'
 [other]
 path=../bin/help/cambios.txt

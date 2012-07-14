@@ -1,6 +1,8 @@
+>>RELEASE 20120713<<
+
 20120713
 	Ya no se permite escribir Fin Si, Fin Para, Fin Mientras o Fin Segun separado si no está activada la sintaxis flexible.
-	Corregido un problema dee tipos al concatenar variables de tipo caracter en una asignación.
+	Corregido un problema de tipos al concatenar variables de tipo caracter en una asignación.
 	Se agregaron botones en los márgenes derecho e izquierdo para acceder facilmente a los paneles de Variables, Ejecución Paso a Paso, y Comandos.
 	Correcciones varias en los calculos de tamaños y posiciones en los diagramas Nassi-Schneiderman.
 
