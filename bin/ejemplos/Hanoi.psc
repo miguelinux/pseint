@@ -67,7 +67,7 @@ Proceso Hanoi
 		Escribir "hacia la torre: "{;}
 		leer t2{;}
 		
-		si t1<0 {|} t1>3 {|} t2<0 {|} t2>3 Entonces // controlar que el nro de torre sea valido
+		si t1<1 {|} t1>3 {|} t2<1 {|} t2>3 Entonces // controlar que el nro de torre sea valido
 			Escribir "Movimiento invalido"{;}
 			Esperar Tecla{;}
 		sino

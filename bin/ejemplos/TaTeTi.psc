@@ -27,7 +27,7 @@ Proceso TaTeTi
 	Ganador<-Falso{;}
 	CantTurnos<-0{;}
 	
-	Mientras No Terminado hacer
+	Mientras ~ Terminado hacer
 		
 		// dibuja el tablero
 		Borrar Pantalla{;}
@@ -45,7 +45,7 @@ Proceso TaTeTi
 		Escribir "     7||    8||    9"{;}
 		Escribir " "{;}
 		
-		Si No Ganador y CantTurnos<9 Entonces
+		Si ~ Ganador y CantTurnos<9 Entonces
 			
 			// carga auxiliares segun a qué jugador le toca
 			Si TurnoJugador1 Entonces
@@ -95,7 +95,7 @@ Proceso TaTeTi
 			Si aux_d1=Objetivo o aux_d2=Objetivo Entonces
 				Ganador<-Verdadero{;}
 			Sino
-				TurnoJugador1 <- no TurnoJugador1{;}
+				TurnoJugador1 <- ~ TurnoJugador1{;}
 			FinSi
 			
 		Sino
