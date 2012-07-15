@@ -349,7 +349,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			deep=0;
 			r++;
 			while ( ! ((*r).nombre=="FINSEGUN" && deep==0) ) {
-				if ((*r).nombre=="OPCION") 
+				if (deep==0 && (*r).nombre=="OPCION") 
 					its.insert(its.end(),r);
 				else if ((*r).nombre=="SEGUN") 
 					deep++;
