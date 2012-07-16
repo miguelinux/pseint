@@ -189,32 +189,34 @@ int main(int argc, char* argv[]) {
 		cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
 		memoria->ListVars();
 		cout<<"<!{[END_OF_VARS]}!>"<<endl;
-		int n=programa.GetInstSize();
-		int *bk=new int[lcount], *st=new int[n+1], stn=0;
-		for(int i=0;i<=n;i++) bk[i]=-1;
-		for(int i=0;i<n;i++) { 
-			Instruccion &in=programa[i];
-//			cout<<"** "<<i<<" "<<in.instruccion<<" **"<<endl;
-			if (
-				LeftCompare(in.instruccion,"SI ") ||
-				LeftCompare(in.instruccion,"PARA ") ||
-				LeftCompare(in.instruccion,"MIENTRAS ") ||
-				LeftCompare(in.instruccion,"SEGUN ") ||
-				in.instruccion=="REPETIR")
-				st[stn++]=in.num_linea;
-			else if (stn&& (
-				in.instruccion=="FINSI" ||
-				in.instruccion=="FINMIENTRAS" ||
-				in.instruccion=="FINSEGUN" ||
-				in.instruccion=="FINPARA" ||
-				LeftCompare(in.instruccion,"HASTA QUE ")||
-				LeftCompare(in.instruccion,"MIENTRAS QUE ")))
-				bk[st[--stn]]=in.num_linea;
+		if (lcount) {
+			int n=programa.GetInstSize();
+			int *bk=new int[lcount], *st=new int[n+1], stn=0;
+			for(int i=0;i<lcount;i++) bk[i]=-1;
+			for(int i=0;i<n;i++) { 
+				Instruccion &in=programa[i];
+	//			cout<<"** "<<i<<" "<<in.instruccion<<" **"<<endl;
+				if (
+					LeftCompare(in.instruccion,"SI ") ||
+					LeftCompare(in.instruccion,"PARA ") ||
+					LeftCompare(in.instruccion,"MIENTRAS ") ||
+					LeftCompare(in.instruccion,"SEGUN ") ||
+					in.instruccion=="REPETIR")
+					st[stn++]=in.num_linea;
+				else if (stn&& (
+					in.instruccion=="FINSI" ||
+					in.instruccion=="FINMIENTRAS" ||
+					in.instruccion=="FINSEGUN" ||
+					in.instruccion=="FINPARA" ||
+					LeftCompare(in.instruccion,"HASTA QUE ")||
+					LeftCompare(in.instruccion,"MIENTRAS QUE ")))
+					bk[st[--stn]]=in.num_linea;
+			}
+			for(int i=0;i<lcount;i++) { 
+				if (bk[i]!=-1) cout<<i<<" "<<bk[i]<<endl;
+			}
+			delete []bk; delete []st;
 		}
-		for(int i=0;i<n;i++) { 
-			if (bk[i]!=-1) cout<<i<<" "<<bk[i]<<endl;
-		}
-		delete []bk; delete []st;
 		cout<<"<!{[END_OF_BLOCKS]}!>"<<endl;
 	}
 	

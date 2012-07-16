@@ -1198,6 +1198,7 @@ void mxSource::ClearBlocks ( ) {
 }
 
 void mxSource::AddBlock (int l1, int l2) {
+	if (l1<0||l2<0) return;
 	while (blocks.GetCount()<=l1) blocks.Add(-1);
 	blocks[l1]=l2;
 	while (blocks_reverse.GetCount()<=l2) blocks_reverse.Add(-1);

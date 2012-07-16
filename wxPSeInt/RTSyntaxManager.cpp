@@ -75,9 +75,8 @@ bool RTSyntaxManager::Process (mxSource * src) {
 				var_window->Add(line.BeforeFirst(' '),line.Last());
 			} else {
 				long l1,l2;
-				line.BeforeFirst(' ').ToLong(&l1);
-				line.AfterFirst(' ').ToLong(&l2);
-				src->AddBlock(l1-1,l2-1);
+				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 
+					src->AddBlock(l1-1,l2-1);
 			}
 				
 		} else {
