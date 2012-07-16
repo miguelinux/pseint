@@ -179,8 +179,9 @@ int main(int argc, char* argv[]) {
 		memoria->HardReset();
 		programa.HardReset();
 		string line;
+		int lcount=0;
 		while (true) {
-			getline(cin,line);
+			getline(cin,line); lcount++;
 			if (line=="<!{[END_OF_INPUT]}!>") break;
 			programa.PushBack(line);
 		}
@@ -189,7 +190,7 @@ int main(int argc, char* argv[]) {
 		memoria->ListVars();
 		cout<<"<!{[END_OF_VARS]}!>"<<endl;
 		int n=programa.GetInstSize();
-		int *bk=new int[n+1], *st=new int[n+1], stn=0;
+		int *bk=new int[lcount], *st=new int[n+1], stn=0;
 		for(int i=0;i<=n;i++) bk[i]=-1;
 		for(int i=0;i<n;i++) { 
 			Instruccion &in=programa[i];
