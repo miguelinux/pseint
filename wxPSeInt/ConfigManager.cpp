@@ -76,6 +76,7 @@ void ConfigManager::LoadDefaults() {
 	lang.lazy_syntax = true;
 	lang.word_operators = true;
 	autocomp = true;
+	highlight_blocks = true;
 	autoclose = true;
 	calltip_helps = true;
 	auto_quickhelp = true;
@@ -152,6 +153,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("show_toolbar="))<<(show_toolbar?1:0));
 	fil.AddLine(wxString(_T("calltip_helps="))<<(calltip_helps?1:0));
 	fil.AddLine(wxString(_T("autocomp="))<<(autocomp?1:0));
+	fil.AddLine(wxString(_T("highlight_blocks="))<<(highlight_blocks?1:0));
 	fil.AddLine(wxString(_T("autoclose="))<<(autoclose?1:0));
 	fil.AddLine(wxString(_T("auto_quickhelp="))<<(auto_quickhelp?1:0));
 	fil.AddLine(wxString(_T("use_colors="))<<(use_colors?1:0));
@@ -223,6 +225,7 @@ void ConfigManager::Read() {
 			else if (key==_T("auto_quickhelp")) auto_quickhelp=utils->IsTrue(value);
 			else if (key==_T("calltip_helps")) calltip_helps=utils->IsTrue(value);
 			else if (key==_T("autocomp")) autocomp=utils->IsTrue(value);
+			else if (key==_T("highlight_blocks")) highlight_blocks=utils->IsTrue(value);
 			else if (key==_T("autoclose")) autoclose=utils->IsTrue(value);
 //			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);

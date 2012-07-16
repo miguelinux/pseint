@@ -86,6 +86,7 @@ public:
 	bool show_debug_panel;
 	bool auto_quickhelp;
 	bool autocomp;
+	bool highlight_blocks;
 	bool autoclose;
 	bool calltip_helps;
 	bool rt_syntax;

@@ -647,7 +647,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 		HideCalltip(true,false);
 	}
 	if (blocks_markers.GetCount()) UnHighLightBlock(); 
-	if (!rt_timer->IsRunning()) HighLightBlock();
+	if (config->highlight_blocks && !rt_timer->IsRunning()) HighLightBlock();
 }
 
 void mxSource::UnHighLightBlock() {
