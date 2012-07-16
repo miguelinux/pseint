@@ -1,4 +1,10 @@
 20120714
+	Ahora se resaltan las lineas que componen un bloque lógico (una estructura Si/Para/Mientras/Repetir/Segun) en el editor de pseudocódigo al posicionar el cursor de texto sobra su primer o última linea.
+
+20120715
+	Corregido el problema con las estructuras Segun anidadas al exportar a C++.
+	
+20120714
 	Ahora se reemplaza correctamente el operador de negación al exportar a C++.
 	
 >>RELEASE 20120713<<

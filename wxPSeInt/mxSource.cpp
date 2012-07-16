@@ -81,10 +81,11 @@ static int comp_count=-1;
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
+	
 	flow=NULL;
 	input=NULL;
 	socket=NULL;
-	do_rt_syntax_checking=config->rt_syntax;
 	
 	page_text=ptext;
 	
@@ -184,6 +185,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
 	MarkerDefine(2,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
 	MarkerDefine(3,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
+	MarkerDefine(4,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
 	debug_line=-1;
 	
 	SetDropTarget(new mxDropTarget());
@@ -644,6 +646,28 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	} else {
 		HideCalltip(true,false);
 	}
+	if (blocks_markers.GetCount()) UnHighLightBlock(); 
+	if (!rt_timer->IsRunning()) HighLightBlock();
+}
+
+void mxSource::UnHighLightBlock() {
+	if (blocks_markers.GetCount()) {
+		for(int i=0;i<blocks_markers.GetCount();i++) MarkerDeleteHandle(blocks_markers[i]);
+		blocks_markers.Clear();
+	}
+}
+
+void mxSource::HighLightBlock() {
+	unsigned int l=GetCurrentLine(), nl=GetLineCount();
+	if (blocks.GetCount()>l && blocks[l]!=-1) {
+		for(int i=l;i<=blocks[l];i++)
+			if (i>=0 && i<nl) 
+				blocks_markers.Add(MarkerAdd(i,4));
+	} else if (blocks_reverse.GetCount()>l && blocks_reverse[l]!=-1) {
+		for(int i=blocks_reverse[l];i<=l;i++)
+			if (i>=0 && i<nl) 
+				blocks_markers.Add(MarkerAdd(i,4));
+	}
 }
 
 void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
@@ -1070,22 +1094,20 @@ void mxSource::MarkError(int l, int i, wxString str, bool special) {
 }
 
 void mxSource::StartRTSyntaxChecking ( ) {
-	do_rt_syntax_checking=true;
 	rt_timer->Start(RT_DELAY,true);
 }
 
 void mxSource::StopRTSyntaxChecking ( ) {
-	do_rt_syntax_checking=false;
-	rt_timer->Stop(); ClearErrors();
+	rt_timer->Stop(); ClearErrors(); ClearBlocks(); UnHighLightBlock();
 }
 
 void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
 	if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
-	DoRealTimeSyntax();
+	DoRealTimeSyntax(); HighLightBlock();
 }
 
 void mxSource::OnChange(wxStyledTextEvent &event) {
-	if (do_rt_syntax_checking) rt_timer->Start(RT_DELAY,true);
+	if (config->rt_syntax) { rt_timer->Start(RT_DELAY,true); }
 	event.Skip();
 }
 
@@ -1165,3 +1187,20 @@ void mxSource::HighLight(wxString words) {
 	SetKeyWords(3,words.Lower());
 	Colourise(0,GetLength());
 }
+
+void mxSource::ClearBlocks ( ) {
+	for(int i=0;i<blocks.GetCount();i++) { 
+		blocks[i]=-1;
+	}
+	for(int i=0;i<blocks_reverse.GetCount();i++) { 
+		blocks_reverse[i]=-1;
+	}
+}
+
+void mxSource::AddBlock (int l1, int l2) {
+	while (blocks.GetCount()<=l1) blocks.Add(-1);
+	blocks[l1]=l2;
+	while (blocks_reverse.GetCount()<=l2) blocks_reverse.Add(-1);
+	blocks_reverse[l2]=l1;
+}
+

@@ -1306,13 +1306,12 @@ void mxMainWindow::OnViewNotebookPrev(wxCommandEvent &evt){
 }
 
 void mxMainWindow::OnDoThat (wxCommandEvent &event) {
-	IF_THERE_IS_SOURCE CURRENT_SOURCE->StartRTSyntaxChecking();
-//	LangSettings old=config->lang;
-//	new mxConfig(this);
-//	if (config->lang!=old) {
-//		config->profile=_T("<personalizado>");
-//		SetWordsForSources();
-//	}
+	LangSettings old=config->lang;
+	new mxConfig(this);
+	if (config->lang!=old) {
+		config->profile=_T("<personalizado>");
+		SetWordsForSources();
+	}
 }
 
 void mxMainWindow::OnFilePrint (wxCommandEvent &event) {

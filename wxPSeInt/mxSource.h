@@ -30,8 +30,7 @@ private:
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
 	wxString page_text;
 	wxArrayString rt_errors;
-	wxTimer *rt_timer;
-	bool do_rt_syntax_checking;
+	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
 	
 public:
 	mxInputDialog *input;
@@ -113,6 +112,14 @@ public:
 	void TryToAutoCloseSomething(int l);
 	
 	void HighLight(wxString words);
+	
+	wxArrayInt blocks; // blocks[l1]=l2 guarda un bloque que va de l1 a l2
+	wxArrayInt blocks_reverse; // blocks_reverse[l1]=l2 guarda un bloque que va de l2 a l1
+	wxArrayInt blocks_markers; // arreglo de handlers de los markers insertados para resaltar un bloque
+	void ClearBlocks(); // borra las listas de bloques (blocks y blocks_reverse)
+	void AddBlock(int l1, int l2); // registra un bloque que va desde l1 a l2 en blocks y blocks_reverse, lo llama el rt_syntax)
+	void UnHighLightBlock(); // borra el resaltado
+	void HighLightBlock(); // resalta el bloque de la linea actual si es que hay y el rt_syntax no tiene trabajo pendiente
 	
 	DECLARE_EVENT_TABLE();
 };

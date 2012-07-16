@@ -48,7 +48,8 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	}
 	output<<"<!{[END_OF_INPUT]}!>\n";
 	src->ClearErrors();
-	bool fase_one=true;
+	src->ClearBlocks();
+	int fase_num=0;
 	var_window->BeginInput();
 	while (true) {
 		wxString line; char c;
@@ -59,18 +60,26 @@ bool RTSyntaxManager::Process (mxSource * src) {
 		}
 		if (line.Len()) {
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
-				fase_one=false;
+				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
+				fase_num=2;
+			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				break;
-			} else if (fase_one) {
+			} else if (fase_num==0) {
 				long l=-1,i=-1;
 				line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
 				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
 				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
 				src->MarkError(l-1,i-1,line,line.StartsWith("Falta cerrar "));
-			} else {
+			} else if (fase_num==1) {
 				var_window->Add(line.BeforeFirst(' '),line.Last());
+			} else {
+				long l1,l2;
+				line.BeforeFirst(' ').ToLong(&l1);
+				line.AfterFirst(' ').ToLong(&l2);
+				src->AddBlock(l1-1,l2-1);
 			}
+				
 		} else {
 			wxYield();
 			if (!the_one||the_one->id!=mid) return false;

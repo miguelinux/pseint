@@ -34,11 +34,11 @@ cursor=1669
 [source]
 path=ConfigManager.cpp
 cursor=2550
-marker=36
 marker=100
+marker=36
 [source]
 path=mxSource.cpp
-cursor=28700
+cursor=25594
 open=true
 [source]
 path=mxProcess.cpp

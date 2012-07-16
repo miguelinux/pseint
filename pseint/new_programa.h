@@ -39,6 +39,7 @@ public:
 	void PushBack(string inst) { v.push_back(Instruccion(inst,++cant_lines,1)); }
 	void Erase(int i) { v.erase(v.begin()+i); cant_lines--; }
 	int GetSize() { return cant_lines; }
+	int GetInstSize() { return v.size(); }
 	Instruccion GetLoc(int x, string s) { return Instruccion(s,v[x].num_linea,v[x].num_instruccion); }
 	void HardReset() { v.clear(); cant_lines=0; }
 };
