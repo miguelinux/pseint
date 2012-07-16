@@ -213,6 +213,7 @@ int main(int argc, char* argv[]) {
 		for(int i=0;i<n;i++) { 
 			if (bk[i]!=-1) cout<<i<<" "<<bk[i]<<endl;
 		}
+		delete []bk; delete []st;
 		cout<<"<!{[END_OF_BLOCKS]}!>"<<endl;
 	}
 	
