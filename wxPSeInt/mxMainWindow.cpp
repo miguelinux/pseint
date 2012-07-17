@@ -202,6 +202,7 @@ void mxMainWindow::OnFileSourceHistory (wxCommandEvent &event) {
 }
 
 mxMainWindow::~mxMainWindow() {
+	RTSyntaxManager::Stop();
 	aui_manager.UnInit();
 }
 
