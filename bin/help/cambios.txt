@@ -1,4 +1,7 @@
+>>RELEASE 20120724<<
+
 20120716
+	Ahora se cierra correctamente el subproceso que realiza la verificación de sintaxis en tiempo real, y se corrigió además un problema grave con el manejo de memoria.
 	Corregido el problema por el cual no se insertaba automáticamente la palabra "FinMientras" luego de abrir un bucle Mientras en el editor de pseudocódigo.
 	Ahora se resaltan las lineas que componen un bloque lógico (una estructura Si/Para/Mientras/Repetir/Segun) en el editor de pseudocódigo al posicionar el cursor de texto sobra su primer o última linea.
 
