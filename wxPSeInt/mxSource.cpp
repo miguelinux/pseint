@@ -38,6 +38,8 @@ const wxChar* mxSourceWords2 =
 //const wxChar* mxSourceWords3 = 
 //	_T("hacer entonces para ");
 
+enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK};
+
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
@@ -181,11 +183,11 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	IndicatorSetForeground (1, 0x005555);
 	IndicatorSetForeground (2, 0x004499);
 	
-	MarkerDefine(0,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
-	MarkerDefine(1,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
-	MarkerDefine(2,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
-	MarkerDefine(3,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
-	MarkerDefine(4,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
+	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
+	MarkerDefine(MARKER_DEBUG_RUNNING_BACK,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
+	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
+	MarkerDefine(MARKER_DEBUG_PAUSE_BACK,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
+	MarkerDefine(MARKER_BLOCK_HIGHLIGHT,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
 	debug_line=-1;
 	
 	SetDropTarget(new mxDropTarget());
@@ -662,11 +664,11 @@ void mxSource::HighLightBlock() {
 	if (blocks.GetCount()>l && blocks[l]!=-1) {
 		for(int i=l;i<=blocks[l];i++)
 			if (i>=0 && i<nl) 
-				blocks_markers.Add(MarkerAdd(i,4));
+				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
 	} else if (blocks_reverse.GetCount()>l && blocks_reverse[l]!=-1) {
 		for(int i=blocks_reverse[l];i<=l;i++)
 			if (i>=0 && i<nl) 
-				blocks_markers.Add(MarkerAdd(i,4));
+				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
 	}
 }
 
@@ -975,8 +977,8 @@ void mxSource::SetDebugPause() {
 	if (debug_line!=-1) {
 		MarkerDeleteHandle(debug_line_handler_1);
 		MarkerDeleteHandle(debug_line_handler_2);
-		debug_line_handler_1=MarkerAdd(debug_line,2);
-		debug_line_handler_2=MarkerAdd(debug_line,3);
+		debug_line_handler_1=MarkerAdd(debug_line,MARKER_DEBUG_PAUSE_ARROW);
+		debug_line_handler_2=MarkerAdd(debug_line,MARKER_DEBUG_PAUSE_BACK);
 	}
 }
 
@@ -986,8 +988,8 @@ void mxSource::SetDebugLine(int l, int i) {
 		MarkerDeleteHandle(debug_line_handler_2);
 	}
 	if ((debug_line=l)!=-1) {
-		debug_line_handler_1=MarkerAdd(l,0);
-		debug_line_handler_2=MarkerAdd(l,1);
+		debug_line_handler_1=MarkerAdd(l,MARKER_DEBUG_RUNNING_ARROW);
+		debug_line_handler_2=MarkerAdd(l,MARKER_DEBUG_RUNNING_BACK);
 		EnsureVisibleEnforcePolicy(l);
 		if (i!=-1) SelectInstruccion(l,i);
 	}
