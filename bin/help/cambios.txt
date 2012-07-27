@@ -1,4 +1,4 @@
->>RELEASE 20120724<<
+>>RELEASE 20120716<<
 
 20120716
 	Ahora se cierra correctamente el subproceso que realiza la verificación de sintaxis en tiempo real, y se corrigió además un problema grave con el manejo de memoria.

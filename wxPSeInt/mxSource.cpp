@@ -503,7 +503,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				SetCurrentPos(p2);
 			}
 		}
-	}
+	} else if (chr==';' && GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRINGEOL) HideCalltip(false,true);
 	if (config->calltip_helps && (chr==' ' || chr=='\n' || chr=='\t' || chr=='\r')) {
 		int p = GetCurrentPos()-1;
 		while (p>0 && (GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
