@@ -933,10 +933,7 @@ int SynCheck() {
 							str=cadena;
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
-							if (Lerrores==errores) 
-								EvaluarSC(str,tipo);
-//							if (tipo<'c')
-//							{ ExpError(tipo,0); errores++;}
+							if (Lerrores==errores) EvaluarSC(str,tipo);
 							tmp3=tmp1+1;
 						}
 					}
@@ -953,7 +950,7 @@ int SynCheck() {
 					else if (RightCompare(cadena," MILISEGUNDOS;")) str.erase(str.size()-14);
 					else if (RightCompare(cadena," MILISEGUNDO;")) str.erase(str.size()-13);
 					else {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
-					EvaluarSC(str,tipo);
+					EvaluarSC(str,tipo,vt_numerica);
 					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
 						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (120,"Se esperaba una sola expresión."); errores++;}
 					}
@@ -1013,7 +1010,7 @@ int SynCheck() {
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
 									{SynError (61,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) res_eval=EvaluarSC(str2,tipo);
+									if (Lerrores==errores) res_eval=EvaluarSC(str2,tipo,vt_numerica);
 									if (tipo!=vt_error&&!tipo.cb_num) {
 										{SynError (62,"No coinciden los tipos."); errores++;}
 										dims[idims]=-1;
@@ -1088,7 +1085,7 @@ int SynCheck() {
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) EvaluarSC(str2,tipo);
+									if (Lerrores==errores) EvaluarSC(str2,tipo,vt_numerica);
 									if (tipo!=vt_error&&!tipo.cb_num)
 										{SynError (154,"No coinciden los tipos."); errores++;}
 									str.erase(0,str2.size()+1);
@@ -1125,7 +1122,7 @@ int SynCheck() {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
 							if (!CheckVariable(str,74)) errores++; else {
 								memoria->DefinirTipo(str,vt_numerica); // para que aparezca en la lista de variables
-								if (Lerrores==errores) EvaluarSC(str,tipo);
+								if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
 								if (!tipo.cb_num)
 									{SynError (76,"No coinciden los tipos."); errores++;}
 								str=cadena;
@@ -1160,13 +1157,11 @@ int SynCheck() {
 										str.erase(0,7); str.erase(str.size()-6,6);
 										if (str.find(" ",0)<0 || str.find(" ",0)>str.size()) {
 											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-											if (!tipo.cb_num)
-												{SynError (80,"No coinciden los tipos."); errores++;}
+											if (!tipo.cb_num) {SynError (80,"No coinciden los tipos."); errores++;}
 										} else {
 											str.erase(str.find(" ",0),str.size()-str.find(" ",0));
 											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-											if (!tipo.cb_num)
-												{SynError (81,"No coinciden los tipos."); errores++;}
+											if (!tipo.cb_num) {SynError (81,"No coinciden los tipos."); errores++;}
 											str=cadena; // comprobar con paso
 											str.erase(0,str.find("HASTA",6)+6);
 											str.erase(0,str.find(" ",0)+1);
@@ -1176,8 +1171,7 @@ int SynCheck() {
 											else {
 												str.erase(0,9);
 												EvaluarSC(str,tipo,vt_numerica);
-												if (!tipo.cb_num)
-													{SynError (84,"No coinciden los tipos."); errores++;}
+												if (!tipo.cb_num) {SynError (84,"No coinciden los tipos."); errores++;}
 											}
 										}
 									}
@@ -1216,7 +1210,7 @@ int SynCheck() {
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',p+1))!=-1) {
 					tipo=vt_caracter_o_numerica;
-					EvaluarSC(cadena.substr(i,p-i-1),tipo);
+					EvaluarSC(cadena.substr(i,p-i-1),tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
 					if (!tipo.cb_num&&(!tipo.cb_car||!lazy_syntax))
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
@@ -1279,9 +1273,8 @@ int SynCheck() {
 						}
 				}
 				tipo=vt_logica;
-				if (Lerrores==errores) EvaluarSC(str,tipo);
-				if (!tipo.cb_log) /// porque estaba comentado este if?????
-						{ SynError (92,"No coinciden los tipos."); errores++; }
+				if (Lerrores==errores) EvaluarSC(str,tipo,vt_logica);
+				if (!tipo.cb_log) { SynError (92,"No coinciden los tipos."); errores++; }
 			}
 			if (instruccion=="HASTA QUE "||instruccion=="MIENTRAS QUE "){  // ------------ HASTA QUE -----------//
 				if (cadena=="HASTA QUE"||cadena=="MIENTRAS QUE")
@@ -1301,12 +1294,8 @@ int SynCheck() {
 						str=str.substr(0,str.size()-1);
 						cadena=cadena.substr(0,cadena.size()-1);
 					}
-					if (Lerrores==errores) EvaluarSC(str,tipo);
-	//				if (!tipo.cb_log)
-	////					if (tipo<'c')
-	////					{ ExpError(tipo,0); errores++;}
-	////					else
-	//						{ SynError (95,"No coinciden los tipos."); errores++; }
+					if (Lerrores==errores) EvaluarSC(str,tipo,vt_logica);
+					if (!tipo.cb_log) { SynError (95,"No coinciden los tipos."); errores++; }
 				}
 			}
 			if (instruccion=="SEGUN "){  // ------------ SEGUN -----------//
@@ -1330,12 +1319,8 @@ int SynCheck() {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|')
 								{SynError (98,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (Lerrores==errores) EvaluarSC(str,tipo);
-						if (!tipo.cb_num)
-//							if (tipo<'c')
-//							{ ExpError(tipo,0); errores++;}
-//							else
-								{ SynError (100,"No coinciden los tipos."); errores++; }
+						if (Lerrores==errores) EvaluarSC(str,tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
+						if (!tipo.cb_num&&!lazy_syntax) { SynError (100,"No coinciden los tipos."); errores++; }
 					}
 			}
 			if (instruccion=="MIENTRAS ") { // ------------ MIENTRAS -----------//
@@ -1370,12 +1355,8 @@ int SynCheck() {
 								}
 						}
 						if (Lerrores==errores) {
-							EvaluarSC(str,tipo);
-							if (tipo!=vt_error && !tipo.cb_log)
-//							if (tipo<'c')
-//							{ ExpError(tipo,0); errores++;}
-//							else
-								{ SynError (104,"No coinciden los tipos."); errores++; }
+							EvaluarSC(str,tipo,vt_logica);
+							if (tipo!=vt_error && !tipo.cb_log) { SynError (104,"No coinciden los tipos."); errores++; }
 						}
 					}
 			}

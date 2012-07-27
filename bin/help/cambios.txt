@@ -1,3 +1,6 @@
+20120727
+	Se mejoró la forma en que se aplican los tipos a las variables en las estructuras de control durante el preproceso.
+	
 >>RELEASE 20120716<<
 
 20120716
