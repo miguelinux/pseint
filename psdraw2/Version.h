@@ -1,6 +1,6 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define VERSION 20120713
+#define VERSION 20120825
 
 #endif

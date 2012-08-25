@@ -292,7 +292,8 @@ static void keyboard_cb(unsigned char key, int x, int y) {
 		if (key==27) Salir();
 		return;
 	} else {
-		if (glutGetModifiers()==GLUT_ACTIVE_ALT||glutGetModifiers()==GLUT_ACTIVE_SHIFT|GLUT_ACTIVE_ALT) {
+		if (glutGetModifiers()&GLUT_ACTIVE_CTRL) return;
+		if (glutGetModifiers()&GLUT_ACTIVE_ALT) {
 			if (key=='a'||key=='A'||key=='e'||key=='E'||key=='i'||key=='I'||key=='o'||key=='O'||key=='u'||key=='U')
 				edit->EditLabel(180);
 			if (key=='n') { edit->EditLabel('ñ'); return; }
