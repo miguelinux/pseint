@@ -1,3 +1,14 @@
+>>RELEASE 20120825<<
+
+20120825
+	Corregido el problema de los acentos y eñes en el editor de diagramas de flujo.
+	
+20120824
+	Se agregó el prefil UNINORTE para la Universidad del Norte (Barranquilla, Colombia).
+
+20120815
+	Se agregó el prefil InstMacedoMartinez para el Instituto Macedo Martinez (Formosa, Argentina).
+	
 20120727
 	Se mejoró la forma en que se aplican los tipos a las variables en las estructuras de control durante el preproceso.
 	
