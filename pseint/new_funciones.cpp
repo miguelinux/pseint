@@ -7,11 +7,14 @@
 using namespace std;
 
 map<string,funcion> funciones;
+map<string,funcion> subprocesos;
 
 funcion* EsFuncion(const string nombre) {
-	map<string,funcion>::iterator it_func = funciones.find(nombre);
-	if (it_func==funciones.end()) return NULL;
-	else return &(it_func->second);
+	map<string,funcion>::iterator it_func = subprocesos.find(nombre);
+	if (it_func!=subprocesos.end()) return &(it_func->second);
+	it_func = funciones.find(nombre);
+	if (it_func!=funciones.end()) return &(it_func->second);
+	return NULL;
 }
 
 string func_rc(string *arg) {
@@ -156,3 +159,4 @@ void LoadFunciones(bool u) {
 		funciones[u?"CONCATENAR":"concatenar"]=funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
 	}
 }
+

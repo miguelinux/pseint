@@ -101,6 +101,10 @@ int main(int argc, char* argv[]) {
 				undef_vars=false;
 			else if (str=="--forcedotandcomma")
 				force_dot_and_comma=true;
+			else if (str=="--hidetringfunctions")
+				enable_string_functions=false;
+			else if (str=="--hidetringfunctions")
+				enable_string_functions=false;
 			else if (str=="--coloquialconditions")
 				coloquial_conditions=word_operators=true;
 			else if (str=="--fixwincharset")
@@ -148,6 +152,8 @@ int main(int argc, char* argv[]) {
 		cout<<"      --coloquialconditions  permite condiciones en lenguaje coloquial (ej: \"x es par\")"<<endl;
 		cout<<"      --delay=<num>          define el retardo entre instrucciones para la ejecucion paso a paso"<<endl;
 		cout<<"      --forcevardefinition   obliga a definir explicitamente los tipos de variable"<<endl;
+		cout<<"      --hidestringfunctions  deshabilitar funciones para el manejo de cadenas (ej: longitud(x), subcadena(x,i,j))"<<endl;
+		cout<<"      --disableuserfunctions no permitir la definición de subprocesos"<<endl;
 		cout<<"      --port=<num>           define el puerto tpc para comunicar controlar la depuracion"<<endl;
 		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
 		cout<<"      --noinput              en lugar realizar las lecturas desde el teclado, lo hace desde los argumentos"<<endl;
@@ -178,6 +184,7 @@ int main(int argc, char* argv[]) {
 	if (real_time_syntax) while (true) {
 		memoria->HardReset();
 		programa.HardReset();
+		subprocesos.clear();
 		string line;
 		int lcount=0;
 		while (true) {
@@ -195,7 +202,6 @@ int main(int argc, char* argv[]) {
 			for(int i=0;i<lcount;i++) bk[i]=-1;
 			for(int i=0;i<n;i++) { 
 				Instruccion &in=programa[i];
-	//			cout<<"** "<<i<<" "<<in.instruccion<<" **"<<endl;
 				if (
 					LeftCompare(in.instruccion,"SI ") ||
 					LeftCompare(in.instruccion,"PARA ") ||
@@ -278,7 +284,7 @@ int main(int argc, char* argv[]) {
 			memoria->FakeReset();
 			Inter.SetStarted();
 			if (programa.GetSize()==4) checksum(programa[2].instruccion);
-			Ejecutar(2,programa.GetSize()-2);
+			Ejecutar(EsFuncion("<main>")->line_start);
 			Inter.SetFinished();
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {

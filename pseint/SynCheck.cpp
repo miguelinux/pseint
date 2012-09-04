@@ -6,6 +6,7 @@
 #include "new_evaluar.h"
 #include "intercambio.h"
 #include "new_programa.h"
+#include "new_funciones.h"
 using namespace std;
 
 static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
@@ -504,17 +505,50 @@ static bool LeftCompareFix(string &s, string e) {
 	return s[le]==' ';
 }
 
+void InformUnclosedLoops(stack<Instruccion> &bucles, int &errores) {
+	// Controlar Cierre de Bucles
+	while (!bucles.empty())	{
+		if (bucles.top()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="SI") {SynError (117,"Falta cerrar SI.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="PROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar PROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (bucles.top()=="SUBPROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar SUBPROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		bucles.pop();
+	}
+}
+
+string NextToken(string &cadena, int &p) {
+	int l=cadena.size();
+	while (p<l && (cadena[p]==' ' || cadena[p]=='\t')) p++;
+	if (p==l) return "";
+	int p1=p;
+	if (cadena[p]>='A'&&cadena[p]<='Z') {
+		while (p<l && ( (cadena[p]>='A'&&cadena[p]<='Z') || cadena[p]=='_') ) p++;
+	} else if (cadena[p]==')') {
+		p++; return ")";
+	} else if (cadena[p]=='(') {
+		p++; return "(";
+	} else {
+		while (p<l && !(cadena[p]>='A'&&cadena[p]<='Z') && cadena[p]!=' ' && cadena[p]!='_' && cadena[p]!='\t' && cadena[p]!=')' && cadena[p]!='(') p++;
+	}
+	return cadena.substr(p1,p-p1);
+}
+
 //-------------------------------------------------------------------------------------------
 // ********************* Checkear la Correcta Sintaxis del Archivo **************************
 //-------------------------------------------------------------------------------------------
 int SynCheck() {
+	queue<string> arguments; // para guardar los nombres de argumentos de funciones
 	SynErrores=0;
 	programa.PushBack("");
 	programa.Insert(0,"");
 	stack <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
 	bucles.push(Instruccion("CHECK",1,1));
 	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
-	int flag_pyc=0, tmp ,Proceso=0;
+	int flag_pyc=0, tmp;
+	bool in_process=false, process_seen=false;
 	tipo_var tipo;
 	string cadena, instruccion, str;
 	
@@ -650,7 +684,10 @@ int SynCheck() {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
-				if (!Proceso) bucles.push(programa.GetLoc(x,"PROCESO"));
+//				if (!in_process) bucles.push(programa.GetLoc(x,"PROCESO"));
+			} else if (enable_user_functions && LeftCompare(cadena,"SUBPROCESO ")) {
+				instruccion="SUBPROCESO "; cadena.erase(0,11);
+//				if (!in_process) bucles.push(programa.GetLoc(x,"SUBPROCESO"));
 			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"SINO ")) {
@@ -693,6 +730,8 @@ int SynCheck() {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
+			} else if (enable_user_functions && LeftCompare(cadena,"FINSUBPROCESO ")) {
+				instruccion="FINSUBPROCESO "; cadena.erase(0,14);
 			} else if (LeftCompare(cadena,"REPETIR ")) {
 				instruccion="REPETIR "; cadena.erase(0,8);
 			} else if (lazy_syntax && LeftCompare(cadena,"HACER ")) {
@@ -829,26 +868,84 @@ int SynCheck() {
 			ReplaceIfFound(cadena," PASO-"," PASO -");
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
-			if (Proceso==0) {
-				if (cadena=="PROCESO")
-				{SynError (40,"Falta nombre de proceso."); errores++; Proceso=1;}
-				else
-					if (LeftCompare(cadena,"PROCESO ")) {
-						if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
-						Proceso=1; // Indica el comienzo
-					} else
-						if (cadena!="") {
-							SynError (42,"Se esperaba PROCESO <nombre>."); errores++; Proceso=1;
-							bucles.push(programa.GetLoc(x,"PROCESO"));
+			if (instruccion=="SUBPROCESO "|| instruccion=="PROCESO ") {
+				funcion the_func(x+1);
+				int p=0; NextToken(cadena,p);
+				if (in_process) InformUnclosedLoops(bucles,errores);
+				bool sub=instruccion[0]=='S'; in_process=true;
+				bucles.push(programa.GetLoc(x,sub?"SUBPROCESO":"PROCESO"));
+				// parsear nombre y valor de retorno
+				string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
+				if (tok=="="||tok=="<-") { // si estaba el igual, lo que se extrajo es el valor de retorno
+					if (!sub) { SynError (999,"El proceso principal no puede retornar ningun valor."); errores++; }
+					the_func.nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
+					if (!CheckVariable(the_func.nombres[0])) errores++;
+				} //...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
+				if (fname=="") { 
+					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
+					fname="<unknown>";
+				}
+				else if (!CheckVariable(fname)) errores++;
+				if (!sub) { // si es el proceso principal, verificar que sea el unico, y poner como funcion de nombre especial "<main>"
+					if (process_seen) { SynError (999,"Solo puede haber un proceso."); errores++; }
+					else process_seen=true;
+					fname="<main>";
+				}
+				// argumentos
+				if (tok=="(") {
+					if (!sub) { SynError (999,"El proceso principal no puede recibir argumentos."); errores++; }
+					bool closed=false;
+					tok=NextToken(cadena,p);
+					while (tok!="") {
+						if (tok==")") { closed=true; break; }
+						else if (tok==",") { 
+							SynError (999,"Falta nombre de argumento."); errores++;
+							tok=NextToken(cadena,p);
+						} else {
+							if (!CheckVariable(tok)) errores++;
+							the_func.AddArg(tok);
+							tok=NextToken(cadena,p);
+							if (tok!="," && tok!=")" && tok!="") { SynError (999,"Se esperaba coma(,) o parentesis ())."); errores++; }
+							else if (tok==",") tok=NextToken(cadena,p);
 						}
-			} else if (LeftCompare(cadena,"PROCESO ")) {
-				SynError (999,"Solo puede haber un proceso."); errores++;
+					}
+					if (!closed) {
+						{ SynError (999,"Falta cerrar lista de argumentos."); errores++; }
+					} else if (NextToken(cadena,p).size()) {
+						{ SynError (999,"Se esperaba fin de linea."); errores++; }
+					}
+				} else if (tok!="") { // si no habia argumentos no tiene que haber nada
+					if (!sub) { SynError (999,"Se esperaba el fin de linea."); errores++; } else {
+						if (the_func.nombres[0].size()) { SynError (999,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
+						else { SynError (999,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
+					}
+				}
+				subprocesos[fname]=the_func;
+
+				
+				
+//				else if (enable_user_functions && cadena=="SUBPROCESO") {SynError (999,"Falta nombre de subproceso."); errores++; Proceso=1;}
+//				else if (LeftCompare(cadena,"PROCESO ") || (enable_user_functions && LeftCompare(cadena,"SUBPROCESO "))) {
+//					
+//					if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
+//					scope=sub?SC_FUNC:SC_MAIN; // Indica el comienzo
+//				} else if (enable_user_functions && LeftCompare(cadena,"SUBPROCESO ")) {
+////					if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
+////					Proceso=1; // Indica el comienzo
+//				} else if (cadena!="") {
+//					SynError (42,"Se esperaba PROCESO <nombre>."); errores++; Proceso=1;
+//					bucles.push(programa.GetLoc(x,"PROCESO"));
+//				}
 			}
-			if (Proceso==2)
-					if (cadena!="")
-					{SynError (43,"Instruccion fuera de proceso."); errores++;}
-			if (cadena=="FINPROCESO")
-					Proceso=2; // Indica que ya termino
+			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
+			if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
+				bool sub=cadena!="FINPROCESO";
+				if (!bucles.empty() && ( (!sub&&bucles.top()=="PROCESO")||(sub&&bucles.top()=="SUBPROCESO") ) ) {
+					bucles.pop();
+				} else {
+					SynError (108,sub?"FINSUBPROCESO mal colocado.":"FINPROCESO mal colocado."); errores++;
+				}
+			}
 			// Controlar correcta y completa sintaxis de cada instruccion
 			if (instruccion=="DEFINIR "){  // ------------ DEFINIR -----------//
 				if (cadena=="DEFINIR" || cadena=="DEFINIR ;")
@@ -1379,47 +1476,40 @@ int SynCheck() {
 			if (cadena=="REPETIR") 
 			{bucles.push(programa.GetLoc(x,"REPETIR"));}
 			if (cadena=="FINSEGUN") {
-				if (bucles.top()=="SEGUN") {
+				if (!bucles.empty() && bucles.top()=="SEGUN") {
 					bucles.pop();
 				} else {
 					SynError (107,"FINSEGUN mal colocado."); errores++;}
 			}
 			if (cadena=="FINPARA") {
-				if (bucles.top()=="PARA"||bucles.top()=="PARACADA") {
+				if (!bucles.empty() && (bucles.top()=="PARA"||bucles.top()=="PARACADA")) {
 					bucles.pop();
 				} else {
 					SynError (108,"FINPARA mal colocado."); errores++;}
 			}
 			if (cadena=="FINMIENTRAS") {
-				if (bucles.top()=="MIENTRAS") {
+				if (!bucles.empty() && (bucles.top()=="MIENTRAS")) {
 					bucles.pop();
 				} else {
 					SynError (109,"FINMIENTRAS mal colocado."); errores++;}
 			}
 			if (cadena=="FINSI") {
-				if (bucles.top()=="SI") {
+				if (!bucles.empty() && (bucles.top()=="SI")) {
 					bucles.pop();
 				} else {
 					SynError (110,"FINSI mal colocado."); errores++;}
 			}
 			if (LeftCompare(cadena,"HASTA QUE ")) {
-				if (bucles.top()=="REPETIR") {
+				if (!bucles.empty() && bucles.top()=="REPETIR") {
 					bucles.pop();
 				} else {
 					SynError (111,"HASTA QUE mal colocado."); errores++;}
 			}
 			if (lazy_syntax && LeftCompare(cadena,"MIENTRAS QUE ")) {
-				if (bucles.top()=="REPETIR") {
+				if (!bucles.empty() && bucles.top()=="REPETIR") {
 					bucles.pop();
 				} else {
 					SynError (999,"MIENTRAS QUE mal colocado."); errores++;}
-			}
-			if (LeftCompare(cadena,"FINPROCESO")) {
-				if (bucles.top()=="PROCESO") {
-					bucles.pop();
-//				} else {
-//					SynError (112,"FINPROCESO mal colocado."); errores++;
-				}
 			}
 			if ( (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"SI "))
 				|| (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"ENTONCES")) )
@@ -1434,16 +1524,7 @@ int SynCheck() {
 		}
 	}
 	
-	// Controlar Cierre de Bucles
-	while (!bucles.empty())	{
-		if (bucles.top()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="SI") {SynError (117,"Falta cerrar SI.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="PROCESO" && Proceso<2) {SynError (119,"Falta cerrar PROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		bucles.pop();
-	}
+	InformUnclosedLoops(bucles,errores);
 	
 	return SynErrores;
 }

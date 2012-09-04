@@ -1,3 +1,9 @@
+20120904
+	Agregado soporte experimental para la definición de subprocesos en el intérprete (falta adecuar el editor).
+	
+20120903
+	Agregadas las funciones Longitud, SubCadena, Concatenar, Mayusculas y Minusculas para operar sobre cadenas de caracteres.
+	
 >>RELEASE 20120825<<
 
 20120825

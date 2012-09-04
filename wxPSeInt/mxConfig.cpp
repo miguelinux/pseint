@@ -39,7 +39,7 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 	chk_word_operators->SetToolTip(
 		"Con esta opción habilitada PSeInt acepta las palabras clave Y, O, NO, y MOD como sinónimos de los operadores &, |, ~ y % respectivamente. "
 		"Notar que en este caso estas palabras serán palabras reservadas y no se podrán utilizar como nombres de variables.");
-	chk_base_zero_arrays = utils->AddCheckBox(opts_sizer,this,_T("Utilizar arreglos en base 0"),config->lang.base_zero_arrays);
+	chk_base_zero_arrays = utils->AddCheckBox(opts_sizer,this,_T("Utilizar indices en arreglos y cadenas en base 0"),config->lang.base_zero_arrays);
 	chk_base_zero_arrays->SetToolTip(
 		"Si esta opción esta activada, el primer elemento de un arreglo de N elementos será el 0 y el último el N-1, mientras "
 		"que en caso contrario el primero será el 1 y el último el N");

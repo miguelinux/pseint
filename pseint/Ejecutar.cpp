@@ -11,7 +11,7 @@
 using namespace std;
 
 // ********************* Ejecutar un Bloque de Instrucciones **************************
-void Ejecutar(int LineStart, int LineEnd){
+void Ejecutar(int LineStart, int LineEnd) {
 	// variables auxiliares
 	string aux1,aux2;
 //	char tipo;
@@ -19,8 +19,13 @@ void Ejecutar(int LineStart, int LineEnd){
 	int tmp1,tmp2,tmp3;
 	string cadena;
 	// Ejecutar el bloque
-	for (int line=LineStart;line<=LineEnd;line++){
+//	for (int line=LineStart;line<=LineEnd;line++) {
+	int line=LineStart-1;
+	while (true) {
+		line++;
+		if (LineEnd!=-1 && line>LineEnd) break; 
 		cadena=programa[line].instruccion;
+		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") break;
 		Inter.SetLineAndInstructionNumber(line);
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			// ----------- ESCRIBIR ------------- //

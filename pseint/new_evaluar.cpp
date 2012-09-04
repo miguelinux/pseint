@@ -8,6 +8,7 @@
 #include "intercambio.h"
 #include <cstdlib>
 #include "utils.h"
+#include "Ejecutar.h"
 using namespace std;
 
 void WriteError(int num, string s) { 
@@ -364,29 +365,51 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 
 					// parsear argumentos
-					string *args=new string[ca];
+					string *args_values=new string[ca];
+					tipo_var *args_tipos=new tipo_var[ca];
 					b=pm; int b2;
 					for (int i=0;i<ca;i++) {
 						b2=BuscarComa(expresion,b+1,p2);
 						if (b2==-1) b2=p2;
 						int p1=b+1, p2=b2-1; b=b2;
-						args[i]=Evaluar(expresion,p1,p2,tipo);
-						if (!tipo.can_be(func->tipos[i+1])) {
+						if (!AplicarTipo(expresion,p1,p2,func->tipos[i+1])) {
 							stringstream ss;
-							ss<<"Tipo de dato incorrecto en el argumento ("<<i+1<<": "<<expresion.substr(p1,p2-p1+1)<<")";
+							ss<<"Tipo de dato incorrecto en el argumento "<<i+1<<" ("<<expresion.substr(p1,p2-p1+1)<<")";
 							WriteError(999,ss.str());
 							ev_return("");
+						} else {
+							args_values[i]=Evaluar(expresion,p1,p2,args_tipos[i]);
 						}
-//						cerr<<endl<<"args["<<i<<"]="<<args[i]<<endl;
 					}
 					if (tipo==vt_error) {
-						delete [] args;
+						delete [] args_values;
+						delete [] args_tipos;
 						ev_return("");
 					}
 					// obtener salida
-					string ret=func->func(args);
-					tipo=func->tipos[0];
-					delete [] args;
+					string ret;
+					if (func->func) {
+						ret=func->func(args_values);
+						tipo=func->tipos[0];
+					} else {
+						if (Inter.Running()) {
+							Memoria *caller_memoria=memoria;
+							memoria=new Memoria;
+							tipo_var tipo_arg;
+							for(int i=0;i<func->cant_arg;i++) { 
+								memoria->EscribirValor(func->nombres[i+1],args_values[i]);
+								memoria->DefinirTipo(func->nombres[i+1],args_tipos[i]);
+							}
+							Ejecutar(func->line_start);
+							ret=memoria->LeerValor(func->nombres[0]);
+							tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
+							delete memoria;
+							memoria=caller_memoria;
+							tipo=rettipo; /// @todo: verificar compatibilidad de tipos
+						} 
+					}
+					delete [] args_values;
+					delete [] args_tipos;
 					ev_return(ret);
 				} else {
 					if (PalabraReservada(nombre,true)) {
