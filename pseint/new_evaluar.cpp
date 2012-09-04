@@ -369,15 +369,23 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					for (int i=0;i<ca;i++) {
 						b2=BuscarComa(expresion,b+1,p2);
 						if (b2==-1) b2=p2;
-						int p1=b+1, p2=b2-1;
+						int p1=b+1, p2=b2-1; b=b2;
 						args[i]=Evaluar(expresion,p1,p2,tipo);
+						if (!tipo.can_be(func->tipos[i+1])) {
+							stringstream ss;
+							ss<<"Tipo de dato incorrecto en el argumento ("<<i+1<<": "<<expresion.substr(p1,p2-p1+1)<<")";
+							WriteError(999,ss.str());
+							ev_return("");
+						}
+//						cerr<<endl<<"args["<<i<<"]="<<args[i]<<endl;
 					}
 					if (tipo==vt_error) {
 						delete [] args;
-						ev_return("0");
+						ev_return("");
 					}
 					// obtener salida
-					string ret=func->func(args,tipo);
+					string ret=func->func(args);
+					tipo=func->tipos[0];
 					delete [] args;
 					ev_return(ret);
 				} else {

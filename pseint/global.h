@@ -14,6 +14,7 @@ extern ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno
 extern bool ExeInfoOn;
 extern bool wait_key;
 extern int SynErrores; // Contador para errores de Sintaxis
+extern bool enable_string_functions;
 extern bool base_zero_arrays;
 extern bool coloquial_conditions; // permite condiciones en lenguaje coloquial como "a es igual a b" o "d es par"
 extern bool force_var_definition; // obliga a definir los tipos de todas las variables antes de usarlas

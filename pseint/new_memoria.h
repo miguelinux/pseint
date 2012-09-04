@@ -17,7 +17,7 @@ struct tipo_var {
 	bool defined; // para saber si fueron definidas explicitamente (definir...)
 	bool used; // para saber si fue usada, asignada, leida, algo que no sea dimensionada o definida explicitamente, lo setean Escribir y LeerValor
 	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false),defined(false),used(false) {}
-	tipo_var(bool l, bool n, bool c):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(false),defined(false),used(false) {}
+	tipo_var(bool l, bool n, bool c, bool r=false):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(r),defined(false),used(false) {}
 	bool set(const tipo_var &v) {
 		enabled=true;
 		cb_log=cb_log&&v.cb_log;
@@ -71,6 +71,7 @@ extern tipo_var vt_numerica;
 extern tipo_var vt_caracter;
 extern tipo_var vt_caracter_o_numerica;
 extern tipo_var vt_caracter_o_logica;
+extern tipo_var vt_numerica_entera;
 
 class Memoria {
 	map<string,tipo_var> var_info;

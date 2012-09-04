@@ -14,6 +14,7 @@ bool word_operators=true;
 bool colored_output=false;
 bool allow_dinamyc_dimensions=false;
 bool allow_concatenation=true;
+bool enable_string_functions=true;
 bool base_zero_arrays=false;
 bool lazy_syntax=true;
 bool overload_equal=false;
