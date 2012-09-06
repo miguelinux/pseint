@@ -8,6 +8,7 @@
 #include "new_memoria.h"
 #include "zcurlib.h"
 #include "new_programa.h"
+#include "new_funciones.h"
 using namespace std;
 
 // ********************* Ejecutar un Bloque de Instrucciones **************************
@@ -35,15 +36,19 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else if (cadena=="ESPERARTECLA;") {
 				getKey();
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
-				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el invocar y el ;
-				Evaluar(llamada,tipo);
+				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el "invocar" y el ";"
+				tipo=vt_desconocido; size_t p=llamada.find('(',0);
+				if (p==string::npos)
+					EvaluarFuncion(EsFuncion(llamada),"()",tipo,false);
+				else
+					EvaluarFuncion(EsFuncion(llamada.substr(0,p)),llamada.substr(p),tipo,false);
 			} else if (LeftCompare(cadena,"ESCRIBIR ") || LeftCompare(cadena,"ESCRIBNL ")) {
 				bool saltar=LeftCompare(cadena,"ESCRIBIR ");
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-1,1);
 				tmp1=-1;tmp2=0;tmp3=0;
 				// Separar parametros
-				while (tmp3<(int)cadena.size()){
+				while (tmp3<(int)cadena.size()) {
 					while (!(tmp1<0 && tmp2==0 && cadena[tmp3]==',') && tmp3<(int)cadena.size()) {
 						if (cadena[tmp3]=='\'') tmp1=-tmp1;
 						if (tmp1<0) {

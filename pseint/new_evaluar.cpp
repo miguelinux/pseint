@@ -274,6 +274,69 @@ string ev_aux(string a,int &tabs)
 #define ev_return(a) return a
 #endif
 
+string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
+	if (for_expresion && func->tipos[0]==vt_error) {
+		WriteError(999,string("La función (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
+		tipo=vt_error; return "";
+	}
+	// controlar cantidad de argumentos
+	int b=0,ca=argumentos[1]==')'?0:1, l=argumentos.length()-1;
+	if (ca==1) while ((b=BuscarComa(argumentos,b+1,l))>0) ca++;
+	if (func->cant_arg!=ca) {
+		tipo=vt_error;
+		WriteError(999,string("Cantidad de argumentos incorrecta para la funcion (")+GetNombreFuncion(func)+(")"));
+		return("");
+	}
+	// parsear argumentos
+	string *args_values=new string[ca];
+	tipo_var *args_tipos=new tipo_var[ca];
+	b=1; int b2;
+	for (int i=0;i<ca;i++) {
+		b2=BuscarComa(argumentos,b+1,l);
+		if (b2==-1) b2=l;
+		int p1=b+1, p2=b2-1; b=b2;
+		if (!AplicarTipo(argumentos,p1,p2,func->tipos[i+1])) {
+			stringstream ss;
+			ss<<"Tipo de dato incorrecto en el argumento "<<i+1<<" ("<<argumentos.substr(p1,p2-p1+1)<<")";
+			WriteError(999,ss.str());
+			return("");
+		} else {
+			args_values[i]=Evaluar(argumentos,p1,p2,args_tipos[i]);
+		}
+	}
+	if (tipo==vt_error) {
+		delete [] args_values;
+		delete [] args_tipos;
+		ev_return("");
+	}
+	// obtener salida
+	string ret; tipo_var rettipo;
+	if (func->func) {
+		ret=func->func(args_values);
+		rettipo=func->tipos[0];
+	} else {
+		if (Inter.Running()) {
+			Memoria *caller_memoria=memoria;
+			memoria=new Memoria;
+			tipo_var tipo_arg;
+			for(int i=0;i<func->cant_arg;i++) { 
+				memoria->EscribirValor(func->nombres[i+1],args_values[i]);
+				memoria->DefinirTipo(func->nombres[i+1],args_tipos[i]);
+			}
+			Ejecutar(func->line_start);
+			ret=memoria->LeerValor(func->nombres[0]);
+			tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
+			delete memoria;
+			memoria=caller_memoria;
+		} 
+	}
+	if (tipo!=vt_error && !tipo.can_be(rettipo)) WriteError(999,"No coinciden los tipos.");
+	delete [] args_values;
+	delete [] args_tipos;
+	tipo=rettipo;
+	return ret;
+}
+
 string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	while (p1<p2&&expresion[p1]==' ') p1++;
 	while (p1<p2&&expresion[p2]==' ') p2--;
@@ -327,7 +390,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						tipo=vt_error;
 						ev_return("");
 					} else {
-						ev_return(Evaluar(nombre+"()",tipo));
+						ev_return(EvaluarFuncion(func,"()",tipo));
 					}
 				}
 				tipo = memoria->LeerTipo(nombre);
@@ -360,62 +423,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				string nombre=expresion.substr(p1,pm-p1);
 				funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
-					// controlar cantidad de argumentos
-					int b=pm,ca=expresion[b+1]==')'?0:1;
-					if (ca==1) while ((b=BuscarComa(expresion,b+1,p2))>0) ca++;
-					if (func->cant_arg!=ca) {
-						tipo=vt_error;
-						WriteError(999,string("Cantidad de argumentos incorrecta para la funcion (")+nombre+(")"));
-						ev_return("0");
-					}
-
-					// parsear argumentos
-					string *args_values=new string[ca];
-					tipo_var *args_tipos=new tipo_var[ca];
-					b=pm; int b2;
-					for (int i=0;i<ca;i++) {
-						b2=BuscarComa(expresion,b+1,p2);
-						if (b2==-1) b2=p2;
-						int p1=b+1, p2=b2-1; b=b2;
-						if (!AplicarTipo(expresion,p1,p2,func->tipos[i+1])) {
-							stringstream ss;
-							ss<<"Tipo de dato incorrecto en el argumento "<<i+1<<" ("<<expresion.substr(p1,p2-p1+1)<<")";
-							WriteError(999,ss.str());
-							ev_return("");
-						} else {
-							args_values[i]=Evaluar(expresion,p1,p2,args_tipos[i]);
-						}
-					}
-					if (tipo==vt_error) {
-						delete [] args_values;
-						delete [] args_tipos;
-						ev_return("");
-					}
-					// obtener salida
-					string ret;
-					if (func->func) {
-						ret=func->func(args_values);
-						tipo=func->tipos[0];
-					} else {
-						if (Inter.Running()) {
-							Memoria *caller_memoria=memoria;
-							memoria=new Memoria;
-							tipo_var tipo_arg;
-							for(int i=0;i<func->cant_arg;i++) { 
-								memoria->EscribirValor(func->nombres[i+1],args_values[i]);
-								memoria->DefinirTipo(func->nombres[i+1],args_tipos[i]);
-							}
-							Ejecutar(func->line_start);
-							ret=memoria->LeerValor(func->nombres[0]);
-							tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
-							delete memoria;
-							memoria=caller_memoria;
-							tipo=rettipo; /// @todo: verificar compatibilidad de tipos
-						} 
-					}
-					delete [] args_values;
-					delete [] args_tipos;
-					ev_return(ret);
+					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
 					if (PalabraReservada(nombre,true)) {
 						WriteError(999,string("Identificador no valido (")+nombre+")");

@@ -171,3 +171,12 @@ void UnloadSubprocesos( ) {
 	subprocesos.clear();
 }
 
+string GetNombreFuncion(funcion * func) {
+	map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+	while (it1!=it2) {
+		if (&(it1->second)==func) return it1->first;
+		else it1++;
+	}
+	return "";
+}
+
