@@ -160,6 +160,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinSubProceso"),_T("FinSubProceso\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "),false,false);
@@ -847,6 +848,7 @@ void mxSource::IndentLine(int l, bool goup) {
 			else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
 			else if (word==_T("FINSI")) cur-=4;
 			else if (word==_T("FINPROCESO")) cur-=4;
+			else if (word==_T("FINSUBPROCESO")) cur-=4;
 			else {
 				bool comillas=false;
 				while (i<n) {

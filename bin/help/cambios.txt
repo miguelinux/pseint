@@ -1,4 +1,6 @@
 20120906
+	Los subprocesos que no requieren argumentos se pueden invocar sin paréntesis.
+	El panel Lista de Variables muestra las variables por proceso/subproceso en forma de arbol.
 	Ahora los subprocesos se pueden invocar fuera de una expresión, como una instrucción más, colocando sus argumentos entre paréntesis.
 	
 20120905
