@@ -1192,7 +1192,7 @@ int SynCheck() {
 				if (RightCompareFix(str," HACER")) { // comprobar asignacion
 					str.erase(str.find(" ",0),str.size()-str.find(" ",0));
 					if (str.find("<-",0)<0 || str.find("<-",0)>=str.size()) // Comprobar asignacion
-					{SynError (72,"Se esperaba asignacion."); errores++;}
+						{SynError (72,"Se esperaba asignacion."); errores++;}
 					else
 						if (RightCompare(str,"<-HASTA") || RightCompare(str,"<-CON PASO") || LeftCompare(str,"<-"))
 						{SynError (73,"Asignacion incompleta."); errores++;}
@@ -1458,8 +1458,8 @@ int SynCheck() {
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
 					if (func->cant_arg!=0) {SynError (999,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
-				} else if (args!="();") {
-					if (func->cant_arg==0) {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
+				} else if (func->cant_arg==0) {
+					if (args!="();") {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
 				} else if (args[0]!='(') {SynError (999,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
 				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
 					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
@@ -1471,6 +1471,7 @@ int SynCheck() {
 							EvaluarSC(args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1),tipo,func->tipos[cant_args+1]);
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
+						if (cant_args!=func->cant_arg) { SynError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
 						if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
 					}
 				}

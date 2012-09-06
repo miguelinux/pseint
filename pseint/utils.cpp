@@ -5,6 +5,7 @@
 #include "new_memoria.h"
 #include "utils.h"
 #include "zcurlib.h"
+#include "new_funciones.h"
 
 // ***************** Conversiones Numeros/Cadenas **********************
 
@@ -248,13 +249,13 @@ bool CheckVariable(string str, int errcode) {
 			ret=false;
 	}
 	// Comprobar que no sea palabra reservada
+	if (EsFuncion(str)) 
+		ret=false;
 	if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
 		ret=false;
-	if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" || str=="RC" || str=="RAIZ" || str=="EXP" || str=="ATAN" || str=="DIMENSION" || str=="PROCESO" || str=="SUBPROCESO")
+	if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" || str=="DIMENSION" || str=="PROCESO" || str=="SUBPROCESO" || str=="FINSI" ||  str=="" || str=="FINPARA")
 		ret=false;
-	if (str=="ABS" || str=="SEN" || str=="TRUNC" || str=="FINSI" ||  str=="LN" || str=="COS" || str=="REDON" || str=="AZAR" || str=="" || str=="FINPARA")
-		ret=false;
-	if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINSUBPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO" || str=="ACOS" || str=="ASEN" || str=="TAN")
+	if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINSUBPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO")
 		ret=false;
 	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no valido (")+str+")."); 
 	return ret;
@@ -510,8 +511,7 @@ string NextToken(string &cadena, int &p) {
 		p++; return "(";
 	} else { // operador? todavia no se usa este caso
 		if (p<l) p++;
-		int parentesis=0;
-		while (p<l && !parteDePalabra(cadena[p]) && cadena[p]!=' ' && cadena[p]!='\t' && cadena[p]!=')' && cadena[p]!='(' && cadena[p]!=',' && cadena[p]!=';' && cadena[p]!='\\"' && cadena[p]!='\'') p++;
+		while (p<l && !parteDePalabra(cadena[p]) && cadena[p]!=' ' && cadena[p]!='\t' && cadena[p]!=')' && cadena[p]!='(' && cadena[p]!=',' && cadena[p]!=';' && cadena[p]!='\"' && cadena[p]!='\'') p++;
 	}
 	return cadena.substr(p1,p-p1);
 }

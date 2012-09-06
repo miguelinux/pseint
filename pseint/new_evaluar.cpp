@@ -276,7 +276,7 @@ string ev_aux(string a,int &tabs)
 
 string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
 	if (for_expresion && func->tipos[0]==vt_error) {
-		WriteError(999,string("La función (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
+		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
 		tipo=vt_error; return "";
 	}
 	// controlar cantidad de argumentos
@@ -284,15 +284,15 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 	if (ca==1) while ((b=BuscarComa(argumentos,b+1,l))>0) ca++;
 	if (func->cant_arg!=ca) {
 		tipo=vt_error;
-		WriteError(999,string("Cantidad de argumentos incorrecta para la funcion (")+GetNombreFuncion(func)+(")"));
+		WriteError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+GetNombreFuncion(func)+(")"));
 		return("");
 	}
 	// parsear argumentos
 	string *args_values=new string[ca];
 	tipo_var *args_tipos=new tipo_var[ca];
-	b=1; int b2;
+	b=0; int b2;
 	for (int i=0;i<ca;i++) {
-		b2=BuscarComa(argumentos,b+1,l);
+		b2=BuscarComa(argumentos,b+1,l,',');
 		if (b2==-1) b2=l;
 		int p1=b+1, p2=b2-1; b=b2;
 		if (!AplicarTipo(argumentos,p1,p2,func->tipos[i+1])) {
