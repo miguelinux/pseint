@@ -54,6 +54,15 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 		"Esta opcion habilita la asignación con el signo igual (Ej: x=0;). En muchos casos esta sintaxis de asignación no se"
 		"permite, ya que en muchos lenguajes no se utilia el mismo operador para asignar y comparar, como sucede al activar"
 		"esta opción. En cualquier caso, las otras dos sintaxis de asignación (con <- y con :=) siguen siendo válidas." );
+	
+	chk_enable_string_functions = utils->AddCheckBox(opts_sizer,this,_T("Utilizar funciones para el manejo de cadenas (Longitud, Subcadena, etc)"),config->lang.enable_string_functions);
+	chk_enable_string_functions ->SetToolTip(
+		"Esta opción habilita un conjunto de funciones predefinidas que sirven para operar sobre cadenas de "
+		"caracteres. Las funciones son: Longitud, SubCadena, Mayusculas, Minusculas y Concatenar).");
+	chk_enable_user_functions = utils->AddCheckBox(opts_sizer,this,_T("Permitir definir funciones/subprocesos"),config->lang.enable_user_functions);
+	chk_enable_user_functions->SetToolTip(
+		"Con esta opción activada se permite definir subprocesos/funciones en pseudocódigo para mediante la palabra clase SubProceso." );
+	
 	chk_lazy_syntax = utils->AddCheckBox(opts_sizer,this,_T("Utilizar sintaxis flexible"),config->lang.lazy_syntax);
 	chk_lazy_syntax->SetToolTip(
 		"Esta opcion habilita variaciones opcionales en la sintaxis: omitir la palabra HACER en un bucle MIENTRAS o PARA, "
@@ -106,6 +115,8 @@ void mxConfig::OnOkButton(wxCommandEvent &evt) {
 	config->lang.word_operators=chk_word_operators->GetValue()||chk_coloquial_conditions->GetValue();
 	config->lang.allow_dinamyc_dimensions=chk_allow_dinamyc_dimensions->GetValue();
 	config->lang.use_nassi_schneiderman=chk_use_nassi_schneiderman->GetValue();
+	config->lang.enable_string_functions=chk_enable_string_functions->GetValue();
+	config->lang.enable_user_functions=chk_enable_user_functions->GetValue();
 	Close();
 }
 

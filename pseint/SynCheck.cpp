@@ -519,28 +519,12 @@ void InformUnclosedLoops(stack<Instruccion> &bucles, int &errores) {
 	}
 }
 
-string NextToken(string &cadena, int &p) {
-	int l=cadena.size();
-	while (p<l && (cadena[p]==' ' || cadena[p]=='\t')) p++;
-	if (p==l) return "";
-	int p1=p;
-	if (cadena[p]>='A'&&cadena[p]<='Z') {
-		while (p<l && ( (cadena[p]>='A'&&cadena[p]<='Z') || cadena[p]=='_') ) p++;
-	} else if (cadena[p]==')') {
-		p++; return ")";
-	} else if (cadena[p]=='(') {
-		p++; return "(";
-	} else {
-		while (p<l && !(cadena[p]>='A'&&cadena[p]<='Z') && cadena[p]!=' ' && cadena[p]!='_' && cadena[p]!='\t' && cadena[p]!=')' && cadena[p]!='(') p++;
-	}
-	return cadena.substr(p1,p-p1);
-}
-
 //-------------------------------------------------------------------------------------------
 // ********************* Checkear la Correcta Sintaxis del Archivo **************************
 //-------------------------------------------------------------------------------------------
 int SynCheck() {
-	queue<string> arguments; // para guardar los nombres de argumentos de funciones
+	queue<string> arguments; // para guardar los nombres de argumentos de funciones 
+	int untitled_functions_count=0; // para numerar las funciones sin nombre
 	SynErrores=0;
 	programa.PushBack("");
 	programa.Insert(0,"");
@@ -805,6 +789,12 @@ int SynCheck() {
 							} 
 						}
 					}
+					if (instruccion!="<-") {
+						int p=0, l=cadena.length();
+						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
+						funcion *func=EsFuncion(cadena.substr(0,p));
+						if (func) instruccion=string("INVOCAR ");
+					}
 				}
 			}
 			
@@ -883,13 +873,13 @@ int SynCheck() {
 				} //...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
 				if (fname=="") { 
 					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
-					fname="<unknown>";
+					fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
 				}
 				else if (!CheckVariable(fname)) errores++;
-				if (!sub) { // si es el proceso principal, verificar que sea el unico, y poner como funcion de nombre especial "<main>"
+				if (!sub) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
 					if (process_seen) { SynError (999,"Solo puede haber un proceso."); errores++; }
 					else process_seen=true;
-					fname="<main>";
+					main_process_name=fname;
 				}
 				// argumentos
 				if (tok=="(") {
@@ -1462,15 +1452,36 @@ int SynCheck() {
 					SynError (105,"La instruccion no debe tener parametros."); errores++;
 					cadena.erase(cadena.find(" ",0),cadena.size()-cadena.find(" ",0));
 				}
-//			if (instruccion=="BORRARPANTALLA")
-//				cadena=cadena+";";
-//			if (instruccion=="ESPERARTECLA")
-//				cadena=cadena+";";
 			if (instruccion=="Error?" && cadena!="" && cadena!=";") {
 				if (LeftCompare(cadena,"FIN "))
 				{SynError (99,"Instruccion no valida."); errores++;}
 				else
 					{SynError (106,"Instruccion no valida."); errores++;}
+			}
+			// llama directa a un subproceso
+			if (instruccion=="INVOCAR ") {
+				int p=8;
+				string fname=NextToken(cadena,p);
+				funcion *func=EsFuncion(fname);
+				string args=cadena.substr(p);
+				if (args=="") args="()"; // para que siempre aparezcan las llaves y se eviten así problemas
+				if (args=="()" && func->cant_arg!=0) {SynError (999,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
+				else if (args!="()" && func->cant_arg==0) {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
+				else if (args[0]!='(') {SynError (999,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
+				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
+					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
+					if (args_last_pos!=-1) { // si faltaban cerrar parentesis, el error salto antes
+						int pos_coma=0, last_pos_coma=0, cant_args=0; tipo_var tipo;
+						do {
+							pos_coma=BuscarComa(args,pos_coma+1,args_last_pos,',');
+							if (pos_coma==-1) pos_coma=args_last_pos;
+							EvaluarSC(args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1),tipo,func->tipos[cant_args+1]);
+							cant_args++; last_pos_coma=pos_coma;
+						} while (pos_coma!=args_last_pos);
+						cerr<<int(args.length())-1<<endl;
+						if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
+					}
+				}
 			}
 			// Controlar Cierre de Bucles
 			if (cadena=="REPETIR") 

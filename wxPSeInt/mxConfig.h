@@ -16,6 +16,8 @@ private:
 	wxCheckBox *chk_word_operators;
 	wxCheckBox *chk_allow_dinamyc_dimensions;
 	wxCheckBox *chk_use_nassi_schneiderman;
+	wxCheckBox *chk_enable_string_functions;
+	wxCheckBox *chk_enable_user_functions;
 public:
 	mxConfig(wxWindow *parent);
 	~mxConfig();

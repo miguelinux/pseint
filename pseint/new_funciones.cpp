@@ -9,6 +9,8 @@ using namespace std;
 map<string,funcion> funciones;
 map<string,funcion> subprocesos;
 
+string main_process_name="<no_main_process>";
+
 funcion* EsFuncion(const string nombre) {
 	map<string,funcion>::iterator it_func = subprocesos.find(nombre);
 	if (it_func!=subprocesos.end()) return &(it_func->second);

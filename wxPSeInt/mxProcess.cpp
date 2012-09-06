@@ -265,6 +265,10 @@ wxString mxProcess::GetProfileArgs() {
 	wxString command;
 	if (config->lang.force_dot_and_comma)
 		command<<_T(" --forcedotandcomma");
+	if (!config->lang.enable_string_functions)
+		command<<_T(" --hidestringfunctions");
+	if (!config->lang.enable_user_functions)
+		command<<_T(" --disableuserfunctions");
 	if (config->lang.overload_equal)
 		command<<_T(" --overloadequal");
 	if (!config->lang.lazy_syntax)

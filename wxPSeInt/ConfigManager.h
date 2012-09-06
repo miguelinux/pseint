@@ -15,6 +15,8 @@ struct LangSettings {
 	bool coloquial_conditions;
 	bool lazy_syntax;
 	bool word_operators;
+	bool enable_user_functions;
+	bool enable_string_functions;
 	bool operator!=(const LangSettings &o) const {
 		return 
 			force_define_vars!=o.force_define_vars ||
@@ -27,20 +29,24 @@ struct LangSettings {
 			overload_equal!=o.overload_equal ||
 			coloquial_conditions!=o.coloquial_conditions||
 			lazy_syntax!=o.lazy_syntax ||
+			enable_string_functions!=o.enable_string_functions||
+			enable_user_functions!=o.enable_user_functions ||
 			word_operators!=o.word_operators;
 	}
 	void Reset() {
-		force_define_vars=0;
-		force_init_vars=0;
-		force_dot_and_comma=0;
-		base_zero_arrays=0;
-		allow_concatenation=1;
-		use_nassi_schneiderman=0;
-		allow_dinamyc_dimensions=1;
-		overload_equal=1;
-		coloquial_conditions=1;
-		lazy_syntax=1;
-		word_operators=1;
+		force_define_vars=false;
+		force_init_vars=false;
+		force_dot_and_comma=false;
+		base_zero_arrays=false;
+		allow_concatenation=true;
+		use_nassi_schneiderman=false;
+		allow_dinamyc_dimensions=true;
+		overload_equal=true;
+		coloquial_conditions=true;
+		lazy_syntax=true;
+		word_operators=true;
+		enable_string_functions=true;
+		enable_user_functions=true;
 	}
 	LangSettings() { Reset(); }
 };

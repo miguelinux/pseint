@@ -8,12 +8,12 @@
 mxVarWindow *var_window=NULL;
 
 BEGIN_EVENT_TABLE(mxVarWindow,wxPanel) 
-	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxVarWindow::OnListClick)
+	EVT_TREE_SEL_CHANGED(wxID_ANY,mxVarWindow::OnTreeClick)
 END_EVENT_TABLE()
 
 mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(150,100)) {
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
-	list =new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxLC_SINGLE_SEL|wxLC_REPORT|wxLC_NO_HEADER|wxLC_HRULES);
+	tree = new wxTreeCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTR_FULL_ROW_HIGHLIGHT|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_NO_BUTTONS);
 	wxImageList* imglist = new wxImageList(16, 16,true,7);
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_desc.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log.png")),wxBITMAP_TYPE_PNG));
@@ -22,11 +22,12 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log_car.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car_num.png")),wxBITMAP_TYPE_PNG));
-	list->AssignImageList(imglist,wxIMAGE_LIST_SMALL);
-	list->InsertColumn(0,"Variables");
-	list->SetColumnWidth(0,1000);
-	list->SetToolTip(_T("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
-	sizer->Add(list,wxSizerFlags().Proportion(1).Expand());
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_main.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_func.png")),wxBITMAP_TYPE_PNG));
+	tree->AssignImageList(imglist);
+	tree_root=tree_current=tree->AddRoot("Variables");
+	tree->SetToolTip(_T("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
+	sizer->Add(tree,wxSizerFlags().Proportion(1).Expand());
 	SetSizer(sizer);
 }
 
@@ -35,9 +36,9 @@ mxVarWindow::~mxVarWindow() {
 }
 
 void mxVarWindow::BeginInput ( ) {
-	int s=GetSelection(); 
-	if (s==-1) last_sel=""; else last_sel=list->GetItemText(s).BeforeFirst('[');
-	list->DeleteAllItems();
+	wxTreeItemId s=GetSelection(); 
+	if (s.IsOk()) last_sel=tree->GetItemText(s).BeforeFirst('['); else last_sel="";
+	tree->DeleteChildren(tree_root);
 }
 
 void mxVarWindow::Add (wxString vname, char type) {
@@ -52,26 +53,24 @@ void mxVarWindow::Add (wxString vname, char type) {
 	default: stype=" "; break;
 	}
 	vname.Replace("-1","??",true);
-	list->InsertItem(list->GetItemCount(),vname/*+stype*/,icon);
-	if (vname.BeforeFirst('[')==last_sel) 
-		list->SetItemState(list->GetItemCount()-1,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
+	wxTreeItemId id=tree->AppendItem(tree_current,vname/*+stype*/,icon);
+	if (vname.BeforeFirst('[')==last_sel) tree->SelectItem(id);
 }
 
 void mxVarWindow::EndInput ( ) {
-	
+	tree->ExpandAll();
 }
 
-void mxVarWindow::OnListClick (wxListEvent & evt) {
+void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 	evt.Skip();	
-	int it=GetSelection();
+	wxTreeItemId it=GetSelection();
 	if (it==-1) return;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
-	src->HighLight(list->GetItemText(it).BeforeFirst('['));
+	src->HighLight(tree->GetItemText(it).BeforeFirst('['));
 }
 
-int mxVarWindow::GetSelection ( ) {
-	if (list->GetSelectedItemCount()==0) return -1;
-	return list->GetNextItem(-1,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
+wxTreeItemId mxVarWindow::GetSelection ( ) {
+	return tree->GetSelection();
 }
 

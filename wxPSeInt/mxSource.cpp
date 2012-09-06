@@ -24,16 +24,22 @@ const wxChar *mxSourceWords1 =
 	_T("según finsegún "); // scintilla no funciona con los acentos
 
 const wxChar *mxSourceWords1_op =
-	_T(" y no o mod ");
+	_T("y no o mod ");
 
 const wxChar *mxSourceWords1_extra =
 	_T("es sies opcion caso desde imprimir cada mostrar opción ");
 
 const wxChar *mxSourceWords1_conds =
-	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor");
+	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor ");
 
-const wxChar* mxSourceWords2 =
+const wxChar *mxSourceWords1_funcs =
+	_T("subproceso finsubproceso ");
+
+const wxChar* mxSourceWords2_math =
 	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon ");
+
+const wxChar* mxSourceWords2_string =
+	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas ");
 
 //const wxChar* mxSourceWords3 = 
 //	_T("hacer entonces para ");
@@ -146,6 +152,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count++]=comp_list_item(_T("Fin Mientras"),_T("Fin Mientras\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Para"),_T("Fin Para\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Proceso"),_T("Fin Proceso\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Fin SubProceso"),_T("Fin SubProceso\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"),false,false);
@@ -168,6 +175,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count++]=comp_list_item(_T("Segundos"),_T("Segundos;"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Sino"),_T("Sino\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("SubProceso"),_T("SubProceso "),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"),false,false);
 	}
 	SetMarginType (0, wxSTC_MARGIN_NUMBER);
@@ -941,11 +949,14 @@ void mxSource::UnExample() {
 
 void mxSource::SetWords() {
 	wxString s1=mxSourceWords1;
+	if (config->lang.enable_user_functions) s1<<mxSourceWords1_funcs;
 	if (config->lang.word_operators) s1<<mxSourceWords1_op;
 	if (config->lang.lazy_syntax) s1<<mxSourceWords1_extra;
 	if (config->lang.coloquial_conditions) s1<<mxSourceWords1_conds;
 	SetKeyWords (0, s1.c_str());
-	SetKeyWords (1, mxSourceWords2);
+	wxString s2=mxSourceWords2_math;
+	if (config->lang.enable_string_functions) s1<<mxSourceWords2_string;
+	SetKeyWords (1, s2.c_str());
 	SetKeyWords (3, ""); // para resaltar las variables
 }
 

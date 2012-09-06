@@ -745,3 +745,27 @@ void fixwincharset(string &s, bool reverse) {
 bool EsLetra(const char &c) {
 	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) );
 }
+
+
+string NextToken(string &cadena, int &p) {
+	int l=cadena.size();
+	while (p<l && (cadena[p]==' ' || cadena[p]=='\t')) p++;
+	if (p==l) return "";
+	int p1=p;
+	if ((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_') {
+		while (p<l && parteDePalabra(cadena[p]) ) p++;
+	} else if ((cadena[p]>='0'&&cadena[p]<='9')||cadena[p]=='.') {
+		while (p<l && ((cadena[p]>='0'&&cadena[p]<='9')||cadena[p]=='.')) p++;
+	} else if (cadena[p]=='\"'||cadena[p]=='\'') {
+		while (p<l && cadena[p]!='\"'&&cadena[p]!='\'' ) p++;
+	} else if (cadena[p]==')') {
+		p++; return ")";
+	} else if (cadena[p]=='(') {
+		p++; return "(";
+	} else { // operador? todavia no se usa este caso
+		if (p<l) p++;
+		while (p<l && !parteDePalabra(cadena[p]) && cadena[p]!=' ' && cadena[p]!='\t' && cadena[p]!=')' && cadena[p]!='(' && cadena[p]!=',' && cadena[p]!='\\"' && cadena[p]!='\'') p++;
+	}
+	return cadena.substr(p1,p-p1);
+}
+

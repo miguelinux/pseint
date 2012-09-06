@@ -144,5 +144,8 @@ void fixwincharset(string &s, bool reverse=false);
 // determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
 bool EsLetra(const char &c);
 
+// "extrae" una palabra, una constante, o un operador, desde la pos p, no modifica la cadena, sino que avanza el indice p
+string NextToken(string &cadena, int &p);
+
 #endif
 

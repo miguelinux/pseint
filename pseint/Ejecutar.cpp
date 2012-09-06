@@ -34,6 +34,9 @@ void Ejecutar(int LineStart, int LineEnd) {
 				gotoXY(1,1);
 			} else if (cadena=="ESPERARTECLA;") {
 				getKey();
+			} else if (LeftCompare(cadena,"INVOCAR ")) {
+				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el invocar y el ;
+				Evaluar(llamada,tipo);
 			} else if (LeftCompare(cadena,"ESCRIBIR ") || LeftCompare(cadena,"ESCRIBNL ")) {
 				bool saltar=LeftCompare(cadena,"ESCRIBIR ");
 				cadena.erase(0,9);

@@ -284,7 +284,7 @@ int main(int argc, char* argv[]) {
 			memoria->FakeReset();
 			Inter.SetStarted();
 			if (programa.GetSize()==4) checksum(programa[2].instruccion);
-			Ejecutar(EsFuncion("<main>")->line_start);
+			Ejecutar(EsFuncion(main_process_name)->line_start);
 			Inter.SetFinished();
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {
