@@ -320,10 +320,15 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					tipo=vt_error;
 					ev_return("");
 				}
-				if (EsFuncion(nombre)) {
-					WriteError(999,string("Faltan parametros para la funcion (")+nombre+")");
-					tipo=vt_error;
-					ev_return("");
+				funcion *func=EsFuncion(nombre);
+				if (func) {
+					if (func->cant_arg!=0) {
+						WriteError(999,string("Faltan parametros para la funcion (")+nombre+")");
+						tipo=vt_error;
+						ev_return("");
+					} else {
+						ev_return(Evaluar(nombre+"()",tipo));
+					}
 				}
 				tipo = memoria->LeerTipo(nombre);
 				if (tipo.dims) {
@@ -355,9 +360,9 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				string nombre=expresion.substr(p1,pm-p1);
 				funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
-					// controlar cantidad de argumentos/indices
-					int b=pm,ca=1;
-					while ((b=BuscarComa(expresion,b+1,p2))>0) ca++;
+					// controlar cantidad de argumentos
+					int b=pm,ca=expresion[b+1]==')'?0:1;
+					if (ca==1) while ((b=BuscarComa(expresion,b+1,p2))>0) ca++;
 					if (func->cant_arg!=ca) {
 						tipo=vt_error;
 						WriteError(999,string("Cantidad de argumentos incorrecta para la funcion (")+nombre+(")"));

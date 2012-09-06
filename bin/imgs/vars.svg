@@ -217,9 +217,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="563.43641"
-     inkscape:cy="566.40308"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="440.19597"
+     inkscape:cy="595.43659"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1468,5 +1468,39 @@
        inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_commands.png"
        inkscape:export-xdpi="21.505793"
        inkscape:export-ydpi="21.505793" />
+    <text
+       inkscape:export-ydpi="22.65"
+       inkscape:export-xdpi="22.65"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/vt_proc.png"
+       sodipodi:linespacing="125%"
+       id="text374"
+       y="457.02048"
+       x="214.12617"
+       style="font-size:55.37797546000000182px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.38444936000000007;font-family:Sans"
+       xml:space="preserve"
+       transform="scale(0.8849228,1.1300421)"><tspan
+         style="stroke-width:1.38444936000000007;stroke:#4d4d4d;fill:#4d4d4d"
+         y="457.02048"
+         x="214.12617"
+         id="tspan376"
+         sodipodi:role="line"
+         dx="0 -6.9089584 -5.0246973">Pro</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:51.19112015000000326px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.27977800000000008;font-family:Sans"
+       x="232.0972"
+       y="503.29779"
+       id="text378"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/vt_sub.png"
+       inkscape:export-xdpi="22.65"
+       inkscape:export-ydpi="22.65"
+       transform="scale(0.81637535,1.2249267)"><tspan
+         sodipodi:role="line"
+         id="tspan380"
+         x="232.0972"
+         y="503.29779"
+         style="stroke-width:1.27977800000000008;stroke:#4d4d4d;fill:#4d4d4d"
+         dx="0 -6.3866062 -8.1284075">Sub</tspan></text>
   </g>
 </svg>

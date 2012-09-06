@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
 			memoria->FakeReset();
 			Inter.SetStarted();
 			if (programa.GetSize()==4) checksum(programa[2].instruccion);
-			funcion *main_func=EsFuncion(main_process_name);
+			funcion *main_func=EsFuncion(main_process_name,true);
 			memoria=main_func->memoria;
 			Ejecutar(main_func->line_start);
 			Inter.SetFinished();

@@ -36,7 +36,7 @@ extern map<string,funcion> funciones; ///< funciones predefinidas del lenguaje
 extern map<string,funcion> subprocesos; ///< funciones definidas por el usuario (proceso y subprocesos)
 
 void LoadFunciones(bool u=true); ///< carga la lista de funciones predefinidas, el argumento es para saber si van en mayúsculas o minúsculas
-funcion* EsFuncion(const string nombre); ///< busca una funcion (predefinida o subproceso del usuario), devuelve NULL si no la encuetra
+funcion* EsFuncion(const string nombre, bool include_main_process=false); ///< busca una funcion (predefinida o subproceso del usuario), devuelve NULL si no la encuetra
 void UnloadSubprocesos(); ///< carga la lista de funciones predefinidas, el argumento es para saber si van en mayúsculas o minúsculas
 
 extern string main_process_name; ///< nombre de la funcion que representa al proceso principal, se asigna en SynCheck y se usa en el main para saber desde donde ejecutar

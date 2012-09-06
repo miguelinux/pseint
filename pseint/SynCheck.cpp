@@ -466,7 +466,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
 						act=='|' || act=='~' || act=='=' ) {SynError (30,"Operador incorrecto."); errores++;}								
 				}
-				if (last=='(' && act==')')  {SynError (152,"Parametro nulo."); errores++;}
+//				if (last=='(' && act==')')  {SynError (152,"Parametro nulo."); errores++;}
 				// Borrar comentarios
 				if (last=='/' && act=='/')
 					cadena.erase(y-1,cadena.size()-y+1);
@@ -873,7 +873,9 @@ int SynCheck() {
 					if (!sub) { SynError (999,"El proceso principal no puede retornar ningun valor."); errores++; }
 					the_func.nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
 					if (!CheckVariable(the_func.nombres[0])) errores++;
-				} //...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
+				} else {
+					the_func.tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
+				}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
 				if (fname=="") { 
 					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
 					fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);

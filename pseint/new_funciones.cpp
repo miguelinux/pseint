@@ -11,7 +11,8 @@ map<string,funcion> subprocesos;
 
 string main_process_name="<no_main_process>";
 
-funcion* EsFuncion(const string nombre) {
+funcion* EsFuncion(const string nombre, bool include_main_process) {
+	if (nombre==main_process_name && !include_main_process) return NULL;
 	map<string,funcion>::iterator it_func = subprocesos.find(nombre);
 	if (it_func!=subprocesos.end()) return &(it_func->second);
 	it_func = funciones.find(nombre);
@@ -65,7 +66,7 @@ string func_atan(string *arg) {
 string func_azar(string *arg) {
 	if (int(StrToDbl(*arg))<=0) {
 		if (Inter.Running())
-			ExeError(152,"Azar de 0 o negativo.");
+			ExeError(999,"Azar de 0 o negativo.");
 		return "";
 	} else
 		return IntToStr(rand() % (int)StrToDbl(*arg));

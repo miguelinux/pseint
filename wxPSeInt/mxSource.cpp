@@ -917,7 +917,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype) {
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
 						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
 						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO")) {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO") {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
