@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
 	if (real_time_syntax) while (true) {
 		memoria->HardReset();
 		programa.HardReset();
-		subprocesos.clear();
+		UnloadSubprocesos();
 		string line;
 		int lcount=0;
 		while (true) {
@@ -194,7 +194,12 @@ int main(int argc, char* argv[]) {
 		}
 		SynCheck();
 		cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
-		memoria->ListVars();
+		map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+		while (it1!=it2) {
+			if (it1->first!=main_process_name) cout<<"SUB";
+			cout<<"PROCESO "<<it1->first/*<<" "<<programa.GetLoc(it1->second.line_start,"").num_linea*/<<endl;
+			(it1++)->second.memoria->ListVars();
+		}
 		cout<<"<!{[END_OF_VARS]}!>"<<endl;
 		if (lcount) {
 			int n=programa.GetInstSize();
@@ -284,7 +289,9 @@ int main(int argc, char* argv[]) {
 			memoria->FakeReset();
 			Inter.SetStarted();
 			if (programa.GetSize()==4) checksum(programa[2].instruccion);
-			Ejecutar(EsFuncion(main_process_name)->line_start);
+			funcion *main_func=EsFuncion(main_process_name);
+			memoria=main_func->memoria;
+			Ejecutar(main_func->line_start);
 			Inter.SetFinished();
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {

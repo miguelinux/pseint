@@ -523,6 +523,8 @@ void InformUnclosedLoops(stack<Instruccion> &bucles, int &errores) {
 // ********************* Checkear la Correcta Sintaxis del Archivo **************************
 //-------------------------------------------------------------------------------------------
 int SynCheck() {
+	Memoria global_memory; // para usar al analizar instrucciones fuera de proceso/subprocesos
+	memoria=&global_memory;
 	queue<string> arguments; // para guardar los nombres de argumentos de funciones 
 	int untitled_functions_count=0; // para numerar las funciones sin nombre
 	SynErrores=0;
@@ -859,7 +861,8 @@ int SynCheck() {
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if (instruccion=="SUBPROCESO "|| instruccion=="PROCESO ") {
-				funcion the_func(x+1);
+				funcion the_func(x+1); 
+				memoria=the_func.memoria;
 				int p=0; NextToken(cadena,p);
 				if (in_process) InformUnclosedLoops(bucles,errores);
 				bool sub=instruccion[0]=='S'; in_process=true;
@@ -911,21 +914,6 @@ int SynCheck() {
 					}
 				}
 				subprocesos[fname]=the_func;
-
-				
-				
-//				else if (enable_user_functions && cadena=="SUBPROCESO") {SynError (999,"Falta nombre de subproceso."); errores++; Proceso=1;}
-//				else if (LeftCompare(cadena,"PROCESO ") || (enable_user_functions && LeftCompare(cadena,"SUBPROCESO "))) {
-//					
-//					if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
-//					scope=sub?SC_FUNC:SC_MAIN; // Indica el comienzo
-//				} else if (enable_user_functions && LeftCompare(cadena,"SUBPROCESO ")) {
-////					if (!CheckVariable(cadena.substr(8,cadena.size()-8),41)) errores++;
-////					Proceso=1; // Indica el comienzo
-//				} else if (cadena!="") {
-//					SynError (42,"Se esperaba PROCESO <nombre>."); errores++; Proceso=1;
-//					bucles.push(programa.GetLoc(x,"PROCESO"));
-//				}
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
 			if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
@@ -935,6 +923,7 @@ int SynCheck() {
 				} else {
 					SynError (108,sub?"FINSUBPROCESO mal colocado.":"FINPROCESO mal colocado."); errores++;
 				}
+				memoria=&global_memory;
 			}
 			// Controlar correcta y completa sintaxis de cada instruccion
 			if (instruccion=="DEFINIR "){  // ------------ DEFINIR -----------//
@@ -1464,10 +1453,12 @@ int SynCheck() {
 				string fname=NextToken(cadena,p);
 				funcion *func=EsFuncion(fname);
 				string args=cadena.substr(p);
-				if (args=="") args="()"; // para que siempre aparezcan las llaves y se eviten así problemas
-				if (args=="()" && func->cant_arg!=0) {SynError (999,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
-				else if (args!="()" && func->cant_arg==0) {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
-				else if (args[0]!='(') {SynError (999,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
+				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
+				if (args=="();") {
+					if (func->cant_arg!=0) {SynError (999,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
+				} else if (args!="();") {
+					if (func->cant_arg==0) {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
+				} else if (args[0]!='(') {SynError (999,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
 				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
 					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
 					if (args_last_pos!=-1) { // si faltaban cerrar parentesis, el error salto antes
@@ -1478,7 +1469,6 @@ int SynCheck() {
 							EvaluarSC(args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1),tipo,func->tipos[cant_args+1]);
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
-						cerr<<int(args.length())-1<<endl;
 						if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
 					}
 				}

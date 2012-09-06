@@ -11,7 +11,8 @@ private:
 protected:
 public:
 	void BeginInput();
-	void Add(wxString vname, char type);
+	void Add(wxString vname, bool main_process); ///< cuando el RTSyntaxManager recibe el nombre de un proceso o subproceso, lo registra en la lista con este método
+	void Add(wxString vname, char type); //  cuando el RTSyntaxManager recibe el nombre de una variable
 	void EndInput();
 	void OnTreeClick(wxTreeEvent &evt);
 	wxTreeItemId GetSelection();

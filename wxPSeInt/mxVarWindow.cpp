@@ -22,8 +22,9 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log_car.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car_num.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_main.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_func.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_desc.png")),wxBITMAP_TYPE_PNG)); // solo para completar las posibles combinaciones de bits en los tipos de variables, esta no se debería usar nunca
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_proc.png")),wxBITMAP_TYPE_PNG)); 
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_sub.png")),wxBITMAP_TYPE_PNG)); 
 	tree->AssignImageList(imglist);
 	tree_root=tree_current=tree->AddRoot("Variables");
 	tree->SetToolTip(_T("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
@@ -39,6 +40,11 @@ void mxVarWindow::BeginInput ( ) {
 	wxTreeItemId s=GetSelection(); 
 	if (s.IsOk()) last_sel=tree->GetItemText(s).BeforeFirst('['); else last_sel="";
 	tree->DeleteChildren(tree_root);
+}
+
+void mxVarWindow::Add (wxString vname, bool main_process) {
+	tree_current=tree->AppendItem(tree_root,vname,main_process?8:9);
+	if (vname.BeforeFirst('[')==last_sel) tree->SelectItem(tree_current);
 }
 
 void mxVarWindow::Add (wxString vname, char type) {

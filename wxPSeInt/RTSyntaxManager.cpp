@@ -72,7 +72,11 @@ bool RTSyntaxManager::Process (mxSource * src) {
 				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
 				src->MarkError(l-1,i-1,line,line.StartsWith("Falta cerrar "));
 			} else if (fase_num==1) {
-				var_window->Add(line.BeforeFirst(' '),line.Last());
+				wxString what=line.BeforeFirst(' ');
+				if (what=="PROCESO"||what=="SUBPROCESO")
+					var_window->Add(line.AfterFirst(' '),what=="PROCESO");
+				else
+					var_window->Add(what,line.Last());
 			} else {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 

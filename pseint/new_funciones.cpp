@@ -162,3 +162,11 @@ void LoadFunciones(bool u) {
 	}
 }
 
+void UnloadSubprocesos( ) {
+	map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+	while (it1!=it2) {
+		delete (it1++)->second.memoria;
+	}
+	subprocesos.clear();
+}
+

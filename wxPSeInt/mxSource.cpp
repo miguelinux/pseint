@@ -911,12 +911,13 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype) {
 						if (word==_T("SI")) { cur+=4; btype=BT_SI; }
 						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
 						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
+						else if (word==_T("SUBPROCESO")) { cur+=4; btype=BT_PROCESO; }
 						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) { cur+=4; btype=BT_MIENTRAS; }
 						else if (word==_T("SEGUN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
 						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
 						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")) {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO")) {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
