@@ -314,6 +314,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 	if (func->func) {
 		ret=func->func(args_values);
 		rettipo=func->tipos[0];
+#ifndef _FOR_PSEXPORT
 	} else {
 		if (Inter.Running()) {
 			Memoria *caller_memoria=memoria;
@@ -329,6 +330,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 			delete memoria;
 			memoria=caller_memoria;
 		} 
+#endif
 	}
 	if (tipo!=vt_error && !tipo.can_be(rettipo)) WriteError(999,"No coinciden los tipos.");
 	delete [] args_values;

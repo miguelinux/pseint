@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/exp_lnx_rls
 GPP=g++
-FLAGS= -O2 -I../pseint 
+FLAGS= -O2 -I../pseint -D_FOR_PSEXPORT
 LIBS= -s
 
 all: ${OBJS_DIR} ../bin/psexport

@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/exp_ppc_rls
 GPP=powerpc-apple-darwin8-g++
-FLAGS= -O2 -I../pseint 
+FLAGS= -O2 -I../pseint -D_FOR_PSEXPORT
 LIBS=
 
 all: ${OBJS_DIR} ../bin/psexport

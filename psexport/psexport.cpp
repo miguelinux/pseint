@@ -316,7 +316,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 	int deep;
 	string s;
 	
-	while (r!=q){
+	while (r!=q) {
 		s=(*r).nombre;
 		if (s=="ESCRIBIR") i_escribir(prog,(*r).par1,tabs);
 		else if (s=="BORRARPANTALLA") i_borrar(prog,(*r).par1,tabs);

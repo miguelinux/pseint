@@ -286,7 +286,8 @@ int main(int argc, char* argv[]) {
 				if (colored_output) setForeColor(COLOR_INFO);
 				cout<<"*** Ejecucion Iniciada. ***\n";
 			}
-			memoria->FakeReset();
+			map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+			while (it1!=it2) (it1++)->second.memoria->FakeReset();
 			Inter.SetStarted();
 			if (programa.GetSize()==4) checksum(programa[2].instruccion);
 			funcion *main_func=EsFuncion(main_process_name,true);

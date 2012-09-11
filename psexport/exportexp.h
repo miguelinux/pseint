@@ -354,10 +354,3 @@ string expresion(string exp) {
 	tipo_var t;
 	return expresion(exp,t);
 }
-
-//void SetTipo(string exp, char t) {
-//	if (exp.find("[",0)!=string::npos) // para que sepa el tipo
-//		memoria->a_escribir(exp.substr(0,exp.find("[",0)),t,NULL,"");
-//	else
-//		memoria->escribir(exp,t,"");
-//}
