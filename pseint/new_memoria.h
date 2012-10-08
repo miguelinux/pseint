@@ -9,6 +9,15 @@
 #include <set>
 using namespace std;
 
+class Memoria;
+
+struct alias {
+	string nom;
+	Memoria *mem;
+	alias(){}
+	alias(string n, Memoria *m):nom(n),mem(m){}
+};
+
 struct tipo_var {
 	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
 	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran
@@ -74,6 +83,9 @@ extern tipo_var vt_caracter_o_logica;
 extern tipo_var vt_numerica_entera;
 
 class Memoria {
+	map<string,alias> var_alias; // lista de aliases, para el pasaje por referencia
+	string alias_nom; Memoria *alias_mem;
+	
 	map<string,tipo_var> var_info;
 	map<string,string> var_value;
 	friend void declarar_variables(list<string> &prog, bool &use_sin_tipo, bool &use_string);
@@ -83,6 +95,21 @@ class Memoria {
 				str.erase(i);
 				break;
 			}
+	}
+	bool EsAlias(const string &s) { // mira si la variable que recibe es un alias, setea it_alias
+		map<string,alias>::iterator it_alias=var_alias.find(s);
+		if (it_alias==var_alias.end()) return false;
+		alias_nom=it_alias->second.nom;
+		alias_mem=it_alias->second.mem;
+		return true;
+	}
+	bool EsAlias(const string &s, bool) { // mira si la expresion que recibe es un alias (puede tener dimensiones, las quita si es asi), setea it_alias
+		string s2=s; QuitarIndices(s2);
+		map<string,alias>::iterator it_alias=var_alias.find(s2);
+		if (it_alias==var_alias.end()) return false;
+		alias_nom=it_alias->second.nom+s.substr(s2.size());
+		alias_mem=it_alias->second.mem;
+		return true;
 	}
 public:
 	void HardReset() {
@@ -104,67 +131,94 @@ public:
 		v.dims=dims;
 	}
 	// esta version de definir tipo se usa en las definiciones implicitas
+	void AgregarAlias(string nom_here, string nom_orig, Memoria *mem) {
+		var_alias[nom_here]=alias(nom_orig,mem);
+	}
 	bool DefinirTipo(string nombre, const tipo_var &tipo) {
 		QuitarIndices(nombre);
-		var_info[nombre].defined=true;
-		return var_info[nombre].set(tipo,true);
+		if (EsAlias(nombre)) return alias_mem->DefinirTipo(alias_nom,tipo);
+		tipo_var &vi=var_info[nombre];
+		vi.defined=true;
+		return vi.set(tipo,true);
 	}
 	// esta version de definir tipo se usa en las definiciones explictas
 	void DefinirTipo(string nombre, const tipo_var &tipo, bool rounded) {
 		QuitarIndices(nombre);
-		tipo_var &t=var_info[nombre];
-		if (rounded) t.rounded=true;
-		t.defined=true;
-		t.cb_car=tipo.cb_car;
-		t.cb_log=tipo.cb_log;
-		t.cb_num=tipo.cb_num;
-//		return var_info[nombre].set(tipo,true);
+		if (EsAlias(nombre)) return alias_mem->DefinirTipo(alias_nom,tipo,rounded);
+		tipo_var &vi=var_info[nombre];
+		if (rounded) vi.rounded=true;
+		vi.defined=true;
+		vi.cb_car=tipo.cb_car;
+		vi.cb_log=tipo.cb_log;
+		vi.cb_num=tipo.cb_num;
 	}
 	void EscribirValor(string nombre, string valor) {
+		if (EsAlias(nombre,true)) return alias_mem->EscribirValor(alias_nom,valor);
 		string nom=nombre; QuitarIndices(nom);
-		var_info[nom].enabled=true;
-		if (var_info[nom].rounded) { 
+		tipo_var &vi = var_info[nom];
+		vi.enabled=true;
+		if (vi.rounded) { 
 			size_t p=valor.find(".");
 			if (p!=string::npos) valor.erase(p);
 		}
-		var_info[nombre].used=true;
+		vi.used=true;
 		var_value[nombre]=valor;
 	}
 	int *LeerDims(string nombre) {
 		QuitarIndices(nombre);
+		if (EsAlias(nombre)) return alias_mem->LeerDims(alias_nom);
+		tipo_var &vi = var_info[nombre];
 		return var_info[nombre].dims;
 	}
 	tipo_var LeerTipo(string nombre) {
 		QuitarIndices(nombre);
-		return var_info[nombre];
+		if (EsAlias(nombre)) return alias_mem->LeerTipo(alias_nom);
+		tipo_var &vi = var_info[nombre];
+		return vi;
 	}
 	bool Existe(string nombre) {
 		QuitarIndices(nombre);
+		if (EsAlias(nombre)) return alias_mem->Existe(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
-		return it_info!=var_info.end() && it_info->second.enabled;
+		if (it_info==var_info.end()) return false;
+		tipo_var &vi=it_info->second;
+		return it_info->second.enabled;
 	}
 	bool HaSidoUsada(string nombre) {
 		QuitarIndices(nombre);
+		if (EsAlias(nombre)) return alias_mem->HaSidoUsada(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
-		return it_info!=var_info.end() && it_info->second.enabled && it_info->second.used;
+		if (it_info==var_info.end()) return false;
+		tipo_var &vi=it_info->second;
+		return it_info->second.enabled && it_info->second.used;
 	}
 	bool EstaInicializada(string nombre) {
+		string nom=nombre; QuitarIndices(nom);
+		if (EsAlias(nombre)) return alias_mem->EstaInicializada(alias_nom);
+		map<string,tipo_var>::iterator it_info = var_info.find(nom);
+		if (it_info==var_info.end()) return false;
+		tipo_var &vi=it_info->second;
 		map<string,string>::iterator it_value = var_value.find(nombre);
 		return it_value!=var_value.end();
 	}
 	bool EstaDefinida(string nombre) {
 		QuitarIndices(nombre);
-		return var_info.find(nombre)!=var_info.end() && var_info[nombre].defined;
+		if (EsAlias(nombre)) return alias_mem->EstaDefinida(alias_nom);
+		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
+		if (it_info==var_info.end()) return false;
+		tipo_var &vi=it_info->second;
+		return  var_info[nombre].defined;
 	}
 	string LeerValor(string nombre) {
+		if (EsAlias(nombre,true)) return alias_mem->LeerValor(alias_nom);
 		string ret=var_value[nombre];
 		if (ret.size()==0) {
-			string tnombre=nombre; QuitarIndices(tnombre);
-			tipo_var &t = var_info[tnombre];
-			t.used=true; // fuera del if no hace falta porque si ret!=0 es porque paso por EscribirValor, y entonces ya esta used=true
-			if (t==vt_numerica)
+			string nom=nombre; QuitarIndices(nom);
+			tipo_var &vi = var_info[nom];
+			vi.used=true; // fuera del if no hace falta porque si ret!=0 es porque paso por EscribirValor, y entonces ya esta used=true
+			if (vi==vt_numerica)
 				return "0";
-			else if (t==vt_logica)
+			else if (vi==vt_logica)
 				return "FALSO";
 			else
 				return "";

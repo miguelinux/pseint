@@ -900,8 +900,16 @@ int SynCheck() {
 							if (!CheckVariable(tok)) errores++;
 							the_func.AddArg(tok);
 							tok=NextToken(cadena,p);
-							if (tok!="," && tok!=")" && tok!="") { SynError (999,"Se esperaba coma(,) o parentesis ())."); errores++; }
-							else if (tok==",") tok=NextToken(cadena,p);
+							if (tok=="POR") {
+								tok=NextToken(cadena,p);
+								if (tok!="REFERENCIA"&&tok!="COPIA"&&tok!="VALOR") {
+									SynError (999,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
+								} else the_func.SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
+								tok=NextToken(cadena,p);
+							} else if (tok!="," && tok!=")" && tok!="") { 
+								SynError (999,"Se esperaba coma(,) o parentesis ())."); errores++;
+							} 
+							if (tok==",") { tok=NextToken(cadena,p); }
 						}
 					}
 					if (!closed) {

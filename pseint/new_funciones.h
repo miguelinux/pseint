@@ -8,13 +8,17 @@ using namespace std;
 
 #define FUNC_MAX_NUM_ARGS 3
 
+enum PASAJE {PP_VALOR, PP_REFERENCIA, PP_DESCONOCIDO};
+
 struct funcion {
 	int cant_arg;
+	vector<PASAJE> pasajes; // tipo de pasaje de parametros (solo para las definidas por el usuario)
 	vector<tipo_var> tipos; // la pos 0 es para el tipo que retorna
-	vector<string> nombres; // nombres de los argumentos, la pos 0 es para el valor de retorno
+	vector<string> nombres; // nombres de los argumentos, la pos 0 es para el valor de retorno (solo para las definidas por el usuario)
 	string (*func)(string *args); // NULL si es de las definidas por el usuario como subproceso
-	int line_start; // linea del pseudocodigo donde comienza la funcion
-	void AddArg(string arg) { nombres.push_back(arg); tipos.push_back(vt_desconocido); cant_arg++; }
+	int line_start; // linea del pseudocodigo donde comienza la funcion (solo para las definidas por el usuario)
+	void AddArg(string arg, PASAJE por=PP_DESCONOCIDO) { nombres.push_back(arg); tipos.push_back(vt_desconocido); pasajes.push_back(por); cant_arg++; }
+	void SetLastPasaje(PASAJE por) { pasajes[pasajes.size()-1]=por; } // para modificar el tipo de pasaje del último argumento insertado con AddArg
 	Memoria *memoria; // instancia de la clase memoria que se usa para el analisis sintático
 	funcion(){}
 //	~funcion() { if (!func) delete memoria; } // esto trae problemas si se copian funcs, por eso se borran aparte, es menos lio que el ctor de copia correcto

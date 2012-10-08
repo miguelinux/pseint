@@ -274,6 +274,35 @@ string ev_aux(string a,int &tabs)
 #define ev_return(a) return a
 #endif
 
+// estructura auxiliar para la funcion EvaluarFuncion, para que el destructor del objeto libere la memoria si la función aborta de forma temprana, entre otras cosas
+struct info_de_llamada { 
+	string *values;
+	tipo_var *tipos;
+	PASAJE *pasajes;
+	info_de_llamada(int n) {
+		values=new string[n];
+		tipos=new tipo_var[n];
+		pasajes=new PASAJE[n];
+	}
+	~info_de_llamada() {
+		delete []values;
+		delete []tipos;
+		delete []pasajes;
+	}
+};
+
+static bool EsArreglo(const string &nombre) {
+	return memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
+}
+
+static bool SirveParaReferencia(string &nombre) {
+	int p1=0, p2=nombre.size()-1;
+	int po=BuscarOperador(nombre,p1,p2);
+	if (po==-1) return false;
+	cerr<<nombre<<endl;
+	return true;
+}
+
 string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
 	if (for_expresion && func->tipos[0]==vt_error) {
 		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
@@ -288,8 +317,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 		return("");
 	}
 	// parsear argumentos
-	string *args_values=new string[ca];
-	tipo_var *args_tipos=new tipo_var[ca];
+	info_de_llamada args(ca);
 	b=0; int b2;
 	for (int i=0;i<ca;i++) {
 		b2=BuscarComa(argumentos,b+1,l,',');
@@ -301,18 +329,34 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 			WriteError(999,ss.str());
 			return("");
 		} else {
-			args_values[i]=Evaluar(argumentos,p1,p2,args_tipos[i]);
+			string arg_actual = argumentos.substr(p1,p2-p1+1);
+			if (EsArreglo(arg_actual)) { // los arreglos siempre pasan por referencia
+				if (func->pasajes[i+1]==PP_VALOR) { // si la funcion explicita por valor, error
+					WriteError(999,string("Los arreglos solo pueden pasarse a subprocesos/funciones por referencia (")+arg_actual+(")"));
+					return "";
+				}
+				args.pasajes[i]=PP_REFERENCIA;
+				args.values[i]=arg_actual;
+			} else if (func->pasajes[i+1]==PP_REFERENCIA) {
+				if (SirveParaReferencia(arg_actual)) { // si el valor dado es una variable, no una expresion
+					WriteError(999,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")"));
+					return "";
+				}
+				args.pasajes[i]=PP_REFERENCIA;
+				args.values[i]=arg_actual;
+			} else {
+				args.pasajes[i]=PP_VALOR;
+				args.values[i]=Evaluar(argumentos,p1,p2,args.tipos[i]);
+			}
 		}
 	}
 	if (tipo==vt_error) {
-		delete [] args_values;
-		delete [] args_tipos;
 		ev_return("");
 	}
 	// obtener salida
 	string ret; tipo_var rettipo;
 	if (func->func) {
-		ret=func->func(args_values);
+		ret=func->func(args.values);
 		rettipo=func->tipos[0];
 #ifndef _FOR_PSEXPORT
 	} else {
@@ -321,8 +365,12 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 			memoria=new Memoria;
 			tipo_var tipo_arg;
 			for(int i=0;i<func->cant_arg;i++) { 
-				memoria->EscribirValor(func->nombres[i+1],args_values[i]);
-				memoria->DefinirTipo(func->nombres[i+1],args_tipos[i]);
+				if (args.pasajes[i]==PP_VALOR) { // por valor
+					memoria->EscribirValor(func->nombres[i+1],args.values[i]);
+					memoria->DefinirTipo(func->nombres[i+1],args.tipos[i]);
+				} else { // por referencia
+					memoria->AgregarAlias(func->nombres[i+1],args.values[i],caller_memoria);
+				}
 			}
 			Ejecutar(func->line_start);
 			ret=memoria->LeerValor(func->nombres[0]);
@@ -333,8 +381,6 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 #endif
 	}
 	if (tipo!=vt_error && !tipo.can_be(rettipo)) WriteError(999,"No coinciden los tipos.");
-	delete [] args_values;
-	delete [] args_tipos;
 	tipo=rettipo;
 	return ret;
 }

@@ -33,7 +33,7 @@ const wxChar *mxSourceWords1_conds =
 	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor ");
 
 const wxChar *mxSourceWords1_funcs =
-	_T("subproceso finsubproceso ");
+	_T("subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia");
 
 const wxChar* mxSourceWords2_math =
 	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon ");
