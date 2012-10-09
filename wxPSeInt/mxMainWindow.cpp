@@ -1355,6 +1355,7 @@ void mxMainWindow::OnLink (wxHtmlLinkEvent &event) {
 }
 
 void mxMainWindow::SetWordsForSources() {
+	mxSource::SetAutocompletion();
 	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
 		((mxSource*)(notebook->GetPage(i)))->SetWords();
 		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());

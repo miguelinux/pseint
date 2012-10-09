@@ -7,7 +7,6 @@
 #define mxSOURCE_UNDERL 4
 #define mxSOURCE_HIDDEN 8
 
-#define MAX_COMP_SIZE 100
 #include <vector>
 using namespace std;
 class mxInputDialog;
@@ -18,11 +17,8 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 
 class mxSource : public wxStyledTextCtrl {
 private:
-//	static const wxChar *comp_list[MAX_COMP_SIZE];
-//	static const wxChar *comp_text[MAX_COMP_SIZE];
 	int comp_from, comp_to;
 	int last_s1,last_s2;
-//	static int comp_count;
 	bool is_example;
 	mxProcess *flow;
 	wxSocketBase *socket;
@@ -39,6 +35,7 @@ public:
 	void SetFileName(wxString afilename);
 	void SetStyling(bool colour=true);
 	void SetWords();
+	static void SetAutocompletion();
 	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle);
 	void SetFieldIndicator(int p1, int p2); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
