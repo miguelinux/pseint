@@ -295,14 +295,6 @@ static bool EsArreglo(const string &nombre) {
 	return memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
 }
 
-static bool SirveParaReferencia(string &nombre) {
-	int p1=0, p2=nombre.size()-1;
-	int po=BuscarOperador(nombre,p1,p2);
-	if (po==-1) return false;
-	cerr<<nombre<<endl;
-	return true;
-}
-
 string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
 	if (for_expresion && func->tipos[0]==vt_error) {
 		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
@@ -338,11 +330,8 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 				args.pasajes[i]=PP_REFERENCIA;
 				args.values[i]=arg_actual;
 			} else if (func->pasajes[i+1]==PP_REFERENCIA) {
-				if (SirveParaReferencia(arg_actual)) { // si el valor dado es una variable, no una expresion
-					WriteError(999,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")"));
-					return "";
-				}
 				args.pasajes[i]=PP_REFERENCIA;
+				// evaluar expresiones en indices si tiene
 				args.values[i]=arg_actual;
 			} else {
 				args.pasajes[i]=PP_VALOR;

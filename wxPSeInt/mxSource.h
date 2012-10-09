@@ -14,7 +14,7 @@ class mxInputDialog;
 class mxProcess;
 class wxSocketBase;
 
-enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_PROCESO};
+enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_PROCESO,BT_SUBPROCESO,BT_FUNCION};
 
 class mxSource : public wxStyledTextCtrl {
 private:
@@ -65,7 +65,7 @@ public:
 	void SetModify(bool);
 	void MessageReadOnly();
 	
-	int GetIndentLevel(int l, bool goup, int *btype=NULL);
+	int GetIndentLevel(int l, bool goup, int *btype=NULL, bool diff_proc_sub_func=false);
 	void Indent(int l1, int l2);
 	void IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);

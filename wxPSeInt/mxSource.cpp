@@ -881,7 +881,8 @@ void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
 		IndentLine(i);
 }
 
-int mxSource::GetIndentLevel(int l, bool goup, int *e_btype) {
+// si diff_proc_sub_func==false, proceso, subproceso y funcion devuelven BT_PROCESO (para el indentado es lo mismo, cambia para el autoclose)
+int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_func) {
 	int btype=BT_NONE;
 	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
 	if (l<1) return 0;
@@ -913,7 +914,8 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype) {
 						if (word==_T("SI")) { cur+=4; btype=BT_SI; }
 						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
 						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
-						else if (word==_T("SUBPROCESO")) { cur+=4; btype=BT_PROCESO; }
+						else if (word==_T("FUNCION")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
+						else if (word==_T("SUBPROCESO")) { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
 						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) { cur+=4; btype=BT_MIENTRAS; }
 						else if (word==_T("SEGUN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
@@ -1145,7 +1147,7 @@ void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
 void mxSource::TryToAutoCloseSomething (int l) {
 	// ver si se abre una estructura
 	int btype;
-	GetIndentLevel(l,false,&btype); 
+	GetIndentLevel(l,false,&btype,true); 
 	// buscar la siguiente linea no nula
 	int l2=l+1,ln=GetLineCount();
 	if (btype==BT_NONE||btype==BT_SINO||btype==BT_PROCESO||btype==BT_CASO) return;
@@ -1160,7 +1162,19 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	while (i<sl && sl2[i]==' '||sl2[i]=='\t')i++;
 	if (i) sl2.Remove(0,i);
 	// agregar FinAlgo
-	if (btype==BT_PARA) {
+	if (btype==BT_PROCESO) {
+		if (sl2.StartsWith("FINPROCESO") || sl2.StartsWith("FIN PROCESO")) return;
+		InsertText(PositionFromLine(l+1),"FinProceso\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_SUBPROCESO) {
+		if (sl2.StartsWith("FINSUBPROCESO") || sl2.StartsWith("FIN SUBPROCESO")) return;
+		InsertText(PositionFromLine(l+1),"FinSubProceso\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_FUNCION) {
+		if (sl2.StartsWith("FINFUNCION") || sl2.StartsWith("FIN FUNCION")) return;
+		InsertText(PositionFromLine(l+1),"FinFuncion\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_PARA) {
 		if (sl2.StartsWith("FINPARA") || sl2.StartsWith("FIN PARA")) return;
 		InsertText(PositionFromLine(l+1),"FinPara\n");
 		IndentLine(l+1,true);

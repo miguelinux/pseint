@@ -519,6 +519,26 @@ void InformUnclosedLoops(stack<Instruccion> &bucles, int &errores) {
 	}
 }
 
+static bool SirveParaReferencia(string &s) {
+	int p=0, l=s.size(), parentesis=0;
+	bool in_name=true; // si estamos en la primer parte (nombre) o segunda (indices si es un arreglo)
+	while (p<l) {
+		if (s[p]=='(') {
+			if (in_name) {
+				if (!CheckVariable(s.substr(0,p))||EsFuncion(s.substr(0,p))) return false;
+				in_name=false;
+			}
+			parentesis++;
+		} else if (s[p]==')') {
+			parentesis--;
+		} else if (parentesis==0 && !in_name) return false; // cualquier operador fuera de parentesis indica expresion y no es legal
+		p++;
+		
+	}
+	if (in_name && (!CheckVariable(s)||EsFuncion(s)) ) return false;
+	return true;
+}
+
 //-------------------------------------------------------------------------------------------
 // ********************* Checkear la Correcta Sintaxis del Archivo **************************
 //-------------------------------------------------------------------------------------------
@@ -1476,7 +1496,11 @@ int SynCheck() {
 						do {
 							pos_coma=BuscarComa(args,pos_coma+1,args_last_pos,',');
 							if (pos_coma==-1) pos_coma=args_last_pos;
-							EvaluarSC(args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1),tipo,func->tipos[cant_args+1]);
+							string arg_actual=args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1);
+							if (!SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
+								if (func->pasajes[cant_args+1]==PP_REFERENCIA) { SynError(999,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
+								else EvaluarSC(arg_actual,tipo,func->tipos[cant_args+1]);
+							}
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
 						if (cant_args!=func->cant_arg) { SynError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
