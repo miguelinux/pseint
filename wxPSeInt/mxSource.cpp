@@ -84,8 +84,14 @@ struct comp_list_item {
 static comp_list_item comp_list[MAX_COMP_SIZE];
 static int comp_count=-1;
 
-//const wxChar *mxSource::comp_list[MAX_COMP_SIZE];
-//const wxChar *mxSource::comp_text[MAX_COMP_SIZE];
+static bool EsLetra(const char &c) {
+	return 
+		c=='_'||
+		((c|32)>='a'&&(c|32)<='z')||
+		c=='á'||c=='Á'||c=='é'||c=='É'||
+		c=='ó'||c=='Ó'||c=='í'||c=='Í'||
+		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ';
+}
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
@@ -155,12 +161,14 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count++]=comp_list_item(_T("Fin SubProceso"),_T("Fin SubProceso\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("FinFuncion"),_T("FinFuncion\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinPara"),_T("FinPara\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("FinSubProceso"),_T("FinSubProceso\n"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Funcion"),_T("Funcion "),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "),false,false);
@@ -170,6 +178,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 		comp_list[comp_count++]=comp_list_item(_T("Opcion "),_T("Opcion "),true,false);
 		comp_list[comp_count++]=comp_list_item(_T("Otro Modo:"),_T("Otro Modo:\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Para"),_T("Para "),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"),false,false);
+		comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Proceso"),_T("Proceso "),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Repetir"),_T("Repetir\n"),false,false);
 		comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "),false,false);
@@ -464,6 +474,20 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			UserListShow(1,res);
 			SetCurrentPos(p2);
 		} else
+		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("POR")) {
+			wxString res;
+			for (int i=0;i<comp_count;i++) {
+				if (comp_list[i][0]=='P'&&comp_list[i][1]=='O'&&comp_list[i][2]=='R'&&comp_list[i][3]==' ') {
+					if (res.Len())
+						res<<_T("|")<<comp_list[i];
+					else
+						res=comp_list[i];
+				}
+			}
+			SetCurrentPos(p1);
+			UserListShow(1,res);
+			SetCurrentPos(p2);
+		} else
 		if (config->lang.coloquial_conditions) {
 			int s=GetStyleAt(p2-2);
 			if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
@@ -522,11 +546,13 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		int s = GetStyleAt(p);
 		if (s!=wxSTC_C_CHARACTER && s!=wxSTC_C_STRING && s!=wxSTC_C_STRINGEOL && s!=wxSTC_C_COMMENTLINE) {
 			int p2=p+1;
-			while (p>0 && !(GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
+			while (p>=0 && !(GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
 				p--;
 			wxString text = GetTextRange(p+1,p2).MakeLower();
 			if (GetTextRange(p-3,p+1).Upper()==_T("FIN ")) return;
-			if (text==_T("leer")||text==_T("definir"))
+			if (text==_T("función")||text==_T("funcion")||text==_T("subproceso"))
+				ShowCalltip(GetCurrentPos(),_T("{variable de retorno} <- {nombre} ( {lista de argumentos, separados por coma} )\n{nombre} ( {lista de argumentos, separados por coma} )"));
+			else if (text==_T("leer")||text==_T("definir"))
 				ShowCalltip(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
 			else if (text==_T("esperar"))
 				ShowCalltip(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
@@ -832,7 +858,7 @@ void mxSource::IndentLine(int l, bool goup) {
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
 	if (i<n) {
-		while (i<n && (line[i]=='_'||((line[i]|32)>='a'&&(line[i]|32)<='z'))) i++;
+		while (i<n && EsLetra(line[i])) i++;
 		if (ignore_next)
 			ignore_next=false;
 			else {
@@ -848,7 +874,7 @@ void mxSource::IndentLine(int l, bool goup) {
 			else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
 			else if (word==_T("FINSI")) cur-=4;
 			else if (word==_T("FINPROCESO")) cur-=4;
-			else if (word==_T("FINSUBPROCESO")) cur-=4;
+			else if (word==_T("FINSUBPROCESO")||word==_T("FINFUNCIÓN")||word==_T("FINFUNCION")) cur-=4;
 			else {
 				bool comillas=false;
 				while (i<n) {
@@ -902,7 +928,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 		} else if (!comillas) {
 			if (c=='/' && i+1<n && line[i+1]=='/')  return cur;
 			if (c==':' && line[i+1]!='=') { cur+=4; btype=BT_CASO; }
-			else if (c!='_'&&((c|32)<'a'||(c|32)>'z')) {
+			else if (!EsLetra(c)) {
 				if (wstart+1<i) {
 					if (ignore_next)
 						ignore_next=false;
@@ -914,14 +940,14 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						if (word==_T("SI")) { cur+=4; btype=BT_SI; }
 						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
 						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
-						else if (word==_T("FUNCION")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
+						else if (word==_T("FUNCION")||word==_T("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
 						else if (word==_T("SUBPROCESO")) { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
 						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) { cur+=4; btype=BT_MIENTRAS; }
 						else if (word==_T("SEGUN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
 						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
 						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO") {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION") {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
@@ -1058,11 +1084,11 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
 				if (s[i]==';'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
-				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && ((s[i+8]|32)<'a'||(s[i+8]|32)>'z') && (s[i+8]<'0'||s[i+8]>'9') && s[i+8]!='_') {
+				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8])) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
 				}
-				else if ((s[i]|32)=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && ((s[i+5]|32)<'a'||(s[i+5]|32)>'z') && (s[i+5]<'0'||s[i+5]>'9') && s[i+5]!='_') {
+				else if ((s[i]|32)=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5])) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+5); 
 					i+=4; starting=true;
 				}
