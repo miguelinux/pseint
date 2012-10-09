@@ -26,7 +26,7 @@ void RTSyntaxManager::Start ( ) {
 }
 
 void RTSyntaxManager::Stop ( ) {
-	if (the_one->pid<=0) return;
+	if (the_one && the_one->pid<=0) return;
 	the_one->Kill(the_one->pid,wxSIGKILL);
 }
 
