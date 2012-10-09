@@ -109,6 +109,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_STEPSTEP_H, mxMainWindow::OnConfigStepStepH)
 //	EVT_MENU(mxID_CONFIG_HIGHRES, mxMainWindow::OnConfigHighRes)
 
+	EVT_BUTTON(mxID_CMD_SUBPROCESO, mxMainWindow::OnCmdSubProceso)
 	EVT_BUTTON(mxID_CMD_ASIGNAR, mxMainWindow::OnCmdAsignar)
 	EVT_BUTTON(mxID_CMD_LEER, mxMainWindow::OnCmdLeer)
 	EVT_BUTTON(mxID_CMD_ESCRIBIR, mxMainWindow::OnCmdEscribir)
@@ -360,6 +361,8 @@ void mxMainWindow::CreateCommandsPanel() {
 	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"))->SetToolTip(tt);
+	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,_T("subproceso.png"),_T("SubProceso")))->SetToolTip(tt);
+	if (!config->lang.enable_user_functions) button_subproc->Hide();
 	panel->SetSizerAndFit(sizer);
 
 	wxAuiPaneInfo info_helper,info_win;
@@ -861,6 +864,22 @@ void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 	InsertCode(toins);
 }
 
+void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
+	if (config->auto_quickhelp) 
+		ShowQuickHelp(help->GetCommandText(_T("SUBPROCESO")));
+	wxArrayString toins;
+	toins.Add(_T("SubProceso {varaible_de_retorno} <- {Nombre} ( {Argumentos} )"));
+	toins.Add(_T("\t"));
+	toins.Add(_T("FinSubProceso"));
+	toins.Add(_T(""));
+	IF_THERE_IS_SOURCE {
+		mxSource *source = CURRENT_SOURCE;
+		source->SetSelection(0,0);
+		source->EnsureVisibleEnforcePolicy(0);
+	}
+	InsertCode(toins);
+}
+
 void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(help->GetCommandText(_T("SI")));
@@ -903,7 +922,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		int line = source->LineFromPosition(ss);
 		int indent = source->GetLineIndentation(line), oline=line;
 		for (unsigned int i=0;i<toins.GetCount();i++) {
-			if (i) 
+//			if (i) 
 				source->InsertText(source->PositionFromLine(line),_T("\n"));
 			source->SetLineIndentation(line,indent);
 			int pos = source->GetLineIndentPosition(line);
@@ -1319,6 +1338,8 @@ void mxMainWindow::OnViewNotebookPrev(wxCommandEvent &evt){
 }
 
 void mxMainWindow::OnDoThat (wxCommandEvent &event) {
+	button_subproc->Show(config->lang.enable_user_functions);
+	commands->Layout();
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {

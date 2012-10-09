@@ -42,6 +42,7 @@ private:
 	void CreateDebugControlsPanel();
 	wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
 	wxAuiNotebook *notebook; 
+	wxButton *button_subproc;
 public:
 	
 	mxSource *NewProgram();
@@ -130,6 +131,7 @@ public:
 	void OnCmdRepetir(wxCommandEvent &evt);
 	void OnCmdSi(wxCommandEvent &evt);
 	void OnCmdSegun(wxCommandEvent &evt);
+	void OnCmdSubProceso(wxCommandEvent &evt);
 	void InsertCode(wxArrayString &toins);
 
 	void OnPaneClose(wxAuiManagerEvent& event);
