@@ -103,8 +103,8 @@ int main(int argc, char* argv[]) {
 				force_dot_and_comma=true;
 			else if (str=="--hidetringfunctions")
 				enable_string_functions=false;
-			else if (str=="--hidetringfunctions")
-				enable_string_functions=false;
+			else if (str=="--disableuserfunctions")
+				enable_user_functions=false;
 			else if (str=="--coloquialconditions")
 				coloquial_conditions=word_operators=true;
 			else if (str=="--fixwincharset")

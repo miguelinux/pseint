@@ -1,3 +1,12 @@
+2012109
+	Corregido el problema de los tooltips muy largos en Windows.
+	La lista de opciones para el autocompletado ahora varía según el perfil del lenguaje.
+	Mejorado el autocompletado y las ayudas emergentes del editor de pseudocódigo para la sintaxis de subprocesos.
+	
+20121008
+	Ahora se pueden pasar argumentos por referencia a un subproceso.
+	Agregado el perfil ITP-ISIC.
+	
 20120906
 	Los subprocesos que no requieren argumentos se pueden invocar sin paréntesis.
 	El panel Lista de Variables muestra las variables por proceso/subproceso en forma de arbol.

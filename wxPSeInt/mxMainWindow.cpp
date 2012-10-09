@@ -350,7 +350,7 @@ void mxMainWindow::CreateCommandsPanel() {
 	wxPanel *panel = commands = new wxPanel(this);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	wxString tt=_T("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma.");
+	wxString tt=utils->FixTooltip("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma.");
 	
 	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,_T("escribir.png"),_T("Escribir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,_T("leer.png"),_T("Leer"))->SetToolTip(tt);

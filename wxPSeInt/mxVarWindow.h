@@ -15,6 +15,7 @@ public:
 	void Add(wxString vname, char type); //  cuando el RTSyntaxManager recibe el nombre de una variable
 	void EndInput();
 	void OnTreeClick(wxTreeEvent &evt);
+	void OnTreeTooltip(wxTreeEvent &evt);
 	wxTreeItemId GetSelection();
 	mxVarWindow(wxWindow *parent);
 	~mxVarWindow();

@@ -251,11 +251,13 @@ bool CheckVariable(string str, int errcode) {
 	// Comprobar que no sea palabra reservada
 	if (EsFuncion(str)) 
 		ret=false;
-	if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
+	else if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
 		ret=false;
-	if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" || str=="DIMENSION" || str=="PROCESO" || str=="SUBPROCESO" || str=="FINSI" ||  str=="" || str=="FINPARA")
+	else if (str=="REPETIR" || str=="SI" || str=="SINO" || str=="ENTONCES" || str=="DIMENSION" || str=="PROCESO" || str=="FINSI" ||  str=="" || str=="FINPARA")
 		ret=false;
-	if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINSUBPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO")
+	else if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO")
+		ret=false;
+	else if (enable_user_functions && (str=="FINSUBPROCESO" || str=="SUBPROCESO" ||str=="FINFUNCION" || str=="FUNCION" ||str=="FINFUNCIÓN" || str=="FUNCIÓN") )
 		ret=false;
 	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no valido (")+str+")."); 
 	return ret;

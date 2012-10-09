@@ -9,7 +9,10 @@ mxVarWindow *var_window=NULL;
 
 BEGIN_EVENT_TABLE(mxVarWindow,wxPanel) 
 	EVT_TREE_SEL_CHANGED(wxID_ANY,mxVarWindow::OnTreeClick)
+	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
 END_EVENT_TABLE()
+	
+static wxString tooltip;
 
 mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(150,100)) {
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
@@ -27,7 +30,7 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_sub.png")),wxBITMAP_TYPE_PNG)); 
 	tree->AssignImageList(imglist);
 	tree_root=tree_current=tree->AddRoot("Variables");
-	tree->SetToolTip(_T("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
+	tree->SetToolTip(tooltip=utils->FixTooltip("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
 	sizer->Add(tree,wxSizerFlags().Proportion(1).Expand());
 	SetSizer(sizer);
 }
@@ -74,6 +77,10 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
 	src->HighLight(tree->GetItemText(it).BeforeFirst('['));
+}
+
+void mxVarWindow::OnTreeTooltip(wxTreeEvent &evt) {
+	evt.SetToolTip(tooltip); // for windows only
 }
 
 wxTreeItemId mxVarWindow::GetSelection ( ) {

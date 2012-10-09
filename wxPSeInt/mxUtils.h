@@ -19,8 +19,6 @@ class wxButton;
 class mxUtils {
 private:
 public:
-	mxUtils();
-	~mxUtils();
 	wxMenuItem *AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename);
 	wxString JoinDirAndFile(wxString dir, wxString file);
 	void AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text);
@@ -30,6 +28,7 @@ public:
 	wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, bool value);
 	wxString GetOutput(wxString command);
 	wxString ToHtml(wxString text);
+	wxString FixTooltip(wxString tooltip);
 };
 
 extern mxUtils *utils;

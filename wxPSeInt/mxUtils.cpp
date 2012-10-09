@@ -8,14 +8,6 @@
 
 mxUtils *utils;
 
-mxUtils::mxUtils() {
-	
-}
-
-mxUtils::~mxUtils() {
-	
-}
-
 wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename) {
 	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);
 	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,_T("menu")),filename);
@@ -100,3 +92,17 @@ wxString mxUtils::ToHtml(wxString text) {
 	text.Replace(_T(" "),_T("&nbsp;"));
 	return text;
 }
+
+wxString mxUtils::FixTooltip (wxString tooltip) {
+#ifdef __WIN32__
+	int p=0, l=tooltip.Len(),c=0;
+	while (p<l) {
+		if (c>50 && tooltip[p]==' ') {
+			tooltip[p]='\n'; c=0;
+		}
+		c++; p++;
+	}
+#endif
+	return tooltip;
+}
+

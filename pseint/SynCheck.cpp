@@ -517,7 +517,7 @@ void InformUnclosedLoops(stack<Instruccion> &bucles, int &errores) {
 		else if (bucles.top()=="SI") {SynError (117,"Falta cerrar SI.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
 		else if (bucles.top()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
 		else if (bucles.top()=="PROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar PROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
-		else if (bucles.top()=="SUBPROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar SUBPROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
+		else if (enable_user_functions && bucles.top()=="SUBPROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar SUBPROCESO.",bucles.top().num_linea,bucles.top().num_instruccion); errores++;}
 		bucles.pop();
 	}
 }
@@ -883,7 +883,7 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," PASO-"," PASO -");
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
-			if (instruccion=="SUBPROCESO "|| instruccion=="PROCESO ") {
+			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
 				funcion the_func(x+1); 
 				memoria=the_func.memoria;
 				int p=0; NextToken(cadena,p);
@@ -949,7 +949,7 @@ int SynCheck(int linea_from, int linea_to) {
 				subprocesos[fname]=the_func;
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
-			if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
+			if (enable_user_functions && (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
 				bool sub=cadena!="FINPROCESO";
 				if (!bucles.empty() && ( (!sub&&bucles.top()=="PROCESO")||(sub&&bucles.top()=="SUBPROCESO") ) ) {
 					bucles.pop();
