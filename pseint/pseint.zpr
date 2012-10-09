@@ -20,11 +20,11 @@ cursor=3669
 [source]
 path=intercambio.cpp
 cursor=4878
-marker=37
 marker=200
+marker=37
 [source]
 path=SynCheck.cpp
-cursor=65255
+cursor=21574
 breakpoint=522
 breakpoint=1327
 marker=1499
@@ -37,8 +37,8 @@ open=true
 path=Ejecutar.cpp
 cursor=221
 breakpoint=241
-marker=372
 marker=178
+marker=372
 [source]
 path=global.cpp
 cursor=928
@@ -54,8 +54,8 @@ path=zcurlib.cpp
 cursor=2812
 [source]
 path=new_evaluar.cpp
-cursor=8988
-breakpoint=450
+cursor=8456
+breakpoint=434
 open=true
 [source]
 path=new_memoria.cpp
@@ -226,4 +226,5 @@ enable_profiling=0
 [inspections]
 name=<current_inspections>
 expr=s._M_dataplus._M_p
+expr=in_name
 [end]
