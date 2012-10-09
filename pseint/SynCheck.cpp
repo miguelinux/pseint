@@ -56,6 +56,9 @@ static bool IsNumericConstant(string &str) {
 
 // pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
 static void SynCheckAux1(string &cadena) {
+	// corregir saltos de linea win/linux
+	if (cadena.size()>0 && (cadena[cadena.size()-1]==13||cadena[cadena.size()-1]==10) ) cadena[cadena.size()-1]=' ';
+	if (cadena.size()>1 && (cadena[cadena.size()-2]==13||cadena[cadena.size()-2]==10) ) cadena[cadena.size()-2]=' ';
 	bool comillas=false;
 	int len = cadena.size();
 	// primero, todo a mayúsculas y cambio de comillas y paréntesis
@@ -542,14 +545,15 @@ static bool SirveParaReferencia(string &s) {
 //-------------------------------------------------------------------------------------------
 // ********************* Checkear la Correcta Sintaxis del Archivo **************************
 //-------------------------------------------------------------------------------------------
-int SynCheck() {
+
+int SynCheck(int linea_from, int linea_to) {
+	
+	programa.SetRefPoint(linea_to);
 	Memoria global_memory; // para usar al analizar instrucciones fuera de proceso/subprocesos
 	memoria=&global_memory;
 	queue<string> arguments; // para guardar los nombres de argumentos de funciones 
-	int untitled_functions_count=0; // para numerar las funciones sin nombre
+	static int untitled_functions_count=0; // para numerar las funciones sin nombre
 	SynErrores=0;
-	programa.PushBack("");
-	programa.Insert(0,"");
 	stack <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
 	bucles.push(Instruccion("CHECK",1,1));
 	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
@@ -559,17 +563,10 @@ int SynCheck() {
 	string cadena, instruccion, str;
 	
 	// Checkear sintaxis y reorganizar el codigo
-	for (int x=1;x<programa.GetSize();x++){
+	for (int x=linea_from;x<programa.GetRefPoint();x++){
 		Inter.SetLineAndInstructionNumber(x);
 		cadena=programa[x];
 		Lerrores=errores;
-		
-		// Corregir formato de fin de linea
-		if (cadena[cadena.size()-1]==13) cadena[cadena.size()-1]=' ';
-		if (cadena[cadena.size()-1]==10) cadena[cadena.size()-1]=' ';
-		if (cadena[cadena.size()-2]==13) cadena[cadena.size()-2]=' ';
-		if (cadena[cadena.size()-2]==10) cadena[cadena.size()-2]=' ';
-		
 		
 		// Ignorar lineas de comentarios
 		{
@@ -578,8 +575,12 @@ int SynCheck() {
 			// Pasar todo a mayusculas, cambiar comillas y corchetes
 			comillas=-1;
 
-			// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
-			SynCheckAux1(cadena);
+			// puede haber que trimear las cadenas que surgieron de separar lineas con mas de una instruccion
+			int pt1=0,pt2=cadena.size(), l=cadena.size();
+			while (pt1<l && cadena[pt1]==' ') pt1++;
+			while (pt2>0 && cadena[pt2-1]==' ') pt2--;
+			if (pt1!=0||pt2!=l) cadena=cadena.substr(pt1,pt2-pt1);
+			
 			
 			int len = cadena.size();
 			if (lazy_syntax && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
@@ -1506,7 +1507,7 @@ int SynCheck() {
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
 						if (cant_args!=func->cant_arg) { SynError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
-						if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
+						else if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
 					}
 				}
 			}
@@ -1577,3 +1578,33 @@ int ParseInspection(string &cadena) {
 	return errores+flag_pyc;
 }
 
+int SynCheck() {
+	programa.PushBack(""); // linea en blanco al final, para que era?
+	programa.Insert(0,""); // linea en blanco al principio, para que era?
+	int errores=0;
+	
+	// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
+	for(int i=0;i<programa.GetSize();i++) SynCheckAux1(programa[i].instruccion);
+	
+	// parsear primero las funciones/subprocesos (j=0), luego el proceso (j=1)
+	for(int j=0;j<2;j++) {
+		bool era_proceso=false;
+		for(int i0=1,i=0;i<programa.GetSize();i++) {
+			string &s=programa[i].instruccion;
+			if (i==programa.GetSize()-1 || // para que tome el último proceso/funcion
+				s=="FUNCION" || LeftCompare(s,"FUNCION ") || 
+				s=="FUNCIÓN" || LeftCompare(s,"FUNCIÓN ") || 
+				s=="PROCESO" || LeftCompare(s,"PROCESO ") || 
+				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
+					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
+					if (i0!=i && era_proceso==(j==1)) {
+						errores+=SynCheck(i0,i);
+						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
+					}
+					i0=i; era_proceso=es_proceso;
+				}
+		}
+	}
+	
+	return errores;
+}

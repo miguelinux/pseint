@@ -174,7 +174,7 @@ public:
 			else 
 				return alias_mem->LeerDims(alias_nom);
 		}
-		tipo_var &vi = var_info[nombre];
+//		tipo_var &vi = var_info[nombre];
 		return var_info[nombre].dims;
 	}
 	tipo_var LeerTipo(string nombre) {
@@ -188,7 +188,7 @@ public:
 		if (EsAlias(nombre)) return alias_mem->Existe(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
 		if (it_info==var_info.end()) return false;
-		tipo_var &vi=it_info->second;
+//		tipo_var &vi=it_info->second;
 		return it_info->second.enabled;
 	}
 	bool HaSidoUsada(string nombre) {
@@ -196,7 +196,7 @@ public:
 		if (EsAlias(nombre)) return alias_mem->HaSidoUsada(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
 		if (it_info==var_info.end()) return false;
-		tipo_var &vi=it_info->second;
+//		tipo_var &vi=it_info->second;
 		return it_info->second.enabled && it_info->second.used;
 	}
 	bool EstaInicializada(string nombre) {
@@ -204,7 +204,7 @@ public:
 		if (EsAlias(nombre)) return alias_mem->EstaInicializada(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nom);
 		if (it_info==var_info.end()) return false;
-		tipo_var &vi=it_info->second;
+//		tipo_var &vi=it_info->second;
 		map<string,string>::iterator it_value = var_value.find(nombre);
 		return it_value!=var_value.end();
 	}
@@ -213,7 +213,7 @@ public:
 		if (EsAlias(nombre)) return alias_mem->EstaDefinida(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nombre);
 		if (it_info==var_info.end()) return false;
-		tipo_var &vi=it_info->second;
+//		tipo_var &vi=it_info->second;
 		return  var_info[nombre].defined;
 	}
 	string LeerValor(string nombre) {
