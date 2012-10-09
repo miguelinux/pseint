@@ -133,6 +133,8 @@ public:
 	// esta version de definir tipo se usa en las definiciones implicitas
 	void AgregarAlias(string nom_here, string nom_orig, Memoria *mem) {
 		var_alias[nom_here]=alias(nom_orig,mem);
+		var_info[nom_here]=mem->var_info[nom_orig];
+		if (nom_orig.find('(')!=string::npos) var_info[nom_here].dims=NULL;
 	}
 	bool DefinirTipo(string nombre, const tipo_var &tipo) {
 		QuitarIndices(nombre);
@@ -166,7 +168,12 @@ public:
 	}
 	int *LeerDims(string nombre) {
 		QuitarIndices(nombre);
-		if (EsAlias(nombre)) return alias_mem->LeerDims(alias_nom);
+		if (EsAlias(nombre)) {
+			if (alias_nom.find('(')!=string::npos) // si el original era una arreglo, pero el alias apunta solo a una posicion
+				return NULL;
+			else 
+				return alias_mem->LeerDims(alias_nom);
+		}
 		tipo_var &vi = var_info[nombre];
 		return var_info[nombre].dims;
 	}

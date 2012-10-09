@@ -690,10 +690,10 @@ int SynCheck() {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
-//				if (!in_process) bucles.push(programa.GetLoc(x,"PROCESO"));
 			} else if (enable_user_functions && LeftCompare(cadena,"SUBPROCESO ")) {
 				instruccion="SUBPROCESO "; cadena.erase(0,11);
-//				if (!in_process) bucles.push(programa.GetLoc(x,"SUBPROCESO"));
+			} else if (enable_user_functions && (LeftCompare(cadena,"FUNCION ")||LeftCompare(cadena,"FUNCIÓN ")) ) {
+				instruccion="SUBPROCESO "; cadena.erase(0,8);
 			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"SINO ")) {
@@ -736,6 +736,8 @@ int SynCheck() {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
+			} else if (enable_user_functions && (LeftCompare(cadena,"FINFUNCION ")||LeftCompare(cadena,"FINFUNCIÓN "))) {
+				instruccion="FINSUBPROCESO "; cadena.erase(0,11);
 			} else if (enable_user_functions && LeftCompare(cadena,"FINSUBPROCESO ")) {
 				instruccion="FINSUBPROCESO "; cadena.erase(0,14);
 			} else if (LeftCompare(cadena,"REPETIR ")) {

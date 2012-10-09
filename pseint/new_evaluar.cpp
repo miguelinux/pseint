@@ -292,7 +292,7 @@ struct info_de_llamada {
 };
 
 static bool EsArreglo(const string &nombre) {
-	return memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
+	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
 }
 
 string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
@@ -331,7 +331,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 				args.values[i]=arg_actual;
 			} else if (func->pasajes[i+1]==PP_REFERENCIA) {
 				args.pasajes[i]=PP_REFERENCIA;
-				// evaluar expresiones en indices si tiene
+				if (arg_actual.find('(')!=string::npos) CheckDims(arg_actual); // evalua las expresiones de los indices
 				args.values[i]=arg_actual;
 			} else {
 				args.pasajes[i]=PP_VALOR;
@@ -362,8 +362,10 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 				}
 			}
 			Ejecutar(func->line_start);
-			ret=memoria->LeerValor(func->nombres[0]);
-			tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
+			if (func->nombres[0].size()) {
+				ret=memoria->LeerValor(func->nombres[0]);
+				tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
+			}
 			delete memoria;
 			memoria=caller_memoria;
 		} 
@@ -430,12 +432,12 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						ev_return(EvaluarFuncion(func,"()",tipo));
 					}
 				}
-				tipo = memoria->LeerTipo(nombre);
-				if (tipo.dims) {
+				if (memoria->LeerDims(nombre)) { // usar leertipo trae problemas cuando la variable es un alias a un elemento de un arreglo
 					WriteError(220,string("Faltan subindices para el arreglo (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
+				tipo = memoria->LeerTipo(nombre);
 				if (force_var_definition && !memoria->EstaDefinida(nombre)) {
 					WriteError(210,string("Variable no definida (")+nombre+")");
 					tipo=vt_error;
