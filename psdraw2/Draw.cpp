@@ -294,7 +294,8 @@ static void DrawChooseProcess() {
 		
 		string &s=procesos[i]->label;
 		int l=s.size(),p=0,f=s.find('<');
-		if (f==string::npos) f=s.find(' ')+1; else f+=2;
+		if (f==string::npos) f=s.find('='); else f++;
+		if (f==string::npos) f=s.find(' ')+1; else f++;
 		int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
 		
 		
