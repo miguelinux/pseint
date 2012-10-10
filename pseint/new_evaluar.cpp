@@ -188,8 +188,8 @@ tipo_var DeterminarTipo(string &expresion, int p1, int p2) {
 		else {
 			size_t pp=expresion.find('(',p1);
 			if (pp!=string::npos) {
-				if (funciones.find(expresion.substr(p1,pp-p1))!=funciones.end())
-					return vt_numerica;
+				funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
+				if (func) return func->tipos[0];
 			}
 			return memoria->LeerTipo(expresion.substr(p1,p2-p1+1));
 		}
@@ -371,7 +371,8 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 		} 
 #endif
 	}
-	if (tipo!=vt_error && !tipo.can_be(rettipo)) WriteError(999,"No coinciden los tipos.");
+	if (!tipo.can_be(rettipo)) 
+		WriteError(999,"No coinciden los tipos.");
 	tipo=rettipo;
 	return ret;
 }
