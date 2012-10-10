@@ -868,7 +868,7 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(help->GetCommandText(_T("SUBPROCESO")));
 	wxArrayString toins;
-	toins.Add(_T("SubProceso {varaible_de_retorno} <- {Nombre} ( {Argumentos} )"));
+	toins.Add(_T("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )"));
 	toins.Add(_T("\t"));
 	toins.Add(_T("FinSubProceso"));
 	toins.Add(_T(""));
@@ -1338,8 +1338,6 @@ void mxMainWindow::OnViewNotebookPrev(wxCommandEvent &evt){
 }
 
 void mxMainWindow::OnDoThat (wxCommandEvent &event) {
-	button_subproc->Show(config->lang.enable_user_functions);
-	commands->Layout();
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {
@@ -1454,8 +1452,11 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::ProfileChanged ( ) {
+	SetWordsForSources();
 	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
+	button_subproc->Show(config->lang.enable_user_functions);
+	commands->Layout();
 }
 
 mxSource * mxMainWindow::GetCurrentSource ( ) {

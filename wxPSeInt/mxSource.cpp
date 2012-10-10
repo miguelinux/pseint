@@ -1193,7 +1193,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	int i2=GetLineIndentPosition(l2)-PositionFromLine(l2);
 	if (l2<ln && i1<i2) return; // si estaba dentro no se hace nada
 	// ver que dice la siguiente para que no coincida con lo que vamos a agregar
-	wxString sl2=GetLine(l2); sl2.MakeUpper(); 
+	wxString sl2=i2<i1?"":GetLine(l2); sl2.MakeUpper(); 
 	int i=0, sl=sl2.Len(); 
 	while (i<sl && sl2[i]==' '||sl2[i]=='\t')i++;
 	if (i) sl2.Remove(0,i);

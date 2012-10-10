@@ -1,4 +1,7 @@
 20121010
+	Se agregaron algunos ejemplos nuevos en la ayuda.
+	Actualizada la ayuda relacionada a funciones de manejo de cadenas.
+	Actualizada la ayuda relacionada a subprocesos.
 	Ahora el intérprete utiliza evaluación en cortocirtuito al analizar expresiones lógicas en tiempo de ejecución.
 	
 20121009
