@@ -26,8 +26,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 		line++;
 		if (LineEnd!=-1 && line>LineEnd) break; 
 		cadena=programa[line].instruccion;
-		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") break;
 		Inter.SetLineAndInstructionNumber(line);
+		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") break;
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			// ----------- ESCRIBIR ------------- //
 			if (cadena=="BORRARPANTALLA;") {
