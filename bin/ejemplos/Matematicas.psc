@@ -1,4 +1,4 @@
-"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENUA AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
+"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
 // Este ejemplo muestra el uso de expresiones, operadores y funciones matematicas
 

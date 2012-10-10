@@ -1,4 +1,4 @@
-"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENUA AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
+"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
 // Para poder ejecutar correctamente este ejemplo debe tener
 // habilitada la sintaxis flexible en su perfil de lenguaje

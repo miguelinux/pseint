@@ -1,4 +1,4 @@
-"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENUA AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
+"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
 // Si tiene problemas para ejecutar este ejemplo seleccione el perfil "Flexible"
 // en el cuadro de "Opciones del lenguaje", al cual se accede desde el menú Configurar.

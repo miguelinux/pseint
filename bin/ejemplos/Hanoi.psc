@@ -1,4 +1,4 @@
-"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENUA AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
+"ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
 //    El objetivo del juego es mover los discos de la torre 1 a la 3 en la
 // menor cantidad de movimientos posible. No se puede colocar un disco de 
