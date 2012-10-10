@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxMainWindow.cpp
+current_source=mxSource.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -21,12 +21,11 @@ marker=75
 path=mxMainWindow.cpp
 cursor=35998
 breakpoint=1241
-marker=1472
-marker=613
-marker=389
-marker=332
 marker=285
-open=true
+marker=332
+marker=389
+marker=613
+marker=1472
 [source]
 path=mxUtils.cpp
 cursor=186
@@ -37,8 +36,9 @@ marker=36
 marker=90
 [source]
 path=mxSource.cpp
-cursor=39931
+cursor=40198
 marker=985
+open=true
 [source]
 path=mxProcess.cpp
 cursor=0

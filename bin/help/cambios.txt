@@ -1,4 +1,5 @@
-2012109
+20121009
+	Ahora el editor de diagramas de flujo permite elegir qué proceso/subproceso editar.
 	Corregido el problema de los tooltips muy largos en Windows.
 	La lista de opciones para el autocompletado ahora varía según el perfil del lenguaje.
 	Mejorado el autocompletado y las ayudas emergentes del editor de pseudocódigo para la sintaxis de subprocesos.

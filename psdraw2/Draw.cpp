@@ -193,8 +193,9 @@ static void DrawMenus() {
 	}
 	glEnd();
 	// menu
-	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-220;
+	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-230;
 	DrawText(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
+	DrawText(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
 	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Cambios"); top-=menu_option_height;
 	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Ejecutar"); top-=menu_option_height;
 	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Cerrar"); top-=menu_option_height;
@@ -203,7 +204,7 @@ static void DrawMenus() {
 	DrawText(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
 	// shapebar
 	if (shapebar) {
-		if (shapebar_sel==1) DrawText(color_selection,10,10,"Asiganacion/Dimension/Definicion");
+		if (shapebar_sel==1) DrawText(color_selection,10,10,"Asignacion/Dimension/Definicion");
 		if (shapebar_sel==2) DrawText(color_selection,10,10,"Escribir");
 		if (shapebar_sel==3) DrawText(color_selection,10,10,"Leer");
 		if (shapebar_sel==4) DrawText(color_selection,10,10,"Si-Entonces");
@@ -265,7 +266,62 @@ static void DrawConfirm() {
 	
 }
 
+static void DrawChooseProcess() {
+	
+	interpolate_good(choose_process_d_base,choose_process_base);
+	interpolate_good(choose_process_d_delta,choose_process_delta);
+	
+	glLineWidth(1);
+	glClear(GL_COLOR_BUFFER_BIT); glLineWidth(menu_line_width);
+	DrawText(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para editar:");
+	
+	int base=win_h-choose_process_d_base, delta=choose_process_d_delta;
+	glColor3fv(color_menu); glBegin(GL_LINES); 
+	glVertex2i(0,base); glVertex2i(win_w,base);
+	glEnd();
+	for(int i=0;i<int(procesos.size());i++) {
+		
+		if (choose_process_sel==i) {
+			glColor3fv(color_shape);
+			glBegin(GL_QUADS);
+			glVertex2i(0,base);
+			glVertex2i(win_w,base);
+			glVertex2i(win_w,base-delta);
+			glVertex2i(0,base-delta);
+			glEnd();
+		}
+		base-=delta;
+		
+		string &s=procesos[i]->label;
+		int l=s.size(),p=0,f=s.find('<');
+		if (f==string::npos) f=s.find(' ')+1; else f+=2;
+		int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
+		
+		
+		glColor3fv(choose_process_sel==i?color_selection:color_menu);
+		glPushMatrix();
+		glTranslated(20,base+10,0);
+		glScaled(.08,.12,.1);
+		
+		while (p<l) {
+			if (p==f) glLineWidth(2);
+			if (p==t) glLineWidth(1);
+			dibujar_caracter(s[p++],true);
+		}
+		glPopMatrix();
+		
+		glLineWidth(1);
+		glColor3fv(color_menu); glBegin(GL_LINES); 
+		glVertex2i(0,base); glVertex2i(win_w,base);
+		glEnd();
+	}
+	glEnd();
+	glutSwapBuffers();
+	
+}
+
 void display_cb() {
+	if (choose_process) { DrawChooseProcess(); return; }
 	if (confirm) { DrawConfirm(); return; }
 	if (entity_to_del) delete entity_to_del;
 	glClear(GL_COLOR_BUFFER_BIT);

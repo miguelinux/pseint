@@ -98,7 +98,8 @@ Entity::~Entity() {
 	}
 	if (all_prev) all_prev->all_next=all_next;
 	if (all_next) all_next->all_prev=all_prev;
-	if (this==all_any) all_any=all_next?all_next:all_prev;
+	if (this==all_any) all_any=all_next; // busca otra...
+	if (this==all_any) all_any=NULL; // ...si no hay otra esta era la ultima
 	if (this==mouse) UnSetMouse();
 }
 
@@ -182,7 +183,7 @@ void Entity::EditLabel(unsigned char key) {
 void Entity::SetLabel(string _label, bool recalc) {
 	modified=true;
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
-	label=_label; GetTextSize(label,t_w,t_h); t_w; h=t_h;
+	label=_label; GetTextSize(label,t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) {
 		if (nassi_schneiderman) { 
@@ -443,7 +444,7 @@ bool Entity::CheckMouse(int x, int y) {
 		if (this==edit) {
 			int bt=d_fx+t_dx+t_prew-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0);
 			edit_pos=(x-bt+char_w/2)/char_w;
-			if (edit_pos<0) edit_pos=0; else if (edit_pos>label.size()) edit_pos=label.size();
+			if (edit_pos<0) edit_pos=0; else if (edit_pos>int(label.size())) edit_pos=label.size();
 		}
 		return true;
 	}
@@ -457,9 +458,10 @@ void Entity::Print(ostream &out, string tab) {
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
-			out<<tab<<"Proceso "<<pname<<endl;
+			string s=label;
+			out<<tab<<label<<endl;
 			if (next) next->Print(out,add_tab?tab+_tabs:tab);
-			out<<tab<<"FinProceso"<<endl;
+			out<<tab<<"Fin"<<label.substr(0,label.find(' '))<<endl;
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {

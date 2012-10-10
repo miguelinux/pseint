@@ -6,6 +6,7 @@
 #include "Entity.h"
 #include "Events.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 
@@ -81,22 +82,18 @@ static void ReemplazarOperadores(string &str) {
 	}
 }
 
-bool Load(const char *filename) {
-	if (filename) fname=filename;
-	else { New(); return false; }
-	ifstream file(filename);
-	if (!file.is_open()) { New(); return false; }
-	string str;
-	start = new Entity(ET_PROCESO,"Inicio");
+void LoadProc(istream &fin) {
+	string str,ret;
+	start = new Entity(ET_PROCESO,"Proceso SinTitulo");
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
-	while (getline(file,str)) {
-//stack<int> saux;
-//cerr<<"ids:";
-//while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
-//while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
-//cerr<<endl;
-//cerr<<str<<endl;
+	while (getline(fin,str)) {
+		//stack<int> saux;
+		//cerr<<"ids:";
+		//while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
+		//while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
+		//cerr<<endl;
+		//cerr<<str<<endl;
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
 		if (word_operators) ReemplazarOperadores(str);
 		bool comillas=false;
@@ -107,12 +104,18 @@ bool Load(const char *filename) {
 				else if (str[i]=='|') { str.replace(i,1," | "); i+=2; }
 			}
 		}
-		if (StartsWith(str,"PROCESO ")) {
-			pname = str.substr(8);
+		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")) {
+			string s1=str.substr(0,str.find(' '));
+			string s2=str.substr(str.find(' '));
+			if (s1=="PROCESO") start->SetLabel("Proceso"+s2);
+			else if (s1=="SUBPROCESO") start->SetLabel("SubProceso"+s2);
 			continue;
 		}
-		if (!str.size()||str=="FINPROCESO"||str=="ENTONCES") {
+		if (!str.size()||str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="ENTONCES") {
 			continue;
+		}
+		else if (StartsWith(str,"INVOCAR ")) {
+			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str.substr(8)));
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
 			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
@@ -196,7 +199,7 @@ bool Load(const char *filename) {
 		}
 		else { // asignacion, dimension, definicion
 			int i=0,l=str.size();
-			while (i<l && (str[i]>='a'&&str[i]<='z')||(str[i]>='A'&&str[i]<='Z')||(str[i]>='0'&&str[i]<='9')||str[i]=='_') i++;
+			while (i<l && ((str[i]>='a'&&str[i]<='z')||(str[i]>='A'&&str[i]<='Z')||(str[i]>='0'&&str[i]<='9')||str[i]=='_')) i++;
 			if (i+2<l && str.substr(i,2)=="<-") {
 				string s1=str.substr(0,i+2);
 				string s2=str.substr(i+2);
@@ -206,30 +209,68 @@ bool Load(const char *filename) {
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
 		}
 	}
-	aux->LinkNext(new Entity(ET_PROCESO,"Fin"));
-	start->Calculate();
-	ProcessMenu(MO_ZOOM_EXTEND);
+	aux->LinkNext(new Entity(ET_PROCESO,string("Fin")+start->label.substr(0,start->label.find(' '))));
+}
+
+bool Load(const char *filename) {
+	if (filename) fname=filename;
+	else { New(); return false; }
+	ifstream file(filename);
+	if (!file.is_open()) { New(); return false; }
+	string str; int imain=0;
+	while (getline(file,str)) {
+		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
+			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
+			Entity::all_any=start=NULL;
+			stringstream ss;
+			ss<<str<<"\n";
+			while (getline(file,str)) {
+				ss<<str<<"\n";
+				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") break;
+			}
+			LoadProc(ss);
+			procesos.push_back(start);
+		}
+	}
+	SetProc(procesos[choose_process_sel=imain]);
+	choose_process=procesos.size()>1;
 	modified=false;
 	return true;
 }
-
 
 bool Save(const char *filename) {
 	if (filename) fname=filename;
 	ofstream fout(fname.c_str());
 	if (!fout.is_open()) return false;
-	start->Print(fout);
+	for(unsigned int i=0;i<procesos.size();i++) {
+//		pname=procesos[i]->prototipo;
+		procesos[i]->Print(fout);
+		fout<<endl;
+	}
 	fout.close();
 	modified=false;
 	return true;
 }
 
+// inicializa las estructuras de datos con un algoritmo en blanco
 void New() {
-	fname="temp.psd"; pname="SinTitulo";
-	start = new Entity(ET_PROCESO,"Inicio");
-	Entity *aux8 = new Entity(ET_PROCESO,"Fin"); start->LinkNext(aux8);
+	fname="temp.psd"; 
+	start = new Entity(ET_PROCESO,"Proceso SinTitulo");
+	Entity *aux8 = new Entity(ET_PROCESO,"FinProceso"); start->LinkNext(aux8);
 	start->Calculate();
+	procesos.push_back(start);
 	ProcessMenu(MO_ZOOM_EXTEND);
 	modified=false;
 }
 
+void SetProc(Entity *proc) {
+	Entity::all_any=start=proc;
+	start->Calculate();
+	ProcessMenu(MO_ZOOM_EXTEND);
+//	pname=proc->prototipo;
+	Entity *ent=start, *ent2=start;
+	do {
+		ent->d_h=ent->d_w=ent->d_bh=ent->d_bwl=ent->d_bwr=ent->d_fx=ent->d_fy=ent->d_x=ent->d_y=0;
+		ent=ent->all_next;
+	} while(ent!=ent2);
+}

@@ -3,7 +3,8 @@
 #include <string>
 using namespace std;
 
-void dibujar_caracter(const char chr);
+void dibujar_caracter(const char chr); 
+void dibujar_caracter(const char chr, bool extra);
 
 void GetTextSize(const string &label, int &w, int &h);
 

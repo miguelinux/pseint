@@ -10,6 +10,13 @@ bool modified=false; // para saber si hay que preguntar antes de salir sin guard
 bool confirm=false; // indica si esta preguntando para salir sin guardar
 int confirm_sel=0; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
 
+// lista de procesos/subprocesos
+bool choose_process=false; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
+bool choose_process_aux=false; // para evitar que al entrar al modo choose_process tome el mismo click del mouse que lo hizo entrar como eleccion del proceso
+int choose_process_sel=0; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
+int choose_process_d_base=0;
+int choose_process_d_delta=0;
+
 // estado para pasar entre eventos para la edicion
 Entity *edit=NULL; // entidad seleccionado para editar su texto
 Entity *mouse=NULL; // entidad seleccionado por el mouse
@@ -64,3 +71,5 @@ const float color_menu[3]={.7,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.8,.95,.95}; // fondo de los menues
 
 bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
+
+vector<Entity*> procesos;

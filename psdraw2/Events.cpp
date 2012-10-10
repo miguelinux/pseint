@@ -8,6 +8,7 @@
 #include "Draw.h"
 #include <cstdlib>
 #include <iostream>
+#include "Load.h"
 using namespace std;
 
 extern const int margin; // para los botones de confirm
@@ -94,7 +95,11 @@ static void idle_func() {
 }
 
 static void passive_motion_cb(int x, int y) {
-	if (confirm) {
+	if (choose_process) {
+		choose_process_sel=(y-choose_process_d_base)/choose_process_d_delta;
+		if (choose_process_sel<0||choose_process_sel>=int(procesos.size())) choose_process_sel=-1;
+		return;
+	} else if (confirm) {
 		y=win_h-y;
 		int w,h;
 		GetTextSize("a",w,h);
@@ -176,6 +181,9 @@ void ProcessMenu(int op) {
 		int h=0,wl=0,wr=0;
 		start->Calculate(wl,wr,h); // calcular tamaño total
 		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h,1.5);
+	} else if (op==MO_FUNCTIONS) {
+		choose_process_d_base=choose_process_d_delta=0;
+		choose_process_aux=choose_process=true;
 	} else if (op==MO_SAVE) {
 		SendUpdate();
 	} else if (op==MO_RUN) {
@@ -191,7 +199,13 @@ void ProcessMenu(int op) {
 
 static void mouse_cb(int button, int state, int x, int y) {
 	mouse_setted=0;
-	if (confirm) {
+	if (choose_process) {
+		if (choose_process_aux) { choose_process_aux=false; return; }
+		if (choose_process_sel!=-1) {
+			SetProc(procesos[choose_process_sel]);
+			choose_process=false;
+		}
+	} else if (confirm) {
 		if (confirm_sel==1) confirm=false;
 		else if (confirm_sel==2) Salir();
 	}
@@ -346,7 +360,7 @@ void initialize() {
 	glutInitDisplayMode (GLUT_RGBA|GLUT_DOUBLE);
 	glutInitWindowSize (win_w,win_h);
 	glutInitWindowPosition (100,100);
-	glutCreateWindow ((string("PSDraw v2 - ")+pname).c_str());
+	glutCreateWindow ((string("PSDraw v2 - ")+start->label).c_str());
 	glutIdleFunc (idle_func);
 	glutDisplayFunc (display_cb);
 	glutReshapeFunc (reshape_cb);

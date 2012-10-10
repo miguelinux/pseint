@@ -1,6 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 #include <string>
+#include <vector>
 using namespace std;
 
 class Entity;
@@ -8,12 +9,21 @@ class Entity;
 // comunicacion con wxPseInt
 extern bool edit_on; // indica si se puede editar el diagrama
 extern string fname; // archivo que recibe como argumento
-extern string pname; // nombre original del proceso
+//extern string pname; // nombre original del proceso
 
 // cuadro de confirmacion al salir sin guardar
 extern bool modified; // para saber si hay que preguntar antes de salir sin guardar
 extern bool confirm; // indica si esta preguntando para salir sin guardar
 extern int confirm_sel; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
+
+// lista de procesos/subprocesos
+extern bool choose_process; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
+extern bool choose_process_aux; // para evitar que al entrar al modo choose_process tome el mismo click del mouse que lo hizo entrar como eleccion del proceso
+extern int choose_process_sel; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
+extern int choose_process_d_base;
+extern int choose_process_d_delta;
+#define choose_process_base 40
+#define choose_process_delta 30
 
 // estado para pasar entre eventos para la edicion
 extern Entity *edit; // entidad seleccionado para editar su texto
@@ -36,7 +46,7 @@ extern int menu_size_h; // ancho para dibujo de la shapebar
 extern int menu_size_w; // ancho para dibujo de la shapebar
 extern bool menu; // indica si el mouse esta sobre la papelera
 extern int menu_sel; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
-#define menu_w_max 240
+#define menu_w_max 250
 #define menu_h_min 30
 #define menu_w_min 70
 #define menu_line_width 1
@@ -86,6 +96,12 @@ extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos oper
 
 //#define interpolate(a,b) a=b
 //#define interpolate_good(a,b) a=b
+
+// para almacenar el proceso principal y los subprocesos
+// la forma de gestionar todo esto es tener los diagramas cargados todos a la
+// vez pero independientes, para lo cual trucheo start y Entity::all_any en 
+// Load y SetProc
+extern vector<Entity*> procesos;
 
 #endif
 

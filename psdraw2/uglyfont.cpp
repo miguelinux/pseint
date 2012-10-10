@@ -1,4 +1,5 @@
 // este fuente fue tomado de http://wwwe.ysflight.com/, pero le agregué algunas letras que faltaban (ñs y acentos)
+// y modifique la funcion que dibuja un caracter para que deje más espaciado cuando es mayúscula que cuando es minúscula
 
 // uglyfont.cpp
 //
@@ -652,28 +653,22 @@ static int Ptn126[]={   /* ~ */
 static int *YsUglyFontSet[]=
 	{
 		NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			Ptn032,Ptn033,Ptn034,Ptn035,Ptn036,Ptn037,Ptn038,Ptn034,Ptn040,Ptn041,Ptn042,Ptn043,Ptn044,Ptn045,Ptn046,Ptn047,
-			Ptn048,Ptn049,Ptn050,Ptn051,Ptn052,Ptn053,Ptn054,Ptn055,Ptn056,Ptn057,Ptn058,Ptn059,Ptn060,Ptn061,Ptn062,Ptn063,
-			Ptn064,Ptn065,Ptn066,Ptn067,Ptn068,Ptn069,Ptn070,Ptn071,Ptn072,Ptn073,Ptn074,Ptn075,Ptn076,Ptn077,Ptn078,Ptn079,
-			Ptn080,Ptn081,Ptn082,Ptn083,Ptn084,Ptn085,Ptn086,Ptn087,Ptn088,Ptn089,Ptn090,Ptn091,Ptn092,Ptn093,Ptn094,Ptn095,
-			Ptn096,Ptn097,Ptn098,Ptn099,Ptn100,Ptn101,Ptn102,Ptn103,Ptn104,Ptn105,Ptn106,Ptn107,Ptn108,Ptn109,Ptn110,Ptn111,
-			Ptn112,Ptn113,Ptn114,Ptn115,Ptn116,Ptn117,Ptn118,Ptn119,Ptn120,Ptn121,Ptn122,Ptn123,Ptn124,Ptn125,Ptn126,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,Ptn161,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
-			NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn191,
-			NULL  ,Ptn193,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn201,NULL  ,NULL  ,NULL  ,Ptn205,NULL  ,NULL  ,
-			NULL  ,Ptn209,NULL  ,Ptn211,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn218,NULL  ,Ptn220,NULL  ,NULL  ,NULL  ,
-			NULL  ,Ptn225,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn233,NULL  ,NULL  ,NULL  ,Ptn237,NULL  ,NULL  ,
-			NULL  ,Ptn241,NULL  ,Ptn243,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn250,NULL  ,Ptn252,NULL  ,NULL  ,NULL  
+		NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+		Ptn032,Ptn033,Ptn034,Ptn035,Ptn036,Ptn037,Ptn038,Ptn034,Ptn040,Ptn041,Ptn042,Ptn043,Ptn044,Ptn045,Ptn046,Ptn047,
+		Ptn048,Ptn049,Ptn050,Ptn051,Ptn052,Ptn053,Ptn054,Ptn055,Ptn056,Ptn057,Ptn058,Ptn059,Ptn060,Ptn061,Ptn062,Ptn063,
+		Ptn064,Ptn065,Ptn066,Ptn067,Ptn068,Ptn069,Ptn070,Ptn071,Ptn072,Ptn073,Ptn074,Ptn075,Ptn076,Ptn077,Ptn078,Ptn079,
+		Ptn080,Ptn081,Ptn082,Ptn083,Ptn084,Ptn085,Ptn086,Ptn087,Ptn088,Ptn089,Ptn090,Ptn091,Ptn092,Ptn093,Ptn094,Ptn095,
+		Ptn096,Ptn097,Ptn098,Ptn099,Ptn100,Ptn101,Ptn102,Ptn103,Ptn104,Ptn105,Ptn106,Ptn107,Ptn108,Ptn109,Ptn110,Ptn111,
+		Ptn112,Ptn113,Ptn114,Ptn115,Ptn116,Ptn117,Ptn118,Ptn119,Ptn120,Ptn121,Ptn122,Ptn123,Ptn124,Ptn125,Ptn126,NULL  ,
+		NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+		NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+		NULL  ,Ptn161,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,
+		NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn191,
+		NULL  ,Ptn193,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn201,NULL  ,NULL  ,NULL  ,Ptn205,NULL  ,NULL  ,
+		NULL  ,Ptn209,NULL  ,Ptn211,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn218,NULL  ,Ptn220,NULL  ,NULL  ,NULL  ,
+		NULL  ,Ptn225,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn233,NULL  ,NULL  ,NULL  ,Ptn237,NULL  ,NULL  ,
+		NULL  ,Ptn241,NULL  ,Ptn243,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,NULL  ,Ptn250,NULL  ,Ptn252,NULL  ,NULL  ,NULL  
 	};
-
-
-
-
-
-
 
 
 const int YsUglyFontBase=1400;
@@ -763,7 +758,34 @@ void YsDrawUglyFont(const char str[],int centering,int useDisplayList=1)
 	glPopMatrix();
 }
 
-
 void dibujar_caracter(const char chr) { 
 	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
 }
+
+void dibujar_caracter(const char chr, bool extra) { 
+	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
+	glTranslated(YsUglyFontWid*1.5/7.0,0.0,0.0);
+}
+
+
+//#define UFW1 8.0/7.0
+//#define UFW2 9.0/7.0
+//static float YsUglyWidth[]=
+//	{
+//		UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,
+//			UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW2  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW2  ,UFW1  ,UFW1  ,UFW1  ,UFW2  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW2  ,UFW1  ,UFW2  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW2  ,UFW1  ,UFW2  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
+//	};
