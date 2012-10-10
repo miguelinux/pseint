@@ -28,9 +28,9 @@ cursor=210
 [source]
 path=Events.cpp
 cursor=7510
-marker=199
-marker=70
 marker=64
+marker=70
+marker=199
 [source]
 path=Draw.cpp
 cursor=12944
@@ -50,9 +50,9 @@ cursor=11702
 [source]
 path=DNassiSchne.cpp
 cursor=1230
-marker=64
-marker=149
 marker=165
+marker=149
+marker=64
 [header]
 path=../pseint/zockets.h
 cursor=215

@@ -903,7 +903,8 @@ int SynCheck(int linea_from, int linea_to) {
 					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
 					fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
 				}
-				else if (!CheckVariable(fname)) errores++;
+				else if (EsFuncion(fname)) { errores++; SynError (999,string("Ya existe otro proceso/subproceso con el mismo nombre(")+fname+")."); errores++; }
+				else if (!CheckVariable(fname)) { errores++; SynError (999,string("El nombre del proceso/subproceso(")+fname+") no es válido."); errores++; }
 				if (!sub) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
 					if (process_seen) { SynError (999,"Solo puede haber un proceso."); errores++; }
 					else process_seen=true;
