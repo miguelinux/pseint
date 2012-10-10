@@ -1604,8 +1604,19 @@ int SynCheck() {
 						have_proceso=true;
 					}
 					if (i0!=i && era_proceso==(j==1)) {
-						errores+=SynCheck(i0,i);
+						int i1=i;
+						errores+=SynCheck(i0,i1);
 						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
+						
+						if (era_proceso) { // los cambios de lineas pueden afectar a funciones ya registradas en la pasada anterior
+							map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+							while (it1!=it2) { 
+								if (!it1->second.func && it1->second.line_start>=i1) 
+									it1->second.line_start+=i-i1; 
+								it1++; 
+							} 
+						}
+						
 					}
 					i0=i; era_proceso=es_proceso;
 				}
