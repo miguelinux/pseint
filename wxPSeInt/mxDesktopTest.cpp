@@ -20,6 +20,7 @@ BEGIN_EVENT_TABLE(mxDesktopTest, wxGrid)
 	EVT_GRID_COL_SIZE(mxDesktopTest::OnColResize)
 END_EVENT_TABLE()
 	
+// cantidad de columnas fijas
 #define PRECOLS 2
 	
 mxDesktopTest::mxDesktopTest(wxWindow *parent, wxWindowID id ):wxGrid(parent,id, wxDefaultPosition,wxSize(400,300)) {

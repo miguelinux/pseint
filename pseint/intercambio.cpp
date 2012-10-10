@@ -249,6 +249,7 @@ void Intercambio::OnFunctionIn(string nom) {
 	backtrace.push_back(nom);
 	backtraceLevel++;
 #ifdef USE_ZOCKETS
+	if (zocket==ZOCKET_ERROR) return;
 	string s="proceso "+backtrace.back()+"\n";
 	zocket_escribir(zocket,s.c_str(),s.size());
 #endif	
@@ -258,6 +259,7 @@ void Intercambio::OnFunctionOut() {
 	if (backtraceLevel==debugLevel) debugLevel--;
 	backtraceLevel--;
 #ifdef USE_ZOCKETS
+	if (zocket==ZOCKET_ERROR) return;
 	string s="proceso "+backtrace.back()+"\n";
 	zocket_escribir(zocket,s.c_str(),s.size());
 #endif
