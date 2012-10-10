@@ -1,3 +1,4 @@
+
 #include "new_funciones.h"
 #include "utils.h"
 #include "intercambio.h"
@@ -132,6 +133,7 @@ string func_subcadena(string *arg) {
 	string &s=arg[0]; int l=s.length(), f=(int)StrToDbl(arg[1]), t=(int)StrToDbl(arg[2]);
 	if (!base_zero_arrays) { f--; t--; }
 	if (t>l-1) t=l-1; if (f<0) f=0;
+	if (t<f) return "";
 	return s.substr(f,t-f+1);
 }
 
@@ -157,8 +159,10 @@ void LoadFunciones(bool u) {
 	if (enable_string_functions) {
 		funciones[u?"LONGITUD":"longitud"]=funcion(vt_numerica,func_longitud,vt_caracter);
 		funciones[u?"SUBCADENA":"subcadena"]=funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
-		funciones[u?"MAYUSCULAS":"subcadena"]=funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones[u?"MAYUSCULAS":"mayusculas"]=funcion(vt_caracter,func_mayusculas,vt_caracter);
 		funciones[u?"MINUSCULAS":"minusculas"]=funcion(vt_caracter,func_minusculas,vt_caracter);
+		funciones[u?"MAYÚSCULAS":"mayúsculas"]=funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones[u?"MINÚSCULAS":"minúsculas"]=funcion(vt_caracter,func_minusculas,vt_caracter);
 		funciones[u?"CONCATENAR":"concatenar"]=funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
 	}
 }

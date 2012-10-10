@@ -27,12 +27,15 @@ struct funcion {
 	}
 	funcion(tipo_var tipo_ret, string (*af)(string *args), tipo_var tipo_arg_1):cant_arg(1),func(af) { 
 		tipos.resize(cant_arg+1); tipos[0]=tipo_ret; tipos[1]=tipo_arg_1;
+		pasajes.resize(cant_arg+1); pasajes[0]=pasajes[1]=PP_DESCONOCIDO;
 	}
 	funcion(tipo_var tipo_ret, string (*af)(string *args), tipo_var tipo_arg_1, tipo_var tipo_arg_2):cant_arg(2),func(af) { 
 		tipos.resize(cant_arg+1); tipos[0]=tipo_ret; tipos[1]=tipo_arg_1; tipos[2]=tipo_arg_2;
+		pasajes.resize(cant_arg+1); pasajes[0]=pasajes[1]=pasajes[2]=PP_DESCONOCIDO;
 	}
 	funcion(tipo_var tipo_ret, string (*af)(string *args), tipo_var tipo_arg_1, tipo_var tipo_arg_2, tipo_var tipo_arg_3):cant_arg(3),func(af) { 
 		tipos.resize(cant_arg+1); tipos[0]=tipo_ret; tipos[1]=tipo_arg_1; tipos[2]=tipo_arg_2; tipos[3]=tipo_arg_3;
+		pasajes.resize(cant_arg+1); pasajes[0]=pasajes[1]=pasajes[2]=pasajes[3]=PP_DESCONOCIDO;
 	}
 };
 

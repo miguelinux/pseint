@@ -73,6 +73,17 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	key.MakeLower();
 	if (key==_("leer")) str=_T("lectura.html");
 	else if (key==_("lectura")) str=_T("lectura.html");
+	else if (key==_("mayusculas")) str=_T("funciones.html");
+	else if (key==_("mayúsculas")) str=_T("funciones.html");
+	else if (key==_("minusculas")) str=_T("funciones.html");
+	else if (key==_("minúsculas")) str=_T("funciones.html");
+	else if (key==_("longitud")) str=_T("funciones.html");
+	else if (key==_("subcadena")) str=_T("funciones.html");
+	else if (key==_("concatenar")) str=_T("funciones.html");
+	else if (key==_("subproceso")) str=_T("subprocesos.html");
+	else if (key==_("subprocesos")) str=_T("subprocesos.html");
+	else if (key==_("función")) str=_T("subprocesos.html");
+	else if (key==_("funcion")) str=_T("subprocesos.html");
 	else if (key==_("sin")) str=_T("escritura.html");
 	else if (key==_("saltar")) str=_T("escritura.html");
 	else if (key==_("bajar")) str=_T("escritura.html");
@@ -123,6 +134,8 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_("caso")) str=_T("segun.html");
 	else if (key==_("segun")) str=_T("segun.html");
 	else if (key==_("finsegun")) str=_T("segun.html");
+	else if (key==_("según")) str=_T("segun.html");
+	else if (key==_("finsegún")) str=_T("segun.html");
 	else if (key==_("finmientras")) str=_T("mientras.html");
 	else if (key==_("mientras")) str=_T("mientras.html");
 	else if (key==_("proceso")) str=_T("forma.html");
@@ -130,7 +143,6 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_("vectores")) str=_T("arreglos.html");
 	else if (key==_("operador")) str=_T("operadores.html");
 	else if (key==_("operadores")) str=_T("operadores.html");
-	else if (key==_("funcion")) str=_T("funciones.html");
 	else if (key==_("funciones")) str=_T("funciones.html");
 	else if (key==_("sen")) str=_T("funciones.html");
 	else if (key==_("asen")) str=_T("funciones.html");
