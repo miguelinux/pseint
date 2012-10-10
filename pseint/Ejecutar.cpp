@@ -26,8 +26,21 @@ void Ejecutar(int LineStart, int LineEnd) {
 		line++;
 		if (LineEnd!=-1 && line>LineEnd) break; 
 		cadena=programa[line].instruccion;
+		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
+			Inter.SetLineAndInstructionNumber(line);
+			Inter.OnFunctionOut();
+			break;
+		}
+		if (LeftCompare(cadena,"PROCESO ") || LeftCompare(cadena,"SUBPROCESO ")) {
+			size_t p=cadena.find(' '); cadena=cadena.substr(p);
+			p=cadena.find('<'); if (p==string::npos) p=cadena.find('='); else p++;
+			if (p==string::npos) p=0; else p++; cadena=cadena.substr(p);
+			p=cadena.find('('); if (p!=string::npos) cadena=cadena.substr(0,p);
+			Inter.OnFunctionIn(cadena);
+			Inter.SetLineAndInstructionNumber(line);
+			continue;
+		}
 		Inter.SetLineAndInstructionNumber(line);
-		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") break;
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			// ----------- ESCRIBIR ------------- //
 			if (cadena=="BORRARPANTALLA;") {

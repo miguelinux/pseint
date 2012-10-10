@@ -19,12 +19,9 @@ DebugManager::DebugManager() {
 	step_in=true;
 }
 
-DebugManager::~DebugManager() {
-	
-}
-
 void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	
+	current_proc_name="<desconocido>";
 	process = proc;
 	sbuffer=_T("");
 	source=src;
@@ -52,7 +49,9 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 }
 
 void DebugManager::ProcData(wxString data) {
-	if (data.StartsWith(_T("linea "))) {
+	if (data.StartsWith(_T("proceso "))) {
+		current_proc_name=data.Mid(8);
+	} else if (data.StartsWith(_T("linea "))) {
 		long l=-1,i=-1;
 		if (data.Contains(":")) {
 			data.Mid(6).BeforeFirst(':').ToLong(&l);
@@ -61,7 +60,7 @@ void DebugManager::ProcData(wxString data) {
 			data.Mid(6).ToLong(&l);
 		}
 		if (l>=0 && source!=NULL) source->SetDebugLine(l-1,i-1);
-		if (do_desktop_test) desktop_test->SetLine(l,i);
+		if (do_desktop_test) desktop_test->SetLine(current_proc_name,l,i);
 	} else if (data.StartsWith(_T("autoevaluacion "))) {
 		long l=-1;
 		data.Mid(15).BeforeFirst(' ').ToLong(&l);

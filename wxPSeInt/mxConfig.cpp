@@ -35,9 +35,14 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 	chk_allow_concatenation->SetToolTip(utils->FixTooltip(
 		"Si esta opción esta activada se puede concatenar el contenido de dos variables de tipo caracter con el operador +. "
 		"Por ejemplo: NombreCompleto <- Nombre+\" \"+Apellido;"));
-	chk_word_operators = utils->AddCheckBox(opts_sizer,this,_T("Permitir las palabras Y, O, NO y MOD para los operadores &, |, ~ y %"),config->lang.word_operators);
+	chk_enable_string_functions = utils->AddCheckBox(opts_sizer,this,_T("Habilitar funciones para el manejo de cadenas"),config->lang.enable_string_functions);
+	chk_enable_string_functions ->SetToolTip(utils->FixTooltip(
+		"Esta opción habilita un conjunto de funciones predefinidas que sirven para operar sobre cadenas de "
+		"caracteres. Las funciones son: Longitud, SubCadena, Mayusculas, Minusculas y Concatenar)."));
+		
+	chk_word_operators = utils->AddCheckBox(opts_sizer,this,_T("Permitir las palabras Y, O, NO y MOD para los operadores &&, |, ~ y %"),config->lang.word_operators);
 	chk_word_operators->SetToolTip(utils->FixTooltip(
-		"Con esta opción habilitada PSeInt acepta las palabras clave Y, O, NO, y MOD como sinónimos de los operadores &, |, ~ y % respectivamente. "
+		"Con esta opción habilitada PSeInt acepta las palabras clave Y, O, NO, y MOD como sinónimos de los operadores &&, |, ~ y % respectivamente. "
 		"Notar que en este caso estas palabras serán palabras reservadas y no se podrán utilizar como nombres de variables."));
 	chk_base_zero_arrays = utils->AddCheckBox(opts_sizer,this,_T("Utilizar indices en arreglos y cadenas en base 0"),config->lang.base_zero_arrays);
 	chk_base_zero_arrays->SetToolTip(utils->FixTooltip(
@@ -55,10 +60,6 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 		"permite, ya que en muchos lenguajes no se utilia el mismo operador para asignar y comparar, como sucede al activar"
 		"esta opción. En cualquier caso, las otras dos sintaxis de asignación (con <- y con :=) siguen siendo válidas." ));
 	
-	chk_enable_string_functions = utils->AddCheckBox(opts_sizer,this,_T("Utilizar funciones para el manejo de cadenas (Longitud, Subcadena, etc)"),config->lang.enable_string_functions);
-	chk_enable_string_functions ->SetToolTip(utils->FixTooltip(
-		"Esta opción habilita un conjunto de funciones predefinidas que sirven para operar sobre cadenas de "
-		"caracteres. Las funciones son: Longitud, SubCadena, Mayusculas, Minusculas y Concatenar)."));
 	chk_enable_user_functions = utils->AddCheckBox(opts_sizer,this,_T("Permitir definir funciones/subprocesos"),config->lang.enable_user_functions);
 	chk_enable_user_functions->SetToolTip(utils->FixTooltip(
 		"Con esta opción activada se permite definir subprocesos/funciones en pseudocódigo para mediante la palabra clase SubProceso." ));

@@ -884,7 +884,7 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
-				funcion the_func(x+1); 
+				funcion the_func(x); 
 				memoria=the_func.memoria;
 				int p=0; NextToken(cadena,p);
 				if (in_process) InformUnclosedLoops(bucles,errores);

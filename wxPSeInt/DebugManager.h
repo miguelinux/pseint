@@ -17,6 +17,7 @@ private:
 	bool step_in;
 	bool do_desktop_test;
 	mxProcess *process;
+	wxString current_proc_name;
 	wxString sbuffer;
 	mxSource *source;
 	wxSocketServer *server;
@@ -42,7 +43,6 @@ public:
 	void SendEvaluation(wxString exp);
 	bool HasSocket(wxObject *s);
 	void SetStepIn(bool b);
-	~DebugManager();
 	int GetPort();
 };
 

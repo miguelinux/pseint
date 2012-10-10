@@ -169,6 +169,7 @@ void Intercambio::ProcInput() {
 void Intercambio::SetStarted() {
 	running=true;
 	backtraceLevel=1;
+	backtrace.clear();
 }
 
 void Intercambio::SetFinished(bool interrupted) {
@@ -244,10 +245,20 @@ void Intercambio::SetError(string error) {
 #endif
 }
 
-void Intercambio::OnFunctionIn() {
+void Intercambio::OnFunctionIn(string nom) {
+	backtrace.push_back(nom);
 	backtraceLevel++;
+#ifdef USE_ZOCKETS
+	string s="proceso "+backtrace.back()+"\n";
+	zocket_escribir(zocket,s.c_str(),s.size());
+#endif	
 }
 void Intercambio::OnFunctionOut() {
+	backtrace.pop_back();
 	if (backtraceLevel==debugLevel) debugLevel--;
 	backtraceLevel--;
+#ifdef USE_ZOCKETS
+	string s="proceso "+backtrace.back()+"\n";
+	zocket_escribir(zocket,s.c_str(),s.size());
+#endif
 }

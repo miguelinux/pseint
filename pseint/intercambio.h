@@ -15,6 +15,7 @@ class Intercambio {
 	
 	int backtraceLevel; // en que nivel del trazado inverso se encuentra el punto actual de ejecucion (1:proceso principal, >1:alguna funcion)
 	int debugLevel; // solo interesa depurar si debugLevel<=backtraceLevel (si es 0 depura todo)
+	vector<string> backtrace;
 	
 	bool running;
 	int instNumber;          // Numero de linea que se está ejecutando (base 1)
@@ -22,6 +23,7 @@ class Intercambio {
 	vector <string> Archivo; // Archivo original
 	vector <string> Errores; // Descripcion de los errores encontrados
 	vector <int> Lineas;     // Numeros de lines correspondientes a los errores	
+	
 
 #ifdef USE_ZOCKETS
 	
@@ -75,7 +77,7 @@ public:
 	bool EvaluatingForDebug();
 	void SetError(string error);
 	
-	void OnFunctionIn();
+	void OnFunctionIn(string nom);
 	void OnFunctionOut();
 };
 

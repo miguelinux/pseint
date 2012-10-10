@@ -14,7 +14,6 @@ private:
 public:
 	mxDesktopTest(wxWindow *parent, wxWindowID id);
 	void AddRow();
-	~mxDesktopTest();
 	void SetVars(wxArrayString &vars);
 	void OnKey(wxKeyEvent &event);
 	void OnDblClick(wxGridEvent &event);
@@ -30,7 +29,7 @@ public:
 	const wxArrayString &GetDesktopVars();
 	void SetDesktopVars(const wxArrayString &vars);
 	void SetAutoevaluation(long l, wxString value);
-	void SetLine(long line, long i=-1);
+	void SetLine(wxString proc, long line, long i=-1);
 	void ResetTest();
 };
 
