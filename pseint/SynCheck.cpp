@@ -950,7 +950,7 @@ int SynCheck(int linea_from, int linea_to) {
 				subprocesos[fname]=the_func;
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
-			if (enable_user_functions && (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
+			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
 				bool sub=cadena!="FINPROCESO";
 				if (!bucles.empty() && ( (!sub&&bucles.top()=="PROCESO")||(sub&&bucles.top()=="SUBPROCESO") ) ) {
 					bucles.pop();
