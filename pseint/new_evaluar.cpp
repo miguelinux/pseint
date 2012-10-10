@@ -515,6 +515,10 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				ev_return("");
 			}
 			s1 = Evaluar(expresion,p1a,p1b,t1);
+			if (Inter.Running()) {
+				if (op=='|' && s1==VERDADERO) ev_return(VERDADERO);
+				if (op=='&' && s1==FALSO) ev_return(FALSO);
+			}
 			s2 = Evaluar(expresion,p2a,p2b,t2);
 			if (!t1.cb_log || !t2.cb_log) { tipo=vt_error; ev_return(""); }
 			if (op=='|')

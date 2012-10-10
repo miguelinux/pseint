@@ -1,3 +1,6 @@
+20121010
+	Ahora el intérprete utiliza evaluación en cortocirtuito al analizar expresiones lógicas en tiempo de ejecución.
+	
 20121009
 	Ahora el editor de diagramas de flujo permite elegir qué proceso/subproceso editar.
 	Corregido el problema de los tooltips muy largos en Windows.
