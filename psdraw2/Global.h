@@ -17,8 +17,7 @@ extern bool confirm; // indica si esta preguntando para salir sin guardar
 extern int confirm_sel; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
 
 // lista de procesos/subprocesos
-extern bool choose_process; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-extern bool choose_process_aux; // para evitar que al entrar al modo choose_process tome el mismo click del mouse que lo hizo entrar como eleccion del proceso
+extern int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
 extern int choose_process_sel; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
 extern int choose_process_d_base;
 extern int choose_process_d_delta;

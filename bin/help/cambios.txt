@@ -1,8 +1,11 @@
 20121010
+	Ya se puede crear y eliminar subprocesos desde el diagrama de flujo.
+	Se agregó una casilla de verificación al panel de Ejecución Paso a Paso para elegir si la misma debe entrar en los subprocesos o pasarlos por alto.
+	Se corrigió un error en la exportación a C++ de expresiones que involucran potencias.
 	Se agregaron algunos ejemplos nuevos en la ayuda.
+	Ahora el intérprete utiliza evaluación en cortocirtuito al analizar expresiones lógicas en tiempo de ejecución.
 	Actualizada la ayuda relacionada a funciones de manejo de cadenas.
 	Actualizada la ayuda relacionada a subprocesos.
-	Ahora el intérprete utiliza evaluación en cortocirtuito al analizar expresiones lógicas en tiempo de ejecución.
 	
 20121009
 	Ahora el editor de diagramas de flujo permite elegir qué proceso/subproceso editar.

@@ -75,7 +75,7 @@ static void idle_func() {
 		aux->Tick();
 		aux=aux->all_next;
 	} while (aux!=start);
-	if (mouse) { 
+	if (mouse || choose_process_state==3) { 
 		interpolate(shapebar_size,0);
 		interpolate(menu_size_h,0);
 		interpolate(menu_size_w,0);
@@ -95,9 +95,11 @@ static void idle_func() {
 }
 
 static void passive_motion_cb(int x, int y) {
-	if (choose_process) {
-		choose_process_sel=(y-choose_process_d_base)/choose_process_d_delta;
-		if (choose_process_sel<0||choose_process_sel>=int(procesos.size())) choose_process_sel=-1;
+	if (choose_process_state) {
+		if (choose_process_state<3 && choose_process_d_delta) {
+			choose_process_sel=(y-choose_process_d_base)/choose_process_d_delta;
+			if (choose_process_sel<0||choose_process_sel>int(procesos.size()-(edit_on?0:1))) choose_process_sel=-1;
+		}
 		return;
 	} else if (confirm) {
 		y=win_h-y;
@@ -139,14 +141,15 @@ static void motion_cb(int x, int y) {
 	y=win_h-y; 
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
-	if (selecting_zoom) {
+	if (selecting_zoom || choose_process_state) {
 		cur_x=x; cur_y=y;
 		return;
 	}
 	if (panning) { 
 		d_dx+=x-m_x0; m_x0=x;
 		d_dy+=y-m_y0; m_y0=y;
-	} if (mouse) { 
+	} 
+	if (mouse) { 
 		cur_y=y; cur_x=mouse->d_x;
 		mouse->d_x=x-mouse->m_x;
 		mouse->d_y=y-mouse->m_y;
@@ -159,6 +162,7 @@ static void motion_cb(int x, int y) {
 			start->Calculate();
 		}
 	}
+	
 }
 
 void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
@@ -174,7 +178,6 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 	d_dy=win_h/zoom/2-(y1+y0)/2/*+h/2/zoom*/;
 }
 
-
 void ProcessMenu(int op) {
 	menu=false;
 	if (op==MO_ZOOM_EXTEND) {
@@ -183,7 +186,8 @@ void ProcessMenu(int op) {
 		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h,1.5);
 	} else if (op==MO_FUNCTIONS) {
 		choose_process_d_base=choose_process_d_delta=0;
-		choose_process_aux=choose_process=true;
+		choose_process_state=1; edit=NULL;
+		if (mouse) mouse->UnSetMouse();
 	} else if (op==MO_SAVE) {
 		SendUpdate();
 	} else if (op==MO_RUN) {
@@ -199,11 +203,24 @@ void ProcessMenu(int op) {
 
 static void mouse_cb(int button, int state, int x, int y) {
 	mouse_setted=0;
-	if (choose_process) {
-		if (choose_process_aux) { choose_process_aux=false; return; }
+	if (choose_process_state) {
+		if (choose_process_state==1) { choose_process_state=2; return; }
+		if (choose_process_sel==procesos.size()) {
+			CreateEmptyProc("SubProceso");
+		}
 		if (choose_process_sel!=-1) {
-			SetProc(procesos[choose_process_sel]);
-			choose_process=false;
+			if (state==GLUT_DOWN) {
+				choose_process_state=3;
+				cur_x=m_x0=x; cur_y=m_y0=win_h-y;
+			} else if (trash) {
+				if (edit_on && procesos[choose_process_sel]->lpre!="Proceso ")
+					procesos.erase(procesos.begin()+choose_process_sel); // no lo quita de la memoria, solo del arreglo, con eso alcanza, algun día corregiré el memory leak
+				choose_process_state=2;
+			} else {
+				SetProc(procesos[choose_process_sel]);
+				choose_process_state=0;
+				if (button==GLUT_RIGHT_BUTTON) start->SetEdit();
+			}
 		}
 	} else if (confirm) {
 		if (confirm_sel==1) confirm=false;
@@ -252,7 +269,7 @@ static void mouse_cb(int button, int state, int x, int y) {
 		if (mouse) mouse->UnSetMouse();
 		do {
 			if (aux->CheckMouse(x,y)) { 
-				if (aux->type==ET_PROCESO) break;
+				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
 				if (button==GLUT_RIGHT_BUTTON) {
 					aux->SetEdit(); return;
 				} else {

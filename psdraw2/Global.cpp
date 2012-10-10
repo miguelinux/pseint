@@ -11,8 +11,7 @@ bool confirm=false; // indica si esta preguntando para salir sin guardar
 int confirm_sel=0; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
 
 // lista de procesos/subprocesos
-bool choose_process=false; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-bool choose_process_aux=false; // para evitar que al entrar al modo choose_process tome el mismo click del mouse que lo hizo entrar como eleccion del proceso
+int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
 int choose_process_sel=0; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
 int choose_process_d_base=0;
 int choose_process_d_delta=0;

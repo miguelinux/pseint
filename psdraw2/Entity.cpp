@@ -43,7 +43,9 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	nolink=NULL;
 	SetLabel(label);
 	parent=prev=next=NULL; child=NULL;
-	if (type==ET_SI) { // dos hijos
+	if (type==ET_PROCESO) { 
+		lpre="Proceso ";
+	} else if (type==ET_SI) { // dos hijos
 		n_child=2;
 		child_bh=(int*)malloc(sizeof(int)*2);
 		child_dx=(int*)malloc(sizeof(int)*2);
@@ -458,10 +460,9 @@ void Entity::Print(ostream &out, string tab) {
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
-			string s=label;
-			out<<tab<<label<<endl;
+			out<<tab<<lpre<<label<<endl;
 			if (next) next->Print(out,add_tab?tab+_tabs:tab);
-			out<<tab<<"Fin"<<label.substr(0,label.find(' '))<<endl;
+			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<endl;
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {

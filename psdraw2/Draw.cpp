@@ -22,29 +22,18 @@ void DrawText(const float *color, int x, int y, const char *t) {
 	glPopMatrix();
 }
 
-static void DrawMenus() {
+static void DrawTrash() {
 	glLineWidth(menu_line_width);
 	glColor3fv(color_menu_back);
 	glBegin(GL_QUADS);
-	// shapebar
-	glVertex2i(win_w-shapebar_size,0);
-	glVertex2i(win_w-shapebar_size,win_h);
-	glVertex2i(win_w,win_h);
-	glVertex2i(win_w,0);
 	// trash
 	glVertex2i(0,trash_size);
 	glVertex2i(trash_size,trash_size);
 	glVertex2i(trash_size,0);
 	glVertex2i(0,0);
-	// menu
-	glVertex2i(0,win_h);
-	glVertex2i(menu_size_w,win_h);
-	glVertex2i(menu_size_w,win_h-menu_size_h);
-	glVertex2i(0,win_h-menu_size_h);
 	glEnd();
 	glColor3fv(color_menu);
 	glBegin(GL_LINES);
-	// trash
 	glVertex2i(0,trash_size); glVertex2i(trash_size,trash_size);
 	glVertex2i(trash_size,0); glVertex2i(trash_size,trash_size);
 	if (trash) {
@@ -72,6 +61,25 @@ static void DrawMenus() {
 		glVertex2i(t6,t6); glVertex2i(4*t6,4*t6);
 		glVertex2i(t6,4*t6); glVertex2i(4*t6,t6);
 	}
+	glEnd();
+}
+static void DrawMenuAndShapeBar() {
+	glLineWidth(menu_line_width);
+	glColor3fv(color_menu_back);
+	glBegin(GL_QUADS);
+	// shapebar
+	glVertex2i(win_w-shapebar_size,0);
+	glVertex2i(win_w-shapebar_size,win_h);
+	glVertex2i(win_w,win_h);
+	glVertex2i(win_w,0);
+	// menu
+	glVertex2i(0,win_h);
+	glVertex2i(menu_size_w,win_h);
+	glVertex2i(menu_size_w,win_h-menu_size_h);
+	glVertex2i(0,win_h-menu_size_h);
+	glEnd();
+	glColor3fv(color_menu);
+	glBegin(GL_LINES);
 	// menu
 	glVertex2i(0,win_h-menu_size_h); glVertex2i(menu_size_w,win_h-menu_size_h);
 	glVertex2i(menu_size_w,win_h); glVertex2i(menu_size_w,win_h-menu_size_h);
@@ -267,19 +275,19 @@ static void DrawConfirm() {
 }
 
 static void DrawChooseProcess() {
-	
+	zoom=1;
 	interpolate_good(choose_process_d_base,choose_process_base);
 	interpolate_good(choose_process_d_delta,choose_process_delta);
 	
 	glLineWidth(1);
 	glClear(GL_COLOR_BUFFER_BIT); glLineWidth(menu_line_width);
-	DrawText(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para editar:");
+	DrawText(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para visualizar:");
 	
 	int base=win_h-choose_process_d_base, delta=choose_process_d_delta;
 	glColor3fv(color_menu); glBegin(GL_LINES); 
 	glVertex2i(0,base); glVertex2i(win_w,base);
 	glEnd();
-	for(int i=0;i<int(procesos.size());i++) {
+	for(int i=0;i<=int(procesos.size()-(edit_on?0:1));i++) {
 		
 		if (choose_process_sel==i) {
 			glColor3fv(color_shape);
@@ -292,24 +300,36 @@ static void DrawChooseProcess() {
 		}
 		base-=delta;
 		
-		string &s=procesos[i]->label;
-		int l=s.size(),p=0,f=s.find('<');
-		if (f==string::npos) f=s.find('='); else f++;
-		if (f==string::npos) f=s.find(' ')+1; else f++;
-		int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
-		
-		
-		glColor3fv(choose_process_sel==i?color_selection:color_menu);
-		glPushMatrix();
-		glTranslated(20,base+10,0);
-		glScaled(.08,.12,.1);
-		
-		while (p<l) {
-			if (p==f) glLineWidth(2);
-			if (p==t) glLineWidth(1);
-			dibujar_caracter(s[p++],true);
+		if (i==int(procesos.size())) {
+			DrawText(choose_process_sel==i?color_selection:color_menu,20,base+10,"Agregar Nuevo SubProceso");
+		} else {
+			
+			string &s=procesos[i]->label;
+			int l=s.size(),p=0,f=s.find('<');
+			if (f==string::npos) f=s.find('='); else f++;
+			if (f==string::npos) f=0; else f++;
+			int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
+			
+			glColor3fv(choose_process_sel==i?color_selection:color_menu);
+			glPushMatrix();
+			int px=20, py=base+10;
+			if (choose_process_state==3 && choose_process_sel==i) glTranslated(cur_x+(px-m_x0),cur_y+(py-m_y0),0);
+			else glTranslated(px,py,0);
+			glScaled(.08,.12,.1);
+			
+			string &sp=procesos[i]->lpre;
+			p=0; l=sp.size();
+			while (p<l)
+				dibujar_caracter(sp[p++]);
+			
+			p=0; l=s.size();
+			while (p<l) {
+				if (p==f) glLineWidth(2);
+				if (p==t) glLineWidth(1);
+				dibujar_caracter(s[p++],true);
+			}
+			glPopMatrix();		
 		}
-		glPopMatrix();
 		
 		glLineWidth(1);
 		glColor3fv(color_menu); glBegin(GL_LINES); 
@@ -317,12 +337,14 @@ static void DrawChooseProcess() {
 		glEnd();
 	}
 	glEnd();
+	
+	DrawTrash();
 	glutSwapBuffers();
 	
 }
 
 void display_cb() {
-	if (choose_process) { DrawChooseProcess(); return; }
+	if (choose_process_state) { DrawChooseProcess(); return; }
 	if (confirm) { DrawConfirm(); return; }
 	if (entity_to_del) delete entity_to_del;
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -371,7 +393,7 @@ void display_cb() {
 	glPopMatrix();
 	// dibujar menues y demases
 	glLineWidth(2);
-	if (edit_on) DrawMenus();
+	if (edit_on) { DrawMenuAndShapeBar(); DrawTrash(); }
 	// dibujar la seleccion para que quede delante de todo
 	if (mouse) {
 		glLineWidth(zoom*2);

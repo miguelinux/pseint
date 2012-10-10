@@ -84,7 +84,7 @@ static void ReemplazarOperadores(string &str) {
 
 void LoadProc(istream &fin) {
 	string str,ret;
-	start = new Entity(ET_PROCESO,"Proceso SinTitulo");
+	start = new Entity(ET_PROCESO,"SinTitulo");
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(fin,str)) {
@@ -106,9 +106,9 @@ void LoadProc(istream &fin) {
 		}
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")) {
 			string s1=str.substr(0,str.find(' '));
-			string s2=str.substr(str.find(' '));
-			if (s1=="PROCESO") start->SetLabel("Proceso"+s2);
-			else if (s1=="SUBPROCESO") start->SetLabel("SubProceso"+s2);
+			string s2=str.substr(str.find(' ')+1);
+			if (s1=="PROCESO") { start->lpre="Proceso "; start->SetLabel(s2); }
+			else if (s1=="SUBPROCESO") { start->lpre="SubProceso "; start->SetLabel(s2); }
 			continue;
 		}
 		if (!str.size()||str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="ENTONCES") {
@@ -209,7 +209,10 @@ void LoadProc(istream &fin) {
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
 		}
 	}
-	aux->LinkNext(new Entity(ET_PROCESO,string("Fin")+start->label.substr(0,start->label.find(' '))));
+	Entity *efin=new Entity(ET_PROCESO,""); 
+	efin->lpre=string("Fin")+start->lpre.substr(0,start->lpre.size()-1);
+	efin->SetLabel("");
+	aux->LinkNext(efin);
 }
 
 bool Load(const char *filename) {
@@ -233,7 +236,7 @@ bool Load(const char *filename) {
 		}
 	}
 	SetProc(procesos[choose_process_sel=imain]);
-	choose_process=procesos.size()>1;
+	choose_process_state=procesos.size()>1?2:0;
 	modified=false;
 	return true;
 }
@@ -243,7 +246,6 @@ bool Save(const char *filename) {
 	ofstream fout(fname.c_str());
 	if (!fout.is_open()) return false;
 	for(unsigned int i=0;i<procesos.size();i++) {
-//		pname=procesos[i]->prototipo;
 		procesos[i]->Print(fout);
 		fout<<endl;
 	}
@@ -253,12 +255,20 @@ bool Save(const char *filename) {
 }
 
 // inicializa las estructuras de datos con un algoritmo en blanco
-void New() {
-	fname="temp.psd"; 
-	start = new Entity(ET_PROCESO,"Proceso SinTitulo");
-	Entity *aux8 = new Entity(ET_PROCESO,"FinProceso"); start->LinkNext(aux8);
+void CreateEmptyProc(string type) {
+	Entity::all_any=NULL;
+	start = new Entity(ET_PROCESO,"");
+	Entity *aux = new Entity(ET_PROCESO,"");
+	start->LinkNext(aux);
+	start->lpre=type+" "; start->SetLabel("SinTitulo");
+	aux->lpre=string("Fin")+type; aux->SetLabel("");
 	start->Calculate();
 	procesos.push_back(start);
+}
+
+void New() {
+	fname="temp.psd"; 
+	CreateEmptyProc("Proceso");
 	ProcessMenu(MO_ZOOM_EXTEND);
 	modified=false;
 }
