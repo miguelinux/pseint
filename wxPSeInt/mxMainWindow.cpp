@@ -1342,7 +1342,7 @@ void mxMainWindow::OnDoThat (wxCommandEvent &event) {
 	new mxConfig(this);
 	if (config->lang!=old) {
 		config->profile=_T("<personalizado>");
-		SetWordsForSources();
+		ProfileChanged();
 	}
 }
 
@@ -1373,13 +1373,6 @@ void mxMainWindow::OnLink (wxHtmlLinkEvent &event) {
 	}
 }
 
-void mxMainWindow::SetWordsForSources() {
-	mxSource::SetAutocompletion();
-	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
-		((mxSource*)(notebook->GetPage(i)))->SetWords();
-		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());
-	}
-}
 
 void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
 	IF_THERE_IS_SOURCE {
@@ -1452,7 +1445,12 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::ProfileChanged ( ) {
-	SetWordsForSources();
+	mxSource::SetAutocompletion();
+	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
+		((mxSource*)(notebook->GetPage(i)))->SetWords();
+		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());
+	}
+	debug_panel->ProfileChanged();
 	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	button_subproc->Show(config->lang.enable_user_functions);

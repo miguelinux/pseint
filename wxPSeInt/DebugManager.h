@@ -14,6 +14,7 @@ class wxObject;
 
 class DebugManager {
 private:
+	bool step_in;
 	bool do_desktop_test;
 	mxProcess *process;
 	wxString sbuffer;
@@ -40,6 +41,7 @@ public:
 	void SetDoDesktopTest(bool val);
 	void SendEvaluation(wxString exp);
 	bool HasSocket(wxObject *s);
+	void SetStepIn(bool b);
 	~DebugManager();
 	int GetPort();
 };

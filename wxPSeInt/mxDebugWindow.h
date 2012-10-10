@@ -6,6 +6,7 @@ class wxButton;
 class wxScrollBar;
 class wxStaticText;
 class mxSource;
+class wxCheckBox;
 class mxEvaluateDialog;
 
 enum ds_enum {DS_NONE,DS_STEP,DS_STARTING,DS_PAUSED,DS_RESUMED,DS_FINALIZED,DS_STOPPED};
@@ -17,6 +18,7 @@ private:
 	wxStaticText *debug_status;
 	wxScrollBar *debug_speed;
 	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
+	wxCheckBox *dp_check_step_in;
 public:
 	mxDebugWindow(wxWindow *parent);
 	void SetSpeed(int speed);
@@ -27,9 +29,10 @@ public:
 	void OnDebugDesktopVars(wxCommandEvent &evt);
 	void OnDebugEvaluate(wxCommandEvent &evt);
 	void OnDebugHelp(wxCommandEvent &evt);
+	void OnDebugCheckStepIn(wxCommandEvent &evt);
 	void StartDebugging(mxSource *source, bool paused);
 	void SetEvaluationValue(wxString val);
-	~mxDebugWindow();
+	bool ProfileChanged();
 	DECLARE_EVENT_TABLE();
 };
 

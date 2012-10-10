@@ -21,6 +21,7 @@ BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 	EVT_BUTTON(mxID_DEBUG_HELP, mxDebugWindow::OnDebugHelp)
 	EVT_BUTTON(mxID_DEBUG_EVALUATE, mxDebugWindow::OnDebugEvaluate)
 	EVT_BUTTON(mxID_DEBUG_DESKTOP_VARS, mxDebugWindow::OnDebugDesktopVars)
+	EVT_CHECKBOX(mxID_DEBUG_STEP_IN, mxDebugWindow::OnDebugCheckStepIn)
 END_EVENT_TABLE()	
 
 mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
@@ -40,14 +41,14 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	debug_speed->SetScrollbar(0,1,100,10);
 	debug_speed->SetToolTip(utils->FixTooltip("Con este slider puede variar la velocidad con la que avanza automáticamente la ejecución paso a paso."));
 	sizer->Add(debug_speed,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	dp_check_step_in=new wxCheckBox(this,mxID_DEBUG_STEP_IN,"Entrar en subprocesos");
+	dp_check_step_in->SetToolTip(utils->FixTooltip("Cuando esta opción está activada y el proceso llega a la llamada de una función entra en dicha función y muestra pasa a paso cómo se ejecuta la misma, mientras que si está desactivada ejecuta la llamada completa en un solo paso sin mostrar la ejecución de la misma."));
+	if (!config->lang.enable_user_functions) dp_check_step_in->Hide();
+	sizer->Add(dp_check_step_in,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	sizer->Add(new wxButton(this,mxID_DEBUG_HELP,_T("Ayuda...")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
 	SetState(DS_STOPPED);
 	this->SetSizerAndFit(sizer);
 	evaluate_window = new mxEvaluateDialog(parent);
-}
-
-mxDebugWindow::~mxDebugWindow() {
-	
 }
 
 void mxDebugWindow::SetSpeed(int speed) {
@@ -161,3 +162,12 @@ void mxDebugWindow::SetEvaluationValue (wxString val) {
 	evaluate_window->SetEvaluationValue(val);
 }
 
+bool mxDebugWindow::ProfileChanged ( ) {
+	dp_check_step_in->Show(config->lang.enable_user_functions);
+	Layout();
+}
+
+void mxDebugWindow::OnDebugCheckStepIn(wxCommandEvent &evt) {
+	evt.Skip();
+	debug->SetStepIn(dp_check_step_in->GetValue());
+}

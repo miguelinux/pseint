@@ -16,6 +16,7 @@ DebugManager::DebugManager() {
 	debugging=false;
 	server=NULL;
 	port=-1;
+	step_in=true;
 }
 
 DebugManager::~DebugManager() {
@@ -68,6 +69,7 @@ void DebugManager::ProcData(wxString data) {
 	} else if (data.StartsWith(_T("estado "))) {
 		wxString state = data.AfterFirst(' ');
 		if (state==_T("inicializado")) {
+			// cargar la prueba de escritorio
 			if (do_desktop_test) {
 				const wxArrayString &vars  = desktop_test->GetDesktopVars();
 				for (unsigned int i=0;i<vars.GetCount();i++) {
@@ -75,6 +77,10 @@ void DebugManager::ProcData(wxString data) {
 					socket->Write(str.c_str(),str.Len());
 				}
 			}
+			// configurar el tipo de paso a paso (step in o step over)
+			wxString str(_T("subprocesos ")); str<<(step_in?1:0)<<_T("\n");
+			socket->Write(str.c_str(),str.Len());
+			// iniciar la ejecución
 			if ((paused=should_pause)) {
 				wxString str(_T("paso\n"));
 				socket->Write(str.c_str(),str.Len());
@@ -192,3 +198,10 @@ int DebugManager::GetPort ( ) {
 	return port;
 }
 
+void DebugManager::SetStepIn(bool b) {
+	step_in=b;
+	if (debugging && socket) {
+		wxString str(_T("subprocesos ")); str<<(step_in?1:0)<<_T("\n");
+		socket->Write(str.c_str(),str.Len());
+	}
+}

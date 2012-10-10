@@ -85,7 +85,6 @@ mxProfile::~mxProfile() {
 
 }
 void mxProfile::OnClose(wxCloseEvent &evt) {
-	main_window->SetWordsForSources();
 	Destroy();
 }
 

@@ -151,7 +151,6 @@ public:
 	
 	void OnLink (wxHtmlLinkEvent &event);
 		
-	void SetWordsForSources();
 	static void SetAutocompletion();
 	
 	mxSource *FindFlowId(int id);

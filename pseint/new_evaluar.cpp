@@ -361,7 +361,9 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 					memoria->AgregarAlias(func->nombres[i+1],args.values[i],caller_memoria);
 				}
 			}
+			Inter.OnFunctionIn();
 			Ejecutar(func->line_start);
+			Inter.OnFunctionOut();
 			if (func->nombres[0].size()) {
 				ret=memoria->LeerValor(func->nombres[0]);
 				tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);

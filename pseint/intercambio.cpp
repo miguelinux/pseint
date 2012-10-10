@@ -12,7 +12,9 @@ string IntToStr(int f);
 // *********************** Intercambio ****************************
 
 // Linea que se esta ejecutando actualmente
-Intercambio::Intercambio(){
+Intercambio::Intercambio() {
+	backtraceLevel=0;
+	debugLevel=0;
 	sbuffer="";
 #ifdef USE_ZOCKETS
 	evaluating_for_debug=false;
@@ -43,6 +45,11 @@ void Intercambio::ProcData(string order) {
 		} else
 			zocket_escribir(zocket,"estado ejecutando\n",18);
 		do_step=true;
+	} else if (order=="subprocesos 1") { // se mete en todos los subprocesos
+		debugLevel=0;
+	} else if (order=="subprocesos 0") { // no se mete más alla del subproceso actual
+		debugLevel=backtraceLevel;
+		if (!debugLevel) debugLevel=1;
 	} else if (order=="pausa") {
 		delay=-delay;
 		if (delay>0)
@@ -95,7 +102,7 @@ void Intercambio::SetLineAndInstructionNumber(int _i) {
 void Intercambio::SetLineNumber(int _l, int _i){
 	lineNumber=_l; instNumber=_i;
 #ifdef USE_ZOCKETS
-	if (zocket!=ZOCKET_ERROR) { // si estamos depurando, informar la linea y esperar
+	if (zocket!=ZOCKET_ERROR && (!debugLevel || backtraceLevel<=debugLevel)) { // si estamos depurando, informar la linea y esperar
 		string str;
 		if (_i>0) str=string("linea ")+IntToStr(_l)+":"+IntToStr(_i)+"\n";
 		else str=string("linea ")+IntToStr(_l)+"\n";
@@ -161,9 +168,11 @@ void Intercambio::ProcInput() {
 
 void Intercambio::SetStarted() {
 	running=true;
+	backtraceLevel=1;
 }
 
 void Intercambio::SetFinished(bool interrupted) {
+	backtraceLevel=0;
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR) {
 		if (!interrupted)
@@ -172,6 +181,7 @@ void Intercambio::SetFinished(bool interrupted) {
 			zocket_escribir(zocket,"estado interrumpido\n",20);
 	}
 #endif
+	running=false;
 }
 int Intercambio::GetLineNumber() {
 	return lineNumber;
@@ -232,4 +242,12 @@ void Intercambio::SetError(string error) {
 	is_evaluation_error = true;
 	evaluation_error = error;
 #endif
+}
+
+void Intercambio::OnFunctionIn() {
+	backtraceLevel++;
+}
+void Intercambio::OnFunctionOut() {
+	if (backtraceLevel==debugLevel) debugLevel--;
+	backtraceLevel--;
 }

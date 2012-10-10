@@ -13,7 +13,9 @@ using namespace std;
 
 class Intercambio {
 	
-
+	int backtraceLevel; // en que nivel del trazado inverso se encuentra el punto actual de ejecucion (1:proceso principal, >1:alguna funcion)
+	int debugLevel; // solo interesa depurar si debugLevel<=backtraceLevel (si es 0 depura todo)
+	
 	bool running;
 	int instNumber;          // Numero de linea que se está ejecutando (base 1)
 	int lineNumber;          // Numero de linea que se está ejecutando (base 1)
@@ -72,6 +74,9 @@ public:
 	
 	bool EvaluatingForDebug();
 	void SetError(string error);
+	
+	void OnFunctionIn();
+	void OnFunctionOut();
 };
 
 extern Intercambio Inter;        // clase para enviar informacion de depuración al editor
