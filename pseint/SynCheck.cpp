@@ -1588,6 +1588,7 @@ int SynCheck() {
 	for(int i=0;i<programa.GetSize();i++) SynCheckAux1(programa[i].instruccion);
 	
 	// parsear primero las funciones/subprocesos (j=0), luego el proceso (j=1)
+	bool have_proceso=false;
 	for(int j=0;j<2;j++) {
 		bool era_proceso=false;
 		for(int i0=1,i=0;i<programa.GetSize();i++) {
@@ -1598,6 +1599,10 @@ int SynCheck() {
 				s=="PROCESO" || LeftCompare(s,"PROCESO ") || 
 				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
 					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
+					if (j==1 && es_proceso) {
+						if (have_proceso) { Inter.SetLineNumber(programa[i].num_linea,1); SynError (999,"Solo puede haber un Proceso."); errores++;}
+						have_proceso=true;
+					}
 					if (i0!=i && era_proceso==(j==1)) {
 						errores+=SynCheck(i0,i);
 						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
@@ -1606,6 +1611,7 @@ int SynCheck() {
 				}
 		}
 	}
+	if (!have_proceso) { Inter.SetLineNumber(1,1); SynError (999,"Debe haber un Proceso."); errores++;}
 	
 	return errores;
 }
