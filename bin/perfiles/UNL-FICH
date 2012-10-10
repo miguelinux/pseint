@@ -10,3 +10,4 @@ base_zero_arrays=0
 overload_equal=0
 coloquial_conditions=0
 force_define_vars=0
+enable_user_functions=0

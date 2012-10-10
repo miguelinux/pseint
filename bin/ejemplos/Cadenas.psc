@@ -21,8 +21,8 @@ Proceso sin_titulo
 	cantvocales<-0{;}
 	
 	// comparar todas las letras de frase con las de vocales y contar coincidencias
-	Para i<-1 hasta Longitud(frase) Hacer
-		Para j<-1 hasta Longitud(vocales) Hacer
+	Para i<-{1#0} hasta Longitud(frase){#-1} Hacer
+		Para j<-{1#0} hasta Longitud(vocales){#-1} Hacer
 			Si Subcadena(frase,i,i)=Subcadena(vocales,j,j) Entonces
 				cantVocales<-cantVocales+1{;}
 			FinSi
