@@ -65,7 +65,7 @@ void Intercambio::ProcData(string order) {
 		is_evaluation_error=false;
 		evaluating_for_debug=true;
 		string exp = order.substr(8);
-		string res,str="evaluacion ";
+		string res,str="evaluacion x ";
 		ParseInspection(exp);
 		tipo_var tipo;
 		if (!is_evaluation_error)
@@ -77,6 +77,7 @@ void Intercambio::ProcData(string order) {
 				res=DblToStr(StrToDbl(res),10);
 			str+=res+"\n";
 		}
+		str[11]='0'+(tipo.cb_log?1:0)+(tipo.cb_num?2:0)+(tipo.cb_car?4:0); // reemplaza la x por el tipo
 		zocket_escribir(zocket,str.c_str(),str.size());
 		evaluating_for_debug=false;
 	} else if (order.substr(0,12)=="autoevaluar ") {

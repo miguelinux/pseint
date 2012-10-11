@@ -116,6 +116,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 }
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
+	if (evaluate_window->IsShown()) evaluate_window->Hide();
 	if (debug->debugging) {
 		debug->Stop();
 	} else {
@@ -125,11 +126,13 @@ void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 }
 
 void mxDebugWindow::OnDebugPause(wxCommandEvent &evt) {
+	if (evaluate_window->IsShown()) evaluate_window->Hide();
 	if (ds_state==DS_STEP) return;
 	debug->Pause();
 }
 
 void mxDebugWindow::OnDebugStep(wxCommandEvent &evt) {
+	if (evaluate_window->IsShown()) evaluate_window->Hide();
 	if (ds_state==DS_STEP) return;
 	if (debug->debugging) {
 		debug->Step();
@@ -159,8 +162,8 @@ void mxDebugWindow::OnDebugEvaluate(wxCommandEvent &evt) {
 	evaluate_window->Show();
 }
 
-void mxDebugWindow::SetEvaluationValue (wxString val) {
-	evaluate_window->SetEvaluationValue(val);
+void mxDebugWindow::SetEvaluationValue (wxString val, char tipo) {
+	evaluate_window->SetEvaluationValue(val,tipo);
 }
 
 bool mxDebugWindow::ProfileChanged ( ) {
@@ -171,4 +174,9 @@ bool mxDebugWindow::ProfileChanged ( ) {
 void mxDebugWindow::OnDebugCheckStepIn(wxCommandEvent &evt) {
 	evt.Skip();
 	debug->SetStepIn(dp_check_step_in->GetValue());
+}
+
+void mxDebugWindow::ShowInEvaluateDialog(wxString s) {
+	evaluate_window->Show();
+	evaluate_window->EvaluateExpression(s);
 }

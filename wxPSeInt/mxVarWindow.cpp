@@ -4,11 +4,15 @@
 #include <wx/imaglist.h>
 #include "ConfigManager.h"
 #include "mxUtils.h"
+#include "DebugManager.h"
+#include "mxDebugWindow.h"
 
 mxVarWindow *var_window=NULL;
 
 BEGIN_EVENT_TABLE(mxVarWindow,wxPanel) 
 	EVT_TREE_SEL_CHANGED(wxID_ANY,mxVarWindow::OnTreeClick)
+	EVT_TREE_ITEM_MIDDLE_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
+	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
 END_EVENT_TABLE()
 	
@@ -77,6 +81,13 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
 	src->HighLight(tree->GetItemText(it).BeforeFirst('['));
+}
+
+void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
+	if (!debug->debugging || !debug->paused) return;
+	evt.Skip();	
+	wxTreeItemId it=GetSelection();
+	if (it!=-1) debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
 }
 
 void mxVarWindow::OnTreeTooltip(wxTreeEvent &evt) {

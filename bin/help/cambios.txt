@@ -1,3 +1,6 @@
+20121011
+	La ventana de evaluación de la ejecución paso a paso muestra el tipo de la expresión evaluada.
+
 >>RELEASE 20121010<<
 
 20121010

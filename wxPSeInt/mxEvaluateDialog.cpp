@@ -32,7 +32,12 @@ mxEvaluateDialog::mxEvaluateDialog(wxWindow *parent) : wxDialog(parent,wxID_ANY,
 	
 	mySizer->Add(new wxStaticText(this, wxID_ANY, _T("Valor actual:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
 	result = new wxTextCtrl(this, wxID_ANY, _T("<<Presione Evaluar para ver aqui el resultado>>"), wxDefaultPosition, wxSize(300,70), wxTE_MULTILINE|wxTE_READONLY);
-	mySizer->Add(result, wxSizerFlags().Border(wxALL,5).DoubleBorder(wxBOTTOM|wxLEFT).Proportion(1).Expand());
+	mySizer->Add(result, wxSizerFlags().Border(wxALL,5).DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).Proportion(1).Expand());
+	tipo = new wxTextCtrl(this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+	wxBoxSizer *tipoSizer = new wxBoxSizer(wxHORIZONTAL);
+	tipoSizer->Add(new wxStaticText(this,wxID_ANY,"Tipo: "),wxSizerFlags().Center());
+	tipoSizer->Add(tipo, wxSizerFlags().Proportion(1).Expand());
+	mySizer->Add(tipoSizer, wxSizerFlags().Border(wxALL,5).DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).Proportion(0).Expand());
 	
 	wxButton *button_close = new wxButton(this,wxID_CANCEL, _T("&Cerrar"));
 	bottomSizer->Add( button_close , wxSizerFlags().Border(wxALL,5));
@@ -71,8 +76,17 @@ void mxEvaluateDialog::OnCloseButton(wxCommandEvent &evt) {
 	Hide();
 }
 
-void mxEvaluateDialog::SetEvaluationValue(wxString val) {
+void mxEvaluateDialog::SetEvaluationValue(wxString val, char t) {
 	result->SetValue(val);
+	switch (t) {
+	case '1': tipo->SetValue("Lógico"); break;
+	case '2': tipo->SetValue("Numérico"); break;
+	case '3': tipo->SetValue("Lógico o Numérico"); break;
+	case '4': tipo->SetValue("Caracter"); break;
+	case '5': tipo->SetValue("Lógico o Caracter"); break;
+	case '6': tipo->SetValue("Numérico o Caracter"); break;
+	default: tipo->SetValue("Indefinido"); break;
+	}
 }
 
 //void mxEvaluateDialog::OnClose(wxCloseEvent &evt) {
@@ -91,3 +105,10 @@ void mxEvaluateDialog::Show() {
 	result->SetValue(_T("<<Presione Evaluar para ver aqui el resultado>>"));
 	wxDialog::Show();
 }
+
+void mxEvaluateDialog::EvaluateExpression (wxString exp) {
+	combo->SetValue(exp);
+	wxCommandEvent evt;
+	OnEvaluateButton(evt);
+}
+

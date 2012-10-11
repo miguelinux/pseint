@@ -31,8 +31,9 @@ public:
 	void OnDebugHelp(wxCommandEvent &evt);
 	void OnDebugCheckStepIn(wxCommandEvent &evt);
 	void StartDebugging(mxSource *source, bool paused);
-	void SetEvaluationValue(wxString val);
+	void SetEvaluationValue(wxString val, char tipo);
 	bool ProfileChanged();
+	void ShowInEvaluateDialog(wxString s);
 	DECLARE_EVENT_TABLE();
 };
 

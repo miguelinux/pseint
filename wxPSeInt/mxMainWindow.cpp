@@ -86,6 +86,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_INDENT_SELECTION, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_BEAUTIFY_CODE, mxMainWindow::OnEdit)
 	
+	EVT_MENU(mxID_DEBUG_STEP, mxMainWindow::OnDebugShortcut)
 	EVT_MENU(mxID_DO_THAT, mxMainWindow::OnDoThat)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
@@ -1311,13 +1312,14 @@ void mxMainWindow::OnConfigLanguage(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	wxAcceleratorEntry entries[5];
+	wxAcceleratorEntry entries[6];
 	entries[0].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
 	entries[1].Set(wxACCEL_CTRL, WXK_TAB, mxID_VIEW_NOTEBOOK_NEXT);
 	entries[2].Set(wxACCEL_CTRL, WXK_PAGEUP, mxID_VIEW_NOTEBOOK_PREV);
 	entries[3].Set(wxACCEL_CTRL, WXK_PAGEDOWN, mxID_VIEW_NOTEBOOK_NEXT);
 	entries[4].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_F5, mxID_DO_THAT);
-	wxAcceleratorTable accel(5, entries);
+	entries[5].Set(0, WXK_F6, mxID_DEBUG_STEP);
+	wxAcceleratorTable accel(6, entries);
 	SetAcceleratorTable(accel);
 }
 
@@ -1487,5 +1489,9 @@ void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
 	aui_manager.GetPane(commands).Show();
 	aui_manager.GetPane("helper_commands").Hide();
 	aui_manager.Update();	
+}
+
+void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
+	if (evt.GetId()==mxID_DEBUG_STEP) debug_panel->OnDebugStep(evt);
 }
 

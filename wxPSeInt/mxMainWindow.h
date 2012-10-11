@@ -107,6 +107,7 @@ public:
 	void OnConfigStepStepH(wxCommandEvent &evt);
 	
 	void OnDoThat(wxCommandEvent &evt);
+	void OnDebugShortcut(wxCommandEvent &evt);
 	
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
@@ -151,8 +152,6 @@ public:
 	
 	void OnLink (wxHtmlLinkEvent &event);
 		
-	static void SetAutocompletion();
-	
 	mxSource *FindFlowId(int id);
 	mxSource *FindFlowSocket(wxObject *s);
 	void SelectSource(mxSource *s);

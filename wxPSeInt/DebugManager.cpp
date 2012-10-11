@@ -102,7 +102,7 @@ void DebugManager::ProcData(wxString data) {
 			debug_panel->SetState(DS_NONE);
 		}
 	} else if (data.StartsWith(_T("evaluacion "))) {
-		debug_panel->SetEvaluationValue(data.Mid(11));
+		debug_panel->SetEvaluationValue(data.Mid(13),data[11]);
 	}	
 }
 
