@@ -36,3 +36,12 @@ coloquial_conditions=1
 
 # obliga a definir los tipos de variables con la sentencia DEFINIR antes de utilizarlas
 force_define_vars=0
+
+# dibujar diagramas de flujo de Nassi-Schneiderman en lugar de los clasicos en el editor de diagramas
+use_nassi_schneiderman=0
+
+# habilitar las funciones de manejo de cadenas de caracteres (Longitud, Concatenar, Subcadena, Mayusculas y Minusculas)
+enable_string_functions=1
+
+# permitir definir nuevas funciones en el algoritmo con las palabras claves funcion o subproceso
+enable_user_functions=1
