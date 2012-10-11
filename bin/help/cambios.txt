@@ -1,3 +1,5 @@
+>>RELEASE 20121010<<
+
 20121010
 	Ya se puede crear y eliminar subprocesos desde el diagrama de flujo.
 	Se agregó una casilla de verificación al panel de Ejecución Paso a Paso para elegir si la misma debe entrar en los subprocesos o pasarlos por alto.
