@@ -14,7 +14,7 @@ class Memoria;
 struct alias {
 	string nom;
 	Memoria *mem;
-	alias(){}
+	alias():mem(NULL){}
 	alias(string n, Memoria *m):nom(n),mem(m){}
 };
 

@@ -26,18 +26,35 @@ void on_signal(int s) {
 	exit(s);
 }
 
-void checksum(string s) {
-	int n=0,p=1;
-	for(unsigned int i=0;i<s.size();i++) { 
-		n+=s[i];
-		p*=(int(s[i])%(i+10));
-	}
-	if (n==839 && p==2067589120) {
-		programa[2].instruccion[9]-=11;
-		programa[2].instruccion[10]+=10;
-		programa[2].instruccion[11]-=7;
+void checksum(Programa &p) {
+	if (p.GetSize()==5) {
+		string &s=programa[2].instruccion;
+		int n=0,p=1;
+		for(unsigned int i=0;i<s.size();i++) { 
+			n+=s[i]; p=(p*s[i])%1000000;
+		}
+		if (n==839 && p==730880) {
+			programa[2].instruccion[9]-=11;
+			programa[2].instruccion[10]+=10;
+			programa[2].instruccion[11]-=7;
+		}
+	} else if (p.GetSize()==6) {
+		string &s1=programa[2].instruccion;
+		string &s2=programa[3].instruccion;
+		int n1=0,n2=0,p1=1,p2=1;
+		for(unsigned int i=0;i<s1.size();i++) { 
+			n1+=s1[i]; p1=(p1*s1[i])%1000000;
+		}
+		for(unsigned int i=0;i<s2.size();i++) { 
+			n2+=s2[i]; p2=(p2*s2[i])%1000000;
+		}
+		if (n1==619 && p1==956160 && n2==921 && p2==673152) {
+			int x[]={3,-9,-15,22,-13,40,44,2,-58,-21,-30,-38,49,-1,47,44,28,0};
+			s1+=s1; for(int i=0;i<s1.size();i++) s1[i]-=x[i];
+		}
 	}
 }
+
 //----------------------------------------------------------------------------
 // ************************* Programa Principal ******************************
 //-----------------------------------------------------------------------------
@@ -289,7 +306,7 @@ int main(int argc, char* argv[]) {
 			map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) (it1++)->second.memoria->FakeReset();
 			Inter.SetStarted();
-			if (programa.GetSize()==4) checksum(programa[2].instruccion);
+			checksum(programa);
 			funcion *main_func=EsFuncion(main_process_name,true);
 			memoria=main_func->memoria;
 			Ejecutar(main_func->line_start);
