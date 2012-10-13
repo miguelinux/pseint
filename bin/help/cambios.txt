@@ -1,10 +1,18 @@
-20121011
+20121013
+	La prueba de escritorio, además de mostrar el nombre de la función actual muestra también un número que indica su profundidad en la pila de llamadas.
+	Corregido el problema de los pseudocódigos muy largos en el editor cuando la comprobación de sintaxis en tiempo real está activa.
+	Corregido el tamaño de los iconos de proceso y subproceso en el panel de variables.
+	Corregido el error que genera el intérprete al final de la ejecución paso a paso.
+	
+20121012
 	La ventana de evaluación de la ejecución paso a paso muestra el tipo de la expresión evaluada.
 
 >>RELEASE 20121010<<
 
 20121010
 	Ya se puede crear y eliminar subprocesos desde el diagrama de flujo.
+	La ejecución paso a paso marca las lines Proceso/SubProceso y Función/FinFunción, para poder ver el estado antes y después de ejecutar una función.
+	La prueba de escritorio muestra una columna adicional con el nombre de la función actual.
 	Se agregó una casilla de verificación al panel de Ejecución Paso a Paso para elegir si la misma debe entrar en los subprocesos o pasarlos por alto.
 	Se corrigió un error en la exportación a C++ de expresiones que involucran potencias.
 	Se agregaron algunos ejemplos nuevos en la ayuda.

@@ -165,6 +165,8 @@ public:
 	void OnHelperDebug(wxCommandEvent &evt);
 	void OnHelperCommands(wxCommandEvent &evt);
 	
+	void CheckIfNeedsRTS();
+	
 	DECLARE_EVENT_TABLE();
 };
 

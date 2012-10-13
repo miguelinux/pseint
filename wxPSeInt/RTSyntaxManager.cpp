@@ -65,19 +65,19 @@ bool RTSyntaxManager::Process (mxSource * src) {
 				fase_num=2;
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				break;
-			} else if (fase_num==0) {
+			} else if (fase_num==0 && config->rt_syntax) {
 				long l=-1,i=-1;
 				line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
 				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
 				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
 				src->MarkError(l-1,i-1,line,line.StartsWith("Falta cerrar "));
-			} else if (fase_num==1) {
+			} else if (fase_num==1 && config->show_vars) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
 					var_window->Add(line.AfterFirst(' '),what=="PROCESO");
 				else
 					var_window->Add(what,line.Last());
-			} else {
+			} else if (config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 
 					src->AddBlock(l1-1,l2-1);

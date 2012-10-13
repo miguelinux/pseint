@@ -17,6 +17,7 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 
 class mxSource : public wxStyledTextCtrl {
 private:
+	bool rt_running; // rt_syntax||highlight_blocks||show_vars
 	int comp_from, comp_to;
 	int last_s1,last_s2;
 	bool is_example;

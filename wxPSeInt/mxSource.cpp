@@ -97,6 +97,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 
 	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
 	
+	rt_running=false;
 	flow=NULL;
 	input=NULL;
 	socket=NULL;
@@ -1148,11 +1149,12 @@ void mxSource::MarkError(int l, int i, wxString str, bool special) {
 }
 
 void mxSource::StartRTSyntaxChecking ( ) {
-	rt_timer->Start(RT_DELAY,true);
+	rt_running=true; rt_timer->Start(RT_DELAY,true);
 }
 
 void mxSource::StopRTSyntaxChecking ( ) {
-	rt_timer->Stop(); ClearErrors(); ClearBlocks(); UnHighLightBlock();
+	rt_running=false; rt_timer->Stop(); 
+	ClearErrors(); ClearBlocks(); UnHighLightBlock();
 }
 
 void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
@@ -1161,7 +1163,7 @@ void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
 }
 
 void mxSource::OnChange(wxStyledTextEvent &event) {
-	if (config->rt_syntax) { rt_timer->Start(RT_DELAY,true); }
+	if (rt_running) { rt_timer->Start(RT_DELAY,true); }
 	event.Skip();
 }
 

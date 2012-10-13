@@ -1036,7 +1036,7 @@ void mxMainWindow::OnConfigShowVars(wxCommandEvent &evt) {
 		aui_manager.GetPane(var_window).Show();
 		aui_manager.GetPane("helper_vars").Hide();
 	}
-	aui_manager.Update();	
+	aui_manager.Update(); CheckIfNeedsRTS();
 }
 	
 void mxMainWindow::OnConfigShowDebugPanel(wxCommandEvent &evt) {
@@ -1097,14 +1097,11 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 	if (!mi_rt_syntax->IsChecked()) {
 		mi_rt_syntax->Check(false);
 		config->rt_syntax=false;
-		for(unsigned int i=0;i<notebook->GetPageCount();i++)
-			((mxSource*)notebook->GetPage(i))->StopRTSyntaxChecking();
 	} else {
 		mi_rt_syntax->Check(true);
 		config->rt_syntax=true;
-		for(unsigned int i=0;i<notebook->GetPageCount();i++)
-			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
 	}
+	CheckIfNeedsRTS();
 }
 
 void mxMainWindow::OnConfigCalltipHelps(wxCommandEvent &evt) {
@@ -1141,10 +1138,12 @@ void mxMainWindow::OnConfigHighlightBlocks(wxCommandEvent &evt) {
 	if (!mi_highlight_blocks->IsChecked()) {
 		mi_highlight_blocks->Check(false);
 		config->highlight_blocks=false;
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->UnHighLightBlock();
 	} else {
 		mi_highlight_blocks->Check(true);
 		config->highlight_blocks=true;
 	}
+	CheckIfNeedsRTS();
 }
 
 void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
@@ -1205,7 +1204,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	else if (event.pane->name == _T("vars_panel")) { 
 		mi_vars_panel->Check(config->show_vars=false); 
 		aui_manager.GetPane("helper_vars").Show();
-		aui_manager.Update();	
+		aui_manager.Update(); CheckIfNeedsRTS();
 	}
 }
 
@@ -1471,10 +1470,10 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
-	mi_vars_panel->Check(true);
+	mi_vars_panel->Check(config->show_vars=true);
 	aui_manager.GetPane(var_window).Show();
 	aui_manager.GetPane("helper_vars").Hide();
-	aui_manager.Update();	
+	aui_manager.Update(); CheckIfNeedsRTS();	
 }
 
 void mxMainWindow::OnHelperDebug (wxCommandEvent & evt) {
@@ -1495,3 +1494,14 @@ void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
 	if (evt.GetId()==mxID_DEBUG_STEP) debug_panel->OnDebugStep(evt);
 }
 
+void mxMainWindow::CheckIfNeedsRTS() {
+	if (config->rt_syntax||config->highlight_blocks||config->show_vars) {
+		if (!RTSyntaxManager::IsLoaded()) RTSyntaxManager::Start();
+		for(unsigned int i=0;i<notebook->GetPageCount();i++)
+			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
+	} else {
+		for(unsigned int i=0;i<notebook->GetPageCount();i++)
+			((mxSource*)notebook->GetPage(i))->StopRTSyntaxChecking();
+		if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Stop();
+	}
+}
