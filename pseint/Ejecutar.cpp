@@ -28,7 +28,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 		cadena=programa[line].instruccion;
 		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
 			Inter.SetLineAndInstructionNumber(line);
-			if (cadena=="FINPROCESO") Inter.OnFunctionOut();
+			if (cadena=="FINSUBPROCESO") Inter.OnFunctionOut();
 			break;
 		}
 		if (LeftCompare(cadena,"PROCESO ") || LeftCompare(cadena,"SUBPROCESO ")) {
