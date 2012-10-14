@@ -366,7 +366,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 //			Inter.OnFunctionOut(); // ahora se encarga Ejecutar
 			if (func->nombres[0].size()) {
 				ret=memoria->LeerValor(func->nombres[0]);
-				tipo_var rettipo=memoria->LeerTipo(func->nombres[0]);
+				rettipo=memoria->LeerTipo(func->nombres[0]);
 			}
 			delete memoria;
 			memoria=caller_memoria;
