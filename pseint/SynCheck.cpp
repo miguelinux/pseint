@@ -34,19 +34,6 @@ static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 	return -1;
 }
 
-//static int PSeudoFind(const string &s, string x, int from=0, int to=-1) {
-//	if (to==-1) to=x.size();
-//	to-=x.size()-1;
-//	int p=PSeudoFind(s,x[0],from,to);
-//	while (p!=-1) {
-//		if (s.substr(p,x.size())==x) return p;
-//		p=PSeudoFind(s,x[0],p+1,to);
-//	}
-//	return -1;
-//}
-
-
-
 // para checkear que las dimensiones de los arreglos no involucren variables
 static bool IsNumericConstant(string &str) {
 	for (unsigned int i=0;i<str.size();i++)
@@ -750,7 +737,8 @@ int SynCheck(int linea_from, int linea_to) {
 			} else {
 				int flag_segun=0;
 				if (!bucles.empty()) {
-					if (bucles.top()=="SEGUN") { // si esta en segun comprobar la condicion
+					// comentado el 20121013 para que siempre diga que lo que esta antes del : es una instruccion y lo que esta despues otra.
+//					if (bucles.top()=="SEGUN") { // si esta en segun comprobar la condicion
 						int pos_dp=PSeudoFind(cadena,':');
 						if (pos_dp!=-1 && cadena[pos_dp+1]!='=') {
 							// ver ademas si dise "OPCION o CASO al principio"
@@ -772,8 +760,9 @@ int SynCheck(int linea_from, int linea_to) {
 							programa[x+1].instruccion.erase(0,pos_dp+1);
 							cadena.erase(pos_dp+1,cadena.size()-pos_dp-1);
 							flag_pyc+=1; flag_segun=1;
+							if (bucles.top()!="SEGUN") { SynError (999,"Opción fuera de SEGUN."); errores++; }
 						}
-					}
+//					}
 				}
 				if (flag_segun==0) {
 					instruccion="Error?";
@@ -853,7 +842,7 @@ int SynCheck(int linea_from, int linea_to) {
 			// si entro en segun comprobar que haya condicion
 			if (!bucles.empty()) {
 				if (bucles.top()=="SEGUN" && LeftCompare(programa[x-1],"SEGUN") && cadena!="") {
-					if (instruccion!=":") SynError (33,"Se esperaba <opcion>:."); errores++;
+					if (instruccion!=":") { SynError (33,"Se esperaba <opcion>:."); errores++; }
 				}
 			}
 			
@@ -1316,16 +1305,16 @@ int SynCheck(int linea_from, int linea_to) {
 					while ((p=cadena.find(" O "))!=-1) cadena.replace(p,3,",");
 					while ((p=cadena.find("|"))!=-1) cadena.replace(p,1,",");
 				}
-				cadena[cadena.size()]=',';
+				cadena[cadena.size()-1]=',';
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',p+1))!=-1) {
 					tipo=vt_caracter_o_numerica;
-					EvaluarSC(cadena.substr(i,p-i-1),tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
-					if (!tipo.cb_num&&(!tipo.cb_car||!lazy_syntax))
+					EvaluarSC(cadena.substr(i,p-i),tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
+					if (!tipo.cb_num&&!lazy_syntax&&tipo!=vt_error)
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
 				}
-				cadena[cadena.size()]=':';
+				cadena[cadena.size()-1]=':';
 			}
 			
 			if (instruccion=="<-") {  // ------------ ASIGNACION -----------//

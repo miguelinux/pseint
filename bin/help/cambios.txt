@@ -1,4 +1,5 @@
 20121013
+	Las opciones de comprobacion de sintaxis en tiempo real, resaltado de bloques, y lista de variables en el editor son ahora independientes.
 	La prueba de escritorio, además de mostrar el nombre de la función actual muestra también un número que indica su profundidad en la pila de llamadas.
 	Corregido el problema de los pseudocódigos muy largos en el editor cuando la comprobación de sintaxis en tiempo real está activa.
 	Corregido el tamaño de los iconos de proceso y subproceso en el panel de variables.

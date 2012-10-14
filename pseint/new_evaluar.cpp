@@ -730,8 +730,8 @@ string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 		if (c0=='*'||c0=='='||c0=='<'||c0=='/'||c0=='&'||c0=='%'||c0=='>'||c0=='|'||c0=='^') {
 			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
 		}
-		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^') {
-			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
+		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^'||c1=='+'||c1=='-') {
+			SynError (999,"Falta un operando al final de la expresión."); /*errores++;*/
 		}
 	}
 	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo de afuera, mejor contextualizado)
