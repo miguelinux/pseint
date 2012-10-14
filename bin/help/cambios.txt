@@ -1,3 +1,4 @@
+>>RELEASE 20121013<<
 
 20121013
 	Ahora el tipo de variable que retorna un SubProceso se aplica correctamente a la expresión que lo invocó.

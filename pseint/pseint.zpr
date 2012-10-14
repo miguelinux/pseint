@@ -11,10 +11,11 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp
-cursor=2463
+cursor=3548
 [source]
 path=intercambio.cpp
 cursor=6738
@@ -24,10 +25,11 @@ marker=212
 marker=39
 [source]
 path=SynCheck.cpp
-cursor=36206
-marker=820
-marker=1406
-marker=1503
+cursor=57946
+marker=739
+marker=809
+marker=1395
+marker=1492
 [source]
 path=Ejecutar.cpp
 cursor=839
@@ -35,7 +37,7 @@ marker=385
 marker=191
 [source]
 path=global.cpp
-cursor=955
+cursor=705
 [source]
 path=zockets.cpp
 cursor=2494
@@ -47,8 +49,11 @@ path=zcurlib.cpp
 cursor=2812
 [source]
 path=new_evaluar.cpp
-cursor=10863
+cursor=11036
+breakpoint=378
+breakpoint=368
 marker=480
+open=true
 [source]
 path=new_memoria.cpp
 cursor=0
@@ -63,7 +68,7 @@ path=common.h
 cursor=367
 [header]
 path=global.h
-cursor=2120
+cursor=1238
 [header]
 path=intercambio.h
 cursor=483
@@ -73,7 +78,7 @@ cursor=2121
 marker=71
 [header]
 path=version.h
-cursor=471
+cursor=24
 [header]
 path=zockets.h
 cursor=255
@@ -113,7 +118,8 @@ path=new_programa.h
 cursor=990
 [other]
 path=../bin/help/cambios.txt
-cursor=648
+cursor=0
+open=true
 [other]
 path=../bin/help/errores.hlp
 cursor=43951
@@ -215,5 +221,6 @@ dont_generate_exe=0
 enable_profiling=0
 [inspections]
 name=<current_inspections>
-expr=order._M_dataplus._M_p
+expr=ret._M_dataplus._M_p
+expr=tipo.cb_car
 [end]
