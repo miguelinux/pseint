@@ -7,6 +7,7 @@
 #include "intercambio.h"
 #include "new_programa.h"
 #include "new_funciones.h"
+#include "case_map.h"
 using namespace std;
 
 static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
@@ -59,15 +60,7 @@ static void SynCheckAux1(string &cadena) {
 			if (c=='[') c='(';
 			else if (c==']') c=')';
 			else if (c==9) c=' ';
-			// pasar a mayusculas (solo importa la ú por el según, las otras importarán cuando permita variables con ñs y acentos
-			else if (c>96 && c<123) c-=32;
-			else if (c=='á') c='Á';
-			else if (c=='é') c='É';
-			else if (c=='í') c='Í';
-			else if (c=='ó') c='Ó';
-			else if (c=='ú') c='Ú';
-			else if (c=='ü') c='Ü';
-			else if (c=='ñ') c='Ñ';
+			else c=ToUpper(c);
 		}
 	}
 	// desues, word_operators
@@ -1572,6 +1565,8 @@ int SynCheck() {
 	programa.PushBack(""); // linea en blanco al final, para que era?
 	programa.Insert(0,""); // linea en blanco al principio, para que era?
 	int errores=0;
+	
+	if (case_map) for(int i=0;i<programa.GetSize();i++) CaseMapFill(programa[i].instruccion);
 	
 	// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
 	for(int i=0;i<programa.GetSize();i++) SynCheckAux1(programa[i].instruccion);

@@ -1,15 +1,15 @@
-OBJS=${OBJS_DIR}/main.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/SynCheck.o ${OBJS_DIR}/Ejecutar.o ${OBJS_DIR}/global.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_programa.o 
+OBJS=${OBJS_DIR}/main.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/SynCheck.o ${OBJS_DIR}/Ejecutar.o ${OBJS_DIR}/global.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/case_map.o 
 
-${OBJS_DIR}/main.o: main.cpp version.h zcurlib.h common.h intercambio.h zockets.h new_memoria.h global.h utils.h new_evaluar.h SynCheck.h Ejecutar.h new_funciones.h new_programa.h
+${OBJS_DIR}/main.o: main.cpp version.h zcurlib.h common.h intercambio.h zockets.h new_memoria.h global.h utils.h new_programa.h new_evaluar.h SynCheck.h Ejecutar.h new_funciones.h case_map.h
 	${GPP} ${FLAGS} -c main.cpp -o $@
 
-${OBJS_DIR}/intercambio.o: intercambio.cpp intercambio.h zockets.h common.h new_evaluar.h new_memoria.h utils.h SynCheck.h
+${OBJS_DIR}/intercambio.o: intercambio.cpp intercambio.h zockets.h common.h new_evaluar.h new_memoria.h utils.h new_programa.h global.h SynCheck.h
 	${GPP} ${FLAGS} -c intercambio.cpp -o $@
 
-${OBJS_DIR}/SynCheck.o: SynCheck.cpp SynCheck.h global.h utils.h new_memoria.h new_evaluar.h intercambio.h zockets.h new_programa.h
+${OBJS_DIR}/SynCheck.o: SynCheck.cpp SynCheck.h global.h utils.h new_memoria.h new_programa.h intercambio.h zockets.h new_evaluar.h new_funciones.h case_map.h
 	${GPP} ${FLAGS} -c SynCheck.cpp -o $@
 
-${OBJS_DIR}/Ejecutar.o: Ejecutar.cpp Ejecutar.h global.h intercambio.h zockets.h utils.h new_memoria.h new_evaluar.h zcurlib.h new_programa.h
+${OBJS_DIR}/Ejecutar.o: Ejecutar.cpp Ejecutar.h global.h intercambio.h zockets.h utils.h new_memoria.h new_programa.h new_evaluar.h zcurlib.h new_funciones.h
 	${GPP} ${FLAGS} -c Ejecutar.cpp -o $@
 
 ${OBJS_DIR}/global.o: global.cpp global.h
@@ -18,21 +18,24 @@ ${OBJS_DIR}/global.o: global.cpp global.h
 ${OBJS_DIR}/zockets.o: zockets.cpp zockets.h
 	${GPP} ${FLAGS} -c zockets.cpp -o $@
 
-${OBJS_DIR}/utils.o: utils.cpp global.h common.h new_evaluar.h new_memoria.h intercambio.h zockets.h utils.h zcurlib.h
+${OBJS_DIR}/utils.o: utils.cpp global.h common.h new_evaluar.h new_memoria.h intercambio.h zockets.h utils.h new_programa.h zcurlib.h new_funciones.h
 	${GPP} ${FLAGS} -c utils.cpp -o $@
 
 ${OBJS_DIR}/zcurlib.o: zcurlib.cpp zcurlib.h
 	${GPP} ${FLAGS} -c zcurlib.cpp -o $@
 
-${OBJS_DIR}/new_evaluar.o: new_evaluar.cpp new_evaluar.h new_memoria.h global.h new_funciones.h intercambio.h zockets.h utils.h
+${OBJS_DIR}/new_evaluar.o: new_evaluar.cpp new_evaluar.h new_memoria.h global.h new_funciones.h intercambio.h zockets.h utils.h new_programa.h Ejecutar.h
 	${GPP} ${FLAGS} -c new_evaluar.cpp -o $@
 
 ${OBJS_DIR}/new_memoria.o: new_memoria.cpp new_memoria.h
 	${GPP} ${FLAGS} -c new_memoria.cpp -o $@
 
-${OBJS_DIR}/new_funciones.o: new_funciones.cpp new_funciones.h new_memoria.h utils.h intercambio.h zockets.h
+${OBJS_DIR}/new_funciones.o: new_funciones.cpp new_funciones.h new_memoria.h utils.h new_programa.h intercambio.h zockets.h global.h
 	${GPP} ${FLAGS} -c new_funciones.cpp -o $@
 
 ${OBJS_DIR}/new_programa.o: new_programa.cpp new_programa.h intercambio.h zockets.h
 	${GPP} ${FLAGS} -c new_programa.cpp -o $@
+
+${OBJS_DIR}/case_map.o: case_map.cpp case_map.h utils.h new_memoria.h new_programa.h intercambio.h zockets.h global.h
+	${GPP} ${FLAGS} -c case_map.cpp -o $@
 

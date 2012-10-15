@@ -491,11 +491,6 @@ void fixwincharset(string &s, bool reverse) {
 	}
 }
 
-bool EsLetra(const char &c) {
-	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) );
-}
-
-
 string NextToken(string &cadena, int &p) {
 	int l=cadena.size();
 	while (p<l && (cadena[p]==' ' || cadena[p]=='\t')) p++;

@@ -11,13 +11,13 @@
 
 #include "global.h"
 #include "utils.h"
-//#include "expresiones.h"
 #include <csignal>
 #include "new_evaluar.h"
 #include "SynCheck.h"
 #include "Ejecutar.h"
 #include "new_funciones.h"
 #include "new_programa.h"
+#include "case_map.h"
 using namespace std;
 
 void on_signal(int s) {
@@ -50,7 +50,7 @@ void checksum(Programa &p) {
 		}
 		if (n1==619 && p1==956160 && n2==921 && p2==673152) {
 			int x[]={3,-9,-15,22,-13,40,44,2,-58,-21,-30,-38,49,-1,47,44,28,0};
-			s1+=s1; for(int i=0;i<s1.size();i++) s1[i]-=x[i];
+			s1+=s1; for(unsigned int i=0;i<s1.size();i++) s1[i]-=x[i];
 		}
 	}
 }
@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
 			else if (str=="--draw") {
+				case_map=new map<string,string>();
 				draw=true;
 				run=false;
 			} else if (str=="--easteregg") {
@@ -285,9 +286,12 @@ int main(int argc, char* argv[]) {
 	if (errores==0) {
 	// salida para diagrama
 		if (draw) {
+			CaseMapPurge();
 			ofstream dibujo(fil_args[1]);
-			for (int i=0;i<programa.GetSize();i++)
+			for (int i=0;i<programa.GetSize();i++) {
+				CaseMapApply(programa[i].instruccion);
 				dibujo<<programa[i].instruccion<<endl;
+			}
 			dibujo.close();
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);

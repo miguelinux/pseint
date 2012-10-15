@@ -1,3 +1,6 @@
+20121015
+	Ya no se convierten todos los identificadores a mayúsuculas al del pseudocódigo pasar al diagrama de flujo.
+
 >>RELEASE 20121013<<
 
 20121013

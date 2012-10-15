@@ -4,6 +4,7 @@
 #include <string>
 #include "new_memoria.h"
 #include "new_programa.h"
+#include "global.h"
 using namespace std;
 
 // -------------------------------------------------------------------
@@ -142,10 +143,26 @@ bool parteDePalabra(char c) ;
 void fixwincharset(string &s, bool reverse=false);
 
 // determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
-bool EsLetra(const char &c);
+inline bool EsLetra(const char &c) {
+	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) );
+}
+
+inline char ToUpper(char c) {
+	if (c>96 && c<123) c-=32;
+	else if (c=='á') c='Á';
+	else if (c=='é') c='É';
+	else if (c=='í') c='Í';
+	else if (c=='ó') c='Ó';
+	else if (c=='ú') c='Ú';
+	else if (c=='ü') c='Ü';
+	else if (c=='ñ') c='Ñ';
+	return c;
+}
 
 // "extrae" una palabra, una constante, o un operador, desde la pos p, no modifica la cadena, sino que avanza el indice p
 string NextToken(string &cadena, int &p);
+
+
 
 #endif
 
