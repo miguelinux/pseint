@@ -1497,8 +1497,11 @@ void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
 void mxMainWindow::CheckIfNeedsRTS() {
 	if (config->rt_syntax||config->highlight_blocks||config->show_vars) {
 		if (!RTSyntaxManager::IsLoaded()) RTSyntaxManager::Start();
-		for(unsigned int i=0;i<notebook->GetPageCount();i++)
-			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
+		IF_THERE_IS_SOURCE {
+			CURRENT_SOURCE->DoRealTimeSyntax();
+			CURRENT_SOURCE->HighLightBlock();
+		}
+//			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
 	} else {
 		for(unsigned int i=0;i<notebook->GetPageCount();i++)
 			((mxSource*)notebook->GetPage(i))->StopRTSyntaxChecking();
