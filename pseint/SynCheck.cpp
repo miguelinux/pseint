@@ -1584,7 +1584,7 @@ int SynCheck() {
 				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
 					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
 					if (j==1 && es_proceso) {
-						if (have_proceso) { Inter.SetLineNumber(programa[i].num_linea,1); SynError (999,"Solo puede haber un Proceso."); errores++;}
+						if (have_proceso) { Inter.SetLineAndInstructionNumber(i); SynError (999,"Solo puede haber un Proceso."); errores++;}
 						have_proceso=true;
 					}
 					if (i0!=i && era_proceso==(j==1)) {
@@ -1606,7 +1606,7 @@ int SynCheck() {
 				}
 		}
 	}
-	if (!have_proceso) { Inter.SetLineNumber(1,1); SynError (999,"Debe haber un Proceso."); errores++;}
+	if (!have_proceso) { Inter.SetLineAndInstructionNumber(1); SynError (999,"Debe haber un Proceso."); errores++;}
 	
 	return errores;
 }

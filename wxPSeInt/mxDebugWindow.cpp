@@ -11,6 +11,7 @@
 #include "mxHelpWindow.h"
 #include "mxDesktopVarsEditor.h"
 #include "mxEvaluateDialog.h"
+#include "mxSubtitles.h"
 
 mxDebugWindow *debug_panel=NULL;
 
@@ -22,6 +23,7 @@ BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 	EVT_BUTTON(mxID_DEBUG_EVALUATE, mxDebugWindow::OnDebugEvaluate)
 	EVT_BUTTON(mxID_DEBUG_DESKTOP_VARS, mxDebugWindow::OnDebugDesktopVars)
 	EVT_CHECKBOX(mxID_DEBUG_STEP_IN, mxDebugWindow::OnDebugCheckStepIn)
+	EVT_CHECKBOX(mxID_DEBUG_SUBTITLES, mxDebugWindow::OnDebugCheckSubtitles)
 END_EVENT_TABLE()	
 
 mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
@@ -46,6 +48,13 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	dp_check_step_in->SetValue(true);
 	if (!config->lang.enable_user_functions) dp_check_step_in->Hide();
 	sizer->Add(dp_check_step_in,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
+	
+	sizer->AddSpacer(20);
+	dp_check_subtitles=new wxCheckBox(this,mxID_DEBUG_SUBTITLES,"Explicar con detalle\ncada paso.");
+	dp_check_subtitles->SetToolTip(utils->FixTooltip("Con esta opción, el intérprete explicará cada acción que realiza para cada instrucción, informando qué instrucciones se ejecutan, qué expresiones se analizan, qué decisiones se toman, etc. El objetivo de esta funcionalidad es ayudar a entender la forma correcta de interpretar un algoritmo."));
+	dp_check_subtitles->SetValue(false);
+	sizer->Add(dp_check_subtitles,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
+	
 	sizer->Add(new wxButton(this,mxID_DEBUG_HELP,_T("Ayuda...")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
 	SetState(DS_STOPPED);
 	this->SetSizerAndFit(sizer);
@@ -66,9 +75,13 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->Disable();
 		dp_button_step->SetLabel(_T("Avanzar un Paso"));
 		dp_button_step->SetToolTip(utils->FixTooltip("Utilice este botón para avanzar ejecutar solamente la siguiente instrucción del algoritmo."));
-		dp_button_desktop_vars->Enable(false);
+		subtitles->button_next->Disable();
+		subtitles->button_next->SetLabel("Continuar");
+		dp_button_desktop_vars->Disable();
 		break;
 	case DS_STOPPED: 
+		subtitles->button_next->SetLabel(_T("Comenzar"));
+		subtitles->button_next->Enable();
 		dp_button_run->SetLabel(_T("Comenzar"));
 		dp_button_run->SetToolTip(utils->FixTooltip("Utilice este botón para que el algoritmo comience a ejecutarse automáticamente y paso a paso, señalando cada instrucción que ejecuta, según la velocidad definida en el menú configuración."));
 		dp_button_step->SetLabel(_T("Primer Paso"));
@@ -81,6 +94,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 		debug_status->SetLabel(_T("No Iniciada"));
 		break;
 	case DS_FINALIZED:
+		subtitles->button_next->SetLabel(_T("Cerrar"));
+		subtitles->button_next->Enable();
 		dp_button_run->SetLabel(_T("Cerrar"));
 		dp_button_run->SetToolTip(utils->FixTooltip("Ha finalizado la ejecución del algoritmo. Utilice este botón para cerrar la ventana de la ejecución del mismo."));
 		dp_button_pause->Disable();
@@ -88,18 +103,18 @@ void mxDebugWindow::SetState(ds_enum state) {
 		debug_status->SetLabel(_T("Finalizada"));
 		break;
 	case DS_PAUSED:
-		dp_button_step->Enable(true);
-		dp_button_pause->Enable(true);
-		dp_button_pause->SetFocus();
-		dp_button_step->SetFocus();
+		dp_button_step->Enable();
+		subtitles->button_next->Enable();
+		dp_button_pause->Enable();
 		dp_button_pause->SetLabel(_T("Continuar"));
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para que el algoritmo continúe avanzando paso a paso automáticamente."));
 		dp_button_evaluate->Enable();
 		debug_status->SetLabel(_T("Pausado"));
 		break;
 	case DS_RESUMED:
-		dp_button_step->Enable(false);
-		dp_button_pause->Enable(true);
+		dp_button_step->Disable();
+		subtitles->button_next->Disable();
+		dp_button_pause->Enable();
 		dp_button_pause->SetLabel(_T("Pausar"));
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para detener temporalmente la ejecución del algoritmo. Al detener el algoritmo puede observar el valor de las variables con el botón Evaluar."));
 		dp_button_evaluate->Disable();
@@ -108,6 +123,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 	case DS_STEP:
 		dp_button_pause->Disable();
 		dp_button_evaluate->Disable();
+		dp_button_step->Disable();
+		subtitles->button_next->Disable();
 		debug_status->SetLabel(_T("Ejecutando"));
 		break;
 	case DS_NONE:
@@ -176,7 +193,24 @@ void mxDebugWindow::OnDebugCheckStepIn(wxCommandEvent &evt) {
 	debug->SetStepIn(dp_check_step_in->GetValue());
 }
 
+void mxDebugWindow::OnDebugCheckSubtitles(wxCommandEvent &evt) {
+	evt.Skip();
+	debug->SetSubtitles(dp_check_subtitles->GetValue());
+	main_window->ShowSubtitles(dp_check_subtitles->GetValue());
+}
+
 void mxDebugWindow::ShowInEvaluateDialog(wxString s) {
 	evaluate_window->Show();
 	evaluate_window->EvaluateExpression(s);
 }
+
+void mxDebugWindow::SetSubtitles(bool on) {
+	dp_check_subtitles->SetValue(on);
+	wxCommandEvent evt;
+	OnDebugCheckSubtitles(evt);
+}
+
+ds_enum mxDebugWindow::GetState ( ) {
+	return ds_state;
+}
+

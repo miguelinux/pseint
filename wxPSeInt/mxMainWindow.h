@@ -71,6 +71,7 @@ public:
 	void OnEditReplace(wxCommandEvent &evt);
 	void OnRunRun(wxCommandEvent &evt);
 	void OnRunStepStep(wxCommandEvent &evt);
+	void OnRunSubtitles(wxCommandEvent &evt);
 	void OnRunCheck(wxCommandEvent &evt);
 	void OnRunDrawFlow(wxCommandEvent &evt);
 	void OnRunSaveFlow(wxCommandEvent &evt);
@@ -166,6 +167,8 @@ public:
 	void OnHelperCommands(wxCommandEvent &evt);
 	
 	void CheckIfNeedsRTS();
+	
+	void ShowSubtitles(bool show);
 	
 	DECLARE_EVENT_TABLE();
 };

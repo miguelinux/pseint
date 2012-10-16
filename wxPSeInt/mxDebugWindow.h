@@ -19,10 +19,12 @@ private:
 	wxScrollBar *debug_speed;
 	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
 	wxCheckBox *dp_check_step_in;
+	wxCheckBox *dp_check_subtitles;
 public:
 	mxDebugWindow(wxWindow *parent);
 	void SetSpeed(int speed);
 	void SetState(ds_enum state);
+	ds_enum GetState();
 	void OnDebugButton(wxCommandEvent &evt);
 	void OnDebugPause(wxCommandEvent &evt);
 	void OnDebugStep(wxCommandEvent &evt);
@@ -30,10 +32,12 @@ public:
 	void OnDebugEvaluate(wxCommandEvent &evt);
 	void OnDebugHelp(wxCommandEvent &evt);
 	void OnDebugCheckStepIn(wxCommandEvent &evt);
+	void OnDebugCheckSubtitles(wxCommandEvent &evt);
 	void StartDebugging(mxSource *source, bool paused);
 	void SetEvaluationValue(wxString val, char tipo);
 	bool ProfileChanged();
 	void ShowInEvaluateDialog(wxString s);
+	void SetSubtitles(bool on);
 	DECLARE_EVENT_TABLE();
 };
 

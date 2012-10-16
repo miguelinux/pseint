@@ -78,11 +78,6 @@ bool CheckVariable(string str, int errcode=-1) ;
 tipo_var TipoVar(string str) ;
 
 // ----------------------------------------------------------------------
-//    Escribe una expresion en el ambiente
-// ----------------------------------------------------------------------
-void Escribir(string aux1) ;
-
-// ----------------------------------------------------------------------
 //    Compara los comienzos de dos cadenas (case sensitive)
 // ----------------------------------------------------------------------
 bool LeftCompare(string a, string b) ;

@@ -53,8 +53,10 @@ public:
 	void ProcInput();
 	void SetDelay(int n);
 #endif
-	void SetLineNumber(int _l, int _i);
-	void SetLineAndInstructionNumber(int _i);
+	void SetLineAndInstructionNumber(int _i); // avisa a la gui en que linea va
+	void ChatWithGUI(); // espera respuesta de la gui para avanzar
+	void SendSubtitle(string _str); // envia el texto para el subtitulo a la gui
+	
 	void SetStarted();
 	void SetFinished(bool interrupted=false);
 	int GetLineNumber();
@@ -79,7 +81,13 @@ public:
 	
 	void OnFunctionIn(string nom);
 	void OnFunctionOut();
+	
 };
+
+#define _sub_msg(i,s) { if (subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); } }
+#define _sub_wait() { if (subtitles_on) Inter.ChatWithGUI(); }
+#define _sub(i,s) { if (subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
+#define _pos(i) { if (!subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.ChatWithGUI(); } }
 
 extern Intercambio Inter;        // clase para enviar informacion de depuración al editor
 

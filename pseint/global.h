@@ -32,6 +32,7 @@ extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acen
 extern bool real_time_syntax; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
 extern bool force_integer_indexes; // indica que setea como numericas y enteras todas las variables que intervienen en una expresion indice de un arreglo, para psexport por ahora
 extern bool enable_user_functions; // habilita la definicion de subprocesos
+extern bool subtitles_on; // habilita la definicion de subprocesos
 
 #define COLOR_INFO COLOR_LBLUE
 #define COLOR_ERROR COLOR_LRED

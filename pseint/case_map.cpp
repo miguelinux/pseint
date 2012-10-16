@@ -18,13 +18,13 @@ void CaseMapAux(string &s, bool fill) {
 					unsigned int l=s1.size(); 
 					if (fill) {
 						string s2=s1;
-						for(int i=0;i<l;i++) 
+						for(unsigned int i=0;i<l;i++) 
 							s1[i]=ToUpper(s2[i]);
 						(*case_map)[s1]=s2;
 					} else {
 						string s2=(*case_map)[s1];
 						if (s2.size()==l) 
-							for(int j=0;j<l;j++) 
+							for(unsigned int j=0;j<l;j++) 
 								s[p+j]=s2[j];
 					}
 					word=false;

@@ -263,31 +263,6 @@ bool CheckVariable(string str, int errcode) {
 	return ret;
 }
 
-
-// ----------------------------------------------------------------------
-//    Escribe una expresion en el ambiente
-// ----------------------------------------------------------------------
-void Escribir(string aux1) {
-	if (colored_output) setForeColor(COLOR_OUTPUT);
-	tipo_var x;
-	aux1=Evaluar(aux1,x);
-//	if (x==vt_error)
-//		ExpError(x,1,Inter.GetLineNumber()); 
-//	else {
-	if (x!=vt_error) {
-		if (x==vt_numerica)
-			aux1=DblToStr(StrToDbl(aux1),10);
-		else {
-			fixwincharset(aux1);
-//			if (aux1[0]=='\'') { // esto no debería pasar nunca
-//				aux1.erase(0,1);
-//				aux1.erase(aux1.size()-1,1);
-//			}
-		}
-		cout<<aux1; // Si es variable, muestra el contenido
-	}
-}
-
 // ----------------------------------------------------------------------
 //    Compara los comienzos de dos cadenas (case sensitive)
 // ----------------------------------------------------------------------

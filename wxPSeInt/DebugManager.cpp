@@ -7,6 +7,7 @@
 #include "mxEvaluateDialog.h"
 #include "ConfigManager.h"
 #include "mxDebugWindow.h"
+#include "mxSubtitles.h"
 using namespace std;
 
 DebugManager *debug;
@@ -17,6 +18,7 @@ DebugManager::DebugManager() {
 	server=NULL;
 	port=-1;
 	step_in=true;
+	subtitles_on=false;
 }
 
 void DebugManager::Start(mxProcess *proc, mxSource *src) {
@@ -29,6 +31,7 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	paused=false;
 
 	desktop_test->ResetTest();
+	subtitles->Reset();
 	if (do_desktop_test)
 		main_window->ShowDesktopTestGrid();
 	
@@ -49,7 +52,9 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 }
 
 void DebugManager::ProcData(wxString data) {
-	if (data.StartsWith(_T("proceso "))) {
+	if (data.StartsWith(_T("subtitulo "))) {
+		subtitles->AddMessage(current_line,current_inst,data.Mid(10));
+	} if (data.StartsWith(_T("proceso "))) {
 		current_proc_name=data.Mid(8);
 	} else if (data.StartsWith(_T("linea "))) {
 		long l=-1,i=-1;
@@ -61,6 +66,7 @@ void DebugManager::ProcData(wxString data) {
 		}
 		if (l>=0 && source!=NULL) source->SetDebugLine(l-1,i-1);
 		if (do_desktop_test) desktop_test->SetLine(current_proc_name,l,i);
+		current_line=l; current_inst=i;
 	} else if (data.StartsWith(_T("autoevaluacion "))) {
 		long l=-1;
 		data.Mid(15).BeforeFirst(' ').ToLong(&l);
@@ -77,8 +83,10 @@ void DebugManager::ProcData(wxString data) {
 				}
 			}
 			// configurar el tipo de paso a paso (step in o step over)
-			wxString str(_T("subprocesos ")); str<<(step_in?1:0)<<_T("\n");
-			socket->Write(str.c_str(),str.Len());
+			wxString str1(_T("subprocesos ")); str1<<(step_in?1:0)<<_T("\n");
+			socket->Write(str1.c_str(),str1.Len());
+			wxString str2(_T("subtitulos ")); str2<<(subtitles_on?1:0)<<_T("\n");
+			socket->Write(str2.c_str(),str2.Len());
 			// iniciar la ejecución
 			if ((paused=should_pause)) {
 				wxString str(_T("paso\n"));
@@ -201,6 +209,14 @@ void DebugManager::SetStepIn(bool b) {
 	step_in=b;
 	if (debugging && socket) {
 		wxString str(_T("subprocesos ")); str<<(step_in?1:0)<<_T("\n");
+		socket->Write(str.c_str(),str.Len());
+	}
+}
+
+void DebugManager::SetSubtitles(bool b) {
+	subtitles_on=b;
+	if (debugging && socket) {
+		wxString str(_T("subtitulos ")); str<<(step_in?1:0)<<_T("\n");
 		socket->Write(str.c_str(),str.Len());
 	}
 }

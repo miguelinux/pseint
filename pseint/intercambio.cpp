@@ -45,6 +45,10 @@ void Intercambio::ProcData(string order) {
 		} else
 			zocket_escribir(zocket,"estado ejecutando\n",18);
 		do_step=true;
+	} else if (order=="subtitulos 1") { // se mete en todos los subprocesos
+		subtitles_on=true;
+	} else if (order=="subtitulos 0") { // no se mete más alla del subproceso actual
+		subtitles_on=false;
 	} else if (order=="subprocesos 1") { // se mete en todos los subprocesos
 		debugLevel=0;
 	} else if (order=="subprocesos 0") { // no se mete más alla del subproceso actual
@@ -96,19 +100,32 @@ void Intercambio::ProcData(string order) {
 	}
 }
 #endif
-void Intercambio::SetLineAndInstructionNumber(int _i) {
-	SetLineNumber(programa[_i].num_linea,programa[_i].num_instruccion);
+
+void Intercambio::SendSubtitle(string _str) {
+#ifdef USE_ZOCKETS
+	if (zocket!=ZOCKET_ERROR && (!debugLevel || backtraceLevel<=debugLevel)) {
+		string ss="subtitulo "; ss+=_str+"\n";
+		zocket_escribir(zocket,ss.c_str(),ss.size());
+	}
+#endif
 }
 
-void Intercambio::SetLineNumber(int _l, int _i){
-	lineNumber=_l; instNumber=_i;
+void Intercambio::SetLineAndInstructionNumber(int _i) {
+	lineNumber=programa[_i].num_linea; instNumber=programa[_i].num_instruccion;
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR && (!debugLevel || backtraceLevel<=debugLevel)) { // si estamos depurando, informar la linea y esperar
 		string str;
-		if (_i>0) str=string("linea ")+IntToStr(_l)+":"+IntToStr(_i)+"\n";
-		else str=string("linea ")+IntToStr(_l)+"\n";
+		if (instNumber>0) str=string("linea ")+IntToStr(lineNumber)+":"+IntToStr(instNumber)+"\n";
+		else str=string("linea ")+IntToStr(lineNumber)+"\n";
 		zocket_escribir(zocket,str.c_str(),str.size());
-		evaluating_for_debug=true;
+	}
+#endif
+}
+		
+void Intercambio::ChatWithGUI () {
+#ifdef USE_ZOCKETS
+	if (zocket!=ZOCKET_ERROR  && (!debugLevel || backtraceLevel<=debugLevel)) {
+		evaluating_for_debug=true; string str;
 		for (unsigned int i=0;i<autoevaluaciones.size();i++) {
 			if (autoevaluaciones_valid[i]) {
 				stringstream autoevaluacion;
@@ -132,13 +149,10 @@ void Intercambio::SetLineNumber(int _l, int _i){
 		}
 		evaluating_for_debug=false;
 		do_step=false;
-		if (delay<0)
-			zocket_escribir(zocket,"estado pausa\n",13);
-		do {
-			ProcInput();
-		} while (delay<0 && !do_step);
-		if (delay>0) Sleep(delay);
-	}  
+		if (delay<0) zocket_escribir(zocket,"estado pausa\n",13);
+		do { ProcInput(); } while ((subtitles_on || delay<0) && !do_step);
+		if (!do_step && !subtitles_on && delay>0) Sleep(delay);
+	}
 #endif
 }
 
@@ -265,3 +279,4 @@ void Intercambio::OnFunctionOut() {
 	zocket_escribir(zocket,s.c_str(),s.size());
 #endif
 }
+

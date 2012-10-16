@@ -15,6 +15,7 @@ class wxObject;
 class DebugManager {
 private:
 	bool step_in;
+	bool subtitles_on;
 	bool do_desktop_test;
 	mxProcess *process;
 	wxString current_proc_name;
@@ -27,6 +28,7 @@ private:
 	friend class mxDesktopTest;
 	bool should_pause;
 	int port;
+	int current_line, current_inst; // linea e instruccion actual, como viene del interprete (base 1), para usar en el subtitulo
 public:
 	bool debugging, paused;
 	DebugManager();
@@ -43,6 +45,7 @@ public:
 	void SendEvaluation(wxString exp);
 	bool HasSocket(wxObject *s);
 	void SetStepIn(bool b);
+	void SetSubtitles(bool b);
 	int GetPort();
 };
 

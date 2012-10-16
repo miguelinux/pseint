@@ -42,6 +42,7 @@
 #include "RTSyntaxManager.h"
 #include "mxVarWindow.h"
 #include "mxDebugWindow.h"
+#include "mxSubtitles.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -77,6 +78,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_RUN_RUN, mxMainWindow::OnRunRun)
 	EVT_MENU(mxID_RUN_STEP_STEP, mxMainWindow::OnRunStepStep)
+	EVT_MENU(mxID_RUN_SUBTITLES, mxMainWindow::OnRunSubtitles)
 	EVT_MENU(mxID_RUN_CHECK, mxMainWindow::OnRunCheck)
 	EVT_MENU(mxID_RUN_DRAW_FLOW, mxMainWindow::OnRunDrawFlow)
 	EVT_MENU(mxID_RUN_SAVE_FLOW, mxMainWindow::OnRunSaveFlow)
@@ -189,6 +191,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	CreateQuickHelp();
 	CreateStatusBar(2,0);
 	
+	
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
 	aui_manager.Update();
 
@@ -285,6 +288,7 @@ void mxMainWindow::CreateMenus() {
 	wxMenu *run = new wxMenu;
 	utils->AddItemToMenu(run,mxID_RUN_RUN, _T("Ejecutar\tF9"),_T(""),_T("ejecutar.png"));
 	utils->AddItemToMenu(run,mxID_RUN_STEP_STEP, _T("Ejecutar Paso a Paso\tF5"),_T(""),_T("pasos.png"));
+	utils->AddItemToMenu(run,mxID_RUN_SUBTITLES, _T("Ejecución Explicada"),_T(""),_T("subtitles.png"));
 	utils->AddItemToMenu(run,mxID_RUN_CHECK, _T("Verificar Sintaxis\tShift+F9"),_T(""),_T("verificar.png"));
 	utils->AddItemToMenu(run,mxID_RUN_DRAW_FLOW, _T("Dibujar Diagrama de Flujo"),_T(""),_T("flujo.png"));
 	utils->AddItemToMenu(run,mxID_RUN_SAVE_FLOW, _T("Guardar Diagrama de Flujo\tShift+F7"),_T(""),_T("guardar.png"));
@@ -393,6 +397,10 @@ void mxMainWindow::CreateVarsPanel() {
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
+	
+	subtitles=new mxSubtitles(this); // hay que crearlo antes que el debug
+	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name(_T("subtitles")).Bottom().CaptionVisible(false).Hide());	
+	
 	debug_panel = new mxDebugWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
 	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Row(1);
@@ -404,6 +412,7 @@ void mxMainWindow::CreateDebugControlsPanel() {
 	}
 	aui_manager.AddPane(debug_panel, info_win);
 	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_DEBUG,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
+	
 }
 
 void mxMainWindow::CreateNotebook() {
@@ -610,6 +619,11 @@ void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 
 void mxMainWindow::OnRunStepStep(wxCommandEvent &evt) {
 	debug_panel->OnDebugButton(evt);
+}
+
+void mxMainWindow::OnRunSubtitles(wxCommandEvent &evt) {
+	debug_panel->SetSubtitles(true);
+	if (!debug->debugging) debug_panel->OnDebugStep(evt);
 }
 
 void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
@@ -1492,6 +1506,7 @@ void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
 
 void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
 	if (evt.GetId()==mxID_DEBUG_STEP) debug_panel->OnDebugStep(evt);
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus();
 }
 
 void mxMainWindow::CheckIfNeedsRTS() {
@@ -1501,10 +1516,17 @@ void mxMainWindow::CheckIfNeedsRTS() {
 			CURRENT_SOURCE->DoRealTimeSyntax();
 			CURRENT_SOURCE->HighLightBlock();
 		}
-//			((mxSource*)notebook->GetPage(i))->StartRTSyntaxChecking();
 	} else {
 		for(unsigned int i=0;i<notebook->GetPageCount();i++)
 			((mxSource*)notebook->GetPage(i))->StopRTSyntaxChecking();
 		if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Stop();
 	}
+}
+
+void mxMainWindow::ShowSubtitles(bool show) {
+	if (show)
+		aui_manager.GetPane(subtitles).Show();
+	else
+		aui_manager.GetPane(subtitles).Hide();
+	aui_manager.Update();	
 }
