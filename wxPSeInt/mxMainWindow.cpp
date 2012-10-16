@@ -28,11 +28,6 @@
 #include "mxConfig.h"
 #include "mxProfile.h"
 #include "mxPrintOut.h"
-//#include "icon16.xpm"
-//#include "icon32.xpm"
-//#include "icon48.xpm"
-//#include "icon64.xpm"
-//#include "icon128.xpm"
 
 #define IF_THERE_IS_SOURCE if (notebook->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook->GetPage(notebook->GetSelection()))
@@ -50,6 +45,19 @@ mxMainWindow *main_window;
 #define _debug_speed_h 80
 #define _debug_speed_m 55
 #define _debug_speed_l 20
+
+// organizacion de los elementos de la ventana (layer,row,position para el wxAuiPaneInfo, p es el panel, h es el helper(boton para hacerlo visible))
+static const int hvar[]={1,0,0};
+static const int hcmd[]={2,0,0};
+static const int hdbg[]={2,0,1};
+static const int pvar[]={0,1,0};
+static const int pdbg[]={0,1,0};
+static const int pcmd[]={0,2,0};
+static const int prtr[]={1,0,0};
+static const int phlp[]={1,0,1};
+static const int pdkt[]={1,0,2};
+static const int psub[]={1,1,0};
+static const int ptlb[]={3,0,0};
 
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_CLOSE(mxMainWindow::OnClose)
@@ -102,8 +110,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
 	EVT_MENU(mxID_CONFIG_SHOW_DEBUG_PANEL, mxMainWindow::OnConfigShowDebugPanel)
 	EVT_MENU(mxID_CONFIG_REALLY_SHOW_DEBUG_PANEL, mxMainWindow::OnToolbarShowDebugPanel)
-//	EVT_MENU(mxID_CONFIG_SHOW_RESULTS, mxMainWindow::OnConfigShowResults)
-//	EVT_MENU(mxID_CONFIG_COLOUR_SINTAX, mxMainWindow::OnConfigColourSintax)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
 	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
@@ -121,8 +127,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_BUTTON(mxID_CMD_PARA, mxMainWindow::OnCmdPara)
 	EVT_BUTTON(mxID_CMD_SI, mxMainWindow::OnCmdSi)
 	EVT_BUTTON(mxID_CMD_SEGUN, mxMainWindow::OnCmdSegun)
-//	EVT_MENU(mxID_CONFIG_, mxMainWindow::OnConfig)
-//	EVT_MENU(mxID_HELP_, mxMainWindow::OnHelp)
 	EVT_MENU_RANGE(mxID_FILE_SOURCE_HISTORY_0, mxID_FILE_SOURCE_HISTORY_0+5,mxMainWindow::OnFileSourceHistory)
 	EVT_MENU(mxID_HELP_INDEX, mxMainWindow::OnHelpIndex)
 	EVT_MENU(mxID_HELP_QUICKHELP, mxMainWindow::OnHelpQuickHelp)
@@ -162,7 +166,6 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	for (int i=0;i<5;i++)
 		file_history[i]=NULL;
 	
-//	SetIcon(wxIcon(icon_xpm));
 	wxIconBundle bundle;
 	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap(_T("imgs/icon16.png"),wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon16));
@@ -190,7 +193,6 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	CreateResultsTree();
 	CreateQuickHelp();
 	CreateStatusBar(2,0);
-	
 	
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
 	aui_manager.Update();
@@ -345,10 +347,9 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_HELP_INDEX,_T("Ayuda..."),_T("ayuda.png"),_T(""));
 //	utils->AddTool(toolbar,mxID_FILE_EXIT,_T("Salir"),_T("salir.png"),_T(""));
 	toolbar->Realize();
-	if (config->show_toolbar)
-		aui_manager.AddPane(toolbar, wxAuiPaneInfo().Name(_T("toolbar")).Caption(_T("Toolbar")).ToolbarPane().Top().Position(0).LeftDockable(false).RightDockable(false).Show());
-	else
-		aui_manager.AddPane(toolbar, wxAuiPaneInfo().Name(_T("toolbar")).Caption(_T("Toolbar")).ToolbarPane().Top().Position(0).LeftDockable(false).RightDockable(false).Hide());
+	wxAuiPaneInfo info; info.Name(_T("toolbar")).Caption(_T("Toolbar")).ToolbarPane().Top().Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]).LeftDockable(false).RightDockable(false).Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]);
+	if (config->show_toolbar) info.Show(); else info.Hide();
+	aui_manager.AddPane(toolbar, info);
 	
 }
 
@@ -371,8 +372,8 @@ void mxMainWindow::CreateCommandsPanel() {
 	panel->SetSizerAndFit(sizer);
 
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("commands")).Caption(_T("Comandos")).Right().Row(2);
-	info_helper.Name(_T("helper_commands")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Row(0);
+	info_win.Name(_T("commands")).Caption(_T("Comandos")).Right().Layer(pcmd[0]).Row(pcmd[1]).Position(pcmd[2]);
+	info_helper.Name(_T("helper_commands")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hcmd[0]).Row(hcmd[1]).Position(hcmd[2]);
 	if (config->show_commands) {
 		info_win.Show(); info_helper.Hide();
 	} else {
@@ -385,8 +386,8 @@ void mxMainWindow::CreateCommandsPanel() {
 void mxMainWindow::CreateVarsPanel() {
 	var_window=new mxVarWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("vars_panel")).Caption(_T("Variables")).Left().Row(1);
-	info_helper.Name(_T("helper_vars")).CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Row(0);
+	info_win.Name(_T("vars_panel")).Caption(_T("Variables")).Left().Layer(pvar[0]).Row(pvar[1]).Position(pvar[2]);
+	info_helper.Name(_T("helper_vars")).CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hvar[0]).Row(hvar[1]).Position(hvar[2]);
 	if (config->show_vars) {
 		info_win.Show(); info_helper.Hide();
 	} else {
@@ -399,12 +400,12 @@ void mxMainWindow::CreateVarsPanel() {
 void mxMainWindow::CreateDebugControlsPanel() {
 	
 	subtitles=new mxSubtitles(this); // hay que crearlo antes que el debug
-	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name(_T("subtitles")).Bottom().CaptionVisible(false).Hide());	
+	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name(_T("subtitles")).Bottom().CaptionVisible(false).Hide().Layer(psub[0]).Row(psub[1]).Position(psub[2]));	
 	
 	debug_panel = new mxDebugWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Row(1);
-	info_helper.Name(_T("helper_debug")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Row(0);
+	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Layer(pdbg[0]).Row(pdbg[1]).Position(pdbg[2]);
+	info_helper.Name(_T("helper_debug")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hdbg[0]).Row(hdbg[1]).Position(hdbg[2]);
 	if (config->show_debug_panel) {
 		info_win.Show(); info_helper.Hide();
 	} else {
@@ -503,13 +504,6 @@ void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 void mxMainWindow::OnHelpExamples(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("ejemplos.html"));
-//	wxFileDialog dlg (this, _T("Abrir Archivo"), DIR_PLUS_FILE(wxGetCwd(),	config->examples_dir), _T(""), _T("Ejemplos|*.psc"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-//	if (dlg.ShowModal() == wxID_OK) {
-//		wxArrayString paths;
-//		dlg.GetPaths(paths);
-//		for (unsigned int i=0;i<paths.GetCount();i++)
-//			OpenProgram(paths[i],false)->SetReadOnly(true);
-//	}
 }
 
 void mxMainWindow::RegenFileMenu(wxString path) {
@@ -732,31 +726,11 @@ void mxMainWindow::CreateResultsTree() {
 	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,_T("error.png")),wxBITMAP_TYPE_PNG));
 	results_tree->AssignImageList(imglist);
 	results_root = results_tree->AddRoot(wxString(_T("PSeInt "))<<VERSION, 0);
-	aui_manager.AddPane(results_tree, wxAuiPaneInfo().Name(_T("symbols_tree")).Caption(_T("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0));	
+	aui_manager.AddPane(results_tree, wxAuiPaneInfo().Name(_T("symbols_tree")).Caption(_T("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
 	
-}
-
-void mxMainWindow::ShowResults(bool error) {
-	if (!aui_manager.GetPane(results_tree).IsShown()) {
-		if (!error && aui_manager.GetPane(quick_html).IsShown())
-			aui_manager.GetPane(quick_html).Hide();
-		aui_manager.GetPane(results_tree).Hide();
-		aui_manager.GetPane(results_tree).Show();
-//		compiler_tree.menuItem->Check(true);
-		aui_manager.Update();
-	} else if (!error && aui_manager.GetPane(quick_html).IsShown()) {
-		aui_manager.GetPane(quick_html).Hide();
-		aui_manager.Update();
-	}
-	results_tree->Expand(results_root);
 }
 
 void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
-	
-	if (!aui_manager.GetPane(quick_html).IsShown()) {
-		aui_manager.GetPane(quick_html).Show();
-		aui_manager.Update();
-	} 
 	
 	bool ask = true; // preguntar si no hay fuente abierto o palabra seleccionada
 	wxString key;
@@ -770,20 +744,12 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 			ask=false;
 		}
 	}
-	if (ask) // si no hay clave, preguntar
-		key = wxGetTextFromUser(_T("Palabra a buscar:"), _T("Ayuda Rapida") , _(""), this);
-	
-	quick_html->LoadPage(help->GetQuickHelp(key));
+	// si no hay clave, preguntar
+	if (ask) key = wxGetTextFromUser(_T("Palabra a buscar:"), _T("Ayuda Rapida") , _(""), this);
+	// mostrar panel y cargar ayuda
+	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),true);
 }
 
-void mxMainWindow::ShowQuickHelp(wxString text) {
-	if (!aui_manager.GetPane(quick_html).IsShown()) {
-		quick_html->SetPage(text);
-		aui_manager.GetPane(quick_html).Show();
-		aui_manager.Update();
-	} else
-		quick_html->SetPage(text);
-}
 
 void mxMainWindow::HideQuickHelp() {
 	if (aui_manager.GetPane(quick_html).IsShown()) {
@@ -795,7 +761,7 @@ void mxMainWindow::HideQuickHelp() {
 void mxMainWindow::CreateQuickHelp() {
 	quick_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
 	quick_html->SetPage(wxString(_T("PSeInt "))<<VERSION);
-	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name(_T("quick_html")).Caption(_T("Ayuda Rapida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1));	
+	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name(_T("quick_html")).Caption(_T("Ayuda Rapida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }
 
 void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
@@ -820,14 +786,14 @@ void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
 			long e=0;
 			text.Mid(7).ToLong(&e);
 			if (config->auto_quickhelp) 
-				ShowQuickHelp(help->GetErrorText(text,e));
+				ShowQuickHelp(true,help->GetErrorText(text,e));
 		}
 	}
 }
 
 void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("ASIGNAR")));
+		ShowQuickHelp(true,help->GetCommandText(_T("ASIGNAR")));
 	wxArrayString toins;
 	toins.Add(_T("{variable}<-{expresion};"));
 	InsertCode(toins);
@@ -835,7 +801,7 @@ void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("LEER")));
+		ShowQuickHelp(true,help->GetCommandText(_T("LEER")));
 	wxArrayString toins;
 	toins.Add(_T("Leer {lista_de_variables};"));
 	InsertCode(toins);
@@ -843,7 +809,7 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("ESCRIBIR")));
+		ShowQuickHelp(true,help->GetCommandText(_T("ESCRIBIR")));
 	wxArrayString toins;
 	toins.Add(_T("Escribir {lista_de_expresiones};"));
 	InsertCode(toins);
@@ -851,7 +817,7 @@ void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("MIENTRAS")));
+		ShowQuickHelp(true,help->GetCommandText(_T("MIENTRAS")));
 	wxArrayString toins;
 	toins.Add(_T("Mientras {expresion_logica} Hacer"));
 	toins.Add(_T("\t{secuencia_de_acciones}"));
@@ -861,7 +827,7 @@ void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("REPETIR")));
+		ShowQuickHelp(true,help->GetCommandText(_T("REPETIR")));
 	wxArrayString toins;
 	toins.Add(_T("Repetir"));
 	toins.Add(_T("\t{secuencia_de_acciones}"));
@@ -871,7 +837,7 @@ void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("PARA")));
+		ShowQuickHelp(true,help->GetCommandText(_T("PARA")));
 	wxArrayString toins;
 	toins.Add(_T("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer"));
 	toins.Add(_T("\t{secuencia_de_acciones}"));
@@ -881,7 +847,7 @@ void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("SUBPROCESO")));
+		ShowQuickHelp(true,help->GetCommandText(_T("SUBPROCESO")));
 	wxArrayString toins;
 	toins.Add(_T("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )"));
 	toins.Add(_T("\t"));
@@ -897,7 +863,7 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("SI")));
+		ShowQuickHelp(true,help->GetCommandText(_T("SI")));
 	wxArrayString toins;
 	toins.Add(_T("Si {expresion_logica} Entonces"));
 	toins.Add(_T("\t{acciones_por_verdadero}"));
@@ -909,7 +875,7 @@ void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSegun(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(help->GetCommandText(_T("SEGUN")));
+		ShowQuickHelp(true,help->GetCommandText(_T("SEGUN")));
 	wxArrayString toins;
 	toins.Add(_T("Segun {variable_numerica} Hacer"));
 	toins.Add(_T("\t{opcion_1}:"));
@@ -1076,27 +1042,6 @@ void mxMainWindow::OnConfigShowQuickHelp(wxCommandEvent &evt) {
 	}
 }
 	
-//void mxMainWindow::OnConfigShowResults(wxCommandEvent &evt) {
-//	if (!mi_results->IsChecked()) {
-//		mi_results->Check(false);
-//		aui_manager.GetPane(toolbar).Hide();
-//	} else {
-//		mi_results->Check(true);
-//		aui_manager.GetPane(toolbar).Show();
-//	}
-//	aui_manager.Update();	
-// }
-	
-//void mxMainWindow::OnConfigColoutSintax(wxCommandEvent &evt) {
-//	if (!mi_toolbar->IsChecked()) {
-//		mi_toolbar->Check(false);
-//		config->colour_sintax=false;
-//	} else {
-//		mi_toolbar->Check(true);
-//		config->colour_sintax=true;
-//	}
-// }
-
 void mxMainWindow::OnConfigSmartIndent(wxCommandEvent &evt) {
 	if (!mi_smart_indent->IsChecked()) {
 		mi_smart_indent->Check(false);
@@ -1262,7 +1207,7 @@ void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
 
 void mxMainWindow::CreateDesktopTestGrid() {
 	desktop_test_grid = new mxDesktopTest(this,wxID_ANY);
-	aui_manager.AddPane(desktop_test_grid, wxAuiPaneInfo().Name(_T("desktop_test")).Caption(_T("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide());
+	aui_manager.AddPane(desktop_test_grid, wxAuiPaneInfo().Name(_T("desktop_test")).Caption(_T("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide().Layer(pdkt[0]).Row(pdkt[1]).Position(pdkt[2]));
 }
 
 const wxArrayString &mxMainWindow::GetDesktopVars() {
@@ -1272,22 +1217,8 @@ const wxArrayString &mxMainWindow::GetDesktopVars() {
 void mxMainWindow::SetDesktopVars(bool do_dt, const wxArrayString &vars) {
 	debug->SetDoDesktopTest(do_dt);
 	desktop_test_grid->SetDesktopVars(vars);
-	if (do_dt) 
-		ShowDesktopTestGrid();
-	else
-		HideDesktopTestGrid();
+	ShowDesktopTestGrid(do_dt);
 }
-
-void mxMainWindow::ShowDesktopTestGrid() {
-	aui_manager.GetPane(desktop_test_grid).Show();	
-	aui_manager.Update();
-}
-
-void mxMainWindow::HideDesktopTestGrid() {
-	aui_manager.GetPane(desktop_test_grid).Hide();	
-	aui_manager.Update();
-}
-
 
 void mxMainWindow::OnToolbarShowDebugPanel(wxCommandEvent &evt) {
 	if (mi_debug_panel->IsChecked()) {
@@ -1530,3 +1461,46 @@ void mxMainWindow::ShowSubtitles(bool show) {
 		aui_manager.GetPane(subtitles).Hide();
 	aui_manager.Update();	
 }
+
+void mxMainWindow::ShowResults(bool show, bool no_error) {
+	if (show) {
+		if (no_error) aui_manager.GetPane(quick_html).Hide();
+		if (!aui_manager.GetPane(results_tree).IsShown()) {
+			aui_manager.GetPane(results_tree).Show();
+			aui_manager.Update();
+		}
+		results_tree->Expand(results_root);
+	} else if (aui_manager.GetPane(results_tree).IsShown()) {
+		aui_manager.GetPane(results_tree).Hide();
+		aui_manager.Update();
+	}
+}
+
+// show=false, oculta
+// show=true muestra el panel
+// show=true, text!="" muestra el panel con ese texto(str)
+// show=true, text!="", load=true muestra el panel y carga ese archivo(str)
+void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
+	if (show) {
+		if (str.Len()) {
+			if (load) quick_html->LoadPage(str); 
+			else quick_html->SetPage(str);
+		}
+		if (!aui_manager.GetPane(quick_html).IsShown()) {
+			aui_manager.GetPane(quick_html).Show();
+			aui_manager.Update();
+		}
+	} else if (aui_manager.GetPane(quick_html).IsShown()) {
+		aui_manager.GetPane(quick_html).Hide();
+		aui_manager.Update();
+	}
+}
+
+void mxMainWindow::ShowDesktopTestGrid(bool show) {
+	if (show)
+		aui_manager.GetPane(desktop_test_grid).Show();	
+	else
+		aui_manager.GetPane(desktop_test_grid).Hide();	
+	aui_manager.Update();
+}
+

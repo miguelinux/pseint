@@ -1,5 +1,10 @@
+20121016
+	Algunos cambios menores en la apariencia del panel de ejecución paso a paso y la politica de visibilidad de los demás paneles en el editor de pseudocódigo.
+	Todas las rutas del archivo de configuración para temporales son ahora relativas.
+	
 20121015
-	Ya no se convierten todos los identificadores a mayúsuculas al del pseudocódigo pasar al diagrama de flujo.
+	Primera implementación de la Ejecución Paso a Paso Explicada (que consiste en informar para cada instrucción qué acciones específicas realiza el intérprete).
+	Ya no se convierten todos los identificadores a mayúsuculas al pasar del pseudocódigo pasar al diagrama de flujo.
 
 >>RELEASE 20121013<<
 

@@ -15,7 +15,7 @@ class mxDebugWindow : public wxPanel {
 private:
 	mxEvaluateDialog *evaluate_window;
 	ds_enum ds_state;
-	wxStaticText *debug_status;
+//	wxStaticText *debug_status;
 	wxScrollBar *debug_speed;
 	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
 	wxCheckBox *dp_check_step_in;

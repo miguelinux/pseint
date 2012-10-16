@@ -30,10 +30,10 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	debugging=true;
 	paused=false;
 
-	desktop_test->ResetTest();
 	subtitles->Reset();
-	if (do_desktop_test)
-		main_window->ShowDesktopTestGrid();
+	desktop_test->ResetTest();
+	if (do_desktop_test) 
+		main_window->ShowDesktopTestGrid(true);
 	
 	if (server!=NULL) return;
 	

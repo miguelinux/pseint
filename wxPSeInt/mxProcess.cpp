@@ -91,7 +91,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 	main_window->last_source = source;
 	
 	if (output.GetCount()) {
-		main_window->ShowResults();
+		main_window->ShowResults(true,false);
 		if (output.GetCount()==1)
 			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Incorrecta: un error."));
 		else
@@ -102,12 +102,10 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 		wxTreeEvent evt(0,main_window->results_tree,item);
 		main_window->OnSelectError(evt);
 		main_window->Raise();
+		proc_for_killing = this;
 	} else {
 		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
 		main_window->HideQuickHelp();
-	}
-		
-	if (!output.GetCount()) {
 		if (what==mxPW_CHECK_AND_RUN)
 			return Run(file,false);
 		else if (what==mxPW_CHECK_AND_DEBUG)
@@ -120,10 +118,9 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 			return SaveDraw(file,false);
 		else if (what==mxPW_CHECK_AND_EXPORT)
 			return ExportCpp(file,false);
-		else
-			main_window->ShowResults();
-	} else
-		proc_for_killing = this;
+		else if (what==mxPW_CHECK)
+			main_window->ShowResults(true);
+	}
 	return output.GetCount()==0;
 }
 
@@ -258,7 +255,7 @@ void mxProcess::ReadOut() {
 			if (main_window->notebook->GetPageCount()) main_window->notebook->GetPage(main_window->notebook->GetSelection())->SetFocus();
 		}
 	}
-	main_window->ShowResults(!happy_ending);
+	if (!happy_ending) main_window->ShowResults(true,false);
 }
 
 wxString mxProcess::GetProfileArgs() {

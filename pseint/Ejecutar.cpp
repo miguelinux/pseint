@@ -87,7 +87,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					
 					if (colored_output) setForeColor(COLOR_OUTPUT);
 					tipo_var x;
-					_sub(line,string("Se evalua la expresion: ")+aux1);
+					_sub(line,string("Se evalúa la expresion: ")+aux1);
 					aux1=Evaluar(aux1,x);
 					if (x!=vt_error) {
 						if (x==vt_numerica)
@@ -199,7 +199,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 				dim=new int[tmp3+1]; dim[0]=tmp3;
 				int last=0;tmp3=1; tmp1=0; tmp2=0;
-				_sub_msg(line,string("Se evaluan las expresiones para cada dimensión del arreglo ")+aux1);
+				_sub_msg(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1);
 				while (tmp1<(int)aux2.size()) {
 					while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
 						tmp1++;
@@ -262,7 +262,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				else if (RightCompare(aux2," SEGUNDOS;")) { factor=1000; aux2.erase(aux2.size()-10); }
 				if (RightCompare(aux2," MILISEGUNDO;")) { factor=1; aux2.erase(aux2.size()-13); }
 				else if (RightCompare(aux2," MILISEGUNDOS;")) { factor=1; aux2.erase(aux2.size()-14); }
-				_sub(line,string("Se evalua la cantidad de tiempo: ")+aux2);
+				_sub(line,string("Se evalúa la cantidad de tiempo: ")+aux2);
 				aux2=Evaluar(aux2,tipo);
 				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
 				else {
@@ -288,7 +288,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					ExeError(201,"La variable ("+aux1.substr(0,aux1.find("(",0))+") no es un arreglo.");
 				}
 				// evaluar expresion
-				_sub(line,string("Se evalua la expresion a asignar: ")+aux2);
+				_sub(line,string("Se evalúa la expresion a asignar: ")+aux2);
 				aux2=Evaluar(aux2,tipo);
 				// comprobar tipos
 				if (/*tipo.is_known() && */!memoria->LeerTipo(aux1).can_be(tipo))
@@ -304,7 +304,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			// ---------------- SI ------------------ //
 			if (LeftCompare(cadena,"SI ")) {
 				cadena.erase(0,3);
-				_sub(line,string("Se evalua la condicion para Si-Entonces: ")+cadena);
+				_sub(line,string("Se evalúa la condicion para Si-Entonces: ")+cadena);
 				aux1=Evaluar(cadena,tipo,vt_logica);
 				if (tipo!=vt_error) {
 					if (aux1=="VERDADERO") {
@@ -356,7 +356,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			if (LeftCompare(cadena,"MIENTRAS ")) {
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-6,6);
-				_sub(line,string("Se evalua la condicion para Mientras: ")+cadena);
+				_sub(line,string("Se evalúa la condicion para Mientras: ")+cadena);
 				aux1=Evaluar(cadena,tipo);
 				if (tipo!=vt_error) {
 					tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
@@ -370,7 +370,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub(line,"La condicion es Verdadera, se iniciará una iteración.");
 						Ejecutar(line+1,tmp1-1);
 						_pos(line); // cambio 20080623 para ejecucion paso a paso
-						_sub(line,string("Se evalua nuevamente la condicion: ")+cadena);
+						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
 					}
 					line=tmp1;
 //					_pos(line); // cambio 20080623 para ejecucion paso a paso
@@ -403,7 +403,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					Ejecutar(line+1,tmp1-1);
 					// evaluar condicion y seguir
 					_pos(tmp1); // cambio 20080623 para ejecucion paso a paso
-					_sub(tmp1,string("Se evalua la condicion: ")+cadena);
+					_sub(tmp1,string("Se evalúa la condicion: ")+cadena);
 					aux1=Evaluar(cadena,tipo);
 //					if (tipo==vt_error) ???
 					if (aux1==valor_verdad) 
@@ -425,7 +425,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 				string contador=aux1.substr(0,tmp1); // variable del para
 				memoria->DefinirTipo(aux1,vt_numerica);
 				string val_ini=aux1.substr(tmp1+2); // valor inicial
-				_sub(line,string("Se evalua la expresion para el valor inicial: ")+val_ini);
+				_pos(line);
+				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+val_ini);
 				val_ini=Evaluar(val_ini,tipo);
 				if (!memoria->LeerTipo(aux1).cb_num || !tipo.cb_num)
 					ExeError(126,"No coinciden los tipos.");
@@ -437,7 +438,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (RightCompare(val_fin," HACER")) // por si ponen "...HASTA 5 HACER CON PASO 3 HACER" (2 HACER)
 						val_fin=val_fin.substr(0,val_fin.size()-6);
 					val_paso=cadena.substr(pos_paso+10);
-					_sub(line,string("Se evalua la expresion para el paso: ")+val_ini);
+					_sub(line,string("Se evalúa la expresion para el paso: ")+val_ini);
 					positivo=(Evaluar(val_paso+">=0",tipo)=="VERDADERO");
 				} else { // si no hay paso adivinar
 					val_fin=cadena;
@@ -461,24 +462,15 @@ void Ejecutar(int LineStart, int LineEnd) {
 				
 				_sub(line,string("Se inicializar el contador ")+contador+" en "+val_ini);
 				memoria->EscribirValor(contador,val_ini); // inicializa el contador
-				if (positivo) { // si el paso es positivo
-					_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+val_fin);
-					while (Evaluar(contador+"<="+val_fin,tipo)=="VERDADERO") {
-						_sub(line,"La expresion fue Verdadera, se iniciará una iteración.");
-						Ejecutar(line+1,tmp1-1);
-						_pos(line); // cambio 20080623 para ejecucion paso a paso
-						memoria->EscribirValor(contador,Evaluar(contador+"+("+val_paso+")",tipo));
-						_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+val_fin);
-					}
-				} else { // si el paso es negativo
-					_sub(line,string("Se compara el contador con el valor final: ")+contador+">="+val_fin);
-					while (Evaluar(contador+">="+val_fin,tipo)=="VERDADERO"){
-						_sub(line,"La expresion fue Verdadera, se iniciará una iteración.");
-						Ejecutar(line+1,tmp1-1);
-						_pos(line); // cambio 20080623 para ejecucion paso a paso
-						memoria->EscribirValor(contador,Evaluar(contador+"+("+val_paso+")",tipo));
-						_sub(line,string("Se compara el contador con el valor final: ")+contador+">="+val_fin);
-					}
+				string comp=positivo?"<=":">=";
+				_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+val_fin);
+				while (Evaluar(contador+comp+val_fin,tipo)=="VERDADERO") {
+					_sub(line,"La expresión fue Verdadera, se iniciará una iteración.");
+					Ejecutar(line+1,tmp1-1);
+					_pos(line); // cambio 20080623 para ejecucion paso a paso
+					memoria->EscribirValor(contador,aux1=Evaluar(contador+"+("+val_paso+")",tipo));
+					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
+					_sub(line,string("Se compara el contador con el valor final: ")+contador+comp+val_fin);
 				}
 				line=tmp1;
 				_pos(line); // cambio 20080623 para ejecucion paso a paso
@@ -537,7 +529,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				cadena.erase(0,6); cadena.erase(cadena.size()-6,6); // Cortar la variable
 				tipo_var tipo_master=vt_caracter_o_numerica;
 				_pos(line);
-				_sub(line,string("Se evalua la expresion: ")+cadena);
+				_sub(line,string("Se evalúa la expresion: ")+cadena);
 				Evaluar(aux2=cadena,tipo,tipo_master); // evaluar para verificar el tipo
 				if (!tipo.cb_num&&(!lazy_syntax||!tipo.cb_car)) {
 					if (lazy_syntax) 
@@ -574,7 +566,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 								aux3=cadena.substr(0,tmp2);
 								cadena.erase(0,aux3.size()+1);
 								_pos(x);
-								_sub(x,string("Se evalua la opcion: ")+aux3);
+								_sub(x,string("Se evalúa la opcion: ")+aux3);
 								aux1=Evaluar(aux3,tipo,tipo_master);
 								if (!tipo.cb_num&&(!lazy_syntax||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde

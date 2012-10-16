@@ -121,8 +121,6 @@ public:
 	
 	void OnClose(wxCloseEvent &evt);
 	void OnSelectError(wxTreeEvent &evt);
-	void ShowResults(bool error=false);
-	void ShowQuickHelp(wxString text);
 	void HideQuickHelp();
 
 	void OnCmdEscribir(wxCommandEvent &evt);
@@ -143,8 +141,6 @@ public:
 	const wxArrayString &GetDesktopVars();
 	void SetDesktopVars(bool do_dt, const wxArrayString &vars);
 
-	void ShowDesktopTestGrid();
-	void HideDesktopTestGrid();
 	void SelectLine(mxSource *src, int line);
 	
 	bool SelectFirstError();
@@ -168,7 +164,10 @@ public:
 	
 	void CheckIfNeedsRTS();
 	
+	void ShowResults(bool show, bool no_error=true);
+	void ShowQuickHelp(bool show, wxString text="", bool load=false);
 	void ShowSubtitles(bool show);
+	void ShowDesktopTestGrid(bool show);
 	
 	DECLARE_EVENT_TABLE();
 };
