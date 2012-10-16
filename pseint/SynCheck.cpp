@@ -828,7 +828,9 @@ int SynCheck(int linea_from, int linea_to) {
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && cadena!="") {
 					if (lazy_syntax) {
-						programa.Insert(x,"ENTONCES "); x++;
+						programa.Insert(x,"ENTONCES "); 
+						programa[x].num_instruccion--;
+						x++;
 					} else 
 						{SynError (32,"Se esperaba ENTONCES"); errores++;}
 				}

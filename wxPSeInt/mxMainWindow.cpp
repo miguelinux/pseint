@@ -458,12 +458,12 @@ void mxMainWindow::OnFileExportCpp(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->ExportCpp(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->ExportCpp(config->GetTempPSC(),true);
 	}	
 }
 
@@ -608,12 +608,12 @@ void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->Run(config->temp_file, true);
+			(new mxProcess(source,source->GetPageText()))->Run(config->GetTempPSC(), true);
 	}
 }
 
@@ -630,12 +630,12 @@ void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->CheckSyntax(config->temp_file);
+			(new mxProcess(source,source->GetPageText()))->CheckSyntax(config->GetTempPSC());
 	}
 }
 
@@ -643,12 +643,12 @@ void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->Draw(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->Draw(config->GetTempPSC(),true);
 	}
 }
 
@@ -656,12 +656,12 @@ void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->SaveDraw(config->temp_file,true);
+			(new mxProcess(source,source->GetPageText()))->SaveDraw(config->GetTempPSC(),true);
 	}		
 }
 
@@ -1408,14 +1408,14 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			wxMessageBox(_T("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
 		bool mod = source->GetModify();
-		source->SaveFile(config->temp_file);
+		source->SaveFile(config->GetTempPSC());
 		source->SetModify(mod);
 		if (debug->debugging)
 			debug->Stop();
 		else {
 			mxProcess *flow=new mxProcess(source,source->GetPageText());
 			int id=flow_editor->GetNextId();
-			if (flow->DrawAndEdit(config->temp_file,id,true)) source->EditFlow(flow,id); else delete flow;
+			if (flow->DrawAndEdit(config->GetTempPSC(),id,true)) source->EditFlow(flow,id); else delete flow;
 		}
 	}	
 }

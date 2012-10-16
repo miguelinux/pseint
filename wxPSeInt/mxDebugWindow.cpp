@@ -162,10 +162,10 @@ void mxDebugWindow::OnDebugStep(wxCommandEvent &evt) {
 void mxDebugWindow::StartDebugging(mxSource *source, bool paused) {
 	debug_status->SetLabel(_T("iniciando..."));
 	bool mod = source->GetModify();
-	source->SaveFile(config->temp_file);
+	source->SaveFile(config->GetTempPSC());
 	source->SetModify(mod);
 	debug->should_pause = paused;
-	if ( (new mxProcess(source,source->GetPageText()))->Debug(config->temp_file, true) )
+	if ( (new mxProcess(source,source->GetPageText()))->Debug(config->GetTempPSC(), true) )
 		SetState(DS_STARTING);
 }
 void mxDebugWindow::OnDebugHelp(wxCommandEvent &evt) {

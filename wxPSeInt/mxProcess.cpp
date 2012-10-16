@@ -135,7 +135,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 		command<<config->tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	temp = config->temp_out;
+	temp = config->GetTempOUT();
 	temp<<_T(".")<<cont;
 	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
@@ -156,7 +156,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 		command<<config->tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	temp = config->temp_out;
+	temp = config->GetTempOUT();
 	temp<<_T(".")<<cont;
 	debug->Start(this,source);
 	int port=debug->GetPort();
@@ -174,29 +174,29 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 
 bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-	if (check_first) return CheckSyntax(file,config->temp_draw);
+	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxString command;
-	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<config->temp_draw<<_T("\"");
+	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<config->GetTempPSD()<<_T("\"");
 //	if (config->high_res_flows) command<<_T(" +");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
 bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,config->temp_draw,id);
+	if (check_first) return CheckSyntax(file,config->GetTempPSD(),id);
 	wxString command;
 	command<<config->psdraw2_command;
 	command<<" --port="<<flow_editor->GetPort()<<" --id="<<id;
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
-	command<<_T(" \"")<<config->temp_draw<<_T("\"");
+	command<<_T(" \"")<<config->GetTempPSD()<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
 bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_SAVEDRAW:mxPW_SAVEDRAW;
-	if (check_first) return CheckSyntax(file,config->temp_draw);
+	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxFileDialog dlg (main_window, _T("Guardar Dibujo"),_T(""),_T(""), _T("Imagen jpg|*.jpg|Imagen bmp|*.bmp|Imagen png|*.png"),  wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
 	wxString command;
@@ -206,7 +206,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	wxString fname = dlg.GetPath();
 	if (fname.Len()<4 || fname.Right(4).MakeLower()!=wxString(_T("."))+ext)
 		fname<<_T(".")<<ext;
-	command<<config->psdraw_command<<_T(" \"")<<config->temp_draw<<_T("\" ");
+	command<<config->psdraw_command<<_T(" \"")<<config->GetTempPSD()<<_T("\" ");
 	/*if (config->high_res_flows)*/ command<<_T(" +");
 	command<<ext<<_T(" \"")<<fname<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -214,12 +214,12 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 
 bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT;
-	if (check_first) return CheckSyntax(file,config->temp_draw);
+	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxFileDialog dlg (main_window, _T("Guardar Cpp"),config->last_dir,_T(""), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	wxString command;
-	command<<config->psexport_command<<_T(" \"")<<config->temp_draw<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
+	command<<config->psexport_command<<_T(" \"")<<config->GetTempPSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
 	if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }

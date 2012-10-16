@@ -114,6 +114,10 @@ public:
 	int GetFlowPort();
 	int GetDebugPort();
 	
+	wxString GetTempPSC();
+	wxString GetTempPSD();
+	wxString GetTempOUT();
+	
 };
 
 extern ConfigManager *config;

@@ -101,9 +101,9 @@ void ConfigManager::LoadDefaults() {
 	temp_dir = home_dir;
 	if (!wxFileName::DirExists(temp_dir))
 		wxFileName::Mkdir(temp_dir);
-	temp_file = DIR_PLUS_FILE(temp_dir,_T("temp.psc"));
-	temp_out = DIR_PLUS_FILE(temp_dir,_T("temp.out"));
-	temp_draw = DIR_PLUS_FILE(temp_dir,_T("temp.psd"));
+	temp_file = _T("temp.psc");
+	temp_out = _T("temp.out");
+	temp_draw = _T("temp.psd");
 }
 
 void ConfigManager::Save() {
@@ -303,5 +303,17 @@ int ConfigManager::GetFlowPort ( ) {
 
 int ConfigManager::GetDebugPort ( ) {
 	if (fixed_port) return debug_port; else return debug_port+rand()%150;
+}
+
+wxString ConfigManager::GetTempPSC ( ) {
+	return DIR_PLUS_FILE(temp_dir,temp_file);
+}
+
+wxString ConfigManager::GetTempOUT ( ) {
+	return DIR_PLUS_FILE(temp_dir,temp_out);
+}
+
+wxString ConfigManager::GetTempPSD ( ) {
+	return DIR_PLUS_FILE(temp_dir,temp_draw);
 }
 
