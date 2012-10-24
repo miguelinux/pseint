@@ -51,7 +51,7 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	sizer->Add(dp_check_step_in,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
 	
 //	sizer->AddSpacer(20);
-	dp_check_subtitles=new wxCheckBox(this,mxID_DEBUG_SUBTITLES,"Explicar con detalle\ncada paso.");
+	dp_check_subtitles=new wxCheckBox(this,mxID_DEBUG_SUBTITLES,"Explicar con detalle\ncada paso");
 	dp_check_subtitles->SetToolTip(utils->FixTooltip("Haga click en \"Comenzar\" para iniciar la ejecución paso a paso y leer en este panel los detalles de cada acción que realiza el intérprete."));
 	dp_check_subtitles->SetValue(false);
 	sizer->Add(dp_check_subtitles,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
@@ -66,7 +66,6 @@ void mxDebugWindow::SetSpeed(int speed) {
 }
 
 void mxDebugWindow::SetState(ds_enum state) {
-	cerr<<"STATE: "<<state<<endl;
 	ds_state = state;
 	switch (state) {
 	case DS_STARTING:

@@ -55,7 +55,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				gotoXY(1,1);
 				_sub(line,"Se borra la pantalla");
 			} else if (cadena=="ESPERARTECLA;") {
-				_sub_msg(line,"Se espera a que el usuario presione una tecla");
+				_sub(line,"Se espera a que el usuario presione una tecla.");
 				getKey();
 				_sub_wait();
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
@@ -199,7 +199,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 				dim=new int[tmp3+1]; dim[0]=tmp3;
 				int last=0;tmp3=1; tmp1=0; tmp2=0;
-				_sub_msg(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1);
+				if (allow_dinamyc_dimensions) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
 				while (tmp1<(int)aux2.size()) {
 					while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
 						tmp1++;
@@ -220,7 +220,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 					}
 					tmp3++; last=tmp1+1; tmp1++;
 				}
-				_sub_msg(line,string("Se crea el arreglo ")+aux1);
+				if (subtitles_on) {
+					string tamanio;
+					for(int i=1;i<=dim[0];i++) tamanio+="x"+IntToStr(dim[i]);
+					tamanio[0]=' ';
+					_sub(line,string("Se crea el arreglo ")+aux1+" de"+tamanio+" elementos");
+				}
 				if (memoria->HaSidoUsada(aux1)||memoria->LeerDims(aux1))
 					ExeError(123,"Identificador en uso.");
 				if (dim!=0) memoria->AgregarArreglo(aux1, dim);
@@ -298,7 +303,6 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_sub(line,string("El resultado se guarda en ")+aux1);
 				memoria->DefinirTipo(aux1,tipo);
 				memoria->EscribirValor(aux1,aux2);
-//							EscribirVar(aux1,tipo,aux2);
 			}
 		} else { // Si no es secuencial
 			// ---------------- SI ------------------ //
@@ -339,7 +343,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 								if (LeftCompare(programa[tmp1],"FINSI")) tmp2--;
 								tmp1++;
 							}
-							_sub(line,"El resultado es Verdadero, se sigue por la rama del Sino");
+							_sub(line,"El resultado es Falso, se sigue por la rama del Sino");
 							Ejecutar(line+1,tmp1-1); // ejecutar salida por verdadero
 						} else {
 							_sub(line,"El resultado es Falso, no se hace nada");
