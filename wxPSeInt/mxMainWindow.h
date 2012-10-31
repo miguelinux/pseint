@@ -167,7 +167,7 @@ public:
 	void ShowResults(bool show, bool no_error=true);
 	void ShowQuickHelp(bool show, wxString text="", bool load=false);
 	void ShowSubtitles(bool show);
-	void ShowDesktopTestGrid(bool show);
+	void ShowDesktopTestGrid(bool show, bool one_line=false);
 	
 	DECLARE_EVENT_TABLE();
 };

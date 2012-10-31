@@ -55,7 +55,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				gotoXY(1,1);
 				_sub(line,"Se borra la pantalla");
 			} else if (cadena=="ESPERARTECLA;") {
-				_sub(line,"Se espera a que el usuario presione una tecla.");
+				_sub_msg(line,"Se espera a que el usuario presione una tecla.");
 				getKey();
 				_sub_wait();
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
@@ -255,8 +255,15 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (memoria->EstaDefinida(aux2)) 
 						ExeError(124,string("La variable (")+aux2+") ya estaba definida.");
 					memoria->DefinirTipo(aux2,tipo,rounded);
-//								memoria->EscribirValor(aux2,aux1);
-//								EscribirVar(aux2,tipo,aux1); // Escribir el Dato en Memoria
+					if (tipo==vt_numerica_entera) {
+						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Entero).");
+					} else if (tipo==vt_numerica) {
+						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Real).");
+					} else if (tipo==vt_caracter) {
+						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Caracter/Cadena de Caracteres.");
+					} else if (tipo==vt_logica) {
+						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Lógico.");
+					}
 				}
 			} else
 			// ------------- ESPERAR un tiempo --------------- //
@@ -503,6 +510,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				for (int i=1;i<=dims[0];i++) nelems*=dims[i];
 				
 				// bucle posta
+				_sub(line,string("El arreglo \"")+aux2+"\" contiene "+IntToStr(nelems)+" elementos. Se comienza a iterar por ellos.");
 				for (int i=0;i<nelems;i++) {
 					// armar expresion del elemento (ej: A[1])
 					string elemento=")";
@@ -513,6 +521,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					}
 					elemento=aux2+"("+elemento.substr(1);
 					// asignar el elemento en la variable del bucle
+					_sub(line,aux1+" será equivalente a "+elemento+" en esta iteración.");
 					_pos(line);
 					if (!memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento)))
 						ExeError(999,"No coinciden los tipos.");
@@ -524,7 +533,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 					memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
-				line=tmp1; // liena del finpara
+				line=tmp1; // linea del finpara
+				_sub(line,"Se sale de la estructura repetitiva Para Cada.");
 				
 			} else 
 			// ------------------- SEGUN --------------------- //

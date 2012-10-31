@@ -1496,10 +1496,11 @@ void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
 	}
 }
 
-void mxMainWindow::ShowDesktopTestGrid(bool show) {
-	if (show)
+void mxMainWindow::ShowDesktopTestGrid(bool show, bool one_line) {
+	if (show) {
 		aui_manager.GetPane(desktop_test_grid).Show();	
-	else
+		if (one_line) aui_manager.GetPane(desktop_test_grid).BestSize(desktop_test_grid->GetSize().GetWidth(),desktop_test_grid->GetColLabelSize()*2);
+	} else
 		aui_manager.GetPane(desktop_test_grid).Hide();	
 	aui_manager.Update();
 }
