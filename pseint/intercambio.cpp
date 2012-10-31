@@ -56,11 +56,15 @@ void Intercambio::ProcData(string order) {
 		debugLevel=backtraceLevel;
 		if (!debugLevel) debugLevel=1;
 	} else if (order=="pausa") {
-		delay=-delay;
-		if (delay>0)
-			zocket_escribir(zocket,"estado ejecutando\n",18);
-		else
-			zocket_escribir(zocket,"estado pausa\n",13);
+		if (subtitles_on) 
+			ProcData("paso"); 
+		else {
+			delay=-delay;
+			if (delay>0)
+				zocket_escribir(zocket,"estado ejecutando\n",18);
+			else
+				zocket_escribir(zocket,"estado pausa\n",13);
+		}
 	} else if (order.substr(0,6)=="delay ") {
 		if (delay<0)
 			delay=-atoi(order.substr(6).c_str());
