@@ -11,11 +11,19 @@ using namespace std;
 
 // *********************** Intercambio ****************************
 
+// estructura auxiliar para guardar datos del backtrace (llamadas a funciones)
+struct FrameInfo {
+	string func_name;
+	int line;
+	int instr;
+	FrameInfo(string name, int l, int i):func_name(name),line(l),instr(i){}
+};
+
 class Intercambio {
 	
 	int backtraceLevel; // en que nivel del trazado inverso se encuentra el punto actual de ejecucion (1:proceso principal, >1:alguna funcion)
 	int debugLevel; // solo interesa depurar si debugLevel<=backtraceLevel (si es 0 depura todo)
-	vector<string> backtrace;
+	vector<FrameInfo> backtrace;
 	
 	bool running;
 	int instNumber;          // Numero de linea que se está ejecutando (base 1)
@@ -81,6 +89,8 @@ public:
 	
 	void OnFunctionIn(string nom);
 	void OnFunctionOut();
+	int GetBacktraceLevel();
+	FrameInfo GetFrame(int level);
 	
 };
 

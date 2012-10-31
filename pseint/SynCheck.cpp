@@ -529,7 +529,7 @@ static bool SirveParaReferencia(string &s) {
 int SynCheck(int linea_from, int linea_to) {
 	
 	programa.SetRefPoint(linea_to);
-	Memoria global_memory; // para usar al analizar instrucciones fuera de proceso/subprocesos
+	Memoria global_memory(NULL); // para usar al analizar instrucciones fuera de proceso/subprocesos
 	memoria=&global_memory;
 	queue<string> arguments; // para guardar los nombres de argumentos de funciones 
 	static int untitled_functions_count=0; // para numerar las funciones sin nombre
@@ -799,7 +799,7 @@ int SynCheck(int linea_from, int linea_to) {
 					if (instruccion!="<-") {
 						int p=0, l=cadena.length();
 						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
-						funcion *func=EsFuncion(cadena.substr(0,p));
+						Funcion *func=EsFuncion(cadena.substr(0,p));
 						if (func) instruccion=string("INVOCAR ");
 					}
 				}
@@ -868,8 +868,8 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
-				funcion the_func(x); 
-				memoria=the_func.memoria;
+				Funcion *the_func=new Funcion(x); 
+				memoria=the_func->memoria;
 				int p=0; NextToken(cadena,p);
 				if (in_process) InformUnclosedLoops(bucles,errores);
 				bool sub=instruccion[0]=='S'; in_process=true;
@@ -878,10 +878,10 @@ int SynCheck(int linea_from, int linea_to) {
 				string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
 				if (tok=="="||tok=="<-") { // si estaba el igual, lo que se extrajo es el valor de retorno
 					if (!sub) { SynError (999,"El proceso principal no puede retornar ningun valor."); errores++; }
-					the_func.nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
-					if (!CheckVariable(the_func.nombres[0])) errores++;
+					the_func->nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
+					if (!CheckVariable(the_func->nombres[0])) errores++;
 				} else {
-					the_func.tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
+					the_func->tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
 				}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
 				if (fname=="") { 
 					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
@@ -906,13 +906,13 @@ int SynCheck(int linea_from, int linea_to) {
 							tok=NextToken(cadena,p);
 						} else {
 							if (!CheckVariable(tok)) errores++;
-							the_func.AddArg(tok);
+							the_func->AddArg(tok);
 							tok=NextToken(cadena,p);
 							if (tok=="POR") {
 								tok=NextToken(cadena,p);
 								if (tok!="REFERENCIA"&&tok!="COPIA"&&tok!="VALOR") {
 									SynError (999,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
-								} else the_func.SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
+								} else the_func->SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
 								tok=NextToken(cadena,p);
 							} else if (tok!="," && tok!=")" && tok!="") { 
 								SynError (999,"Se esperaba coma(,) o parentesis ())."); errores++;
@@ -927,7 +927,7 @@ int SynCheck(int linea_from, int linea_to) {
 					}
 				} else if (tok!="") { // si no habia argumentos no tiene que haber nada
 					if (!sub) { SynError (999,"Se esperaba el fin de linea."); errores++; } else {
-						if (the_func.nombres[0].size()) { SynError (999,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
+						if (the_func->nombres[0].size()) { SynError (999,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
 						else { SynError (999,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
 					}
 				}
@@ -1469,7 +1469,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="INVOCAR ") {
 				int p=8;
 				string fname=NextToken(cadena,p);
-				funcion *func=EsFuncion(fname);
+				Funcion *func=EsFuncion(fname);
 				string args=cadena.substr(p);
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
@@ -1595,10 +1595,10 @@ int SynCheck() {
 						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
 						
 						if (era_proceso) { // los cambios de lineas pueden afectar a funciones ya registradas en la pasada anterior
-							map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+							map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 							while (it1!=it2) { 
-								if (!it1->second.func && it1->second.line_start>=i1) 
-									it1->second.line_start+=i-i1; 
+								if (!it1->second->func && it1->second->line_start>=i1) 
+									it1->second->line_start+=i-i1; 
 								it1++; 
 							} 
 						}

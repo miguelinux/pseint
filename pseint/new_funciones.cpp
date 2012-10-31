@@ -7,17 +7,17 @@
 #include "global.h"
 using namespace std;
 
-map<string,funcion> funciones;
-map<string,funcion> subprocesos;
+map<string,Funcion*> funciones;
+map<string,Funcion*> subprocesos;
 
 string main_process_name="<no_main_process>";
 
-funcion* EsFuncion(const string nombre, bool include_main_process) {
+Funcion* EsFuncion(const string nombre, bool include_main_process) {
 	if (nombre==main_process_name && !include_main_process) return NULL;
-	map<string,funcion>::iterator it_func = subprocesos.find(nombre);
-	if (it_func!=subprocesos.end()) return &(it_func->second);
+	map<string,Funcion*>::iterator it_func = subprocesos.find(nombre);
+	if (it_func!=subprocesos.end()) return it_func->second;
 	it_func = funciones.find(nombre);
-	if (it_func!=funciones.end()) return &(it_func->second);
+	if (it_func!=funciones.end()) return it_func->second;
 	return NULL;
 }
 
@@ -142,43 +142,44 @@ string func_concatenar(string *arg) {
 }
 
 void LoadFunciones(bool u) {
-	funciones[u?"RC":"rc"]=funcion(vt_numerica,func_rc,vt_numerica); 
-	funciones[u?"RAIZ":"raiz"]=funcion(vt_numerica,func_rc,vt_numerica); 
-	funciones[u?"ABS":"abs"]=funcion(vt_numerica,func_abs,vt_numerica);
-	funciones[u?"LN":"ln"]=funcion(vt_numerica,func_ln,vt_numerica);
-	funciones[u?"EXP":"exp"]=funcion(vt_numerica,func_exp,vt_numerica);
-	funciones[u?"SEN":"sen"]=funcion(vt_numerica,func_sen,vt_numerica);
-	funciones[u?"ASEN":"asen"]=funcion(vt_numerica,func_asen,vt_numerica);
-	funciones[u?"ACOS":"acos"]=funcion(vt_numerica,func_acos,vt_numerica);
-	funciones[u?"COS":"cos"]=funcion(vt_numerica,func_cos,vt_numerica);
-	funciones[u?"TAN":"tan"]=funcion(vt_numerica,func_tan,vt_numerica);
-	funciones[u?"ATAN":"atan"]=funcion(vt_numerica,func_atan,vt_numerica);
-	funciones[u?"AZAR":"azar"]=funcion(vt_numerica,func_azar,vt_numerica_entera);
-	funciones[u?"TRUNC":"trunc"]=funcion(vt_numerica,func_trunc,vt_numerica);
-	funciones[u?"REDON":"redon"]=funcion(vt_numerica,func_redon,vt_numerica);
+	funciones[u?"RC":"rc"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
+	funciones[u?"RAIZ":"raiz"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
+	funciones[u?"ABS":"abs"]=new Funcion(vt_numerica,func_abs,vt_numerica);
+	funciones[u?"LN":"ln"]=new Funcion(vt_numerica,func_ln,vt_numerica);
+	funciones[u?"EXP":"exp"]=new Funcion(vt_numerica,func_exp,vt_numerica);
+	funciones[u?"SEN":"sen"]=new Funcion(vt_numerica,func_sen,vt_numerica);
+	funciones[u?"ASEN":"asen"]=new Funcion(vt_numerica,func_asen,vt_numerica);
+	funciones[u?"ACOS":"acos"]=new Funcion(vt_numerica,func_acos,vt_numerica);
+	funciones[u?"COS":"cos"]=new Funcion(vt_numerica,func_cos,vt_numerica);
+	funciones[u?"TAN":"tan"]=new Funcion(vt_numerica,func_tan,vt_numerica);
+	funciones[u?"ATAN":"atan"]=new Funcion(vt_numerica,func_atan,vt_numerica);
+	funciones[u?"AZAR":"azar"]=new Funcion(vt_numerica,func_azar,vt_numerica_entera);
+	funciones[u?"TRUNC":"trunc"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
+	funciones[u?"REDON":"redon"]=new Funcion(vt_numerica,func_redon,vt_numerica);
 	if (enable_string_functions) {
-		funciones[u?"LONGITUD":"longitud"]=funcion(vt_numerica,func_longitud,vt_caracter);
-		funciones[u?"SUBCADENA":"subcadena"]=funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
-		funciones[u?"MAYUSCULAS":"mayusculas"]=funcion(vt_caracter,func_mayusculas,vt_caracter);
-		funciones[u?"MINUSCULAS":"minusculas"]=funcion(vt_caracter,func_minusculas,vt_caracter);
-		funciones[u?"MAYÚSCULAS":"mayúsculas"]=funcion(vt_caracter,func_mayusculas,vt_caracter);
-		funciones[u?"MINÚSCULAS":"minúsculas"]=funcion(vt_caracter,func_minusculas,vt_caracter);
-		funciones[u?"CONCATENAR":"concatenar"]=funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
+		funciones[u?"LONGITUD":"longitud"]=new Funcion(vt_numerica,func_longitud,vt_caracter);
+		funciones[u?"SUBCADENA":"subcadena"]=new Funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
+		funciones[u?"MAYUSCULAS":"mayusculas"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones[u?"MINUSCULAS":"minusculas"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
+		funciones[u?"MAYÚSCULAS":"mayúsculas"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones[u?"MINÚSCULAS":"minúsculas"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
+		funciones[u?"CONCATENAR":"concatenar"]=new Funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
 	}
 }
 
 void UnloadSubprocesos( ) {
-	map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+	map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 	while (it1!=it2) {
-		delete (it1++)->second.memoria;
+		delete (it1++)->second->memoria;
+		delete (it1++)->second;
 	}
 	subprocesos.clear();
 }
 
-string GetNombreFuncion(funcion * func) {
-	map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+string GetNombreFuncion(Funcion * func) {
+	map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 	while (it1!=it2) {
-		if (&(it1->second)==func) return it1->first;
+		if (it1->second==func) return it1->first;
 		else it1++;
 	}
 	return "";

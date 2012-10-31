@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
 
 	// inicializaciones varias
 	int errores;
-	memoria = new Memoria;
+//	memoria = new Memoria(NULL); // ejecutar crea su propia memoria
 	LoadFunciones();
 	srand(time(NULL));
 	
@@ -214,11 +214,11 @@ int main(int argc, char* argv[]) {
 		}
 		SynCheck();
 		cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
-		map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+		map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 		while (it1!=it2) {
 			if (it1->first!=main_process_name) cout<<"SUB";
 			cout<<"PROCESO "<<it1->first/*<<" "<<programa.GetLoc(it1->second.line_start,"").num_linea*/<<endl;
-			(it1++)->second.memoria->ListVars();
+			(it1++)->second->memoria->ListVars();
 		}
 		cout<<"<!{[END_OF_VARS]}!>"<<endl;
 		if (lcount) {
@@ -309,11 +309,11 @@ int main(int argc, char* argv[]) {
 				if (colored_output) setForeColor(COLOR_INFO);
 				cout<<"*** Ejecucion Iniciada. ***\n";
 			}
-			map<string,funcion>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
-			while (it1!=it2) (it1++)->second.memoria->FakeReset();
+			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+			while (it1!=it2) (it1++)->second->memoria->FakeReset();
 			Inter.SetStarted();
 			checksum(programa);
-			funcion *main_func=EsFuncion(main_process_name,true);
+			Funcion *main_func=EsFuncion(main_process_name,true);
 			memoria=main_func->memoria;
 			Ejecutar(main_func->line_start);
 			Inter.SetFinished();

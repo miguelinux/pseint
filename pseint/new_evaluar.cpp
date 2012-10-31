@@ -188,7 +188,7 @@ tipo_var DeterminarTipo(string &expresion, int p1, int p2) {
 		else {
 			size_t pp=expresion.find('(',p1);
 			if (pp!=string::npos) {
-				funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
+				Funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
 				if (func) return func->tipos[0];
 			}
 			return memoria->LeerTipo(expresion.substr(p1,p2-p1+1));
@@ -295,7 +295,7 @@ static bool EsArreglo(const string &nombre) {
 	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
 }
 
-string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
+string EvaluarFuncion(Funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
 	if (for_expresion && func->tipos[0]==vt_error) {
 		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
 		tipo=vt_error; return "";
@@ -351,7 +351,7 @@ string EvaluarFuncion(funcion *func, string argumentos, tipo_var &tipo, bool for
 	} else {
 		if (Inter.Running()) {
 			Memoria *caller_memoria=memoria;
-			memoria=new Memoria;
+			memoria=new Memoria(func);
 			tipo_var tipo_arg;
 			for(int i=0;i<func->cant_arg;i++) { 
 				if (args.pasajes[i]==PP_VALOR) { // por valor
@@ -425,7 +425,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					tipo=vt_error;
 					ev_return("");
 				}
-				funcion *func=EsFuncion(nombre);
+				Funcion *func=EsFuncion(nombre);
 				if (func) {
 					if (func->cant_arg!=0) {
 						WriteError(999,string("Faltan parametros para la funcion (")+nombre+")");
@@ -463,7 +463,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 				}
 				string nombre=expresion.substr(p1,pm-p1);
-				funcion *func=EsFuncion(nombre);
+				Funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
 					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
@@ -734,7 +734,7 @@ string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 			SynError (999,"Falta un operando al final de la expresión."); /*errores++;*/
 		}
 	}
-	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo de afuera, mejor contextualizado)
+	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo dé afuera, mejor contextualizado)
 	tipo=vt_desconocido; int p1=0, p2=expresion.size()-1;
 	string retval=Evaluar(expresion,p1,p2,tipo);
 	// si no habia nada raro, aplica el tipo a las variables
@@ -759,6 +759,7 @@ bool CheckDims(string &str) {
 	string nombre=str.substr(0,pp);
 	int *adims=memoria->LeerDims(str);
 	if (!adims) {
+		if (!Inter.Running() && memoria->EsArgumento(nombre)) return true; // si es una funcion, no sabemos si lo que van a pasar sera o no arreglo
 		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo"));
 		return false;
 	}
@@ -795,7 +796,6 @@ bool CheckDims(string &str) {
 				} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
 					if (par==0) {
 						string nombre=exp.substr(l,i-l);
-//						cerr<<"***"<<nombre<<"***\n";
 						if (memoria->Existe(nombre)) 
 							memoria->DefinirTipo(nombre,vt_numerica,true);
 					}

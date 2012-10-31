@@ -82,7 +82,9 @@ extern tipo_var vt_caracter_o_numerica;
 extern tipo_var vt_caracter_o_logica;
 extern tipo_var vt_numerica_entera;
 
+class Funcion;
 class Memoria {
+	
 	map<string,alias> var_alias; // lista de aliases, para el pasaje por referencia
 	string alias_nom; Memoria *alias_mem;
 	
@@ -111,7 +113,10 @@ class Memoria {
 		alias_mem=it_alias->second.mem;
 		return true;
 	}
+	Funcion *funcion; // scope
 public:
+	Memoria(Funcion *parent):funcion(parent){} // guarda el puntero a su scope para usar en EsArgumento
+	bool EsArgumento(string nom); // determina si un nombre dado es uno de los argumentos de la función actual o no
 	void HardReset() {
 		var_value.clear();
 		var_info.clear();
@@ -171,10 +176,9 @@ public:
 		if (EsAlias(nombre)) {
 			if (alias_nom.find('(')!=string::npos) // si el original era una arreglo, pero el alias apunta solo a una posicion
 				return NULL;
-			else 
+			else
 				return alias_mem->LeerDims(alias_nom);
 		}
-//		tipo_var &vi = var_info[nombre];
 		return var_info[nombre].dims;
 	}
 	tipo_var LeerTipo(string nombre) {
@@ -247,6 +251,7 @@ public:
 		}
 		
 	}
+	
 };
 
 extern Memoria *memoria;

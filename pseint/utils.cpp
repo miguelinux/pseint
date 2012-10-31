@@ -156,8 +156,17 @@ void ExeError(int num,string s) {
 		}
 		if (colored_output) setForeColor(COLOR_ERROR);
 		cout<<"Lin "<<Inter.GetLineNumber()<<" (inst "<<Inter.GetInstNumber()<<"): ERROR "<<num<<": "<<s<<endl;
+		for(int i=Inter.GetBacktraceLevel()-1;i>0;i--) {  
+			FrameInfo fi=Inter.GetFrame(i);
+			cout<<"...dentro del subproceso "<<fi.func_name<<", invocado desde la línea "<<fi.line<<"."<<endl;
+		}
 		if (ExeInfoOn) {
 			ExeInfo<<"Lin "<<Inter.GetLineNumber()<<" (inst "<<Inter.GetInstNumber()<<"): ERROR "<<num<<": "<<s<<endl;
+			for(int i=Inter.GetBacktraceLevel()-1;i>0;i--) {  
+				FrameInfo fi=Inter.GetFrame(i);
+				ExeInfo<<"Lin "<<fi.line<<" (inst "<<fi.instr<<"): ";
+				ExeInfo<<"...dentro del subproceso "<<fi.func_name<<", invocado desde aquí."<<endl;
+			}
 			ExeInfo<<"*** Ejecucion Interrumpida. ***\n";
 		} 
 		if (wait_key) {

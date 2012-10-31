@@ -1,3 +1,7 @@
+20121031
+	Al producirse un error en tiempo de ejecución dentro de un subproceso se indica junto al mensaje cómo se llegó a ese subproceso (se muestra la pila de llamadas).
+	Ahora las funciones pueden recibir arreglos correctamente (siempre por referencia).
+	
 20121016
 	Algunos cambios menores en la apariencia del panel de ejecución paso a paso y la politica de visibilidad de los demás paneles en el editor de pseudocódigo.
 	Todas las rutas del archivo de configuración para temporales son ahora relativas.

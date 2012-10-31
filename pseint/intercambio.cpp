@@ -262,11 +262,11 @@ void Intercambio::SetError(string error) {
 }
 
 void Intercambio::OnFunctionIn(string nom) {
-	backtrace.push_back(nom);
+	backtrace.push_back(FrameInfo(nom,lineNumber,instNumber));
 	backtraceLevel++;
 #ifdef USE_ZOCKETS
 	if (zocket==ZOCKET_ERROR || backtrace.empty()) return;
-	string s="proceso "+IntToStr(backtraceLevel)+":"+backtrace.back()+"\n";
+	string s="proceso "+IntToStr(backtraceLevel)+":"+backtrace.back().func_name+"\n";
 	zocket_escribir(zocket,s.c_str(),s.size());
 #endif	
 }
@@ -276,8 +276,16 @@ void Intercambio::OnFunctionOut() {
 	backtraceLevel--;
 #ifdef USE_ZOCKETS
 	if (zocket==ZOCKET_ERROR || backtrace.empty()) return;
-	string s="proceso "+IntToStr(backtraceLevel)+":"+backtrace.back()+"\n";
+	string s="proceso "+IntToStr(backtraceLevel)+":"+backtrace.back().func_name+"\n";
 	zocket_escribir(zocket,s.c_str(),s.size());
 #endif
+}
+
+int Intercambio::GetBacktraceLevel ( ) {
+	return backtraceLevel;
+}
+
+FrameInfo Intercambio::GetFrame(int level) {
+	return backtrace[level];
 }
 
