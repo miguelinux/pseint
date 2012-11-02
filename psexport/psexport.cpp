@@ -543,7 +543,7 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	memoria=new Memoria;
+	memoria=new Memoria(NULL);
 	LoadFunciones(false);
 	
 	//cargar programa y calcular dibujo

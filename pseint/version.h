@@ -1,4 +1,4 @@
-#define VERSION 20121031
+#define VERSION 20121102
 #if defined(__WIN32__)
 #define ARCHITECTURE "w32"
 #elif defined(__WIN64__)

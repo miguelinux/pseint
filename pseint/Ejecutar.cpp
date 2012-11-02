@@ -61,6 +61,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
 				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el "invocar" y el ";"
 				tipo=vt_desconocido; size_t p=llamada.find('(',0);
+				_sub(line,string("Se va a invocar al subproceso")+llamada.substr(0,p));
 				if (p==string::npos)
 					EvaluarFuncion(EsFuncion(llamada),"()",tipo,false);
 				else
