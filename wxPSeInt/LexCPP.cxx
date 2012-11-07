@@ -338,7 +338,7 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 				sc.SetState(SCE_C_STRING);
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_C_CHARACTER);
-			} else if (sc.ch == '#' && visibleChars == 0) {
+			} else if (sc.ch == '#' && visibleChars == 0 && !enable_pseint) {
 				// Preprocessor commands are alone on their line
 				sc.SetState(SCE_C_PREPROCESSOR);
 				// Skip whitespace between # and preprocessor word

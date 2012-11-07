@@ -1025,7 +1025,7 @@ int SynCheck(int linea_from, int linea_to) {
 						}
 						if (parentesis==0 && cadena[i]==',') { // comprobar validez
 							str=cadena.substr(last_i,i-last_i);
-							ºif (Lerrores==errores) EvaluarSC(str,tipo);
+							if (Lerrores==errores) EvaluarSC(str,tipo);
 							last_i=i+1;
 						}
 					}

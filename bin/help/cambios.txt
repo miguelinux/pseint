@@ -1,4 +1,5 @@
 20121107
+	Ahora se colorean correctamente los nombres de funciones predefinadas para manejo de cadenas.
 	Corregido un error al evaluar expresiones con paréntesis dentro de una cadena de caracteres en la instrucción Escribir.
 
 20121031
