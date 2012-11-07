@@ -1011,24 +1011,22 @@ int SynCheck(int linea_from, int linea_to) {
 						cadena[cadena.size()-1]=',';
 					else
 						cadena=cadena+",";
-					int tmp1=0,tmp2=0, tmp3=9;
-					comillas=-1; // cortar parametros
-					for (tmp1=9;tmp1<(int)cadena.size();tmp1++) {
-						if (cadena[tmp1]=='(') tmp2++;
-						if (cadena[tmp1]==')') tmp2--;
-						if (cadena[tmp1]=='\'') comillas=-comillas;
-						if (comillas>0) continue;
-						if (tmp1>0 && tmp1<(int)cadena.size()-1) {
-							if (lazy_syntax && cadena[tmp1]==' ') cadena[tmp1]=',';
-							if (cadena[tmp1]==' ' && cadena[tmp1-1]!='&' && cadena[tmp1-1]!='|'  && cadena[tmp1+1]!='&'  && cadena[tmp1+1]!='|')
+					bool comillas=false; // cortar parametros
+					int parentesis=0;
+					for (int last_i=9, i=9;i<(int)cadena.size();i++) {
+						if (cadena[i]=='\'') comillas=!comillas;
+						else if (comillas) continue;
+						if (cadena[i]=='(') parentesis++;
+						if (cadena[i]==')') parentesis--;
+						if (i>0 && i<(int)cadena.size()-1) {
+							if (lazy_syntax && cadena[i]==' ') cadena[i]=',';
+							if (cadena[i]==' ' && cadena[i-1]!='&' && cadena[i-1]!='|'  && cadena[i+1]!='&'  && cadena[i+1]!='|')
 								{SynError (54,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (tmp2==0 && cadena[tmp1]==',') { // comprobar validez
-							str=cadena;
-							str.erase(tmp1,str.size()-tmp1);
-							str.erase(0,tmp3);
+						if (parentesis==0 && cadena[i]==',') { // comprobar validez
+							str=cadena.substr(last_i,i-last_i);
 							if (Lerrores==errores) EvaluarSC(str,tipo);
-							tmp3=tmp1+1;
+							last_i=i+1;
 						}
 					}
 					cadena[cadena.size()-1]=';';
