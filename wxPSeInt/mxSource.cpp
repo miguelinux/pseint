@@ -921,7 +921,7 @@ void mxSource::SetWords() {
 	if (config->lang.coloquial_conditions) s1<<mxSourceWords1_conds;
 	SetKeyWords (0, s1.c_str());
 	wxString s2=mxSourceWords2_math;
-	if (config->lang.enable_string_functions) s1<<mxSourceWords2_string;
+	if (config->lang.enable_string_functions) s2<<mxSourceWords2_string;
 	SetKeyWords (1, s2.c_str());
 	SetKeyWords (3, ""); // para resaltar las variables
 }
