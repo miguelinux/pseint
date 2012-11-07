@@ -894,6 +894,8 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		if (source->GetReadOnly()) return source->MessageReadOnly();
+		
+		// obtener la seleccion y eliminarla
 		int ss = source->GetSelectionStart(), se = source->GetSelectionEnd();
 		if (ss!=se) {
 			source->SetTargetStart(ss);
@@ -901,18 +903,28 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 			source->ReplaceTarget(_T(""));
 		}
 		int line = source->LineFromPosition(ss);
-		int indent = source->GetLineIndentation(line), oline=line;
+		// ver si había algo en la misma linea despues de la seleccion para saber si va un enter más o no
+		int oline_end = source->GetLineEndPosition(line);
+		se=ss; while (se<oline_end && (source->GetCharAt(se)==' '||source->GetCharAt(se)=='\t')) se++;
+		if (se<oline_end) { source->InsertText(ss,_T("\n")); source->Indent(line+1,line+1); }
+		// ver si había algo en la misma linea antes de la seleccion para saber si va un enter más o no
+		int oline_beg = source->PositionFromLine(line);
+		se=ss-1; while (se>=oline_beg && (source->GetCharAt(se)==' '||source->GetCharAt(se)=='\t')) se--;
+		if (se>=oline_beg) { source->InsertText(ss,"\n"); line++; }
+			
+		// insertar el código con su correspondiente formato (en la linea dada por line, que está en blanco)
+		int oline=line;
 		for (unsigned int i=0;i<toins.GetCount();i++) {
-//			if (i) 
-				source->InsertText(source->PositionFromLine(line),_T("\n"));
-			source->SetLineIndentation(line,indent);
+			if (i) source->InsertText(source->PositionFromLine(line),_T("\n"));
 			int pos = source->GetLineIndentPosition(line);
 			wxString toindic = toins[i];
+			// quitar las llaves del texto e insertarlo
 			for (int j=toindic.size()-1;j>=0;j--) {
 				if (toindic[j]=='{' || toindic[j]=='}')
 					toins[i] = toins[i].SubString(0,j-1)+toins[i].Mid(j+1);
 			}
 			source->InsertText(pos,toins[i]);
+			// aplicarle al texto los indicadores en los campos a completar
 			int p1=-1,p2=-2, des=0;
 			for (unsigned int j=0;j<toindic.size();j++) {
 				if (toindic[j]=='{' && p1==-1) {
@@ -927,9 +939,12 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 			}
 			line++;
 		}
+		// corregir el indentado y seleccionar el código nuevo 
+		source->Indent(oline,line-1);
 		source->SetSelectionStart(source->GetLineIndentPosition(oline));
 		source->SetSelectionEnd(source->GetLineEndPosition(line-1));
 		source->SetFocus();
+		
 	}
 }
 void mxMainWindow::OnEditFind (wxCommandEvent &event) {
