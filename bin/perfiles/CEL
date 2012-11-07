@@ -1,0 +1,14 @@
+desc=Perfil para la materia "Metodología de la Programacación" de la carrera "Programación Básica" del "Centro de Estudios Latinoamericano", enviado por el Ing. Diego Romero.
+force_init_vars=1
+force_define_vars=1
+force_dot_and_comma=1
+allow_concatenation=1
+allow_word_operators=0
+base_zero_arrays=1
+allow_dinamyc_dimensions=1
+lazy_syntax=0
+coloquial_conditions=0
+use_nassi_schneiderman=0
+enable_user_functions=1
+overload_equal=1
+enable_string_functions=1
