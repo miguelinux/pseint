@@ -18,6 +18,8 @@ void fix_argv(char *argv[]) {
 int main(int argc, char *argv[]) {
 	setenv("UBUNTU_MENUPROXY","",1);
 	setenv("LIBOVERLAY_SCROLLBAR","0",1);
+	setenv("LANG","",1); // for fixing the problem with utf8 locale and ansi wx build
+	setenv("LC_CTYPE","",1); // for fixing the problem with utf8 locale and ansi wx build
 	fix_argv(argv);
 	execvp(argv[0],argv);
 	return 0;

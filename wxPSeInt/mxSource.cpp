@@ -95,6 +95,13 @@ static bool EsLetra(const char &c) {
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+// se modifica en launcher.txt en lugar de aca, para nadie use utf8 y entonces se vea igual en todos lados y tampoco tenga que convertir los ejemplos
+  // #ifndef __WIN32__
+// 	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
+// 	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
+// 		SetCodePage(wxSTC_CP_UTF8);
+// #endif
+  
 	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
 	
 	rt_running=false;

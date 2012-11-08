@@ -11,7 +11,6 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=Application.cpp
@@ -27,9 +26,9 @@ cursor=186
 [source]
 path=ConfigManager.cpp
 cursor=3635
-marker=312
-marker=90
 marker=36
+marker=90
+marker=312
 [source]
 path=mxSource.cpp
 cursor=42513
@@ -37,8 +36,8 @@ marker=986
 [source]
 path=mxProcess.cpp
 cursor=4850
-marker=214
 marker=141
+marker=214
 [source]
 path=HelpManager.cpp
 cursor=8174
@@ -76,9 +75,9 @@ cursor=0
 [source]
 path=mxConfig.cpp
 cursor=4018
-marker=62
-marker=63
 marker=64
+marker=63
+marker=62
 [source]
 path=mxProfile.cpp
 cursor=3256
@@ -206,7 +205,6 @@ cursor=526
 [other]
 path=../bin/help/cambios.txt
 cursor=18
-open=true
 [other]
 path=../bin/help/errores.hlp
 cursor=0
