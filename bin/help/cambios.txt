@@ -1,3 +1,5 @@
+>>RELEASE 20121107<<
+
 20121107
 	Ya no se colorean en verde la lineas que comienzan con numeral, y se colorean correctamente los nombres de las nuevas funciones para manejo de cadenas.
 	Se agregó un nuevo perfil de lenguaje para el "Centro de Estudios Latinoamericano".

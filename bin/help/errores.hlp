@@ -83,71 +83,71 @@
 17
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo mayor (&gt;) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ ; , &amp; | ~ ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 18
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menor (&lt;) seguido de otro caracter que no corresponde ( &lt; / * ^ ; , &amp; | ~ ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 19
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo igual (=) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; , ; | ~ = ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 20
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo pipe (|) seguido de otro caracter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que el operador lógico de disyunción (|) va espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 21
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo andpersand (&amp;) seguido de otro caracter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que el operador lógico de conjunción (&amp;) va espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 22
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay una negación (~ ó NO) seguida de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; | , ; ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 23
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo más (+) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
 
 24
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menos (-) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 25
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo asterisco (*) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 26
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo barra (/) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 27
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo (^) seguido de otro caracter que no corresponde ( &lt; &gt; + / * ^ &amp; | , ; ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 28
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis izquierdo (() seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; | = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que algnos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 29
   Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis derecho ()) seguido de otro caracter que no corresponde ( &amp; | ~ ( ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que algnos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores consulte "Referencia Rapida" en el menú "Ayuda".
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
   
 31
   Falta alguna expresión en esta linea. Puede deberse a que dentro de dos paréntesis no hay ninguna expresión o a que falta la expresión de la derecha en alguna asignación. 
@@ -473,7 +473,6 @@
   La instrucción de esta linea no se reconoce como una instrucción válida. Puede haber errores de tipeo.
   * Verifique que la palabra clave este escrita correctamente.
   * Si es una asignación recuerde utilizar el operador "&lt;-" (o alternativamente el operador = si su <A href="perfiles.html">perfil</A> de lenguaje lo permite).
-  * Para una lista completa de posibles palabras claves consulte "Referencia Rapida" en el menú "Ayuda".
   
 107
   Se encontró la palabra clave FINSEGUN, pero la ultima estructura de control abierta no fue una estructura del tipo SEGUN. 
