@@ -1,7 +1,8 @@
-20121108
-	Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux.
+>>RELEASE 20121108<<
 
->>RELEASE 20121107<<
+20121108
+	Corregido el bug que hacía inusable la versión 20121107
+	Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux.
 
 20121107
 	Ya no se colorean en verde la lineas que comienzan con numeral, y se colorean correctamente los nombres de las nuevas funciones para manejo de cadenas.
