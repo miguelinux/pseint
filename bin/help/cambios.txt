@@ -1,3 +1,6 @@
+20121108
+	Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux.
+
 >>RELEASE 20121107<<
 
 20121107

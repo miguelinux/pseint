@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=SynCheck.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp
@@ -54,8 +54,8 @@ cursor=2812
 [source]
 path=new_evaluar.cpp
 cursor=24106
-breakpoint=391
 breakpoint=577
+breakpoint=391
 marker=480
 open=true
 [source]
@@ -138,6 +138,11 @@ cursor=43951
 [config]
 name=Linux_Debug
 toolchain=
+toolchain_argument_0=${DEFAULT}
+toolchain_argument_1=${DEFAULT}
+toolchain_argument_2=${DEFAULT}
+toolchain_argument_3=${DEFAULT}
+toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
 args=--forrealtimesyntax
@@ -163,6 +168,11 @@ enable_profiling=0
 [config]
 name=Linux_Release
 toolchain=
+toolchain_argument_0=${DEFAULT}
+toolchain_argument_1=${DEFAULT}
+toolchain_argument_2=${DEFAULT}
+toolchain_argument_3=${DEFAULT}
+toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
 args=
@@ -188,6 +198,11 @@ enable_profiling=0
 [config]
 name=Windows_Debug
 toolchain=
+toolchain_argument_0=${DEFAULT}
+toolchain_argument_1=${DEFAULT}
+toolchain_argument_2=${DEFAULT}
+toolchain_argument_3=${DEFAULT}
+toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
 args=
@@ -213,6 +228,11 @@ enable_profiling=0
 [config]
 name=Windows_Release
 toolchain=
+toolchain_argument_0=${DEFAULT}
+toolchain_argument_1=${DEFAULT}
+toolchain_argument_2=${DEFAULT}
+toolchain_argument_3=${DEFAULT}
+toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
 args=
