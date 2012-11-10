@@ -1,5 +1,8 @@
->>RELEASE 20121108<<
+>>RELEASE 20121110<<
 
+20121110
+	Corregido el problema que evitaba guardar los cambios luego de editar un diagrama de flujo.
+	
 20121108
 	Corregido el bug que hacía inusable la versión 20121107
 	Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux.

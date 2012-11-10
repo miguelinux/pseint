@@ -80,10 +80,10 @@ void FlowEditionManager::ProcData(wxSocketBase *s, wxString data) {
 		mxSource *src=main_window->FindFlowSocket(s);
 		if (!src) return;
 		if (data=="reload") {
-			src->ReloadTemp(config->GetTempOUT());
+			src->ReloadTemp(config->GetTempPSD());
 			main_window->SelectSource(src);
 		} else if (data=="run") {
-			src->ReloadTemp(config->GetTempOUT());
+			src->ReloadTemp(config->GetTempPSD());
 			main_window->SelectSource(src);
 			wxCommandEvent evt;
 			main_window->OnRunRun(evt);
