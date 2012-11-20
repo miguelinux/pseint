@@ -12,13 +12,23 @@ map<string,Funcion*> subprocesos;
 
 string main_process_name="<no_main_process>";
 
-Funcion* EsFuncion(const string nombre, bool include_main_process) {
+Funcion* EsFuncionDelUsuario(const string nombre, bool include_main_process) {
 	if (nombre==main_process_name && !include_main_process) return NULL;
 	map<string,Funcion*>::iterator it_func = subprocesos.find(nombre);
 	if (it_func!=subprocesos.end()) return it_func->second;
-	it_func = funciones.find(nombre);
+	return NULL;
+}
+
+Funcion* EsFuncionPredefinida(const string nombre) {
+	map<string,Funcion*>::iterator it_func = funciones.find(nombre);
 	if (it_func!=funciones.end()) return it_func->second;
 	return NULL;
+}
+
+Funcion* EsFuncion(const string nombre, bool include_main_process) {
+	Funcion *ret=EsFuncionDelUsuario(nombre, include_main_process);
+	if (!ret) ret=EsFuncionPredefinida(nombre);
+	return ret;
 }
 
 string func_rc(string *arg) {
