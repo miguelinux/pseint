@@ -10,10 +10,11 @@
 #include "mxArt.h"
 #include "mxMainWindow.h"
 #include "RTSyntaxManager.h"
+#include <wx/imaglist.h>
 
 BEGIN_EVENT_TABLE(mxProfile,wxDialog)
-	EVT_LISTBOX(wxID_ANY,mxProfile::OnList)
-	EVT_LISTBOX_DCLICK(wxID_ANY,mxProfile::OnOkButton)
+	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxProfile::OnListSelect)
+	EVT_LIST_ITEM_ACTIVATED(wxID_ANY,mxProfile::OnListActivate)
 	EVT_BUTTON(wxID_FIND,mxProfile::OnOptionsButton)
 	EVT_BUTTON(wxID_OK,mxProfile::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxProfile::OnCancelButton)
@@ -21,6 +22,8 @@ BEGIN_EVENT_TABLE(mxProfile,wxDialog)
 END_EVENT_TABLE()
 
 mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
+	
+	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
 	old_config=config->lang;
 	
@@ -43,12 +46,27 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	perfiles.Sort();
 	int profnum=-1;
 	profnum = perfiles.Index(config->profile,false);
-	perfiles.Add(_T("<personalizado>"));
+//	perfiles.Add(_T("<personalizado>"));
 	
 	if (profnum==wxNOT_FOUND) profnum=perfiles.GetCount()-1;
 	
-	list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxSize(100,150),perfiles,wxLB_SINGLE);
-	list->SetSelection(profnum);
+	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
+	list->InsertColumn(0,"Perfil");
+	wxImageList *iml=new wxImageList(24,24,true,0);
+	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"));
+	for(unsigned int i=0;i<perfiles.GetCount();i++) {
+		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),perfiles[i]+".png");
+		if (wxFileName::FileExists(ficon))
+			iml->Add(wxBitmap(ficon));
+		else
+			iml->Add(noimage);
+	}
+//	iml->Add(wxBitmap(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"personalizado.png")));
+	list->AssignImageList(iml,wxIMAGE_LIST_SMALL);
+	for(unsigned int i=0;i<perfiles.GetCount();i++) list->InsertItem(i,perfiles[i],i);
+	list->InsertItem(perfiles.GetCount(),"<personalizado>"/*,perfiles.GetCount()*/);
+	
+	SetListSelection(profnum);
 	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	LoadProfile();
 	
@@ -60,8 +78,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-//	sizer->Add(new wxStaticText(this,wxID_ANY,_T("")),wxSizerFlags().Expand().Proportion(0));
-	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Seleccione un perfil para configurar las reglas de su pseudocodigo:  ")),wxSizerFlags().Expand().Proportion(0));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Seleccione un perfil para configurar las reglas de su pseudocodigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
 	sizer->Add(list,wxSizerFlags().Expand().Proportion(2).FixedMinSize());
 	sizer->Add(new wxStaticText(this,wxID_ANY,_T("")),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Descripcion del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
@@ -73,7 +90,9 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	SetEscapeId(wxID_CANCEL);
 	
 	SetSizerAndFit(sizer);
-//	CentreOnParent();
+	
+	this->Layout(); // para ajustar el tamaño de la columna de la lista
+	list->SetColumnWidth(0,list->GetSize().GetWidth()-32);
 	
 	list->SetFocus();
 	
@@ -97,21 +116,38 @@ void mxProfile::OnCancelButton(wxCommandEvent &evt) {
 	config->lang=old_config;
 	Close();
 }
-void mxProfile::OnList(wxCommandEvent &evt) {
+void mxProfile::OnListSelect(wxListEvent &evt) {
 	LoadProfile();
+}
+
+void mxProfile::OnListActivate(wxListEvent &evt) {
+	wxCommandEvent ce;
+	OnOkButton(ce);
 }
 
 void mxProfile::OnOptionsButton(wxCommandEvent &evt) {
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {
-		list->SetSelection(list->GetCount()-1);
+		SetListSelection(list->GetItemCount()-1);
 		LoadProfile();
 	}
 	list->SetFocus();
 }
 
 void mxProfile::LoadProfile() {
-	text->SetValue(config->LoadProfile(list->GetString(list->GetSelection())));
+	if (text) text->SetValue(config->LoadProfile(GetListSelection()));
+}
+
+wxString mxProfile::GetListSelection ( ) {
+	long item = -1;
+	item = list->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	wxListItem li; li.SetId(item);
+	list->GetItem(li);
+	return li.GetText();
+}
+
+void mxProfile::SetListSelection (int i) {
+	list->SetItemState(i,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
 }
 
