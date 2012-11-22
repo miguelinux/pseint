@@ -52,19 +52,19 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Perfil");
-	wxImageList *iml=new wxImageList(24,24,true,0);
-	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"));
+	wxImageList *iml=new wxImageList(24,24,true,perfiles.GetCount()+1);
+	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"),wxBITMAP_TYPE_PNG);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
 		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),perfiles[i]+".png");
 		if (wxFileName::FileExists(ficon))
-			iml->Add(wxBitmap(ficon));
+			iml->Add(wxBitmap(ficon,wxBITMAP_TYPE_PNG));
 		else
 			iml->Add(noimage);
 	}
-//	iml->Add(wxBitmap(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"personalizado.png")));
+	iml->Add(wxBitmap(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"personalizado.png"),wxBITMAP_TYPE_PNG));
 	list->AssignImageList(iml,wxIMAGE_LIST_SMALL);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) list->InsertItem(i,perfiles[i],i);
-	list->InsertItem(perfiles.GetCount(),"<personalizado>"/*,perfiles.GetCount()*/);
+	list->InsertItem(perfiles.GetCount(),"<personalizado>",perfiles.GetCount());
 	
 	SetListSelection(profnum);
 	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
