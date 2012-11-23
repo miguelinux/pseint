@@ -52,7 +52,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Perfil");
-	wxImageList *iml=new wxImageList(24,24,true,perfiles.GetCount()+1);
+	iml = new wxImageList(24,24,true,perfiles.GetCount()+1);
 	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"),wxBITMAP_TYPE_PNG);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
 		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),perfiles[i]+".png");
@@ -100,9 +100,9 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 }
 
 mxProfile::~mxProfile() {
-	
-
+	delete iml;
 }
+
 void mxProfile::OnClose(wxCloseEvent &evt) {
 	Destroy();
 }
@@ -136,18 +136,18 @@ void mxProfile::OnOptionsButton(wxCommandEvent &evt) {
 }
 
 void mxProfile::LoadProfile() {
+#warning NO FUNCIONA EN WINDOWS
 	if (text) text->SetValue(config->LoadProfile(GetListSelection()));
 }
 
 wxString mxProfile::GetListSelection ( ) {
 	long item = -1;
 	item = list->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	wxListItem li; li.SetId(item);
-	list->GetItem(li);
-	return li.GetText();
+	return list->GetItemText(item);
 }
 
 void mxProfile::SetListSelection (int i) {
 	list->SetItemState(i,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
+	list->EnsureVisible(i);
 }
 

@@ -4,11 +4,13 @@
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
 #include "ConfigManager.h"
+#include <wx/imaglist.h>
 
 class mxProfile:wxDialog {
 private:
 	wxListCtrl *list;
 	wxTextCtrl *text;
+	wxImageList *iml;
 public:
 	LangSettings old_config;
 	mxProfile(wxWindow *parent);
