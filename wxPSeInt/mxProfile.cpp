@@ -52,7 +52,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Perfil");
-	iml = new wxImageList(24,24,true,perfiles.GetCount()+1);
+	wxImageList *iml = new wxImageList(24,24,true);
 	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"),wxBITMAP_TYPE_PNG);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
 		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),perfiles[i]+".png");
@@ -100,7 +100,6 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 }
 
 mxProfile::~mxProfile() {
-	delete iml;
 }
 
 void mxProfile::OnClose(wxCloseEvent &evt) {
@@ -117,10 +116,12 @@ void mxProfile::OnCancelButton(wxCommandEvent &evt) {
 	Close();
 }
 void mxProfile::OnListSelect(wxListEvent &evt) {
+	evt.Skip();
 	LoadProfile();
 }
 
 void mxProfile::OnListActivate(wxListEvent &evt) {
+	evt.Skip();
 	wxCommandEvent ce;
 	OnOkButton(ce);
 }

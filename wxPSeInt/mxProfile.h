@@ -10,7 +10,6 @@ class mxProfile:wxDialog {
 private:
 	wxListCtrl *list;
 	wxTextCtrl *text;
-	wxImageList *iml;
 public:
 	LangSettings old_config;
 	mxProfile(wxWindow *parent);
