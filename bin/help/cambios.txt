@@ -1,3 +1,6 @@
+20121204
+	Corregido un problema al verificar si se usan posiciones sin inicializar en un arreglo que recibe un subproceso.
+	
 20121122
 	La lista de perfiles de lenguajes incluye íconos.
 	Agregado el perfil COEES.

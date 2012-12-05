@@ -7,7 +7,7 @@ SubProceso prom <- Promedio ( arreglo, cantidad )
 	{Definir suma como Real}{;}
 	suma <- 0{;}
 	Para i<-{1#0} Hasta cantidad{#-1} Hacer
-		 suma <- suma + arreglo[i]{;}
+		suma <- suma + arreglo[i]{;}
 	FinPara
 	prom <- suma/cantidad{;}
 FinSubProceso

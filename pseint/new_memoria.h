@@ -205,7 +205,7 @@ public:
 	}
 	bool EstaInicializada(string nombre) {
 		string nom=nombre; QuitarIndices(nom);
-		if (EsAlias(nombre)) return alias_mem->EstaInicializada(alias_nom);
+		if (EsAlias(nombre,true)) return alias_mem->EstaInicializada(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nom);
 		if (it_info==var_info.end()) return false;
 //		tipo_var &vi=it_info->second;
