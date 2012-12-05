@@ -6,7 +6,7 @@ SubProceso prom <- Promedio ( arreglo, cantidad )
 	{Definir i como Entero}{;}
 	{Definir suma como Real}{;}
 	suma <- 0{;}
-	Para i<-1 Hasta cantidad Hacer
+	Para i<-{1#0} Hasta cantidad{#-1} Hacer
 		 suma <- suma + arreglo[i]{;}
 	FinPara
 	prom <- suma/cantidad{;}
@@ -20,8 +20,8 @@ Proceso Principal
 	Escribir "Ingrese la cantidad de datos:"{;}
 	Leer n{;}
 	
-	Para i<-1 Hasta n Hacer
-		Escribir "Ingrese el dato ",i,":"{;}
+	Para i<-{1#0} Hasta n{#-1} Hacer
+		Escribir "Ingrese el dato ",i{#+1},":"{;}
 		Leer datos[i]{;}
 	FinPara
 	
