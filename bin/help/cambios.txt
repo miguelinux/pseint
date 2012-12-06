@@ -1,3 +1,6 @@
+20121206
+	Mejorado el análisis de condiciones en lenguaje coloquial, y corregidos algunos errores relacionados.
+	
 20121204
 	Corregido un problema al verificar si se usan posiciones sin inicializar en un arreglo que recibe un subproceso.
 	

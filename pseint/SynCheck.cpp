@@ -95,6 +95,7 @@ static void SynCheckAux1(string &cadena) {
 //	}
 }
 
+	
 // reescribir condiciones coloquiales
 static void SynCheckAux2(string &cadena) {
 	if (!cadena.size() || !coloquial_conditions) return;
@@ -108,150 +109,102 @@ static void SynCheckAux2(string &cadena) {
 		}
 	}
 	comillas=-1;
+	
+	struct coloquial_aux {
+		string cond, pre, post, rep;
+		int csize;
+		coloquial_aux(){}
+		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
+	};
+	static coloquial_aux *coloquial_conditions_list=NULL;
+	static int coloquial_conditions_list_size=0;
+	if (!coloquial_conditions_list) {
+		coloquial_conditions_list=new coloquial_aux[200]; int i=0;
+		coloquial_conditions_list[i++]=coloquial_aux(" ES ENTERO ",				"(",	")=TRUNC(",		"<PRE>)"	);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES ENTERA ",				"(",	")=TRUNC(",		"<PRE>)"	);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR A ",			"(",	")<(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR QUE ",			"(",	")<(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR A ",			"(",	")>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR QUE ",			"(",	")>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MAYOR A ",	"(",	")>=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MAYOR QUE ",	"(",	")>=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MENOR A ",	"(",	")<=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MENOR QUE ",	"(",	")<=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR | IGUAL A ",	"(",	")>=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR | IGUAL QUE ",	"(",	")>=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR | IGUAL A ",	"(",	")<=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL A ",			"(",	")=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL QUE ",			"(",	")=(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTO A ",			"(",	")<>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTO DE ",		"(",	")<>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTA A ",			"(",	")<>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTA DE ",		"(",	")<>(",			")"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES PAR ",				"(",	")%2=0 ",		""		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES IMPAR ",				"(",	")%2=1 ",		""		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES POSITIVO ",			"(",	")>0 ",			""			);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES POSITIVA ",			"(",	")>0 ",			""			);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES NEGATIVO ",			"(",	")<0 ",			""			);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES NEGATIVA ",			"(",	")<0 ",			""			);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES CERO ",				"(",	")=0 ",			""			);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES DIVISIBLE POR ",		"(",	") % (",		")=0"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES MULTIPLO DE ",		"(",	") % (",		")=0"		);
+		coloquial_conditions_list[i++]=coloquial_aux(" ES ",					"(",	")=(",			")"		);
+		coloquial_conditions_list_size=i;
+	}
 	for (int y=0;y<int(cadena.size());y++) {
 		if (cadena[y]=='\'' || cadena[y]=='\"') comillas=-comillas;
 		else if (comillas<0) {
-			string pre, post; int nlen=0;
-			if (cadena.substr(y,11)==" ES ENTERO ") {
-				cadena.replace(y,11,")=TRUNC(");
-				pre="("; post="<PRE>)"; nlen=1;
-			} else 
-			if (cadena.substr(y,14)==" ES MENOR QUE ") {
-				cadena.replace(y,14,"<");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,14)==" ES MAYOR QUE ") {
-				cadena.replace(y,14,">");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,12)==" ES MENOR A ") {
-				cadena.replace(y,12,"<");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,12)==" ES MAYOR A ") {
-				cadena.replace(y,12,">");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,20)==" ES IGUAL O MAYOR A ") {
-				cadena.replace(y,20,">=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,20)==" ES IGUAL O MENOR A ") {
-				cadena.replace(y,20,"<=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,22)==" ES IGUAL O MAYOR QUE ") {
-				cadena.replace(y,22,">=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,22)==" ES IGUAL O MENOR QUE ") {
-				cadena.replace(y,22,"<=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,20)==" ES MAYOR O IGUAL A ") {
-				cadena.replace(y,20,">=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,20)==" ES MENOR O IGUAL A ") {
-				cadena.replace(y,20,"<=");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,12)==" ES IGUAL A ") {
-				cadena.replace(y,12,"=");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,14)==" ES IGUAL QUE ") {
-				cadena.replace(y,14,"=");
-				pre="("; post=")"; nlen=1;
-			} else 
-			if (cadena.substr(y,8)==" ES PAR ") {
-				cadena.replace(y,8,")%2=0 ");
-				pre="("; nlen=6;
-			} else 
-			if (cadena.substr(y,10)==" ES IMPAR ") {
-				cadena.replace(y,10,")%2=1 ");
-				pre="("; nlen=6;
-			} else 
-			if (cadena.substr(y,13)==" ES POSITIVO ") {
-				cadena.replace(y,13,")>0 ");
-				pre="("; nlen=4;
-			} else 
-			if (cadena.substr(y,13)==" ES NEGATIVO ") {
-				cadena.replace(y,13,")<0 ");
-				pre="("; nlen=4;
-			} else 
-			if (cadena.substr(y,13)==" ES POSITIVA ") {
-				cadena.replace(y,13,")>0 ");
-				pre="("; nlen=4;
-			} else 
-			if (cadena.substr(y,13)==" ES NEGATIVA ") {
-				cadena.replace(y,13,")<0 ");
-				pre="("; nlen=4;
-			} else 
-			if (cadena.substr(y,9)==" ES CERO ") {
-				cadena.replace(y,9,")=0 ");
-				pre="("; nlen=4;
-			} else 
-			if (cadena.substr(y,16)==" ES DISTINTO DE ") {
-				cadena.replace(y,16,"<>");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,15)==" ES DISTINTO A ") {
-				cadena.replace(y,15,"<>");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,16)==" ES DISTINTA DE ") {
-				cadena.replace(y,16,"<>");
-				pre="("; post=")"; nlen=2;
-			} else 
-			if (cadena.substr(y,18)==" ES DIVISIBLE POR ") {
-				cadena.replace(y,18,") % (");
-				pre="("; post=")=0"; nlen=5;
-			} else 
-			if (cadena.substr(y,16)==" ES MULTIPLO DE ") {
-				cadena.replace(y,16,") % (");
-				pre="("; post=")=0"; nlen=5;
-			} else 
-//			if (cadena.substr(y,7)==" NO ES ") {
-//				cadena.replace(y,7," ES ");
-//				pre="~("; post=")"; nlen=4;
-//			} else 
-			if (cadena.substr(y,6)==" ~ ES ") {
-				cadena.replace(y,6," ES ");
-				pre="~("; post=")"; nlen=4;
-			}
-			else
-			if (cadena.substr(y,4)==" ES ") {
-				cadena.replace(y,4,"=");
-				pre="("; post=")"; nlen=1;
-			}
-			if (pre.size()) {
-				int par=0, com=-1, yold=y--;
-				while ( y>=0 && cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && (par>0||cadena[y]!='(')) {
-					if (cadena[y]=='\''||cadena[y]=='\"') com=-com;
-					else if (com>0) {
-						if (cadena[y]==')') par++;
-						else if (cadena[y]=='(') par--;
+			int cual=-1;
+			if (y+3<int(cadena.size()) && cadena[y]==' '&&cadena[y+1]=='E'&&cadena[y+2]=='S'&&cadena[y+3]==' ') {
+				bool negate=(y>1 && cadena[y-1]=='~' && cadena[y-2]==' ');
+				for(int j=0;j<coloquial_conditions_list_size;j++) { // buscar si coincide con alguna expresion de la lista
+					if (cadena.substr(y,coloquial_conditions_list[j].csize)==coloquial_conditions_list[j].cond) {
+						cual=j;	break;
 					}
-					y--;
 				}
-				cadena.insert(y+1,pre);
-				if (post=="<PRE>") post=cadena.substr(y+1,yold-y+1);
-				else if (post=="<PRE>)") post=cadena.substr(y+2,yold-y);
-				y=yold;
-			}
-			if (post.size()) {
-				int par=0, com=-1, yold=y,l=cadena.size(); y+=nlen+1;
-				while ( y<l && cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && (par>0||cadena[y]!=')') && (comillas>0||(cadena.substr(y,2)!="//"&&cadena.substr(y,10)!=" ENTONCES "&&cadena.substr(y,7)!=" HACER ")) ) {
-					if (cadena[y]=='\''||cadena[y]=='\"') com=-com;
-					else if (com>0) {
-						if (cadena[y]==')') par--;
-						else if (cadena[y]=='(') par++;
+				if (cual!=-1) {
+					if (negate) { cadena.erase(y-2,2); y-=2; }
+					coloquial_aux &col=coloquial_conditions_list[cual];
+					cadena.replace(y,col.csize,col.rep);
+					// si era una expresion coloquial, agregar pre y post antes y despues de los operandos
+					string pre;
+					{
+						int parentesis=0, yold=y--; bool comillas=false;
+						while ( y>=0 && ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!='(') ) ) {
+								if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
+								else if (!comillas) {
+									if (cadena[y]==')') parentesis++;
+									else if (cadena[y]=='(') parentesis--;
+								}
+								y--;
+						}
+						int y2=yold-1; while (y2>y && cadena[y2]==' ') y2--;
+						pre=cadena.substr(y+1,y2-y);
+						if (col.pre.size()) cadena.insert(y+1,col.pre);
+						if (negate) { cadena.insert(y+1,"~"); yold++; }
+						y=yold+col.pre.size();
 					}
-					y++;
+					if (col.post.size()) {
+						int parentesis=0, yold=y,l=cadena.size(); y+=col.rep.size();  bool comillas=false;
+						while ( y<l 
+							&& ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!=')' && cadena[y]!=';'))
+							&& (comillas||(cadena.substr(y,2)!="//"&&cadena.substr(y,10)!=" ENTONCES "&&cadena.substr(y,7)!=" HACER ")) ) {
+								if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
+								else if (!comillas) {
+									if (cadena[y]==')') parentesis--;
+									else if (cadena[y]=='(') parentesis++;
+								}
+								y++;
+						}
+						while (y>yold && cadena[y-1]==' ') y--;
+						string post=col.post;
+						size_t n=post.find("<PRE>");
+						if (n!=string::npos) post.replace(n,5,pre);
+						cadena.insert(y,post);
+						y=yold;
+					}
 				}
-				cadena.insert(y,post);
-				y=yold;
 			}
 		}
 	}
