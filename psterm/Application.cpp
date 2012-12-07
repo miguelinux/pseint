@@ -4,8 +4,6 @@
 IMPLEMENT_APP(mxApplication)
 
 bool mxApplication::OnInit() {
-	new mxFrame;
+	new mxFrame(argv[1]);
 	return true;
 }
-
-

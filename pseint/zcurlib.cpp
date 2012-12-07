@@ -96,6 +96,6 @@ void setTitle(const char* title) {
 }
 
 string getLine() {
-	if (for_pseint_terminal) cerr<<"\033[zl";
+	if (for_pseint_terminal) cout<<"\033[zl";
 	string s; getline(cin,s); return s;
 }

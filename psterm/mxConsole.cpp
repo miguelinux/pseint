@@ -48,9 +48,22 @@ mxConsole::mxConsole(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition
 	buffer=NULL;
 	Reset();
 	SetFontSize(12);
-	timer_size->Start(100,true);
-	timer_caret->Start(_CARET_TIME,false);
 }
+
+
+void mxConsole::Reset (bool hard) {
+	if (hard) input_history.Clear();
+	if (hard) current_input="";
+	wait_one_key=false;
+	input_history_position=0;
+	history=""; last_clear=0; 
+	cur_x=cur_y=0;
+	bg=0; cur_fg=15;
+	blinking_caret_aux=false;
+	caret_visible=true;
+	Clear(false);
+}
+
 
 void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) return;
@@ -86,10 +99,23 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 	if (the_process) {
 		wxOutputStream *output=the_process->GetOutputStream();
 		char c=char(event.GetKeyCode());
-		if (c=='\r') c='\n';
-		output->Write(&c,1);
-		Print(wxString()<<c);
-		Refresh();
+		if (wait_one_key) {
+		 	wait_one_key=false;
+			RecordInput(wxString()<<c);
+			output->Write(&c,1);
+		} else {
+			if (c=='\r'||c=='\n') { 
+				RecordInput(current_input+"\n");
+				c='\n';
+			} else if (c=='\b') {
+				if (!current_input.Len()) return;
+				current_input.RemoveLast();
+			} else
+				current_input<<c;
+			output->Write(&c,1);
+			Print(wxString()<<c);
+			Refresh();
+		}
 	}
 }
 
@@ -145,14 +171,6 @@ void mxConsole::ShowCaret (bool show, bool record) {
 	}
 }
 
-wxString mxConsole::GetInput ( ) {
-	
-}
-
-void mxConsole::WaitForKey ( ) {
-	
-}
-
 void mxConsole::Clear (bool record) {
 	if (record) {
 		history<<"\033[2J";
@@ -170,7 +188,28 @@ void mxConsole::Process (wxString input, bool record) {
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i-i0) Print(input.Mid(i0,i-i0),record);	
-			if (input[i+2]=='2' && input[i+3]=='J') {
+			if (input[i+2]=='z' && input[i+3]=='k') { // getKey
+				if (input_history_position>=input_history.GetCount()) { 
+					wait_one_key=true;
+				} else {
+					wxString aux=input_history[input_history_position++];
+					wxOutputStream *output=the_process->GetOutputStream();
+					output->Write(aux.c_str(),aux.Len());
+				}
+				i+=3;
+			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
+				if (input_history_position>=input_history.GetCount()) { 
+					wxOutputStream *output=the_process->GetOutputStream();
+					output->Write(current_input.c_str(),current_input.Len());
+					Print(current_input);
+				} else {
+					wxString aux=input_history[input_history_position++];
+					wxOutputStream *output=the_process->GetOutputStream();
+					output->Write(aux.c_str(),aux.Len());
+					Print(aux);
+				}
+				i+=3;
+			} else if (input[i+2]=='2' && input[i+3]=='J') {
 				Clear(record); i+=3;
 			} else if (input[i+2]=='?' && input[i+3]=='2' && input[i+4]=='5' && input[i+5]=='l') {
 				ShowCaret(false,record); i+=5;
@@ -213,15 +252,6 @@ void mxConsole::Process (wxString input, bool record) {
 	if (i-i0) Print(input.Mid(i0,i0-i),record);	
 }
 
-void mxConsole::Reset ( ) {
-	history=""; last_clear=0; 
-	cur_x=cur_y=0;
-	bg=0; cur_fg=15;
-	blinking_caret_aux=false;
-	caret_visible=true;
-	Clear(false);
-}
-
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
 	blinking_caret_aux=!blinking_caret_aux;
 	Refresh();
@@ -240,15 +270,18 @@ void mxConsole::OnTimerSize (wxTimerEvent & event) {
 }
 
 void mxConsole::Run (wxString command) {
-	Reset();
-	if (the_process) { 
-		the_process->Kill(the_process_pid,wxSIGKILL);
-		the_process->Detach();
-	}
+	this->command=command;
+	KillProcess();
 	the_process=new wxProcess(this->GetEventHandler(),wxID_ANY);
 	the_process->Redirect();
 	the_process_pid=wxExecute(command,wxEXEC_ASYNC,the_process);
-	if (the_process_pid>0) timer_process->Start(_PROCESS_TIME,false);
+	if (the_process_pid>0) {
+		timer_caret->Start(_CARET_TIME,false);
+		timer_process->Start(_PROCESS_TIME,false);
+	} else {
+		delete the_process;
+		the_process=NULL;
+	}
 }
 
 void mxConsole::OnTimerProcess (wxTimerEvent & event) {
@@ -279,4 +312,26 @@ void mxConsole::GotoXY (int x, int y, bool record) {
 	cur_x=x; if (x>=buffer_w) x=buffer_w;
 	cur_y=y; if (y>=buffer_h) y=buffer_h;
 }
+
+void mxConsole::Reload ( ) {
+	KillProcess();
+	Reset(false);
+	Run(command);
+}
+
+void mxConsole::KillProcess ( ) {
+	if (the_process) { 
+		the_process->Kill(the_process_pid,wxSIGKILL);
+		the_process->Detach();
+	}
+	the_process=NULL;
+}
+
+void mxConsole::RecordInput (wxString input) {
+	if (input_history_position==input_history.GetCount()) 
+		input_history_position++;
+	input_history.Add(input);
+	current_input.Clear();
+}
+
 
