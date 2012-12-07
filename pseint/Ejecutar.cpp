@@ -144,7 +144,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
 						_sub_wait();
 					} else {
-						getline(cin,aux1);  
+						aux1=getLine();  
 					}
 					
 					fixwincharset(aux1,true); // "descorrige" para que al corregir no traiga problemas

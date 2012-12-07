@@ -33,6 +33,7 @@ extern bool real_time_syntax; // indica que espera eternamente codigo desde std,
 extern bool force_integer_indexes; // indica que setea como numericas y enteras todas las variables que intervienen en una expresion indice de un arreglo, para psexport por ahora
 extern bool enable_user_functions; // habilita la definicion de subprocesos
 extern bool subtitles_on; // habilita la definicion de subprocesos
+extern bool for_pseint_terminal; // habilita algunas secuencias de escape adicionales para usar en la terminal propia
 
 #define COLOR_INFO COLOR_LBLUE
 #define COLOR_ERROR COLOR_LRED

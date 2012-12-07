@@ -27,3 +27,4 @@ bool force_integer_indexes=false;
 bool enable_user_functions=true;
 bool remembar_case=false;
 bool subtitles_on=false;
+bool for_pseint_terminal=false;

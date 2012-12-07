@@ -137,6 +137,8 @@ int main(int argc, char* argv[]) {
 				return 0;
 			} else if (str=="--forrealtimesyntax") {
 				real_time_syntax=true;
+			} else if (str=="--forpseintterminal") {
+				for_pseint_terminal=true;
 			} else 
 				error=true;
 		} else {
