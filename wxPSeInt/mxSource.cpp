@@ -30,7 +30,7 @@ const wxChar *mxSourceWords1_extra =
 	_T("es sies opcion caso desde imprimir cada mostrar opción ");
 
 const wxChar *mxSourceWords1_conds =
-	_T("es par impar igual divisible multiplo distinto de por cero positivo negativo negativa positiva entero mayor menor ");
+	_T("es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ");
 
 const wxChar *mxSourceWords1_funcs =
 	_T("subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ");
@@ -955,7 +955,9 @@ void mxSource::SetAutocompletion() {
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero"));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Igual A"),_T("Es Igual A "));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Impar"),_T("Es Impar"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor O Igual A"),_T("Es Mayor O Igual A "));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor Que"),_T("Es Mayor Que "));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor O Igual A"),_T("Es Menor O Igual A "));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor Que"),_T("Es Menor Que "));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Multiplo De"),_T("Es Multiplo De "));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"));

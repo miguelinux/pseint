@@ -1,3 +1,5 @@
+>>RELEASE 20121206<<
+
 20121206
 	Mejorado el análisis de condiciones en lenguaje coloquial, y corregidos algunos errores relacionados.
 	
