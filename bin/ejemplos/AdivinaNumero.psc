@@ -5,7 +5,7 @@
 Proceso Adivina_Numero
 
 	{Definir intentos,num_secreto,num_ingresado Como Entero}{;}
-	intentos<-9{;}
+	intentos<-10{;}
 	num_secreto <- azar(100)+1{;}
 	
 	Escribir "Adivine el numero (de 1 a 100):"{;}
@@ -16,9 +16,9 @@ Proceso Adivina_Numero
 		Sino 
 			Escribir "Muy alto"{;}
 		FinSi
+		intentos <- intentos-1{;}
 		Escribir "Le quedan ",intentos," intentos:"{;}
 		Leer num_ingresado{;}
-		intentos <- intentos-1{;}
 	FinMientras
 	
 	Si intentos=0 Entonces
