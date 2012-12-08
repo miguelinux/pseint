@@ -1,17 +1,18 @@
+#include <wx/clipbrd.h>
+#include <wx/process.h>
+#include <wx/socket.h>
+#include <iostream>
+#include <vector>
+using namespace std;
 #include "mxSource.h"
+#include "mxStatusBar.h"
 #include "ConfigManager.h"
 #include "ids.h"
 #include "mxProcess.h"
 #include "mxDropTarget.h"
 #include "DebugManager.h"
-#include <wx/clipbrd.h>
-#include <iostream>
-#include <wx/process.h>
-#include <wx/socket.h>
 #include "mxMainWindow.h"
-#include <vector>
 #include "RTSyntaxManager.h"
-using namespace std;
 
 #define RT_DELAY 1000
 
@@ -154,9 +155,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	SetDropTarget(new mxDropTarget());
 	
 	if (is_example) SetReadOnly(true);
-	
 	rt_timer = new wxTimer(GetEventHandler());
 	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnRealTimeSyntaxTimer),NULL,this);
+	
+	SetStatus(is_example?STATUS_EXAMPLE:STATUS_WELCOME);
 	
 	SetMouseDwellTime(500);
 	
@@ -532,6 +534,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 }
 
 void mxSource::SetModify (bool modif) {
+	status_should_change=true;
 	if (is_example) return;
 	if (modif) {
 		bool ro=GetReadOnly();
@@ -630,7 +633,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 
 void mxSource::UnHighLightBlock() {
 	if (blocks_markers.GetCount()) {
-		for(int i=0;i<blocks_markers.GetCount();i++) MarkerDeleteHandle(blocks_markers[i]);
+		for(unsigned int i=0;i<blocks_markers.GetCount();i++) MarkerDeleteHandle(blocks_markers[i]);
 		blocks_markers.Clear();
 	}
 }
@@ -638,11 +641,11 @@ void mxSource::UnHighLightBlock() {
 void mxSource::HighLightBlock() {
 	unsigned int l=GetCurrentLine(), nl=GetLineCount();
 	if (blocks.GetCount()>l && blocks[l]!=-1) {
-		for(int i=l;i<=blocks[l];i++)
+		for(unsigned int i=l;i<=blocks[l];i++)
 			if (i>=0 && i<nl) 
 				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
 	} else if (blocks_reverse.GetCount()>l && blocks_reverse[l]!=-1) {
-		for(int i=blocks_reverse[l];i<=l;i++)
+		for(unsigned int i=blocks_reverse[l];i<=l;i++)
 			if (i>=0 && i<nl) 
 				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
 	}
@@ -888,7 +891,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
 						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
 						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO")||word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION") {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION")) {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
@@ -1132,6 +1135,7 @@ void mxSource::SelectInstruccion (int _l, int _i) {
 
 void mxSource::DoRealTimeSyntax ( ) {
 	RTSyntaxManager::Process(this);
+	SetStatus();
 }
 
 void mxSource::ClearErrors() {
@@ -1206,7 +1210,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	// ver que dice la siguiente para que no coincida con lo que vamos a agregar
 	wxString sl2=i2<i1?"":GetLine(l2); sl2.MakeUpper(); 
 	int i=0, sl=sl2.Len(); 
-	while (i<sl && sl2[i]==' '||sl2[i]=='\t')i++;
+	while (i<sl && (sl2[i]==' '||sl2[i]=='\t'))i++;
 	if (i) sl2.Remove(0,i);
 	// agregar FinAlgo
 	if (btype==BT_PROCESO) {
@@ -1266,10 +1270,10 @@ void mxSource::HighLight(wxString words) {
 }
 
 void mxSource::ClearBlocks ( ) {
-	for(int i=0;i<blocks.GetCount();i++) { 
+	for(unsigned int i=0;i<blocks.GetCount();i++) { 
 		blocks[i]=-1;
 	}
-	for(int i=0;i<blocks_reverse.GetCount();i++) { 
+	for(unsigned int i=0;i<blocks_reverse.GetCount();i++) { 
 		blocks_reverse[i]=-1;
 	}
 }
@@ -1280,5 +1284,22 @@ void mxSource::AddBlock (int l1, int l2) {
 	blocks[l1]=l2;
 	while (blocks_reverse.GetCount()<=l2) blocks_reverse.Add(-1);
 	blocks_reverse[l2]=l1;
+}
+
+void mxSource::SetStatus (int cual) {
+	
+	if (cual!=-1) {
+		status_should_change=true;
+		status_bar->SetStatus(status=cual);
+	}
+	
+	// no pasa nada, edicion normal...
+	if (!status_should_change) return;
+	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
+		if (rt_errors.GetCount()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
+		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
+	} else // ...sin verificacion de sintaxis en tiempo real
+		status_bar->SetStatus(status=STATUS_NO_RTSYNTAX);
+	
 }
 

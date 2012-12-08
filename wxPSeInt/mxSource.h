@@ -1,17 +1,16 @@
 #ifndef MXSOURCE_H
 #define MXSOURCE_H
 #include <wx/stc/stc.h>
-
-#define mxSOURCE_BOLD 1
-#define mxSOURCE_ITALIC 2
-#define mxSOURCE_UNDERL 4
-#define mxSOURCE_HIDDEN 8
-
 #include <vector>
 using namespace std;
 class mxInputDialog;
 class mxProcess;
 class wxSocketBase;
+
+#define mxSOURCE_BOLD 1
+#define mxSOURCE_ITALIC 2
+#define mxSOURCE_UNDERL 4
+#define mxSOURCE_HIDDEN 8
 
 enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_PROCESO,BT_SUBPROCESO,BT_FUNCION};
 
@@ -28,6 +27,8 @@ private:
 	wxString page_text;
 	wxArrayString rt_errors;
 	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
+	int status; // estado actual para este fuente
+	bool status_should_change; // para no cambiar ciertos estados hasta que no se modifique el pseudocódigo
 	
 public:
 	mxInputDialog *input;
@@ -118,6 +119,8 @@ public:
 	void AddBlock(int l1, int l2); // registra un bloque que va desde l1 a l2 en blocks y blocks_reverse, lo llama el rt_syntax)
 	void UnHighLightBlock(); // borra el resaltado
 	void HighLightBlock(); // resalta el bloque de la linea actual si es que hay y el rt_syntax no tiene trabajo pendiente
+	
+	void SetStatus(int cual=-1);
 	
 	DECLARE_EVENT_TABLE();
 };

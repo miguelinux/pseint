@@ -1,4 +1,3 @@
-#include <wx/statusbr.h>
 #include <wx/menu.h>
 #include <wx/aui/auibook.h>
 #include <wx/toolbar.h>
@@ -38,6 +37,7 @@
 #include "mxVarWindow.h"
 #include "mxDebugWindow.h"
 #include "mxSubtitles.h"
+#include "mxStatusBar.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -192,7 +192,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	CreateNotebook();
 	CreateResultsTree();
 	CreateQuickHelp();
-	CreateStatusBar(2,0);
+	CreateStatusBar();
 	
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
 	aui_manager.Update();
@@ -423,20 +423,9 @@ void mxMainWindow::CreateNotebook() {
 	aui_manager.AddPane(notebook, wxAuiPaneInfo().Name(_T("notebook_sources")).CenterPane().PaneBorder(false));
 }
 
-wxStatusBar* mxMainWindow::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name) {
-	status_bar = new wxStatusBar(this, id, style, name);
-	int sz[2]={-75,100};
-	status_bar->SetFieldsCount(number,sz);
-	
-	wxTextFile fil(_T("version"));
-	if (fil.Exists()) {
-		fil.Open();
-		status_bar->SetStatusText(wxString(_T(" v"))<<fil.GetFirstLine(),1);
-		fil.Close();
-	} else {
-		status_bar->SetStatusText(_T("version desconocida"),1);
-	}
-	return status_bar;
+void mxMainWindow::CreateStatusBar() {
+	status_bar=new mxStatusBar(this);
+	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(20,20).PaneBorder(false)	);
 }
 
 mxSource *mxMainWindow::NewProgram() {
@@ -1426,7 +1415,12 @@ mxSource * mxMainWindow::GetCurrentSource ( ) {
 void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 	event.Skip(); 
 	// para que se actualice la lista de variables
-	if (config->rt_syntax && notebook->GetPageCount()) ((mxSource*)(notebook->GetPage(notebook->GetSelection())))->StartRTSyntaxChecking();
+	if (config->rt_syntax && notebook->GetPageCount()) {
+		mxSource *src=CURRENT_SOURCE;
+		src->SetStatus();
+		src->StartRTSyntaxChecking();
+	} else
+		status_bar->SetStatus(STATUS_WELCOME);
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {

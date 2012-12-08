@@ -26,7 +26,6 @@ private:
 	wxTreeCtrl *results_tree;
 	wxTreeItemId results_root;
 	int last_proc;
-	wxStatusBar *status_bar;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
 	wxPanel *commands;
@@ -40,7 +39,7 @@ private:
 	void CreateQuickHelp();
 	void CreateCommandsPanel();
 	void CreateDebugControlsPanel();
-	wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
+	void CreateStatusBar();
 	wxAuiNotebook *notebook; 
 	wxButton *button_subproc;
 public:

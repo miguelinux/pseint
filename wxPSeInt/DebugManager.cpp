@@ -220,3 +220,5 @@ void DebugManager::SetSubtitles(bool b) {
 		socket->Write(str.c_str(),str.Len());
 	}
 }
+
+
