@@ -944,7 +944,10 @@ int SynCheck(int linea_from, int linea_to) {
 								str.erase(0,tmp3);
 								if (str.find("(",0)==string::npos) {
 									if (!CheckVariable(str,48)) errores++;
-									else memoria->DefinirTipo(str,tipo_def);
+									else {
+										if (memoria->EsArgumento(str)) { SynError (222,"No debe redefinir el tipo de un argumento."); errores++; }
+										memoria->DefinirTipo(str,tipo_def);
+									}
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
 									SynError (212,string("No debe utilizar subindices (")+str+")."); errores++;
@@ -1028,6 +1031,7 @@ int SynCheck(int linea_from, int linea_to) {
 								string aname;
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
 								if (!CheckVariable(str,60)) errores++;
+								if (memoria->EsArgumento(str)) { SynError (223,"No debe redimensionar un argumento."); errores++; }
 								else aname=str; // para que aparezca en la lista de variables
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
