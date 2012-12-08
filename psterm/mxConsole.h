@@ -70,6 +70,7 @@ public:
 	void Clear(bool record=true);
 	void GotoXY(int x, int y, bool record=true);
 	void Reset(bool hard=false);
+	
 };
 
 #endif

@@ -137,7 +137,6 @@ void mxProfile::OnOptionsButton(wxCommandEvent &evt) {
 }
 
 void mxProfile::LoadProfile() {
-#warning NO FUNCIONA EN WINDOWS
 	if (text) text->SetValue(config->LoadProfile(GetListSelection()));
 }
 

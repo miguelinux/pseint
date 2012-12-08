@@ -702,3 +702,13 @@
 221
   La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
   * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.
+
+222
+  Los argumentos de un subproceso serán definidos por el proceso/subproceso que realice la llamada, y por lo tanto el subproceso los recibirá con un tipo ya definido. Es por esto que no debe volver a definir el tipo de una variable que es argumento otra vez dentro del subproceso.
+  * Elimine la definición de tipo del parámetro formal del interior del subproceso.
+  * Verifique que la variable que actúe como parámetro actual (en la llamada) se encuentre definida previamente.
+
+223
+  Los argumentos de un subproceso serán dimensionados por el proceso/subproceso que realice la llamada, y por lo tanto el subproceso los recibirá con un tipo ya dimensionados. Es por esto que no debe volver a dimensionar el tipo de una variable que es argumento otra vez dentro del subproceso.
+  * Elimine la instrucción de dimensión del parámetro formal del interior del subproceso.
+  * Verifique que el arreglo que actúe como parámetro actual (en la llamada) se encuentre definida dimensionado.

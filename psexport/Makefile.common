@@ -1,4 +1,4 @@
-OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/export_cpp.o ${OBJS_DIR}/exportexp.o ${OBJS_DIR}/export_chooser.o 
+OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/export_cpp.o ${OBJS_DIR}/exportexp.o ${OBJS_DIR}/export_chooser.o ${OBJS_DIR}/zcurlib_lnx.o ${OBJS_DIR}/zcurlib_win.o 
 
 ${OBJS_DIR}/psexport.o: psexport.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/global.h defines.h version.h export_chooser.h
 	${GPP} ${FLAGS} -c psexport.cpp -o $@
@@ -12,7 +12,7 @@ ${OBJS_DIR}/global.o: ../pseint/global.cpp ../pseint/global.h
 ${OBJS_DIR}/intercambio.o: ../pseint/intercambio.cpp ../pseint/intercambio.h ../pseint/zockets.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/global.h ../pseint/SynCheck.h
 	${GPP} ${FLAGS} -c ../pseint/intercambio.cpp -o $@
 
-${OBJS_DIR}/zcurlib.o: ../pseint/zcurlib.cpp ../pseint/zcurlib.h
+${OBJS_DIR}/zcurlib.o: ../pseint/zcurlib.cpp ../pseint/global.h
 	${GPP} ${FLAGS} -c ../pseint/zcurlib.cpp -o $@
 
 ${OBJS_DIR}/new_evaluar.o: ../pseint/new_evaluar.cpp ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/global.h ../pseint/new_funciones.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/Ejecutar.h
@@ -35,4 +35,10 @@ ${OBJS_DIR}/exportexp.o: exportexp.cpp ../pseint/utils.h ../pseint/new_memoria.h
 
 ${OBJS_DIR}/export_chooser.o: export_chooser.cpp export_chooser.h defines.h export_cpp.h
 	${GPP} ${FLAGS} -c export_chooser.cpp -o $@
+
+${OBJS_DIR}/zcurlib_lnx.o: zcurlib_lnx.cpp ../pseint/zcurlib.h
+	${GPP} ${FLAGS} -c zcurlib_lnx.cpp -o $@
+
+${OBJS_DIR}/zcurlib_win.o: zcurlib_win.cpp ../pseint/zcurlib.h
+	${GPP} ${FLAGS} -c zcurlib_win.cpp -o $@
 
