@@ -1109,12 +1109,14 @@ int SynCheck(int linea_from, int linea_to) {
 									if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 									if (memoria->LeerTipo(str).dims) SynError(999,"Faltan subindices para el arreglo ("+str+").");
 								}
-							} else {
+							} else if (!memoria->EsArgumento(str.substr(0,str.find("(",0)))) {
 								bool name_ok=true;
 								string aname=str.substr(0,str.find("(",0));
 								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
 								else if (!memoria->EstaDefinida(aname)) memoria->DefinirTipo(aname,vt_desconocido); // para que aparezca en la lista de variables
-								if (!memoria->LeerTipo(aname).dims) { SynError(999,"La variable ("+aname+") no es un arreglo."); name_ok=false; }
+								if (!memoria->LeerTipo(aname).dims) { 
+									SynError(999,"La variable ("+aname+") no es un arreglo."); name_ok=false;
+								}
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
 								str.erase(0,tmp3);
