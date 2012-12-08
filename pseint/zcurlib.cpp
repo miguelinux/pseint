@@ -22,7 +22,7 @@ void win_setTitle(const char* title);
 
 void setBackColor(int color) {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_setBackColor(color);
 	else
 #endif
@@ -31,7 +31,7 @@ void setBackColor(int color) {
 
 void setForeColor(int color) {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_setForeColor(color);
 	else
 #endif
@@ -40,7 +40,7 @@ void setForeColor(int color) {
 
 void clrscr() {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_clrscr();
 	else
 #endif
@@ -49,7 +49,7 @@ void clrscr() {
 
 void gotoXY(int x, int y) {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_gotoXY(x,y);
 	else
 #endif
@@ -57,21 +57,21 @@ void gotoXY(int x, int y) {
 }
 
 int getKey(void) {
-	if (for_pseint_terminal)
+	if (for_pseint_terminal) {
+		cout<<"\033[zk";
+		return cin.get();
+	} else {
 #ifdef __WIN32__
 		return win_getKey();
 #else
 		return lnx_getKey();
 #endif
-	else {
-		cout<<"\033[zk";
-		return cin.get();
 	}
 }
 
 void hideCursor() {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_hideCursor();
 	else
 #endif
@@ -79,7 +79,7 @@ void hideCursor() {
 }
 void showCursor() {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_showCursor();
 	else
 #endif
@@ -88,7 +88,7 @@ void showCursor() {
 
 void setTitle(const char* title) {
 #ifdef __WIN32__
-	if (for_pseint_terminal)
+	if (!for_pseint_terminal)
 		win_setTitle(title);
 	else
 #endif
