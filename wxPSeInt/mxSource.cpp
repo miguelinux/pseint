@@ -48,6 +48,7 @@ const wxChar* mxSourceWords2_string =
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK};
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
+	EVT_STC_CHANGE(wxID_ANY,mxSource::OnModify)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
 	EVT_STC_USERLISTSELECTION (wxID_ANY, mxSource::OnUserListSelection)
@@ -94,7 +95,7 @@ static bool EsLetra(const char &c) {
 		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ';
 }
 
-mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool ais_example) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
+mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
 // se modifica en launcher.txt en lugar de aca, para nadie use utf8 y entonces se vea igual en todos lados y tampoco tenga que convertir los ejemplos
   // #ifndef __WIN32__
@@ -113,7 +114,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	page_text=ptext;
 	
 	last_s1=last_s2=0;
-	is_example=ais_example;
+	is_example=false;
 	
 	filename = afilename;
 	sin_titulo = filename==wxEmptyString;
@@ -154,11 +155,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename, bool a
 	
 	SetDropTarget(new mxDropTarget());
 	
-	if (is_example) SetReadOnly(true);
 	rt_timer = new wxTimer(GetEventHandler());
 	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnRealTimeSyntaxTimer),NULL,this);
 	
-	SetStatus(is_example?STATUS_EXAMPLE:STATUS_WELCOME);
+	SetStatus(STATUS_NEW_SOURCE);
 	
 	SetMouseDwellTime(500);
 	
@@ -534,7 +534,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 }
 
 void mxSource::SetModify (bool modif) {
-	status_should_change=true;
 	if (is_example) return;
 	if (modif) {
 		bool ro=GetReadOnly();
@@ -639,13 +638,13 @@ void mxSource::UnHighLightBlock() {
 }
 
 void mxSource::HighLightBlock() {
-	unsigned int l=GetCurrentLine(), nl=GetLineCount();
-	if (blocks.GetCount()>l && blocks[l]!=-1) {
-		for(unsigned int i=l;i<=blocks[l];i++)
+	int l=GetCurrentLine(), nl=GetLineCount();
+	if (int(blocks.GetCount())>l && blocks[l]!=-1) {
+		for(int i=l;i<=blocks[l];i++)
 			if (i>=0 && i<nl) 
 				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
-	} else if (blocks_reverse.GetCount()>l && blocks_reverse[l]!=-1) {
-		for(unsigned int i=blocks_reverse[l];i<=l;i++)
+	} else if (int(blocks_reverse.GetCount())>l && blocks_reverse[l]!=-1) {
+		for(int i=blocks_reverse[l];i<=l;i++)
 			if (i>=0 && i<nl) 
 				blocks_markers.Add(MarkerAdd(i,MARKER_BLOCK_HIGHLIGHT));
 	}
@@ -778,6 +777,7 @@ void mxSource::SetExample() {
 	SetText(total);
 	SetReadOnly(sin_titulo=is_example=true);
 	SetSavePoint();
+//	SetStatus(STATUS_EXAMPLE); // lo hace el main despues de cargarle el contenido para que se mantenga el status_should_change=false
 }
 
 void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
@@ -1017,6 +1017,7 @@ void mxSource::SetAutocompletion() {
 void mxSource::EditFlow ( mxProcess *proc, int id ) {
 	flow=proc; flow_id=id;
 	SetReadOnly(proc!=NULL||is_example);
+	if (flow) SetStatus(STATUS_FLOW); else { status_should_change=true; SetStatus(); }
 }
 
 int mxSource::GetFlowId() { 
@@ -1280,26 +1281,33 @@ void mxSource::ClearBlocks ( ) {
 
 void mxSource::AddBlock (int l1, int l2) {
 	if (l1<0||l2<0) return;
-	while (blocks.GetCount()<=l1) blocks.Add(-1);
+	while (int(blocks.GetCount())<=l1) blocks.Add(-1);
 	blocks[l1]=l2;
-	while (blocks_reverse.GetCount()<=l2) blocks_reverse.Add(-1);
+	while (int(blocks_reverse.GetCount())<=l2) blocks_reverse.Add(-1);
 	blocks_reverse[l2]=l1;
 }
 
 void mxSource::SetStatus (int cual) {
 	
 	if (cual!=-1) {
-		status_should_change=true;
+		status_should_change=false;
 		status_bar->SetStatus(status=cual);
 	}
 	
 	// no pasa nada, edicion normal...
-	if (!status_should_change) return;
+	if (!status_should_change) { // si se habia definido un estado externo (por main window, o por debug panel por ejemplo), se mantiene hasta que alguien modifique el pseudocodigo
+		status_bar->SetStatus(status);
+		return;
+	}
 	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
 		if (rt_errors.GetCount()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
 		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
 	} else // ...sin verificacion de sintaxis en tiempo real
 		status_bar->SetStatus(status=STATUS_NO_RTSYNTAX);
 	
+}
+
+void mxSource::OnModify (wxStyledTextEvent & event) {
+	status_should_change=true; event.Skip();
 }
 

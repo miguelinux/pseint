@@ -1,9 +1,10 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include "mxDebugWindow.h"
-#include "ids.h"
 #include <wx/button.h>
 #include <wx/scrolbar.h>
+#include "mxDebugWindow.h"
+#include "mxStatusBar.h"
+#include "ids.h"
 #include "DebugManager.h"
 #include "mxMainWindow.h"
 #include "ConfigManager.h"
@@ -66,7 +67,6 @@ void mxDebugWindow::SetSpeed(int speed) {
 }
 
 void mxDebugWindow::SetState(ds_enum state) {
-	ds_state = state;
 	switch (state) {
 	case DS_STARTING:
 		dp_button_run->SetLabel(_T("Finalizar"));
@@ -93,6 +93,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_evaluate->Disable();
 		dp_button_step->Enable();
 		dp_button_pause->Disable();
+		if (debug&&debug->source) if (!ds_state==DS_FINALIZED) debug->source->SetStatus(STATUS_DEBUG_STOPPED);
 //		debug_status->SetLabel(_T("No Iniciada"));
 		break;
 	case DS_FINALIZED:
@@ -102,7 +103,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_run->SetToolTip(utils->FixTooltip("Ha finalizado la ejecución del algoritmo. Utilice este botón para cerrar la ventana de la ejecución del mismo."));
 		dp_button_pause->Disable();
 		dp_button_step->Disable();
-//		debug_status->SetLabel(_T("Finalizada"));
+		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_ENDED);
 		break;
 	case DS_PAUSED:
 		dp_button_step->Enable();
@@ -111,7 +112,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_pause->SetLabel(_T("Continuar"));
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para que el algoritmo continúe avanzando paso a paso automáticamente."));
 		dp_button_evaluate->Enable();
-//		debug_status->SetLabel(_T("Pausado"));
+		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_PAUSED);
 		break;
 	case DS_RESUMED:
 		dp_button_step->Disable();
@@ -120,18 +121,19 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_pause->SetLabel(_T("Pausar"));
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para detener temporalmente la ejecución del algoritmo. Al detener el algoritmo puede observar el valor de las variables con el botón Evaluar."));
 		dp_button_evaluate->Disable();
-//		debug_status->SetLabel(_T("Ejecutando"));
+		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_RUNNING);
 		break;
 	case DS_STEP:
 		dp_button_pause->Disable();
 		dp_button_evaluate->Disable();
 		dp_button_step->Disable();
 		subtitles->button_next->Disable();
-//		debug_status->SetLabel(_T("Ejecutando"));
+		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_RUNNING);
 		break;
 //	case DS_NONE:
 //		debug_status->SetLabel(_T("Desconocido"));
 	}
+	ds_state = state;
 }
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {

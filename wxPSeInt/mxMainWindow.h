@@ -163,6 +163,8 @@ public:
 	
 	void CheckIfNeedsRTS();
 	
+	void ShowDebugPanel(bool show);
+	void ShowCommandsPanel(bool show);
 	void ShowResults(bool show, bool no_error=true);
 	void ShowQuickHelp(bool show, wxString text="", bool load=false);
 	void ShowSubtitles(bool show);

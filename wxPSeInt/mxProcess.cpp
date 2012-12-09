@@ -4,6 +4,7 @@
 
 #include <wx/arrstr.h>
 #include "mxMainWindow.h"
+#include "mxStatusBar.h"
 #include <wx/textfile.h>
 #include "DebugManager.h"
 #include <wx/filename.h>
@@ -91,6 +92,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 	main_window->last_source = source;
 	
 	if (output.GetCount()) {
+		source->SetStatus(STATUS_SYNTAX_CHECK_ERROR);
 		main_window->ShowResults(true,false);
 		if (output.GetCount()==1)
 			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Incorrecta: un error."));
@@ -104,6 +106,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 		main_window->Raise();
 		proc_for_killing = this;
 	} else {
+		source->SetStatus(STATUS_SYNTAX_CHECK_OK);
 		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
 		main_window->HideQuickHelp();
 		if (what==mxPW_CHECK_AND_RUN)
@@ -174,7 +177,6 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxString command;
 	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<config->GetTempPSD()<<_T("\"");
-//	if (config->high_res_flows) command<<_T(" +");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -236,6 +238,7 @@ void mxProcess::ReadOut() {
 				if (str.Contains(_T("Finalizada"))) {
 					happy_ending=true;
 					main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Finalizada"));
+					source->SetStatus(STATUS_RUNNED_OK);
 				}
 			} else {
 				if (str.Len())
@@ -245,6 +248,7 @@ void mxProcess::ReadOut() {
 		fil.Close();
 		wxRemoveFile(temp);
 		if (!happy_ending) {
+			source->SetStatus(STATUS_RUNNED_INT);
 			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Interrumpida"));
 			main_window->SelectFirstError();
 			wxTreeItemIdValue v;

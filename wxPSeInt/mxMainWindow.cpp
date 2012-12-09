@@ -436,6 +436,7 @@ mxSource *mxMainWindow::NewProgram() {
 	source->SetSelection(20,20);
 	source->SetModify(false);
 	source->SetFocus();
+	source->SetStatus(STATUS_NEW_SOURCE);
 	return source;
 }
 
@@ -547,6 +548,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool history) {
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
 	source->LoadFile(path); if (config->rt_syntax) source->DoRealTimeSyntax();
+	source->SetStatus(STATUS_NEW_SOURCE);
 	return source;
 }
 
@@ -933,7 +935,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		source->SetSelectionStart(source->GetLineIndentPosition(oline));
 		source->SetSelectionEnd(source->GetLineEndPosition(line-1));
 		source->SetFocus();
-		
+		source->SetStatus(STATUS_COMMAND);
 	}
 }
 void mxMainWindow::OnEditFind (wxCommandEvent &event) {
@@ -1512,5 +1514,21 @@ void mxMainWindow::ShowDesktopTestGrid(bool show, bool one_line) {
 	} else
 		aui_manager.GetPane(desktop_test_grid).Hide();	
 	aui_manager.Update();
+}
+
+void mxMainWindow::ShowDebugPanel (bool show) {
+	if (show!=mi_debug_panel->IsChecked()) {
+		wxCommandEvent evt;
+		mi_debug_panel->Check(show);
+		OnConfigShowDebugPanel(evt);
+	}	
+}
+
+void mxMainWindow::ShowCommandsPanel (bool show) {
+	if (show!=mi_commands->IsChecked()) {
+		wxCommandEvent evt;
+		mi_commands->Check(show);
+		OnConfigShowCommands(evt);
+	}
 }
 

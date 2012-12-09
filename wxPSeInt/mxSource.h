@@ -42,7 +42,7 @@ public:
 	void SetFieldIndicator(int p1, int p2); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();
-	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString, bool ais_example=false);
+	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString);
 	~mxSource();
 	
 	void OnEditCut(wxCommandEvent &evt);
@@ -57,6 +57,7 @@ public:
 	void OnEditSelectAll(wxCommandEvent &evt);
 	void OnEditToggleLinesUp (wxCommandEvent &event);
 	void OnEditToggleLinesDown (wxCommandEvent &event);
+	void OnModify(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
 	void OnCharAdded(wxStyledTextEvent &event);
 	void OnUserListSelection (wxStyledTextEvent &event);

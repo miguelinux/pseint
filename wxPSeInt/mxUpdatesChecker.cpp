@@ -9,6 +9,7 @@
 #include <wx/bitmap.h>
 #include "mxArt.h"
 #include <wx/textfile.h>
+#include "mxStatusBar.h"
 
 BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxUpdatesChecker::OnCloseButton)
@@ -122,7 +123,7 @@ void mxUpdatesChecker::BackgroundCheck() {
 	fil.Write();
 	fil.Close();
 	
-	main_window->GetStatusBar()->SetStatusText(_T("Buscar actualizaciones: Consultando..."));
+	status_bar->SetStatus(STATUS_UPDATE_CHECKING);
 	
 	new mxUpdatesChecker(false);
 }
@@ -132,7 +133,7 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 	wxString temp_file(DIR_PLUS_FILE(config->temp_dir,_T("updatem.res")));
 	wxTextFile fil(temp_file);
 	if (!fil.Exists() || !fil.Open() || !fil.GetLineCount()) {
-		main_window->GetStatusBar()->SetStatusText(_T("Buscar actualizaciones: Error al conectarse al servidor."));
+		status_bar->SetStatus(STATUS_UPDATE_ERROR);
 		text->SetLabel(_T("Error al conectarse al servidor."));
 		GetSizer()->Layout();
 		if (!shown) Destroy();
@@ -141,11 +142,12 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 	}
 	wxString res=fil.GetFirstLine();
 	if (res==_T("nonews")) {
-		main_window->GetStatusBar()->SetStatusText(_T("Buscar actualizaciones: No hay versiones nuevas disponibles."));
+		status_bar->SetStatus(STATUS_UPDATE_NONEWS);
 		text->SetLabel(_T("No hay nuevas versiones disponibles."));
 		GetSizer()->Layout();
 		if (!shown) Destroy();
 	} else if (res==_T("update")) {
+		status_bar->SetStatus(STATUS_UPDATE_FOUND);
 		wxString str;
 		str<<_T("Hay una nueva version disponible en\nhttp://pseint.sourceforge.net (")<<fil.GetNextLine()<<_T(")");
 		text->SetLabel(str);
