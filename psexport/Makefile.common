@@ -36,9 +36,9 @@ ${OBJS_DIR}/exportexp.o: exportexp.cpp ../pseint/utils.h ../pseint/new_memoria.h
 ${OBJS_DIR}/export_chooser.o: export_chooser.cpp export_chooser.h defines.h export_cpp.h
 	${GPP} ${FLAGS} -c export_chooser.cpp -o $@
 
-${OBJS_DIR}/zcurlib_lnx.o: zcurlib_lnx.cpp ../pseint/zcurlib.h
-	${GPP} ${FLAGS} -c zcurlib_lnx.cpp -o $@
+${OBJS_DIR}/zcurlib_lnx.o: ../pseint/zcurlib_lnx.cpp ../pseint/zcurlib.h
+	${GPP} ${FLAGS} -c ../pseint/zcurlib_lnx.cpp -o $@
 
-${OBJS_DIR}/zcurlib_win.o: zcurlib_win.cpp ../pseint/zcurlib.h
-	${GPP} ${FLAGS} -c zcurlib_win.cpp -o $@
+${OBJS_DIR}/zcurlib_win.o: ../pseint/zcurlib_win.cpp ../pseint/zcurlib.h
+	${GPP} ${FLAGS} -c ../pseint/zcurlib_win.cpp -o $@
 
