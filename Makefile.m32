@@ -1,15 +1,17 @@
 all: 
 	make -C pseint -f Makefile.m32
-	make -C psdraw -f Makefile.m32
-#	make -C psdraw2 -f Makefile.m32
 	make -C psexport -f Makefile.m32
 	make -C wxPSeInt -f Makefile.m32
 	make -C updatem -f Makefile.m32
+#	make -C psterm -f Makefile.m32
+#	make -C psdraw2 -f Makefile.m32
+	make -C psdraw -f Makefile.m32
 
 clean: 
 	make -C pseint -f Makefile.m32 clean
-	make -C psdraw -f Makefile.m32 clean
-#	make -C psdraw2 -f Makefile.m32 clean
 	make -C psexport -f Makefile.m32 clean
 	make -C wxPSeInt -f Makefile.m32 clean
 	make -C updatem -f Makefile.m32 clean
+#	make -C psterm -f Makefile.m32 clean
+#	make -C psdraw2 -f Makefile.m32 clean
+	make -C psdraw -f Makefile.m32 clean

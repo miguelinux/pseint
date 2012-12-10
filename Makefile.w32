@@ -3,6 +3,7 @@ all:
 	mingw32-make -C wxPSeInt -f Makefile.w32
 	mingw32-make -C psexport -f Makefile.w32
 	mingw32-make -C updatem -f Makefile.w32
+	mingw32-make -C psterm -f Makefile.w32
 	mingw32-make -C psdraw2 -f Makefile.w32
 	mingw32-make -C psdraw -f Makefile.w32
 
@@ -11,6 +12,7 @@ clean:
 	mingw32-make -C wxPSeInt -f Makefile.w32 clean
 	mingw32-make -C psexport -f Makefile.w32 clean
 	mingw32-make -C updatem -f Makefile.w32 clean
+	mingw32-make -C psterm -f Makefile.w32 clean
 	mingw32-make -C psdraw2 -f Makefile.w32 clean
 	mingw32-make -C psdraw -f Makefile.w32 clean
 

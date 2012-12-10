@@ -36,8 +36,10 @@ GNU/Linux mediante wine.
 Contenido de los directorios:
   pseint: fuentes del interprete (verifica sintaxis e interpreta un algoritmo)
   psdraw: fuentes del graficador (genera y muestra o graba diagramas de flujo)
+  psdraw2: fuentes del editor de diagramas de flujo
   psexport: fuentes del exportador (convierte de pseudocodigo a codigo C++)
   wxPSeInt: fuentes de la nueva interfaz (editor)
+  psterm: fuentes de la terminal que se utiliza para ejecutar desde wxPSeInt
   updatem: fuentes del programa que busca actualizaciones
   test: pseudocódigos con casos de prueba y scripts para correrlos de forma automática
   bin: demas archivos necesarios para ejecutar wxPSeInt (imagenes, documentacion, ayuda, etc).

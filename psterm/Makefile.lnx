@@ -1,0 +1,19 @@
+OBJS_DIR=../temp/trm_lnx_rls
+GPP=g++
+GCC=gcc
+FLAGS= -O2 `wx-config --cppflags --unicode=no`
+LIBS= -s  `wx-config --libs --unicode=no` -lwx_gtk2_stc-2.8 
+
+all: ${OBJS_DIR} ../bin/psterm
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psterm
+
+../bin/psterm: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+
