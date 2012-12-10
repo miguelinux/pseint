@@ -69,7 +69,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 	proc_for_killing=this;
 }
 
-bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
+bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 	
 	if (what==mxPW_NULL) what=mxPW_CHECK;
 	
@@ -107,7 +107,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 		main_window->Raise();
 		proc_for_killing = this;
 	} else {
-		if (source) source->SetStatus(STATUS_SYNTAX_CHECK_OK);
+		if (!source) return false; // si el fuente se cerro mientras se analizaba (muy poco probable)
 		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
 		main_window->HideQuickHelp();
 		if (what==mxPW_CHECK_AND_RUN)
@@ -117,13 +117,15 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 		else if (what==mxPW_CHECK_AND_DRAW)
 			return Draw(file,false);
 		else if (what==mxPW_CHECK_AND_DRAWEDIT)
-			return DrawAndEdit(file,id,false);
+			return DrawAndEdit(file,false);
 		else if (what==mxPW_CHECK_AND_SAVEDRAW)
 			return SaveDraw(file,false);
 		else if (what==mxPW_CHECK_AND_EXPORT)
 			return ExportCpp(file,false);
-		else if (what==mxPW_CHECK)
+		else if (what==mxPW_CHECK) {
+			source->SetStatus(STATUS_SYNTAX_CHECK_OK);
 			main_window->ShowResults(true);
+		}
 	}
 	return output.GetCount()==0;
 }
@@ -181,12 +183,12 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
-bool mxProcess::DrawAndEdit(wxString file, int id, bool check_first) {
+bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,config->GetTempPSD(),id);
+	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxString command;
 	command<<config->psdraw2_command;
-	command<<" --port="<<flow_editor->GetPort()<<" --id="<<id;
+	command<<" --port="<<flow_editor->GetPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (!config->lang.word_operators) command<<" --nowordoperators";

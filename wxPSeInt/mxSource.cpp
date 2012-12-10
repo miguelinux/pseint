@@ -1026,7 +1026,7 @@ void mxSource::SetAutocompletion() {
 	comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"));
 }
 
-void mxSource::EditFlow ( mxProcess *proc, int id ) {
+void mxSource::EditFlow (mxProcess *proc) {
 	flow_process=proc; SetReadOnly(proc!=NULL||is_example);
 	if (flow_process) SetStatus(STATUS_FLOW); else { status_should_change=true; SetStatus(); }
 }

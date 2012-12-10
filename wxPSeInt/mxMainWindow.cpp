@@ -1348,7 +1348,7 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		else {
 			mxProcess *flow=new mxProcess(source);
 			int id=flow_editor->GetNextId();
-			if (flow->DrawAndEdit(fname,id,true)) source->EditFlow(flow,id); else delete flow;
+			if (flow->DrawAndEdit(fname,true)) source->EditFlow(flow); else delete flow;
 		}
 	}	
 }

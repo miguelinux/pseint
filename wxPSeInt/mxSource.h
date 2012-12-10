@@ -80,7 +80,7 @@ public:
 	void OnEditIndentSelection(wxCommandEvent &evt);
 	void OnEditBeautifyCode(wxCommandEvent &evt);
 
-	void EditFlow(mxProcess *proc, int id=-1);
+	void EditFlow(mxProcess *proc);
 	int GetId();
 	wxSocketBase *GetFlowSocket();
 	void ReloadTemp(wxString file);
