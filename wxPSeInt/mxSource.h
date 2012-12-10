@@ -20,9 +20,18 @@ private:
 	int comp_from, comp_to;
 	int last_s1,last_s2;
 	bool is_example;
-	mxProcess *flow;
-	wxSocketBase *socket;
-	int flow_id;
+	
+	static int last_id;
+	int id; // id unico e irrepetible para cada source, se usa para pasarle a los procesos externos y que digan al llamar al socket a que 
+
+	// para la edicion del diagrama de flujo con psdraw2
+	mxProcess *flow_process; // si esta siendo editado como diagrama de flujo, apunta al proceso del diagrama, si no es NULL
+	wxSocketBase *flow_socket; // si esta siendo editado como diagrama de flujo, guarda el socket con el que se comunica con el proceso flow_proces
+	
+	// para la ejecucion con psterm
+	mxProcess *run_process; // si esta siendo editado como diagrama de flujo, apunta al proceso del diagrama, si no es NULL
+	wxSocketBase *run_socket; // si esta siendo editado como diagrama de flujo, guarda el socket con el que se comunica con el proceso flow_proces
+	
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
 	wxString page_text;
 	wxArrayString rt_errors;
@@ -31,7 +40,7 @@ private:
 	bool status_should_change; // para no cambiar ciertos estados hasta que no se modifique el pseudocódigo
 	
 public:
-	mxInputDialog *input;
+	mxInputDialog *input; // entrada predefinida para ese proceso, o NULL si no la hay
 	bool sin_titulo;
 	wxString filename;
 	void SetFileName(wxString afilename);
@@ -72,7 +81,7 @@ public:
 	void OnEditBeautifyCode(wxCommandEvent &evt);
 
 	void EditFlow(mxProcess *proc, int id=-1);
-	int GetFlowId();
+	int GetId();
 	wxSocketBase *GetFlowSocket();
 	void ReloadTemp(wxString file);
 	void SetFlowSocket(wxSocketBase *s);
@@ -88,6 +97,8 @@ public:
 	wxString GetPageText();
 	void OnSavePointReached(wxStyledTextEvent &evt);
 	void OnSavePointLeft(wxStyledTextEvent &evt);
+	
+	wxString SaveTemp(); // guarda el fuente actual en un archivo temporal (para pasarle al interprete)
 	
 	// retorna las posiciones donde empieza y termina cada instruccion de una linea
 	vector<int> &FillAuxInstr(int _l);
@@ -127,4 +138,5 @@ public:
 };
 
 #endif
+
 

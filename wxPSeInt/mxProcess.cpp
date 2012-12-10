@@ -21,13 +21,13 @@ mxProcess *proc_for_killing=NULL;
 
 int mxProcess::cont=0;
 
-mxProcess::mxProcess(mxSource *src, wxString aname) {
+mxProcess::mxProcess(mxSource *src) {
 	prev=NULL;
 	next=proc_list;
 	proc_list=this;
 	if (next)
 		next->prev=this;
-	filename = aname;
+	filename = src->GetPageText();
 	cont++;
 	source = src;
 	if (proc_for_killing) 

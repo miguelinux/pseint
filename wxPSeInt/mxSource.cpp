@@ -16,6 +16,8 @@ using namespace std;
 
 #define RT_DELAY 1000
 
+int mxSource::last_id=0;
+
 const wxChar *mxSourceWords1 =
 	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
 	_T("repetir mientras de otro modo escribir finpara ")
@@ -97,6 +99,8 @@ static bool EsLetra(const char &c) {
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+	id=++last_id;
+	
 // se modifica en launcher.txt en lugar de aca, para nadie use utf8 y entonces se vea igual en todos lados y tampoco tenga que convertir los ejemplos
   // #ifndef __WIN32__
 // 	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
@@ -107,9 +111,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
 	
 	rt_running=false;
-	flow=NULL;
+	flow_process=NULL; flow_socket=NULL;
+	run_process=NULL; run_socket=NULL;
 	input=NULL;
-	socket=NULL;
 	
 	page_text=ptext;
 	
@@ -167,9 +171,13 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 mxSource::~mxSource() {
 	rt_timer->Stop();
 	debug->Close(this);
-	if (socket) {
-		socket->Write("quit",4);
-		socket=NULL; flow_id=-1;
+	if (flow_socket) {
+		flow_socket->Write("quit",4);
+		flow_socket=NULL;
+	}
+	if (run_socket) {
+		run_socket->Write("quit",4);
+		run_socket=NULL;
 	}
 	mxProcess *proc=proc_list;
 	while (proc) {
@@ -703,7 +711,7 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 void mxSource::MessageReadOnly() {
-	if (flow) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
+	if (flow_process) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
 	else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
 	else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
 }
@@ -1019,13 +1027,8 @@ void mxSource::SetAutocompletion() {
 }
 
 void mxSource::EditFlow ( mxProcess *proc, int id ) {
-	flow=proc; flow_id=id;
-	SetReadOnly(proc!=NULL||is_example);
-	if (flow) SetStatus(STATUS_FLOW); else { status_should_change=true; SetStatus(); }
-}
-
-int mxSource::GetFlowId() { 
-	return flow_id; 
+	flow_process=proc; SetReadOnly(proc!=NULL||is_example);
+	if (flow_process) SetStatus(STATUS_FLOW); else { status_should_change=true; SetStatus(); }
 }
 
 void mxSource::ReloadTemp (wxString file) {
@@ -1037,10 +1040,10 @@ void mxSource::ReloadTemp (wxString file) {
 }
 
 wxSocketBase * mxSource::GetFlowSocket ( ) {
-	return socket;
+	return flow_socket;
 }
 void mxSource::SetFlowSocket ( wxSocketBase *s ) {
-	socket=s;
+	flow_socket=s;
 }
 
 void mxSource::SetDebugPause() {
@@ -1315,3 +1318,14 @@ void mxSource::OnModify (wxStyledTextEvent & event) {
 	status_should_change=true; event.Skip();
 }
 
+int mxSource::GetId ( ) {
+	return id;
+}
+
+wxString mxSource::SaveTemp ( ) {
+	wxString fname=config->GetTempPSC();
+	bool mod = GetModify();
+	SaveFile(fname);
+	SetModify(mod);
+	return fname;
+}

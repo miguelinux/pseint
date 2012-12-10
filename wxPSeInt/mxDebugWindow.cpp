@@ -130,8 +130,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 		subtitles->button_next->Disable();
 		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_RUNNING);
 		break;
-//	case DS_NONE:
-//		debug_status->SetLabel(_T("Desconocido"));
+	default:
+		break;
 	}
 	ds_state = state;
 }
@@ -169,7 +169,7 @@ void mxDebugWindow::StartDebugging(mxSource *source, bool paused) {
 	source->SaveFile(config->GetTempPSC());
 	source->SetModify(mod);
 	debug->should_pause = paused;
-	if ( (new mxProcess(source,source->GetPageText()))->Debug(config->GetTempPSC(), true) )
+	if ( (new mxProcess(source))->Debug(config->GetTempPSC(), true) )
 		SetState(DS_STARTING);
 }
 void mxDebugWindow::OnDebugHelp(wxCommandEvent &evt) {

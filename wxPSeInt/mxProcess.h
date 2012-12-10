@@ -25,7 +25,7 @@ private:
 	friend class mxSource;
 public:
 	mxProcess *next, *prev;
-	mxProcess(mxSource *src,wxString filename);
+	mxProcess(mxSource *src);
 	bool CheckSyntax(wxString file, wxString parsed=wxEmptyString, int id=-1);
 	bool Run(wxString file, bool check_first=false);
 	bool Debug(wxString file, bool check_first=false);

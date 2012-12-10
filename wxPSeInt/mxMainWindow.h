@@ -147,7 +147,7 @@ public:
 	
 	void OnLink (wxHtmlLinkEvent &event);
 		
-	mxSource *FindFlowId(int id);
+	mxSource *FindSourceById(int id);
 	mxSource *FindFlowSocket(wxObject *s);
 	void SelectSource(mxSource *s);
 	

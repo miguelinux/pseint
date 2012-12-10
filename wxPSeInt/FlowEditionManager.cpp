@@ -66,7 +66,7 @@ void FlowEditionManager::ProcData(wxSocketBase *s, wxString data) {
 	if (s==socket) {
 		if (data.StartsWith("hello ")) {
 			long id=-1; data.AfterFirst(' ').ToLong(&id);
-			mxSource *src = main_window->FindFlowId(id);
+			mxSource *src = main_window->FindSourceById(id);
 			if (src) {
 				src->SetFlowSocket(s); socket=NULL;
 			}

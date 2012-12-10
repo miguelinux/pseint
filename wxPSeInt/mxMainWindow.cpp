@@ -447,13 +447,11 @@ void mxMainWindow::OnFileNew(wxCommandEvent &evt) {
 void mxMainWindow::OnFileExportCpp(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->ExportCpp(config->GetTempPSC(),true);
+			(new mxProcess(source))->ExportCpp(fname,true);
 	}	
 }
 
@@ -590,14 +588,12 @@ void mxMainWindow::OnEdit(wxCommandEvent &evt) {
 
 void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
-		mxSource *source = CURRENT_SOURCE;
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		mxSource *source=CURRENT_SOURCE;
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->Run(config->GetTempPSC(), true);
+			(new mxProcess(source))->Run(fname,true);
 	}
 }
 
@@ -613,39 +609,33 @@ void mxMainWindow::OnRunSubtitles(wxCommandEvent &evt) {
 void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->CheckSyntax(config->GetTempPSC());
+			(new mxProcess(source))->CheckSyntax(fname);
 	}
 }
 
 void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->Draw(config->GetTempPSC(),true);
+			(new mxProcess(source))->Draw(fname,true);
 	}
 }
 
 void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else
-			(new mxProcess(source,source->GetPageText()))->SaveDraw(config->GetTempPSC(),true);
+			(new mxProcess(source))->SaveDraw(fname,true);
 	}		
 }
 
@@ -1352,23 +1342,21 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		} else if (!source->GetReadOnly() && source->HaveComments()) {
 			wxMessageBox(_T("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
-		bool mod = source->GetModify();
-		source->SaveFile(config->GetTempPSC());
-		source->SetModify(mod);
+		wxString fname=source->SaveTemp();
 		if (debug->debugging)
 			debug->Stop();
 		else {
-			mxProcess *flow=new mxProcess(source,source->GetPageText());
+			mxProcess *flow=new mxProcess(source);
 			int id=flow_editor->GetNextId();
-			if (flow->DrawAndEdit(config->GetTempPSC(),id,true)) source->EditFlow(flow,id); else delete flow;
+			if (flow->DrawAndEdit(fname,id,true)) source->EditFlow(flow,id); else delete flow;
 		}
 	}	
 }
 
-mxSource * mxMainWindow::FindFlowId (int id) {
+mxSource * mxMainWindow::FindSourceById (int id) {
 	if (id<=0) return NULL;
 	for(unsigned int i=0;i<notebook->GetPageCount();i++)
-		if (((mxSource*)(notebook->GetPage(i)))->GetFlowId()==id) 
+		if (((mxSource*)(notebook->GetPage(i)))->GetId()==id) 
 			return ((mxSource*)(notebook->GetPage(i)));
 	return NULL;
 }
