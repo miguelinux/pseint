@@ -8,6 +8,7 @@ using namespace std;
 
 ConfigManager *config;
 
+
 ConfigManager::ConfigManager(wxString apath) {
 	
 	pseint_dir = apath;
@@ -32,25 +33,8 @@ ConfigManager::ConfigManager(wxString apath) {
 #else
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();
-	pseint_command = DIR_PLUS_FILE(f_path.GetFullPath(),_T("pseint"));
-	if (pseint_command.Contains(_T(" "))) pseint_command=wxString(_T("\""))<<pseint_command<<_T("\"");
-	if (!have_tty_command) { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput(_T("xterm -version")).Len()) {
-			tty_command = _T("xterm -T \"$name\" -e");
-		} else if (utils->GetOutput(_T("lxterminal -version")).Len()) {
-			tty_command = _T("lxterminal -T \"$name\" -e");
-		} else if (utils->GetOutput(_T("gnome-terminal --version")).Len()) {
-			tty_command = _T("gnome-terminal --hide-menubar --disable-factory -t \"$name\" -x");
-		} else if (utils->GetOutput(_T("konsole --version")).Len()) {
-			if (utils->GetOutput(_T("konsole --version")).Find(_T("KDE: 3"))==wxNOT_FOUND) {
-				tty_command = _T("konsole -e");
-				wxMessageBox(_T("PSeInt requiere de una terminal para ejecutar los algoritmos. La unica terminal conocida encontrada en sus sistema es konosole, de KDE4. Esta genera problemas para ejecutar los algoritmos paso a paso y para obtener correctamente los errores en tiempo de ejecucion. Se recomienda instalar xterm."),_T("Terminal de ejecucion"));
-			} else {
-				tty_command = _T("konsole --nomenubar --notoolbar -T \"$name\" -e");
-			}
-		} else
-			wxMessageBox(_T("No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\""),_T("Terminal de ejecucion"));
-	}
+//	pseint_command = DIR_PLUS_FILE(f_path.GetFullPath(),_T("pseint"));
+//	if (pseint_command.Contains(_T(" "))) pseint_command=wxString(_T("\""))<<pseint_command<<_T("\"");
 #endif
 }
 
@@ -76,6 +60,7 @@ void ConfigManager::LoadDefaults() {
 	stepstep_speed=1;
 	debug_port=55374;
 	flow_port=55375;
+	use_psterm = true;
 	check_for_updates = true;
 	fixed_port = false;
 	rt_syntax = true;
@@ -83,17 +68,18 @@ void ConfigManager::LoadDefaults() {
 	last_dir=wxFileName::GetHomeDir();
 #if defined(_WIN32) || defined(__WIN32__)
 	pseint_command = _T("pseint.exe");
+	psterm_command = _T("psterm.exe");
 	psdraw_command = _T("psdraw.exe");
 	psdraw2_command = _T("psdraw2.exe");
 	psexport_command = _T("psexport.exe");
 	tty_command = _T("");
 #else
 	pseint_command = _T("./pseint");
+	psterm_command = _T("./psterm");
 	psdraw2_command = _T("./psdraw2");
 	psexport_command = _T("./psexport");
-	tty_command = _T("<<sin configurar>>");
+	tty_command = _no_tty;
 #endif
-	have_tty_command=false;
 	help_dir = _T("help");
 	proxy = _T("");
 	profiles_dir = _T("perfiles");
@@ -118,10 +104,11 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("version="))<<VERSION);
 	fil.AddLine(wxString(_T("images_path="))<<images_path);
 	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
+	fil.AddLine(wxString(_T("psterm_command="))<<psterm_command);
 	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
 	fil.AddLine(wxString(_T("psdraw_command="))<<psdraw_command);
 	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
-	if (have_tty_command) fil.AddLine(wxString(_T("terminal="))<<tty_command);
+	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
 	fil.AddLine(wxString(_T("temp_draw="))<<temp_draw);
 	fil.AddLine(wxString(_T("temp_file="))<<temp_file);
@@ -172,6 +159,7 @@ void ConfigManager::Save() {
 		fil.AddLine(wxString(_T("debug_port="))<<debug_port);	
 		fil.AddLine(wxString(_T("flow_port="))<<flow_port);	
 	}
+	fil.AddLine(wxString(_T("use_psterm="))<<(use_psterm?1:0));	
 	fil.AddLine(wxString(_T("check_for_updates="))<<(check_for_updates?1:0));	
 	fil.AddLine(wxString(_T("fixed_port="))<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
@@ -204,6 +192,7 @@ void ConfigManager::Read() {
 			else if (key==_T("pos_y")) { value.ToLong(&l); pos_y=l; }
 			else if (key==_T("debug_port")) { value.ToLong(&l); debug_port=l; }
 			else if (key==_T("flow_port")) { value.ToLong(&l); flow_port=l; }
+			else if (key==_T("use_psterm")) use_psterm=utils->IsTrue(value);
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
 			else if (key==_T("stepstep_speed")) { value.ToLong(&l); stepstep_speed=l; }
@@ -246,10 +235,12 @@ void ConfigManager::Read() {
 			else if (key==_T("temp_draw")) temp_draw=value;
 			else if (key==_T("temp_out")) temp_out=value;
 			else if (key==_T("pseint_command")) pseint_command=value;
+			else if (key==_T("psterm_command")) psterm_command=value;
+			else if (key==_T("psterm_command")) psterm_command=value;
 			else if (key==_T("psexport_command")) psexport_command=value;
 			else if (key==_T("psdraw_command")) psdraw_command=value;
 			else if (key==_T("psdraw2_command")) psdraw2_command=value;
-			else if (key==_T("terminal")) { tty_command=value; have_tty_command=true; }
+			else if (key==_T("terminal")) { tty_command=value; }
 			else if (key==_T("history")) last_files.Add(value);
 		}
 	}
@@ -315,5 +306,27 @@ wxString ConfigManager::GetTempOUT ( ) {
 
 wxString ConfigManager::GetTempPSD ( ) {
 	return DIR_PLUS_FILE(temp_dir,temp_draw);
+}
+
+wxString ConfigManager::GetTTYCommand ( ) {
+	if (tty_command==_no_tty) { // tratar de detectar automaticamente un terminal adecuado
+		if (utils->GetOutput(_T("xterm -version")).Len()) {
+			tty_command = _T("xterm -T \"$name\" -e");
+		} else if (utils->GetOutput(_T("lxterminal -version")).Len()) {
+			tty_command = _T("lxterminal -T \"$name\" -e");
+		} else if (utils->GetOutput(_T("gnome-terminal --version")).Len()) {
+			tty_command = _T("gnome-terminal --hide-menubar --disable-factory -t \"$name\" -x");
+		} else if (utils->GetOutput(_T("konsole --version")).Len()) {
+			if (utils->GetOutput(_T("konsole --version")).Find(_T("KDE: 3"))==wxNOT_FOUND) {
+				tty_command = _T("konsole -e");
+				wxMessageBox(_T("PSeInt requiere de una terminal para ejecutar los algoritmos. La unica terminal conocida encontrada en sus sistema es konosole, de KDE4. Esta genera problemas para ejecutar los algoritmos paso a paso y para obtener correctamente los errores en tiempo de ejecucion. Se recomienda instalar xterm."),_T("Terminal de ejecucion"));
+			} else {
+				tty_command = _T("konsole --nomenubar --notoolbar -T \"$name\" -e");
+			}
+		} else {
+			wxMessageBox(_T("No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\""),_T("Terminal de ejecucion"));
+		}
+	}
+	return tty_command;
 }
 

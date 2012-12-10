@@ -131,9 +131,9 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed, int id) {
 bool mxProcess::Run(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_RUN:mxPW_RUN;
 	if (check_first) return CheckSyntax(file);
-	wxString command;
-	if (config->tty_command.Len()) {
-		command<<config->tty_command<<_T(" ");
+	wxString command, tty_command=config->GetTTYCommand();
+	if (tty_command.Len()) {
+		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
 	temp = config->GetTempOUT();
@@ -152,9 +152,9 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DEBUG:mxPW_DEBUG;
 	if (check_first) 
 		return CheckSyntax(file);
-	wxString command;
-	if (config->tty_command.Len()) {
-		command<<config->tty_command<<_T(" ");
+	wxString command, tty_command=config->GetTTYCommand();
+	if (tty_command.Len()) {
+		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
 	temp = config->GetTempOUT();

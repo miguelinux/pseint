@@ -10,11 +10,8 @@ include Makefile.common
 clean:
 	del ${OBJS} ..\bin\psterm.exe ${OBJS_DIR}\icon.o
 
-${OBJS_DIR}\icon.o: icon.rc ..\bin\imgs\icon.ico manifest.xml
-	${WINDRES} -i icon.rc -o $@
-
-..\bin\psterm.exe: ${OBJS_DIR}\icon.o ${OBJS}
-	${GPP} ${OBJS} ${LIBS} ${OBJS_DIR}\icon.o -o $@
+..\bin\psterm.exe: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}

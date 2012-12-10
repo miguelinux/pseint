@@ -96,10 +96,9 @@ public:
 	void OnConfigShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowQuickHelp(wxCommandEvent &evt);
 	void OnConfigUseColors(wxCommandEvent &evt);
+	void OnConfigUsePSTerm(wxCommandEvent &evt);
 	void OnConfigNassiScheiderman(wxCommandEvent &evt);
 	void OnConfigLanguage(wxCommandEvent &evt);
-//	void OnConfigShowResults(wxCommandEvent &evt);
-//	void OnConfigColourSintax(wxCommandEvent &evt);
 	void OnConfigRealTimeSyntax(wxCommandEvent &evt);
 	void OnConfigSmartIndent(wxCommandEvent &evt);
 	void OnConfigStepStepL(wxCommandEvent &evt);
@@ -112,8 +111,8 @@ public:
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
 	
-	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, /* *mi_results, *mi_sintax,*/ *mi_smart_indent, *mi_debug_panel, *mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne,
-		/* *mi_init_vars, *mi_dot_and_comma,*/  *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m/*, *mi_word_operators*/, *mi_use_colors/*, *mi_high_res*/, *mi_vars_panel;
+	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, *mi_smart_indent, *mi_debug_panel, 
+		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, *mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, *mi_use_colors, *mi_use_psterm, *mi_vars_panel;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];

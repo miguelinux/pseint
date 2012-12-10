@@ -12,8 +12,8 @@ include Makefile.common
 clean:
 	rm -rf ${OBJS} ../bin/psterm.exe
 
-../bin/psterm.exe: ../temp/trm_w32_rls/icon.o ${OBJS}
-	${GPP} ${OBJS} ${LIBS} ../temp/trm_w32_rls/icon.o -o $@
+../bin/psterm.exe: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
 
 ${OBJS_DIR}:
 	mkdir -p ${OBJS_DIR}

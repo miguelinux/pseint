@@ -100,6 +100,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DO_THAT, mxMainWindow::OnDoThat)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
+	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
 	EVT_MENU(mxID_CONFIG_SHOW_VARS, mxMainWindow::OnConfigShowVars)
 	EVT_MENU(mxID_CONFIG_SHOW_COMMANDS, mxMainWindow::OnConfigShowCommands)
@@ -269,15 +270,13 @@ void mxMainWindow::CreateMenus() {
 	
 	cfg->AppendSeparator();
 	mi_quickhelp = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
-//	mi_results = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_RESULTS, _T("Mostrar Errores"),_T(""),false);
 	mi_toolbar = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_TOOLBAR, _T("Mostrar Barra de Herramientas"),_T(""),config->show_toolbar);
-//	mi_colour = utils->AddCheckToMenu(cfg,mxID_CONFIG_COLOUR_SINTAX, _T("Colorear Sintaxis"),_T(""),config->colour_sintax);
 	mi_commands = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_COMMANDS, _T("Mostrar Panel de Comandos"),_T(""),config->show_commands);
 	mi_vars_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_VARS, _T("Mostrar Panel de Variables"),_T(""),config->show_vars);
 	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
 	cfg->AppendSeparator();
-//	mi_high_res = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHRES, _T("Diagramas de Flujo de Alta Resolucion"),_T(""),config->high_res_flows);
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
+	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),config->use_psterm);
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
@@ -1117,6 +1116,16 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 	} else {
 		mi_use_colors->Check(true);
 		config->use_colors=true;
+	}
+}
+
+void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
+	if (!mi_use_psterm->IsChecked()) {
+		mi_use_psterm->Check(false);
+		config->use_psterm=false;
+	} else {
+		mi_use_psterm->Check(true);
+		config->use_psterm=true;
 	}
 }
 

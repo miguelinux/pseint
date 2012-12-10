@@ -3,6 +3,8 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 
+#define _no_tty "<<sin configurar>>"
+
 struct LangSettings {
 	bool force_define_vars;
 	bool force_init_vars;
@@ -53,7 +55,11 @@ struct LangSettings {
 
 class ConfigManager {
 private:
+	wxString tty_command;
 public:
+	bool use_psterm;
+	wxString GetTTYCommand(); // terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
+	
 	int version; // version del archivo de configuración que se leyó al inicializar
 	int flow_port;
 	int debug_port;
@@ -65,11 +71,10 @@ public:
 	wxArrayString last_files;
 	wxString images_path;
 	wxString pseint_command;
+	wxString psterm_command;
 	wxString psdraw_command;
 	wxString psdraw2_command;
 	wxString psexport_command;
-	bool have_tty_command;
-	wxString tty_command;
 	wxString last_dir;
 	wxString temp_dir;
 	wxString temp_file;
