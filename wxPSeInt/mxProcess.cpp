@@ -11,6 +11,7 @@
 #include "mxInputDialog.h"
 #include "FlowEditionManager.h"
 #include "mxDebugWindow.h"
+#include "CommunicationsManager.h"
 using namespace std;
 
 mxProcess *proc_list;
@@ -22,6 +23,9 @@ mxProcess *proc_for_killing=NULL;
 int mxProcess::cont=0;
 
 mxProcess::mxProcess(mxSource *src) {
+	
+	cerr<<"new mxProcess "<<this<<endl;
+	
 	prev=NULL;
 	next=proc_list;
 	proc_list=this;
@@ -38,6 +42,9 @@ mxProcess::mxProcess(mxSource *src) {
 }
 
 mxProcess::~mxProcess() {
+	
+	cerr<<"delete mxProcess"<<this<<endl;
+	
 	if (this==proc_for_killing) proc_for_killing=NULL;
 	if (prev)
 		prev->next=next;
@@ -51,16 +58,15 @@ void mxProcess::OnTerminate(int pid, int status) {
 	if (this==debug->process) {
 		debug->debugging=false;
 		debug_panel->SetState(DS_STOPPED);
-		source->SetReadOnly(was_readonly);
-		source->SetDebugLine();
+		if (source) source->SetReadOnly(was_readonly);
+		if (source) source->SetDebugLine();
 		debug->process=NULL;
 	}
 	if (what==mxPW_DRAWEDIT) {
 		if (source) source->EditFlow(NULL);
 	}
 	if (what==mxPW_RUN) {
-#warning QUE PASA SI EL USUARIO CERRO EL FUENTE!
-		ReadOut();
+		if (source) ReadOut(); // el if es por si el usuario cerro el fuente mientras este corria
 	}
 	if (proc_for_killing) {
 		delete proc_for_killing;
@@ -162,7 +168,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	temp = config->GetTempOUT();
 	temp<<_T(".")<<cont;
 	debug->Start(this,source);
-	int port=debug->GetPort();
+	int port=comm_manager->GetServerPort();
 	int delay=_calc_delay(config->stepstep_speed);
 	debug_panel->SetSpeed(debug->GetSpeed(delay));
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
@@ -188,7 +194,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	if (check_first) return CheckSyntax(file,config->GetTempPSD());
 	wxString command;
 	command<<config->psdraw2_command;
-	command<<" --port="<<flow_editor->GetPort()<<" --id="<<source->GetId();
+	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
@@ -241,7 +247,7 @@ void mxProcess::ReadOut() {
 				if (str.Contains(_T("Finalizada"))) {
 					happy_ending=true;
 					main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Finalizada"));
-					if (source) source->SetStatus(STATUS_RUNNED_OK);
+					source->SetStatus(STATUS_RUNNED_OK);
 				}
 			} else {
 				if (str.Len())
@@ -251,7 +257,7 @@ void mxProcess::ReadOut() {
 		fil.Close();
 		wxRemoveFile(temp);
 		if (!happy_ending) {
-			if (source) source->SetStatus(STATUS_RUNNED_INT);
+			source->SetStatus(STATUS_RUNNED_INT);
 			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Interrumpida"));
 			main_window->SelectFirstError();
 			wxTreeItemIdValue v;

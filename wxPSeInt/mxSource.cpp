@@ -1028,7 +1028,13 @@ void mxSource::SetAutocompletion() {
 
 void mxSource::EditFlow (mxProcess *proc) {
 	flow_process=proc; SetReadOnly(proc!=NULL||is_example);
-	if (flow_process) SetStatus(STATUS_FLOW); else { status_should_change=true; SetStatus(); }
+	if (flow_process) {
+		SetStatus(STATUS_FLOW);
+	} else {
+		flow_socket=NULL;
+		status_should_change=true; 
+		SetStatus();
+	}
 }
 
 void mxSource::ReloadTemp (wxString file) {

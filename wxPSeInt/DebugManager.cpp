@@ -15,43 +15,42 @@ DebugManager *debug;
 DebugManager::DebugManager() {
 	do_desktop_test=false;
 	debugging=false;
-	server=NULL;
-	port=-1;
+//	server=NULL;
+//	port=-1;
 	step_in=true;
 	subtitles_on=false;
 }
 
 void DebugManager::Start(mxProcess *proc, mxSource *src) {
-	
+	socket=NULL;
 	current_proc_name="<desconocido>";
 	process = proc;
 	sbuffer=_T("");
 	source=src;
 	debugging=true;
 	paused=false;
-
 	subtitles->Reset();
 	desktop_test->ResetTest();
 	if (do_desktop_test) 
 		main_window->ShowDesktopTestGrid(true);
 	
-	if (server!=NULL) return;
-	
-	do {
-		if (server) delete server;
-		wxIPV4address adrs;
-		adrs.Hostname(_T("127.0.0.1"));
-		adrs.Service(port=config->GetDebugPort());
-		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
-		server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-		server->Notify(true);
-	} while (!server->IsOk());
+//	if (server!=NULL) return;
+//	
+//	do {
+//		if (server) delete server;
+//		wxIPV4address adrs;
+//		adrs.Hostname(_T("127.0.0.1"));
+//		adrs.Service(port=config->GetDebugPort());
+//		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
+//		server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
+//		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
+//		server->Notify(true);
+//	} while (!server->IsOk());
 	return;
 	
 }
 
-void DebugManager::ProcData(wxString data) {
+void DebugManager::ProcSocketData(wxString data) {
 	if (data.StartsWith(_T("subtitulo "))) {
 		subtitles->AddMessage(current_line,current_inst,data.Mid(10));
 	} if (data.StartsWith(_T("proceso "))) {
@@ -97,16 +96,16 @@ void DebugManager::ProcData(wxString data) {
 			}
 		} else if (state==_T("pausa")) {
 			debug_panel->SetState(DS_PAUSED);
-			source->SetDebugPause();
+			if (source) source->SetDebugPause();
 		} else if (state==_T("paso"))
 			debug_panel->SetState(DS_STEP);
 		else if (state==_T("ejecutando"))
 			debug_panel->SetState(DS_RESUMED);
 		else if (state==_T("finalizado")) {
 			debug_panel->SetState(DS_FINALIZED);
-			source->SetDebugLine();
+			if (source) source->SetDebugLine();
 		} else {
-			source->SetDebugLine();
+			if (source) source->SetDebugLine();
 			debug_panel->SetState(DS_NONE);
 		}
 	} else if (data.StartsWith(_T("evaluacion "))) {
@@ -115,40 +114,9 @@ void DebugManager::ProcData(wxString data) {
 }
 
 void DebugManager::Close(mxSource *src) {
-	if (source==src) source=NULL;
-}
-
-void DebugManager::SocketEvent(wxSocketEvent *event) {
-	if (event->GetSocket()==server) {
-		socket = server->Accept(false);
-		socket->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-		socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);
-		socket->Notify(true);
-	} else if (event->GetSocketEvent()==wxSOCKET_INPUT) {
-		wxChar buf[256];
-		event->GetSocket()->Read(buf,255);
-		int n = event->GetSocket()->LastCount();
-		while (n>0) {
-			buf[n]='\0';
-			wxChar *aux=buf;
-			for (int i=0;i<n;i++)
-				if (buf[i]=='\n') {
-					buf[i]='\0';
-					sbuffer<<aux;
-					ProcData(sbuffer);
-					sbuffer=_T("");
-					aux=buf+i+1;
-				}
-			event->GetSocket()->Read(buf,255);
-			n = event->GetSocket()->LastCount();
-		}
-	} else if (event->GetSocketEvent()==wxSOCKET_LOST) {
-		if (socket==event->GetSocket()) {
-			debugging=false;
-			socket=NULL;
-		}
-		event->GetSocket()->Destroy();
-//	} else if (event->GetSocketEvent()==wxSOCKET_CONNECTION) {
+	if (source==src) {
+		if (debugging) Stop();
+		source=NULL;
 	}
 }
 
@@ -197,14 +165,6 @@ void DebugManager::SendEvaluation(wxString exp) {
 	socket->Write(str.c_str(),str.Len());	
 }
 
-bool DebugManager::HasSocket (wxObject *s) {
-	return s && (s==socket||s==server);
-}
-
-int DebugManager::GetPort ( ) {
-	return port;
-}
-
 void DebugManager::SetStepIn(bool b) {
 	step_in=b;
 	if (debugging && socket) {
@@ -221,4 +181,11 @@ void DebugManager::SetSubtitles(bool b) {
 	}
 }
 
+void DebugManager::SetSocket (wxSocketBase * s) {
+	socket=s;
+}
 
+void DebugManager::ProcessSocketLost() {
+	debugging=false;
+	socket=NULL;
+}

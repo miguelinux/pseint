@@ -59,7 +59,7 @@ void ConfigManager::LoadDefaults() {
 	tabw = 4;
 	stepstep_speed=1;
 	debug_port=55374;
-	flow_port=55375;
+	comm_port=55375;
 	use_psterm = true;
 	check_for_updates = true;
 	fixed_port = false;
@@ -157,7 +157,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("maximized="))<<maximized);	
 	if (fixed_port) {
 		fil.AddLine(wxString(_T("debug_port="))<<debug_port);	
-		fil.AddLine(wxString(_T("flow_port="))<<flow_port);	
+		fil.AddLine(wxString(_T("comm_port="))<<comm_port);	
 	}
 	fil.AddLine(wxString(_T("use_psterm="))<<(use_psterm?1:0));	
 	fil.AddLine(wxString(_T("check_for_updates="))<<(check_for_updates?1:0));	
@@ -191,7 +191,7 @@ void ConfigManager::Read() {
 			else if (key==_T("pos_x")) { value.ToLong(&l); pos_x=l; }
 			else if (key==_T("pos_y")) { value.ToLong(&l); pos_y=l; }
 			else if (key==_T("debug_port")) { value.ToLong(&l); debug_port=l; }
-			else if (key==_T("flow_port")) { value.ToLong(&l); flow_port=l; }
+			else if (key==_T("comm_port")) { value.ToLong(&l); comm_port=l; }
 			else if (key==_T("use_psterm")) use_psterm=utils->IsTrue(value);
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
@@ -288,8 +288,8 @@ wxString ConfigManager::LoadProfile(wxString pname) {
 	}
 }
 
-int ConfigManager::GetFlowPort ( ) {
-	if (fixed_port) return flow_port; else return flow_port+rand()%150+150;
+int ConfigManager::GetCommPort () {
+	if (fixed_port) return comm_port; else return comm_port+rand()%150+150;
 }
 
 int ConfigManager::GetDebugPort ( ) {

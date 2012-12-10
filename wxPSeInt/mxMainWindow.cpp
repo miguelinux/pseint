@@ -38,6 +38,7 @@
 #include "mxDebugWindow.h"
 #include "mxSubtitles.h"
 #include "mxStatusBar.h"
+#include "CommunicationsManager.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -1194,10 +1195,10 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 }
 
 void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
-	if (debug && debug->HasSocket(event.GetEventObject()))
-		debug->SocketEvent(&event);
-	else if (flow_editor && flow_editor->HasSocket(event.GetEventObject()) )
-		flow_editor->SocketEvent(&event);
+//	if (debug && debug->HasSocket(event.GetEventObject()))
+//		debug->SocketEvent(&event);
+//	else 
+	comm_manager->SocketEvent(event);
 }
 
 void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
@@ -1334,7 +1335,6 @@ void mxMainWindow::OnRunSetInput (wxCommandEvent & evt) {
 
 void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 	IF_THERE_IS_SOURCE {
-		if (!flow_editor) new FlowEditionManager();
 		mxSource *source = CURRENT_SOURCE;
 		if (source->GetFlowSocket()) { 
 			source->GetFlowSocket()->Write("raise",5); 
@@ -1347,7 +1347,6 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			debug->Stop();
 		else {
 			mxProcess *flow=new mxProcess(source);
-			int id=flow_editor->GetNextId();
 			if (flow->DrawAndEdit(fname,true)) source->EditFlow(flow); else delete flow;
 		}
 	}	

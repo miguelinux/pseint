@@ -80,11 +80,12 @@ public:
 	void OnEditIndentSelection(wxCommandEvent &evt);
 	void OnEditBeautifyCode(wxCommandEvent &evt);
 
-	void EditFlow(mxProcess *proc);
 	int GetId();
+	
+	void EditFlow(mxProcess *proc);
+	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();
 	void ReloadTemp(wxString file);
-	void SetFlowSocket(wxSocketBase *s);
 	bool HaveComments();
 	
 	void SetDebugLine(int l=-1, int i=-1); // para marcar donde va el paso a paso, -1 para desmarcar

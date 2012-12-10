@@ -15,7 +15,7 @@ bool Connect(int port, int id) {
 	zocket = zocket_llamar(port,"127.0.0.1");
 	if (zocket==ZOCKET_ERROR) return false;
 	stringstream ss;
-	ss<<"hello "<<id<<"\n";
+	ss<<"hello-flow "<<id<<"\n";
 	string s=ss.str();
 	zocket_escribir(zocket,s.c_str(),s.size());
 	if (zocket==ZOCKET_ERROR) return false;

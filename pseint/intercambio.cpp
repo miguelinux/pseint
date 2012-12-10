@@ -228,6 +228,7 @@ void Intercambio::SetDelay(int n) {
 		if (zocket==ZOCKET_ERROR) 
 			cerr<<"<<Error al inicializar ejecucion paso a paso>>"<<endl;
 		else {
+			zocket_escribir(zocket,"hello-debug -1\n",15);
 			zocket_escribir(zocket,"estado inicializado\n",20);
 			while (!do_step) ProcInput();
 //			zocket_escribir(zocket,"estado ejecutando\n",18);

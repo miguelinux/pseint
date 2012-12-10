@@ -12,6 +12,7 @@
 #include "mxUpdatesChecker.h"
 #include <wx/socket.h>
 #include "mxIconInstaller.h"
+#include "CommunicationsManager.h"
 using namespace std;
 
 wxSplashScreen *splash;
@@ -94,6 +95,9 @@ bool mxApplication::OnInit() {
 		if (config->check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();
 	}
+	
+	comm_manager=new CommunicationsManager();
+	
 	return true;
 	
 }

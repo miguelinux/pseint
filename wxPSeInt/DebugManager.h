@@ -21,21 +21,20 @@ private:
 	wxString current_proc_name;
 	wxString sbuffer;
 	mxSource *source;
-	wxSocketServer *server;
 	wxSocketBase *socket;
 	friend class mxProcess;
 	friend class mxDebugWindow;
 	friend class mxDesktopTest;
 	bool should_pause;
-	int port;
 	int current_line, current_inst; // linea e instruccion actual, como viene del interprete (base 1), para usar en el subtitulo
 public:
 	bool debugging, paused;
 	DebugManager();
 	void Start(mxProcess *process, mxSource *src);
 	void Close(mxSource *src);
-	void ProcData(wxString data);
-	void SocketEvent(wxSocketEvent *event);
+	void SetSocket(wxSocketBase *s);
+	void ProcSocketData(wxString data);
+	void ProcessSocketLost();
 	void SetSpeed(int speed);
 	int GetSpeed(int delay) const;
 	bool Pause();
@@ -43,10 +42,8 @@ public:
 	void Stop();
 	void SetDoDesktopTest(bool val);
 	void SendEvaluation(wxString exp);
-	bool HasSocket(wxObject *s);
 	void SetStepIn(bool b);
 	void SetSubtitles(bool b);
-	int GetPort();
 };
 
 extern DebugManager *debug;

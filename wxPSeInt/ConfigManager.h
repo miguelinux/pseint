@@ -61,7 +61,7 @@ public:
 	wxString GetTTYCommand(); // terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
 	
 	int version; // version del archivo de configuración que se leyó al inicializar
-	int flow_port;
+	int comm_port;
 	int debug_port;
 	bool fixed_port;
 	bool check_for_updates;
@@ -116,7 +116,7 @@ public:
 	void Save();
 	~ConfigManager();
 	
-	int GetFlowPort();
+	int GetCommPort();
 	int GetDebugPort();
 	
 	wxString GetTempPSC();
