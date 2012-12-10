@@ -169,8 +169,12 @@ mxSource::~mxSource() {
 	debug->Close(this);
 	if (socket) {
 		socket->Write("quit",4);
-		flow->SetSourceDeleted();
 		socket=NULL; flow_id=-1;
+	}
+	mxProcess *proc=proc_list;
+	while (proc) {
+		if (proc->source==this) proc->SetSourceDeleted();
+		proc=proc->next;
 	}
 }
 

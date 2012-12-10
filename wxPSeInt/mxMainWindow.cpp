@@ -279,7 +279,7 @@ void mxMainWindow::CreateMenus() {
 //	mi_high_res = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHRES, _T("Diagramas de Flujo de Alta Resolucion"),_T(""),config->high_res_flows);
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	cfg->AppendSeparator();
-	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje..."),_T(""),_T("lenguaje.png"));
+	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
 	cfg->AppendSeparator();
 	mi_stepstep_l = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_L, _T("Velocidad del paso a paso: Baja"),_T(""),config->stepstep_speed==0);
@@ -683,7 +683,6 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 		mxProcess *nproc=proc->next;
 		if (proc_list->pid) 
 			proc->Kill(proc_list->pid,wxSIGKILL);
-//		proc->Destroy();
 		proc=nproc;
 	}
 	if (proc_for_killing) delete proc_for_killing;

@@ -1,3 +1,6 @@
+20121209
+	Implementada una nueva barra de estado más funcional.
+
 >>RELEASE 20121208<<
 
 20121208

@@ -22,6 +22,7 @@ private:
 	wxString filename;
 	friend class mxMainWindow;
 	friend class DebugManager;
+	friend class mxSource;
 public:
 	mxProcess *next, *prev;
 	mxProcess(mxSource *src,wxString filename);
