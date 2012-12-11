@@ -1,8 +1,10 @@
 #include<iostream>
-#include "../pseint/zockets.h"
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include "../pseint/zockets.h"
+#define VERSION 20121211
+#include "../pseint/version_common.h"
 using namespace std;
 
 int main (int argc, char *argv[]) {
@@ -13,7 +15,9 @@ int main (int argc, char *argv[]) {
 	int lver=0;
 	while (++iarg<argc) {
 		string sarg(argv[iarg]);
-		if (sarg=="--help") {
+		if (sarg=="--version") {
+			_print_version_info("updatem");
+			return 0;
 		} else if (sarg=="--postfix") {
 			postfix=argv[++iarg];
 		} else if (sarg=="--version") {

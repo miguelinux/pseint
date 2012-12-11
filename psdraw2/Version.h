@@ -1,6 +1,2 @@
-#ifndef VERSION_H
-#define VERSION_H
-
-#define VERSION 20121210
-
-#endif
+#define VERSION 20121211
+#include "../pseint/version_common.h"

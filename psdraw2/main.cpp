@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--version") {
-			cout<<"psDraw v2 "<<VERSION<<endl;
+			_print_version_info("psDraw2");
 			return 0;
 		}
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;

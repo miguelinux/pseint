@@ -1,6 +1,6 @@
 OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/export_cpp.o ${OBJS_DIR}/exportexp.o ${OBJS_DIR}/export_chooser.o ${OBJS_DIR}/zcurlib_lnx.o ${OBJS_DIR}/zcurlib_win.o 
 
-${OBJS_DIR}/psexport.o: psexport.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/global.h defines.h version.h export_chooser.h
+${OBJS_DIR}/psexport.o: psexport.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/global.h defines.h version.h ../pseint/version_common.h export_chooser.h
 	${GPP} ${FLAGS} -c psexport.cpp -o $@
 
 ${OBJS_DIR}/utils.o: ../pseint/utils.cpp ../pseint/global.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/zcurlib.h ../pseint/new_funciones.h
@@ -27,7 +27,7 @@ ${OBJS_DIR}/new_memoria.o: ../pseint/new_memoria.cpp ../pseint/new_memoria.h ../
 ${OBJS_DIR}/new_programa.o: ../pseint/new_programa.cpp ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h
 	${GPP} ${FLAGS} -c ../pseint/new_programa.cpp -o $@
 
-${OBJS_DIR}/export_cpp.o: export_cpp.cpp export_cpp.h defines.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h version.h exportexp.h
+${OBJS_DIR}/export_cpp.o: export_cpp.cpp export_cpp.h defines.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h version.h ../pseint/version_common.h exportexp.h
 	${GPP} ${FLAGS} -c export_cpp.cpp -o $@
 
 ${OBJS_DIR}/exportexp.o: exportexp.cpp ../pseint/utils.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h ../pseint/new_evaluar.h ../pseint/new_funciones.h export_chooser.h defines.h

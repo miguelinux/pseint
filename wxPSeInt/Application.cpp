@@ -1,16 +1,19 @@
+#include <wx/image.h>
+#include <wx/socket.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <iostream>
+using namespace std;
 #include "Application.h"
 #include "mxMainWindow.h"
-#include <wx/image.h>
+#include "version.h"
 #include "mxUtils.h"
 #include "ConfigManager.h"
 #include "HelpManager.h"
 #include "DebugManager.h"
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
 #include "mxProfile.h"
 #include "mxArt.h"
 #include "mxUpdatesChecker.h"
-#include <wx/socket.h>
 #include "mxIconInstaller.h"
 #include "CommunicationsManager.h"
 using namespace std;
@@ -18,6 +21,11 @@ using namespace std;
 wxSplashScreen *splash;
 
 bool mxApplication::OnInit() {
+	
+	if (argc==2 && wxString(argv[1])=="--version") {
+		_print_version_info("wxPSeInt");
+		return false;
+	}
 	
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();

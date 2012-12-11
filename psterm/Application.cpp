@@ -1,6 +1,9 @@
+#include <wx/msgdlg.h>
+#include <iostream>
+using namespace std;
 #include "Application.h"
 #include "mxFrame.h"
-#include <wx/msgdlg.h>
+#include "version.h"
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -14,6 +17,12 @@ static wxString EscapeString(wxString what) {
 }
 
 bool mxApplication::OnInit() {
+	
+	if (argc==2 && wxString(argv[1])=="--version") {
+		_print_version_info("psTerm");
+		return false;
+	}
+	
 	bool no_arg=false;
 	long port=-1, src_id=-1;
 	wxString command;

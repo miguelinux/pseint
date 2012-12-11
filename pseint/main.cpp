@@ -66,14 +66,8 @@ int main(int argc, char* argv[]) {
 	signal(15,on_signal);
 
 	if (argc==2 && string(argv[1])=="--install-test") {cout<<"OK";return 0;}
-	if (argc==3 && string(argv[1])==string("--version")) {
-		ofstream fil(argv[2]);
-		fil<<"PSeInt "<<VERSION<<"-"ARCHITECTURE"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n";
-		fil.close();
-		exit(0);
-	}
 	if (argc==2 && string(argv[1])==string("--version")) {
-		cout<<"PSeInt "<<VERSION<<"-"ARCHITECTURE"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n";
+		_print_version_info("PSeInt");
 		exit(0);
 	}
 

@@ -1,6 +1,6 @@
 OBJS=${OBJS_DIR}/main.o ${OBJS_DIR}/uglyfont.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o 
 
-${OBJS_DIR}/main.o: main.cpp Entity.h Global.h Version.h Events.h Load.h Comm.h
+${OBJS_DIR}/main.o: main.cpp Entity.h Global.h Version.h ../pseint/version_common.h Events.h Load.h Comm.h
 	${GPP} ${FLAGS} -c main.cpp -o $@
 
 ${OBJS_DIR}/uglyfont.o: uglyfont.cpp
@@ -12,7 +12,7 @@ ${OBJS_DIR}/zockets.o: ../pseint/zockets.cpp ../pseint/zockets.h
 ${OBJS_DIR}/Entity.o: Entity.cpp Entity.h Global.h Draw.h
 	${GPP} ${FLAGS} -c Entity.cpp -o $@
 
-${OBJS_DIR}/Events.o: Events.cpp Events.h Entity.h Global.h Comm.h Draw.h
+${OBJS_DIR}/Events.o: Events.cpp Events.h Entity.h Global.h Comm.h Draw.h Load.h
 	${GPP} ${FLAGS} -c Events.cpp -o $@
 
 ${OBJS_DIR}/Draw.o: Draw.cpp Draw.h Global.h Entity.h Events.h

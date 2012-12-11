@@ -75,12 +75,8 @@ void dibujar(CImg<unsigned char> &img ,t_dibujo &d, int x, int y, bool double_re
 
 int main(int argc, char *argv[]){
 	
-	if (argc==2 && string(argv[1])=="--install-test") {
-		cout<<"OK";
-		return 0;
-	}
 	if (argc==2 && string(argv[1])=="--version") {
-		cout<<"PSDraw "<<VERSION<<"-"<<ARCHITECTURE<<"\n by Pablo Novara - zaskar_84@yahoo.com.ar\n"; 
+		_print_version_info("psDraw");
 		return 0;
 	}
 	

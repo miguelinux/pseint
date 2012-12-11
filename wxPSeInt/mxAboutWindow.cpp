@@ -61,21 +61,35 @@ wxString mxAboutWindow::MakePageText() {
 	
 	text<<_T("</TD></TR></TABLE></CENTER><HR><BR>");
 	
-	text<<_T("Version de la interface: ")<<VERSION<<_T("-"ARCHITECTURE"<BR><BR>");
-	wxArrayString out_int, out_drw, out_exp, out_drw2;
-	wxString command_int, command_drw, command_exp, command_drw2;
+	text<<_T("Versión general de la instalación: ");
+	wxTextFile fil(_T("version")); 
+	if (fil.Exists()) {
+		fil.Open();
+		text<<fil.GetFirstLine();;
+		fil.Close();
+	} else {
+		text<<"Error: No se pudo determinar.";
+	}
+	text<<"<BR><BR> Versiones individuales:<BR>";
+	
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt ")<<VERSION<<_T("-"ARCHITECTURE"<BR>");
+	wxArrayString out_int, out_drw, out_exp, out_drw2, out_trm;
+	wxString command_int, command_drw, command_exp, command_drw2, command_trm;
 	command_int<<config->pseint_command<<_T(" --version");
 	command_drw<<config->psdraw_command<<_T(" --version");
 	command_drw2<<config->psdraw2_command<<_T(" --version");
 	command_exp<<config->psexport_command<<_T(" --version");
+	command_trm<<config->psterm_command<<_T(" --version");
 	wxExecute(command_int, out_int, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_drw, out_drw, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_drw2, out_drw2, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_exp, out_exp, wxEXEC_SYNC|wxEXEC_NODISABLE);
-	text<<_T("Version del interprete: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_int.GetCount()>0?out_int[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
-	text<<_T("Version del graficador: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw.GetCount()>0?out_drw[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
-	text<<_T("Version del editor de diagramas: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw2.GetCount()>0?out_drw2[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
-	text<<_T("Version del exportador: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_exp.GetCount()>0?out_exp[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR><BR>");
+	wxExecute(command_trm, out_trm, wxEXEC_SYNC|wxEXEC_NODISABLE);
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_int.GetCount()>0?out_int[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR>");
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw.GetCount()>0?out_drw[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR>");
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_drw2.GetCount()>0?out_drw2[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR>");
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_exp.GetCount()>0?out_exp[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR>");
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<(out_trm.GetCount()>0?out_trm[0]:wxString(_T("Error: No se pudo determinar la version")))<<_T("<BR>");
 	
 	text<<_T("<BR><BR>");
 	return text;
