@@ -17,6 +17,10 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 class mxSource : public wxStyledTextCtrl {
 private:
 	bool rt_running; // rt_syntax||highlight_blocks||show_vars
+	bool mask_timers; // para evitar lanzar el timer en la modificacion que hace SaveTemp
+	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
+	wxTimer *reload_timer; // se activa al modificar el algoritmo si se estaba ejecutando en psterm, para mandar a reejecutar
+	
 	int comp_from, comp_to;
 	int last_s1,last_s2;
 	bool is_example;
@@ -24,18 +28,12 @@ private:
 	static int last_id;
 	int id; // id unico e irrepetible para cada source, se usa para pasarle a los procesos externos y que digan al llamar al socket a que 
 
-	// para la edicion del diagrama de flujo con psdraw2
-	mxProcess *flow_process; // si esta siendo editado como diagrama de flujo, apunta al proceso del diagrama, si no es NULL
-	wxSocketBase *flow_socket; // si esta siendo editado como diagrama de flujo, guarda el socket con el que se comunica con el proceso flow_proces
-	
-	// para la ejecucion con psterm
-	mxProcess *run_process; // si esta siendo editado como diagrama de flujo, apunta al proceso del diagrama, si no es NULL
-	wxSocketBase *run_socket; // si esta siendo editado como diagrama de flujo, guarda el socket con el que se comunica con el proceso flow_proces
+	wxSocketBase *flow_socket; // si esta siendo editado como diagrama de flujo, guarda el socket con el que se comunica con el editor, sino NULL
+	wxSocketBase *run_socket; // si esta siendo ejecutado en un psterm, guarda el socket con el que se comunica con la terminal, sino NULL
 	
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
 	wxString page_text;
 	wxArrayString rt_errors;
-	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
 	int status; // estado actual para este fuente
 	bool status_should_change; // para no cambiar ciertos estados hasta que no se modifique el pseudocódigo
 	
@@ -82,10 +80,11 @@ public:
 
 	int GetId();
 	
-	void EditFlow(mxProcess *proc);
+	void SetRunSocket(wxSocketBase *s);
+	bool UpdateRunningTerminal(bool force=false);
 	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();
-	void ReloadTemp(wxString file);
+	void ReloadFromTempPSD();
 	bool HaveComments();
 	
 	void SetDebugLine(int l=-1, int i=-1); // para marcar donde va el paso a paso, -1 para desmarcar
@@ -100,6 +99,10 @@ public:
 	void OnSavePointLeft(wxStyledTextEvent &evt);
 	
 	wxString SaveTemp(); // guarda el fuente actual en un archivo temporal (para pasarle al interprete)
+	wxString GetTempFilename(); // nombre de archivo temporal, sin extension (la extension dependera de para que se quiera), no usar directamente
+	wxString GetTempFilenamePSC(); // nombre de archivo temporal para el pseudocodigo
+	wxString GetTempFilenameOUT(); // nombre de archivo temporal para los resultados
+	wxString GetTempFilenamePSD(); // nombre de archivo temporal para el diagrama de flujo
 	
 	// retorna las posiciones donde empieza y termina cada instruccion de una linea
 	vector<int> &FillAuxInstr(int _l);
@@ -110,7 +113,7 @@ public:
 	void MarkError(int l, int i, wxString str, bool special=false);
 	void StartRTSyntaxChecking();
 	void StopRTSyntaxChecking();
-	void OnRealTimeSyntaxTimer(wxTimerEvent &te);
+	void OnTimer(wxTimerEvent &te);
 	void OnChange(wxStyledTextEvent &event);
 	
 	bool current_calltip_is_error, current_calltip_is_dwell;

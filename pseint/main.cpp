@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
 #ifdef __APPLE__
 	wait_key=false;
 #else
-	wait_key=user;
+	wait_key=user&&!for_pseint_terminal;
 #endif
 
 	// comprobar parametros
@@ -276,7 +276,7 @@ int main(int argc, char* argv[]) {
 	
 	if (user && check) {
 		if (colored_output) setForeColor(COLOR_INFO);
-		cout<<"Leyendo archivo y comprobando sintaxis...\n";
+		cout<<"Leyendo archivo y comprobando sintaxis..."<<endl;
 	}
 	string buffer;
 	while (!archivo.eof()) {
@@ -310,10 +310,10 @@ int main(int argc, char* argv[]) {
 		} else if (run) {
 			allow_undef_vars=undef_vars;
 			force_var_definition=var_definition;
-			if (ExeInfoOn) if (user) ExeInfo<<"*** Ejecucion Iniciada. ***\n";
+			if (ExeInfoOn) if (user) ExeInfo<<"*** Ejecucion Iniciada. ***"<<endl;
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Ejecucion Iniciada. ***\n";
+				cout<<"*** Ejecucion Iniciada. ***"<<endl;
 			}
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) (it1++)->second->memoria->FakeReset();
@@ -326,7 +326,7 @@ int main(int argc, char* argv[]) {
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<endl<<"*** Ejecucion Finalizada. ***\n";
+				cout<<endl<<"*** Ejecucion Finalizada. ***"<<endl;
 			}
 		}
 	} else {
@@ -335,12 +335,12 @@ int main(int argc, char* argv[]) {
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Se encontro 1 error. ***";
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Se encontro 1 error. ***\n";
+				cout<<"*** Se encontro 1 error. ***"<<endl;
 			}
 		} else {
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Se encontraron "<<errores<<" errores. ***\n";
+				cout<<"*** Se encontraron "<<errores<<" errores. ***"<<endl;
 			}
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Se encontraron "<<errores<<" errores. ***";
 		}

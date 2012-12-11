@@ -3,6 +3,8 @@
 #include <iostream>
 #include <wx/msgdlg.h>
 #include <wx/txtstrm.h>
+#include <wx/app.h>
+#include "mxFrame.h"
 using namespace std;
 
 enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS };
@@ -19,6 +21,7 @@ END_EVENT_TABLE()
 	
 #define _buffer(i,j) buffer[(i)*buffer_w+(j)]
 #define _CARET_TIME 500
+#define _SIZE_TIME 100
 #define _PROCESS_TIME 10
 
 static wxColour colors[16] = {
@@ -40,7 +43,9 @@ static wxColour colors[16] = {
 	wxColour(255,255,255)
 };
 	
-mxConsole::mxConsole(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+	this->parent=parent;
+	margin=2;
 	the_process=NULL;
 	timer_size=new wxTimer(this,CONSOLE_ID_TIMER_SIZE);
 	timer_caret=new wxTimer(this,CONSOLE_ID_TIMER_CARET);
@@ -66,7 +71,7 @@ void mxConsole::Reset (bool hard) {
 
 
 void mxConsole::OnPaint (wxPaintEvent & event) {
-	if (!buffer) return;
+	if (!buffer) CalcResize();
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.SetBackground(colors[bg]);
@@ -92,7 +97,7 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 }
 
 void mxConsole::OnSize (wxSizeEvent & event) {
-	timer_size->Start(100,true);
+	timer_size->Start(_SIZE_TIME,true);
 }
 
 void mxConsole::OnChar (wxKeyEvent & event) {
@@ -116,7 +121,7 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 			Print(wxString()<<c);
 			Refresh();
 		}
-	}
+	} else wxExit();
 }
 
 void mxConsole::SetFontSize (int size) {
@@ -189,7 +194,7 @@ void mxConsole::Process (wxString input, bool record) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i-i0) Print(input.Mid(i0,i-i0),record);	
 			if (input[i+2]=='z' && input[i+3]=='k') { // getKey
-				if (input_history_position>=input_history.GetCount()) { 
+				if (input_history_position>=int(input_history.GetCount())) { 
 					wait_one_key=true;
 				} else {
 					wxString aux=input_history[input_history_position++];
@@ -198,7 +203,7 @@ void mxConsole::Process (wxString input, bool record) {
 				}
 				i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
-				if (input_history_position>=input_history.GetCount()) { 
+				if (input_history_position>=int(input_history.GetCount())) { 
 					wxOutputStream *output=the_process->GetOutputStream();
 					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input);
@@ -228,8 +233,6 @@ void mxConsole::Process (wxString input, bool record) {
 				i+=3;
 			} else if (input[i+2]=='3' && (input[i+3]>='0'&&input[i+3]<='7') && input[i+4]=='m') {
 				if (record) history<<"\033[3"<<input[i+3]<<"m";
-				int last_fg=cur_fg;
-				char c=input[i+3];
 				cur_fg=(cur_fg/8)*8+(input[i+3]-'0');
 				i+=4;
 			} else {
@@ -258,6 +261,10 @@ void mxConsole::OnTimerCaret (wxTimerEvent & event) {
 }
 
 void mxConsole::OnTimerSize (wxTimerEvent & event) {
+	CalcResize();
+}
+
+void mxConsole::CalcResize() {
 	wxSize size = GetClientSize();
 	buffer_w = (size.x - 2*margin) / char_w;
 	buffer_h = (size.y - 2*margin) / char_h;
@@ -276,8 +283,8 @@ void mxConsole::Run (wxString command) {
 	the_process->Redirect();
 	the_process_pid=wxExecute(command,wxEXEC_ASYNC,the_process);
 	if (the_process_pid>0) {
-		timer_caret->Start(_CARET_TIME,false);
 		timer_process->Start(_PROCESS_TIME,false);
+		timer_caret->Start(_CARET_TIME,false);
 	} else {
 		delete the_process;
 		the_process=NULL;
@@ -287,6 +294,7 @@ void mxConsole::Run (wxString command) {
 void mxConsole::OnTimerProcess (wxTimerEvent & event) {
 	GetProcessOutput();
 }
+
 void mxConsole::GetProcessOutput () {
 	if (!the_process) return;
 	wxTextInputStream input(*(the_process->GetInputStream()));
@@ -294,7 +302,6 @@ void mxConsole::GetProcessOutput () {
 	while (the_process->IsInputAvailable())
 		line<<input.GetChar();
 	if (line.Len()) { Process(line); Refresh(); }
-	for(int i=0;i<line.Len();i++) { if (line[i]=='\033') line[i]='#'; }
 }
 
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
@@ -304,6 +311,7 @@ void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 		the_process=NULL;
 		timer_process->Stop();
 		timer_caret->Stop(); caret_visible=false;
+		parent->OnProcessTerminated();
 	}	
 }
 
@@ -328,7 +336,7 @@ void mxConsole::KillProcess ( ) {
 }
 
 void mxConsole::RecordInput (wxString input) {
-	if (input_history_position==input_history.GetCount()) 
+	if (input_history_position==int(input_history.GetCount())) 
 		input_history_position++;
 	input_history.Add(input);
 	current_input.Clear();

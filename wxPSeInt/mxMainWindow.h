@@ -169,6 +169,8 @@ public:
 	void ShowSubtitles(bool show);
 	void ShowDesktopTestGrid(bool show, bool one_line=false);
 	
+	void ParseResults(mxSource *source); // analiza el archivo de salida que genera un ejecucion, que contiene los errores de la misma
+	
 	DECLARE_EVENT_TABLE();
 };
 

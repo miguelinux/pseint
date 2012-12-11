@@ -87,9 +87,9 @@ void ConfigManager::LoadDefaults() {
 	temp_dir = home_dir;
 	if (!wxFileName::DirExists(temp_dir))
 		wxFileName::Mkdir(temp_dir);
-	temp_file = _T("temp.psc");
-	temp_out = _T("temp.out");
-	temp_draw = _T("temp.psd");
+//	temp_file = _T("temp.psc");
+//	temp_out = _T("temp.out");
+//	temp_draw = _T("temp.psd");
 }
 
 void ConfigManager::Save() {
@@ -110,9 +110,9 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
-	fil.AddLine(wxString(_T("temp_draw="))<<temp_draw);
-	fil.AddLine(wxString(_T("temp_file="))<<temp_file);
-	fil.AddLine(wxString(_T("temp_out="))<<temp_out);
+//	fil.AddLine(wxString(_T("temp_draw="))<<temp_draw);
+//	fil.AddLine(wxString(_T("temp_file="))<<temp_file);
+//	fil.AddLine(wxString(_T("temp_out="))<<temp_out);
 	fil.AddLine(wxString(_T("last_dir="))<<last_dir);
 	fil.AddLine(wxString(_T("help_dir="))<<help_dir);
 	fil.AddLine(wxString(_T("proxy="))<<proxy);
@@ -231,9 +231,9 @@ void ConfigManager::Read() {
 			else if (key==_T("examples_dir")) examples_dir=value;
 			else if (key==_T("last_dir")) last_dir=value;
 			else if (key==_T("temp_dir")) temp_dir=value;
-			else if (key==_T("temp_file")) temp_file=value;
-			else if (key==_T("temp_draw")) temp_draw=value;
-			else if (key==_T("temp_out")) temp_out=value;
+//			else if (key==_T("temp_file")) temp_file=value;
+//			else if (key==_T("temp_draw")) temp_draw=value;
+//			else if (key==_T("temp_out")) temp_out=value;
 			else if (key==_T("pseint_command")) pseint_command=value;
 			else if (key==_T("psterm_command")) psterm_command=value;
 			else if (key==_T("psterm_command")) psterm_command=value;
@@ -296,19 +296,20 @@ int ConfigManager::GetDebugPort ( ) {
 	if (fixed_port) return debug_port; else return debug_port+rand()%150;
 }
 
-wxString ConfigManager::GetTempPSC ( ) {
-	return DIR_PLUS_FILE(temp_dir,temp_file);
-}
-
-wxString ConfigManager::GetTempOUT ( ) {
-	return DIR_PLUS_FILE(temp_dir,temp_out);
-}
-
-wxString ConfigManager::GetTempPSD ( ) {
-	return DIR_PLUS_FILE(temp_dir,temp_draw);
-}
+//wxString ConfigManager::GetTempPSC ( ) {
+//	return DIR_PLUS_FILE(temp_dir,temp_file);
+//}
+//
+//wxString ConfigManager::GetTempOUT ( ) {
+//	return DIR_PLUS_FILE(temp_dir,temp_out);
+//}
+//
+//wxString ConfigManager::GetTempPSD ( ) {
+//	return DIR_PLUS_FILE(temp_dir,temp_draw);
+//}
 
 wxString ConfigManager::GetTTYCommand ( ) {
+	if (use_psterm) return psterm_command;
 	if (tty_command==_no_tty) { // tratar de detectar automaticamente un terminal adecuado
 		if (utils->GetOutput(_T("xterm -version")).Len()) {
 			tty_command = _T("xterm -T \"$name\" -e");

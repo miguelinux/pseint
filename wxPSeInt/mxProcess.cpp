@@ -62,11 +62,8 @@ void mxProcess::OnTerminate(int pid, int status) {
 		if (source) source->SetDebugLine();
 		debug->process=NULL;
 	}
-	if (what==mxPW_DRAWEDIT) {
-		if (source) source->EditFlow(NULL);
-	}
 	if (what==mxPW_RUN) {
-		if (source) ReadOut(); // el if es por si el usuario cerro el fuente mientras este corria
+		if (source && !config->use_psterm) main_window->ParseResults(source); // el if es por si el usuario cerro el fuente mientras este corria
 	}
 	if (proc_for_killing) {
 		delete proc_for_killing;
@@ -144,12 +141,13 @@ bool mxProcess::Run(wxString file, bool check_first) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	temp = config->GetTempOUT();
-	temp<<_T(".")<<cont;
+	if (config->use_psterm) command<<_T(" --port=")<<comm_manager->GetServerPort()<<" --id="<<source->GetId()<<" ";
+	temp = source->GetTempFilenameOUT();
 	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
+	if (config->use_psterm) command<<_T(" --forpseintterminal");
 #ifdef __WIN32__
-	command<<" --fixwincharset";
+	if (!config->use_psterm) command<<" --fixwincharset";
 #endif
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	if (source) source->SetStatus(STATUS_RUNNING);
@@ -165,8 +163,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	temp = config->GetTempOUT();
-	temp<<_T(".")<<cont;
+	temp = source->GetTempFilenameOUT();
 	debug->Start(this,source);
 	int port=comm_manager->GetServerPort();
 	int delay=_calc_delay(config->stepstep_speed);
@@ -183,28 +180,28 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 
 bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-	if (check_first) return CheckSyntax(file,config->GetTempPSD());
+	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxString command;
-	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<config->GetTempPSD()<<_T("\"");
+	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,config->GetTempPSD());
+	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxString command;
 	command<<config->psdraw2_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
-	command<<_T(" \"")<<config->GetTempPSD()<<_T("\"");
+	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
 bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_SAVEDRAW:mxPW_SAVEDRAW;
-	if (check_first) return CheckSyntax(file,config->GetTempPSD());
+	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxFileDialog dlg (main_window, _T("Guardar Dibujo"),_T(""),_T(""), _T("Imagen jpg|*.jpg|Imagen bmp|*.bmp|Imagen png|*.png"),  wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
 	wxString command;
@@ -214,7 +211,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	wxString fname = dlg.GetPath();
 	if (fname.Len()<4 || fname.Right(4).MakeLower()!=wxString(_T("."))+ext)
 		fname<<_T(".")<<ext;
-	command<<config->psdraw_command<<_T(" \"")<<config->GetTempPSD()<<_T("\" ");
+	command<<config->psdraw_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	/*if (config->high_res_flows)*/ command<<_T(" +");
 	command<<ext<<_T(" \"")<<fname<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -222,54 +219,15 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 
 bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT;
-	if (check_first) return CheckSyntax(file,config->GetTempPSD());
+	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxMessageBox(_T("Si el código define subprocesos o utiliza funciones de manejos de cadenas no se exportará correctamente.\nEstas limitaciones serán solucionadas en las próximas versiones de PSeInt."),_T("Exportar a código C++"),wxOK|wxICON_EXCLAMATION);
 	wxFileDialog dlg (main_window, _T("Guardar Cpp"),config->last_dir,_T(""), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	wxString command;
-	command<<config->psexport_command<<_T(" \"")<<config->GetTempPSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
+	command<<config->psexport_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
 	if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
-}
-
-void mxProcess::ReadOut() {
-	main_window->results_tree->DeleteChildren(main_window->results_root);	
-	wxTextFile fil(temp);
-	bool happy_ending = false;
-	if (fil.Exists()) {
-		fil.Open();
-		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-			if (str[0]=='*') {
-//				if (str.Contains("Interrumpida"))
-//					main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Interrumpida"));
-//				else 
-				if (str.Contains(_T("Finalizada"))) {
-					happy_ending=true;
-					main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Finalizada"));
-					source->SetStatus(STATUS_RUNNED_OK);
-				}
-			} else {
-				if (str.Len())
-					main_window->results_tree->AppendItem(main_window->results_root,str,1);
-			}
-		}
-		fil.Close();
-		wxRemoveFile(temp);
-		if (!happy_ending) {
-			source->SetStatus(STATUS_RUNNED_INT);
-			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Ejecucion Interrumpida"));
-			main_window->SelectFirstError();
-			wxTreeItemIdValue v;
-			wxTreeItemId item(main_window->results_tree->GetFirstChild(main_window->results_root,v));
-			wxTreeEvent evt(0,main_window->results_tree,item);
-			main_window->OnSelectError(evt);
-			main_window->Raise();
-		} else {
-			if (main_window->notebook->GetPageCount()) main_window->notebook->GetPage(main_window->notebook->GetSelection())->SetFocus();
-		}
-	}
-	if (!happy_ending) main_window->ShowResults(true,false);
 }
 
 wxString mxProcess::GetProfileArgs() {

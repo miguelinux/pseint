@@ -1,3 +1,7 @@
+20121210
+	Ahora se puede modificar el pseudocódigo de un programa en ejecución y observar sobre la misma ejecución.
+	Ahora se utiliza una terminal propia para ejecutar los algoritmos.
+	
 20121209
 	Implementada una nueva barra de estado más funcional.
 

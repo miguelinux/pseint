@@ -425,7 +425,7 @@ void mxMainWindow::CreateNotebook() {
 
 void mxMainWindow::CreateStatusBar() {
 	status_bar=new mxStatusBar(this);
-	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(20,20).PaneBorder(false)	);
+	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(23,23).PaneBorder(false)	);
 }
 
 mxSource *mxMainWindow::NewProgram() {
@@ -590,11 +590,13 @@ void mxMainWindow::OnEdit(wxCommandEvent &evt) {
 void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
-		wxString fname=source->SaveTemp();
-		if (debug->debugging)
-			debug->Stop();
-		else
-			(new mxProcess(source))->Run(fname,true);
+		if (!source->UpdateRunningTerminal()) {
+			wxString fname=source->SaveTemp();
+			if (debug->debugging)
+				debug->Stop();
+			else
+				(new mxProcess(source))->Run(fname,true);
+		}
 	}
 }
 
@@ -1347,7 +1349,8 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			debug->Stop();
 		else {
 			mxProcess *flow=new mxProcess(source);
-			if (flow->DrawAndEdit(fname,true)) source->EditFlow(flow); else delete flow;
+			if (!flow->DrawAndEdit(fname,true)) 
+				delete flow;
 		}
 	}	
 }
@@ -1527,3 +1530,39 @@ void mxMainWindow::ShowCommandsPanel (bool show) {
 	}
 }
 
+void mxMainWindow::ParseResults(mxSource *source) {
+	results_tree->DeleteChildren(results_root);	
+	wxString temp_filename=source->GetTempFilenameOUT();
+	wxTextFile fil(temp_filename);
+	bool happy_ending = false;
+	if (fil.Exists()) {
+		fil.Open();
+		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+			if (str[0]=='*') {
+				if (str.Contains(_T("Finalizada"))) {
+					happy_ending=true;
+					results_tree->SetItemText(results_root,source->GetPageText()+_T(": Ejecucion Finalizada"));
+					source->SetStatus(STATUS_RUNNED_OK);
+				}
+			} else {
+				if (str.Len())
+					results_tree->AppendItem(results_root,str,1);
+			}
+		}
+		fil.Close();
+//		wxRemoveFile(temp_filename);
+		if (!happy_ending) {
+			source->SetStatus(STATUS_RUNNED_INT);
+			results_tree->SetItemText(results_root,source->GetPageText()+_T(": Ejecucion Interrumpida"));
+			SelectFirstError();
+			wxTreeItemIdValue v;
+			wxTreeItemId item(results_tree->GetFirstChild(results_root,v));
+			wxTreeEvent evt(0,results_tree,item);
+			OnSelectError(evt);
+			Raise();
+		} else {
+			if (notebook->GetPageCount()) notebook->GetPage(notebook->GetSelection())->SetFocus();
+		}
+	}
+	if (!happy_ending) ShowResults(true,false);
+}

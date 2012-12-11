@@ -167,11 +167,11 @@ void ExeError(int num,string s) {
 				ExeInfo<<"Lin "<<fi.line<<" (inst "<<fi.instr<<"): ";
 				ExeInfo<<"...dentro del subproceso "<<fi.func_name<<", invocado desde aquí."<<endl;
 			}
-			ExeInfo<<"*** Ejecucion Interrumpida. ***\n";
+			ExeInfo<<"*** Ejecucion Interrumpida. ***"<<endl;
 		} 
 		if (wait_key) {
 			if (colored_output) setForeColor(COLOR_INFO);
-			cout<<"*** Ejecucion Interrumpida. ***\n";
+			cout<<"*** Ejecucion Interrumpida. ***"<<endl;
 		}
 //		Inter.AddError(s,Inter.GetLineNumber());
 		if (ExeInfoOn) ExeInfo.close();

@@ -4,8 +4,12 @@
 #include <wx/timer.h>
 #include <wx/process.h>
 
+class mxFrame;
+
 class mxConsole : public wxPanel {
 private:
+	
+	mxFrame *parent; ///< para avisarle de algunos eventos
 	
 	wxString command; ///< the last command runned in this console
 	
@@ -49,7 +53,8 @@ private:
 	
 	wxTimer *timer_size; ///< timer to reprocess last text after a resize event (regenerates buffer content)
 	int last_clear; ///< position in history where last cls even occured (to rewrite the text when resizing the console)
-	void OnTimerSize(wxTimerEvent &event); ///< reprocess since last cls event to redraw after a resize event
+	void CalcResize(); ///< reprocess since last cls event to redraw after a resize event
+	void OnTimerSize(wxTimerEvent &event); ///< calls resize when in timer_tize event
 	void OnSize( wxSizeEvent &event ); ///< starts timer_size for regenerating buffer after a resize event
 	
 	bool caret_visible; ///< indicates if caret should be visible or not
@@ -60,7 +65,7 @@ private:
 	DECLARE_EVENT_TABLE();
 	
 public:
-	mxConsole(wxWindow *parent);
+	mxConsole(mxFrame *parent);
 	void Run(wxString command);
 	void Reload();
 	void SetFontSize(int size);
@@ -70,7 +75,6 @@ public:
 	void Clear(bool record=true);
 	void GotoXY(int x, int y, bool record=true);
 	void Reset(bool hard=false);
-	
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+#include "mxUtils.h"
 #include "mxSource.h"
 #include "mxStatusBar.h"
 #include "ConfigManager.h"
@@ -15,6 +16,7 @@ using namespace std;
 #include "RTSyntaxManager.h"
 
 #define RT_DELAY 1000
+#define RELOAD_DELAY 5000
 
 int mxSource::last_id=0;
 
@@ -110,9 +112,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
   
 	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
 	
+	mask_timers=false;
 	rt_running=false;
-	flow_process=NULL; flow_socket=NULL;
-	run_process=NULL; run_socket=NULL;
+	flow_socket=NULL;
+	run_socket=NULL;
 	input=NULL;
 	
 	page_text=ptext;
@@ -160,7 +163,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	SetDropTarget(new mxDropTarget());
 	
 	rt_timer = new wxTimer(GetEventHandler());
-	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnRealTimeSyntaxTimer),NULL,this);
+	reload_timer = new wxTimer(GetEventHandler());
+	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnTimer),NULL,this);
 	
 	SetStatus(STATUS_NEW_SOURCE);
 	
@@ -169,6 +173,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 }
 
 mxSource::~mxSource() {
+	wxRemoveFile(GetTempFilenameOUT());
+	wxRemoveFile(GetTempFilenamePSC());
+	wxRemoveFile(GetTempFilenamePSD());
+	reload_timer->Stop();
 	rt_timer->Stop();
 	debug->Close(this);
 	if (flow_socket) {
@@ -711,7 +719,7 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 void mxSource::MessageReadOnly() {
-	if (flow_process) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
+	if (flow_socket) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
 	else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
 	else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
 }
@@ -1026,30 +1034,33 @@ void mxSource::SetAutocompletion() {
 	comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"));
 }
 
-void mxSource::EditFlow (mxProcess *proc) {
-	flow_process=proc; SetReadOnly(proc!=NULL||is_example);
-	if (flow_process) {
-		SetStatus(STATUS_FLOW);
-	} else {
-		flow_socket=NULL;
-		status_should_change=true; 
-		SetStatus();
-	}
-}
-
-void mxSource::ReloadTemp (wxString file) {
+void mxSource::ReloadFromTempPSD () {
+	wxString file=GetTempFilenamePSD();
 	bool isro=GetReadOnly();
 	if (isro) SetReadOnly(false);
 	LoadFile(file);
 	SetModify(true);
 	if (isro) SetReadOnly(true);
+	if (run_socket) UpdateRunningTerminal();
 }
 
 wxSocketBase * mxSource::GetFlowSocket ( ) {
 	return flow_socket;
 }
+
 void mxSource::SetFlowSocket ( wxSocketBase *s ) {
-	flow_socket=s;
+	if ((flow_socket=s)) {
+		SetReadOnly(true);
+		SetStatus(STATUS_FLOW);
+	} else {
+		if (!is_example) SetReadOnly(false);
+		status_should_change=true; 
+		SetStatus();
+	}
+}
+
+void mxSource::SetRunSocket ( wxSocketBase *s ) {
+	run_socket=s;
 }
 
 void mxSource::SetDebugPause() {
@@ -1184,13 +1195,20 @@ void mxSource::StopRTSyntaxChecking ( ) {
 	ClearErrors(); ClearBlocks(); UnHighLightBlock();
 }
 
-void mxSource::OnRealTimeSyntaxTimer (wxTimerEvent & te) {
-	if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
-	DoRealTimeSyntax(); HighLightBlock();
+void mxSource::OnTimer (wxTimerEvent & te) {
+	if (te.GetEventObject()==rt_timer) {
+		if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
+		DoRealTimeSyntax(); HighLightBlock();
+	} else if (te.GetEventObject()==reload_timer) {
+		if (run_socket && rt_errors.GetCount()==0) UpdateRunningTerminal();
+	}
 }
 
 void mxSource::OnChange(wxStyledTextEvent &event) {
-	if (rt_running) { rt_timer->Start(RT_DELAY,true); }
+	if (!mask_timers) {
+		rt_timer->Start(RT_DELAY,true);
+		reload_timer->Start(RELOAD_DELAY,true);
+	}
 	event.Skip();
 }
 
@@ -1314,6 +1332,7 @@ void mxSource::SetStatus (int cual) {
 	}
 	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
 		if (rt_errors.GetCount()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
+		else if (run_socket) status_bar->SetStatus(status=STATUS_RUNNING_CHANGED);
 		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
 	} else // ...sin verificacion de sintaxis en tiempo real
 		status_bar->SetStatus(status=STATUS_NO_RTSYNTAX);
@@ -1322,16 +1341,47 @@ void mxSource::SetStatus (int cual) {
 
 void mxSource::OnModify (wxStyledTextEvent & event) {
 	status_should_change=true; event.Skip();
+	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) SetStatus(STATUS_RUNNING_CHANGED);
 }
 
 int mxSource::GetId ( ) {
 	return id;
 }
 
-wxString mxSource::SaveTemp ( ) {
-	wxString fname=config->GetTempPSC();
+wxString mxSource::GetTempFilename() {
+	return DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);
+}
+
+wxString mxSource::GetTempFilenamePSC() {
+	return GetTempFilename()+".psc";
+}
+
+wxString mxSource::GetTempFilenamePSD() {
+	return GetTempFilename()+".psd";
+}
+
+wxString mxSource::GetTempFilenameOUT() {
+	return GetTempFilename()+".out";
+}
+
+
+wxString mxSource::SaveTemp() {
+	mask_timers=true;
+	wxString fname=GetTempFilenamePSC();
 	bool mod = GetModify();
 	SaveFile(fname);
 	SetModify(mod);
+	mask_timers=false;
 	return fname;
 }
+
+bool mxSource::UpdateRunningTerminal (bool force) {
+	if (!run_socket) return false;
+	if (!force && rt_running && !rt_timer->IsRunning() && rt_errors.GetCount()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
+	reload_timer->Stop();
+	SaveTemp();
+	run_socket->Write("reload\n",7);
+	SetStatus(STATUS_RUNNING_UPDATED);
+	return true;
+}
+

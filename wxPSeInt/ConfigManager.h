@@ -77,9 +77,9 @@ public:
 	wxString psexport_command;
 	wxString last_dir;
 	wxString temp_dir;
-	wxString temp_file;
-	wxString temp_out;
-	wxString temp_draw;
+	wxString /*temp*/_file;
+//	wxString temp_out;
+//	wxString temp_draw;
 	wxString help_dir;
 	wxString examples_dir;
 	wxString profiles_dir;
@@ -119,9 +119,9 @@ public:
 	int GetCommPort();
 	int GetDebugPort();
 	
-	wxString GetTempPSC();
-	wxString GetTempPSD();
-	wxString GetTempOUT();
+//	wxString GetTempPSC();
+//	wxString GetTempPSD();
+//	wxString GetTempOUT();
 	
 };
 
