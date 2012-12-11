@@ -1382,3 +1382,7 @@ bool mxSource::UpdateRunningTerminal (bool force) {
 	return true;
 }
 
+void mxSource::StopReloadTimer ( ) {
+	reload_timer->Stop();
+}
+

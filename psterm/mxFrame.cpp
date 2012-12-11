@@ -4,6 +4,8 @@
 #include <wx/button.h>
 #include <wx/msgdlg.h>
 #include <wx/app.h>
+#include <iostream>
+using namespace std;
 
 enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RELOAD };
 
@@ -16,10 +18,11 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 END_EVENT_TABLE()
 
 mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxSize(550,350)) {
+	already_connected=false;
 	src_id=id;
 	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	console=new mxConsole(this,scroll);
-	play_from_here=new wxButton(this,FRAME_ID_PLAY," Continuar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	play_from_here=new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 	is_present=true; play_from_here->Hide();
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -59,6 +62,9 @@ void mxFrame::OnSocketEvent (wxSocketEvent & event) {
 	if (event.GetSocketEvent()==wxSOCKET_CONNECTION) {
 		wxString msg("hello-run "); msg<<src_id<<"\n";
 		socket->Write(msg.c_str(),msg.Len());
+		already_connected=true;
+		if (tosend_after_hello.Len()) 
+			socket->Write(tosend_after_hello.c_str(),tosend_after_hello.Len());
 	} if (event.GetSocketEvent()==wxSOCKET_INPUT) {
 		// leer datos y procesar
 		wxChar buf[256];
@@ -92,7 +98,10 @@ void mxFrame::ProcessCommand ( ) {
 void mxFrame::OnProcessTerminated ( ) {
 	if (!socket) return;
 	wxString msg("terminated\n");
-	socket->Write(msg.c_str(),msg.Len());
+	if (already_connected)
+		socket->Write(msg.c_str(),msg.Len());
+	else 
+		tosend_after_hello<<msg;
 }
 
 void mxFrame::OnClose (wxCloseEvent & event) {

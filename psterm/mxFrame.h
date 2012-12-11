@@ -13,6 +13,8 @@ private:
 	wxScrollBar *scroll;
 	mxConsole *console;
 	wxSocketClient *socket;
+	bool already_connected; ///< false si esta esperando establecer la conexion, para no enviar nada antes del hello
+	wxString tosend_after_hello; ///< si quiere enviar algo por el socket antes del hello, en lugar de enviarlo lo guarda aca
 	int src_id;
 	wxString buffer;
 	bool is_present; ///< para saber si mostrar o no el boton "continuar desde aqui"

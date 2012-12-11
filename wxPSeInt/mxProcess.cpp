@@ -136,6 +136,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 
 bool mxProcess::Run(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_RUN:mxPW_RUN;
+	source->StopReloadTimer();
 	if (check_first) return CheckSyntax(file);
 	wxString command, tty_command=config->GetTTYCommand();
 	if (tty_command.Len()) {
@@ -151,7 +152,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	if (!config->use_psterm) command<<" --fixwincharset";
 #endif
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
-	if (source) source->SetStatus(STATUS_RUNNING);
+	if (source)	source->SetStatus(STATUS_RUNNING);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 

@@ -116,14 +116,15 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 			output->Write(&c,1);
 		} else {
 			if (c=='\r'||c=='\n') { 
-				RecordInput(current_input+"\n");
+				current_input<<"\n";
+				output->Write(current_input.c_str(),current_input.Len());
+				RecordInput(current_input);
 				c='\n';
 			} else if (c=='\b') {
 				if (!current_input.Len()) return;
 				current_input.RemoveLast();
 			} else
 				current_input<<c;
-			output->Write(&c,1);
 			Print(wxString()<<c);
 			Refresh();
 		}
@@ -141,8 +142,6 @@ void mxConsole::Print (wxString text, bool record) {
 	if (!buffer) return;
 	int l=text.Len();
 	for(int i=0;i<l;i++) {
-		if (text[i]=='[') 
-			cerr<<"AAA";
 		if (text[i]=='\n') {
 			if (record) MarkEvent();
 			cur_x=buffer_w;
@@ -404,7 +403,6 @@ void mxConsole::RebuildBuffer ( ) {
 
 void mxConsole::PlayFromCurrentEvent ( ) {
 	if (!events.size()) return;
-	cerr<<cur_event<<"   "<<events[cur_event].input_count<<endl;
 	if (cur_event!=-1) {
 		input_history.erase(input_history.begin()+events[cur_event].input_count,input_history.end());
 	}

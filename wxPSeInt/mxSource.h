@@ -139,6 +139,8 @@ public:
 	
 	void SetStatus(int cual=-1);
 	
+	void StopReloadTimer();
+	
 	DECLARE_EVENT_TABLE();
 };
 

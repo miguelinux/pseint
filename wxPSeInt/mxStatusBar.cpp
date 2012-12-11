@@ -4,6 +4,7 @@
 #include <wx/event.h>
 #include "mxMainWindow.h"
 #include <wx/utils.h>
+#include <wx/settings.h>
 
 BEGIN_EVENT_TABLE(mxStatusBar,wxPanel)
 	EVT_PAINT(mxStatusBar::OnPaint)
@@ -23,6 +24,7 @@ mxStatusBar *status_bar=NULL;
 mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
 	wxColour negro(0,0,0),rojo(128,0,0),verde(0,75,0),azul(0,0,128);
 	font = wxFont(11,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+	bg_color=wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 	wxTextFile fil(_T("version")); 
 	if (fil.Exists()) {
 		fil.Open();
@@ -58,7 +60,7 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 void mxStatusBar::OnPaint (wxPaintEvent & event) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(wxColour(230,230,230));
+	dc.SetBackground(bg_color);
 	dc.SetTextForeground(texts[status].col);
 	dc.Clear();
 	dc.SetFont(font);

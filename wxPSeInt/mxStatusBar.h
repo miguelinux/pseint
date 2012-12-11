@@ -16,6 +16,7 @@ class mxStatusBar : public wxPanel {
 private:
 	int status;
 	wxFont font;
+	wxColour bg_color;
 	void OnPaint(wxPaintEvent &event);
 	void OnClick(wxMouseEvent &event);
 	DECLARE_EVENT_TABLE();
