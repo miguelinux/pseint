@@ -181,11 +181,11 @@ mxSource::~mxSource() {
 	rt_timer->Stop();
 	debug->Close(this);
 	if (flow_socket) {
-		flow_socket->Write("quit",4);
+		flow_socket->Write("quit\n",5);
 		flow_socket=NULL;
 	}
 	if (run_socket) {
-		run_socket->Write("quit",4);
+		run_socket->Write("quit\n",5);
 		run_socket=NULL;
 	}
 	mxProcess *proc=proc_list;

@@ -120,7 +120,7 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 			Print(wxString()<<c);
 			Refresh();
 		}
-	} else wxExit();
+	} else parent->Close();
 }
 
 void mxConsole::SetFontSize (int size) {

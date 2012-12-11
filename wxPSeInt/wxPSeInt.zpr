@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxVarWindow.cpp
+current_source=mxSource.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -39,7 +39,7 @@ marker=76
 marker=37
 [source]
 path=mxSource.cpp
-cursor=45182
+cursor=7036
 open=true
 [source]
 path=mxProcess.cpp
