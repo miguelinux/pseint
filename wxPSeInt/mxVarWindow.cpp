@@ -75,7 +75,8 @@ void mxVarWindow::EndInput ( ) {
 }
 
 void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
-	evt.Skip();	
+	evt.StopPropagation(); // para que no le llegue a main_window y crea que es el arbol de errores
+	evt.Skip(); // para que se seleccione en el arbol
 	wxTreeItemId it=GetSelection();
 	if (it==-1) return;
 	mxSource *src=main_window->GetCurrentSource();
