@@ -5,9 +5,12 @@
 IMPLEMENT_APP(mxApplication)
 	
 static wxString EscapeString(wxString what) {
-	for(int i=0;i<what.Len();i++)
-		if (what[i]=='\''||what[i]=='\"'||what[i]==' '||what[i]=='\\') { what=what.Mid(0,i)+"\\"+what.Mid(i); i++; }
-	return what;
+	bool have_space=false;
+	for(unsigned int i=0;i<what.Len();i++)
+		if (what[i]=='\''||what[i]=='\"'||what[i]=='\\') { what=what.Mid(0,i)+"\\"+what.Mid(i); i++; }
+		else if (what[i]==' ') have_space=true;
+	if (have_space) return wxString("\"")+what+"\"";
+	else return what;
 }
 
 bool mxApplication::OnInit() {

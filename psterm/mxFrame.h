@@ -17,6 +17,7 @@ public:
 //	void OnButtonReload(wxCommandEvent &evt);
 	void InitSocket(int port);
 	void OnSocketEvent(wxSocketEvent &event);
+	void OnClose(wxCloseEvent &event);
 	void ProcessCommand();
 	void OnProcessTerminated();
 	DECLARE_EVENT_TABLE();

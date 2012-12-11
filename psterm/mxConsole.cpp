@@ -44,7 +44,7 @@ static wxColour colors[16] = {
 	wxColour(255,255,255)
 };
 	
-mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
 	this->parent=parent;
 	margin=2;
 	the_process=NULL;
@@ -53,9 +53,8 @@ mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,
 	timer_process=new wxTimer(this,CONSOLE_ID_TIMER_PROCESS);
 	buffer=NULL;
 	Reset();
-	SetFontSize(12);
+	SetFontSize(11);
 }
-
 
 void mxConsole::Reset (bool hard) {
 	if (hard) input_history.Clear();
@@ -69,7 +68,6 @@ void mxConsole::Reset (bool hard) {
 	caret_visible=true;
 	Clear(false);
 }
-
 
 void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) CalcResize();
@@ -136,8 +134,10 @@ void mxConsole::Print (wxString text, bool record) {
 	if (!buffer) return;
 	int l=text.Len();
 	for(int i=0;i<l;i++) {
-		if (text[i]=='\n'||text[i]=='\r') {
+		if (text[i]=='\n') {
 			cur_x=buffer_w;
+		} else if (text[i]=='\r') {
+			cur_x=0;
 		} else if (text[i]=='\b') {
 			if (--cur_x<0) {
 				cur_x=buffer_w-1;
@@ -259,7 +259,6 @@ void mxConsole::Process (wxString input, bool record) {
 
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
 	blinking_caret_aux=!blinking_caret_aux;
-	if (the_process==NULL) { timer_caret->Stop(); caret_visible=false; }
 	Refresh();
 }
 
@@ -310,6 +309,7 @@ void mxConsole::GetProcessOutput () {
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 	if (event.GetPid()==the_process_pid) {
 		GetProcessOutput();
+		ShowCaret(false);
 		the_process->Detach();
 		the_process=NULL;
 		timer_process->Stop();

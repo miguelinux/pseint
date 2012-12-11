@@ -10,9 +10,10 @@ enum { FRAME_ID_BASE=wxID_HIGHEST+1000/*, FRAME_ID_RELOAD*/ };
 BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 //	EVT_BUTTON(FRAME_ID_RELOAD,mxFrame::OnButtonReload)
 	EVT_SOCKET(wxID_ANY,mxFrame::OnSocketEvent)
+	EVT_CLOSE(mxFrame::OnClose)
 END_EVENT_TABLE()
 
-mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"console test",wxDefaultPosition,wxDefaultSize) {
+mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxDefaultSize) {
 	src_id=id;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	console=new mxConsole(this);
@@ -82,5 +83,10 @@ void mxFrame::OnProcessTerminated ( ) {
 	if (!socket) return;
 	wxString msg("terminated\n");
 	socket->Write(msg.c_str(),msg.Len());
+}
+
+void mxFrame::OnClose (wxCloseEvent & event) {
+	console->KillProcess();
+	wxExit();
 }
 

@@ -7,7 +7,9 @@
 class mxFrame;
 
 class mxConsole : public wxPanel {
-private:
+	
+public:
+	
 	
 	mxFrame *parent; ///< para avisarle de algunos eventos
 	
@@ -64,9 +66,6 @@ private:
 	void OnTimerCaret( wxTimerEvent &event ); ///< anima el parpadeo del cursor
 	
 	
-	DECLARE_EVENT_TABLE();
-	
-public:
 	mxConsole(mxFrame *parent);
 	void Run(wxString command);
 	void Reload();
@@ -77,6 +76,9 @@ public:
 	void Clear(bool record=true);
 	void GotoXY(int x, int y, bool record=true);
 	void Reset(bool hard=false);
+	
+	DECLARE_EVENT_TABLE();
+	
 };
 
 #endif
