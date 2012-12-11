@@ -1560,8 +1560,8 @@ void mxMainWindow::ParseResults(mxSource *source) {
 			wxTreeEvent evt(0,results_tree,item);
 			OnSelectError(evt);
 			Raise();
-		} else {
-			if (notebook->GetPageCount()) notebook->GetPage(notebook->GetSelection())->SetFocus();
+//		} else {
+//			source->SetFocus();
 		}
 	}
 	if (!happy_ending) ShowResults(true,false);

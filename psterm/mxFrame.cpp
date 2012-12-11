@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 	EVT_CLOSE(mxFrame::OnClose)
 END_EVENT_TABLE()
 
-mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxDefaultSize) {
+mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxSize(550,350)) {
 	src_id=id;
 	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	console=new mxConsole(this,scroll);
