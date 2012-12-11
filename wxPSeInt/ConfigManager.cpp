@@ -249,7 +249,7 @@ void ConfigManager::Read() {
 }
 
 ConfigManager::~ConfigManager() {
-	
+	config=NULL;
 }
 
 wxString ConfigManager::LoadProfile(wxString pname) {

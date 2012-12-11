@@ -16,6 +16,8 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 
 class mxSource : public wxStyledTextCtrl {
 private:
+	wxString temp_filename_prefix; // ruta y nombre de los temporales para este algoritmo (sin extension, ver GetTempFilename*)
+	
 	bool rt_running; // rt_syntax||highlight_blocks||show_vars
 	bool mask_timers; // para evitar lanzar el timer en la modificacion que hace SaveTemp
 	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
@@ -99,7 +101,6 @@ public:
 	void OnSavePointLeft(wxStyledTextEvent &evt);
 	
 	wxString SaveTemp(); // guarda el fuente actual en un archivo temporal (para pasarle al interprete)
-	wxString GetTempFilename(); // nombre de archivo temporal, sin extension (la extension dependera de para que se quiera), no usar directamente
 	wxString GetTempFilenamePSC(); // nombre de archivo temporal para el pseudocodigo
 	wxString GetTempFilenameOUT(); // nombre de archivo temporal para los resultados
 	wxString GetTempFilenamePSD(); // nombre de archivo temporal para el diagrama de flujo

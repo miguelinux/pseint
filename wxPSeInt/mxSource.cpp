@@ -102,6 +102,7 @@ static bool EsLetra(const char &c) {
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
 	id=++last_id;
+	temp_filename_prefix=DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);	
 	
 // se modifica en launcher.txt en lugar de aca, para nadie use utf8 y entonces se vea igual en todos lados y tampoco tenga que convertir los ejemplos
   // #ifndef __WIN32__
@@ -1348,20 +1349,16 @@ int mxSource::GetId ( ) {
 	return id;
 }
 
-wxString mxSource::GetTempFilename() {
-	return DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);
-}
-
 wxString mxSource::GetTempFilenamePSC() {
-	return GetTempFilename()+".psc";
+	return temp_filename_prefix+".psc";
 }
 
 wxString mxSource::GetTempFilenamePSD() {
-	return GetTempFilename()+".psd";
+	return temp_filename_prefix+".psd";
 }
 
 wxString mxSource::GetTempFilenameOUT() {
-	return GetTempFilename()+".out";
+	return temp_filename_prefix+".out";
 }
 
 
