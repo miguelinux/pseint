@@ -44,7 +44,9 @@ static wxColour colors[16] = {
 	wxColour(255,255,255)
 };
 	
-mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+	this->scroll=scroll;
+	if (scroll) scroll->SetScrollbar(0,1,1,1,false);
 	this->parent=parent;
 	margin=2;
 	the_process=NULL;
@@ -52,13 +54,17 @@ mxConsole::mxConsole(mxFrame *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,
 	timer_caret=new wxTimer(this,CONSOLE_ID_TIMER_CARET);
 	timer_process=new wxTimer(this,CONSOLE_ID_TIMER_PROCESS);
 	buffer=NULL;
-	Reset();
+	Reset(true);
 	SetFontSize(11);
 }
 
 void mxConsole::Reset (bool hard) {
-	if (hard) input_history.Clear();
-	if (hard) current_input="";
+	events.clear();
+	cur_event=-1;
+	if (hard) {
+		input_history.clear();
+		current_input="";
+	}
 	wait_one_key=false;
 	input_history_position=0;
 	history=""; last_clear=0; 
@@ -101,6 +107,7 @@ void mxConsole::OnSize (wxSizeEvent & event) {
 
 void mxConsole::OnChar (wxKeyEvent & event) {
 	if (the_process) {
+		if (cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
 		char c=char(event.GetKeyCode());
 		if (wait_one_key) {
@@ -134,7 +141,10 @@ void mxConsole::Print (wxString text, bool record) {
 	if (!buffer) return;
 	int l=text.Len();
 	for(int i=0;i<l;i++) {
+		if (text[i]=='[') 
+			cerr<<"AAA";
 		if (text[i]=='\n') {
+			if (record) MarkEvent();
 			cur_x=buffer_w;
 		} else if (text[i]=='\r') {
 			cur_x=0;
@@ -191,12 +201,20 @@ void mxConsole::Clear (bool record) {
 }
 
 void mxConsole::Process (wxString input, bool record) {
-	int i=record?0:last_clear,l=input.Len(); int i0=i;
+	int i,l;
+	if (record) { // normal, viene un comando nuevo, se procesa todo
+		i=0; l=input.Len();
+	} else if (cur_event==-1) { // tiempo actual, se reprocesa desde el ultimo last_clear hasta el final
+		i=last_clear; l=input.Len();
+	} else { // viaje en el tiempo, se reprocesa hasta cierto evento
+		i=events[cur_event].last_clear; l=events[cur_event].pos;
+	}
+	int i0=i;
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i-i0) Print(input.Mid(i0,i-i0),record);	
 			if (input[i+2]=='z' && input[i+3]=='k') { // getKey
-				if (input_history_position>=int(input_history.GetCount())) { 
+				if (input_history_position>=int(input_history.size())) { 
 					wait_one_key=true;
 				} else {
 					wxString aux=input_history[input_history_position++];
@@ -205,7 +223,7 @@ void mxConsole::Process (wxString input, bool record) {
 				}
 				i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
-				if (input_history_position>=int(input_history.GetCount())) { 
+				if (input_history_position>=int(input_history.size())) { 
 					wxOutputStream *output=the_process->GetOutputStream();
 					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input);
@@ -254,7 +272,7 @@ void mxConsole::Process (wxString input, bool record) {
 		}
 		i++;
 	}
-	if (i-i0) Print(input.Mid(i0,i0-i),record);	
+	if (i-i0) Print(input.Mid(i0,i-i0),record);	
 }
 
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
@@ -274,8 +292,7 @@ void mxConsole::CalcResize() {
 	if (buffer_h<1) buffer_h=1;
 	delete [] buffer;
 	buffer=new console_char[buffer_w*buffer_h];
-	cur_x=cur_y=0; Process(history, false);
-	Refresh();
+	RebuildBuffer();
 }
 
 void mxConsole::Run (wxString command) {
@@ -323,10 +340,11 @@ void mxConsole::GotoXY (int x, int y, bool record) {
 	cur_y=y; if (y>=buffer_h) y=buffer_h;
 }
 
-void mxConsole::Reload ( ) {
+void mxConsole::Reload (int to) {
 	KillProcess();
 	Reset(false);
 	Run(command);
+	parent->SetIsPresent(true);
 }
 
 void mxConsole::KillProcess ( ) {
@@ -338,9 +356,9 @@ void mxConsole::KillProcess ( ) {
 }
 
 void mxConsole::RecordInput (wxString input) {
-	if (input_history_position==int(input_history.GetCount())) 
+	if (input_history_position==int(input_history.size())) 
 		input_history_position++;
-	input_history.Add(input);
+	input_history.push_back(input);
 	current_input.Clear();
 }
 
@@ -354,5 +372,42 @@ void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
 	SetFontSize(fsize);
 	timer_size->Start(_SIZE_TIME,true);
 	Refresh();
+}
+
+void mxConsole::MarkEvent ( ) {
+	if (!scroll) return;
+	history_event h;
+	h.pos=history.Len();
+	h.last_clear=last_clear;
+	h.input_count=input_history.size();
+	if (input_history_position<h.input_count) 
+		h.input_count=input_history_position;
+	events.push_back(h);
+	scroll->SetScrollbar(h.pos,1,events.size()+1,h.pos/10,true);
+}
+
+void mxConsole::SetTime (int t) {
+	if (t>=int(events.size())) {
+		t=-1; parent->SetIsPresent(true);
+	} else {
+		parent->SetIsPresent(false);
+	}
+	cur_event=t;
+	RebuildBuffer();
+}
+
+void mxConsole::RebuildBuffer ( ) {
+	Clear(false); cur_x=cur_y=0;
+	Process(history, false);
+	Refresh();
+}
+
+void mxConsole::PlayFromCurrentEvent ( ) {
+	if (!events.size()) return;
+	cerr<<cur_event<<"   "<<events[cur_event].input_count<<endl;
+	if (cur_event!=-1) {
+		input_history.erase(input_history.begin()+events[cur_event].input_count,input_history.end());
+	}
+	Reload();
 }
 

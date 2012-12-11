@@ -5,23 +5,33 @@
 #include <wx/msgdlg.h>
 #include <wx/app.h>
 
-enum { FRAME_ID_BASE=wxID_HIGHEST+1000/*, FRAME_ID_RELOAD*/ };
+enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RELOAD };
 
 BEGIN_EVENT_TABLE(mxFrame,wxFrame)
-//	EVT_BUTTON(FRAME_ID_RELOAD,mxFrame::OnButtonReload)
+	EVT_BUTTON(FRAME_ID_RELOAD,mxFrame::OnButtonReload)
+	EVT_BUTTON(FRAME_ID_PLAY,mxFrame::OnButtonPlay)
 	EVT_SOCKET(wxID_ANY,mxFrame::OnSocketEvent)
+	EVT_SCROLL(mxFrame::OnScroll)
 	EVT_CLOSE(mxFrame::OnClose)
 END_EVENT_TABLE()
 
 mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxDefaultSize) {
 	src_id=id;
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	console=new mxConsole(this);
-	sizer->Add(console,wxSizerFlags().Proportion(1).Expand());
-//	wxBoxSizer *sizer_but = new wxBoxSizer(wxHORIZONTAL);
-//	sizer_but->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"));
-//	sizer->Add(sizer_but,wxSizerFlags().Proportion(0).Expand());
-//	SetSizer(sizer);
+	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
+	console=new mxConsole(this,scroll);
+	play_from_here=new wxButton(this,FRAME_ID_PLAY," Continuar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	is_present=true; play_from_here->Hide();
+	
+	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
+	sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
+	sizer_in->Add(play_from_here,wxSizerFlags().Right());
+#ifdef DEBUG
+	sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
+#endif
+	sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
+	sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
+	SetSizer(sizer);
 	Show();
 	wxTimerEvent evt;
 	if (port!=-1) InitSocket(port);
@@ -29,10 +39,10 @@ mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeI
 	console->SetFocus();
 }
 
-//void mxFrame::OnButtonReload (wxCommandEvent & evt) {
-//	console->Reload();
-//	console->SetFocus();
-//}
+void mxFrame::OnButtonPlay (wxCommandEvent & evt) {
+	console->PlayFromCurrentEvent();
+	console->SetFocus();
+}
 
 void mxFrame::InitSocket (int port) {
 	socket=new wxSocketClient(wxSOCKET_NOWAIT);
@@ -88,5 +98,20 @@ void mxFrame::OnProcessTerminated ( ) {
 void mxFrame::OnClose (wxCloseEvent & event) {
 	console->KillProcess();
 	wxExit();
+}
+
+void mxFrame::OnScroll (wxScrollEvent & event) {
+	console->SetTime(scroll->GetThumbPosition());
+}
+
+void mxFrame::SetIsPresent (bool is) {
+	if (is==is_present) return;
+	is_present=is;
+	play_from_here->Show(!is);
+	Layout();
+}
+
+void mxFrame::OnButtonReload (wxCommandEvent & evt) {
+	console->Reload();
 }
 
