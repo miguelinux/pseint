@@ -12,6 +12,7 @@
 #include "FlowEditionManager.h"
 #include "mxDebugWindow.h"
 #include "CommunicationsManager.h"
+#include <iostream>
 using namespace std;
 
 mxProcess *proc_list;

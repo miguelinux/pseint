@@ -17,6 +17,7 @@ BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_TIMER(CONSOLE_ID_TIMER_CARET,mxConsole::OnTimerCaret)
 	EVT_TIMER(CONSOLE_ID_TIMER_PROCESS,mxConsole::OnTimerProcess)
 	EVT_END_PROCESS(wxID_ANY,mxConsole::OnProcessTerminate)
+	EVT_MOUSEWHEEL(mxConsole::OnMouseWheel)
 END_EVENT_TABLE()
 	
 #define _buffer(i,j) buffer[(i)*buffer_w+(j)]
@@ -169,7 +170,8 @@ void mxConsole::Print (wxString text, bool record) {
 void mxConsole::ShowCaret (bool show, bool record) {
 	caret_visible=show;
 	if (!caret_visible) timer_caret->Stop();
-	else timer_caret->Start(_CARET_TIME,false);
+	else 
+		timer_caret->Start(_CARET_TIME,false);
 	if (record) {
 		if (show) history<<"\033[?25h";
 		else history<<"\033[?25l";
@@ -257,6 +259,7 @@ void mxConsole::Process (wxString input, bool record) {
 
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
 	blinking_caret_aux=!blinking_caret_aux;
+	if (the_process==NULL) { timer_caret->Stop(); caret_visible=false; }
 	Refresh();
 }
 
@@ -310,7 +313,6 @@ void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 		the_process->Detach();
 		the_process=NULL;
 		timer_process->Stop();
-		timer_caret->Stop(); caret_visible=false;
 		parent->OnProcessTerminated();
 	}	
 }
@@ -342,4 +344,15 @@ void mxConsole::RecordInput (wxString input) {
 	current_input.Clear();
 }
 
+
+void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
+	if (!evt.ControlDown()) return;
+	int fsize=font.GetPointSize();
+	if (evt.m_wheelRotation<0) {
+		fsize++;
+	} else if (fsize>4) fsize--;
+	SetFontSize(fsize);
+	timer_size->Start(_SIZE_TIME,true);
+	Refresh();
+}
 

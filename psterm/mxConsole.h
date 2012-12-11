@@ -50,6 +50,7 @@ private:
 	int cur_y; ///< current y caret position
 	
 	wxFont font; ///< current font
+	void OnMouseWheel(wxMouseEvent &evt);
 	
 	wxTimer *timer_size; ///< timer to reprocess last text after a resize event (regenerates buffer content)
 	int last_clear; ///< position in history where last cls even occured (to rewrite the text when resizing the console)
@@ -61,6 +62,7 @@ private:
 	bool blinking_caret_aux; ///< aux flag for caret blinking animation
 	wxTimer *timer_caret; ///< timer to blink caret if caret_visible
 	void OnTimerCaret( wxTimerEvent &event ); ///< anima el parpadeo del cursor
+	
 	
 	DECLARE_EVENT_TABLE();
 	
