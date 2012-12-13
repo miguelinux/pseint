@@ -153,7 +153,7 @@ bool DebugManager::Pause() {
 
 void DebugManager::Stop() {
 	if (process && process->pid!=0 && process->Exists(process->pid)) {
-		wxProcess::Kill(process->pid,wxSIGKILL);
+		wxProcess::Kill(process->pid,wxSIGKILL,wxKILL_CHILDREN);
 	}
 }
 

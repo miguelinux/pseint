@@ -153,7 +153,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 #endif
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	if (source)	source->SetStatus(STATUS_RUNNING);
-	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
+	return wxExecute(command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, this)!=0;
 }
 
 bool mxProcess::Debug(wxString file, bool check_first) {
@@ -176,7 +176,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	was_readonly = source->GetReadOnly();
 	if (pid) source->SetReadOnly(true);
-	pid = wxExecute(command, wxEXEC_ASYNC, this);
+	pid = wxExecute(command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, this);
 	return pid!=0;
 }
 
