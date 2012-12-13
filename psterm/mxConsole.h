@@ -88,11 +88,10 @@ public:
 	void PlayFromCurrentEvent(); ///< recarga el proceso, reejecutandolo hasta el evento actual, y siguiendo desde ahi en vivo (si historial)
 	
 	void SetFontSize(int size);
-	void Process(wxString input, bool record=true);
-	void Print(wxString text, bool record=true);
-	void ShowCaret(bool show, bool record=true);
-	void Clear(bool record=true);
-	void GotoXY(int x, int y, bool record=true);
+	void Process(wxString input, bool record=true/*, bool do_print=true*/);
+	void Print(wxString text, bool record/*, bool do_print*/);
+	void ClearBuffer();
+	void GotoXY(int x, int y, bool record);
 	void Reset(bool hard=false);
 	
 	DECLARE_EVENT_TABLE();
