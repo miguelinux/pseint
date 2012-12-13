@@ -320,7 +320,7 @@ void mxConsole::GetProcessOutput () {
 	wxString line;
 	while (the_process->IsInputAvailable())
 		line<<input.GetChar();
-	if (line.Len()) { Process(line); Refresh(); cerr<<"HHHH"; }
+	if (line.Len()) { Process(line); Refresh(); }
 }
 
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {

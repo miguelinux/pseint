@@ -368,6 +368,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			if (LeftCompare(cadena,"MIENTRAS ")) {
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-6,6);
+				_pos(line); 
 				_sub(line,string("Se evalúa la condicion para Mientras: ")+cadena);
 				aux1=Evaluar(cadena,tipo);
 				if (tipo!=vt_error) {
@@ -381,7 +382,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					while (Evaluar(cadena,tipo)=="VERDADERO") {
 						_sub(line,"La condicion es Verdadera, se iniciará una iteración.");
 						Ejecutar(line+1,tmp1-1);
-						_pos(line); // cambio 20080623 para ejecucion paso a paso
+						_pos(line);
 						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
 					}
 					line=tmp1;

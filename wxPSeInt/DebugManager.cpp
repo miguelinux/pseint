@@ -178,7 +178,7 @@ void DebugManager::SetStepIn(bool b) {
 void DebugManager::SetSubtitles(bool b) {
 	subtitles_on=b;
 	if (debugging && socket) {
-		wxString str(_T("subtitulos ")); str<<(step_in?1:0)<<_T("\n");
+		wxString str(_T("subtitulos ")); str<<(b?1:0)<<_T("\n");
 		socket->Write(str.c_str(),str.Len());
 	}
 }
