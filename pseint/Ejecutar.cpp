@@ -386,7 +386,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
 					}
 					line=tmp1;
-//					_pos(line); // cambio 20080623 para ejecucion paso a paso
+//					_pos(line);
 					_sub(line,"La condicion es Falsa, se sale de la estructura Mientras.");
 				}
 			} else 
@@ -415,7 +415,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				do {
 					Ejecutar(line+1,tmp1-1);
 					// evaluar condicion y seguir
-					_pos(tmp1); // cambio 20080623 para ejecucion paso a paso
+					_pos(tmp1);
 					_sub(tmp1,string("Se evalúa la condicion: ")+cadena);
 					aux1=Evaluar(cadena,tipo);
 //					if (tipo==vt_error) ???
@@ -480,13 +480,13 @@ void Ejecutar(int LineStart, int LineEnd) {
 				while (Evaluar(contador+comp+val_fin,tipo)=="VERDADERO") {
 					_sub(line,"La expresión fue Verdadera, se iniciará una iteración.");
 					Ejecutar(line+1,tmp1-1);
-					_pos(line); // cambio 20080623 para ejecucion paso a paso
+					_pos(line);
 					memoria->EscribirValor(contador,aux1=Evaluar(contador+"+("+val_paso+")",tipo));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
 					_sub(line,string("Se compara el contador con el valor final: ")+contador+comp+val_fin);
 				}
 				line=tmp1;
-				_pos(line); // cambio 20080623 para ejecucion paso a paso
+				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para.");
 			} else 
 			// ------------------- PARA CADA --------------------- //
@@ -609,7 +609,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					Ejecutar(x+1,tmp1-1); 
 				}
 				line=fin+1;
-				_pos(line); // cambio 20080623 para ejecucion paso a paso
+				_pos(line);
 				_sub(line,"Se sale de la estructura Segun.	");
 			}
 		}

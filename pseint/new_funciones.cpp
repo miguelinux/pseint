@@ -151,6 +151,14 @@ string func_concatenar(string *arg) {
 	return (arg[0])+(arg[1]);
 }
 
+string func_atof(string *arg) {
+	return DblToStr(StrToDbl(arg[0]));
+}
+
+string func_ftoa(string *arg) {
+	return arg[0];
+}
+
 void LoadFunciones(bool u) {
 	funciones[u?"RC":"rc"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
 	funciones[u?"RAIZ":"raiz"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
@@ -167,6 +175,9 @@ void LoadFunciones(bool u) {
 	funciones[u?"TRUNC":"trunc"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
 	funciones[u?"REDON":"redon"]=new Funcion(vt_numerica,func_redon,vt_numerica);
 	if (enable_string_functions) {
+		funciones[u?"CONVERTIRANÚMERO":"convertiranumero"]=new Funcion(vt_numerica,func_atof,vt_caracter);
+		funciones[u?"CONVERTIRANUMERO":"convertiranumero"]=new Funcion(vt_numerica,func_atof,vt_caracter);
+		funciones[u?"CONVERTIRATEXTO":"convertiratexto"]=new Funcion(vt_caracter,func_ftoa,vt_numerica);
 		funciones[u?"LONGITUD":"longitud"]=new Funcion(vt_numerica,func_longitud,vt_caracter);
 		funciones[u?"SUBCADENA":"subcadena"]=new Funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
 		funciones[u?"MAYUSCULAS":"mayusculas"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);

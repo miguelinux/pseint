@@ -44,7 +44,7 @@ const wxChar* mxSourceWords2_math =
 	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon ");
 
 const wxChar* mxSourceWords2_string =
-	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas ");
+	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto");
 
 //const wxChar* mxSourceWords3 = 
 //	_T("hacer entonces para ");

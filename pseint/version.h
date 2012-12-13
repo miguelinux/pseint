@@ -1,2 +1,2 @@
-#define VERSION 20121212
+#define VERSION 20121213
 #include "version_common.h"

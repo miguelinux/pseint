@@ -80,6 +80,9 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_("longitud")) str=_T("funciones.html");
 	else if (key==_("subcadena")) str=_T("funciones.html");
 	else if (key==_("concatenar")) str=_T("funciones.html");
+	else if (key==_("convertiranumero")) str=_T("funciones.html");
+	else if (key==_("convertiranúmero")) str=_T("funciones.html");
+	else if (key==_("convertiratexto")) str=_T("funciones.html");
 	else if (key==_("subproceso")) str=_T("subprocesos.html");
 	else if (key==_("subprocesos")) str=_T("subprocesos.html");
 	else if (key==_("función")) str=_T("subprocesos.html");
