@@ -1,4 +1,9 @@
+20121213
+	Mejorados los tiempos de respuesta en la comunación entre el intérprete y el editor en la ejecución paso a paso.
+	Agregadas dos nuevas funciones para convertir datos entre los tipos numérico y caracter.
+	
 20121211
+	La nueva terminal ahora permite hacer zoom con control y la rueda del mouse.
 	Ahora la terminal propia es capaz de volver en el tiempo y retomar la ejecución desde un punto en el pasado.
 	
 20121210

@@ -226,10 +226,12 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 				caret_visible=false;
 				timer_caret->Stop();
 				if (record) history<<"\033[?25l";
+				i+=5;
 			} else if (input[i+2]=='?' && input[i+3]=='2' && input[i+4]=='5' && input[i+5]=='h') {
 				caret_visible=true;
 				timer_caret->Start(_CARET_TIME,false);
 				if (record) history<<"\033[?25h";
+				i+=5;
 			} else if (input[i+2]=='4' && input[i+4]=='m') {
 				// background color, ignored
 				i+=4; 
