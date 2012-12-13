@@ -19,7 +19,7 @@ path=main.cpp
 cursor=9739
 [source]
 path=intercambio.cpp
-cursor=5978
+cursor=7111
 marker=278
 marker=43
 open=true
@@ -150,7 +150,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=/home/zaskar/.pseint/temp.psc --coloquialconditions
+args=/home/zaskar/borrame.psc --coloquialconditions
 wait_for_key=1
 temp_folder=../temp/int_lnx_dbg
 output_file=../temp/int_lnx_dbg/pseint

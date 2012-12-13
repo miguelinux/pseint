@@ -17,7 +17,8 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 	EVT_CLOSE(mxFrame::OnClose)
 END_EVENT_TABLE()
 
-mxFrame::mxFrame(wxString command, int port, int id):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxSize(550,350)) {
+mxFrame::mxFrame(wxString command, int port, int id, bool debug):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxSize(550,350)) {
+	debug_mode=debug;
 	already_connected=false;
 	src_id=id;
 	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
@@ -97,6 +98,7 @@ void mxFrame::ProcessCommand ( ) {
 }
 
 void mxFrame::OnProcessTerminated ( ) {
+	if (debug_mode) Close();
 	if (!socket) return;
 	wxString msg("terminated\n");
 	if (already_connected)
@@ -106,7 +108,6 @@ void mxFrame::OnProcessTerminated ( ) {
 }
 
 void mxFrame::OnClose (wxCloseEvent & event) {
-	wxMessageBox("close");
 	console->KillProcess();
 	wxExit();
 }
@@ -116,7 +117,7 @@ void mxFrame::OnScroll (wxScrollEvent & event) {
 }
 
 void mxFrame::SetIsPresent (bool is) {
-	if (is==is_present) return;
+	if (is==is_present || debug_mode) return;
 	is_present=is;
 	play_from_here->Show(!is);
 	Layout();

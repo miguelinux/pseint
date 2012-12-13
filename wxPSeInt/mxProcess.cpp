@@ -165,6 +165,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
+	if (config->use_psterm) command<<_T(" --debugmode ");
 	temp = source->GetTempFilenameOUT();
 	debug->Start(this,source);
 	int port=comm_manager->GetServerPort();

@@ -23,7 +23,7 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	
-	bool no_arg=false;
+	bool no_arg=false, debug=false;
 	long port=-1, src_id=-1;
 	wxString command;
 	for(int i=1;i<argc;i++) {
@@ -35,6 +35,8 @@ bool mxApplication::OnInit() {
 			if (arg.StartsWith("--")) {
 				if (arg=="--") {
 					no_arg=true;
+				} else if (arg=="--debugmode") {
+					debug=true;
 				} else if (arg.StartsWith("--id=")) {
 					arg.AfterFirst('=').ToLong(&src_id);
 				} else if (arg.StartsWith("--port=")) {
@@ -46,6 +48,6 @@ bool mxApplication::OnInit() {
 			}
 		}
 	}
-	new mxFrame(command,port,src_id);
+	new mxFrame(command,port,src_id,debug);
 	return true;
 }

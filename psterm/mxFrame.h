@@ -18,9 +18,10 @@ private:
 	int src_id;
 	wxString buffer;
 	bool is_present; ///< para saber si mostrar o no el boton "continuar desde aqui"
+	bool debug_mode; ///< si estamos utilizando la consola para ejecucion paso a paso, entonces no se puede volver en el tiempo ni se espera tecla adicional luego de que finaliza el proceso hijo
 protected:
 public:
-	mxFrame(wxString command, int port, int id);
+	mxFrame(wxString command, int port, int id, bool debug);
 	void OnButtonReload(wxCommandEvent &evt);
 	void OnButtonPlay(wxCommandEvent &evt);
 	void InitSocket(int port);

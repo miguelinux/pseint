@@ -106,6 +106,7 @@ void mxConsole::OnSize (wxSizeEvent & event) {
 }
 
 void mxConsole::OnChar (wxKeyEvent & event) {
+	if (event.GetKeyCode()==3) { parent->Close(); return; }
 	if (the_process) {
 		if (cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
@@ -319,7 +320,7 @@ void mxConsole::GetProcessOutput () {
 	wxString line;
 	while (the_process->IsInputAvailable())
 		line<<input.GetChar();
-	if (line.Len()) { Process(line); Refresh(); }
+	if (line.Len()) { Process(line); Refresh(); cerr<<"HHHH"; }
 }
 
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
