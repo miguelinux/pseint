@@ -115,7 +115,7 @@ void mxSocketClient::ProcessCommandFlow() {
 		src->ReloadFromTempPSD();
 		main_window->SelectSource(src);
 		wxCommandEvent evt;
-		main_window->OnRunRun(evt);
+		main_window->RunCurrent(true);
 	}
 }
 

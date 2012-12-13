@@ -118,8 +118,6 @@ int main(int argc, char* argv[]) {
 				enable_user_functions=false;
 			else if (str=="--coloquialconditions")
 				coloquial_conditions=word_operators=true;
-			else if (str=="--subtitles")
-				subtitles_on=true;
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
 			else if (str=="--draw") {
@@ -282,7 +280,7 @@ int main(int argc, char* argv[]) {
 
 	// comprobar sintaxis y ejecutar
 	errores=SynCheck();
-	Inter.SetDelay(delay);
+	Inter.InitDebug(delay);
 
 	//ejecutar
 	if (errores==0) {

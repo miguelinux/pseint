@@ -92,6 +92,7 @@ void mxFrame::OnSocketEvent (wxSocketEvent & event) {
 
 void mxFrame::ProcessCommand ( ) {
 	if (buffer=="reload") console->Reload();
+	else if (buffer=="raise") Raise();
 	else if (buffer=="quit") Close();
 }
 
@@ -105,6 +106,7 @@ void mxFrame::OnProcessTerminated ( ) {
 }
 
 void mxFrame::OnClose (wxCloseEvent & event) {
+	wxMessageBox("close");
 	console->KillProcess();
 	wxExit();
 }

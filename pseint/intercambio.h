@@ -43,12 +43,15 @@ class Intercambio {
 	vector <string> autoevaluaciones; // expresiones para el depurador que se muestran automaticamente en cada paso
 	ZOCKET zocket;
 	
+	int port; // nro de puerto para comunicarse con wxPSeInt
 #endif
 	
 	string sbuffer;
-	int delay;
-	int port;
-	bool do_step;
+	int delay; // indica el retardo entre instruccion e instruccion para el pasa a paso continuo
+	bool do_continue; // indica si debe continuar la ejecucion  o pausarse
+	bool do_one_step; // si do_continue, indica si continuar solo un paso (en cuyo caso do_continue volvera a ser falso)
+public:
+	bool subtitles_on; // si estamos en paso a paso explicado
 	
 public:
 	
@@ -59,7 +62,8 @@ public:
 #ifdef USE_ZOCKETS
 	void ProcData(string order);
 	void ProcInput();
-	void SetDelay(int n);
+	void InitDebug(int _delay); // si _delay!=0 inicializa la ejecución paso a paso enviando el hello y esperando la primer instruccion
+	void SetPort(int p);
 #endif
 	void SetLineAndInstructionNumber(int _i); // avisa a la gui en que linea va
 	void ChatWithGUI(); // espera respuesta de la gui para avanzar
@@ -70,7 +74,6 @@ public:
 	int GetLineNumber();
 	int GetInstNumber();
 	bool Running();
-	void SetPort(int p);
 	
 	// Manejo de las lineas del programa en memoria
 	int Archivo_Size();
@@ -94,10 +97,10 @@ public:
 	
 };
 
-#define _sub_msg(i,s) { if (subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); } }
-#define _sub_wait() { if (subtitles_on) Inter.ChatWithGUI(); }
-#define _sub(i,s) { if (subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
-#define _pos(i) { if (!subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.ChatWithGUI(); } }
+#define _sub_msg(i,s) { if (Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); } }
+#define _sub_wait() { if (Inter.subtitles_on) Inter.ChatWithGUI(); }
+#define _sub(i,s) { if (Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
+#define _pos(i) { if (!Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.ChatWithGUI(); } }
 
 extern Intercambio Inter;        // clase para enviar informacion de depuración al editor
 

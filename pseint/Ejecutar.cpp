@@ -221,7 +221,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					}
 					tmp3++; last=tmp1+1; tmp1++;
 				}
-				if (subtitles_on) {
+				if (Inter.subtitles_on) {
 					string tamanio;
 					for(int i=1;i<=dim[0];i++) tamanio+="x"+IntToStr(dim[i]);
 					tamanio[0]=' ';
@@ -280,7 +280,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
 				else {
 					_sub(line,string("Se esperan ")+aux2+(factor==1?" milisengudos":" segundos"));
-					if (!subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
+					if (!Inter.subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
 				}
 			} else {
 				// ------------- ASIGNACION --------------- //

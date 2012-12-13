@@ -143,7 +143,9 @@ void DebugManager::Step() {
 bool DebugManager::Pause() {
 	paused = !paused;
 	if (debugging && socket) {
-		wxString str(_T("pausa\n"));
+		wxString str;
+		if (paused) str=_T("pausar\n");
+		else str=_T("continuar\n");
 		socket->Write(str.c_str(),str.Len());
 	}
 	return paused;

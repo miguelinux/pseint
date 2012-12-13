@@ -171,6 +171,8 @@ public:
 	
 	void ParseResults(mxSource *source); // analiza el archivo de salida que genera un ejecucion, que contiene los errores de la misma
 	
+	void RunCurrent(bool raise); // ejecuta o re-ejecuta el source actual (si ya estaba corriendo en un psterm, raise indica si debe pasar al frente esa ventana)
+	
 	DECLARE_EVENT_TABLE();
 };
 

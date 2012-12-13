@@ -71,7 +71,7 @@ void mxStatusBar::OnPaint (wxPaintEvent & event) {
 void mxStatusBar::OnClick (wxMouseEvent & event) {
 	if (status==STATUS_SYNTAX_OK||status==STATUS_SYNTAX_ERROR) {
 		wxCommandEvent evt;
-		main_window->OnRunRun(evt);
+		main_window->RunCurrent(false);
 	} else if (status==STATUS_UPDATE_FOUND) {
 		wxLaunchDefaultBrowser(_T("http://pseint.sourceforge.net?page=descargas.php"));
 	} else if (status==STATUS_DEBUG_RUNNING||status==STATUS_DEBUG_PAUSED||status==STATUS_DEBUG_ENDED||status==STATUS_DEBUG_STOPPED) {

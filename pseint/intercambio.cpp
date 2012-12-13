@@ -3,6 +3,7 @@
 #include "new_evaluar.h"
 #include "utils.h"
 #include "SynCheck.h"
+#include <cstdlib>
 using namespace std;
 
 Intercambio Inter;
@@ -13,15 +14,18 @@ string IntToStr(int f);
 
 // Linea que se esta ejecutando actualmente
 Intercambio::Intercambio() {
+	subtitles_on=false;
 	backtraceLevel=0;
 	debugLevel=0;
 	sbuffer="";
 #ifdef USE_ZOCKETS
 	evaluating_for_debug=false;
 	zocket = ZOCKET_ERROR;
+	port=24377; 
 #endif
-	instNumber=lineNumber=-1;delay=0; // Inicializar
-	port=24377; running=false;
+	instNumber=lineNumber=-1;
+	delay=0; do_continue=false; 
+	do_one_step=false; running=false;
 }
 Intercambio::~Intercambio() {
 #ifdef USE_ZOCKETS
@@ -39,15 +43,17 @@ void Intercambio::UnInit() {
 #ifdef USE_ZOCKETS
 void Intercambio::ProcData(string order) {
 	if (order=="paso" || order=="comenzar") {
+		do_continue=true;
 		if (order=="paso"||subtitles_on) {
-			if (delay>0) delay=-delay;
+			do_one_step=true;
 			zocket_escribir(zocket,"estado paso\n",12);
-		} else
+		} else {
+			do_one_step=false;
 			zocket_escribir(zocket,"estado ejecutando\n",18);
-		do_step=true;
+		}
 	} else if (order=="subtitulos 1") { // se mete en todos los subprocesos
 		subtitles_on=true;
-		if (delay>0) zocket_escribir(zocket,"estado pausa\n",13);
+		if (do_continue) zocket_escribir(zocket,"estado pausa\n",13);
 	} else if (order=="subtitulos 0") { // no se mete más alla del subproceso actual
 		subtitles_on=false;
 	} else if (order=="subprocesos 1") { // se mete en todos los subprocesos
@@ -55,21 +61,14 @@ void Intercambio::ProcData(string order) {
 	} else if (order=="subprocesos 0") { // no se mete más alla del subproceso actual
 		debugLevel=backtraceLevel;
 		if (!debugLevel) debugLevel=1;
-	} else if (order=="pausa") {
-		if (subtitles_on) 
-			ProcData("paso"); 
-		else {
-			delay=-delay;
-			if (delay>0)
-				zocket_escribir(zocket,"estado ejecutando\n",18);
-			else
-				zocket_escribir(zocket,"estado pausa\n",13);
-		}
+	} else if (order=="pausar") {
+		do_continue=false;
+		zocket_escribir(zocket,"estado pausa\n",13);
+	} else if (order=="continuar") {
+		do_continue=true; do_one_step=subtitles_on;
+		zocket_escribir(zocket,"estado ejecutando\n",18);
 	} else if (order.substr(0,6)=="delay ") {
-		if (delay<0)
-			delay=-atoi(order.substr(6).c_str());
-		else
-			delay=atoi(order.substr(6).c_str());
+		delay=atoi(order.substr(6).c_str());
 	} else if (order.substr(0,8)=="evaluar ") {
 		is_evaluation_error=false;
 		evaluating_for_debug=true;
@@ -102,6 +101,8 @@ void Intercambio::ProcData(string order) {
 			autoevaluaciones.push_back(exp);
 		}
 		evaluating_for_debug=false;
+	} else if (order=="quit") {
+		exit(0);
 	}
 }
 #endif
@@ -153,10 +154,15 @@ void Intercambio::ChatWithGUI () {
 			}
 		}
 		evaluating_for_debug=false;
-		do_step=false;
-		if (delay<0||subtitles_on) zocket_escribir(zocket,"estado pausa\n",13);
-		do { ProcInput(); } while ((subtitles_on || delay<0) && !do_step);
-		if (!do_step && !subtitles_on && delay>0) Sleep(delay);
+		if (do_one_step) { 
+			zocket_escribir(zocket,"estado pausa\n",13); 
+			do_continue=false;
+			do { ProcInput(); } while (!do_continue);
+		} else {
+			ProcInput();
+			if (do_continue) Sleep(delay);
+		}
+		do { ProcInput(); } while (!do_continue);
 	}
 #endif
 }
@@ -216,22 +222,21 @@ bool Intercambio::Running() {
 	return running;
 }
 
+#ifdef USE_ZOCKETS
+
 void Intercambio::SetPort(int p) { 
 	port = p; 
 }
 
-#ifdef USE_ZOCKETS
-void Intercambio::SetDelay(int n) { 
-	if ( (delay=n) ) {
-		//			zocket = zocket_esperar_llamada(port);
+void Intercambio::InitDebug(int _delay) { 
+	if ( (delay=_delay) ) {
 		zocket = zocket_llamar(port);
 		if (zocket==ZOCKET_ERROR) 
 			cerr<<"<<Error al inicializar ejecucion paso a paso>>"<<endl;
 		else {
 			zocket_escribir(zocket,"hello-debug -1\n",15);
 			zocket_escribir(zocket,"estado inicializado\n",20);
-			while (!do_step) ProcInput();
-//			zocket_escribir(zocket,"estado ejecutando\n",18);
+			while (!do_continue) ProcInput();
 		}
 	}
 }

@@ -83,7 +83,7 @@ public:
 	int GetId();
 	
 	void SetRunSocket(wxSocketBase *s);
-	bool UpdateRunningTerminal(bool force=false);
+	bool UpdateRunningTerminal(bool raise=false);
 	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();
 	void ReloadFromTempPSD();

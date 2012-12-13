@@ -1372,12 +1372,13 @@ wxString mxSource::SaveTemp() {
 	return fname;
 }
 
-bool mxSource::UpdateRunningTerminal (bool force) {
+bool mxSource::UpdateRunningTerminal (bool raise) {
 	if (!run_socket) return false;
-	if (!force && rt_running && !rt_timer->IsRunning() && rt_errors.GetCount()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
+	if (rt_running && !rt_timer->IsRunning() && rt_errors.GetCount()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
 	reload_timer->Stop();
 	SaveTemp();
 	run_socket->Write("reload\n",7);
+	if (raise) run_socket->Write("raise\n",6);
 	SetStatus(STATUS_RUNNING_UPDATED);
 	return true;
 }

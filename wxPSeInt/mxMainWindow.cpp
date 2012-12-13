@@ -588,9 +588,13 @@ void mxMainWindow::OnEdit(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
+	RunCurrent(true);
+}
+
+void mxMainWindow::RunCurrent(bool raise) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
-		if (!source->UpdateRunningTerminal()) {
+		if (!source->UpdateRunningTerminal(raise)) {
 			wxString fname=source->SaveTemp();
 			if (debug->debugging)
 				debug->Stop();
