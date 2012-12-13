@@ -322,7 +322,7 @@ void mxConsole::GetProcessOutput () {
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 	if (event.GetPid()==the_process_pid) {
 		GetProcessOutput();
-		Process("\033[?25l");
+		Process("\033[?25l",true);
 		the_process->Detach();
 		the_process=NULL;
 		timer_process->Stop();

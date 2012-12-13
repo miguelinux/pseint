@@ -1,5 +1,5 @@
 20121213
-	Mejorados los tiempos de respuesta en la comunación entre el intérprete y el editor en la ejecución paso a paso.
+	Mejorados los tiempos de respuesta en la comunicación entre el intérprete y el editor en la ejecución paso a paso.
 	Agregadas dos nuevas funciones para convertir datos entre los tipos numérico y caracter.
 	
 20121211
