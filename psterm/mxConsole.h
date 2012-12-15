@@ -37,11 +37,12 @@ public:
 	
 	wxTimer *timer_process; ///< timer to extract and process output from current process' output stream
 	void OnTimerProcess( wxTimerEvent &event ); ///< llama a GetProcessOutput regularmente, para actualizar la salida
-	void GetProcessOutput(); ///< extract unprocessed text from output stream for current process
+	void GetProcessOutput(bool refresh=true); ///< extract unprocessed text from output stream for current process
 	
 	wxString current_input; ///< the text entered for next/current input (since last time Enter key was presses, or since start), for storing in input_history on next Enter
 	vector<wxString> input_history; ///< array with all inputs since process started, for reapeting input when reloading process
 	int input_history_position; ///< auxiliar para saber en un Reload cuales ya se usaron y cuales no de las entradas en input_history
+	bool want_input; ///< indica que se espera una entrada (ver wait_input para saber si tecla o linea)
 	bool wait_one_key; ///< indica que se espera una tecla cualquiera (que no se debe mostrar en pantalla)
 	void OnChar( wxKeyEvent &event ); ///< process console input, and sends it to child process
 	void RecordInput(wxString input); ///< guarda une lectura en el historial de entradas (input_history)
@@ -75,7 +76,6 @@ public:
 	void RebuildBuffer(); ///< recalcula buffer, se usa luego de un resize o de un settime
 	
 	
-	bool caret_visible; ///< indicates if caret should be visible or not
 	bool blinking_caret_aux; ///< aux flag for caret blinking animation
 	wxTimer *timer_caret; ///< timer to blink caret if caret_visible
 	void OnTimerCaret( wxTimerEvent &event ); ///< anima el parpadeo del cursor

@@ -65,13 +65,12 @@ void mxConsole::Reset (bool hard) {
 		input_history.clear();
 		current_input="";
 	}
-	wait_one_key=false;
+	want_input=wait_one_key=false;
 	input_history_position=0;
 	history=""; last_clear=0; 
 	cur_x=cur_y=0;
 	bg=0; cur_fg=15;
 	blinking_caret_aux=false;
-	caret_visible=true;
 	ClearBuffer();
 }
 
@@ -95,7 +94,7 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 			}
 		}
 	}
-	if (caret_visible && blinking_caret_aux) {
+	if (want_input && !wait_one_key && blinking_caret_aux) {
 		dc.SetTextForeground(colors[cur_fg]);
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
 	}
@@ -108,7 +107,7 @@ void mxConsole::OnSize (wxSizeEvent & event) {
 void mxConsole::OnChar (wxKeyEvent & event) {
 	if (event.GetKeyCode()==3) { parent->Close(); return; }
 	if (the_process) {
-		if (cur_event!=-1) return;
+		if (!want_input || cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
 		char c=char(event.GetKeyCode());
 		if (wait_one_key) {
@@ -116,7 +115,13 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 			RecordInput(wxString()<<c);
 			output->Write(&c,1);
 		} else {
-			if (c=='\r'||c=='\n') { 
+			if (c==27) { 
+				for(int i=current_input.Len();i>0;i--) 
+					Process("\b"); 
+				current_input="";
+				Refresh();
+				return;
+			} else if (c=='\r'||c=='\n') { 
 				current_input<<"\n";
 				output->Write(current_input.c_str(),current_input.Len());
 				RecordInput(current_input);
@@ -200,7 +205,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (i-i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 			if (input[i+2]=='z' && input[i+3]=='k') { // getKey
 				if (input_history_position>=int(input_history.size())) { 
-					wait_one_key=true;
+					want_input=true; wait_one_key=true;
 				} else {
 					wxString aux=input_history[input_history_position++];
 					wxOutputStream *output=the_process->GetOutputStream();
@@ -209,6 +214,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 				i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
 				if (input_history_position>=int(input_history.size())) { 
+					want_input=true; wait_one_key=false;
 					wxOutputStream *output=the_process->GetOutputStream();
 					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input,true/*,true*/); // true,true, porque estas cosas solo llegan en vivo, no se guardan en el historial
@@ -222,15 +228,8 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			} else if (input[i+2]=='2' && input[i+3]=='J') {
 				ClearBuffer(); i+=3;
 				if (record) { history<<"\033[2J"; last_clear=history.Len(); }
-			} else if (input[i+2]=='?' && input[i+3]=='2' && input[i+4]=='5' && input[i+5]=='l') {
-				caret_visible=false;
-				timer_caret->Stop();
-				if (record) history<<"\033[?25l";
-				i+=5;
-			} else if (input[i+2]=='?' && input[i+3]=='2' && input[i+4]=='5' && input[i+5]=='h') {
-				caret_visible=true;
-				timer_caret->Start(_CARET_TIME,false);
-				if (record) history<<"\033[?25h";
+			} else if (input[i+2]=='?' && input[i+3]=='2' && input[i+4]=='5' && (input[i+5]=='l'||input[i+5]=='h')) {
+				// hide/show caret, ignored
 				i+=5;
 			} else if (input[i+2]=='4' && input[i+4]=='m') {
 				// background color, ignored
@@ -306,7 +305,7 @@ void mxConsole::OnTimerProcess (wxTimerEvent & event) {
 	GetProcessOutput();
 }
 
-void mxConsole::GetProcessOutput () {
+void mxConsole::GetProcessOutput (bool refresh) {
 	if (!the_process) return;
 	wxTextInputStream input(*(the_process->GetInputStream()));
 	wxString line;
@@ -314,15 +313,17 @@ void mxConsole::GetProcessOutput () {
 		line<<input.GetChar();
 	if (line.Len()) { 
 		if (cur_event!=-1) SetTime(int(events.size()));
-		Process(line,true/*,cur_event==-1*/); Refresh(); wxYield(); 
+		Process(line,true/*,cur_event==-1*/); 
+		if (refresh) Refresh(); wxYield(); 
 		// el wxYield es neceasario para procesos tipo "mientras verdero hacer escribir "Hola"; finmientras" porque sino no tiene oportunidad de redibujar por el intenso procesamiento
 	}
 }
 
 void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 	if (event.GetPid()==the_process_pid) {
-		GetProcessOutput();
-		Process("\033[?25l",true);
+		GetProcessOutput(false);
+		want_input=false;
+		Refresh();
 		the_process->Detach();
 		the_process=NULL;
 		timer_process->Stop();
@@ -356,6 +357,7 @@ void mxConsole::RecordInput (wxString input) {
 		input_history_position++;
 	input_history.push_back(input);
 	current_input.Clear();
+	want_input=false;
 }
 
 
