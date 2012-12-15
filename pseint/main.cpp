@@ -213,7 +213,7 @@ int main(int argc, char* argv[]) {
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) {
 				if (it1->first!=main_process_name) cout<<"SUB";
-				cout<<"PROCESO "<<it1->first/*<<" "<<programa.GetLoc(it1->second.line_start,"").num_linea*/<<endl;
+				cout<<"PROCESO "<<it1->first<<":"<<it1->second->userline_start<<':'<<it1->second->userline_end<<endl;
 				(it1++)->second->memoria->ListVars();
 			}
 			cout<<"<!{[END_OF_VARS]}!>"<<endl;
@@ -226,10 +226,11 @@ int main(int argc, char* argv[]) {
 					if (
 						LeftCompare(in.instruccion,"SI ") ||
 						LeftCompare(in.instruccion,"PARA ") ||
+						LeftCompare(in.instruccion,"PARACADA ") ||
 						LeftCompare(in.instruccion,"MIENTRAS ") ||
 						LeftCompare(in.instruccion,"SEGUN ") ||
 						in.instruccion=="REPETIR")
-						st[stn++]=in.num_linea;
+							st[stn++]=in.num_linea;
 					else if (stn&& (
 						in.instruccion=="FINSI" ||
 						in.instruccion=="FINMIENTRAS" ||
@@ -237,7 +238,7 @@ int main(int argc, char* argv[]) {
 						in.instruccion=="FINPARA" ||
 						LeftCompare(in.instruccion,"HASTA QUE ")||
 						LeftCompare(in.instruccion,"MIENTRAS QUE ")))
-						bk[st[--stn]]=in.num_linea;
+							bk[st[--stn]]=in.num_linea;
 				}
 				for(int i=0;i<lcount;i++) { 
 					if (bk[i]!=-1) cout<<i<<" "<<bk[i]<<endl;

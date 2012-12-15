@@ -494,6 +494,7 @@ int SynCheck(int linea_from, int linea_to) {
 	bool in_process=false, process_seen=false;
 	tipo_var tipo;
 	string cadena, instruccion, str;
+	Funcion *current_func; // funcion actual, necesito el puntero para setear line_end cuando encuentre el FinProceso/FinSubProceso
 	
 	// Checkear sintaxis y reorganizar el codigo
 	for (int x=linea_from;x<programa.GetRefPoint();x++){
@@ -821,7 +822,8 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
-				Funcion *the_func=new Funcion(x); 
+				Funcion *the_func=current_func=new Funcion(x); 
+				current_func->userline_start=Inter.GetLineNumber();
 				memoria=the_func->memoria;
 				int p=0; NextToken(cadena,p);
 				if (in_process) InformUnclosedLoops(bucles,errores);
@@ -890,6 +892,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
 				bool sub=cadena!="FINPROCESO";
 				if (!bucles.empty() && ( (!sub&&bucles.top()=="PROCESO")||(sub&&bucles.top()=="SUBPROCESO") ) ) {
+					if (current_func) { current_func->userline_end=Inter.GetLineNumber(); current_func=NULL; }
 					bucles.pop();
 				} else {
 					SynError (108,sub?"FINSUBPROCESO mal colocado.":"FINPROCESO mal colocado."); errores++;

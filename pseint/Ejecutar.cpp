@@ -48,8 +48,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 			continue;
 		}
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
-			// ----------- ESCRIBIR ------------- //
 			_pos(line);
+			// ----------- ESCRIBIR ------------- //
 			if (cadena=="BORRARPANTALLA;") {
 				clrscr();
 				gotoXY(1,1);
@@ -171,69 +171,68 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else 
 					// ------------- DIMENSION --------------- //
 			if (LeftCompare(cadena,"DIMENSION ")) {
-				string otro=""; // por si hay mas de un arreglo
-				cadena.erase(0,10);
-				tmp1=cadena.find("(",0);  // Cortar nombre del arreglo
-				aux1=cadena; aux1.erase(tmp1,aux1.size()-tmp1);
-				aux2=cadena; // cortar indices
-				aux2.erase(0,aux1.size()+1); aux2.erase(aux2.size()-2,2);
-				// Separar indices
-				tmp2=0; tmp1=0;
-				int *dim; tmp3=0; // arreglo para las dimensiones
-				while (tmp1<(int)aux2.size()) {
-					while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
-						tmp1++;
-						if (aux2[tmp1]=='(') tmp2++;
-						if (aux2[tmp1]==')') tmp2--;
-						if (tmp2<0) break;
+				do {
+					string otro=""; // por si hay mas de un arreglo
+					cadena.erase(0,10);
+					tmp1=cadena.find("(",0);  // Cortar nombre del arreglo
+					aux1=cadena; aux1.erase(tmp1,aux1.size()-tmp1);
+					aux2=cadena; // cortar indices
+					aux2.erase(0,aux1.size()+1); aux2.erase(aux2.size()-2,2);
+					// Separar indices
+					tmp2=0; tmp1=0;
+					int *dim; tmp3=0; // arreglo para las dimensiones
+					while (tmp1<(int)aux2.size()) {
+						while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
+							tmp1++;
+							if (aux2[tmp1]=='(') tmp2++;
+							if (aux2[tmp1]==')') tmp2--;
+							if (tmp2<0) break;
+						}
+						if (tmp2<0) {
+							otro=aux2;
+							otro.erase(0,tmp1+2);
+							otro="DIMENSION "+otro+");";
+							aux2.erase(tmp1,aux2.size()-tmp1);
+							aux2=aux2+",";
+							tmp3++;
+							break;
+						}
+						tmp1++; tmp3++;
 					}
-					if (tmp2<0) {
-						otro=aux2;
-						otro.erase(0,tmp1+2);
-						otro="DIMENSION "+otro+");";
-						aux2.erase(tmp1,aux2.size()-tmp1);
-						aux2=aux2+",";
-						tmp3++;
-						break;
+					dim=new int[tmp3+1]; dim[0]=tmp3;
+					int last=0;tmp3=1; tmp1=0; tmp2=0;
+					if (allow_dinamyc_dimensions) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
+					while (tmp1<(int)aux2.size()) {
+						while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
+							tmp1++;
+							if (aux2[tmp1]=='(') tmp2++;
+							if (aux2[tmp1]==')') tmp2--;
+						}
+						cadena=aux2; // Cortar la expresion indice
+						cadena.erase(tmp1,cadena.size()-tmp1); cadena.erase(0,last);
+						cadena=Evaluar(cadena,tipo);
+						if (!tipo.cb_num) // Controlar tipo
+	//								if (tipo<'c')
+	//									ExpError(tipo,1);
+	//								else
+								ExeError(122,"No coinciden los tipos.");
+						dim[tmp3]=(int)StrToDbl(cadena);
+						if (dim[tmp3]<=0) {
+							ExeError(999,"Las dimensiones deben ser mayores a 0.");
+						}
+						tmp3++; last=tmp1+1; tmp1++;
 					}
-					tmp1++; tmp3++;
-				}
-				dim=new int[tmp3+1]; dim[0]=tmp3;
-				int last=0;tmp3=1; tmp1=0; tmp2=0;
-				if (allow_dinamyc_dimensions) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
-				while (tmp1<(int)aux2.size()) {
-					while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
-						tmp1++;
-						if (aux2[tmp1]=='(') tmp2++;
-						if (aux2[tmp1]==')') tmp2--;
+					if (Inter.subtitles_on) {
+						string tamanio;
+						for(int i=1;i<=dim[0];i++) tamanio+="x"+IntToStr(dim[i]);
+						tamanio[0]=' ';
+						_sub(line,string("Se crea el arreglo ")+aux1+" de"+tamanio+" elementos");
 					}
-					cadena=aux2; // Cortar la expresion indice
-					cadena.erase(tmp1,cadena.size()-tmp1); cadena.erase(0,last);
-					cadena=Evaluar(cadena,tipo);
-					if (!tipo.cb_num) // Controlar tipo
-//								if (tipo<'c')
-//									ExpError(tipo,1);
-//								else
-							ExeError(122,"No coinciden los tipos.");
-					dim[tmp3]=(int)StrToDbl(cadena);
-					if (dim[tmp3]<=0) {
-						ExeError(999,"Las dimensiones deben ser mayores a 0.");
-					}
-					tmp3++; last=tmp1+1; tmp1++;
-				}
-				if (Inter.subtitles_on) {
-					string tamanio;
-					for(int i=1;i<=dim[0];i++) tamanio+="x"+IntToStr(dim[i]);
-					tamanio[0]=' ';
-					_sub(line,string("Se crea el arreglo ")+aux1+" de"+tamanio+" elementos");
-				}
-				if (memoria->HaSidoUsada(aux1)||memoria->LeerDims(aux1))
-					ExeError(123,"Identificador en uso.");
-				if (dim!=0) memoria->AgregarArreglo(aux1, dim);
-				if (otro!="") { // si hay otro, inicilizarlo tambien
-					programa[line]=otro;
-					Ejecutar(line,line);
-				}
+					if (memoria->HaSidoUsada(aux1)||memoria->LeerDims(aux1))
+						ExeError(123,"Identificador en uso.");
+					if (dim!=0) memoria->AgregarArreglo(aux1, dim);
+					if (otro!="") cadena=otro; else cadena="";
+				} while (cadena.size());
 			} else
 			// ------------- DEFINICION --------------- //
 			if (LeftCompare(cadena,"DEFINIR ")) {
@@ -316,6 +315,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			// ---------------- SI ------------------ //
 			if (LeftCompare(cadena,"SI ")) {
 				cadena.erase(0,3);
+				_pos(line);
 				_sub(line,string("Se evalúa la condicion para Si-Entonces: ")+cadena);
 				aux1=Evaluar(cadena,tipo,vt_logica);
 				if (tipo!=vt_error) {
@@ -351,14 +351,15 @@ void Ejecutar(int LineStart, int LineEnd) {
 								if (LeftCompare(programa[tmp1],"FINSI")) tmp2--;
 								tmp1++;
 							}
+							_pos(line);
 							_sub(line,"El resultado es Falso, se sigue por la rama del Sino");
-							Ejecutar(line+1,tmp1-1); // ejecutar salida por verdadero
+							Ejecutar(line+1,tmp1-1); // ejecutar salida por falso
 						} else {
 							_sub(line,"El resultado es Falso, no se hace nada");
 						}
 						line=tmp1;
 					}
-//					_pos(line);
+					_pos(line);
 					_sub(line,"Se sale de la estructura Si-Entonces");
 				} else {
 					ExeError(999,"No coinciden los tipos.");
@@ -368,7 +369,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			if (LeftCompare(cadena,"MIENTRAS ")) {
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-6,6);
-				_pos(line); 
+				_pos(line);
 				_sub(line,string("Se evalúa la condicion para Mientras: ")+cadena);
 				aux1=Evaluar(cadena,tipo);
 				if (tipo!=vt_error) {
@@ -386,12 +387,13 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
 					}
 					line=tmp1;
-//					_pos(line);
+					_pos(line);
 					_sub(line,"La condicion es Falsa, se sale de la estructura Mientras.");
 				}
 			} else 
 			// ---------------- REPETIR HASTA QUE ------------------ //
 			if (cadena=="REPETIR") {
+				_pos(line);
 				tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
 				while (!(tmp2==0 && (LeftCompare(programa[tmp1],"HASTA QUE ")||LeftCompare(programa[tmp1],"MIENTRAS QUE ")))) {
 					// Saltear bucles anidados
@@ -410,7 +412,6 @@ void Ejecutar(int LineStart, int LineEnd) {
 					cadena.erase(0,13);
 					valor_verdad="VERDADERO";
 				}
-				// ejecutar por primera vez
 				_sub(line,"Se ejecutaran las acciones contenidas en la estructura Repetir");
 				do {
 					Ejecutar(line+1,tmp1-1);
@@ -427,6 +428,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else 
 			// ------------------- PARA --------------------- //
 			if (LeftCompare(cadena,"PARA ")) {
+				_pos(line);
 				bool positivo; // para saber si es positivo o negativo
 				cadena.erase(0,5); // saca "PARA "
 				cadena.erase(cadena.size()-6,6); // saca " HACER"
@@ -438,7 +440,6 @@ void Ejecutar(int LineStart, int LineEnd) {
 				string contador=aux1.substr(0,tmp1); // variable del para
 				memoria->DefinirTipo(aux1,vt_numerica);
 				string val_ini=aux1.substr(tmp1+2); // valor inicial
-				_pos(line);
 				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+val_ini);
 				val_ini=Evaluar(val_ini,tipo);
 				if (!memoria->LeerTipo(aux1).cb_num || !tipo.cb_num)
@@ -491,6 +492,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else 
 			// ------------------- PARA CADA --------------------- //
 			if (LeftCompare(cadena,"PARACADA ")) {
+				bool primer_iteracion=true; _pos(line);
 				cadena.erase(0,9); // borrar "PARACADA "
 				cadena.erase(cadena.size()-6,6); // borrar " HACER"
 				tmp1=cadena.find(" ");
@@ -523,19 +525,19 @@ void Ejecutar(int LineStart, int LineEnd) {
 					}
 					elemento=aux2+"("+elemento.substr(1);
 					// asignar el elemento en la variable del bucle
+					if (primer_iteracion) primer_iteracion=false; else { _pos(line); }
 					_sub(line,aux1+" será equivalente a "+elemento+" en esta iteración.");
-					_pos(line);
 					if (!memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento)))
 						ExeError(999,"No coinciden los tipos.");
 					memoria->EscribirValor(aux1,memoria->LeerValor(elemento));
 					// ejecutar la iteracion
 					Ejecutar(line+1,tmp1-1);
 					// asignar la variable del bucle en el elemento
-					_pos(tmp1);
 					memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
 				line=tmp1; // linea del finpara
+				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para Cada.");
 				
 			} else 
@@ -587,10 +589,10 @@ void Ejecutar(int LineStart, int LineEnd) {
 								if (!tipo.cb_num&&(!lazy_syntax||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde
 								if (Evaluar(aux3+"="+aux2,tipo)==VERDADERO) {
-									_sub(line,"El resultado coincide, se ingresará en esta opción.");
+									_sub(x,"El resultado coincide, se ingresará en esta opción.");
 									cadena=aux1;flag_coincide=1;x--;break;
 								} else {
-									_sub(line,string("El resultado no coincide: ")+aux1);
+									_sub(x,string("El resultado no coincide: ")+aux1);
 								}
 //								if (tipo==vt_error) ExeError(127,"No coinciden los tipos."); // no parece hacer falta
 								tmp2=cadena.find(",",0);

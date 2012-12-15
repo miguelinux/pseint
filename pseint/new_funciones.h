@@ -16,13 +16,14 @@ struct Funcion {
 	vector<tipo_var> tipos; // la pos 0 es para el tipo que retorna
 	vector<string> nombres; // nombres de los argumentos, la pos 0 es para el valor de retorno (solo para las definidas por el usuario)
 	string (*func)(string *args); // NULL si es de las definidas por el usuario como subproceso
-	int line_start; // linea del pseudocodigo donde comienza la funcion (solo para las definidas por el usuario)
+	int line_start; // linea del pseudocodigo parseado donde comienza la funcion (solo para las definidas por el usuario)
+	int userline_start, userline_end; // linea del pseudocodigo original donde empieza y termina la funcion (para pasarsela a la lista de variables del editor)
 	void AddArg(string arg, PASAJE por=PP_DESCONOCIDO) { nombres.push_back(arg); tipos.push_back(vt_desconocido); pasajes.push_back(por); cant_arg++; }
 	void SetLastPasaje(PASAJE por) { pasajes[pasajes.size()-1]=por; } // para modificar el tipo de pasaje del último argumento insertado con AddArg
 	Memoria *memoria; // instancia de la clase memoria que se usa para el analisis sintático
 	Funcion(){}
 //	~funcion() { if (!func) delete memoria; } // esto trae problemas si se copian funcs, por eso se borran aparte, es menos lio que el ctor de copia correcto
-	Funcion(int line):func(NULL),line_start(line) { 
+	Funcion(int line):func(NULL),line_start(line),userline_start(-1),userline_end(-1) { 
 		AddArg(""); cant_arg=0; memoria=new Memoria(this);
 	}
 	Funcion(tipo_var tipo_ret, string (*af)(string *args), tipo_var tipo_arg_1):cant_arg(1),func(af) { 

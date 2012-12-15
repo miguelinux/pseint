@@ -117,7 +117,8 @@ void Intercambio::SendSubtitle(string _str) {
 }
 
 void Intercambio::SetLineAndInstructionNumber(int _i) {
-	lineNumber=programa[_i].num_linea; instNumber=programa[_i].num_instruccion;
+	lineNumber=programa[_i].num_linea; 
+	instNumber=programa[_i].num_instruccion;
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR && (!debugLevel || backtraceLevel<=debugLevel)) { // si estamos depurando, informar la linea y esperar
 		string str;
