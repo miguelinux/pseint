@@ -5,6 +5,7 @@
 
 class mxVarWindow : public wxPanel {
 private:
+	struct range:public wxTreeItemData { long from, to; };
 	wxTreeCtrl *tree;
 	wxTreeItemId tree_root,tree_current;
 	wxString last_sel;

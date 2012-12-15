@@ -50,8 +50,15 @@ void mxVarWindow::BeginInput ( ) {
 }
 
 void mxVarWindow::Add (wxString vname, bool main_process) {
-	tree_current=tree->AppendItem(tree_root,vname,main_process?8:9);
-	if (vname.BeforeFirst('[')==last_sel) tree->SelectItem(tree_current);
+	range *r=NULL;
+	if (vname.Contains(":")) {
+		r=new range;
+		vname.AfterFirst(':').BeforeFirst(':').ToLong(&r->from);
+		vname.AfterLast(':').ToLong(&r->to);
+		vname=vname.BeforeFirst(':');
+	}
+	tree_current=tree->AppendItem(tree_root,vname,main_process?8:9,-1,r);
+	if (vname==last_sel) tree->SelectItem(tree_current);
 }
 
 void mxVarWindow::Add (wxString vname, char type) {
@@ -81,7 +88,13 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 	if (it==-1) return;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
-	src->HighLight(tree->GetItemText(it).BeforeFirst('['));
+	int from=-1, to=-1;
+	wxTreeItemId parent=tree->GetItemParent(it);
+	if (parent!=tree->GetRootItem()) {
+		range *r=(range*)tree->GetItemData(parent);
+		if (r) { from=r->from; to=r->to; }
+	}
+	src->HighLight(tree->GetItemText(it).BeforeFirst('['),from,to);
 }
 
 void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {

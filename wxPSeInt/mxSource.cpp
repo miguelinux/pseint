@@ -1330,7 +1330,8 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::HighLight(wxString words) {
+void mxSource::HighLight(wxString words, int from, int to) {
+	if (to!=-1) words<<" 0"<<(from-1)<<" 1"<<(to-1); // el 0 y 1 son porque scintilla los va a ordernar alfabeticamente, para que queden simpre primero y segundo
 	SetKeyWords(3,words.Lower());
 	Colourise(0,GetLength());
 }

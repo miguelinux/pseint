@@ -172,8 +172,8 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	int delay=_calc_delay(config->stepstep_speed);
 	debug_panel->SetSpeed(debug->GetSpeed(delay));
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
-	if (config->use_colors)
-		command<<_T(" --color");
+	if (config->use_colors) command<<_T(" --color");
+	if (config->use_psterm) command<<_T(" --forpseintterminal");
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	was_readonly = source->GetReadOnly();
 	if (pid) source->SetReadOnly(true);

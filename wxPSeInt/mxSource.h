@@ -128,7 +128,7 @@ public:
 	
 	void TryToAutoCloseSomething(int l);
 	
-	void HighLight(wxString words);
+	void HighLight(wxString words, int from=-1, int to=-1);
 	
 	wxArrayInt blocks; // blocks[l1]=l2 guarda un bloque que va de l1 a l2
 	wxArrayInt blocks_reverse; // blocks_reverse[l1]=l2 guarda un bloque que va de l2 a l1
