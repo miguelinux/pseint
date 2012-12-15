@@ -94,6 +94,7 @@ public:
 	
 	bool LineHasSomething(int l); // false si esta vacia o tiene solo comentarios
 	
+	wxString GetInstruction(int p); // devuelve la instrucción (primer palabra de la sentencia) a la que pertenece esa posición
 	
 	void SetPageText(wxString ptext);
 	wxString GetPageText();

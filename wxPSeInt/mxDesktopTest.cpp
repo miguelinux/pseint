@@ -9,7 +9,7 @@ mxDesktopTest *desktop_test=NULL;
 BEGIN_EVENT_TABLE(mxDesktopTest, wxGrid)
 //	EVT_KEY_DOWN(mxDesktopTest::OnKey)
 	EVT_GRID_CELL_LEFT_DCLICK(mxDesktopTest::OnDblClick)
-//	EVT_GRID_CELL_RIGHT_CLICK(mxDesktopTest::OnRightClick)
+	EVT_GRID_CELL_RIGHT_CLICK(mxDesktopTest::OnRightClick)
 //	EVT_MENU(mxID_BACKTRACE_GOTO_POS,mxDesktopTest::OnGotoPos)
 //	EVT_MENU(mxID_BACKTRACE_INSPECT_ARGS,mxDesktopTest::OnInspectArgs)
 //	EVT_MENU(mxID_BACKTRACE_INSPECT_LOCALS,mxDesktopTest::OnInspectLocals)
@@ -142,3 +142,9 @@ void mxDesktopTest::ResetTest() {
 void mxDesktopTest::OnSelectCell(wxGridEvent &evt) {
 	sel_col = evt.GetCol(); evt.Skip();
 }
+
+void mxDesktopTest::OnRightClick (wxGridEvent & event) {
+	event.Skip();
+	OnDblClick(event);
+}
+

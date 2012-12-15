@@ -305,7 +305,7 @@ int main(int argc, char* argv[]) {
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Ejecucion Iniciada. ***"<<endl;
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Ejecucion Iniciada. ***"<<endl;
+				cout<<"*** Ejecución Iniciada. ***"<<endl;
 			}
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) (it1++)->second->memoria->FakeReset();
@@ -318,7 +318,7 @@ int main(int argc, char* argv[]) {
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<endl<<"*** Ejecucion Finalizada. ***"<<endl;
+				cout<<endl<<"*** Ejecución Finalizada. ***"<<endl;
 			}
 		}
 	} else {
@@ -327,7 +327,7 @@ int main(int argc, char* argv[]) {
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Se encontro 1 error. ***";
 			if (user) {
 				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Se encontro 1 error. ***"<<endl;
+				cout<<"*** Se encontró 1 error. ***"<<endl;
 			}
 		} else {
 			if (user) {

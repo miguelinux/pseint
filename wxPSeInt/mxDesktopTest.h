@@ -13,17 +13,9 @@ private:
 	wxArrayString variables;
 public:
 	mxDesktopTest(wxWindow *parent, wxWindowID id);
-	void AddRow();
-	void SetVars(wxArrayString &vars);
-	void OnKey(wxKeyEvent &event);
 	void OnDblClick(wxGridEvent &event);
 	void OnRightClick(wxGridEvent &event);
 	void OnSelectCell(wxGridEvent &evt);
-//	void OnExploreArgs(wxCommandEvent &event);
-//	void OnExploreLocals(wxCommandEvent &event);
-//	void OnInspectArgs(wxCommandEvent &event);
-//	void OnInspectLocals(wxCommandEvent &event);
-//	void OnGotoPos(wxCommandEvent &event);
 	void OnResize(wxSizeEvent &evt);
 	void OnColResize(wxGridSizeEvent &evt);
 	const wxArrayString &GetDesktopVars();

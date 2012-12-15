@@ -1,3 +1,6 @@
+20121214
+	El autocompletado del editor ahora mira el tipo de instrucción para determinar las posibles opciones.
+	
 20121213
 	Mejorados los tiempos de respuesta en la comunicación entre el intérprete y el editor en la ejecución paso a paso.
 	Agregadas dos nuevas funciones para convertir datos entre los tipos numérico y caracter.

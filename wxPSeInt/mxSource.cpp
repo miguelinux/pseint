@@ -3,6 +3,7 @@
 #include <wx/socket.h>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 #include "mxUtils.h"
 #include "mxSource.h"
@@ -16,7 +17,7 @@ using namespace std;
 #include "RTSyntaxManager.h"
 
 #define RT_DELAY 1000
-#define RELOAD_DELAY 3000
+#define RELOAD_DELAY 2000
 
 int mxSource::last_id=0;
 
@@ -80,11 +81,13 @@ END_EVENT_TABLE()
 
 	
 struct comp_list_item {
-	const wxChar *label;
-	const wxChar *text;
+	wxString label;
+	wxString text;
+	wxString instruction; // este elemento solo debe mostrarse en el contexto de esta instruccion ("*" significa cualquier contexto, pero no como nombre de instruccion)
 	comp_list_item(){}
-	comp_list_item(const wxChar *_label, const wxChar *_text):label(_label),text(_text){}
-	operator const wxChar*() { return label; }
+	comp_list_item(wxString  _label, wxString _text, wxString _instruction):label(_label),text(_text),instruction(_instruction.Lower()){}
+	operator wxString() { return label; }
+	bool operator<(const comp_list_item &o) const { return label<o.label; }
 };
 #define MAX_COMP_SIZE 100
 static comp_list_item comp_list[MAX_COMP_SIZE];
@@ -428,7 +431,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("FIN")) {
 			wxString res;
 			for (int i=0;i<comp_count;i++) {
-				if (comp_list[i][0]=='F'&&comp_list[i][1]=='i'&&comp_list[i][2]=='n'&&comp_list[i][3]==' ') {
+				if (comp_list[i].label.StartsWith("Fin ")) {
 					if (res.Len())
 						res<<_T("|")<<comp_list[i];
 					else
@@ -442,7 +445,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("POR")) {
 			wxString res;
 			for (int i=0;i<comp_count;i++) {
-				if (comp_list[i][0]=='P'&&comp_list[i][1]=='O'&&comp_list[i][2]=='R'&&comp_list[i][3]==' ') {
+				if (comp_list[i].label.StartsWith("Por ")) {
 					if (res.Len())
 						res<<_T("|")<<comp_list[i];
 					else
@@ -460,7 +463,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			if (p2-p1==3 && GetTextRange(p1,p2-1).Upper()==_T("ES")) {
 				wxString res;
 				for (int i=0;i<comp_count;i++) {
-					if (comp_list[i][0]=='E'&&comp_list[i][1]=='s'&&comp_list[i][2]==' ') {
+					if (comp_list[i].label.StartsWith("Es ")) {
 						if (res.Len())
 							res<<_T("|")<<comp_list[i];
 						else
@@ -478,17 +481,22 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2,true);
 		if (p2-p1>2)  {
+			wxString instruccion=GetInstruction(p1);
 			wxString str = GetTextRange(p1,p2);
 			str.MakeLower();
 			int l = str.Len();
 			bool show=false;
 			wxString res;
-//			int li = LineFromPosition(p1);
 			for (int j,i=0;i<comp_count;i++) {
+				if (comp_list[i].instruction=="*") {
+					if (instruccion=="") continue;
+				} else {
+					if (comp_list[i].instruction!=instruccion) continue;
+				}
 				for (j=0;j<l;j++)
-					if (str[j]!=(comp_list[i][j]|32))
+					if (str[j]!=(comp_list[i].label[j]|32))
 						break;
-				if (j==l && (comp_list[i][3]!=' '||comp_list[i][0]!='F')) {
+				if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
 					if (!show) {
 						show=true;
 						res=comp_list[i];
@@ -960,79 +968,104 @@ void mxSource::SetWords() {
 void mxSource::SetAutocompletion() {
 	// setear reglas para el autocompletado
 	comp_count=0;
-	comp_list[comp_count++]=comp_list_item(_T("Borrar Pantalla"),_T("Borrar Pantalla;"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Caso "),_T("Caso "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Cada "),_T("Cada "));
-	comp_list[comp_count++]=comp_list_item(_T("Como Caracter"),_T("Como Caracter;"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Entero"),_T("Como Entero;"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Logico"),_T("Como Logico;"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Real"),_T("Como Real;"));
-	comp_list[comp_count++]=comp_list_item(_T("Con Paso"),_T("Con Paso "));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(");
-	comp_list[comp_count++]=comp_list_item(_T("Definir"),_T("Definir "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Desde"),_T("Desde "));
-	comp_list[comp_count++]=comp_list_item(_T("Dimension"),_T("Dimension "));
-	comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Cero"),_T("Es Cero"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Distinto De"),_T("Es Distinto De "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Divisible Por"),_T("Es Divisible Por "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Igual A"),_T("Es Igual A "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Impar"),_T("Es Impar"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor O Igual A"),_T("Es Mayor O Igual A "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor Que"),_T("Es Mayor Que "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor O Igual A"),_T("Es Menor O Igual A "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor Que"),_T("Es Menor Que "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Multiplo De"),_T("Es Multiplo De "));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Par"),_T("Es Par"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Positivo"),_T("Es Positivo"));
-	comp_list[comp_count++]=comp_list_item(_T("Escribir"),_T("Escribir "));
-	comp_list[comp_count++]=comp_list_item(_T("Esperar"),_T("Esperar "));
-	comp_list[comp_count++]=comp_list_item(_T("Esperar Tecla"),_T("Esperar Tecla;"));
-	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Hasta"),_T("Hasta "));
-	comp_list[comp_count++]=comp_list_item(_T("Hasta Que"),_T("Hasta Que "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Imprimir"),_T("Imprimir "));
-	comp_list[comp_count++]=comp_list_item(_T("Falso"),_T("Falso"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Mientras"),_T("Fin Mientras\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Para"),_T("Fin Para\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Proceso"),_T("Fin Proceso\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin SubProceso"),_T("Fin SubProceso\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinFuncion"),_T("FinFuncion\n"));
-	comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"));
-	comp_list[comp_count++]=comp_list_item(_T("FinPara"),_T("FinPara\n"));
-	comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"));
-	comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"));
-	comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinSubProceso"),_T("FinSubProceso\n"));
-	if (config->lang.enable_user_functions)comp_list[comp_count++]=comp_list_item(_T("Funcion"),_T("Funcion "));
-	comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "));
-	comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(");
-	comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mientras Que"),_T("Mientras Que "));
-	comp_list[comp_count++]=comp_list_item(_T("Milisegundos"),_T("Milisegundos;"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mostrar"),_T("Mostrar "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Opcion "),_T("Opcion "));
-	comp_list[comp_count++]=comp_list_item(_T("Otro Modo:"),_T("Otro Modo:\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Para"),_T("Para "));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Para Cada"),_T("Para Cada "));
-	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"));
-	comp_list[comp_count++]=comp_list_item(_T("Proceso"),_T("Proceso "));
-	comp_list[comp_count++]=comp_list_item(_T("Repetir"),_T("Repetir\n"));
-	comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "));
-	comp_list[comp_count++]=comp_list_item(_T("Segundos"),_T("Segundos;"));
-	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"));
-	comp_list[comp_count++]=comp_list_item(_T("Sino"),_T("Sino\n"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("SubProceso"),_T("SubProceso "));
-	comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Proceso"),_T("Proceso "),_T(""));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Funcion"),_T("Funcion "),_T(""));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("SubProceso"),_T("SubProceso "),_T(""));
+	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"),_T("SubProceso"));
+	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"),_T("Funcion"));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"),_T("SubProceso"));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"),_T("Funcion"));
+	comp_list[comp_count++]=comp_list_item(_T("Fin Proceso"),_T("Fin Proceso\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"),_T(""));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Fin SubProceso"),_T("Fin SubProceso\n"),_T(""));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinSubProceso"),_T("FinSubProceso\n"),_T(""));
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinFuncion"),_T("FinFuncion\n"),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Escribir"),_T("Escribir "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Imprimir"),_T("Imprimir "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mostrar"),_T("Mostrar "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Escribir"));
+	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Mostrar"));
+	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Imprimir"));
+	comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Esperar"),_T("Esperar "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Segundos"),_T("Segundos;"),_T("Esperar"));
+	comp_list[comp_count++]=comp_list_item(_T("Milisegundos"),_T("Milisegundos;"),_T("Esperar"));
+	comp_list[comp_count++]=comp_list_item(_T("Tecla"),_T("Tecla;"),_T("Esperar"));
+	comp_list[comp_count++]=comp_list_item(_T("Esperar Tecla"),_T("Esperar Tecla;"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Borrar Pantalla"),_T("Borrar Pantalla;"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"),_T(""));
+
+	
+	comp_list[comp_count++]=comp_list_item(_T("Dimension"),_T("Dimension "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Definir"),_T("Definir "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Como Real"),_T("Como Real;"),_T("Definir"));
+	comp_list[comp_count++]=comp_list_item(_T("Como Caracter"),_T("Como Caracter;"),_T("Definir"));
+	comp_list[comp_count++]=comp_list_item(_T("Como Entero"),_T("Como Entero;"),_T("Definir"));
+	comp_list[comp_count++]=comp_list_item(_T("Como Logico"),_T("Como Logico;"),_T("Definir"));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"),_T("Si"));
+	comp_list[comp_count++]=comp_list_item(_T("Sino"),_T("Sino\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T("Mientras"));
+	comp_list[comp_count++]=comp_list_item(_T("Fin Mientras"),_T("Fin Mientras\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Para"),_T("Para "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Para Cada"),_T("Para Cada "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Desde"),_T("Desde "),_T("Para"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Hasta"),_T("Hasta "),_T("Para"));
+	comp_list[comp_count++]=comp_list_item(_T("Con Paso"),_T("Con Paso "),_T("Para"));
+	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T("Para"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Cada "),_T("Cada "),_T("Para"));
+	comp_list[comp_count++]=comp_list_item(_T("Fin Para"),_T("Fin Para\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("FinPara"),_T("FinPara\n"),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Repetir"),_T("Repetir\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Hasta Que"),_T("Hasta Que "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mientras Que"),_T("Mientras Que "),_T(""));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Opcion"),_T("Opcion "),_T(""));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Caso"),_T("Caso "),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Otro Modo:"),_T("Otro Modo:\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),_T(""));
+	
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(",_T("*"));
+	
+	comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"),_T("*"));
+	comp_list[comp_count++]=comp_list_item(_T("Falso"),_T("Falso"),_T("*"));
+	
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Cero"),_T("Es Cero"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Distinto De"),_T("Es Distinto De "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Divisible Por"),_T("Es Divisible Por "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Igual A"),_T("Es Igual A "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Impar"),_T("Es Impar"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor O Igual A"),_T("Es Mayor O Igual A "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor Que"),_T("Es Mayor Que "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor O Igual A"),_T("Es Menor O Igual A "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor Que"),_T("Es Menor Que "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Multiplo De"),_T("Es Multiplo De "),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Par"),_T("Es Par"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Positivo"),_T("Es Positivo"),_T("*"));
+	
+	sort(comp_list,comp_list+comp_count);
 }
 
 void mxSource::ReloadFromTempPSD () {
@@ -1385,5 +1418,40 @@ bool mxSource::UpdateRunningTerminal (bool raise) {
 
 void mxSource::StopReloadTimer ( ) {
 	reload_timer->Stop();
+}
+
+static bool EstiloNada(int s) {
+	return s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL;
+}
+
+wxString mxSource::GetInstruction (int p) {
+	int i=PositionFromLine(LineFromPosition(p)),s; char c;
+	wxString instruccion; int i0=-1; bool first=true;
+	while (i<p) {
+		s=GetStyleAt(i);
+		c=GetCharAt(i);
+		bool nada=EstiloNada(s);
+		if ( nada || (!EsLetra(c)&&(c<='0'||c>='9')) ) {
+			if (!nada && c==';') {
+				i0=-1; first=true; instruccion.Clear();
+			} else if (i0!=-1) {
+				wxString palabra=GetTextRange(i0,i);
+				if (first) {
+					instruccion=palabra;
+					first=false;
+				} else {
+					palabra.MakeLower();
+					if (palabra=="entonces" || palabra=="hacer") {
+						first=true; instruccion.Clear();
+					}
+				}
+				i0=-1;
+			}
+		} else {
+			if (i0==-1) { i0=i; }
+		}
+		i++;
+	}
+	return instruccion.Lower();
 }
 
