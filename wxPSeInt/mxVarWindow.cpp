@@ -33,7 +33,7 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_proc.png")),wxBITMAP_TYPE_PNG)); 
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_sub.png")),wxBITMAP_TYPE_PNG)); 
 	tree->AssignImageList(imglist);
-	tree_root=tree_current=tree->AddRoot("Variables");
+	tree_root=tree_current=tree->AddRoot("");
 	tree->SetToolTip(tooltip=utils->FixTooltip("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
 	sizer->Add(tree,wxSizerFlags().Proportion(1).Expand());
 	SetSizer(sizer);
@@ -45,7 +45,11 @@ mxVarWindow::~mxVarWindow() {
 
 void mxVarWindow::BeginInput ( ) {
 	wxTreeItemId s=GetSelection(); 
-	if (s.IsOk()) last_sel=tree->GetItemText(s).BeforeFirst('['); else last_sel="";
+	if (s.IsOk()) {
+		last_sel=tree->GetItemText(s).BeforeFirst('['); 
+		wxTreeItemId p=tree->GetItemParent(s);
+		last_parent=tree->GetItemText(p).BeforeFirst('('); 
+	} else last_sel="";
 	tree->DeleteChildren(tree_root);
 }
 
@@ -58,7 +62,7 @@ void mxVarWindow::Add (wxString vname, bool main_process) {
 		vname=vname.BeforeFirst(':');
 	}
 	tree_current=tree->AppendItem(tree_root,vname,main_process?8:9,-1,r);
-	if (vname==last_sel) tree->SelectItem(tree_current);
+	if (vname==last_sel && !last_parent.Len()) tree->SelectItem(tree_current);
 }
 
 void mxVarWindow::Add (wxString vname, char type) {
@@ -74,7 +78,7 @@ void mxVarWindow::Add (wxString vname, char type) {
 	}
 	vname.Replace("-1","??",true);
 	wxTreeItemId id=tree->AppendItem(tree_current,vname/*+stype*/,icon);
-	if (vname.BeforeFirst('[')==last_sel) tree->SelectItem(id);
+	if (vname.BeforeFirst('[')==last_sel && last_parent==tree->GetItemText(tree_current)) tree->SelectItem(id);
 }
 
 void mxVarWindow::EndInput ( ) {

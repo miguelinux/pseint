@@ -1,3 +1,8 @@
+20121215
+	Ahora al seleccionar una variable de la Lista de Variables para resaltar, se tiene en cuenta el ámbito de validéz de la misma (su proceso o subproceso).
+	Corregido el resaltado de bloques para la estructura Para Cada.
+	Corregidos errores en las lineas que marcaba la ejecución paso a paso para algunas estructuras.
+	
 20121214
 	El autocompletado del editor ahora mira el tipo de instrucción para determinar las posibles opciones.
 	

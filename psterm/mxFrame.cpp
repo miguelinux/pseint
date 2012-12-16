@@ -98,7 +98,7 @@ void mxFrame::ProcessCommand ( ) {
 }
 
 void mxFrame::OnProcessTerminated ( ) {
-	if (debug_mode) Close();
+//	if (debug_mode) Close();
 	if (!socket) return;
 	wxString msg("terminated\n");
 	if (already_connected)

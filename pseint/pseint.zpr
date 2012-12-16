@@ -12,11 +12,11 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=main.cpp
+current_source=version.h
 path_char=/
 [source]
 path=main.cpp
-cursor=7855
+cursor=7903
 open=true
 [source]
 path=intercambio.cpp
@@ -26,10 +26,10 @@ marker=279
 marker=43
 [source]
 path=SynCheck.cpp
-cursor=42011
-breakpoint=1123
-marker=1446
-marker=1349
+cursor=38042
+breakpoint=1124
+marker=1447
+marker=1350
 marker=756
 marker=686
 open=true
@@ -128,7 +128,7 @@ marker=216
 marker=223
 [header]
 path=new_funciones.h
-cursor=1493
+cursor=1543
 open=true
 [header]
 path=new_programa.h
