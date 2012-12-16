@@ -156,7 +156,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					tipo_var tipo2 = GuestTipo(aux1);
 					if (!tipo.set(tipo2))
 //						if (tipo=='n' && (GuestTipo(aux1)=='c' || GuestTipo(aux1)=='l')) {
-						ExeError(120,"No coinciden los tipos.");
+						ExeError(120,string("No coinciden los tipos (")+aux1+").");
 //						}
 //						if (tipo=='l' && (GuestTipo(aux1)=='c' || GuestTipo(aux1)=='n')) {
 //							ExeError(121,"No coinciden los tipos.");

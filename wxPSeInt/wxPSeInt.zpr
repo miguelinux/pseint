@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=version.h
+current_source=mxVarWindow.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -21,10 +21,10 @@ marker=84
 [source]
 path=mxMainWindow.cpp
 cursor=49776
-breakpoint=654
-breakpoint=1245
-breakpoint=1285
 breakpoint=1565
+breakpoint=1285
+breakpoint=1245
+breakpoint=654
 marker=1430
 [source]
 path=mxUtils.cpp
@@ -32,8 +32,8 @@ cursor=510
 [source]
 path=ConfigManager.cpp
 cursor=11077
-marker=37
 marker=76
+marker=37
 [source]
 path=mxSource.cpp
 cursor=51253
@@ -131,9 +131,9 @@ cursor=3130
 [source]
 path=mxConfig.cpp
 cursor=4018
-marker=62
-marker=63
 marker=64
+marker=63
+marker=62
 [source]
 path=mxProfile.cpp
 cursor=4514
@@ -156,8 +156,8 @@ cursor=2701
 breakpoint=58
 [source]
 path=mxVarWindow.cpp
-cursor=4395
-marker=93
+cursor=3954
+marker=97
 open=true
 [source]
 path=mxDebugWindow.cpp
@@ -255,7 +255,7 @@ path=mxIconInstaller.h
 cursor=235
 [header]
 path=mxVarWindow.h
-cursor=173
+cursor=271
 open=true
 [header]
 path=mxDebugWindow.h
