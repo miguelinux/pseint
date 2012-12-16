@@ -224,7 +224,7 @@ int Entity::CheckLinkOpcion(int x, int y) {
 
 bool Entity::CheckLinkNext(int x, int y) {
 	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO && !next) || mouse==next || nolink) return false;
-	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh-2*flecha_h/3-selection_tolerance_y && y<d_y-d_bh-2*flecha_h/3+selection_tolerance_y);
+	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh/2-2*flecha_h/3-selection_tolerance_y && y<d_y-d_bh/2-2*flecha_h/3+selection_tolerance_y);
 }
 
 void Entity::UnLink() {

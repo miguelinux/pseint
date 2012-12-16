@@ -21,10 +21,10 @@ marker=84
 [source]
 path=mxMainWindow.cpp
 cursor=49776
-breakpoint=1565
-breakpoint=1285
-breakpoint=1245
 breakpoint=654
+breakpoint=1245
+breakpoint=1285
+breakpoint=1565
 marker=1430
 [source]
 path=mxUtils.cpp
@@ -32,8 +32,8 @@ cursor=510
 [source]
 path=ConfigManager.cpp
 cursor=11077
-marker=76
 marker=37
+marker=76
 [source]
 path=mxSource.cpp
 cursor=51253
@@ -131,9 +131,9 @@ cursor=3130
 [source]
 path=mxConfig.cpp
 cursor=4018
-marker=64
-marker=63
 marker=62
+marker=63
+marker=64
 [source]
 path=mxProfile.cpp
 cursor=4514
