@@ -1,5 +1,4 @@
-#ver Flexible para una descripción de los campos y el formato
-desc=Perfil enviado por Alfredo Paz Valderrama, para utilizar en la cátedra "Informática" de la carrera "Ciencias de la Computación" de la Universidad Católica de San Pablo.
+desc=Perfil para utilizar en la cátedra "Informática" de la carrera "Ciencias de la Computación" de la Universidad Católica de San Pablo (enviado por Alfredo Paz Valderrama).
 allow_dinamyc_dimensions=1
 allow_concatenation=1
 force_init_vars=1

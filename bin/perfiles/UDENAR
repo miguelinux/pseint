@@ -1,5 +1,4 @@
-#ver Flexible para una descripción de los campos y el formato
-desc=Perfil utilizado por el profesor Ing. Jaime Dávila en la cátedra "Fundamentos de Programación" de las carreras de Ing. de Sistemas, Ing. Civil e Ing. Electrónica y en la cátedra "Algoritmos" de la carrera Tecnología en Computación, carreras pertenecientes a la facultad de Ingeniería de la Universidad de Nariño (UDENAR) en Colombia.
+desc=Perfil para la cátedra "Fundamentos de Programación" de las carreras de Ing. de Sistemas, Ing. Civil e Ing. Electrónica y en la cátedra "Algoritmos" de la carrera Tecnología en Computación, carreras pertenecientes a la facultad de Ingeniería de la Universidad de Nariño (UDENAR) en Colombia (enviado por el profesor Ing. Jaime Dávila).
 allow_dinamyc_dimensions=0
 allow_concatenation=0
 force_init_vars=1
