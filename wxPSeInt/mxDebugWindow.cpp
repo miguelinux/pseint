@@ -184,7 +184,7 @@ void mxDebugWindow::SetEvaluationValue (wxString val, char tipo) {
 	evaluate_window->SetEvaluationValue(val,tipo);
 }
 
-bool mxDebugWindow::ProfileChanged ( ) {
+void mxDebugWindow::ProfileChanged ( ) {
 	dp_check_step_in->Show(config->lang.enable_user_functions);
 	Layout();
 }

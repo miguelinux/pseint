@@ -35,7 +35,7 @@ public:
 	void OnDebugCheckSubtitles(wxCommandEvent &evt);
 	void StartDebugging(mxSource *source, bool paused);
 	void SetEvaluationValue(wxString val, char tipo);
-	bool ProfileChanged();
+	void ProfileChanged();
 	void ShowInEvaluateDialog(wxString s);
 	void SetSubtitles(bool on);
 	DECLARE_EVENT_TABLE();

@@ -109,6 +109,7 @@ void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 }
 
 void mxVarWindow::OnTreeTooltip(wxTreeEvent &evt) {
+	tree->SetToolTip(NULL); // si no pongo esto al mover el mouse por varios items y mostrar tooltip "sobre" (no se ve asi) tooltip despues no se cierra
 	evt.SetToolTip(tooltip); // for windows only
 }
 

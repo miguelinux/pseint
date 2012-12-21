@@ -19,11 +19,11 @@ path=Application.cpp
 cursor=1281
 [source]
 path=mxFrame.cpp
-cursor=3346
+cursor=3465
 open=true
 [source]
 path=mxConsole.cpp
-cursor=9647
+cursor=10953
 open=true
 [header]
 path=Application.h
