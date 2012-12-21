@@ -173,7 +173,14 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 					} else if (keywords2.InList(s)) {
 						sc.ChangeState(SCE_C_WORD2);
 					} else if (keywords4.InList(s)) {
-						sc.ChangeState(SCE_C_GLOBALCLASS);
+						if (enable_pseint && keywords4.len==3) {                        // AGREGADO PARA PSEINT
+							int lineCurrent = styler.GetLine(sc.currentPos);        // AGREGADO PARA PSEINT
+							int from=atoi(keywords4[0]+1), to=atoi(keywords4[1]+1);      // AGREGADO PARA PSEINT
+							if (lineCurrent>=from && lineCurrent<=to)               // AGREGADO PARA PSEINT
+								sc.ChangeState(SCE_C_GLOBALCLASS);              // AGREGADO PARA PSEINT
+						} else {                                                        // AGREGADO PARA PSEINT
+							sc.ChangeState(SCE_C_GLOBALCLASS);
+						}                                                               // AGREGADO PARA PSEINT
 					}
 					sc.SetState(SCE_C_DEFAULT);
 				}
