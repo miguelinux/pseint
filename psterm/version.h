@@ -1,2 +1,2 @@
-#define VERSION 20121214
+#define VERSION 20121221
 #include "../pseint/version_common.h"

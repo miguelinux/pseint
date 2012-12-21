@@ -114,6 +114,7 @@ void mxFrame::OnClose (wxCloseEvent & event) {
 
 void mxFrame::OnScroll (wxScrollEvent & event) {
 	console->SetTime(scroll->GetThumbPosition());
+	console->SetFocus();
 }
 
 void mxFrame::SetIsPresent (bool is) {

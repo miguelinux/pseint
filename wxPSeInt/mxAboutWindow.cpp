@@ -11,6 +11,7 @@
 #include "version.h"
 #include <wx/html/htmlwin.h>
 #include <wx/msgdlg.h>
+#include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(mxAboutWindow, wxDialog)
 
