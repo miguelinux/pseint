@@ -269,10 +269,10 @@ static void mouse_cb(int button, int state, int x, int y) {
 		if (mouse) mouse->UnSetMouse();
 		do {
 			if (aux->CheckMouse(x,y)) { 
-				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
 				if (button==GLUT_RIGHT_BUTTON) {
 					aux->SetEdit(); return;
 				} else {
+					if (aux->type==ET_PROCESO /*&& aux!=start*/) break; // para no editar el "FinProceso"
 					if (aux->type==ET_AUX_PARA) aux=aux->parent;
 					if (glutGetModifiers()==GLUT_ACTIVE_SHIFT) {
 						aux=DuplicateEntity(aux);

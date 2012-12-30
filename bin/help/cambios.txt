@@ -1,3 +1,8 @@
+20121230
+	Corregido el comportamiento del item para elegir la terminal en el menu de configuracion.
+	Corregido el valor por defecto para el comando para llamar a psdraw en GNU/Linux.
+	Agregado el perfil USTATUNJA para la Facultad de Ingenieria Civil de Universidad Santo Tomás seccional Tunja, Colombia.
+	
 20121215
 	Ahora al seleccionar una variable de la Lista de Variables para resaltar, se tiene en cuenta el ámbito de validéz de la misma (su proceso o subproceso).
 	Corregido el resaltado de bloques para la estructura Para Cada.
