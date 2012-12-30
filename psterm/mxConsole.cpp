@@ -216,7 +216,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 				if (input_history_position>=int(input_history.size())) { 
 					want_input=true; wait_one_key=false;
 					wxOutputStream *output=the_process->GetOutputStream();
-					output->Write(current_input.c_str(),current_input.Len());
+//					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input,true/*,true*/); // true,true, porque estas cosas solo llegan en vivo, no se guardan en el historial
 				} else {
 					wxString aux=input_history[input_history_position++];
