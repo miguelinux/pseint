@@ -277,7 +277,7 @@ void mxMainWindow::CreateMenus() {
 	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
 	cfg->AppendSeparator();
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
-	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),config->use_psterm);
+	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
@@ -1119,10 +1119,10 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 	if (!mi_use_psterm->IsChecked()) {
 		mi_use_psterm->Check(false);
-		config->use_psterm=false;
+		config->use_psterm=true;
 	} else {
 		mi_use_psterm->Check(true);
-		config->use_psterm=true;
+		config->use_psterm=false;
 	}
 }
 
