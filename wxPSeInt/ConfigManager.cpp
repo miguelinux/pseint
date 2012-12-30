@@ -27,6 +27,9 @@ ConfigManager::ConfigManager(wxString apath) {
 		filename = DIR_PLUS_FILE(home_dir,_T("config"));
 	LoadDefaults();
 	Read();
+#ifndef __WIN32__
+	if (psdraw_command.Len()==0) psdraw_command="./psdraw";
+#endif
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
 	tty_command=_T("./mac-terminal-wrapper.bin");
@@ -76,6 +79,7 @@ void ConfigManager::LoadDefaults() {
 #else
 	pseint_command = _T("./pseint");
 	psterm_command = _T("./psterm");
+	psdraw_command = _T("./psdraw");
 	psdraw2_command = _T("./psdraw2");
 	psexport_command = _T("./psexport");
 	tty_command = _no_tty;
