@@ -56,6 +56,7 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_A
 	buffer=NULL;
 	Reset(true);
 	SetFontSize(11);
+	SetBackgroundStyle(wxBG_STYLE_CUSTOM); // para evitar el flickering en windows
 }
 
 void mxConsole::Reset (bool hard) {
@@ -215,7 +216,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
 				if (input_history_position>=int(input_history.size())) { 
 					want_input=true; wait_one_key=false;
-					wxOutputStream *output=the_process->GetOutputStream();
+//					wxOutputStream *output=the_process->GetOutputStream();
 //					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input,true/*,true*/); // true,true, porque estas cosas solo llegan en vivo, no se guardan en el historial
 				} else {
@@ -267,6 +268,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 }
 
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
+	if (!want_input || wait_one_key) return; // no redibujar si no cambia nada
 	blinking_caret_aux=!blinking_caret_aux;
 	Refresh();
 }
@@ -381,8 +383,8 @@ void mxConsole::MarkEvent ( ) {
 	if (input_history_position<h.input_count) 
 		h.input_count=input_history_position;
 	events.push_back(h);
-	int pos=cur_event==-1?h.pos:cur_event;
-	scroll->SetScrollbar(h.pos,1,events.size()+1,h.pos/10,true);
+//	int pos=cur_event==-1?h.pos:cur_event;
+	scroll->SetScrollbar(h.pos,1,events.size()+1,events.size()/10,true);
 }
 
 void mxConsole::SetTime (int t) {
