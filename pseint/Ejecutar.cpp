@@ -49,7 +49,6 @@ void Ejecutar(int LineStart, int LineEnd) {
 		}
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			_pos(line);
-			// ----------- ESCRIBIR ------------- //
 			if (cadena=="BORRARPANTALLA;") {
 				clrscr();
 				gotoXY(1,1);
@@ -66,6 +65,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					EvaluarFuncion(EsFuncion(llamada),"()",tipo,false);
 				else
 					EvaluarFuncion(EsFuncion(llamada.substr(0,p)),llamada.substr(p),tipo,false);
+				// ----------- ESCRIBIR ------------ //
 			} else if (LeftCompare(cadena,"ESCRIBIR ") || LeftCompare(cadena,"ESCRIBNL ")) {
 				bool saltar=LeftCompare(cadena,"ESCRIBIR ");
 				cadena.erase(0,9);

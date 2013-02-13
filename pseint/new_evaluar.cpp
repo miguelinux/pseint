@@ -484,6 +484,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 							tipo=vt_error;
 							ev_return("");
 						}
+						tipo=memoria->LeerTipo(aux); // correccion 20130213
 						ev_return(memoria->LeerValor(aux));
 					} else {
 						tipo=vt_error;

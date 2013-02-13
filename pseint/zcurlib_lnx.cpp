@@ -31,7 +31,7 @@ static char colors[][12]={
 #include <termios.h>
 #include <unistd.h>
 #endif
-// secuencias de escape POSIX
+// secuencias de escape ANSI
 
 void lnx_setBackColor(int color) {	
 	static char aux[10]="\033[43m";

@@ -1,3 +1,6 @@
+20130213
+	Corregida la verificación de tipos en las evaluaciones de posiciones en arreglos.
+	
 20121230
 	Corregido el comportamiento del item para elegir la terminal en el menu de configuracion.
 	Corregido el valor por defecto para el comando para llamar a psdraw en GNU/Linux.
