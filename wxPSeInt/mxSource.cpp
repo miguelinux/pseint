@@ -1376,7 +1376,10 @@ void mxSource::SetStatus (int cual) {
 
 void mxSource::OnModify (wxStyledTextEvent & event) {
 	status_should_change=true; event.Skip();
-	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) SetStatus(STATUS_RUNNING_CHANGED);
+	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) {
+		run_socket->Write("dimm\n",5);
+		SetStatus(STATUS_RUNNING_CHANGED);
+	}
 }
 
 int mxSource::GetId ( ) {

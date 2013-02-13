@@ -25,26 +25,30 @@ END_EVENT_TABLE()
 #define _SIZE_TIME 100
 #define _PROCESS_TIME 10
 
-static wxColour colors[16] = {
-	wxColour(0  ,0  ,0),
-	wxColour(127,0  ,0),
-	wxColour(0  ,127,0),
-	wxColour(127,127,0),
-	wxColour(0  ,0  ,255),
-	wxColour(127,0  ,127),
-	wxColour(0  ,127,127),
-	wxColour(127,127,127),
-	wxColour(0  ,  0,0),
-	wxColour(255,  0,0),
-	wxColour(0  ,255,0),
-	wxColour(255,255,0),
-	wxColour(127,127,255),
-	wxColour(255,  0,255),
-	wxColour(0  ,255,255),
-	wxColour(255,255,255)
+static wxColour colors[16][2] = {
+	wxColour(0  ,0  ,0),	wxColour(0,0,0),
+	wxColour(127,0  ,0),	wxColour(0,0,0),
+	wxColour(0  ,127,0),	wxColour(0,0,0),
+	wxColour(127,127,0),	wxColour(0,0,0),
+	wxColour(0  ,0  ,255),	wxColour(0,0,0),
+	wxColour(127,0  ,127),	wxColour(0,0,0),
+	wxColour(0  ,127,127),	wxColour(0,0,0),
+	wxColour(127,127,127),	wxColour(0,0,0),
+	wxColour(0  ,  0,0),	wxColour(0,0,0),
+	wxColour(255,  0,0),	wxColour(0,0,0),
+	wxColour(0  ,255,0),	wxColour(0,0,0),
+	wxColour(255,255,0),	wxColour(0,0,0),
+	wxColour(127,127,255),	wxColour(0,0,0),
+	wxColour(255,  0,255),	wxColour(0,0,0),
+	wxColour(0  ,255,255),	wxColour(0,0,0),
+	wxColour(255,255,255),	wxColour(0,0,0)
 };
+
+
 	
 mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+	for(int i=0;i<16;i++) 
+		colors[i][1]=wxColour(colors[i][0].Red()/2,colors[i][0].Green()/2,colors[i][0].Blue()/2);
 	this->scroll=scroll;
 	if (scroll) scroll->SetScrollbar(0,1,1,1,false);
 	this->parent=parent;
@@ -60,6 +64,7 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_A
 }
 
 void mxConsole::Reset (bool hard) {
+	dimmed=0;
 	events.clear();
 	cur_event=-1;
 	if (hard) {
@@ -79,8 +84,8 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) CalcResize();
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(colors[bg]);
-	dc.SetTextBackground(colors[bg]);
+	dc.SetBackground(colors[bg][0]);
+	dc.SetTextBackground(colors[bg][0]);
 	dc.Clear();
 	dc.SetFont(font);
 	for(int i=0;i<buffer_h;i++) { 
@@ -88,7 +93,7 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		for(int j=0;j<buffer_w;j++) {
 			line<<_buffer(i,j).the_char;
 			if (j+1==buffer_w||_buffer(i,j).fg!=_buffer(i,j+1).fg) {
-				dc.SetTextForeground(colors[_buffer(i,j).fg]);
+				dc.SetTextForeground(colors[_buffer(i,j).fg][dimmed]);
 				dc.DrawText(line,margin+lj*char_w,margin+i*char_h);
 				line.Clear();
 				lj=j+1;
@@ -96,7 +101,7 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		}
 	}
 	if (want_input && !wait_one_key && blinking_caret_aux) {
-		dc.SetTextForeground(colors[cur_fg]);
+		dc.SetTextForeground(colors[cur_fg][dimmed]);
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
 	}
 }
@@ -409,5 +414,10 @@ void mxConsole::PlayFromCurrentEvent ( ) {
 		input_history.erase(input_history.begin()+events[cur_event].input_count,input_history.end());
 	}
 	Reload();
+}
+
+void mxConsole::Dimm ( ) {
+	dimmed=1;
+	Refresh();
 }
 

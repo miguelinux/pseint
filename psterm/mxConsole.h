@@ -79,6 +79,8 @@ public:
 	bool blinking_caret_aux; ///< aux flag for caret blinking animation
 	wxTimer *timer_caret; ///< timer to blink caret if caret_visible
 	void OnTimerCaret( wxTimerEvent &event ); ///< anima el parpadeo del cursor
+	
+	int dimmed; /// puede valer 0 o 1, 0 es lo normal, 1 muestra el texto "apagado", se usa para indicar que la salida ya está desactualizada
 		
 	mxConsole(mxFrame *parent, wxScrollBar *scroll=NULL);
 	
@@ -93,6 +95,7 @@ public:
 	void ClearBuffer();
 	void GotoXY(int x, int y, bool record);
 	void Reset(bool hard=false);
+	void Dimm(); ///< pinta el texto "apagado" para indicar que esta salida está desactualizada respecto del algortimo
 	
 	DECLARE_EVENT_TABLE();
 	

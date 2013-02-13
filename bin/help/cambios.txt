@@ -1,4 +1,5 @@
 20130213
+	La nueva terminal utiliza colores más apagados cuando su contenido está desactualizado respecto del editor.
 	Se agregaron botones para guardar y cargar perfiles personalizados desde archivos en el cuadro de configuración del perfil del editor.
 	Agregado el perfil UNLZ para la Universidad Nacional de Lomas de Zamora.
 	Ahora se puede editar el rango del Para haciendo doble click sobre los valores iniciales, finales y del paso en el editor de diagramas de flujo.

@@ -95,6 +95,7 @@ void mxFrame::ProcessCommand ( ) {
 	if (buffer=="reload") console->Reload();
 	else if (buffer=="raise") Raise();
 	else if (buffer=="quit") Close();
+	else if (buffer=="dimm") console->Dimm();
 }
 
 void mxFrame::OnProcessTerminated ( ) {
