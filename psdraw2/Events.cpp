@@ -274,7 +274,6 @@ static void mouse_cb(int button, int state, int x, int y) {
 					aux->SetEdit(); return;
 				} else {
 					if (aux->type==ET_PROCESO /*&& aux!=start*/) break; // para no editar el "FinProceso"
-					if (aux->type==ET_AUX_PARA) aux=aux->parent;
 					if (glutGetModifiers()==GLUT_ACTIVE_SHIFT) {
 						aux=DuplicateEntity(aux);
 						aux->SetEdit();
@@ -283,11 +282,12 @@ static void mouse_cb(int button, int state, int x, int y) {
 						edit=NULL;
 					}
 					to_set_mouse=aux; mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
+					if (aux->type==ET_AUX_PARA) to_set_mouse=aux->parent; // para que no haga drag del hijo del para, sino de todo el para completo
 					// doble click
 					static int last_click_time=0;
 					static Entity *last_click_mouse=NULL;
 					int click_time=glutGet(GLUT_ELAPSED_TIME);
-					if (click_time-last_click_time<500 && last_click_mouse==aux) aux->SetEdit();
+					if (click_time-last_click_time<500 && (last_click_mouse==aux ||  (aux->type==ET_PARA && aux->parent==last_click_mouse)) ) aux->SetEdit();
 					last_click_mouse=aux; last_click_time=click_time;
 					return;
 				}
