@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
 				undef_vars=false;
 			else if (str=="--forcedotandcomma")
 				force_dot_and_comma=true;
-			else if (str=="--hidetringfunctions")
+			else if (str=="--hidestringfunctions")
 				enable_string_functions=false;
 			else if (str=="--disableuserfunctions")
 				enable_user_functions=false;
