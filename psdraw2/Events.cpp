@@ -207,7 +207,7 @@ static void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
 		if (choose_process_state==1) { choose_process_state=2; return; }
-		if (choose_process_sel==procesos.size()) {
+		if (choose_process_sel==int(procesos.size())) {
 			CreateEmptyProc("SubProceso");
 		}
 		if (choose_process_sel!=-1) {
