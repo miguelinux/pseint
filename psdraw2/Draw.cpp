@@ -7,6 +7,10 @@
 
 extern const int margin; // para los botones de confirm
 
+#define mouse_link_delta 250
+static int mouse_link_x=0,mouse_link_y=0; 
+
+
 void GetTextSize(const string &label, int &w, int &h) {
 	w=label.size()*10;
 	h=15;
@@ -355,8 +359,9 @@ void display_cb() {
 	glPushMatrix();
 	glScalef(d_zoom,d_zoom,1);
 	do {
-		if (!found && mouse && mouse->type!=ET_OPCION) {
+		if (!found && mouse && mouse->type!=ET_OPCION && (cur_x-mouse_link_x)*(cur_x-mouse_link_x)+(cur_y-mouse_link_y)*(cur_y-mouse_link_y)>mouse_link_delta) {
 			if (aux!=mouse && aux->CheckLinkNext(cur_x,cur_y)) {
+				mouse_link_x=cur_x; mouse_link_y=cur_y;
 				mouse->UnLink();
 				aux->LinkNext(mouse);
 				start->Calculate();
@@ -364,6 +369,7 @@ void display_cb() {
 			} else if (aux->child) {
 				int i=aux->CheckLinkChild(cur_x,cur_y);
 				if (i!=-1) {
+					mouse_link_x=cur_x; mouse_link_y=cur_y;
 					mouse->UnLink();
 					aux->LinkChild(i,mouse);
 					start->Calculate();

@@ -204,7 +204,7 @@ int Entity::CheckLinkChild(int x, int y) {
 			return 0; else return -1;
 	}
 	for (int i=0;i<n_child;i++) {
-		if (child[i]!=mouse && d_x+child_dx[i]+selection_tolerance_x>x && d_x+child_dx[i]-selection_tolerance_x<x && y>d_y-d_h-2*flecha_h/3-selection_tolerance_y && y<d_y-d_h-2*flecha_h/3+selection_tolerance_y)
+		if (child[i]!=mouse && d_x+child_dx[i]+selection_tolerance_x>x && d_x+child_dx[i]-selection_tolerance_x<x && y>d_y-d_h-flecha_h-selection_tolerance_y && y<d_y-d_h-flecha_h+selection_tolerance_y)
 			return i;
 	}
 	return -1;
@@ -224,7 +224,7 @@ int Entity::CheckLinkOpcion(int x, int y) {
 
 bool Entity::CheckLinkNext(int x, int y) {
 	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO && !next) || mouse==next || nolink) return false;
-	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh/2-2*flecha_h/3-selection_tolerance_y && y<d_y-d_bh/2-2*flecha_h/3+selection_tolerance_y);
+	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh-selection_tolerance_y && y<d_y-d_bh+selection_tolerance_y);
 }
 
 void Entity::UnLink() {

@@ -1,5 +1,9 @@
 20130213
+	Los eventos de drag en el editor de diagramas ahora se activan despues de mover el mouse más de una distancia mínima, ya no al hacer el primer click.
 	Corregida la verificación de tipos en las evaluaciones de posiciones en arreglos.
+	
+20130102
+	Corregido el flickering de la nueva terminal en Windows y algunos redibujados innecesarios.
 	
 20121230
 	Corregido el comportamiento del item para elegir la terminal en el menu de configuracion.

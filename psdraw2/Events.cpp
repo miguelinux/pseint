@@ -18,9 +18,9 @@ extern const int margin; // para los botones de confirm
 #define usleep(x) Sleep((x)/1000)
 #endif
 
-#define mouse_setted_time 10
-static int mouse_setted=0; // frames que pasan desde el click derecho hasta que efectivamente la gui reacciona (para evitar pasos en falso en click simples y dobles click)
-static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el contador de frames llegue a cer
+#define mouse_setted_delta 1000
+static int mouse_setted_x,mouse_setted_y; // posicion del click que va a setear el mouse en una entidad cuando se mueva, con correccion de y y zoom aplicados
+static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
 
 static Entity *DuplicateEntity(Entity *orig) {
 	Entity *nueva=new Entity(orig->type,orig->label);
@@ -83,7 +83,7 @@ static void idle_func() {
 		else interpolate(trash_size,trash_size_min);
 		menu=shapebar=false;
 	} else {
-		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
+//		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
 		if (menu) { interpolate(menu_size_h,menu_option_height*(MO_HELP+2)); interpolate(menu_size_w,menu_w_max); }
@@ -137,10 +137,12 @@ static void passive_motion_cb(int x, int y) {
 }
 static void motion_cb(int x, int y) {
 	if (confirm) return;
-	if (mouse_setted && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
 	y=win_h-y; 
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
+	if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
+		to_set_mouse->SetMouse(); start->Calculate();
+	}
 	if (selecting_zoom || choose_process_state) {
 		cur_x=x; cur_y=y;
 		return;
@@ -202,7 +204,7 @@ void ProcessMenu(int op) {
 }
 
 static void mouse_cb(int button, int state, int x, int y) {
-	mouse_setted=0;
+	to_set_mouse=NULL;
 	if (choose_process_state) {
 		if (choose_process_state==1) { choose_process_state=2; return; }
 		if (choose_process_sel==procesos.size()) {
@@ -258,7 +260,6 @@ static void mouse_cb(int button, int state, int x, int y) {
 			if (!aux) return;
 			aux->m_x=0; aux->m_y=0;
 			to_set_mouse=aux;
-//			mouse_setted=mouse_setted_time;
 			aux->SetMouse();
 			aux->SetEdit();
 			aux->SetPosition(x,y);
@@ -281,9 +282,7 @@ static void mouse_cb(int button, int state, int x, int y) {
 					if (edit!=aux) {
 						edit=NULL;
 					}
-//					aux->SetMouse();
-					to_set_mouse=aux;
-					mouse_setted=mouse_setted_time;
+					to_set_mouse=aux; mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
 					// doble click
 					static int last_click_time=0;
 					static Entity *last_click_mouse=NULL;
