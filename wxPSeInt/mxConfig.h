@@ -2,6 +2,7 @@
 #define MXCONFIG_H
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
+#include "ConfigManager.h"
 
 class mxConfig:wxDialog {
 private:
@@ -18,10 +19,14 @@ private:
 	wxCheckBox *chk_use_nassi_schneiderman;
 	wxCheckBox *chk_enable_string_functions;
 	wxCheckBox *chk_enable_user_functions;
+	void ReadFromStruct(LangSettings l);
+	void CopyToStruct(LangSettings &l);
 public:
 	mxConfig(wxWindow *parent);
 	~mxConfig();
 	void OnClose(wxCloseEvent &evt);
+	void OnOpenButton(wxCommandEvent &evt);
+	void OnSaveButton(wxCommandEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();

@@ -6,6 +6,7 @@
 #define _no_tty "<<sin configurar>>"
 
 struct LangSettings {
+	wxString desc;
 	bool force_define_vars;
 	bool force_init_vars;
 	bool force_dot_and_comma;
@@ -36,6 +37,7 @@ struct LangSettings {
 			word_operators!=o.word_operators;
 	}
 	void Reset() {
+		desc.Clear();
 		force_define_vars=false;
 		force_init_vars=false;
 		force_dot_and_comma=false;
@@ -51,6 +53,8 @@ struct LangSettings {
 		enable_user_functions=true;
 	}
 	LangSettings() { Reset(); }
+	bool Load(wxString fname);
+	bool Save(wxString fname);
 };
 
 class ConfigManager {

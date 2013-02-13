@@ -46,7 +46,6 @@ void ConfigManager::LoadDefaults() {
 	use_colors=true;
 	show_debug_panel = false;
 	maximized = false;
-//	high_res_flows = false;
 	colour_sintax = true;
 	show_vars = false;
 	show_commands = true;
@@ -91,9 +90,6 @@ void ConfigManager::LoadDefaults() {
 	temp_dir = home_dir;
 	if (!wxFileName::DirExists(temp_dir))
 		wxFileName::Mkdir(temp_dir);
-//	temp_file = _T("temp.psc");
-//	temp_out = _T("temp.out");
-//	temp_draw = _T("temp.psd");
 }
 
 void ConfigManager::Save() {
@@ -114,9 +110,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
-//	fil.AddLine(wxString(_T("temp_draw="))<<temp_draw);
-//	fil.AddLine(wxString(_T("temp_file="))<<temp_file);
-//	fil.AddLine(wxString(_T("temp_out="))<<temp_out);
 	fil.AddLine(wxString(_T("last_dir="))<<last_dir);
 	fil.AddLine(wxString(_T("help_dir="))<<help_dir);
 	fil.AddLine(wxString(_T("proxy="))<<proxy);
@@ -125,7 +118,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("examples_dir="))<<examples_dir);
 	fil.AddLine(wxString(_T("rt_syntax="))<<(rt_syntax?1:0));
 	fil.AddLine(wxString(_T("smart_indent="))<<(smart_indent?1:0));
-//	fil.AddLine(wxString(_T("high_res_flows="))<<(high_res_flows?1:0));
 	fil.AddLine(wxString(_T("colour_sintax="))<<(colour_sintax?1:0));
 	fil.AddLine(wxString(_T("show_vars="))<<(show_vars?1:0));
 	fil.AddLine(wxString(_T("show_commands="))<<(show_commands?1:0));
@@ -211,7 +203,6 @@ void ConfigManager::Read() {
 			else if (key==_T("autocomp")) autocomp=utils->IsTrue(value);
 			else if (key==_T("highlight_blocks")) highlight_blocks=utils->IsTrue(value);
 			else if (key==_T("autoclose")) autoclose=utils->IsTrue(value);
-//			else if (key==_T("high_res_flows")) high_res_flows=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);
 			else if (key==_T("use_colors")) use_colors=utils->IsTrue(value);
 			else if (key==_T("use_nassi_schneiderman")) lang.use_nassi_schneiderman=utils->IsTrue(value);
@@ -235,9 +226,6 @@ void ConfigManager::Read() {
 			else if (key==_T("examples_dir")) examples_dir=value;
 			else if (key==_T("last_dir")) last_dir=value;
 			else if (key==_T("temp_dir")) temp_dir=value;
-//			else if (key==_T("temp_file")) temp_file=value;
-//			else if (key==_T("temp_draw")) temp_draw=value;
-//			else if (key==_T("temp_out")) temp_out=value;
 			else if (key==_T("pseint_command")) pseint_command=value;
 			else if (key==_T("psterm_command")) psterm_command=value;
 			else if (key==_T("psterm_command")) psterm_command=value;
@@ -258,37 +246,10 @@ ConfigManager::~ConfigManager() {
 
 wxString ConfigManager::LoadProfile(wxString pname) {
 	profile=pname;
-	wxTextFile fil(DIR_PLUS_FILE(profiles_dir,profile));
-	if (!fil.Exists()) profile=_T("");
-	if (profile==_T("<personalizado>") || profile==_T("")) {
-		return _T(
-			"Esta opcion le permite definir su propia configuracion. Utilice el boton \"Personalizar...\" para definirla."
-			);
+	if (lang.Load(DIR_PLUS_FILE(profiles_dir,profile))) {
+		return lang.desc;
 	} else {
-		lang.Reset();
-		fil.Open();
-		wxString key, value; wxString desc;
-		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-			if (str[0]=='#') continue;
-			key=str.BeforeFirst('=');
-			value=str.AfterFirst('=');
-			if (key==_T("allow_dinamyc_dimensions")) lang.allow_dinamyc_dimensions=utils->IsTrue(value);
-			else if (key==_T("use_nassi_schneiderman")) lang.use_nassi_schneiderman=utils->IsTrue(value);
-			else if (key==_T("force_define_vars")) lang.force_define_vars=utils->IsTrue(value);
-			else if (key==_T("force_init_vars")) lang.force_init_vars=utils->IsTrue(value);
-			else if (key==_T("allow_concatenation")) lang.allow_concatenation=utils->IsTrue(value);
-			else if (key==_T("enable_string_functions")) lang.enable_string_functions=utils->IsTrue(value);
-			else if (key==_T("enable_user_functions")) lang.enable_user_functions=utils->IsTrue(value);
-			else if (key==_T("force_dot_and_comma")) lang.force_dot_and_comma=utils->IsTrue(value);
-			else if (key==_T("allow_word_operators")) lang.word_operators=utils->IsTrue(value);
-			else if (key==_T("overload_equal")) lang.overload_equal=utils->IsTrue(value);
-			else if (key==_T("coloquial_conditions")) lang.coloquial_conditions=utils->IsTrue(value);
-			else if (key==_T("lazy_syntax")) lang.lazy_syntax=utils->IsTrue(value);
-			else if (key==_T("base_zero_arrays")) lang.base_zero_arrays=utils->IsTrue(value);
-			else if (key==_T("desc")) desc+=value+_T("\n");
-		}
-		fil.Close();
-		return desc;
+		return _T("Esta opcion le permite definir su propia configuracion. Utilice el boton \"Personalizar...\" para definirla.");
 	}
 }
 
@@ -299,18 +260,6 @@ int ConfigManager::GetCommPort () {
 int ConfigManager::GetDebugPort ( ) {
 	if (fixed_port) return debug_port; else return debug_port+rand()%150;
 }
-
-//wxString ConfigManager::GetTempPSC ( ) {
-//	return DIR_PLUS_FILE(temp_dir,temp_file);
-//}
-//
-//wxString ConfigManager::GetTempOUT ( ) {
-//	return DIR_PLUS_FILE(temp_dir,temp_out);
-//}
-//
-//wxString ConfigManager::GetTempPSD ( ) {
-//	return DIR_PLUS_FILE(temp_dir,temp_draw);
-//}
 
 wxString ConfigManager::GetTTYCommand ( ) {
 	if (use_psterm) return psterm_command;
@@ -333,5 +282,60 @@ wxString ConfigManager::GetTTYCommand ( ) {
 		}
 	}
 	return tty_command;
+}
+
+bool LangSettings::Load (wxString fname) {
+	Reset();
+	wxTextFile fil(fname);
+	if (!fil.Exists()) return false;
+	fil.Open();
+	if (!fil.IsOpened()) return false;
+	wxString key, value; wxString desc;
+	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+		if (str[0]=='#') continue;
+		key=str.BeforeFirst('=');
+		value=str.AfterFirst('=');
+		if (key==_T("allow_dinamyc_dimensions")) allow_dinamyc_dimensions=utils->IsTrue(value);
+		else if (key==_T("use_nassi_schneiderman")) use_nassi_schneiderman=utils->IsTrue(value);
+		else if (key==_T("force_define_vars")) force_define_vars=utils->IsTrue(value);
+		else if (key==_T("force_init_vars")) force_init_vars=utils->IsTrue(value);
+		else if (key==_T("allow_concatenation")) allow_concatenation=utils->IsTrue(value);
+		else if (key==_T("enable_string_functions")) enable_string_functions=utils->IsTrue(value);
+		else if (key==_T("enable_user_functions")) enable_user_functions=utils->IsTrue(value);
+		else if (key==_T("force_dot_and_comma")) force_dot_and_comma=utils->IsTrue(value);
+		else if (key==_T("allow_word_operators")) word_operators=utils->IsTrue(value);
+		else if (key==_T("overload_equal")) overload_equal=utils->IsTrue(value);
+		else if (key==_T("coloquial_conditions")) coloquial_conditions=utils->IsTrue(value);
+		else if (key==_T("lazy_syntax")) lazy_syntax=utils->IsTrue(value);
+		else if (key==_T("base_zero_arrays")) base_zero_arrays=utils->IsTrue(value);
+		else if (key==_T("desc")) desc+=value+_T("\n");
+	}
+	fil.Close();
+	return true;
+}
+
+bool LangSettings::Save (wxString fname) {
+	wxTextFile fil(fname);
+	if (!fil.Exists()) fil.Create();
+	fil.Open(); if (!fil.IsOpened()) return false;
+	fil.Clear();
+	wxString tmp=desc; tmp.Replace("\r",""); tmp.Replace("\n","\ndesc=");
+	fil.AddLine(wxString(_T("desc="))<<tmp);
+	fil.AddLine(wxString(_T("allow_dinamyc_dimensions="))<<(allow_dinamyc_dimensions?1:0));
+	fil.AddLine(wxString(_T("use_nassi_schneiderman="))<<(use_nassi_schneiderman?1:0));
+	fil.AddLine(wxString(_T("force_define_vars="))<<(force_define_vars?1:0));
+	fil.AddLine(wxString(_T("force_init_vars="))<<(force_init_vars?1:0));
+	fil.AddLine(wxString(_T("allow_concatenation="))<<(allow_concatenation?1:0));
+	fil.AddLine(wxString(_T("enable_string_functions="))<<(enable_string_functions?1:0));
+	fil.AddLine(wxString(_T("enable_user_functions="))<<(enable_user_functions?1:0));
+	fil.AddLine(wxString(_T("force_dot_and_comma="))<<(force_dot_and_comma?1:0));
+	fil.AddLine(wxString(_T("allow_word_operators="))<<(word_operators?1:0));
+	fil.AddLine(wxString(_T("overload_equal="))<<(overload_equal?1:0));
+	fil.AddLine(wxString(_T("coloquial_conditions="))<<(coloquial_conditions?1:0));
+	fil.AddLine(wxString(_T("lazy_syntax="))<<(lazy_syntax?1:0));
+	fil.AddLine(wxString(_T("base_zero_arrays="))<<(base_zero_arrays?1:0));
+	fil.Write();
+	fil.Close();
+	return true;
 }
 
