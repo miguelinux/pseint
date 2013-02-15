@@ -187,10 +187,7 @@ mxSource::~mxSource() {
 		flow_socket->Write("quit\n",5);
 		flow_socket=NULL;
 	}
-	if (run_socket) {
-		run_socket->Write("quit\n",5);
-		run_socket=NULL;
-	}
+	KillRunningTerminal();
 	mxProcess *proc=proc_list;
 	while (proc) {
 		if (proc->source==this) proc->SetSourceDeleted();
@@ -1457,5 +1454,12 @@ wxString mxSource::GetInstruction (int p) {
 		i++;
 	}
 	return instruccion.Lower();
+}
+
+void mxSource::KillRunningTerminal ( ) {
+	if (run_socket) {
+		run_socket->Write("quit\n",5);
+		run_socket=NULL;
+	}
 }
 

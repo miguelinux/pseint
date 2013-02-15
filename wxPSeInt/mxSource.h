@@ -84,6 +84,7 @@ public:
 	
 	void SetRunSocket(wxSocketBase *s);
 	bool UpdateRunningTerminal(bool raise=false);
+	void KillRunningTerminal();
 	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();
 	void ReloadFromTempPSD();

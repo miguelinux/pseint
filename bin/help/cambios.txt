@@ -1,3 +1,7 @@
+20130215
+	Ahora se cierran las ejecuciones en curso si cambia el perfil de lenguaje.
+	Corregido un potencial segfault en el intérprete al verificar la sintaxis en tiempo real.
+	
 20130213
 	La nueva terminal utiliza colores más apagados cuando su contenido está desactualizado respecto del editor.
 	Se agregaron botones para guardar y cargar perfiles personalizados desde archivos en el cuadro de configuración del perfil del editor.

@@ -1403,6 +1403,7 @@ void mxMainWindow::ProfileChanged ( ) {
 	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
 		((mxSource*)(notebook->GetPage(i)))->SetWords();
 		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());
+		((mxSource*)(notebook->GetPage(i)))->KillRunningTerminal();
 	}
 	debug_panel->ProfileChanged();
 	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
