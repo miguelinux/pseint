@@ -66,7 +66,7 @@ inline string DblToStr(double f) {
 	// eliminar ceros que sobren y el punto si era entero
 	int i=0; while (ret[i]!=0) i++;
 	while (ret[--i]=='0'); 
-	if (ret[--i]=='.');
+	if (ret[i]=='.') i--;
 	ret[++i]='\0';
 	return ret;
 }
@@ -79,7 +79,7 @@ inline string DblToStr(double f,bool low_precision) {
 	// eliminar ceros que sobren y el punto si era entero
 	int i=0; while (ret[i]!=0) i++;
 	while (ret[--i]=='0');
-	if (ret[--i]=='.');
+	if (ret[i]=='.') i--;
 	ret[++i]='\0';
 	return ret;
 }
