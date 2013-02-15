@@ -48,7 +48,8 @@ Funcion* EsFuncion(const string nombre, bool include_main_process=false); ///< b
 Funcion* EsFuncionPredefinida(const string nombre); ///< busca una funcion predefinida, devuelve NULL si no la encuetra
 Funcion* EsFuncionDelUsuario(const string nombre, bool include_main_process); ///< busca una funcion predefinida, devuelve NULL si no la encuetra
 string GetNombreFuncion(Funcion *func); ///< obtiene el nombre de la función a partir de un puntero (para mostrar en los mensajes de error)
-void UnloadSubprocesos(); ///< carga la lista de funciones predefinidas, el argumento es para saber si van en mayúsculas o minúsculas
+void UnloadSubprocesos(); ///< borra de la memoria todos los subprocesos definidos por el usuario
+void UnloadFunciones(); ///< borra de la memoria todas las funciones predefinidas (nunca es necesario, solo para depurar el rtsyntax con memcheck y evitar falsos positivos)
 
 extern string main_process_name; ///< nombre de la funcion que representa al proceso principal, se asigna en SynCheck y se usa en el main para saber desde donde ejecutar
 

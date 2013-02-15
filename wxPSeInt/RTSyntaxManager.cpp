@@ -22,7 +22,6 @@ void RTSyntaxManager::Start ( ) {
 	the_one->restart=false;
 	wxString command;
 	command<<config->pseint_command<<_T(" --forrealtimesyntax")<<mxProcess::GetProfileArgs();
-	cerr<<command<<endl;
 	the_one->pid=wxExecute(command,wxEXEC_ASYNC,the_one);
 }
 

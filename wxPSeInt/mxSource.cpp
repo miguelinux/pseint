@@ -17,7 +17,7 @@ using namespace std;
 #include "RTSyntaxManager.h"
 
 #define RT_DELAY 1000
-#define RELOAD_DELAY 2000
+#define RELOAD_DELAY 2500
 
 int mxSource::last_id=0;
 

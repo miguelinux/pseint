@@ -198,6 +198,15 @@ void UnloadSubprocesos() {
 	subprocesos.clear();
 }
 
+void UnloadFunciones() {
+	map<string,Funcion*>::iterator it1=funciones.begin(), it2=funciones.end();
+	while (it1!=it2) {
+		delete (it1)->second;
+		it1++;
+	}
+	funciones.clear();
+}
+
 string GetNombreFuncion(Funcion * func) {
 	map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 	while (it1!=it2) {

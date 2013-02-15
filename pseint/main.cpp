@@ -196,15 +196,16 @@ int main(int argc, char* argv[]) {
 	srand(time(NULL));
 	
 	if (real_time_syntax) {
-		memoria = new Memoria(NULL);
+//		memoria = new Memoria(NULL);
 		while (true) {
-			memoria->HardReset();
+//			memoria->HardReset();
 			programa.HardReset();
 			UnloadSubprocesos();
 			string line;
 			int lcount=0;
 			while (true) {
 				getline(cin,line); lcount++;
+				if (line=="<!{[EXIT]}!>") { UnloadFunciones(); return 0; }
 				if (line=="<!{[END_OF_INPUT]}!>") break;
 				programa.PushBack(line);
 			}
