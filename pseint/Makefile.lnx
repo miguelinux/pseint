@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/int_lnx_rls
 GPP=g++
-FLAGS= -O2 -DUSE_ZOCKETS
+FLAGS= -O3 -DUSE_ZOCKETS
 LIBS= -s  
 
 all: ${OBJS_DIR} ../bin/pseint

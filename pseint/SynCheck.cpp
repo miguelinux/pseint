@@ -113,6 +113,7 @@ static void SynCheckAux2(string &cadena) {
 	struct coloquial_aux {
 		string cond, pre, post, rep;
 		int csize;
+		// cppcheck-suppress uninitMemberVar
 		coloquial_aux(){}
 		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
 	};
@@ -155,8 +156,8 @@ static void SynCheckAux2(string &cadena) {
 	for (int y=0;y<int(cadena.size());y++) {
 		if (cadena[y]=='\'' || cadena[y]=='\"') comillas=-comillas;
 		else if (comillas<0) {
-			int cual=-1;
 			if (y+3<int(cadena.size()) && cadena[y]==' '&&cadena[y+1]=='E'&&cadena[y+2]=='S'&&cadena[y+3]==' ') {
+				int cual=-1;
 				bool negate=(y>1 && cadena[y-1]=='~' && cadena[y-2]==' ');
 				for(int j=0;j<coloquial_conditions_list_size;j++) { // buscar si coincide con alguna expresion de la lista
 					if (cadena.substr(y,coloquial_conditions_list[j].csize)==coloquial_conditions_list[j].cond) {
@@ -484,7 +485,6 @@ int SynCheck(int linea_from, int linea_to) {
 	programa.SetRefPoint(linea_to);
 	Memoria global_memory(NULL); // para usar al analizar instrucciones fuera de proceso/subprocesos
 	memoria=&global_memory;
-	queue<string> arguments; // para guardar los nombres de argumentos de funciones 
 	static int untitled_functions_count=0; // para numerar las funciones sin nombre
 	SynErrores=0;
 	stack <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
@@ -504,10 +504,8 @@ int SynCheck(int linea_from, int linea_to) {
 		
 		// Ignorar lineas de comentarios
 		{
-			int comillas=-1, parentesis=0;
+			int comillas=-1;
 			instruccion="";
-			// Pasar todo a mayusculas, cambiar comillas y corchetes
-			comillas=-1;
 
 			// puede haber que trimear las cadenas que surgieron de separar lineas con mas de una instruccion
 			int pt1=0,pt2=cadena.size(), l=cadena.size();
@@ -753,7 +751,7 @@ int SynCheck(int linea_from, int linea_to) {
 					if (instruccion!="<-") {
 						int p=0, l=cadena.length();
 						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
-						Funcion *func=EsFuncion(cadena.substr(0,p));
+						const Funcion *func=EsFuncion(cadena.substr(0,p));
 						if (func) instruccion=string("INVOCAR ");
 					}
 				}
@@ -1026,7 +1024,7 @@ int SynCheck(int linea_from, int linea_to) {
 							str=cadena;
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
-							if (str.find("(",0)<0 || str.find("(",0)>=str.size()){ 
+							if (str.find("(",0)==string::npos){ 
 								SynError (58,"Faltan subindices."); errores++;
 								if (!CheckVariable(str,59)) errores++;
 								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
@@ -1057,7 +1055,7 @@ int SynCheck(int linea_from, int linea_to) {
 								
 								// comprobar los indices
 								string str2,res_eval;
-								while (str.find(",",0)>=0 && str.find(",",0)<str.size()){
+								while (str.find(",",0)!=string::npos){
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
@@ -1135,7 +1133,7 @@ int SynCheck(int linea_from, int linea_to) {
 								string str2;
 								// comprobar los indices
 								int ca=0;
-								while (str.find(",",0)>=0 && str.find(",",0)<str.size()){
+								while (str.find(",",0)!=string::npos){
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
@@ -1159,7 +1157,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="PARA "){  // ------------ PARA -----------//
 				str=cadena; // cortar instruccion
 				str.erase(0,5);
-				if ((str.find(" ",0)<0 || str.find(" ",0)>=str.size()))
+				if (str.find(" ",0)==string::npos)
 				{SynError (70,"Faltan parametros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
@@ -1167,7 +1165,7 @@ int SynCheck(int linea_from, int linea_to) {
 				}
 				if (RightCompareFix(str," HACER")) { // comprobar asignacion
 					str.erase(str.find(" ",0),str.size()-str.find(" ",0));
-					if (str.find("<-",0)<0 || str.find("<-",0)>=str.size()) // Comprobar asignacion
+					if (str.find("<-",0)==string::npos) // Comprobar asignacion
 						{SynError (72,"Se esperaba asignacion."); errores++;}
 					else
 						if (RightCompare(str,"<-HASTA") || RightCompare(str,"<-CON PASO") || LeftCompare(str,"<-"))
@@ -1209,7 +1207,7 @@ int SynCheck(int linea_from, int linea_to) {
 										{SynError (79,"Falta el valor final del PARA."); errores++;}
 									else {
 										str.erase(0,7); str.erase(str.size()-6,6);
-										if (str.find(" ",0)<0 || str.find(" ",0)>str.size()) {
+										if (str.find(" ",0)==string::npos) {
 											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
 											if (!tipo.cb_num) {SynError (80,"No coinciden los tipos."); errores++;}
 										} else {
@@ -1238,7 +1236,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="PARACADA "){  // ------------ PARA CADA -----------//
 				str=cadena; // cortar instruccion
 				str.erase(0,9);
-				if ((str.find(" ",0)<0 || str.find(" ",0)>=str.size()))
+				if (str.find(" ",0)==string::npos)
 				{SynError (70,"Faltan parametros."); errores++;} /// 999
 				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
@@ -1282,7 +1280,7 @@ int SynCheck(int linea_from, int linea_to) {
 					string vname=str;
 					str=cadena;
 					str.erase(0,str.find("<-",0)+2);
-					comillas=-1;parentesis=0;
+					comillas=-1; int parentesis=0;
 					for (int y=0;y<(int)str.size();y++){ // comprobar que se un solo parametro
 						if (str[y]=='(') parentesis++;
 						if (str[y]==')') parentesis--;
@@ -1414,11 +1412,13 @@ int SynCheck(int linea_from, int linea_to) {
 						}
 					}
 			}
-			if (LeftCompare(instruccion,"FIN") || instruccion=="REPETIR "||instruccion=="BORRARPANTALLA"||instruccion=="ESPERARTECLA")
-				if (cadena.find(" ",0)>=0 && cadena.find(" ",0)<cadena.size() && cadena.substr(cadena.find(" ",0))!=" ;") {
+			if (LeftCompare(instruccion,"FIN") || instruccion=="REPETIR "||instruccion=="BORRARPANTALLA"||instruccion=="ESPERARTECLA") {
+				size_t sp=cadena.find(" ",0);
+				if (sp!=string::npos && cadena.substr(sp)!=" ;") {
 					SynError (105,"La instruccion no debe tener parametros."); errores++;
-					cadena.erase(cadena.find(" ",0),cadena.size()-cadena.find(" ",0));
+					cadena.erase(sp,cadena.size()-sp);
 				}
+			}
 			if (instruccion=="Error?" && cadena!="" && cadena!=";") {
 				if (LeftCompare(cadena,"FIN "))
 				{SynError (99,"Instruccion no valida."); errores++;}
@@ -1429,7 +1429,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="INVOCAR ") {
 				int p=8;
 				string fname=NextToken(cadena,p);
-				Funcion *func=EsFuncion(fname);
+				const Funcion *func=EsFuncion(fname);
 				string args=cadena.substr(p);
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
@@ -1559,7 +1559,7 @@ int SynCheck() {
 							while (it1!=it2) { 
 								if (!it1->second->func && it1->second->line_start>=i1) 
 									it1->second->line_start+=i-i1; 
-								it1++; 
+								++it1; 
 							} 
 						}
 						

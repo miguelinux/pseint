@@ -7,140 +7,6 @@
 #include "zcurlib.h"
 #include "new_funciones.h"
 
-// ***************** Conversiones Numeros/Cadenas **********************
-
-// -------------------------------------------------------------------
-//    Convierte un entero a una cadena
-// -------------------------------------------------------------------
-string IntToStr(int f) {
-	string s,stmp="0";
-	int tmp;
-	int a=1,b,c;
-	if (f<0) {f=f*(-1);s="-";}
-	while (a<=f) a=a*10;
-	a=a/10;
-	while (a>0) {
-		b=a;c=1;
-		while (b<=f) {b+=a;c++;}
-		stmp[0]=(c-1)+48;
-		s=s+stmp;
-		f=f-(b-a);
-		a=a/10; 
-	}
-	tmp=s.find(".",0);
-	while (s[s.size()-1]==' ' && (int)s.size()>tmp && tmp>=0)
-		s.erase(s.size()-1,1);
-	if (s=="") s="0";
-	return s;
-}
-
-// -------------------------------------------------------------------
-//    Convierte una cadena a un double
-// -------------------------------------------------------------------
-//double StrToDbl(string s) {
-//	int Neg=0; // Bandera de Numero negativo
-//	int i=0;
-//	if (s[0]=='-') {i++; Neg=1;}
-//	else if (s[0]=='+') i++;
-//	double f=0,b,punto=0;
-//	while ((int)s[i]!=0) {
-//		if (punto==0)
-//			if ((int)s[i]==46)
-//				punto=.1;
-//			else
-//				f=(f*10)+((int)s[i]-48);
-//		else {
-//			b=(int)s[i]-48;
-//			f+=b*punto;
-//			punto=punto/10; }
-//		i++;};
-//	if (Neg==1) f=-f;
-//	return f;
-// }
-
-// -------------------------------------------------------------------
-//    Convierte un double a una cadena - Alta Precision
-// -------------------------------------------------------------------
-//string DblToStrM(double f) {
-//	stringstream s;
-//	s<<setprecision(50)<<f;
-//	return s.str();
-// }
-//// -------------------------------------------------------------------
-////    Convierte un double a una cadena
-//// -------------------------------------------------------------------
-//string DblToStr(double f) {
-//	stringstream s;
-//	s<<fixed<<setprecision(10)<<f;
-//	string str = s.str();
-//	size_t p = str.find('.',0);
-//	if (p!=string::npos) {
-//		int s = str.size();
-//		while (str[s-1]=='0')
-//			s--;
-//		if (str[s-1]=='.')
-//			s--;
-//		str.erase(s,str.size()-s);
-//	}
-//	return str;
-//	
-//	/*
-//	string s,stmp="0";
-//	int pos;
-//	double a=1,c,ff=0, aa,b=0, la;
-//	if (f<0) {s="-";f=-f;} else s="+";
-//	
-//	pos=1;
-//	while (f>=a)
-//	{a=a*10;s=s+"0";}
-//	//   s.erase(s.size()-1,1);
-//	aa=a;
-//	a=0;
-//	while (ff<f && aa>.000000001){
-//	if (aa>1)
-//	aa=aa/10;
-//	else {
-//	stmp=IntToStr((int)((f-a)*100000000));
-//	s=s+".";
-//	s=s+stmp;
-//	while (s[s.size()-1]=='0') 
-//	s.erase(s.size()-1,1);
-//	break;
-//	}
-//	//      TRUNC(aa,5);
-//	b=aa; c=0;
-//	la=a-1;;
-//	while (a<=f && la!=a) {la=a;a=a+b;c++;}
-//	//      if (!(b<1))
-//	a=a-b; c--;
-//	if (b<1 && b>.02) {s=s+"."; pos++;}
-//	if (pos>=(int)s.size())
-//	s=s+"0";
-//	if (c==0) s[pos]='0';
-//	if (c==1) s[pos]='1';
-//	if (c==2) s[pos]='2';
-//	if (c==3) s[pos]='3';
-//	if (c==4) s[pos]='4';
-//	if (c==5) s[pos]='5';
-//	if (c==6) s[pos]='6';
-//	if (c==7) s[pos]='7';
-//	if (c==8) s[pos]='8';
-//	if (c==9) s[pos]='9';
-//	ff=a; pos++;
-//	}
-//	if (s[0]=='+') s.erase(0,1);
-//	
-//	int tmp=s.find(".",0);
-//	while (s[s.size()-1]=='0' && (int)s.size()>tmp && tmp>=0)
-//	s.erase(s.size()-1,1);
-//	if (s[s.size()-1]=='.')
-//	s.erase(s.size()-1,1);
-//	if (s=="") s="0";
-//	return s;
-//	*/
-// }
-
-
 // ***************** Control de Errores y Depuración **********************
 
 // ------------------------------------------------------------
@@ -248,8 +114,9 @@ void SynError(int num,string s, int line, int inst) {
 //  funciones predefinidas.
 // ------------------------------------------------------------
 bool CheckVariable(string str, int errcode) { 
-	if (str.find("(",0)>0 && str.find("(",0)<str.size() && str[str.size()-1]==')')
-		str.erase(str.find("(",0),str.size()-str.find("(",0)); // si es arreglo corta los subindices
+	size_t pi=str.find("(",0);
+	if (pi!=string::npos && str[str.size()-1]==')')
+		str.erase(pi,str.size()-pi); // si es arreglo corta los subindices
 	bool ret=true;
 	if (!EsLetra(str[0]))
 		ret=false;

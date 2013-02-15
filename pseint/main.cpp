@@ -146,7 +146,6 @@ int main(int argc, char* argv[]) {
 #endif
 
 	// comprobar parametros
-	string cadena;
 	if (error || (fil_count==0 && !real_time_syntax)) {
 		cout<<"Use: pseint FileName.psc [<options>] [LogFile]\n";
 		cout<<"     pseint FileName.psc --draw DrawFile.psd [LogFile]\n";
@@ -313,7 +312,7 @@ int main(int argc, char* argv[]) {
 			while (it1!=it2) (it1++)->second->memoria->FakeReset();
 			Inter.SetStarted();
 			checksum(programa);
-			Funcion *main_func=EsFuncion(main_process_name,true);
+			const Funcion *main_func=EsFuncion(main_process_name,true);
 			memoria=main_func->memoria;
 			Ejecutar(main_func->line_start);
 			Inter.SetFinished();

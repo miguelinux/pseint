@@ -92,7 +92,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					aux1=Evaluar(aux1,x);
 					if (x!=vt_error) {
 						if (x==vt_numerica)
-							aux1=DblToStr(StrToDbl(aux1),10);
+							aux1=DblToStr(StrToDbl(aux1),true);
 						else
 							fixwincharset(aux1);
 						cout<<aux1<<flush; // Si es variable, muestra el contenido
@@ -103,7 +103,6 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else 
 			// ------------- LEER --------------- //
 			if (LeftCompare(cadena,"LEER ")) {
-				string aux3,aux4;
 				cadena.erase(0,5);
 				cadena.erase(cadena.size()-1,1);
 				tmp1=0; tmp2=0;
@@ -236,7 +235,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 			} else
 			// ------------- DEFINICION --------------- //
 			if (LeftCompare(cadena,"DEFINIR ")) {
-				string aux3,aux4; tmp1=0; tmp2=0; cadena.erase(0,8); bool rounded=false;
+				tmp1=0; tmp2=0; cadena.erase(0,8); bool rounded=false;
 				if (RightCompare(cadena," COMO LOGICO;")) { tipo=vt_logica; aux1="FALSO"; cadena.erase(cadena.size()-13,13); }
 				else if (RightCompare(cadena," COMO REAL;")) { tipo=vt_numerica; aux1="0"; cadena.erase(cadena.size()-11,11); }
 				else if (RightCompare(cadena," COMO ENTERO;")) { tipo=vt_numerica; aux1="0"; cadena.erase(cadena.size()-13,13); rounded=true; }

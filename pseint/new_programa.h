@@ -14,7 +14,6 @@ struct Instruccion {
 	string instruccion;
 	int num_linea;
 	int num_instruccion;
-	Instruccion() {}
 	Instruccion(string _instruccion, int _num_linea=-1, int _num_instruccion=-1):instruccion(_instruccion),num_linea(_num_linea),num_instruccion(_num_instruccion){}
 	operator string() {return instruccion;}
 	bool operator==(const string &s) { return instruccion==s; }
@@ -27,9 +26,7 @@ class Programa {
 	int cant_lines;
 	int ref_point; // marcador para apuntar a una linea, y que PushBack y Erase lo actualicen si corresponde
 public:
-	Programa() { 
-		cant_lines=0;
-	}
+	Programa():cant_lines(0),ref_point(0) {}
 	Instruccion &operator[](int i) { 
 		return v[i];
 	}

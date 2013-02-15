@@ -1,4 +1,5 @@
 20130215
+	Se eliminaron todos los errores y advertencias detectadas por cppcheck y se aplicaron pequeños cambios para mejorar la eficiencia del intérprete.
 	Ahora se cierran las ejecuciones en curso si cambia el perfil de lenguaje.
 	Corregido un potencial segfault en el intérprete al verificar la sintaxis en tiempo real.
 	

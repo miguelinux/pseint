@@ -7,25 +7,82 @@
 #include "global.h"
 using namespace std;
 
+// ***************** Conversiones Numeros/Cadenas **********************
+
 // -------------------------------------------------------------------
 //    Convierte un entero a una cadena
 // -------------------------------------------------------------------
-string IntToStr(int f) ;
+inline string IntToStr(int f) {
+	string s; 
+	char stmp[]="0";
+	int tmp;
+	int a=1,b,c;
+	if (f<0) {f=f*(-1);s="-";}
+	while (a<=f) a=a*10;
+	a=a/10;
+	while (a>0) {
+		b=a; c=1;
+		while (b<=f) {b+=a;c++;}
+		stmp[0]=(c-1)+48;
+		s+=stmp;
+		f-=(b-a);
+		a/=10; 
+	}
+	tmp=s.find(".",0);
+	while (s[s.size()-1]==' ' && (int)s.size()>tmp && tmp>=0)
+		s.erase(s.size()-1,1);
+	if (s=="") s="0";
+	return s;
+}
 
 // -------------------------------------------------------------------
 //    Convierte una cadena a un double
 // -------------------------------------------------------------------
-double StrToDbl(string s) ;
+inline double StrToDbl(const string &s) {
+	bool Neg=0; // Bandera de Numero negativo
+	int i=0, c=int(s[0]);
+	if (c=='-') {i++; Neg=true;}
+	else if (c=='+') i++;
+	double f=0,punto=0;
+	while ((c=int(s[i]))!=0) {
+		if (punto==0) {
+			if (c==46) { punto=.1; }
+			else { f*=10; f+=c-48; }
+		} else {
+			f+=(c-48)*punto;
+			punto/=10; }
+		i++;
+	}
+	if (Neg) return -f;
+	else return f;
+}
 
 // -------------------------------------------------------------------
 //    Convierte un double a una cadena - Alta Precision
 // -------------------------------------------------------------------
-string DblToStr(double f,int pres=50) ;
+inline string DblToStr(double f) {
+	static char ret[2048];
+	sprintf(ret,"%.50f",f);
+	// eliminar ceros que sobren y el punto si era entero
+	int i=0; while (ret[i]!=0) i++;
+	while (ret[--i]=='0'); 
+	if (ret[--i]=='.');
+	ret[++i]='\0';
+	return ret;
+}
 // -------------------------------------------------------------------
-//    Convierte un double a una cadena
+//    Convierte un double a una cadena - Baja Precision
 // -------------------------------------------------------------------
-//string DblToStr(double f) ;
-
+inline string DblToStr(double f,bool low_precision) {
+	static char ret[2048];
+	sprintf(ret,"%.10f",f);
+	// eliminar ceros que sobren y el punto si era entero
+	int i=0; while (ret[i]!=0) i++;
+	while (ret[--i]=='0');
+	if (ret[--i]=='.');
+	ret[++i]='\0';
+	return ret;
+}
 
 // ***************** Control de Errores y Depuración **********************
 
@@ -41,12 +98,6 @@ void SynError(int num,string s, InstruccionLoc il) ;
 void SynError(int num,string s, int line=-1, int inst=-1) ;
 
 // ------------------------------------------------------------
-//    Analiza el tipo de error devuelo por Evaluar(expresion)
-//  e informa segun corresponda.
-// ------------------------------------------------------------
-//void ExpError(char tipo, int level, int line) ;
-
-// ------------------------------------------------------------
 //    Comprueba que sea un identificador correcto y unico
 //    A diferencia del anterior, no tiene en cuenta las
 //  funciones predefinidas.
@@ -54,24 +105,7 @@ void SynError(int num,string s, int line=-1, int inst=-1) ;
 bool CheckVariable(string str, int errcode=-1) ;
 
 
-// ------------------------------------------------------------
-//    Comprueba que sea un identificador correcto y unico
-// ------------------------------------------------------------
-//bool CheckVariableForW(string str) ;
-
-
 // *********************** Funciones Auxiliares **************************
-
-// ----------------------------------------------------------------------
-//    Escribe un variable en Memoria realizando algunas verificaciones
-// ----------------------------------------------------------------------
-//void EscribirVar(string nombre,tipo_var tipo,string contenido) ;
-
-// ----------------------------------------------------------------------
-//    Lee una variable de Memoria o evalua una funcion predefinida
-// ----------------------------------------------------------------------
-//string LeerVar(string str) ;
-
 // ----------------------------------------------------------------------
 //    Devuelve el tipo de una variable o una funcion predefinida
 // ----------------------------------------------------------------------
@@ -83,19 +117,9 @@ tipo_var TipoVar(string str) ;
 bool LeftCompare(string a, string b) ;
 
 // ----------------------------------------------------------------------
-//    Compara los comienzos de dos cadenas (case insensitve)
-// ----------------------------------------------------------------------
-//bool LeftCompareNC(string a, string b);
-
-// ----------------------------------------------------------------------
 //    Compara las terminaciones de dos cadenas (case sensitve)
 // ----------------------------------------------------------------------
 bool RightCompare(string a, string b) ;
-
-// ----------------------------------------------------------------------
-//    Compara las terminaciones de dos cadenas (case insensitve)
-// ----------------------------------------------------------------------
-//bool RightCompareNC(string a, string b) ;
 
 // ----------------------------------------------------------------------
 //    Compara parte de una cadena con otra (case insensitve)

@@ -18,68 +18,7 @@ void WriteError(int num, string s) {
 		SynError(num,s);
 }
 
-// -------------------------------------------------------------------
-//    Convierte una cadena a un double
-// -------------------------------------------------------------------
-double StrToDbl(string s) {
-	int Neg=0; // Bandera de Numero negativo
-	int i=0;
-	if (s[0]=='-') {i++; Neg=1;}
-	else if (s[0]=='+') i++;
-	double f=0,b,punto=0;
-	while ((int)s[i]!=0) {
-		if (punto==0)
-			if ((int)s[i]==46)
-				punto=.1;
-			else
-				f=(f*10)+((int)s[i]-48);
-		else {
-			b=(int)s[i]-48;
-			f+=b*punto;
-			punto=punto/10; }
-		i++;};
-	if (Neg==1) f=-f;
-	return f;
-}
-
-// -------------------------------------------------------------------
-//    Convierte un double a una cadena - Alta Precision
-// -------------------------------------------------------------------
-string DblToStr(double f, int pres) {
-	stringstream s;
-	s<<fixed<<setprecision(pres)<<f;
-	string r=s.str();
-	if (r.find('.',0)!=string::npos || r.find(',',0)!=string::npos) {
-		int p=r.size()-1;
-		while (r[p]=='0') p--;
-		if (r[p]==','||r[p]=='.') p--;
-		r=r.substr(0,p+1);
-	}
-		
-	return r;
-}
-
-// -------------------------------------------------------------------
-//    Arregla un doble de una cadena... quita precision para evitar
-//  cosas como 5+2=6.99999857
-// -------------------------------------------------------------------
-//string FixDblStr(string dbl) {
-//	stringstream s;
-//	s<<fixed<<setprecision(10)<<StrToDbl(dbl);
-//	string str = s.str();
-//	size_t p = str.find('.',0);
-//	if (p!=string::npos) {
-//		int s = str.size();
-//		while (str[s-1]=='0')
-//			s--;
-//		if (str[s-1]=='.')
-//			s--;
-//		str.erase(s,str.size()-s);
-//	}
-//	return str;
-// 0}
-
-bool PalabraReservada(string str, bool exclude_functions=false) {
+bool PalabraReservada(const string &str, bool exclude_functions=false) {
 	// Comprobar que no sea palabra reservada
 	if (word_operators && (str=="Y" || str=="O" || str=="NO" || str=="MOD"))
 		return true;
@@ -98,7 +37,7 @@ bool PalabraReservada(string str, bool exclude_functions=false) {
 	return false;
 }
 
-int BuscarComa(string &expresion, int p1, int p2, char coma) {
+int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 	bool comillas = false;
 	int parentesis = 0;
 	char c;
@@ -121,17 +60,16 @@ int BuscarComa(string &expresion, int p1, int p2, char coma) {
 
 int operadores[]={',','|','&','~','=','<','>','+','-','*','/','^','%',' '};
 
-int BuscarOperador(string &expresion, int &p1, int &p2) {
-	bool parentesis_externos=true, comillas;
-	int i,j, parentesis, indice_operador=999, posicion_operador=-1; 
-	char c;
+int BuscarOperador(const string &expresion, int &p1, int &p2) {
+	bool parentesis_externos=true;
+	int j, indice_operador=999, posicion_operador=-1;
 	while (parentesis_externos) {
-		c=expresion[i=p1];
+		char c=expresion[p1]; int i=p1;
 		while (i<=p2 && (c==' '||c=='\t'))
 			c=expresion[++i];
 		parentesis_externos = i<=p2&&c=='(';
-		comillas=false;
-		parentesis=0;
+		bool comillas=false;
+		int parentesis=0;
 		while(i<=p2) {
 			if (c=='\"' || c=='\'') {
 				comillas = !comillas;
@@ -173,7 +111,7 @@ int BuscarOperador(string &expresion, int &p1, int &p2) {
 		return -1;
 }
 
-tipo_var DeterminarTipo(string &expresion, int p1, int p2) {
+tipo_var DeterminarTipo(const string &expresion, int p1, int p2) {
 	if (p2<p1) return vt_desconocido;
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op==-1) {
@@ -188,7 +126,7 @@ tipo_var DeterminarTipo(string &expresion, int p1, int p2) {
 		else {
 			size_t pp=expresion.find('(',p1);
 			if (pp!=string::npos) {
-				Funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
+				const Funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
 				if (func) return func->tipos[0];
 			}
 			return memoria->LeerTipo(expresion.substr(p1,p2-p1+1));
@@ -228,7 +166,7 @@ tipo_var DeterminarTipo(string &expresion, int p1, int p2) {
 	return vt_desconocido;
 }
 
-bool AplicarTipo(string &expresion, int &p1, int &p2, tipo_var tipo) {
+bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 	if (p2<p1) return true;
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op==-1) { // si no hay operador, es una variable o constante
@@ -275,6 +213,7 @@ string ev_aux(string a,int &tabs)
 #endif
 
 // estructura auxiliar para la funcion EvaluarFuncion, para que el destructor del objeto libere la memoria si la función aborta de forma temprana, entre otras cosas
+// cppcheck-suppress noCopyConstructor
 struct info_de_llamada { 
 	string *values;
 	tipo_var *tipos;
@@ -295,8 +234,8 @@ static bool EsArreglo(const string &nombre) {
 	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
 }
 
-string EvaluarFuncion(Funcion *func, string argumentos, tipo_var &tipo, bool for_expresion) {
-	if (for_expresion && func->tipos[0]==vt_error) {
+string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &tipo, bool for_expresion) {
+	if (for_expresion && func->GetTipo(0)==vt_error) {
 		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
 		tipo=vt_error; return "";
 	}
@@ -379,7 +318,7 @@ string EvaluarFuncion(Funcion *func, string argumentos, tipo_var &tipo, bool for
 	return ret;
 }
 
-string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
+string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	while (p1<p2&&expresion[p1]==' ') p1++;
 	while (p1<p2&&expresion[p2]==' ') p2--;
 #ifdef LOG_EVALUAR
@@ -425,7 +364,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					tipo=vt_error;
 					ev_return("");
 				}
-				Funcion *func=EsFuncion(nombre);
+				const Funcion *func=EsFuncion(nombre);
 				if (func) {
 					if (func->cant_arg!=0) {
 						WriteError(999,string("Faltan parametros para la funcion (")+nombre+")");
@@ -463,7 +402,7 @@ string Evaluar(string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 				}
 				string nombre=expresion.substr(p1,pm-p1);
-				Funcion *func=EsFuncion(nombre);
+				const Funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
 					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
@@ -774,7 +713,7 @@ bool CheckDims(string &str) {
 		for (int i=0;i<ca;i++) {
 			int np=BuscarComa(str,++pp,p2)-1;
 			tipo_var t=vt_numerica;
-			string ret = Evaluar(str,pp,np,t);
+			Evaluar(str,pp,np,t);
 			pp=np+1;
 			if (!t.is_ok()) return false;
 		}

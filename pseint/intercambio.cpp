@@ -17,8 +17,8 @@ Intercambio::Intercambio() {
 	subtitles_on=false;
 	backtraceLevel=0;
 	debugLevel=0;
-	sbuffer="";
 #ifdef USE_ZOCKETS
+	is_evaluation_error=false;
 	evaluating_for_debug=false;
 	zocket = ZOCKET_ERROR;
 	port=24377; 
@@ -82,7 +82,7 @@ void Intercambio::ProcData(string order) {
 			str+=evaluation_error+"\n";
 		else {
 			if (tipo==vt_numerica)
-				res=DblToStr(StrToDbl(res),10);
+				res=DblToStr(StrToDbl(res),true);
 			str+=res+"\n";
 		}
 		str[11]='0'+(tipo.cb_log?1:0)+(tipo.cb_num?2:0)+(tipo.cb_car?4:0); // reemplaza la x por el tipo
@@ -142,7 +142,7 @@ void Intercambio::ChatWithGUI () {
 				if (is_evaluation_error)
 					autoevaluacion<<"autoevaluacion "<<i+1<<' '<<evaluation_error<<'\n';
 				else {
-					if (tipo==vt_numerica) res=DblToStr(StrToDbl(res),10);
+					if (tipo==vt_numerica) res=DblToStr(StrToDbl(res),true);
 					autoevaluacion<<"autoevaluacion "<<i+1<<' '<<res<<'\n';
 				}
 				str = autoevaluacion.str();
@@ -211,17 +211,6 @@ void Intercambio::SetFinished(bool interrupted) {
 #endif
 	running=false;
 }
-int Intercambio::GetLineNumber() {
-	return lineNumber;
-}
-
-int Intercambio::GetInstNumber() {
-	return instNumber;
-}
-
-bool Intercambio::Running() {
-	return running;
-}
 
 #ifdef USE_ZOCKETS
 
@@ -248,12 +237,6 @@ int Intercambio::Archivo_Size(){return (int)Archivo.size();}
 void Intercambio::AddLine(string s){Archivo.push_back(s);}
 void Intercambio::AddLine(char *s){Archivo.push_back(s);}
 //string Intercambio::GetLine(int x){return Archivo[x];}
-
-// Manejo de errores
-//int Intercambio::Errores_Size(){return (int)Errores.size();}
-//void Intercambio::AddError(string s, int n){Errores.push_back(s);Lineas.push_back(n);}
-//string Intercambio::GetErrorDesc(int x){return Errores[x];}
-//int Intercambio::GetErrorLine(int x){return Lineas[x];}
 
 // *****************************************************************
 

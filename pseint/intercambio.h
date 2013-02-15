@@ -71,9 +71,9 @@ public:
 	
 	void SetStarted();
 	void SetFinished(bool interrupted=false);
-	int GetLineNumber();
-	int GetInstNumber();
-	bool Running();
+	int GetLineNumber() const { return lineNumber; }
+	int GetInstNumber() const { return instNumber; }
+	bool Running() const { return running; }
 	
 	// Manejo de las lineas del programa en memoria
 	int Archivo_Size();

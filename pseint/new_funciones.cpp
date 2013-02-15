@@ -12,21 +12,21 @@ map<string,Funcion*> subprocesos;
 
 string main_process_name="<no_main_process>";
 
-Funcion* EsFuncionDelUsuario(const string nombre, bool include_main_process) {
+const Funcion* EsFuncionDelUsuario(const string &nombre, bool include_main_process) {
 	if (nombre==main_process_name && !include_main_process) return NULL;
 	map<string,Funcion*>::iterator it_func = subprocesos.find(nombre);
 	if (it_func!=subprocesos.end()) return it_func->second;
 	return NULL;
 }
 
-Funcion* EsFuncionPredefinida(const string nombre) {
+const Funcion* EsFuncionPredefinida(const string &nombre) {
 	map<string,Funcion*>::iterator it_func = funciones.find(nombre);
 	if (it_func!=funciones.end()) return it_func->second;
 	return NULL;
 }
 
-Funcion* EsFuncion(const string nombre, bool include_main_process) {
-	Funcion *ret=EsFuncionDelUsuario(nombre, include_main_process);
+const Funcion* EsFuncion(const string &nombre, bool include_main_process) {
+	const Funcion *ret=EsFuncionDelUsuario(nombre, include_main_process);
 	if (!ret) ret=EsFuncionPredefinida(nombre);
 	return ret;
 }
@@ -84,15 +84,17 @@ string func_azar(string *arg) {
 }
 string func_trunc(string *arg) {
 	string str=*arg;
-	if (str.find(".",0)>=0 && str.find(".",0)<str.size())
-		str.erase(str.find(".",0),str.size()-str.find(".",0));
+	size_t pos_pt=str.find(".",0);
+	if (pos_pt!=string::npos)
+		str.erase(pos_pt,str.size()-pos_pt);
 	if (str=="") str="0";
 	return str;
 }
 string func_redon(string *arg) {
 	string str=*arg;
-	if (str.find(".",0)>=0 && str.find(".",0)<str.size())
-		str.erase(str.find(".",0),str.size()-str.find(".",0));
+	size_t pos_pt=str.find(".",0);
+	if (pos_pt!=string::npos)
+		str.erase(pos_pt,str.size()-pos_pt);
 	if (str=="") str="0";
 	double a,b;
 	a=(StrToDbl(*arg));
@@ -193,7 +195,7 @@ void UnloadSubprocesos() {
 	while (it1!=it2) {
 		delete (it1)->second->memoria;
 		delete (it1)->second;
-		it1++;
+		++it1;
 	}
 	subprocesos.clear();
 }
@@ -202,16 +204,16 @@ void UnloadFunciones() {
 	map<string,Funcion*>::iterator it1=funciones.begin(), it2=funciones.end();
 	while (it1!=it2) {
 		delete (it1)->second;
-		it1++;
+		++it1;
 	}
 	funciones.clear();
 }
 
-string GetNombreFuncion(Funcion * func) {
+string GetNombreFuncion(const Funcion * func) {
 	map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 	while (it1!=it2) {
 		if (it1->second==func) return it1->first;
-		else it1++;
+		else ++it1;
 	}
 	return "";
 }

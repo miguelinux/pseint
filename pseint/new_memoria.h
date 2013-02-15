@@ -45,21 +45,22 @@ struct tipo_var {
 		} else
 			return false;
 	}
-	bool is_known() {
+	bool is_known() const {
 		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)==1;
 	}
-	bool is_ok() {
+	bool is_ok() const {
 		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)!=0;
 	}
-	bool operator==(const tipo_var &t) {
+	bool operator==(const tipo_var &t) const {
 		return cb_car==t.cb_car&&cb_num==t.cb_num&&cb_log==t.cb_log;
 	}
-	bool operator!=(const tipo_var &t) {
+	bool operator!=(const tipo_var &t) const {
 		return cb_car!=t.cb_car||cb_num!=t.cb_num||cb_log!=t.cb_log;
 	}
-	bool can_be(const tipo_var &t) {
+	bool can_be(const tipo_var &t) const {
 		return (cb_car&&t.cb_car) || (cb_num&&t.cb_num) || (cb_log&&t.cb_log);
 	}
+	// cppcheck-suppress operatorEqVarError
 	tipo_var &operator=(const tipo_var &t) {
 		cb_log=t.cb_log;
 		cb_num=t.cb_num;
@@ -82,7 +83,9 @@ extern tipo_var vt_caracter_o_numerica;
 extern tipo_var vt_caracter_o_logica;
 extern tipo_var vt_numerica_entera;
 
+// cppcheck-suppress noConstructor
 class Funcion;
+
 class Memoria {
 	
 	map<string,alias> var_alias; // lista de aliases, para el pasaje por referencia
@@ -92,7 +95,8 @@ class Memoria {
 	map<string,string> var_value;
 	friend void declarar_variables(list<string> &prog, bool &use_sin_tipo, bool &use_string);
 	void QuitarIndices(string &str) {
-		for (int i=0;i<int(str.size());i++)
+		int sz=str.size();
+		for (int i=0;i<sz;i++)
 			if (str[i]=='['||str[i]=='(') {
 				str.erase(i);
 				break;
@@ -113,10 +117,11 @@ class Memoria {
 		alias_mem=it_alias->second.mem;
 		return true;
 	}
-	Funcion *funcion; // scope
+	const Funcion *funcion; // scope
 public:
-	Memoria(Funcion *parent):funcion(parent){} // guarda el puntero a su scope para usar en EsArgumento
-	bool EsArgumento(string nom); // determina si un nombre dado es uno de los argumentos de la función actual o no
+	// cppcheck-suppress uninitMemberVar
+	Memoria(const Funcion *parent):funcion(parent){} // guarda el puntero a su scope para usar en EsArgumento
+	bool EsArgumento(const string &nom) const; // determina si un nombre dado es uno de los argumentos de la función actual o no
 	void HardReset() {
 		var_value.clear();
 		var_info.clear();
@@ -127,16 +132,16 @@ public:
 			(it++)->second.reset();
 		var_value.clear();
 	}
-	void Agregartipo_var(string nombre, const tipo_var &tipo=vt_desconocido) {
+	void Agregartipo_var(const string &nombre, const tipo_var &tipo=vt_desconocido) {
 		tipo_var &v = var_info[nombre];
 		v.set(tipo);
 	}
-	void AgregarArreglo(string nombre, int *dims) {
+	void AgregarArreglo(const string &nombre, int *dims) {
 		tipo_var &v = var_info[nombre];
 		v.dims=dims;
 	}
 	// esta version de definir tipo se usa en las definiciones implicitas
-	void AgregarAlias(string nom_here, string nom_orig, Memoria *mem) {
+	void AgregarAlias(const string &nom_here, const string &nom_orig, Memoria *mem) {
 		var_alias[nom_here]=alias(nom_orig,mem);
 		var_info[nom_here]=mem->var_info[nom_orig];
 		if (nom_orig.find('(')!=string::npos) var_info[nom_here].dims=NULL;
@@ -159,7 +164,7 @@ public:
 		vi.cb_log=tipo.cb_log;
 		vi.cb_num=tipo.cb_num;
 	}
-	void EscribirValor(string nombre, string valor) {
+	void EscribirValor(const string &nombre, string valor) {
 		if (EsAlias(nombre,true)) return alias_mem->EscribirValor(alias_nom,valor);
 		string nom=nombre; QuitarIndices(nom);
 		tipo_var &vi = var_info[nom];
@@ -203,7 +208,7 @@ public:
 //		tipo_var &vi=it_info->second;
 		return it_info->second.enabled && it_info->second.used;
 	}
-	bool EstaInicializada(string nombre) {
+	bool EstaInicializada(const string &nombre) {
 		string nom=nombre; QuitarIndices(nom);
 		if (EsAlias(nombre,true)) return alias_mem->EstaInicializada(alias_nom);
 		map<string,tipo_var>::iterator it_info = var_info.find(nom);
@@ -220,7 +225,7 @@ public:
 //		tipo_var &vi=it_info->second;
 		return  var_info[nombre].defined;
 	}
-	string LeerValor(string nombre) {
+	string LeerValor(const string &nombre) {
 		if (EsAlias(nombre,true)) return alias_mem->LeerValor(alias_nom);
 		string ret=var_value[nombre];
 		if (ret.size()==0) {
@@ -247,7 +252,7 @@ public:
 				cout<<it->second.dims[it->second.dims[0]]<<"]";
 			}
 			cout<<" "<<(it->second.cb_log?1:0)+(it->second.cb_num?2:0)+(it->second.cb_car?4:0)<<endl;;
-			it++;
+			++it;
 		}
 		
 	}
