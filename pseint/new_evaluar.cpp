@@ -18,7 +18,7 @@ void WriteError(int num, string s) {
 		SynError(num,s);
 }
 
-bool PalabraReservada(const string &str, bool exclude_functions=false) {
+bool PalabraReservada(const string &str, bool exclude_functions) {
 	// Comprobar que no sea palabra reservada
 	if (word_operators && (str=="Y" || str=="O" || str=="NO" || str=="MOD"))
 		return true;
@@ -58,7 +58,7 @@ int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 	return -1;
 }
 
-int operadores[]={',','|','&','~','=','<','>','+','-','*','/','^','%',' '};
+int operadores[]={',','|','&','~','!','=','<','>','+','-','*','/','^','%',' '};
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
@@ -392,15 +392,16 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				}
 				ev_return(memoria->LeerValor(nombre));
 			} else { // si es un arreglo o funcion
-				int pcierra = BuscarComa(expresion,pm+1,p2,')');
-				if (pcierra!=p2) {
-					while (pcierra<=p2 && expresion[pcierra]==' ') pcierra++;
-					if (pcierra<=p2) {
-						WriteError(999,string("Falta operador (")+expresion.substr(p1,p2-p1+1)+")");
-						tipo=vt_error;
-						ev_return("");
-					}
-				}
+				// lo que verificaba este código comentado ahora está en el error 239 de SynCheckAux3
+//				int pcierra = BuscarComa(expresion,pm+1,p2,')');
+//				if (pcierra!=p2) {
+//					while (pcierra<=p2 && expresion[pcierra]==' ') pcierra++;
+//					if (pcierra<=p2) {
+//						WriteError(999,string("Falta operador (")+expresion.substr(p1,p2-p1+1)+")");
+//						tipo=vt_error;
+//						ev_return("");
+//					}
+//				}
 				string nombre=expresion.substr(p1,pm-p1);
 				const Funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
@@ -436,10 +437,9 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 		// cortar operandos y ver sus tipos
 		string s1,s2;
 		tipo_var t1,t2;
-		char op = expresion[pos_op];
+		char op = expresion[pos_op], next=expresion[pos_op+1];
 		int p1b=pos_op-1, p2a=pos_op+1;
-		if ((op=='<'||op=='>') && expresion[pos_op+1]=='=') p2a++;
-		if (op=='<'&&expresion[pos_op+1]=='>') p2a++;
+		if (next=='='||next=='&'||next=='|'||next=='>') p2a++;
 		int p1a=p1, p2b=p2;
 		t1=DeterminarTipo(expresion,p1a,p1b);
 		t2=DeterminarTipo(expresion,p2a,p2b);
@@ -469,22 +469,25 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			else
 				ev_return((s1==VERDADERO && s2==VERDADERO)?VERDADERO:FALSO);
 			
-		case '~':
-			tipo=vt_logica; // el resultado es logico
-			// el operando debe ser logico
-			if (p2a>=p2)
-				WriteError(999,"Falta operando para la negacion (~/NO).");
-			if (t2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
-				WriteError(999,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
-				tipo=vt_error; 
-				ev_return("");
+		case '~': case '!':
+			if (op!='!'||next!='=') {
+				tipo=vt_logica; // el resultado es logico
+				// el operando debe ser logico
+				if (p2a>=p2)
+					WriteError(999,"Falta operando para la negacion (~/NO).");
+				if (t2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
+					WriteError(999,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
+					tipo=vt_error; 
+					ev_return("");
+				}
+				s2 = Evaluar(expresion,p2a,p2b,t2);
+				ev_return(s2==VERDADERO?FALSO:VERDADERO);
+			} else {
+				next='>'; op='<';
 			}
-			s2 = Evaluar(expresion,p2a,p2b,t2);
-			ev_return(s2==VERDADERO?FALSO:VERDADERO);
-			
 		case '<': case '>': {
 			// los operandos no pueden ser logicos para <, >, <= o >=
-			if ((op=='<' || op=='>')&& expresion[pos_op+1]!='>') {
+			if ((op=='<' || op=='>')&& next!='>') {
 				if (t1.cb_log) {
 					t1.set(vt_caracter_o_numerica);
 					AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica);
@@ -531,14 +534,14 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				tipo = vt_logica;
 				if (t.cb_num) { // comparaciones de numeros
 					if (op=='<') {
-						if (expresion[pos_op+1]=='>')
+						if (next=='>')
 							ev_return(StrToDbl(s1)!=StrToDbl(s2)?VERDADERO:FALSO);
-						else if (expresion[pos_op+1]=='=')
+						else if (next=='=')
 							ev_return(StrToDbl(s1)<=StrToDbl(s2)?VERDADERO:FALSO);
 						else
 							ev_return(StrToDbl(s1)<StrToDbl(s2)?VERDADERO:FALSO);
 					} else if (op=='>') {
-						if (expresion[pos_op+1]=='=')
+						if (next=='=')
 							ev_return(StrToDbl(s1)>=StrToDbl(s2)?VERDADERO:FALSO);
 						else
 							ev_return(StrToDbl(s1)>StrToDbl(s2)?VERDADERO:FALSO);
@@ -547,7 +550,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						ev_return(diff<1e-11?VERDADERO:FALSO); // comparacion "difusa" para evitar problemas numericos
 					}
 				} else if (t==vt_logica) { // comparaciones de logicos
-					if (op=='<' && expresion[pos_op+1]=='>') {
+					if (op=='<' && next=='>') {
 						ev_return((s1==VERDADERO)!=(s2==VERDADERO)?VERDADERO:FALSO);
 					} else if (op=='=') {
 						ev_return((s1==VERDADERO)==(s2==VERDADERO)?VERDADERO:FALSO);
@@ -557,14 +560,14 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 				} else { // comparaciones de cadenas
 					if (op=='<') {
-						if (expresion[pos_op+1]=='>')
+						if (next=='>')
 							ev_return(s1!=s2?VERDADERO:FALSO);
-						else if (expresion[pos_op+1]=='=')
+						else if (next=='=')
 							ev_return(s1<=s2?VERDADERO:FALSO);
 						else
 							ev_return(s1<s2?VERDADERO:FALSO);
 					} else if (op=='>') {
-						if (expresion[pos_op+1]=='=')
+						if (next=='=')
 							ev_return(s1>=s2?VERDADERO:FALSO);
 						else
 							ev_return(s1>s2?VERDADERO:FALSO);
@@ -662,18 +665,19 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 
 // wrapper para llamar al Evaluar que sigue desde SynCheck, para que verifique que no falten operandos al principio o al final, y aplique los tipos solo si la evaluación es correcta
 string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
+	// <<<el comentario que sigue ya no aplica porque eso ahora se verifica en SynCheckAux3>>
 	// el evaluar comun admite operandos nulos en los extremos, porque pueden ser variables 
-	// sin inicializar que han sido reemplazadas, esta version no
-	if (expresion.size()) {
-		char c0=expresion[0];
-		char c1=expresion[expresion.size()-1];
-		if (c0=='*'||c0=='='||c0=='<'||c0=='/'||c0=='&'||c0=='%'||c0=='>'||c0=='|'||c0=='^') {
-			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
-		}
-		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^'||c1=='+'||c1=='-') {
-			SynError (999,"Falta un operando al final de la expresión."); /*errores++;*/
-		}
-	}
+	// sin inicializar que han sido reemplazadas, esta version no 
+//	if (expresion.size()) {
+//		char c0=expresion[0];
+//		char c1=expresion[expresion.size()-1];
+//		if (c0=='*'||c0=='='||c0=='<'||c0=='/'||c0=='&'||c0=='%'||c0=='>'||c0=='|'||c0=='^') {
+//			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
+//		}
+//		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^'||c1=='+'||c1=='-') {
+//			SynError (999,"Falta un operando al final de la expresión."); /*errores++;*/
+//		}
+//	}
 	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo dé afuera, mejor contextualizado)
 	tipo=vt_desconocido; int p1=0, p2=expresion.size()-1;
 	string retval=Evaluar(expresion,p1,p2,tipo);

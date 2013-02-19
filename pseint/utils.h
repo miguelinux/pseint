@@ -163,7 +163,7 @@ void fixwincharset(string &s, bool reverse=false);
 
 // determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
 inline bool EsLetra(const char &c) {
-	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) );
+	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) || c=='_' );
 }
 
 inline char ToUpper(char c) {

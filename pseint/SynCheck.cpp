@@ -42,7 +42,7 @@ static bool IsNumericConstant(string &str) {
 	return true;
 }
 
-// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
+// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y quita espacios extras
 static void SynCheckAux1(string &cadena) {
 	// corregir saltos de linea win/linux
 	if (cadena.size()>0 && (cadena[cadena.size()-1]==13||cadena[cadena.size()-1]==10) ) cadena[cadena.size()-1]=' ';
@@ -60,10 +60,11 @@ static void SynCheckAux1(string &cadena) {
 			if (c=='[') c='(';
 			else if (c==']') c=')';
 			else if (c==9) c=' ';
+			else if (c==' ' && tmp!=0 && cadena[tmp-1]==' ') { cadena.erase(--tmp,1); len--; }
 			else c=ToUpper(c);
 		}
 	}
-	// desues, word_operators
+	// despues, word_operators
 	if (word_operators) {
 		comillas=false;
 		for (int tmp=0;tmp<len;tmp++) {
@@ -211,214 +212,358 @@ static void SynCheckAux2(string &cadena) {
 	}
 }
 
-// verificar operadores
-static void SynCheckAux3(const int &x, string &cadena, int &errores,const  string &instruccion, int &flag_pyc) {
-	char last='.',lastb='.';
-	int comillas=-1;
-	int parentesis=0;
-	int Numero=0; // Para controlar los correctos nombres de variables
-	// Borrar espacios en blanco al principio y al final
-	while (cadena[0]==' ' && !cadena.size()==0) cadena.erase(0,1);
-	while (!cadena.size()==0 && cadena[cadena.size()-1]==' ') cadena.erase(cadena.size()-1,1);
-	if (cadena[0]==',') { SynError (3,"Parametro nulo."); errores++; }
-	for (int y=0;y<(int)cadena.size();y++) {
-		char act=cadena[y];
-		// Checkear correctos nombres de variables
-		if (comillas<0) {
-			if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='%'
-				|| act=='&' || act=='=' || act=='^' || act=='~' || act==')' || act=='(' ||act=='<' || act=='>' ) Numero=0;
-			if (Numero==0 && EsLetra(act)) Numero=-1;
-			if (Numero==0 && act>='.' && act<='9' && act!='/') Numero=1;
-			if (Numero==2 && act=='.')
-			{SynError (4,"Constante o Identificador no valido."); errores++; Numero=-1;}
-			if (Numero==1 && act=='.') Numero=2;
-			if (Numero>0 && (EsLetra(act) || act=='(' || act=='\''))
-			{SynError (5,"Constante o Identificador no valido."); errores++; Numero=-1;}
-		}
-		// Contar comillas
-		if (act=='\"') {cadena[y]='\'';act='\'';}
-		if (act=='\'') {
-			comillas=comillas*(-1);
-			if (comillas==1) { // Si se abren comillas
-				// if (cadena[y-1]==' ') {cadena.erase(y-1,1);y--;} // Borrar espacio innecesario
-				if (last==')' || last=='/' || last=='*' || last=='^' || last=='&' || last=='%' ||
-					last=='|' || last=='~' || (last=='.' && y!=0) || (last=='+'&&!allow_concatenation) || (last=='-' && lastb!='<'))
-					{SynError (6,"Operador incorrecto."); errores++;}
-					if (EsLetra(last))
-					{SynError (7,"Se esperaba espacio o coma."); errores++;}
-					if (last>='.' && last<='9' && last!=47 && y!=0)
-					{SynError (8,"Se esperaba espacio o coma."); errores++;}
-					;;
-			} else { // Si se cierran comillas
-				if ((int)cadena.size()>y+1)
-					if (cadena[y+1]=='(' || cadena[y+1]=='/' || cadena[y+1]=='*' || cadena[y+1]=='^' || cadena[y+1]=='&' ||
-						cadena[y+1]=='|' || cadena[y+1]=='~' || cadena[y+1]=='.' || cadena[y+1]=='%' ||
-						(cadena[y+1]=='+'&&!allow_concatenation) || cadena[y+1]=='-' )
-					{SynError (9,"Operador incorrecto."); errores++;}
-				if (EsLetra(cadena[y+1]))
-				{SynError (10,"Se esperaba espacio o coma."); errores++;}
-				if (cadena[y+1]>='.' && cadena[y+1]<='9' && cadena[y+1]!=47)
-				{SynError (11,"Se esperaba espacio o coma."); errores++;}
-				;;
-			}
-		} else {
-			if (comillas==(-1)) { // si estamos fuera de comillas
-				if (act==':' && instruccion!=":") { SynError(999,"Operador no valido (:)."); errores++; }
-				// Corroborar caracteres validos
-				if (act=='{' || act=='}') 
-				{SynError (68,"Caracter no valido."); errores++;}
-				else if (!EsLetra(act) && act!=' ' && act!='^'
-					&& act!='+' && act!='(' && act!='\'' && act!='~' && act!='-' && act!=')' 
-					&& act!='|' && act!='&' && act!='*' && act!='=' && act!='<' && act!='>'
-					&& act!='/' && act!='0' && act!='1' && act!='2' && act!='3' && act!='4'
-					&& act!='5' && act!='6' && act!='7' && act!='8' && act!='9' && act!='.'
-					&& act!=',' && act!='[' && act!=']' && act!=':' && act!=';' && act!='_' && act!='%') 
-				{SynError (12,string("Caracter no valido (")+string(1,act)+")."); errores++;}
-				// Separar lineas compuestas por más de una instrucción
-				if (act==';' && y!=(int)cadena.size()-1) {
-					string str=cadena;
-					cadena.erase(y+1,cadena.size()-y-1);
-					str.erase(0,y+1);
-					programa.Insert(x+1,str);
-					flag_pyc+=1;
-				}
-				// Contar parentesis
-				if (act=='(') 
-					parentesis+=1;
-				if (act==')') 
-					parentesis-=1;
-				// Borrar espacios innecesarios
-				/// @todo: ver porque no queria sacarle los espacios a & y |
-				if (last=='\'' && act==32 && !EsLetra(cadena[y+1]) /*&& cadena[y+1]!='&' &&  cadena[y+1]!='|'*/) {cadena.erase(y,1);y--;}
-				if (last==32 && act==32) {cadena.erase(y,1);y--;} // <<<-
-				if (last=='&' && act==32) {cadena.erase(y,1);y--;} // <<<-
-				if (last==32 && act=='&') {cadena.erase(y-1,1);y--;} // <<<-
-				if (last=='|' && act==32) {cadena.erase(y,1);y--;} // <<<-
-				if (last==32 && act=='|') {cadena.erase(y-1,1);y--;}
-				if (last=='(' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='(') {cadena.erase(y-1,1);y--;}
-				//if (last==')' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act==')') {cadena.erase(y-1,1);y--;}
-				if (last==32 && act=='+') {cadena.erase(y-1,1);y--;}
-				if (last==32 && act=='-') {cadena.erase(y-1,1);y--;}
-				if (last=='+' && act==32) {cadena.erase(y,1);y--;}
-				if (last=='-' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='/') {cadena.erase(y-1,1);y--;}
-				if (last=='/' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='*') {cadena.erase(y-1,1);y--;}
-				if (last=='*' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='%') {cadena.erase(y-1,1);y--;}
-				if (last=='%' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='^') {cadena.erase(y-1,1);y--;}
-				if (last=='^' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act==',') {cadena.erase(y-1,1);y--;}
-				if (last==',' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='<') {cadena.erase(y-1,1);y--;}
-				if (last==32 && act=='>') {cadena.erase(y-1,1);y--;}
-				if (last=='>' && act==32) {cadena.erase(y,1);y--;}
-				if (last=='<' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act=='=') {cadena.erase(y-1,1);y--;}
-				if (last=='=' && act==32) {cadena.erase(y,1);y--;}
-				if (last=='~' && act==32) {cadena.erase(y,1);y--;}
-				if (last==32 && act==';') {cadena.erase(y-1,1);y--;}
-				if (last==32 && act==':') {cadena.erase(y-1,1);y--;}
-				// Buscar operadores incorrectos
-				if (EsLetra(act) && last=='.' && y!=0) {SynError (13,"Operador incorrecto."); errores++;}
-				if (EsLetra(last) && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
-				if (last=='.' && y!=0)
-					if (act=='<' || act=='>' || act=='(' || act==')' || 
-						act=='/' || act=='*' || act=='^' || act=='&' || 
-						act=='|' || act=='~' || act=='.' || act==',' ||
-						act=='%' || act=='+' || act=='-' || act=='=') 
-							{SynError (15,"Operador incorrecto."); errores++;}
-				if (last==',')
-					if (act=='<' || act=='>' || act==')' || act==',' || act==';' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
-						act=='|' || act=='=') 
-							{SynError (16,"Parametro nulo."); errores++;}
-				if (last=='>')
-					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
-						act=='|' || act=='~' || act==')') 
-							{SynError (17,"Operador incorrecto."); errores++;}
-				if (last=='<')
-					if (act=='<' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
-						act=='|' || act=='~' || act==')')
-							{SynError (18,"Operador incorrecto."); errores++;}
-				if (last=='=')
-					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
-						act=='|' || act=='~' || act=='=' || act==')') 
-							{SynError (19,"Operador incorrecto."); errores++;}
-				if (last=='|')
-					if (act=='<' || act=='>' || act=='-' || act=='+' || act=='%' ||
-						act=='/' || act=='*' || act=='^' || act=='&' ||
-						act=='|' || act=='=' || act==',' || act==';' || act==')') 
-							{SynError (20,"Operador incorrecto."); errores++;}
-				if (last=='&')
-					if (act=='<' || act=='>' || act=='-' || act=='+' || act=='%' ||
-						act=='/' || act=='*' || act=='^' || act=='&' ||
-						act=='|' || act=='=' || act==',' || act==';' || act==')')
-							{SynError (21,"Operador incorrecto."); errores++;}
-				if (last=='~')
-					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
-						act=='|' || act=='~' || act=='=' || act==')') 
-							{SynError (22,"Operador incorrecto."); errores++;}
-				if (last=='+')
-					if (act=='<' || act=='>' || act=='-' || act=='+' || act==')' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
-						act=='|' || act=='~' || act=='=' ) 
-							{SynError (23,"Operador incorrecto."); errores++;}
-				if (last=='-')
-					if (act=='<' || act=='>' || act=='-' || act=='+' || act==')' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
-						act=='|' || act=='~' || act=='=' ) 
-							{SynError (24,"Operador incorrecto."); errores++;}
-				if (last=='*')
-					if (act=='<' || act=='>' || act=='+' || act=='%' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
-						act=='|' || act=='~' || act=='=' || act==')') 
-							{SynError (25,"Operador incorrecto."); errores++;}
-				if (last=='/')
-					if (act=='<' || act=='>' || act=='+' || act=='%' ||
-						act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
-						act=='|' || act=='~' || act=='=' || act==')') 
-							{SynError (26,"Operador incorrecto."); errores++;}
-				if (last=='^')
-					if (act=='<' || act=='>' || act=='+' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
-						act=='|' || act=='~' || act=='=' || act==')') 
-							{SynError (27,"Operador incorrecto."); errores++;}
-				if (last=='(')
-					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
-						act=='|' || act=='=') 
-							{SynError (28,"Operador incorrecto."); errores++;}
-				if (last=='(')
-					if (act==',') 
-						{SynError (999,"Parametro nulo."); errores++;}
-				if (last==')') {
-					if (act=='(') 
-						{SynError (29,"Operador incorrecto."); errores++;}
-				}
-				if (last=='%') {
-					if (act=='<' || act=='>' || act==')' || act=='%' ||
-						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
-						act=='|' || act=='~' || act=='=' ) {SynError (30,"Operador incorrecto."); errores++;}								
-				}
-//				if (last=='(' && act==')')  {SynError (152,"Parametro nulo."); errores++;}
-				// Borrar comentarios
-				if (last=='/' && act=='/')
-					cadena.erase(y-1,cadena.size()-y+1);
-			}
-		}
-		if (y!=0) lastb=cadena[y-1];
-		last=cadena[y];
+// retorna 1 si es operador unario, 2 si es binario, 3 si puede ser cualquiera de los dos, y 0 si no es operador
+// ademas, en len retorna cuando ocupa ese operador
+int is_valid_operator(char act, char next, int &len) {
+	switch (act) {
+		case '+': case '-': 
+			len=1; return 3; 
+		case '*': case '/': case '^': case '%':
+			len=1; return 2; 
+		case '~':  
+			len=1; return 1;
+		case '&': case '|':
+			len=(next==act)?2:1; 
+			return 2;
+		case '!':
+			if (next=='=') { len=2; return 2; }
+			else { len=1; return 1; }
+		case '<': case '>': case '=':
+			len=(next=='='||(act=='<'&&next=='>'))?2:1;
+			return 2;
 	}
+	return 0;
+}
+
+// verificar operadores, constantes y parentesis, y borrar los espacios en blanco que sobran entre ellos
+static void SynCheckAux3(const int &x, string &cadena, int &errores,const  string &instruccion, int &flag_pyc) {
+	bool allow_multiple_expresions=instruccion!=":" && instruccion!="<-";
+	enum what { w_null, w_operhand, w_operator, w_space };
+	enum what_extra { w_comma, w_other, 
+					  /*w_unary_op, w_binary_op, */w_relational_op,
+					  w_number_int, w_number_dec, w_string, w_id, w_expr};
+	what w=w_null; what_extra wext=w_other;
+	int parentesis=0, csize; bool comillas=false;
+	for (int i=0;i<(csize=(int)cadena.size());i++) {
+		char act=cadena[i]; 
+		if (act=='\'') {
+			if (comillas) { w=w_operhand; wext=w_string; }
+			comillas=!comillas;
+		} else if (!comillas) {
+			
+			if (act==' ') {
+				char next=cadena[i+1]; bool next_es_letra=EsLetra(next);
+				if (w==w_operator) {
+					// solo puede seguir un operando (id, cte, o expresion)
+					if (next_es_letra) {
+						int j=i+2; while (EsLetra(cadena[j])) j++;
+						string sas=cadena.substr(i,j-i);
+						if (PalabraReservada(cadena.substr(i+1,j-i-1),true)) 
+							{SynError (237,"Falta operando (antes de "+cadena.substr(i+1,j-i-1)+")."); errores++; } // hola+ ;
+						else { cadena.erase(i,1); i--; }
+					} else if ((next>='0'&&next<='9') || next=='.' || next=='\'' || next=='(' || next==':' || next==';') {
+						cadena.erase(i,1); i--;
+					} else {SynError (224,"Falta operando (despues de "+string(1,cadena[i-1])+")."); errores++; } // hola+ ;
+				} else if (w==w_operhand) {
+					// si lo que sigue es otro operador, puede haber problemas a menos que se trate de "escribir" con sintaxis flexible
+					if (next==')' || next==':' || next==';') {
+						cadena.erase(i,1); i--;
+					} else if (next_es_letra || (next>='0'&&next<='9') || next=='.' || next=='\'' || next=='(') {
+						if (allow_multiple_expresions) {
+							w=w_null;
+//							cadena.erase(i,1); i--;
+						} else {
+							SynError (225,"Falta operador o coma entre operandos."); errores++;
+						}
+					} else {
+						cadena.erase(i,1); i--;
+					}
+				} else {
+					cadena.erase(i,1); i--;
+				}
+			} else if (act==';' || act==':') {
+				if (act==':' && instruccion!=":") {SynError (226,"Operador no valido (:)."); errores++;}
+				else if (w==w_operator) {
+					SynError (227,"Falta operando (antes de "+string(1,act)+")."); errores++;
+				}
+				w=w_null; wext=w_other;
+				if (act==';') {
+					// todo: ver si realmente puede llegar esto hasta aca, o se corta en otro lado
+					programa.Insert(x+1,cadena.substr(i+1));
+					cadena.erase(i+1); flag_pyc+=1;
+				}
+			} else if (act==',') {
+				if (w==w_operator) {
+					SynError (228,"Falta operador."); errores++;
+				}
+				else if (w==w_null && wext==w_comma) {SynError (3,"Parámetro nulo."); errores++; } // 35+;
+				w=w_null; wext=w_comma;
+			
+			} else if (act=='(') {
+				if (w==w_operhand && wext!=w_id) {SynError (229,"Falta operador."); errores++; } // 123(21
+				w=w_null; wext=w_other; parentesis++;
+			
+			} else if (act==')') {
+				if (w==w_operator) {SynError (230,"Falta operando (antes de ')')."); errores++; }
+				w=w_operhand; wext=w_expr; parentesis--;
+			
+			} else if (act>='0'&&act<='9') {
+				if (w!=w_operhand) { w=w_operhand; wext=w_number_int; }
+				else if (wext==w_expr) { SynError (239,"Falta operador (despues de ')')."); errores++; }
+			
+			} else if (act=='.') {
+				if (w!=w_operhand) { w=w_operhand; wext=w_number_dec; }
+				else if (wext!=w_number_int) {
+					SynError (231,"Constante numérica no válida."); errores++;
+				}
+			
+			} else if (act==',') {
+				if (w==w_operator) {SynError (232,"Falta operando."); errores++; } // 3+,2
+				w=w_null; wext=w_other;
+			
+			} else if (EsLetra(act)) {
+				if (w==w_operhand && wext!=w_id) {
+					if (wext==w_string)
+						{ SynError (233,"Falta operando (después de cadena de texto)."); errores++; }
+					else
+						{ SynError (238,"Constante numérica no válida."); errores++; }
+				}
+				w=w_operhand; wext=w_id;
+			
+			} else {
+				int len=1; char next=cadena[i+1];
+				int ret=is_valid_operator(act,next,len);
+				if (ret) {
+					if (ret==2) {
+						if (w!=w_operhand && wext!=w_relational_op) { SynError (234,"Falta operando (antes de "+cadena.substr(i,len)+")."); errores++; }
+//						wext=w_binary_op;
+						i+=len-1;
+					} else {
+						if (w==w_operator && wext!=w_relational_op) { SynError (235,"Falta operando (antes de "+cadena.substr(i,len)+")."); errores++; }
+//						wext=w_unary_op;
+					}
+					if (act=='<'||act=='>'||act=='='||(act=='!'&&len==2)) wext=w_relational_op; else wext=w_other;
+					w=w_operator;
+					
+				} else {SynError (68,"Caracter no valido."); errores++;}
+			} 
+		}
+	}
+	if (w==w_operator) { SynError (236,"Falta operando al final de la expresión"); errores++; }
 	// Posibles errores encontrados
 	if (parentesis<0) { SynError (35,"Se cerraron parentesis o corchetes demás."); errores++; }
 	if (parentesis>0) { 
 		SynError (36,"Falta cerrar parentesis o corchete."); errores++;
 	}
-	if (comillas==1) { SynError (37,"Falta cerrar comillas."); errores++; }
+	if (comillas) { SynError (37,"Falta cerrar comillas."); errores++; }
 }
+
+//static void SynCheckAux3(const int &x, string &cadena, int &errores,const  string &instruccion, int &flag_pyc) {
+//	char last='.',lastb='.';
+//	bool comillas=false;
+//	int parentesis=0;
+//	int Numero=0; // Para controlar los correctos nombres de variables
+//	// Borrar espacios en blanco al principio y al final
+//	while (cadena[0]==' ' && !cadena.size()==0) cadena.erase(0,1);
+//	while (!cadena.size()==0 && cadena[cadena.size()-1]==' ') cadena.erase(cadena.size()-1,1);
+//	if (cadena[0]==',') { SynError (3,"Parametro nulo."); errores++; }
+//	for (int y=0;y<(int)cadena.size();y++) {
+//		char act=cadena[y];
+//		// Checkear correctos nombres de variables
+//		if (!comillas) {
+//			if (act==' ' || act==',' || act=='+' || act=='-' || act=='*' || act=='/' || act=='|' || act=='%'
+//				|| act=='&' || act=='=' || act=='^' || act=='~' || act==')' || act=='(' ||act=='<' || act=='>') Numero=0;
+//			if (Numero==0 && EsLetra(act)) Numero=-1;
+//			if (Numero==0 && act>='.' && act<='9' && act!='/') Numero=1;
+//			if (Numero==2 && act=='.')
+//			{SynError (4,"Constante o Identificador no valido."); errores++; Numero=-1;}
+//			if (Numero==1 && act=='.') Numero=2;
+//			if (Numero>0 && (EsLetra(act) || act=='(' || act=='\''))
+//			{SynError (5,"Constante o Identificador no valido."); errores++; Numero=-1;}
+//		}
+//		// Contar comillas
+//		if (act=='\"') {cadena[y]='\'';act='\'';}
+//		if (act=='\'') {
+//			comillas=!comillas;
+//			if (comillas) { // Si se abren comillas
+//				// if (cadena[y-1]==' ') {cadena.erase(y-1,1);y--;} // Borrar espacio innecesario
+//				if (last==')' || last=='/' || last=='*' || last=='^' || last=='&' || last=='%' ||
+//					last=='|' || last=='~' || (last=='.' && y!=0) || (last=='+'&&!allow_concatenation) || (last=='-' && lastb!='<'))
+//					{SynError (6,"Operador incorrecto."); errores++;}
+//					if (EsLetra(last))
+//					{SynError (7,"Se esperaba espacio o coma."); errores++;}
+//					if (last>='.' && last<='9' && last!=47 && y!=0)
+//					{SynError (8,"Se esperaba espacio o coma."); errores++;}
+//					;;
+//			} else { // Si se cierran comillas
+//				if ((int)cadena.size()>y+1)
+//					if (cadena[y+1]=='(' || cadena[y+1]=='/' || cadena[y+1]=='*' || cadena[y+1]=='^' || cadena[y+1]=='&' ||
+//						cadena[y+1]=='|' || cadena[y+1]=='~' || cadena[y+1]=='.' || cadena[y+1]=='%' ||
+//						(cadena[y+1]=='+'&&!allow_concatenation) || cadena[y+1]=='-' )
+//					{SynError (9,"Operador incorrecto."); errores++;}
+//				if (EsLetra(cadena[y+1]))
+//				{SynError (10,"Se esperaba espacio o coma."); errores++;}
+//				if (cadena[y+1]>='.' && cadena[y+1]<='9' && cadena[y+1]!=47)
+//				{SynError (11,"Se esperaba espacio o coma."); errores++;}
+//				;;
+//			}
+//		} else {
+//			if (!comillas) { // si estamos fuera de comillas
+//				if (act==':' && instruccion!=":") { SynError(999,"Operador no valido (:)."); errores++; }
+//				// Corroborar caracteres validos
+//				if (act=='{' || act=='}') 
+//				{SynError (68,"Caracter no valido."); errores++;}
+//				else if (!EsLetra(act) && act!=' ' && act!='^'
+//					&& act!='+' && act!='(' && act!='\'' && act!='~' && act!='-' && act!=')' 
+//					&& act!='|' && act!='&' && act!='*' && act!='=' && act!='<' && act!='>'
+//					&& act!='/' && act!='0' && act!='1' && act!='2' && act!='3' && act!='4'
+//					&& act!='5' && act!='6' && act!='7' && act!='8' && act!='9' && act!='.'
+//					&& act!=',' && act!='[' && act!=']' && act!=':' && act!=';' && act!='_' && act!='%') 
+//				{SynError (12,string("Caracter no valido (")+string(1,act)+")."); errores++;}
+//				// Separar lineas compuestas por más de una instrucción
+//				if (act==';' && y!=(int)cadena.size()-1) {
+//					string str=cadena;
+//					cadena.erase(y+1,cadena.size()-y-1);
+//					str.erase(0,y+1);
+//					programa.Insert(x+1,str);
+//					flag_pyc+=1;
+//				}
+//				// Contar parentesis
+//				if (act=='(') 
+//					parentesis+=1;
+//				if (act==')') 
+//					parentesis-=1;
+//				// Borrar espacios innecesarios
+//				if (last=='\'' && act==32 && !EsLetra(cadena[y+1]) /*&& cadena[y+1]!='&' &&  cadena[y+1]!='|'*/) {cadena.erase(y,1);y--;}
+//				if (last==32 && act==32) {cadena.erase(y,1);y--;} // <<<-
+//				if (last=='&' && act==32) {cadena.erase(y,1);y--;} // <<<-
+//				if (last==32 && act=='&') {cadena.erase(y-1,1);y--;} // <<<-
+//				if (last=='|' && act==32) {cadena.erase(y,1);y--;} // <<<-
+//				if (last==32 && act=='|') {cadena.erase(y-1,1);y--;}
+//				if (last=='(' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='(') {cadena.erase(y-1,1);y--;}
+//				//if (last==')' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act==')') {cadena.erase(y-1,1);y--;}
+//				if (last==32 && act=='+') {cadena.erase(y-1,1);y--;}
+//				if (last==32 && act=='-') {cadena.erase(y-1,1);y--;}
+//				if (last=='+' && act==32) {cadena.erase(y,1);y--;}
+//				if (last=='-' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='/') {cadena.erase(y-1,1);y--;}
+//				if (last=='/' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='*') {cadena.erase(y-1,1);y--;}
+//				if (last=='*' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='%') {cadena.erase(y-1,1);y--;}
+//				if (last=='%' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='^') {cadena.erase(y-1,1);y--;}
+//				if (last=='^' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act==',') {cadena.erase(y-1,1);y--;}
+//				if (last==',' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='<') {cadena.erase(y-1,1);y--;}
+//				if (last==32 && act=='>') {cadena.erase(y-1,1);y--;}
+//				if (last=='>' && act==32) {cadena.erase(y,1);y--;}
+//				if (last=='<' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act=='=') {cadena.erase(y-1,1);y--;}
+//				if (last=='=' && act==32) {cadena.erase(y,1);y--;}
+//				if (last=='~' && act==32) {cadena.erase(y,1);y--;}
+//				if (last==32 && act==';') {cadena.erase(y-1,1);y--;}
+//				if (last==32 && act==':') {cadena.erase(y-1,1);y--;}
+//				// Buscar operadores incorrectos
+//				if (EsLetra(act) && last=='.' && y!=0) {SynError (13,"Operador incorrecto."); errores++;}
+//				if (EsLetra(last) && act=='.') {SynError (14,"Operador incorrecto."); errores++;}
+//				if (last=='.' && y!=0)
+//					if (act=='<' || act=='>' || act=='(' || act==')' || 
+//						act=='/' || act=='*' || act=='^' || act=='&' || 
+//						act=='|' || act=='~' || act=='.' || act==',' ||
+//						act=='%' || act=='+' || act=='-' || act=='=') 
+//							{SynError (15,"Operador incorrecto."); errores++;}
+//				if (last==',')
+//					if (act=='<' || act=='>' || act==')' || act==',' || act==';' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
+//						act=='|' || act=='=') 
+//							{SynError (16,"Parametro nulo."); errores++;}
+//				if (last=='>')
+//					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
+//						act=='|' || act=='~' || act==')') 
+//							{SynError (17,"Operador incorrecto."); errores++;}
+//				if (last=='<')
+//					if (act=='<' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
+//						act=='|' || act=='~' || act==')')
+//							{SynError (18,"Operador incorrecto."); errores++;}
+//				if (last=='=')
+//					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
+//						act=='|' || act=='~' || act==')' || (act=='='&&lastb=='=')) 
+//							{SynError (19,"Operador incorrecto."); errores++;}
+//				if (last=='|')
+//					if (act=='<' || act=='>' || act=='-' || act=='+' || act=='%' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' ||
+//						act=='|' || act=='=' || act==',' || act==';' || act==')') 
+//							{SynError (20,"Operador incorrecto."); errores++;}
+//				if (last=='&')
+//					if (act=='<' || act=='>' || act=='-' || act=='+' || act=='%' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' ||
+//						act=='|' || act=='=' || act==',' || act==';' || act==')')
+//							{SynError (21,"Operador incorrecto."); errores++;}
+//				if (last=='~')
+//					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' || act=='%' ||
+//						act=='|' || act=='~' || act=='=' || act==')') 
+//							{SynError (22,"Operador incorrecto."); errores++;}
+//				if (last=='+')
+//					if (act=='<' || act=='>' || act=='-' || act=='+' || act==')' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
+//						act=='|' || act=='~' || act=='=' ) 
+//							{SynError (23,"Operador incorrecto."); errores++;}
+//				if (last=='-')
+//					if (act=='<' || act=='>' || act=='-' || act=='+' || act==')' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
+//						act=='|' || act=='~' || act=='=' ) 
+//							{SynError (24,"Operador incorrecto."); errores++;}
+//				if (last=='*')
+//					if (act=='<' || act=='>' || act=='+' || act=='%' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
+//						act=='|' || act=='~' || act=='=' || act==')') 
+//							{SynError (25,"Operador incorrecto."); errores++;}
+//				if (last=='/')
+//					if (act=='<' || act=='>' || act=='+' || act=='%' ||
+//						act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
+//						act=='|' || act=='~' || act=='=' || act==')') 
+//							{SynError (26,"Operador incorrecto."); errores++;}
+//				if (last=='^')
+//					if (act=='<' || act=='>' || act=='+' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
+//						act=='|' || act=='~' || act=='=' || act==')') 
+//							{SynError (27,"Operador incorrecto."); errores++;}
+//				if (last=='(')
+//					if (act=='<' || act=='>' || act=='/' || act=='*' || act=='^' || act=='&' || act=='%' ||
+//						act=='|' || act=='=') 
+//							{SynError (28,"Operador incorrecto."); errores++;}
+//				if (last=='(')
+//					if (act==',') 
+//						{SynError (999,"Parametro nulo."); errores++;}
+//				if (last==')') {
+//					if (act=='(') 
+//						{SynError (29,"Operador incorrecto."); errores++;}
+//				}
+//				if (last=='%') {
+//					if (act=='<' || act=='>' || act==')' || act=='%' ||
+//						act=='/' || act=='*' || act=='^' || act=='&' || act==',' || act==';' ||
+//						act=='|' || act=='~' || act=='=' ) {SynError (30,"Operador incorrecto."); errores++;}								
+//				}
+////				if (last=='(' && act==')')  {SynError (152,"Parametro nulo."); errores++;}
+//				// Borrar comentarios
+//				if (last=='/' && act=='/')
+//					cadena.erase(y-1,cadena.size()-y+1);
+//			}
+//		}
+//		if (y!=0) lastb=cadena[y-1];
+//		last=cadena[y];
+//	}
+//	// Posibles errores encontrados
+//	if (parentesis<0) { SynError (35,"Se cerraron parentesis o corchetes demás."); errores++; }
+//	if (parentesis>0) { 
+//		SynError (36,"Falta cerrar parentesis o corchete."); errores++;
+//	}
+//	if (comillas) { SynError (37,"Falta cerrar comillas."); errores++; }
+//}
 
 static bool RightCompareFix(string &s, string e) {
 	int le=e.size(); int ls=s.size();
@@ -1518,7 +1663,7 @@ int ParseInspection(string &cadena) {
 	if (cadena.size() && cadena[cadena.size()-1]==';') cadena.erase(cadena.size()-1,1);
 	SynCheckAux2(cadena); // word_operators
 	int errores=0, flag_pyc=0;
-	SynCheckAux3(-1,cadena,errores,"ESCRIBIR",flag_pyc); // verificar operadores
+	SynCheckAux3(-1,cadena,errores,"<-",flag_pyc); // verificar operadores
 	if (flag_pyc) { SynError (999,"No puede haber más de una expresión."); errores++; }
 	return errores+flag_pyc;
 }
