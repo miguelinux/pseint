@@ -61,7 +61,7 @@ inline double StrToDbl(const string &s) {
 //    Convierte un double a una cadena - Alta Precision
 // -------------------------------------------------------------------
 inline string DblToStr(double f) {
-	static char ret[2048];
+	char ret[2048];
 	sprintf(ret,"%.50f",f);
 	// eliminar ceros que sobren y el punto si era entero
 	int i=0; while (ret[i]!=0) i++;
@@ -74,7 +74,7 @@ inline string DblToStr(double f) {
 //    Convierte un double a una cadena - Baja Precision
 // -------------------------------------------------------------------
 inline string DblToStr(double f,bool low_precision) {
-	static char ret[2048];
+	char ret[2048];
 	sprintf(ret,"%.10f",f);
 	// eliminar ceros que sobren y el punto si era entero
 	int i=0; while (ret[i]!=0) i++;

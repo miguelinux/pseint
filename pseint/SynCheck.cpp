@@ -258,7 +258,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					if (next_es_letra) {
 						int j=i+2; while (EsLetra(cadena[j])) j++;
 						string sas=cadena.substr(i,j-i);
-						if (PalabraReservada(cadena.substr(i+1,j-i-1),true)) 
+						if (PalabraReservada(cadena.substr(i+1,j-i-1))) 
 							{SynError (237,"Falta operando (antes de "+cadena.substr(i+1,j-i-1)+")."); errores++; } // hola+ ;
 						else { cadena.erase(i,1); i--; }
 					} else if ((next>='0'&&next<='9') || next=='.' || next=='\'' || next=='(' || next==':' || next==';') {

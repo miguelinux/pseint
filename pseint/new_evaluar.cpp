@@ -18,7 +18,7 @@ void WriteError(int num, string s) {
 		SynError(num,s);
 }
 
-bool PalabraReservada(const string &str, bool exclude_functions) {
+bool PalabraReservada(const string &str) {
 	// Comprobar que no sea palabra reservada
 	if (word_operators && (str=="Y" || str=="O" || str=="NO" || str=="MOD"))
 		return true;
@@ -31,8 +31,6 @@ bool PalabraReservada(const string &str, bool exclude_functions) {
 	if (str=="FIN" ||  str=="IMPRIMIR" || str=="BORRAR" || str=="LIMPIAR" || str=="PANTALLA" ||  str=="BORRARPANTALLA" || str=="LIMPIARPANTALLA")
 		return true;
 	if (str=="SIN" || str=="BAJAR" || str=="SINBAJAR" || str=="SALTAR" || str=="SINSALTAR")
-		return true;
-	if (!exclude_functions && funciones.find(str)!=funciones.end())
 		return true;
 	return false;
 }
@@ -58,15 +56,16 @@ int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 	return -1;
 }
 
-int operadores[]={',','|','&','~','!','=','<','>','+','-','*','/','^','%',' '};
+static int operadores[]={',','|','&','~','!','=','<','>','+','-','*','/','^','%',' '};
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
 	int j, indice_operador=999, posicion_operador=-1;
 	while (parentesis_externos) {
 		char c=expresion[p1]; int i=p1;
-		while (i<=p2 && (c==' '||c=='\t'))
-			c=expresion[++i];
+		// comentado el 19-2-2013, creo que ya no es necesario
+//		while (i<=p2 && (c==' '||c=='\t'))
+//			c=expresion[++i];
 		parentesis_externos = i<=p2&&c=='(';
 		bool comillas=false;
 		int parentesis=0;
@@ -79,18 +78,19 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 				else if (c==')' || c==']') {
 					parentesis--;
 				} else if (parentesis==0) {
-					parentesis_externos=false;
-					j=0;
-					while (c!=operadores[j] && operadores[j]!=' ')
-						j++;
-					if (operadores[j]!=' ') {
-						if (j<indice_operador) {
-							posicion_operador=i;
-							indice_operador=j;
-							char nc=expresion[i+1];
-							if ( (c=='<'||c=='>') && (nc=='=' || nc=='>') ) i++;
+						parentesis_externos=false;
+					if ((c<'A'||c>'Z')&&(c<'0'||c>'9')) { // este if no es necesario pero baja considerablemente los tiempos
+						j=0;
+						while (c!=operadores[j] && operadores[j]!=' ')
+							j++;
+						if (operadores[j]!=' ') {
+							if (j<indice_operador) {
+								posicion_operador=i;
+								indice_operador=j;
+								char nc=expresion[i+1];
+								if ( (c=='<'||c=='>') && (nc=='=' || nc=='>') ) i++;
+							}
 						}
-//						i++;
 					}
 				}
 			}
@@ -319,6 +319,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 }
 
 string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
+	// es probable que estos 2 whiles ya no sean necesarios
 	while (p1<p2&&expresion[p1]==' ') p1++;
 	while (p1<p2&&expresion[p2]==' ') p2--;
 #ifdef LOG_EVALUAR
@@ -327,9 +328,8 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	cerr<<setw(tabs)<<""<<"EVALUAR: *"<<expresion.substr(p1,p2-p1+1)<<"*\n";
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
-	if (pos_op!=-1 && expresion[pos_op]==',') { 
-		WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return "";
-	}
+	if (pos_op!=-1 && expresion[pos_op]==',') 
+		{ WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
 		if (p2<p1) ev_return("");
 		char c = expresion[p1];
@@ -359,7 +359,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 //				pm=pc;
 			if (pm==string::npos) { // si es una variable comun
 				string nombre = expresion.substr(p1,p2-p1+1);
-				if (PalabraReservada(nombre,true)) {
+				if (PalabraReservada(nombre)) {
 					WriteError(999,string("Identificador no valido (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
@@ -407,7 +407,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				if (func) { //si es funcion
 					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
-					if (PalabraReservada(nombre,true)) {
+					if (PalabraReservada(nombre)) {
 						WriteError(999,string("Identificador no valido (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
@@ -610,7 +610,6 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return(DblToStr(StrToDbl(s1)+StrToDbl(s2)));
 			}
 			
-			// ver que pasa si se suman cadenas
 		case '-':case '*':case '/':case '^':case '%': {
 			tipo=vt_numerica; // el resultado es numerico
 			// los operandos deben ser numericos

@@ -1,3 +1,6 @@
+20130219
+	Se ha rediseñado la verificación de sintaxis de expresiones para mejorar la detección de expresiones incorrectas.
+	
 20130217
 	Ahora se aceptan los operadores == (equivalente al =), y != (quivalente al <>), && (equivalente al &), || (equivalente al |) y ! (equivalente al ~).
 	Agregado el perfil UCSP-MPR; el perfil UCSP ha sido renombrado como UCSP-APV.

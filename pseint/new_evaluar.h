@@ -13,7 +13,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo);
 string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo=vt_desconocido);
 string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo=vt_desconocido);
-bool PalabraReservada(const string &str, bool exclude_functions=false);
+bool PalabraReservada(const string &str);
 
 #endif
 
