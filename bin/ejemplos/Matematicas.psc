@@ -72,7 +72,7 @@ Proceso Matematicas
                Escribir 'El numero debe ser entero!'{;}
             Sino
                Si N<0  entonces 
-                  Nu<-N*-1{;}
+                  Nu<-N*(-1){;}
                sino
                   Nu<-N{;}
                FinSi

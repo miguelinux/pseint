@@ -1,3 +1,6 @@
+20130221
+	Corregidos algunos errores en el nuevo análisis de expresiones, agregados los tests correspondientes, y corregido el ejemplo de matemáticas para ajustarse a las nuevas reglas.
+	
 20130219
 	Se ha rediseñado la verificación de sintaxis de expresiones para mejorar la detección de expresiones incorrectas.
 	
