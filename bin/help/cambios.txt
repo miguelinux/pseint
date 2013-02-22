@@ -1,4 +1,5 @@
 20130222
+	Corregido un error al ejecutar condicionales Si-Entonces en los que se omite la palabra Entonces y se colocan las acciones en la misma linea que la condición.
 	Ahora se puede mover el scroll en la nueva terminal con la rueda del ratón.
 	
 20130221

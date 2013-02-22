@@ -1258,15 +1258,17 @@ int SynCheck(int linea_from, int linea_to) {
 				comillas=-1;
 				for (int tmp1=0;tmp1<(int)str.size();tmp1++) {
 					if (str[tmp1]=='\'') comillas=-comillas;
-					if (tmp1>0 && tmp1<(int)str.size()-1)
+					if (tmp1>0 && tmp1<(int)str.size()-1) {
+						// si encuentra un espacio (que no saco SynCheckAux3) es porque habia una instruccion despues del si, faltaba el "ENTONCES"
 						if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|') {
 							if (lazy_syntax) {
-								string aux=str.substr(tmp1); flag_pyc++;
-								programa.Insert(x+1,aux);
+								programa.Insert(x+1,str.substr(tmp1)); flag_pyc++;
+								cadena.erase(3+tmp1);
 								break;
 							} else
 								SynError (91,"Se esperaba ENTONCES o fin de expresion."); errores++;
 						}
+					}
 				}
 				tipo=vt_logica;
 				if (Lerrores==errores) EvaluarSC(str,tipo,vt_logica);
