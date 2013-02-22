@@ -55,7 +55,7 @@ wxString mxAboutWindow::MakePageText() {
 	text<<_T("<IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("logo.png"))<<_T("\"/>");
 	text<<_T("</TD><TD>");
 	
-	text<<_T("<CENTER><B>Copyleft 2003-2012<BR>por Pablo Novara<BR>");
+	text<<_T("<CENTER><B>Copyleft 2003-2013<BR>por Pablo Novara<BR>");
 	text<<_T("zaskar_84@yahoo.com.ar<BR><BR>");
 	text<<_T("Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL<BR>(General Public License)");
 	text<<_T("<BR><BR>http://pseint.sourceforge.net</B><BR></CENTER>");
