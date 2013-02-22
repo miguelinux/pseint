@@ -78,7 +78,7 @@ static void SynCheckAux1(string &cadena) {
 				if (c=='O' && tmp>0 && cadena[tmp-1]=='N' && (tmp-1==0 || !parteDePalabra(cadena[tmp-2])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
 				{ cadena[tmp-1]='~'; cadena.erase(tmp,1); tmp--; len--; }
 				if (c=='D' && tmp>1 && cadena[tmp-1]=='O' && cadena[tmp-2]=='M' && (tmp-2==0 || !parteDePalabra(cadena[tmp-3])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
-				{ cadena[tmp-1]='%'; cadena.erase(tmp,2); tmp-=2; len-=2; }
+				{ cadena[tmp-2]='%'; cadena.erase(tmp,2); tmp-=2; len-=2; }
 			}
 		}
 	}

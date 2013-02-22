@@ -5,7 +5,7 @@ Proceso sin_titulo
 	sino
 		Nu<-N
 	FinSi
-	Si N/2=trunc(Nu/2) Entonces 
+	Si N mod 2 = 0 Entonces 
 		Escribir 'Numero Primo:',Nu=2
 		Si Nu<>2 Entonces
 			Escribir N,'=2x',N/2
@@ -15,7 +15,7 @@ Proceso sin_titulo
 		Nu<-RC(Nu)
 		f<-3
 		Mientras f<=Nu Y EsPrimo Hacer
-			Si N/F=trunc(N/F) Entonces 
+			Si N%F=0 Entonces 
 				EsPrimo<-Falso
 			FinSi
 			f<-f+2
