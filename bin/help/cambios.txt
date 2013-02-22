@@ -1,3 +1,6 @@
+20130222
+	Ahora se puede mover el scroll en la nueva terminal con la rueda del ratón.
+	
 20130221
 	Corregidos algunos errores en el nuevo análisis de expresiones, agregados los tests correspondientes, y corregido el ejemplo de matemáticas para ajustarse a las nuevas reglas.
 	

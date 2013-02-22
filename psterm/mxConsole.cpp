@@ -369,14 +369,31 @@ void mxConsole::RecordInput (wxString input) {
 
 
 void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
-	if (!evt.ControlDown()) return;
-	int fsize=font.GetPointSize();
-	if (evt.m_wheelRotation<0) {
-		fsize++;
-	} else if (fsize>4) fsize--;
-	SetFontSize(fsize);
-	timer_size->Start(_SIZE_TIME,true);
-	Refresh();
+	if (evt.ControlDown()) {
+		int fsize=font.GetPointSize();
+		if (evt.m_wheelRotation<0) {
+			fsize++;
+		} else if (fsize>4) fsize--;
+		SetFontSize(fsize);
+		timer_size->Start(_SIZE_TIME,true);
+		Refresh();
+	} else {
+		int i=scroll->GetThumbPosition();
+		if (evt.m_wheelRotation<0) {
+			if (i<events.size()) {
+				scroll->SetThumbPosition(++i);
+				SetTime(scroll->GetThumbPosition());
+				Refresh();
+			}
+		} else {
+			if (i>0) {
+				scroll->SetThumbPosition(--i);
+				SetTime(scroll->GetThumbPosition());
+				Refresh();
+			}
+		}
+	}
+	
 }
 
 void mxConsole::MarkEvent ( ) {
