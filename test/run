@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ "$1" = "" ]; then
   echo use: $1 testname
 else
@@ -12,7 +12,11 @@ else
     ARGS=
   fi
   if test -e $1.out; then
-      ../bin/pseint --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
+    if ! ../bin/pseint --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out &>/dev/null; then
+	echo ""
+	../bin/pseint --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
+	echo ""
+    fi
   else
       make -f Makefile.lnx -C ../pseint -j 2 || exit 1
       cat $1.psc

@@ -1,5 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 make -f Makefile.lnx -C ../pseint -j 2 || exit 1
 echo ""
-for A in *.psc; do echo $A; bash run $(echo $A | sed 's/.psc//'); done
-echo ""
+for A in *.psc; do 
+    echo -n $A"              "; 
+    bash run $(echo $A | sed 's/.psc//');
+    echo -n -e \\r
+done
+echo "done                           "
