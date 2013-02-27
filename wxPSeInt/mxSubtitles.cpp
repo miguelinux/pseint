@@ -18,18 +18,16 @@ END_EVENT_TABLE()
 mxSubtitles::mxSubtitles(wxWindow *parent):wxPanel(parent) {
 	wxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *sizer_bt=new wxBoxSizer(wxVERTICAL);
-	text=new wxTextCtrl(this,wxID_ANY,"Este un texto de ejemplo. Este un texto de ejemplo. Este un texto de ejemplo. Este un texto de ejemplo.",wxDefaultPosition,wxDefaultSize,wxTE_CENTRE|wxTE_READONLY|wxTE_MULTILINE);
-//	button_next=new mxBitmapButton(this,wxID_OK,bitmaps->buttons.ok,"*Continuar*");
+	text=new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_CENTRE|wxTE_READONLY|wxTE_MULTILINE);
 	button_next=new wxButton(this,wxID_OK,"*Continuar*");
-//	button_cancel=new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,"Finalizar");
 	sizer->Add(text,wxSizerFlags().Expand().Proportion(1));
 	sizer_bt->Add(button_next,wxSizerFlags().Border(wxALL,10).Proportion(0).Expand());
-//	sizer_bt->Add(button_cancel,wxSizerFlags().Border(wxLEFT|wxRIGHT|wxBOTTOM,10).Proportion(0).Expand());
 	sizer->Add(sizer_bt,wxSizerFlags().Center());
 	text->SetBackgroundColour(wxColour(255,255,150));
 	text->SetForegroundColour(wxColour(0,0,100));
-	text->SetFont(wxFont(11,wxDECORATIVE,0,wxBOLD));
-	SetSizerAndFit(sizer);
+	text->SetFont(wxFont(11,wxMODERN,0,wxBOLD));
+	SetSizer(sizer);
+	SetSize(100,button_next->GetSize().GetHeight()*3);
 }
 
 void mxSubtitles::AddMessage (int linea, int inst, wxString msg) {
