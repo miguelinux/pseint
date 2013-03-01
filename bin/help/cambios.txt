@@ -1,3 +1,7 @@
+20130301
+	Ya no se evalúa dos veces la misma condición antes de entrar en un ciclo Mientras.
+	Ya no se agregan erróneamente nombres de subprocesos como variables internas de un (sub)proceso en el panel de variables.
+	
 20130222
 	Corregido un error al ejecutar condicionales Si-Entonces en los que se omite la palabra Entonces y se colocan las acciones en la misma linea que la condición.
 	Ahora se puede mover el scroll en la nueva terminal con la rueda del ratón.

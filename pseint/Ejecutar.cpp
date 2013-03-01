@@ -379,11 +379,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 						if (programa[tmp1]=="FINMIENTRAS") tmp2--;
 						tmp1++;
 					}
-					while (Evaluar(cadena,tipo)=="VERDADERO") {
+					while (aux1=="VERDADERO") {
 						_sub(line,"La condicion es Verdadera, se iniciará una iteración.");
 						Ejecutar(line+1,tmp1-1);
 						_pos(line);
 						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
+						aux1=Evaluar(cadena,tipo);
 					}
 					line=tmp1;
 					_pos(line);
