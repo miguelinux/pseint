@@ -170,21 +170,20 @@ bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 	if (p2<p1) return true;
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op==-1) { // si no hay operador, es una variable o constante
-//		size_t pp=expresion.find('(');
-//		size_t pc=expresion.find('[');
-//		if (pp!=string::npos) {
-//			if (pc!=string::npos && pc<pp)
-//				return memoria->DefinirTipo(expresion.substr(p1,pc-p1+1),tipo);
-//			else
-//				return memoria->DefinirTipo(expresion.substr(p1,pp-p1+1),tipo);
-//		} if (pc!=string::npos)
-//			return memoria->DefinirTipo(expresion.substr(p1,pc-p1+1),tipo);
-//		else
-		
-		if (expresion.substr(p1,p2-p1+1)==VERDADERO||expresion.substr(p1,p2-p1+1)==FALSO) return tipo.cb_log;
-		if (expresion[p1]=='.'||(expresion[p1]>='0'&&expresion[p1]<='9') ) return tipo.cb_num;
-		if (expresion[p1]=='\'') return tipo.cb_car;
-		return memoria->DefinirTipo(expresion.substr(p1,p2-p1+1),tipo);
+		string sub=expresion.substr(p1,p2-p1+1); char c=sub[0];
+		if (sub==VERDADERO||sub==FALSO) return tipo.cb_log;
+		if (c=='.'||(c>='0'&&c<='9') ) return tipo.cb_num;
+		if (c=='\'') return tipo.cb_car;
+		size_t p=sub.find('(');
+		if (p!=string::npos) { // si era funcion no tiene que llegar a DefinirTipo porque sino aparece en el panel de variables
+			sub.erase(p);
+			const Funcion *f=EsFuncion(sub,true);
+			if (f) {
+				tipo_var tv=f->GetTipo(0);
+				return tv.set(tipo);
+			}
+		}
+		return memoria->DefinirTipo(sub,tipo);
 	} else { // si era operador
 		char op=expresion[pos_op];
 		if (op=='='||op=='<'||op=='>'||op=='~'||op=='!') {
@@ -703,7 +702,7 @@ bool CheckDims(string &str) {
 	int *adims=memoria->LeerDims(str);
 	if (!adims) {
 		if (!Inter.Running() && memoria->EsArgumento(nombre)) return true; // si es una funcion, no sabemos si lo que van a pasar sera o no arreglo
-		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo"));
+		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo o subproceso"));
 		return false;
 	}
 	if (!Inter.Running()) {
