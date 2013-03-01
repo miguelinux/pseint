@@ -1258,6 +1258,16 @@ void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
 	else if (!current_calltip_is_error && if_is_not_error) CallTipCancel();
 }
 
+int mxSource::GetIndent(int line) {
+	int i=PositionFromLine(line), n=0;
+	while (true) {
+		char c=GetCharAt(i++);
+		if (c==' ') n++; 
+		else if (c=='\t') n+=config->tabw;
+		else return n;
+	}
+}
+
 void mxSource::TryToAutoCloseSomething (int l) {
 	// ver si se abre una estructura
 	int btype;
@@ -1267,8 +1277,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	if (btype==BT_NONE||btype==BT_SINO||btype==BT_PROCESO||btype==BT_CASO) return;
 	while (l2<ln && GetLineEndPosition(l2)==GetLineIndentPosition(l2)) l2++;
 	// comparar los indentados para ver si la siguiente esta dentro o fuera
-	int i1=GetLineIndentPosition(l-1)-PositionFromLine(l-1);
-	int i2=GetLineIndentPosition(l2)-PositionFromLine(l2);
+	int i1=GetIndent(l-1), i2=GetIndent(l2);
 	if (l2<ln && i1<i2) return; // si estaba dentro no se hace nada
 	// ver que dice la siguiente para que no coincida con lo que vamos a agregar
 	wxString sl2=i2<i1?"":GetLine(l2); sl2.MakeUpper(); 

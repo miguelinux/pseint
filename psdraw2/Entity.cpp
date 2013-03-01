@@ -453,7 +453,7 @@ bool Entity::CheckMouse(int x, int y) {
 	return false;
 }
 
-#define _tabs "    "
+#define _tabs "\t"
 
 void Entity::Print(ostream &out, string tab) {
 	bool add_tab=false;

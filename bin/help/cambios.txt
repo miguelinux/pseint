@@ -1,4 +1,5 @@
 20130301
+	El editor de diagramas de flujo genera pseudocódigo indentado con tabs en lugar de espacios.
 	Ya no se evalúa dos veces la misma condición antes de entrar en un ciclo Mientras.
 	Ya no se agregan erróneamente nombres de subprocesos como variables internas de un (sub)proceso en el panel de variables.
 	
