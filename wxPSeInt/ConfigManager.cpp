@@ -290,7 +290,7 @@ bool LangSettings::Load (wxString fname) {
 	if (!fil.Exists()) return false;
 	fil.Open();
 	if (!fil.IsOpened()) return false;
-	wxString key, value; wxString desc;
+	wxString key, value;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str[0]=='#') continue;
 		key=str.BeforeFirst('=');
