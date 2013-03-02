@@ -97,9 +97,9 @@ void mxIconInstaller::InstallDesktop ( bool menu ) {
 		fil.Create();
 	fil.Clear();
 	fil.AddLine(_T("[Desktop Entry]"));
-	fil.AddLine(_T("Comment=Editor e intérprete de pseudocódigo"));
+	fil.AddLine(_T("Comment=PSeInt - Editor e intérprete de pseudocódigo"));
 	fil.AddLine(_T("Encoding=UTF-8"));
-	fil.AddLine(_T("Name=PSeInt"));
+	fil.AddLine(_T("Name=pseint"));
 	fil.AddLine(_T("Type=Application"));
 	fil.AddLine(_T("Categories=Development"));
 	fil.AddLine(_T("Icon=pseint"));
