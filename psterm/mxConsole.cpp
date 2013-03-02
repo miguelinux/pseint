@@ -209,7 +209,9 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i-i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
-			if (input[i+2]=='z' && input[i+3]=='k') { // getKey
+			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
+				GetParent()->Raise(); i+=3;
+			} else if (input[i+2]=='z' && input[i+3]=='k') { // getKey
 				if (input_history_position>=int(input_history.size())) { 
 					want_input=true; wait_one_key=true;
 				} else {

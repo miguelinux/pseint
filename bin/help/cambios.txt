@@ -1,3 +1,6 @@
+20130302
+	Al ejecutar paso a paso con explicación, las instrucciones de lectura vuelven el foco a la terminal.
+	
 20130301
 	El editor de diagramas de flujo genera pseudocódigo indentado con tabs en lugar de espacios.
 	Ya no se evalúa dos veces la misma condición antes de entrar en un ciclo Mientras.

@@ -101,6 +101,7 @@ public:
 #define _sub_wait() { if (Inter.subtitles_on) Inter.ChatWithGUI(); }
 #define _sub(i,s) { if (Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
 #define _pos(i) { if (!Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.ChatWithGUI(); } }
+#define _sub_raise() { if (Inter.subtitles_on && for_pseint_terminal) { cout<<"\033[zr"; } }
 
 extern Intercambio Inter;        // clase para enviar informacion de depuración al editor
 

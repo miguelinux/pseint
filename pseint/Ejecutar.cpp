@@ -55,6 +55,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_sub(line,"Se borra la pantalla");
 			} else if (cadena=="ESPERARTECLA;") {
 				_sub_msg(line,"Se espera a que el usuario presione una tecla.");
+				_sub_raise();
 				getKey();
 				_sub_wait();
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
@@ -138,6 +139,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (colored_output) setForeColor(COLOR_INPUT);
 					// Leer dato
 					_sub_msg(line,"Se espera a que el usuario ingrese un valor y presiones enter."); // tipo?
+					_sub_raise();
+					
 					if (!predef_input.empty() || noinput) {
 						if (predef_input.empty()) ExeError(214,"Sin entradas disponibles.");
 						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
