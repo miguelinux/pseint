@@ -1,3 +1,5 @@
+>>RELEASE 20130302<<
+
 20130302
 	Al ejecutar paso a paso con explicación, las instrucciones de lectura vuelven el foco a la terminal.
 	

@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxConsole.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=Application.cpp
@@ -45,7 +45,7 @@ path=manifest.xml
 cursor=0
 [other]
 path=../bin/help/cambios.txt
-cursor=890
+cursor=340
 open=true
 [config]
 name=Linux_Debug
