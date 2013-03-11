@@ -275,6 +275,7 @@ string expresion(string exp, tipo_var &tipo){
 		}
 		else if (exp[i]=='~'){
 			exp.insert(i,"!");
+			i++;
 		}
 	}
 	return exp;
