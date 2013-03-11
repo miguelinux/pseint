@@ -60,6 +60,7 @@ void CaseMapPurge() {
 	(*case_map)["ESCRIBIR"]="";
 	(*case_map)["LEER"]="";
 	(*case_map)["DEFINIR"]="";
+	(*case_map)["DIMENSION"]="";
 	
 	(*case_map)["REPETIR"]="";
 	(*case_map)["HASTA"]="";
@@ -79,5 +80,12 @@ void CaseMapPurge() {
 	(*case_map)["OTRO"]="";
 	(*case_map)["MODO"]="";
 	(*case_map)["FINSEGUN"]="";
+	
+	(*case_map)["DEFINIR"]="";
+	(*case_map)["COMO"]="";
+	(*case_map)["ENTERO"]="";
+	(*case_map)["CARACTER"]="";
+	(*case_map)["REAL"]="";
+	(*case_map)["LOGICO"]="";
 	
 }

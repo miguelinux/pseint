@@ -702,7 +702,7 @@ bool CheckDims(string &str) {
 	int *adims=memoria->LeerDims(str);
 	if (!adims) {
 		if (!Inter.Running() && memoria->EsArgumento(nombre)) return true; // si es una funcion, no sabemos si lo que van a pasar sera o no arreglo
-		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo o subproceso"));
+		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo o subproceso")); /// @todo: ver que hacer cuando se llama desde psexport, porque genera errores falsos
 		return false;
 	}
 	if (!Inter.Running()) {
