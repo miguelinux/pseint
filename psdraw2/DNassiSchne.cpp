@@ -96,8 +96,8 @@ void Entity::DrawNassiSchne(bool force) {
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
-			if (child[0]) px+=child_dx[0]+child[0]->d_bwr;
-			else if (child[1]) px+=child_dx[1]-child[1]->d_bwl;
+			if (child[1]) px+=child_dx[1]+child[1]->d_bwr;
+			else if (child[0]) px+=child_dx[0]-child[0]->d_bwl;
 			glVertex2i(px,d_y-2*h-margin);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
@@ -198,6 +198,8 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			if (c1r+c1l+c2r+c2l>w)
 				bwl=bwr=(c1r+c1l+c2r+c2l)/2;
 			else  {
+				cerr<<(w-(c1r+c1l+c2r+c2l))<<endl;
+				
 				int dw=(w-(c1r+c1l+c2r+c2l))/2;
 				if (child[0]) child[0]->ResizeW(c1r+c1l+dw,false);
 				if (child[1]) child[1]->ResizeW(c2r+c2l+dw,false);
@@ -206,8 +208,8 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 			bh += (c1h>c2h?c1h:c2h);
 			child_bh[0]=c1h; child_bh[1]=c2h;
 			// mover hijos horizontalmente
-			child_dx[0] = -bwl+c1l;
-			child_dx[1] = bwr-c2r;
+			child_dx[0] = bwr-c1r;
+			child_dx[1] = -bwl+c2l;
 			if (child[0]) child[0]->MoveX(child_dx[0]);
 			if (child[1]) child[1]->MoveX(child_dx[1]);
 		} else

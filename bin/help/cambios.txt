@@ -1,3 +1,14 @@
+20130315
+	Corregida la posición de las ramas del bloque Si-Entonces en el diagrama de Nassi-Schneiderman.
+	
+20130311
+	Corregido un error al exportar a C++ de la instrucción Definir.
+	Corregido un loop infinito al exportar a C++ un algoritmo que usa el operador de comparación ~.
+
+20130309
+	Agregado el perfil UPEL-IPC.
+
+
 >>RELEASE 20130302<<
 
 20130302

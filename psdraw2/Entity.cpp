@@ -391,9 +391,9 @@ void Entity:: ResizeW(int aw, bool up) {
 			child[i]->ResizeW(child[i]->bwl+child[i]->bwr+(aw-old)/nc,false);
 	if (type==ET_SI) {
 		int dx=(aw-old)/4;
-		if (child[0]) child[0]->MoveX(-dx);
-		if (child[1]) child[1]->MoveX(dx);
-		child_dx[0]-=dx; child_dx[1]+=dx;
+		if (child[0]) child[0]->MoveX(dx);
+		if (child[1]) child[1]->MoveX(-dx);
+		child_dx[0]+=dx; child_dx[1]-=dx;
 	} else if (type==ET_SEGUN) {
 		int dx=(aw-old)/2;
 		int dx0=dx-dx/nc;
