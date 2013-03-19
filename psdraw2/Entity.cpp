@@ -44,6 +44,7 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	SetLabel(label);
 	parent=prev=next=NULL; child=NULL;
 	if (type==ET_PROCESO) { 
+		n_child=0;
 		lpre="Proceso ";
 	} else if (type==ET_SI) { // dos hijos
 		n_child=2;
@@ -415,6 +416,8 @@ void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y man
 		next->x=x;
 		next->y=y-bh;
 		next->Calculate(gwl,gwr,gh);
+	} else {
+		gwl=gwr=gh=0;
 	}
 	// actualizar el bb global del bloque
 	gh+=bh;	
