@@ -1,3 +1,6 @@
+20130322
+	Corregido un error importante en la evaluación de expresiones relacionado al operador - afectando a un término entre paréntesis.
+	
 20130315
 	Corregida la posición de las ramas del bloque Si-Entonces en el diagrama de Nassi-Schneiderman.
 	

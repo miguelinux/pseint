@@ -61,7 +61,8 @@ static int oper_lev[]=  { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 8 , 10, 10, 12, 13
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
-	int j, indice_operador=999, posicion_operador=-1;
+	static int max_ind=sizeof(operadores)/sizeof(int)-1;
+	int j, indice_operador=max_ind, posicion_operador=-1;
 	while (parentesis_externos) {
 		char c=expresion[p1]; int i=p1;
 		// comentado el 19-2-2013, creo que ya no es necesario
@@ -82,15 +83,13 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 						parentesis_externos=false;
 					if ((c<'A'||c>'Z')&&(c<'0'||c>'9')) { // este if no es necesario pero baja considerablemente los tiempos
 						j=0;
-						while (c!=operadores[j] && operadores[j]!=' ')
-							j++;
-						if (operadores[j]!=' ') {
-							if (j<indice_operador || oper_lev[j]==oper_lev[indice_operador]) {
-								posicion_operador=i;
-								indice_operador=j;
-								char nc=expresion[i+1];
-								if ( (c=='<'||c=='>') && (nc=='=' || nc=='>') ) i++;
-							}
+						while (j<max_ind && c!=operadores[j]) j++;
+						if (j!=max_ind && oper_lev[j]<=oper_lev[indice_operador]) {
+							posicion_operador=i;
+							indice_operador=j;
+							char nc=expresion[i+1];
+							if ( (c=='<'||c=='>'||c=='=') && (nc=='=' || nc=='>') ) i++;
+							else if ( (c=='&'||c=='|') && (nc=='|' || nc=='&') ) i++;
 						}
 					}
 				}
