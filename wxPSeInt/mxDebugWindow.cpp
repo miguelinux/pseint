@@ -44,6 +44,7 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	debug_speed=new wxScrollBar(this,mxID_DEBUG_SLIDER);
 	debug_speed->SetScrollbar(0,1,100,10);
 	debug_speed->SetToolTip(utils->FixTooltip("Con este slider puede variar la velocidad con la que avanza automáticamente la ejecución paso a paso."));
+	debug_speed->SetThumbPosition(config->stepstep_speed);
 	sizer->Add(debug_speed,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	dp_check_step_in=new wxCheckBox(this,mxID_DEBUG_STEP_IN,"Entrar en subprocesos");
 	dp_check_step_in->SetToolTip(utils->FixTooltip("Cuando esta opción está activada y el proceso llega a la llamada de una función entra en dicha función y muestra pasa a paso cómo se ejecuta la misma, mientras que si está desactivada ejecuta la llamada completa en un solo paso sin mostrar la ejecución de la misma."));
@@ -67,7 +68,7 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 }
 
 void mxDebugWindow::SetSpeed(int speed) {
-	debug_speed->SetThumbPosition(speed);
+	debug_speed->SetThumbPosition(config->stepstep_speed=speed);
 }
 
 void mxDebugWindow::SetState(ds_enum state) {

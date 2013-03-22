@@ -43,9 +43,9 @@ using namespace std;
 
 mxMainWindow *main_window;
 
-#define _debug_speed_h 80
-#define _debug_speed_m 55
-#define _debug_speed_l 20
+//#define _debug_speed_h 80
+//#define _debug_speed_m 55
+//#define _debug_speed_l 20
 
 // organizacion de los elementos de la ventana (layer,row,position para el wxAuiPaneInfo, p es el panel, h es el helper(boton para hacerlo visible))
 static const int hvar[]={1,0,0};
@@ -116,9 +116,9 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
 	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
-	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
-	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
-	EVT_MENU(mxID_CONFIG_STEPSTEP_H, mxMainWindow::OnConfigStepStepH)
+//	EVT_MENU(mxID_CONFIG_STEPSTEP_L, mxMainWindow::OnConfigStepStepL)
+//	EVT_MENU(mxID_CONFIG_STEPSTEP_M, mxMainWindow::OnConfigStepStepM)
+//	EVT_MENU(mxID_CONFIG_STEPSTEP_H, mxMainWindow::OnConfigStepStepH)
 //	EVT_MENU(mxID_CONFIG_HIGHRES, mxMainWindow::OnConfigHighRes)
 
 	EVT_BUTTON(mxID_CMD_SUBPROCESO, mxMainWindow::OnCmdSubProceso)
@@ -283,10 +283,6 @@ void mxMainWindow::CreateMenus() {
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
-	cfg->AppendSeparator();
-	mi_stepstep_l = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_L, _T("Velocidad del paso a paso: Baja"),_T(""),config->stepstep_speed==0);
-	mi_stepstep_m = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_M, _T("Velocidad del paso a paso: Media"),_T(""),config->stepstep_speed==1);
-	mi_stepstep_h = utils->AddCheckToMenu(cfg,mxID_CONFIG_STEPSTEP_H, _T("Velocidad del paso a paso: Alta"),_T(""),config->stepstep_speed==2);
 	menu->Append(cfg, _T("&Configurar"));
 	
 	wxMenu *run = new wxMenu;
@@ -1138,39 +1134,6 @@ void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 	}
 }
 
-//void mxMainWindow::OnConfigHighRes(wxCommandEvent &evt) {
-//	if (!mi_high_res->IsChecked()) {
-//		mi_high_res->Check(false);
-//		config->high_res_flows=false;
-//	} else {
-//		mi_high_res->Check(true);
-//		config->high_res_flows=true;
-//	}
-// }
-
-void mxMainWindow::OnConfigStepStepL(wxCommandEvent &evt) {
-	mi_stepstep_l->Check(true);
-	mi_stepstep_h->Check(false);
-	mi_stepstep_m->Check(false);
-	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_l);
-	debug->SetSpeed(config->stepstep_speed);
-}
-
-void mxMainWindow::OnConfigStepStepH(wxCommandEvent &evt) {
-	mi_stepstep_h->Check(true);
-	mi_stepstep_l->Check(false);
-	mi_stepstep_m->Check(false);
-	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_h);
-	debug->SetSpeed(config->stepstep_speed);
-}
-void mxMainWindow::OnConfigStepStepM(wxCommandEvent &evt) {
-	mi_stepstep_m->Check(true);
-	mi_stepstep_l->Check(false);
-	mi_stepstep_h->Check(false);
-	debug_panel->SetSpeed(config->stepstep_speed=_debug_speed_m);
-	debug->SetSpeed(config->stepstep_speed);
-}
-
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	if (event.pane->name == _T("toolbar")) mi_toolbar->Check(config->show_toolbar=false);
 	else if (event.pane->name == _T("commands")) {
@@ -1220,11 +1183,8 @@ void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
 }
 
 void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
-	int speed=evt.GetInt();
-	mi_stepstep_l->Check(speed==0);
-	mi_stepstep_m->Check(speed==1);
-	mi_stepstep_h->Check(speed==2);
-	debug->SetSpeed(speed);
+	config->stepstep_speed=evt.GetInt();
+	debug->SetSpeed(config->stepstep_speed);
 }
 
 

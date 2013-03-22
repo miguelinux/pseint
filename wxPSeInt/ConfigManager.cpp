@@ -60,7 +60,7 @@ void ConfigManager::LoadDefaults() {
 	images_path = _T("imgs");
 	font_size = 10;
 	tabw = 4;
-	stepstep_speed=1;
+	stepstep_speed=50;
 	debug_port=55374;
 	comm_port=55375;
 	use_psterm = true;
