@@ -1,9 +1,7 @@
-20130322
-	Eliminadas las opciones de velocidad de ejecucion paso a paso del menu Configurar.
-
 >>RELEASE 20130322<<
 
 20130322
+	Eliminadas las opciones de velocidad de ejecucion paso a paso del menu Configurar (ahora se define siempre desde el panel).
 	Agregada una opción al menú configurar para que acomode automáticamente las ventanas al iniciar la ejecución paso a paso (maximiza el código, y ubica la terminal a la derecha y siempre visible).
 	Corregido un error importante en la evaluación de expresiones relacionado al operador - afectando a un término entre paréntesis.
 	
