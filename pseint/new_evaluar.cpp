@@ -57,6 +57,7 @@ int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 }
 
 static int operadores[]={',','|','&','~','!','=','<','>','+','-','*','/','^','%',' '};
+static int oper_lev[]=  { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 8 , 10, 10, 12, 13, 14};
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
@@ -73,9 +74,9 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 			if (c=='\"' || c=='\'') {
 				comillas = !comillas;
 			} else if (!comillas) {
-				if (c=='(' || c=='[')
+				if (c=='(' || c=='[') {
 					parentesis++;
-				else if (c==')' || c==']') {
+				} else if (c==')' || c==']') {
 					parentesis--;
 				} else if (parentesis==0) {
 						parentesis_externos=false;
@@ -84,7 +85,7 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 						while (c!=operadores[j] && operadores[j]!=' ')
 							j++;
 						if (operadores[j]!=' ') {
-							if (j<indice_operador) {
+							if (j<indice_operador || oper_lev[j]==oper_lev[indice_operador]) {
 								posicion_operador=i;
 								indice_operador=j;
 								char nc=expresion[i+1];
@@ -100,15 +101,7 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 			p1++; p2--;
 		}
 	}
-	if (posicion_operador!=-1 && operadores[indice_operador]!=' ') {
-		if (operadores[indice_operador]=='-') {
-			int np1=posicion_operador+1,np2=p2;
-			int aux=BuscarOperador(expresion,np1,np2);
-			if (aux!=-1 && (expresion[aux]=='-' || expresion[aux]=='+')) return aux;
-		}
-		return posicion_operador;
-	} else
-		return -1;
+	return posicion_operador;
 }
 
 tipo_var DeterminarTipo(const string &expresion, int p1, int p2) {
@@ -201,9 +194,8 @@ bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 	return false;  // nunca llega aca
 }
 
-//#define LOG_EVALUAR
-
 #ifdef LOG_EVALUAR
+static int tabs=0;
 string ev_aux(string a,int &tabs)
 { cerr<<setw(tabs)<<""<<"RET: *"<<(a)<<"*\n"; tabs-=2; return a;}
 #define ev_return(a) return ev_aux(a,tabs)
@@ -322,9 +314,8 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 	while (p1<p2&&expresion[p1]==' ') p1++;
 	while (p1<p2&&expresion[p2]==' ') p2--;
 #ifdef LOG_EVALUAR
-	static int tabs=0;
 	tabs+=2;
-	cerr<<setw(tabs)<<""<<"EVALUAR: *"<<expresion.substr(p1,p2-p1+1)<<"*\n";
+	cerr<<setw(tabs)<<""<<"EVALUAR: {"<<expresion.substr(p1,p2-p1+1)<<"}\n";
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op!=-1 && expresion[pos_op]==',') 
