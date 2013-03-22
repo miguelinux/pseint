@@ -1183,8 +1183,8 @@ void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
 }
 
 void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
-	config->stepstep_speed=evt.GetInt();
-	debug->SetSpeed(config->stepstep_speed);
+	config->stepstep_tspeed=evt.GetInt();
+	debug->SetSpeed(config->stepstep_tspeed);
 }
 
 

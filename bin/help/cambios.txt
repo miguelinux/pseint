@@ -1,3 +1,6 @@
+20130322
+	Eliminadas las opciones de velocidad de ejecucion paso a paso del menu Configurar.
+
 >>RELEASE 20130322<<
 
 20130322

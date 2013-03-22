@@ -180,7 +180,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	temp = source->GetTempFilenameOUT();
 	debug->Start(this,source);
 	int port=comm_manager->GetServerPort();
-	int delay=_calc_delay(config->stepstep_speed);
+	int delay=_calc_delay(config->stepstep_tspeed);
 	debug_panel->SetSpeed(debug->GetSpeed(delay));
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");

@@ -110,7 +110,7 @@ public:
 	int tabw;
 	int size_x, size_y;
 	int pos_x, pos_y;
-	int stepstep_speed;
+	int stepstep_tspeed; // velocidad para la ejecucion paso a paso (posicion del scroll, no tiempo para el interprete)
 	bool maximized;
 	
 	ConfigManager(wxString apath);

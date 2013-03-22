@@ -60,7 +60,7 @@ void ConfigManager::LoadDefaults() {
 	images_path = _T("imgs");
 	font_size = 10;
 	tabw = 4;
-	stepstep_speed=50;
+	stepstep_tspeed=50;
 	debug_port=55374;
 	comm_port=55375;
 	use_psterm = true;
@@ -147,7 +147,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("maximized="))<<(maximized?1:0));
 	fil.AddLine(wxString(_T("font_size="))<<font_size);
 	fil.AddLine(wxString(_T("tabw="))<<tabw);
-	fil.AddLine(wxString(_T("stepstep_speed="))<<stepstep_speed);
+	fil.AddLine(wxString(_T("stepstep_tspeed="))<<stepstep_tspeed);
 	fil.AddLine(wxString(_T("size_x="))<<size_x);
 	fil.AddLine(wxString(_T("size_y="))<<size_y);
 	fil.AddLine(wxString(_T("pos_x="))<<pos_x);
@@ -193,7 +193,7 @@ void ConfigManager::Read() {
 			else if (key==_T("use_psterm")) use_psterm=utils->IsTrue(value);
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
-			else if (key==_T("stepstep_speed")) { value.ToLong(&l); stepstep_speed=l; }
+			else if (key==_T("stepstep_tspeed")) { value.ToLong(&l); stepstep_tspeed=l; }
 			else if (key==_T("rt_syntax")) rt_syntax=utils->IsTrue(value);
 			else if (key==_T("smart_indent")) smart_indent=utils->IsTrue(value);
 			else if (key==_T("show_commands")) show_commands=utils->IsTrue(value);
