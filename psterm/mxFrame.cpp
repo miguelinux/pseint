@@ -17,30 +17,42 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 	EVT_CLOSE(mxFrame::OnClose)
 END_EVENT_TABLE()
 
-mxFrame::mxFrame(wxString command, int port, int id, bool debug):wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",wxDefaultPosition,wxSize(550,350)) {
-	debug_mode=debug;
-	already_connected=false;
-	src_id=id;
-	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
-	console=new mxConsole(this,scroll);
-	play_from_here=new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-	is_present=true; play_from_here->Hide();
+mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props)
+	:wxFrame(NULL,wxID_ANY,"PSeInt - Ejecutando...",
+	wxDefaultPosition, wxSize(props.width,props.height),
+	wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) {
 	
-	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
-	sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
-	sizer_in->Add(play_from_here,wxSizerFlags().Right());
+		debug_mode=debug;
+		already_connected=false;
+		src_id=id;
+		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
+		console=new mxConsole(this,scroll);
+		play_from_here=new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+		is_present=true; play_from_here->Hide();
+		
+		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+		wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
+		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
+		sizer_in->Add(play_from_here,wxSizerFlags().Right());
 #ifdef DEBUG
-	sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
+		sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
 #endif
-	sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
-	sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
-	SetSizer(sizer);
-	Show();
-	wxTimerEvent evt;
-	if (port!=-1) InitSocket(port);
-	console->Run(command);
-	console->SetFocus();
+		sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
+		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
+		SetSizer(sizer);
+		Show();
+		wxTimerEvent evt;
+		if (port!=-1) InitSocket(port);
+		console->Run(command);
+		console->SetFocus();
+		if (props.set_left||props.set_right||props.set_bottom||props.set_top) {
+			wxYield();
+			int x,y,w,h;
+			GetScreenPosition(&x,&y); GetSize(&w,&h);
+			if (props.set_left||props.set_right) x= props.set_left?props.left:(props.right-w);
+			if (props.set_bottom||props.set_top) y= props.set_top?props.top:(props.bottom-h);
+			Move(x,y);
+		}
 }
 
 void mxFrame::OnButtonPlay (wxCommandEvent & evt) {

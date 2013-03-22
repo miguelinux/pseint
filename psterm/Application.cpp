@@ -25,6 +25,7 @@ bool mxApplication::OnInit() {
 	
 	bool no_arg=false, debug=false;
 	long port=-1, src_id=-1;
+	win_props props;
 	wxString command;
 	for(int i=1;i<argc;i++) {
 		if (no_arg) {
@@ -37,8 +38,22 @@ bool mxApplication::OnInit() {
 					no_arg=true;
 				} else if (arg=="--debugmode") {
 					debug=true;
+				} else if (arg=="--alwaysontop") {
+					props.always_on_top=true;
 				} else if (arg.StartsWith("--id=")) {
 					arg.AfterFirst('=').ToLong(&src_id);
+				} else if (arg.StartsWith("--left=")) {
+					props.set_left=arg.AfterFirst('=').ToLong(&props.left);
+				} else if (arg.StartsWith("--right=")) {
+					props.set_right=arg.AfterFirst('=').ToLong(&props.right);
+				} else if (arg.StartsWith("--top=")) {
+					props.set_top=arg.AfterFirst('=').ToLong(&props.top);
+				} else if (arg.StartsWith("--bottom=")) {
+					props.set_bottom=arg.AfterFirst('=').ToLong(&props.bottom);
+				} else if (arg.StartsWith("--width=")) {
+					arg.AfterFirst('=').ToLong(&props.width);
+				} else if (arg.StartsWith("--height=")) {
+					arg.AfterFirst('=').ToLong(&props.height);
 				} else if (arg.StartsWith("--port=")) {
 					arg.AfterFirst('=').ToLong(&port);
 				}
@@ -48,6 +63,6 @@ bool mxApplication::OnInit() {
 			}
 		}
 	}
-	new mxFrame(command,port,src_id,debug);
+	new mxFrame(command,port,src_id,debug,props);
 	return true;
 }

@@ -100,6 +100,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_STEP, mxMainWindow::OnDebugShortcut)
 	EVT_MENU(mxID_DO_THAT, mxMainWindow::OnDoThat)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
+	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
@@ -275,6 +276,7 @@ void mxMainWindow::CreateMenus() {
 	mi_commands = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_COMMANDS, _T("Mostrar Panel de Comandos"),_T(""),config->show_commands);
 	mi_vars_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_VARS, _T("Mostrar Panel de Variables"),_T(""),config->show_vars);
 	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
+	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
 	cfg->AppendSeparator();
 	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
@@ -1113,6 +1115,16 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 	} else {
 		mi_use_colors->Check(true);
 		config->use_colors=true;
+	}
+}
+
+void mxMainWindow::OnConfigReorganizeForDebug(wxCommandEvent &evt) {
+	if (!mi_reorganize_for_debug->IsChecked()) {
+		mi_reorganize_for_debug->Check(false);
+		config->reorganize_for_debug=false;
+	} else {
+		mi_reorganize_for_debug->Check(true);
+		config->reorganize_for_debug=true;
 	}
 }
 

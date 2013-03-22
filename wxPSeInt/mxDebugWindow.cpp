@@ -141,6 +141,13 @@ void mxDebugWindow::SetState(ds_enum state) {
 }
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
+	
+	if (config->reorganize_for_debug) {
+		if (!main_window->IsMaximized()) main_window->Maximize();
+		main_window->ShowDebugPanel(true);
+		wxYield();
+	}
+	
 	if (evaluate_window->IsShown()) evaluate_window->Hide();
 	if (debug->debugging) {
 		debug->Stop();
@@ -173,6 +180,7 @@ void mxDebugWindow::StartDebugging(mxSource *source, bool paused) {
 	if ( (new mxProcess(source))->Debug(fname, true) )
 		SetState(DS_STARTING);
 }
+
 void mxDebugWindow::OnDebugHelp(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("debug.html"));

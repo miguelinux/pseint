@@ -92,9 +92,9 @@ public:
 	wxString profile;
 	LangSettings lang;
 	
+	bool reorganize_for_debug; // si reacomoda las ventanas al lanzar la ejecución paso a paso
 	bool use_colors;
 	bool colour_sintax;
-//	bool high_res_flows;
 	bool show_toolbar;
 	bool show_vars;
 	bool show_commands;

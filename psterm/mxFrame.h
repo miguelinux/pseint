@@ -7,6 +7,20 @@
 
 class mxConsole;
 
+struct win_props {
+	bool always_on_top;
+	bool set_left; long left;
+	bool set_right; long right;
+	bool set_top; long top;
+	bool set_bottom; long bottom;
+	long width, height;
+	win_props() {
+		always_on_top=false;
+		set_left=set_right=set_top=set_bottom=false;
+		width=550; height=350;
+	}
+};
+
 class mxFrame : public wxFrame {
 private:
 	wxButton *play_from_here;
@@ -21,7 +35,7 @@ private:
 	bool debug_mode; ///< si estamos utilizando la consola para ejecucion paso a paso, entonces no se puede volver en el tiempo ni se espera tecla adicional luego de que finaliza el proceso hijo
 protected:
 public:
-	mxFrame(wxString command, int port, int id, bool debug);
+	mxFrame(wxString command, int port, int id, bool debug, win_props props);
 	void OnButtonReload(wxCommandEvent &evt);
 	void OnButtonPlay(wxCommandEvent &evt);
 	void InitSocket(int port);
