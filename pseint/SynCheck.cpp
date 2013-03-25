@@ -369,7 +369,10 @@ static bool RightCompareFix(string &s, string e) {
 	bool fix=e[0]==' ';
 	if (fix) { le--; e=e.substr(1); }
 	if (ls<le) return false;
-	else if (le==ls) return s==e;
+	else if (le==ls) {
+		if (s==e) { if (fix) s.insert(0," "); return true;}
+		else return false;
+	}
 	else if (s.substr(ls-le,le)!=e) return false;
 	else if (s[ls-le-1]==')') { s.insert(ls-le," "); ls++; };
 	return s[ls-le-1]==' ';
@@ -380,7 +383,10 @@ static bool LeftCompareFix(string &s, string e) {
 	bool fix=e[le-1]==' ';
 	if (fix) { le--; e=e.substr(0,le); }
 	if (ls<le) return false;
-	else if (ls==le) return s==e;
+	else if (ls==le) {
+		if (s==e) { if (fix) s+=" "; return true;}
+		else return false;
+	}
 	else if (s.substr(0,le)!=e) return false;
 	else if (s[le]=='(') s.insert(le," ");
 	return s[le]==' ';
@@ -1250,7 +1256,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="SI "){  // ------------ SI -----------//
 				if (cadena=="SI")
-				{ SynError (90,"Falta condicion."); errores++; }
+				{ SynError (90,"Falta la condicion en la estructura Si-Entonces."); errores++; }
 				else
 					str=cadena; // Comprobar la condicion
 				str.erase(0,3);
@@ -1276,7 +1282,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="HASTA QUE "||instruccion=="MIENTRAS QUE "){  // ------------ HASTA QUE -----------//
 				if (cadena=="HASTA QUE"||cadena=="MIENTRAS QUE")
-				{ SynError (93,"Falta condicion."); errores++; }
+				{ SynError (93,"Falta la condicion en la estructur Repetir."); errores++; }
 				else {
 					str=cadena; // Comprobar la condicion
 					str.erase(0,instruccion=="HASTA QUE "?10:13);
@@ -1299,7 +1305,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="SEGUN "){  // ------------ SEGUN -----------//
 //				last_was_segun=true;
 				if (cadena=="SEGUN HACER" || cadena=="SEGUN")
-				{ SynError (96,"Falta condicion."); errores++; }
+				{ SynError (96,"Falta la variable/expresión de control en la estructura Segun."); errores++; }
 				else
 					if (!RightCompareFix(cadena," HACER")) {
 						if (lazy_syntax) cadena+=" HACER";
@@ -1323,7 +1329,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="MIENTRAS ") { // ------------ MIENTRAS -----------//
 				if (cadena=="MIENTRAS ")
-				{ SynError (101,"Falta condicion."); errores++; }
+				{ SynError (101,"Falta la condicion en la estructura Mientras."); errores++; }
 				else
 					if (RightCompare(cadena,";")) {
 						SynError (999,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++;
@@ -1337,6 +1343,7 @@ int SynCheck(int linea_from, int linea_to) {
 						str=cadena; // Comprobar la condicion
 						str.erase(str.size()-6,6);
 						str.erase(0,9);
+						if (str=="") { SynError (999,"Falta la condición en la estructura Mientras."); errores++; }
 						// comprobar que no halla espacios
 						comillas=-1;
 						for (int tmp1=0;tmp1<(int)str.size();tmp1++) {
