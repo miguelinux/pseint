@@ -364,6 +364,7 @@ static void keyboard_esp_cb(int key, int x, int y) {
 	if (confirm) return;
 	if (key==GLUT_KEY_F5) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
+	else if (key==GLUT_KEY_F3) ProcessMenu(MO_FUNCTIONS);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
 	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
 	else if (key==GLUT_KEY_F7) ToggleEditable();
