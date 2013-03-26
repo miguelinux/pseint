@@ -66,7 +66,18 @@ public:
 	int cur_y; ///< current y caret position
 	
 	wxFont font; ///< current font
-	void OnMouseWheel(wxMouseEvent &evt);
+	void OnMouseWheel(wxMouseEvent &evt); ///< scroll y zoom
+	
+	bool selecting; ///< true if the user is selection (moving the mouse wiht left button down)
+	int selection_start; ///< -1 if there is no selecion, one selection limit else
+	int selection_end; ///< the other selection limit (can be less than selection_start)
+	void OnMouseLeftDown(wxMouseEvent &evt); ///< para seleccionar y copiar
+	void OnMouseLeftUp(wxMouseEvent &evt); ///< para seleccionar y copiar
+	void OnMouseMotion(wxMouseEvent &evt); ///< para seleccionar y copiar
+	
+	void OnMouseRightDown(wxMouseEvent &evt); ///< popup menu for copy/paste
+	void OnPaste(wxCommandEvent &evt);
+	void OnCopy(wxCommandEvent &evt);
 	
 	wxTimer *timer_size; ///< timer to reprocess last text after a resize event (regenerates buffer content)
 	int last_clear; ///< position in history where last cls even occured (to rewrite the text when resizing the console)

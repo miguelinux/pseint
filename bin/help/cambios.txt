@@ -1,3 +1,9 @@
+20130326
+	Ahora se puede copiar y pegar mediante un menú contextual en la nueva terminal de ejecución.
+
+20130325
+	Corregido el problema por el que no marcaba correctamente los errores cuando faltaban las condiciones en las estructuras de control.
+
 >>RELEASE 20130322<<
 
 20130322

@@ -1,13 +1,16 @@
-#include "mxConsole.h"
-#include <wx/dcclient.h>
 #include <iostream>
+#include <wx/dcclient.h>
 #include <wx/msgdlg.h>
 #include <wx/txtstrm.h>
 #include <wx/app.h>
+#include <wx/menu.h>
+#include <wx/clipbrd.h>
 #include "mxFrame.h"
+#include "mxConsole.h"
+#include <wx/dataobj.h>
 using namespace std;
 
-enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS };
+enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS, CONSOLE_ID_PASTE, CONSOLE_ID_COPY };
 
 BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_PAINT(mxConsole::OnPaint)
@@ -18,6 +21,12 @@ BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_TIMER(CONSOLE_ID_TIMER_PROCESS,mxConsole::OnTimerProcess)
 	EVT_END_PROCESS(wxID_ANY,mxConsole::OnProcessTerminate)
 	EVT_MOUSEWHEEL(mxConsole::OnMouseWheel)
+	EVT_RIGHT_DOWN(mxConsole::OnMouseRightDown)
+	EVT_LEFT_DOWN(mxConsole::OnMouseLeftDown)
+	EVT_LEFT_UP(mxConsole::OnMouseLeftUp)
+	EVT_MOTION(mxConsole::OnMouseMotion)
+	EVT_MENU(CONSOLE_ID_PASTE,mxConsole::OnPaste)
+	EVT_MENU(CONSOLE_ID_COPY,mxConsole::OnCopy)
 END_EVENT_TABLE()
 	
 #define _buffer(i,j) buffer[(i)*buffer_w+(j)]
@@ -26,7 +35,7 @@ END_EVENT_TABLE()
 #define _PROCESS_TIME 10
 
 static wxColour colors[16][2] = {
-	wxColour(0  ,0  ,0),	wxColour(0,0,0),
+	wxColour(0  ,0  ,0),	wxColour(127,127,127),
 	wxColour(127,0  ,0),	wxColour(0,0,0),
 	wxColour(0  ,127,0),	wxColour(0,0,0),
 	wxColour(127,127,0),	wxColour(0,0,0),
@@ -47,6 +56,14 @@ static wxColour colors[16][2] = {
 
 	
 mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+	
+	selection_start=-1; selecting=false;
+	wxAcceleratorEntry entries[2];
+	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_PASTE);
+	entries[1].Set(wxACCEL_CTRL, 'c', CONSOLE_ID_COPY);
+	wxAcceleratorTable accel(2, entries);
+	SetAcceleratorTable(accel);
+	
 	for(int i=0;i<16;i++) 
 		colors[i][1]=wxColour(colors[i][0].Red()/2,colors[i][0].Green()/2,colors[i][0].Blue()/2);
 	this->scroll=scroll;
@@ -87,7 +104,19 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	dc.SetBackground(colors[bg][0]);
 	dc.SetTextBackground(colors[bg][0]);
 	dc.Clear();
+	if (selection_start!=-1) {
+		wxColour sel_color(100,100,100);
+		dc.SetPen(wxPen(sel_color));
+		dc.SetBrush(wxBrush(sel_color));
+		if (selection_start<selection_end)
+			for(int i=selection_start;i<=selection_end;i++)
+				dc.DrawRectangle(margin+(i%buffer_w)*char_w,margin+(i/buffer_w)*char_h,char_w,char_h);
+		else
+			for(int i=selection_end;i<=selection_start;i++)
+				dc.DrawRectangle(margin+(i%buffer_w)*char_w,margin+(i/buffer_w)*char_h,char_w,char_h);
+	}
 	dc.SetFont(font);
+	bool selected=false;
 	for(int i=0;i<buffer_h;i++) { 
 		int lj=0; wxString line;
 		for(int j=0;j<buffer_w;j++) {
@@ -422,6 +451,7 @@ void mxConsole::SetTime (int t) {
 }
 
 void mxConsole::RebuildBuffer ( ) {
+	selection_start=-1;
 	ClearBuffer(); cur_x=cur_y=0;
 	Process(history, false);
 	Refresh();
@@ -438,5 +468,91 @@ void mxConsole::PlayFromCurrentEvent ( ) {
 void mxConsole::Dimm ( ) {
 	dimmed=1;
 	Refresh();
+}
+
+inline int auxGetPosition(const wxMouseEvent &evt, int margin, int char_w, int char_h, int buffer_w, int buffer_h) {
+	int x=(evt.GetX()-margin)/char_w, y=(evt.GetY()-margin)/char_h;
+	int r=x+buffer_w*y;	
+	if (r<0) r=0; else if (r>=buffer_w*buffer_h) r=buffer_w*buffer_h-1;
+	return r;
+}
+void mxConsole::OnMouseLeftDown (wxMouseEvent & evt) {
+	selecting=true; 
+	selection_start=auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
+	selection_end=selection_start;
+	evt.Skip();
+}
+
+void mxConsole::OnMouseLeftUp (wxMouseEvent & evt) {
+	selecting=false;
+	evt.Skip();
+}
+
+void mxConsole::OnMouseMotion (wxMouseEvent & evt) {
+	if (selecting) {
+		cerr<<selection_start<<","<<selection_end<<"         \r";
+		selection_end=auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
+		Refresh();
+	}
+	evt.Skip();
+}
+
+inline wxString GetClipboardText() {
+	if (!wxTheClipboard->Open()) return "";
+	wxTextDataObject data;
+	if (!wxTheClipboard->GetData(data)) {
+		wxTheClipboard->Close();
+		return "";
+	}
+	wxTheClipboard->Close();
+	return data.GetText();
+}
+
+void mxConsole::OnMouseRightDown (wxMouseEvent & evt) {
+	wxMenu menu;
+	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_COPY,"&Copiar");
+	if (selection_start==-1) mcopy->Enable(false);
+	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_PASTE,"&Pegar");
+	if (!GetClipboardText().Len()) mpaste->Enable(false);
+	PopupMenu(&menu);
+}
+
+
+void mxConsole::OnPaste(wxCommandEvent &evt) {
+	wxString str=GetClipboardText();
+	str.Replace("\r","");
+	wxKeyEvent k(wxEVT_CHAR); 
+	for(int i=0;i<str.Len();i++) { 
+		k.m_keyCode=str[i];
+		OnChar(k);
+		if (str[i]=='\n') {
+			str=str.AfterFirst('\n');
+			str<<"\n";
+			while (str.Len()) {
+				input_history.push_back((str.BeforeFirst('\n')+"\n").c_str());
+				str=str.AfterFirst('\n');
+			}
+			return;
+		}
+	}
+}
+
+void mxConsole::OnCopy (wxCommandEvent & evt) {
+	if (selection_end<selection_start) { int aux=selection_end; selection_end=selection_start; selection_start=aux; }
+	int i0=selection_start%buffer_w, i1=selection_end%buffer_w;
+	int j0=selection_start/buffer_w, j1=selection_end/buffer_w;
+	wxString res;
+	for(int j=j0;j<=j1;j++) {
+		wxString aux;
+		int k0=j==j0?i0:0, k1=j==j1?i1:buffer_w;
+		for (int k=k0;k<k1;k++) {
+			aux<<_buffer(j,k).the_char;
+		}
+		while (aux.Len() && aux.Last()==' ') aux.RemoveLast();
+		if (j!=j1) aux<<"\n"; res<<aux; 
+	}
+	wxTheClipboard->Open();
+	wxTheClipboard->SetData(new wxTextDataObject(res));
+	wxTheClipboard->Close();
 }
 
