@@ -240,6 +240,15 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (i-i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
+			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
+				static bool skip=true;
+				if (skip) {
+					skip=false;
+					i--; break;
+				}
+				int j=i+4; while (j<input.Len() && input[j]!='\n') j++;
+				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+input.SubString(i+4,j-1));
+				i=j;
 			} else if (input[i+2]=='z' && input[i+3]=='k') { // getKey
 				if (input_history_position>=int(input_history.size())) { 
 					want_input=true; wait_one_key=true;

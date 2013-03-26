@@ -282,6 +282,8 @@ int main(int argc, char* argv[]) {
 	// comprobar sintaxis y ejecutar
 	errores=SynCheck();
 	Inter.InitDebug(delay);
+	
+	if (for_pseint_terminal) { cout<<"\033[zt"<<main_process_name<<"\n"; }
 
 	//ejecutar
 	if (errores==0) {
