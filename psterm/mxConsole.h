@@ -69,8 +69,8 @@ public:
 	void OnMouseWheel(wxMouseEvent &evt); ///< scroll y zoom
 	
 	bool selecting; ///< true if the user is selection (moving the mouse wiht left button down)
-	int selection_start; ///< -1 if there is no selecion, one selection limit else
-	int selection_end; ///< the other selection limit (can be less than selection_start)
+	int selection_start; ///< one selection limit (only valid if selection_end!=-1)
+	int selection_end; ///< the other selection limit (can be less than selection_start), or -1 if there is no selection
 	void OnMouseLeftDown(wxMouseEvent &evt); ///< para seleccionar y copiar
 	void OnMouseLeftUp(wxMouseEvent &evt); ///< para seleccionar y copiar
 	void OnMouseMotion(wxMouseEvent &evt); ///< para seleccionar y copiar

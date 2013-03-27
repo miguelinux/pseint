@@ -140,6 +140,7 @@ public:
 	void UnHighLightBlock(); // borra el resaltado
 	void HighLightBlock(); // resalta el bloque de la linea actual si es que hay y el rt_syntax no tiene trabajo pendiente
 	
+	int GetStatus();
 	void SetStatus(int cual=-1);
 	
 	void StopReloadTimer();

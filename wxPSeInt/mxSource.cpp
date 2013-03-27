@@ -17,7 +17,7 @@ using namespace std;
 #include "RTSyntaxManager.h"
 
 #define RT_DELAY 1000
-#define RELOAD_DELAY 2500
+#define RELOAD_DELAY 3500
 
 int mxSource::last_id=0;
 
@@ -1470,5 +1470,9 @@ void mxSource::KillRunningTerminal ( ) {
 		run_socket->Write("quit\n",5);
 		run_socket=NULL;
 	}
+}
+
+int mxSource::GetStatus ( ) {
+	return status;
 }
 

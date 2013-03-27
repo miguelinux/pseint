@@ -15,6 +15,7 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 	EVT_SOCKET(wxID_ANY,mxFrame::OnSocketEvent)
 	EVT_SCROLL(mxFrame::OnScroll)
 	EVT_CLOSE(mxFrame::OnClose)
+	EVT_ACTIVATE(mxFrame::OnFocus)
 END_EVENT_TABLE()
 
 mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props)
@@ -139,5 +140,13 @@ void mxFrame::SetIsPresent (bool is) {
 
 void mxFrame::OnButtonReload (wxCommandEvent & evt) {
 	console->Reload();
+}
+
+void mxFrame::OnFocus (wxActivateEvent & evt) {
+	if (socket && already_connected && evt.GetActive()) {
+		wxString msg("activated\n");
+		socket->Write(msg.c_str(),msg.Len());
+	}
+	evt.Skip();
 }
 

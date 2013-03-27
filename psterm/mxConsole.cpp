@@ -57,7 +57,7 @@ static wxColour colors[16][2] = {
 	
 mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
 	
-	selection_start=-1; selecting=false;
+	selection_start=selection_end=-1; selecting=false;
 	wxAcceleratorEntry entries[2];
 	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_PASTE);
 	entries[1].Set(wxACCEL_CTRL, 'c', CONSOLE_ID_COPY);
@@ -104,8 +104,8 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	dc.SetBackground(colors[bg][0]);
 	dc.SetTextBackground(colors[bg][0]);
 	dc.Clear();
-	if (selection_start!=-1) {
-		wxColour sel_color(100,100,100);
+	if (selection_end!=-1) {
+		wxColour sel_color(50,50,50);
 		dc.SetPen(wxPen(sel_color));
 		dc.SetBrush(wxBrush(sel_color));
 		if (selection_start<selection_end)
@@ -460,7 +460,7 @@ void mxConsole::SetTime (int t) {
 }
 
 void mxConsole::RebuildBuffer ( ) {
-	selection_start=-1;
+	selection_end=-1;
 	ClearBuffer(); cur_x=cur_y=0;
 	Process(history, false);
 	Refresh();
@@ -488,7 +488,8 @@ inline int auxGetPosition(const wxMouseEvent &evt, int margin, int char_w, int c
 void mxConsole::OnMouseLeftDown (wxMouseEvent & evt) {
 	selecting=true; 
 	selection_start=auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
-	selection_end=selection_start;
+	selection_end=-1;
+	Refresh();
 	evt.Skip();
 }
 
@@ -520,7 +521,7 @@ inline wxString GetClipboardText() {
 void mxConsole::OnMouseRightDown (wxMouseEvent & evt) {
 	wxMenu menu;
 	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_COPY,"&Copiar");
-	if (selection_start==-1) mcopy->Enable(false);
+	if (selection_end==-1) mcopy->Enable(false);
 	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_PASTE,"&Pegar");
 	if (!GetClipboardText().Len()) mpaste->Enable(false);
 	PopupMenu(&menu);
@@ -531,18 +532,20 @@ void mxConsole::OnPaste(wxCommandEvent &evt) {
 	wxString str=GetClipboardText();
 	str.Replace("\r","");
 	wxKeyEvent k(wxEVT_CHAR); 
-	for(int i=0;i<str.Len();i++) { 
-		k.m_keyCode=str[i];
-		OnChar(k);
-		if (str[i]=='\n') {
-			str=str.AfterFirst('\n');
-			str<<"\n";
-			while (str.Len()) {
-				input_history.push_back((str.BeforeFirst('\n')+"\n").c_str());
+	if (want_input) {
+		for(int i=0;i<str.Len();i++) { 
+			k.m_keyCode=str[i];
+			OnChar(k);
+			if (str[i]=='\n') {
 				str=str.AfterFirst('\n');
+				break;
 			}
-			return;
 		}
+	}
+	str<<"\n";
+	while (str.Len()) {
+		input_history.push_back((str.BeforeFirst('\n')+"\n").c_str());
+		str=str.AfterFirst('\n');
 	}
 }
 

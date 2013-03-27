@@ -1,10 +1,11 @@
-#include "CommunicationsManager.h"
 #include <wx/socket.h>
+#include <iostream>
+#include "CommunicationsManager.h"
 #include "mxMainWindow.h"
 #include "ConfigManager.h"
-#include <iostream>
 #include "mxHelpWindow.h"
 #include "DebugManager.h"
+#include "mxStatusBar.h"
 using namespace std;
 
 enum {MXS_TYPE_UNKNOWN, MXS_TYPE_DEBUG, MXS_TYPE_FLOW, MXS_TYPE_RUN};
@@ -97,6 +98,9 @@ void mxSocketClient::ProcessCommandRun() {
 	if (buffer=="terminated") {
 		mxSource *src=main_window->FindSourceById(src_id);
 		if (src) main_window->ParseResults(src);
+	} else if (buffer=="activated") {
+		mxSource *src=main_window->FindSourceById(src_id);
+		if (src && src->GetStatus()==STATUS_RUNNING_CHANGED) src->UpdateRunningTerminal(false);
 	}
 }
 

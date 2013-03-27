@@ -36,6 +36,7 @@ private:
 protected:
 public:
 	mxFrame(wxString command, int port, int id, bool debug, win_props props);
+	void OnFocus(wxActivateEvent &evt);
 	void OnButtonReload(wxCommandEvent &evt);
 	void OnButtonPlay(wxCommandEvent &evt);
 	void InitSocket(int port);
