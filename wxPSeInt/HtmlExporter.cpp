@@ -33,7 +33,7 @@ bool HtmlExporter::Export(mxSource *src, wxString title, wxString fname) {
 			fil.Write(header);
 		}
 	}
-	header=_T("\t</STYLE>\n</HEAD><BODY><CODE>\n\t");
+	header=_T("\t</STYLE>\n</HEAD><BODY><PRE>\n");
 	fil.Write(header);
 	
 	
@@ -60,7 +60,7 @@ bool HtmlExporter::Export(mxSource *src, wxString title, wxString fname) {
 		p0=p1++;
 	}
 	
-	wxString footer(_T("\n</CODE></BODY></HTML>"));
+	wxString footer(_T("\n</PRE></BODY></HTML>"));
 	fil.Write(footer);
 	
 	fil.Close();
@@ -116,7 +116,7 @@ wxString HtmlExporter::ToHtml(wxString text) {
 	text.Replace(_T("\t"),tabs);
 	text.Replace(_T("<"),_T("&lt;"));
 	text.Replace(_T(">"),_T("&gt;"));
-	text.Replace(_T("\n"),_T("<BR>\n"));
-	text.Replace(_T(" "),_T("&nbsp;"));
+//	text.Replace(_T("\n"),_T("<BR>\n"));
+//	text.Replace(_T(" "),_T("&nbsp;"));
 	return text;
 }

@@ -675,7 +675,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 			mxSource *source = (mxSource*)(notebook->GetPage(i));
 			if (source->GetModify()) {
 				notebook->SetSelection(i);
-				int res=wxMessageBox(_T("Hay cambios sin guardar. Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL,this);
+				int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL,this);
 				if (res&wxYES) {
 					if (!source->sin_titulo)
 						source->SaveFile(source->filename);
@@ -1180,7 +1180,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 	mxSource *source = CURRENT_SOURCE;
 	if (source->GetModify()) {
-		int res=wxMessageBox(_T("Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
+		int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
 		if (res==wxCANCEL) {
 			event.Veto();
 			return;
