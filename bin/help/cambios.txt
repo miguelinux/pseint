@@ -1,4 +1,5 @@
 20130326
+	Ahora se puede exportar el pseudocódigo a HTML.
 	La terminal de ejecución propia muestra el nombre del proceso.
 	Se puede copiar y pegar mediante un menú contextual en la nueva terminal de ejecución.
 

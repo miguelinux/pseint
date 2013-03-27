@@ -39,6 +39,7 @@
 #include "mxSubtitles.h"
 #include "mxStatusBar.h"
 #include "CommunicationsManager.h"
+#include "HtmlExporter.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -66,6 +67,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FILE_OPEN, mxMainWindow::OnFileOpen)
 	EVT_MENU(mxID_FILE_SAVE, mxMainWindow::OnFileSave)
 	EVT_MENU(mxID_FILE_EDIT_FLOW, mxMainWindow::OnFileEditFlow)
+	EVT_MENU(mxID_FILE_EXPORT_HTML, mxMainWindow::OnFileExportHtml)
 	EVT_MENU(mxID_FILE_EXPORT_CPP, mxMainWindow::OnFileExportCpp)
 	EVT_MENU(mxID_FILE_CLOSE, mxMainWindow::OnFileClose)
 	EVT_MENU(mxID_FILE_SAVE_AS, mxMainWindow::OnFileSaveAs)
@@ -228,7 +230,12 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _T("Editar Diagrama de Flujo...\tF7"),_T(""),_T("edit_flow.png"));
 #endif
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _T("Imprimir..."),_T(""),_T("imprimir.png"));
-	utils->AddItemToMenu(file,mxID_FILE_EXPORT_CPP, _T("Exportar a Cpp..."),_T(""),_T("cpp.png"));
+	
+	wxMenu *export_menu=new wxMenu;
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_CPP, _T("Exportar a Cpp..."),_T(""),_T("cpp.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _T("Exportar a Html..."),_T(""),_T("html.png"));
+	file->AppendSubMenu(export_menu,_T("Exportar"),_T(""));
+	
 	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _T("&Cerrar...\tCtrl+W"),_T(""),_T("cerrar.png"));
 	file->AppendSeparator();
 	utils->AddItemToMenu(file,mxID_FILE_EXIT, _T("&Salir\tAlt+F4"),_T(""),_T("salir.png"));
@@ -454,11 +461,28 @@ void mxMainWindow::OnFileExportCpp(wxCommandEvent &evt) {
 	}	
 }
 
+void mxMainWindow::OnFileExportHtml(wxCommandEvent &evt) {
+	IF_THERE_IS_SOURCE {
+		mxSource *source = CURRENT_SOURCE;
+		wxFileDialog dlg (this, "Exportar",config->last_dir,source->GetPageText().BeforeLast('.')+".html", _T("Documento HTML | *.html"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		if (dlg.ShowModal() == wxID_OK) {
+			config->last_dir=config->last_dir=wxFileName(dlg.GetPath()).GetPath();
+			HtmlExporter ce;
+			wxString title = source->GetPageText();
+			if (title.Last()=='*') title.RemoveLast();
+			if (ce.Export(source,title,dlg.GetPath()))
+				wxLaunchDefaultBrowser(dlg.GetPath());
+			else
+				wxMessageBox("No se pudo guardar el archivo","Error",wxID_OK|wxICON_ERROR,this);
+		}
+	}
+}
+
 void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		if (source->GetModify()) {
-			int res=wxMessageBox(_T("Hay cambios sin guardar. Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL,this);
+			int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL,this);
 			if (res==wxCANCEL)
 				return;
 			else if (res==wxYES) {
