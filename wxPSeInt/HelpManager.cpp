@@ -147,6 +147,7 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_("operador")) str=_T("operadores.html");
 	else if (key==_("operadores")) str=_T("operadores.html");
 	else if (key==_("funciones")) str=_T("funciones.html");
+	else if (key==_("pi")) str=_T("funciones.html");
 	else if (key==_("sen")) str=_T("funciones.html");
 	else if (key==_("asen")) str=_T("funciones.html");
 	else if (key==_("cos")) str=_T("funciones.html");

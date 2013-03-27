@@ -42,7 +42,7 @@ const wxChar *mxSourceWords1_funcs =
 	_T("subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ");
 
 const wxChar* mxSourceWords2_math =
-	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon ");
+	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon pi ");
 
 const wxChar* mxSourceWords2_string =
 	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto");
