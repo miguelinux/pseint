@@ -109,7 +109,7 @@ wxString HtmlExporter::ToHtml(wxString text) {
 	if (tabs_n!=config->tabw) {
 		tabs=_T("");
 		for (int i=0;i<config->tabw;i++)
-			tabs<<_T("&nbsp;");
+			tabs<<_T(" ");
 		tabs_n=config->tabw;
 	}
 	text.Replace(_T("&"),_T("&amp;"));

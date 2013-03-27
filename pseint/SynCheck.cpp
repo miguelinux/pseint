@@ -951,7 +951,7 @@ int SynCheck(int linea_from, int linea_to) {
 					else {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
 					EvaluarSC(str,tipo,vt_numerica);
 					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
-						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (120,"Se esperaba una sola expresión."); errores++;}
+						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (240,"Se esperaba una sola expresión."); errores++;}
 					}
 				}
 			}
