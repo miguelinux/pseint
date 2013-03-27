@@ -29,6 +29,10 @@ struct Funcion {
 		AddArg(""); cant_arg=0; memoria=new Memoria(this);
 	}
 	// cppcheck-suppress uninitMemberVar
+	Funcion(tipo_var tipo_ret, string (*af)(string *args)):cant_arg(0),func(af) { 
+		tipos.resize(cant_arg+1); tipos[0]=tipo_ret;
+		pasajes.resize(cant_arg+1); pasajes[0]=PP_DESCONOCIDO;
+	}
 	Funcion(tipo_var tipo_ret, string (*af)(string *args), tipo_var tipo_arg_1):cant_arg(1),func(af) { 
 		tipos.resize(cant_arg+1); tipos[0]=tipo_ret; tipos[1]=tipo_arg_1;
 		pasajes.resize(cant_arg+1); pasajes[0]=pasajes[1]=PP_DESCONOCIDO;

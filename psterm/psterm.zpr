@@ -12,14 +12,14 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxConsole.cpp
+current_source=mxFrame.cpp
 path_char=/
 [source]
 path=Application.cpp
 cursor=1055
 [source]
 path=mxFrame.cpp
-cursor=0
+cursor=3666
 open=true
 [source]
 path=mxConsole.cpp

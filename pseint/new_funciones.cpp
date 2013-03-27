@@ -161,7 +161,12 @@ string func_ftoa(string *arg) {
 	return arg[0];
 }
 
+string func_pi(string *arg) {
+	return "3.141592653589793238462643383279502884197169399375105820974944592";
+}
+
 void LoadFunciones(bool u) {
+	funciones[u?"PI":"pi"]=new Funcion(vt_numerica,func_pi); 
 	funciones[u?"RC":"rc"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
 	funciones[u?"RAIZ":"raiz"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
 	funciones[u?"ABS":"abs"]=new Funcion(vt_numerica,func_abs,vt_numerica);

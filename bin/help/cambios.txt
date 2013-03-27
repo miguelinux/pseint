@@ -1,4 +1,5 @@
 20130326
+	Ahora se puede usar PI como constante para el numero 3.14159...
 	Ahora la ejecución se actualiza al activar la ventana de ejecución si cambió el pseudocódigo.
 	Ahora se puede exportar el pseudocódigo a HTML.
 	La terminal de ejecución propia muestra el nombre del proceso.
