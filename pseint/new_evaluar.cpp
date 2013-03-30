@@ -274,6 +274,11 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 	// obtener salida
 	string ret; tipo_var rettipo;
 	if (func->func) {
+		for(int i=0;i<func->cant_arg;i++)
+			if (EsArreglo(args.values[i])) {
+				WriteError(999,string("La función espera un único valor, pero recibe un arreglo (")+args.values[i]+(")"));
+				return "";
+			}
 		ret=func->func(args.values);
 		rettipo=func->tipos[0];
 #ifndef _FOR_PSEXPORT

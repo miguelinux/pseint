@@ -1,3 +1,6 @@
+20130330
+	Ya no se permite pasar (erroneamente) arreglos a las funciones predefinidas.
+	
 20130329
 	Correcciones en los calculos de tamaños de las etiquetas de proceso y finproceso del diagrama de flujo.
 	Implementado un nuevo mecanismo de exportación de diagramas de flujo a imágenes PNG, JPG o BMP.
