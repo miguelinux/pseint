@@ -1,1 +1,0 @@
-CImg.h fue tomado de http://cimg.sourceforge.net/ (hace mucho mucho tiempo, ya hay versiones mucho mas nuevas), licenciada bajo CeCILL-C (http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt), compatible con GPL, proyecto liderado por David Tschumperlé.
