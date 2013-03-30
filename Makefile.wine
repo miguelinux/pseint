@@ -6,8 +6,8 @@ exes:
 	make -C wxPSeInt -f Makefile.wine
 	make -C updatem -f Makefile.wine
 	make -C psterm -f Makefile.wine
+	make -C psdrawE -f Makefile.wine
 	make -C psdraw2 -f Makefile.wine
-	make -C psdraw -f Makefile.wine
 
 clean: 
 	make -C pseint -f Makefile.wine clean
@@ -15,5 +15,5 @@ clean:
 	make -C wxPSeInt -f Makefile.wine clean
 	make -C updatem -f Makefile.wine clean
 	make -C psterm -f Makefile.wine clean
+	make -C psdrawE -f Makefile.wine clean
 	make -C psdraw2 -f Makefile.wine clean
-	make -C psdraw -f Makefile.wine clean

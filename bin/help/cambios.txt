@@ -1,8 +1,11 @@
+20130329
+	Implementado un nuevo mecanismo de exportación de diagramas de flujo a imágenes PNG, JPG o BMP.
+
 20130326
 	Ahora se puede usar PI como constante para el numero 3.14159...
-	Ahora la ejecución se actualiza al activar la ventana de ejecución si cambió el pseudocódigo.
-	Ahora se puede exportar el pseudocódigo a HTML.
-	La terminal de ejecución propia muestra el nombre del proceso.
+	Ahora la ejecución se actualiza automáticamente si cambió el pseudocódigo al activar la ventana de ejecución.
+	Ahora se puede exportar el pseudocódigo a HTML desde el menú Archivo.
+	La terminal de ejecución propia muestra el nombre del proceso en la barra de título.
 	Se puede copiar y pegar mediante un menú contextual en la nueva terminal de ejecución.
 
 20130325
@@ -24,7 +27,6 @@
 
 20130309
 	Agregado el perfil UPEL-IPC.
-
 
 >>RELEASE 20130302<<
 

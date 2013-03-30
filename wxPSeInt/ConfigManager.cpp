@@ -28,7 +28,7 @@ ConfigManager::ConfigManager(wxString apath) {
 	LoadDefaults();
 	Read();
 #ifndef __WIN32__
-	if (psdraw_command.Len()==0) psdraw_command="./psdraw";
+	if (psdrawe_command.Len()==0) psdrawe_command="./psdrawe";
 #endif
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
@@ -72,14 +72,14 @@ void ConfigManager::LoadDefaults() {
 #if defined(_WIN32) || defined(__WIN32__)
 	pseint_command = _T("pseint.exe");
 	psterm_command = _T("psterm.exe");
-	psdraw_command = _T("psdraw.exe");
+	psdrawe_command = _T("psdrawE.exe");
 	psdraw2_command = _T("psdraw2.exe");
 	psexport_command = _T("psexport.exe");
 	tty_command = _T("");
 #else
 	pseint_command = _T("./pseint");
 	psterm_command = _T("./psterm");
-	psdraw_command = _T("./psdraw");
+	psdrawe_command = _T("./psdrawE");
 	psdraw2_command = _T("./psdraw2");
 	psexport_command = _T("./psexport");
 	tty_command = _no_tty;
@@ -107,7 +107,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
 	fil.AddLine(wxString(_T("psterm_command="))<<psterm_command);
 	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
-	fil.AddLine(wxString(_T("psdraw_command="))<<psdraw_command);
+	fil.AddLine(wxString(_T("psdrawe_command="))<<psdrawe_command);
 	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
@@ -233,7 +233,7 @@ void ConfigManager::Read() {
 			else if (key==_T("psterm_command")) psterm_command=value;
 			else if (key==_T("psterm_command")) psterm_command=value;
 			else if (key==_T("psexport_command")) psexport_command=value;
-			else if (key==_T("psdraw_command")) psdraw_command=value;
+			else if (key==_T("psdrawe_command")) psdrawe_command=value;
 			else if (key==_T("psdraw2_command")) psdraw2_command=value;
 			else if (key==_T("terminal")) { tty_command=value; }
 			else if (key==_T("history")) last_files.Add(value);

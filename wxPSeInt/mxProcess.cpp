@@ -216,18 +216,12 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_SAVEDRAW:mxPW_SAVEDRAW;
 	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
-	wxFileDialog dlg (main_window, _T("Guardar Dibujo"),_T(""),_T(""), _T("Imagen jpg|*.jpg|Imagen bmp|*.bmp|Imagen png|*.png"),  wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	if (dlg.ShowModal() != wxID_OK) return false;
 	wxString command;
-	wxString ext=_T("jpg");
-	if (dlg.GetFilterIndex()==1) ext=_T("bmp");
-	else if (dlg.GetFilterIndex()==2) ext=_T("png");
-	wxString fname = dlg.GetPath();
-	if (fname.Len()<4 || fname.Right(4).MakeLower()!=wxString(_T("."))+ext)
-		fname<<_T(".")<<ext;
-	command<<config->psdraw_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
-	/*if (config->high_res_flows)*/ command<<_T(" +");
-	command<<ext<<_T(" \"")<<fname<<_T("\"");
+	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
+	if (source->sin_titulo) command<<_("\"")<<DIR_PLUS_FILE(config->last_dir,"sin_titulo.png")<<_T("\" ");
+	else command<<_("\"")<<DIR_PLUS_FILE(wxFileName(source->filename).GetPath(),wxFileName(source->filename).GetName())<<_T(".png\" ");
+	if (config->lang.use_nassi_schneiderman) command<<"--nassischneiderman";
+	cerr<<command<<endl;
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 

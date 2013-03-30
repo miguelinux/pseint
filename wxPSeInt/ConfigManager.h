@@ -76,7 +76,7 @@ public:
 	wxString images_path;
 	wxString pseint_command;
 	wxString psterm_command;
-	wxString psdraw_command;
+	wxString psdrawe_command;
 	wxString psdraw2_command;
 	wxString psexport_command;
 	wxString last_dir;

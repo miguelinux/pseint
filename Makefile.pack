@@ -5,7 +5,7 @@ src:
 	make -f Makefile.pack clean
 	rm -f bin/core
 	rm -f bin/gmon.out
-	cd .. && tar -czvf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/mingw.conf pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/psexport pseint/psdraw pseint/psdraw2 pseint/bin pseint/dist/license.txt pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist
+	cd .. && tar -czvf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/mingw.conf pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/psexport pseint/psdrawE pseint/psdraw2 pseint/bin pseint/dist/license.txt pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist
 	@echo 
 	@echo -n "DONE: "
 	@ls -sh dist/pseint-src-`cat bin/version`.tgz
@@ -28,7 +28,7 @@ lnx:
 	make -f Makefile.pack clean
 	make -f Makefile.lnx -C psterm
 	make -f Makefile.lnx -C wxPSeInt
-	make -f Makefile.`./dist/get_arch` -C psdraw
+	make -f Makefile.`./dist/get_arch` -C psdrawE
 	make -f Makefile.`./dist/get_arch` -C psdraw2
 	make -f Makefile.lnx -C pseint
 	make -f Makefile.lnx -C psexport
@@ -105,8 +105,8 @@ clean:
 	rm -f bin/psterm.exe
 	rm -f bin/psdraw2
 	rm -f bin/psdraw2.exe
-	rm -f bin/psdraw
-	rm -f bin/psdraw.exe
+	rm -f bin/psdrawE
+	rm -f bin/psdrawE.exe
 	rm -f bin/psexport
 	rm -f bin/psexport.exe
 	rm -f bin/mac-terminal-wrapper.bin

@@ -232,8 +232,10 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _T("Imprimir..."),_T(""),_T("imprimir.png"));
 	
 	wxMenu *export_menu=new wxMenu;
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_CPP, _T("Exportar a Cpp..."),_T(""),_T("cpp.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _T("Exportar a Html..."),_T(""),_T("html.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_CPP, _T("Convertir a código C++ (cpp)..."),_T(""),_T("cpp.png"));
+	export_menu->AppendSeparator();
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _T("Pseudocódigo coloreado (html)..."),_T(""),_T("html.png"));
+	utils->AddItemToMenu(export_menu,mxID_RUN_SAVE_FLOW, _T("Diagrama de flujo (png, bmp o jpg)..."),_T(""),_T("edit_flow.png"));
 	file->AppendSubMenu(export_menu,_T("Exportar"),_T(""));
 	
 	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _T("&Cerrar...\tCtrl+W"),_T(""),_T("cerrar.png"));
@@ -298,7 +300,6 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(run,mxID_RUN_SUBTITLES, _T("Ejecución Explicada"),_T(""),_T("subtitles.png"));
 	utils->AddItemToMenu(run,mxID_RUN_CHECK, _T("Verificar Sintaxis\tShift+F9"),_T(""),_T("verificar.png"));
 	utils->AddItemToMenu(run,mxID_RUN_DRAW_FLOW, _T("Dibujar Diagrama de Flujo"),_T(""),_T("flujo.png"));
-	utils->AddItemToMenu(run,mxID_RUN_SAVE_FLOW, _T("Guardar Diagrama de Flujo\tShift+F7"),_T(""),_T("guardar.png"));
 	utils->AddItemToMenu(run,mxID_RUN_SET_INPUT, _T("Predefinir Entrada...\tCtrl+F9"),_T(""),_T("input.png"));
 	menu->Append(run, _T("E&jecutar"));
 	
@@ -1390,7 +1391,6 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	} else {
 		mi_nassi_schne->Check(true);
 		config->lang.use_nassi_schneiderman=true;
-		wxMessageBox(_T("PSeInt ya puede graficar diagramas de Nassi-Schneiderman, sin embargo algunas operaciones de edición aún no funcionan correctamente."),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 	}
 }
 

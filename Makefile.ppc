@@ -5,7 +5,7 @@ all:
 	make -C updatem -f Makefile.ppc
 #	make -C psterm -f Makefile.ppc
 #	make -C psdraw2 -f Makefile.ppc
-	make -C psdraw -f Makefile.ppc
+	make -C psdrawE -f Makefile.ppc
 
 clean: 
 	make -C pseint -f Makefile.ppc clean
@@ -14,4 +14,4 @@ clean:
 	make -C updatem -f Makefile.ppc clean
 #	make -C psterm -f Makefile.ppc clean
 #	make -C psdraw2 -f Makefile.ppc clean
-	make -C psdraw -f Makefile.ppc clean
+	make -C psdrawE -f Makefile.ppc clean

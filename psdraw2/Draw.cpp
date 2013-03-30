@@ -1,9 +1,12 @@
-#include <GL/gl.h>
+#ifdef _FOR_EXPORT
+#include <GLtoWX.h>
+#else
+#include <GL/glut.h>
+#endif
 #include "Draw.h"
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
-#include <GL/glut.h>
 
 extern const int margin; // para los botones de confirm
 

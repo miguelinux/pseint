@@ -75,14 +75,14 @@ wxString mxAboutWindow::MakePageText() {
 	
 	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt ")<<VERSION<<_T("-"ARCHITECTURE"<BR>");
 	wxArrayString out_int, out_drw, out_exp, out_drw2, out_trm;
-	wxString command_int, command_drw, command_exp, command_drw2, command_trm;
+	wxString command_int, command_drwe, command_exp, command_drw2, command_trm;
 	command_int<<config->pseint_command<<_T(" --version");
-	command_drw<<config->psdraw_command<<_T(" --version");
+	command_drwe<<config->psdrawe_command<<_T(" --version");
 	command_drw2<<config->psdraw2_command<<_T(" --version");
 	command_exp<<config->psexport_command<<_T(" --version");
 	command_trm<<config->psterm_command<<_T(" --version");
 	wxExecute(command_int, out_int, wxEXEC_SYNC|wxEXEC_NODISABLE);
-	wxExecute(command_drw, out_drw, wxEXEC_SYNC|wxEXEC_NODISABLE);
+	wxExecute(command_drwe, out_drw, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_drw2, out_drw2, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_exp, out_exp, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	wxExecute(command_trm, out_trm, wxEXEC_SYNC|wxEXEC_NODISABLE);

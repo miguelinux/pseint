@@ -1,4 +1,8 @@
+#ifdef _FOR_EXPORT
+#include <GLtoWX.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <iostream>
 #include <cstdlib>
 #include "Entity.h"
