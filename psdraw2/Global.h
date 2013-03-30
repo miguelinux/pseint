@@ -85,6 +85,7 @@ extern const float color_back[3]; // fondo de la pantalla
 extern const float color_ghost[3]; // borde fantasma cuando se arrastra una forma
 extern const float color_menu[3]; // texto de los menues
 extern const float color_menu_back[3]; // fondo de los menues
+extern const float color_menu_sel[3]; // fondo de elemento de menu seleccionado
 
 extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 

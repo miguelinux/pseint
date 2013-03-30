@@ -94,7 +94,22 @@ static void DrawMenuAndShapeBar() {
 	glVertex2i(win_w-shapebar_size,0);
 	glVertex2i(win_w-shapebar_size,win_h);
 	if (shapebar) {
+		
 		int y=win_h, x=win_w-shapebar_size, sh=win_h/8;
+		
+		if(shapebar_sel>0) {
+			glEnd();
+			glColor3fv(color_menu_sel);
+			glBegin(GL_QUADS);
+			glVertex2i(win_w,              win_h-sh*(shapebar_sel-1)); 
+			glVertex2i(win_w-shapebar_size,win_h-sh*(shapebar_sel-1)); 
+			glVertex2i(win_w-shapebar_size,win_h-sh*(shapebar_sel-0)); 
+			glVertex2i(win_w,              win_h-sh*(shapebar_sel-0)); 
+			glEnd();
+			glColor3fv(color_menu);
+			glBegin(GL_LINES);
+		}
+		
 		int x0,x1,y0,y1,xm,ym;
 		x0=x+shapebar_size/5; x1=x+shapebar_size-shapebar_size/5;
 		y0=y-3*sh/10; y1=y-7*sh/10; xm=(x0+x1)/2; ym=(y0+y1)/2;
@@ -207,15 +222,25 @@ static void DrawMenuAndShapeBar() {
 		glVertex2i(win_w-2*shapebar_size/3,win_h/2); glVertex2i(win_w-shapebar_size/3,win_h/2+2*shapebar_size/3);
 	}
 	glEnd();
+	
 	// menu
 	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-230;
+	if(menu_sel!=MO_NONE) {
+		glColor3fv(color_menu_sel);
+		glBegin(GL_QUADS);
+		glVertex2i(3,            win_h-menu_size_h+top-menu_option_height*(menu_sel-1.7)); 
+		glVertex2i(menu_size_w-4,win_h-menu_size_h+top-menu_option_height*(menu_sel-1.7)); 
+		glVertex2i(menu_size_w-4,win_h-menu_size_h+top-menu_option_height*(menu_sel-0.7)); 
+		glVertex2i(3,            win_h-menu_size_h+top-menu_option_height*(menu_sel-0.7)); 
+		glEnd();
+	}
 	DrawText(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
 	DrawText(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
-	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Cambios"); top-=menu_option_height;
-	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Ejecutar"); top-=menu_option_height;
-	DrawText(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Exportar..."); top-=menu_option_height;
-	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Cerrar"); top-=menu_option_height;
-	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar Sin Guardar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar Cambios"); top-=menu_option_height;
+	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Ejecutar..."); top-=menu_option_height;
+	DrawText(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
+//	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
 	DrawText(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
 	DrawText(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
 	// shapebar

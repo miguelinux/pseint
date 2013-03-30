@@ -1,4 +1,5 @@
 20130329
+	Correcciones en los calculos de tamaños de las etiquetas de proceso y finproceso del diagrama de flujo.
 	Implementado un nuevo mecanismo de exportación de diagramas de flujo a imágenes PNG, JPG o BMP.
 
 20130326
