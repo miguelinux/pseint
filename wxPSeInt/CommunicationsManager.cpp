@@ -112,14 +112,11 @@ void mxSocketClient::ProcessCommandFlow() {
 	}
 	mxSource *src=main_window->FindSourceById(src_id);
 	if (!src) { _ERROR("mxSocketClient::ProcessCommandFlow::src error"); return; }
-	if (buffer=="reload") {
+	if (buffer=="reload"||buffer=="run"||buffer=="export") {
 		src->ReloadFromTempPSD();
 		main_window->SelectSource(src);
-	} else if (buffer=="run") {
-		src->ReloadFromTempPSD();
-		main_window->SelectSource(src);
-		wxCommandEvent evt;
-		main_window->RunCurrent(true);
+		if (buffer=="run") main_window->RunCurrent(true);
+		else if (buffer=="export") { wxCommandEvent evt; main_window->OnRunSaveFlow(evt); }
 	}
 }
 

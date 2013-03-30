@@ -22,10 +22,12 @@ bool Connect(int port, int id) {
 	return true;
 }
 
-bool SendUpdate(bool run) {
+bool SendUpdate(bool run, bool exp) {
 	if (!Save()) return false;
 	if (zocket==ZOCKET_ERROR) return false;
-	if (run)
+	if (exp)
+		zocket_escribir(zocket,"export\n",7);
+	else if (run)
 		zocket_escribir(zocket,"run\n",4);
 	else
 		zocket_escribir(zocket,"reload\n",7);

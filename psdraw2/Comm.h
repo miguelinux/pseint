@@ -3,7 +3,7 @@
 
 bool Connect(int port, int id);
 
-bool SendUpdate(bool run=false);
+bool SendUpdate(bool run=false, bool exp=false);
 
 bool SendHelp();
 

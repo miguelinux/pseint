@@ -22,14 +22,14 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 			glVertex2i(x+cosx[i]*w,y+sinx[i]*h);
 		}
 	} else if (type==ET_PROCESO) {
-		glVertex2i(x-w/2-5*h/8,y-5*h/8); glVertex2i(x-w/2-5*h/8,y-3*h/8);
-		glVertex2i(x-w/2-h/2,y-1*h/8); glVertex2i(x-w/2-h/2,y-7*h/8);
-		glVertex2i(x-w/2,y); glVertex2i(x-w/2,y-h);
-		glVertex2i(x+w/2,y); glVertex2i(x+w/2,y-h); 
-		glVertex2i(x+w/2+h/2,y-1*h/8);
-		glVertex2i(x+w/2+h/2,y-7*h/8);
-		glVertex2i(x+w/2+5*h/8,y-3*h/8);
-		glVertex2i(x+w/2+5*h/8,y-5*h/8);
+		glVertex2i(x-w/2+3*h/8,y-5*h/8); glVertex2i(x-w/2+3*h/8,y-3*h/8);
+		glVertex2i(x-w/2+h/2,y-1*h/8); glVertex2i(x-w/2+h/2,y-7*h/8);
+		glVertex2i(x-w/2+h,y); glVertex2i(x-w/2+h,y-h);
+		glVertex2i(x+w/2-h,y); glVertex2i(x+w/2-h,y-h); 
+		glVertex2i(x+w/2-h/2,y-1*h/8);
+		glVertex2i(x+w/2-h/2,y-7*h/8);
+		glVertex2i(x+w/2-3*h/8,y-3*h/8);
+		glVertex2i(x+w/2-3*h/8,y-5*h/8);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x-w/2,y-h/2); glVertex2i(x,y-h);
@@ -55,16 +55,16 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 			glVertex2i(x+cosx[i+1]*w,y+sinx[i+1]*h);
 		}
 	} else if (type==ET_PROCESO) {
-		glVertex2i(x-w/2,y); glVertex2i(x+w/2,y);
-		glVertex2i(x+w/2+h/2,y-1*h/8);
-		glVertex2i(x+w/2+5*h/8,y-3*h/8);
-		glVertex2i(x+w/2+5*h/8,y-5*h/8);
-		glVertex2i(x+w/2+h/2,y-7*h/8);
-		glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
-		glVertex2i(x-w/2-h/2,y-7*h/8);
-		glVertex2i(x-w/2-5*h/8,y-5*h/8);
-		glVertex2i(x-w/2-5*h/8,y-3*h/8);
-		glVertex2i(x-w/2-h/2,y-1*h/8);
+		glVertex2i(x-w/2+h,y); glVertex2i(x+w/2-h,y);
+		glVertex2i(x+w/2-h/2,y-1*h/8);
+		glVertex2i(x+w/2-3*h/8,y-3*h/8);
+		glVertex2i(x+w/2-3*h/8,y-5*h/8);
+		glVertex2i(x+w/2-h/2,y-7*h/8);
+		glVertex2i(x+w/2-h,y-h); glVertex2i(x-w/2+h,y-h);
+		glVertex2i(x-w/2+h/2,y-7*h/8);
+		glVertex2i(x-w/2+3*h/8,y-5*h/8);
+		glVertex2i(x-w/2+3*h/8,y-3*h/8);
+		glVertex2i(x-w/2+h/2,y-1*h/8);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x,y-h); glVertex2i(x-w/2,y-h/2);
@@ -275,6 +275,8 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 		h=2*h+3*margin; w=1.3*w+2*margin;
 	} else if (type==ET_SEGUN) {
 		h*=2;
+	} else if (type==ET_PROCESO) {
+		w+=2*h;
 	}
 	
 	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma

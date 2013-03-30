@@ -128,7 +128,7 @@ void Entity::DrawNassiSchne(bool force) {
 void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
 	
 	// calcular tamaños de la forma segun el texto
-	if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; } h=t_h+2*margin; 
+	if (!t_w) w=margin*6; else { w=t_w; w+=2*margin; } h=t_h+2*margin; 
 	t_dy=t_dx=0; fx=x; fy=y; bh=h; bwr=bwl=w/2; // esto es si fuera solo la forma
 	// si son estructuras de control...
 	if (!nolink && n_child) {

@@ -213,6 +213,7 @@ static void DrawMenuAndShapeBar() {
 	DrawText(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
 	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Cambios"); top-=menu_option_height;
 	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Ejecutar"); top-=menu_option_height;
+	DrawText(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Exportar..."); top-=menu_option_height;
 	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar y Cerrar"); top-=menu_option_height;
 	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar Sin Guardar"); top-=menu_option_height;
 	DrawText(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");

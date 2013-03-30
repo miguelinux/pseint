@@ -196,6 +196,8 @@ void ProcessMenu(int op) {
 		SendUpdate(true);
 	} else if (op==MO_SAVE_CLOSE) {
 		SendUpdate(); Salir();
+	} else if (op==MO_SAVE_EXPORT) {
+		SendUpdate(false,true);
 	} else if (op==MO_CLOSE) {
 		Salir();
 	} else if (op==MO_HELP) {
