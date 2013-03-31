@@ -1168,9 +1168,12 @@ int SynCheck(int linea_from, int linea_to) {
 											str.erase(0,str.find("HASTA",6)+6);
 											str.erase(0,str.find(" ",0)+1);
 											str.erase(str.size()-6,6);
-											if (!LeftCompare(str,"CON PASO "))
-											{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
-											else {
+											if (!LeftCompare(str,"CON PASO ")) {
+												if (str=="CON PASO")
+													{SynError (999,"Falta el valor del paso."); errores++;}
+												else
+													{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
+											} else {
 												str.erase(0,9);
 												EvaluarSC(str,tipo,vt_numerica);
 												if (!tipo.cb_num) {SynError (84,"No coinciden los tipos."); errores++;}
@@ -1282,7 +1285,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="HASTA QUE "||instruccion=="MIENTRAS QUE "){  // ------------ HASTA QUE -----------//
 				if (cadena=="HASTA QUE"||cadena=="MIENTRAS QUE")
-				{ SynError (93,"Falta la condicion en la estructur Repetir."); errores++; }
+				{ SynError (93,"Falta la condicion en la estructura Repetir."); errores++; cadena+=" "; }
 				else {
 					str=cadena; // Comprobar la condicion
 					str.erase(0,instruccion=="HASTA QUE "?10:13);

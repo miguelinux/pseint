@@ -1,4 +1,7 @@
+>>RELEASE 20130331<<
+
 20130330
+	Mejorados los mensajes de error en los casos en que faltan parámentros en las estructuras de control.
 	Ya no se permite pasar (erroneamente) arreglos a las funciones predefinidas.
 	
 20130329
