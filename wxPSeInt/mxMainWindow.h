@@ -21,7 +21,6 @@ private:
 	friend class mxSource; // para el page_text
 	friend class mxProcess;
 	friend class mxFindDialog;
-	friend class mxDebugManager;
 	wxHtmlWindow *quick_html;
 	wxTreeCtrl *results_tree;
 	wxTreeItemId results_root;
@@ -161,6 +160,7 @@ public:
 	
 	void CheckIfNeedsRTS();
 	
+	void ShowVarsPanel(bool show);
 	void ShowDebugPanel(bool show);
 	void ShowCommandsPanel(bool show);
 	void ShowResults(bool show, bool no_error=true);
@@ -171,6 +171,8 @@ public:
 	void ParseResults(mxSource *source); // analiza el archivo de salida que genera un ejecucion, que contiene los errores de la misma
 	
 	void RunCurrent(bool raise); // ejecuta o re-ejecuta el source actual (si ya estaba corriendo en un psterm, raise indica si debe pasar al frente esa ventana)
+	
+	int GetNotebookWidth();
 	
 	DECLARE_EVENT_TABLE();
 };

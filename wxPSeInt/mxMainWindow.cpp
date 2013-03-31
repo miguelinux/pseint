@@ -1523,6 +1523,13 @@ void mxMainWindow::ShowDebugPanel (bool show) {
 	}	
 }
 
+void mxMainWindow::ShowVarsPanel (bool show) {
+	if (show!=mi_vars_panel->IsChecked()) {
+		wxCommandEvent evt;
+		mi_vars_panel->Check(show);
+		OnConfigShowVars(evt);
+	}	
+}
 void mxMainWindow::ShowCommandsPanel (bool show) {
 	if (show!=mi_commands->IsChecked()) {
 		wxCommandEvent evt;
@@ -1566,4 +1573,7 @@ void mxMainWindow::ParseResults(mxSource *source) {
 		}
 	}
 	if (!happy_ending) ShowResults(true,false);
+}
+int mxMainWindow::GetNotebookWidth ( ) {
+	return notebook->GetSize().GetWidth();
 }

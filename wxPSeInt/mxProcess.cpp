@@ -175,6 +175,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 			command<<_T(" --right=")<<x+w-delta<<_T(" ");
 			command<<_T(" --top=")<<y+delta<<_T(" ");
 			command<<_T(" --alwaysontop ");
+			if (w-500<400) command<<_T("--width=400 ");
 		}
 	}
 	temp = source->GetTempFilenameOUT();

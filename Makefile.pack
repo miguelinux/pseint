@@ -5,7 +5,7 @@ src:
 	make -f Makefile.pack clean
 	rm -f bin/core
 	rm -f bin/gmon.out
-	cd .. && tar -czvf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/mingw.conf pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/psexport pseint/psdrawE pseint/psdraw2 pseint/bin pseint/dist/license.txt pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist
+	cd .. && tar -czvf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/mingw.conf pseint/Makefile pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/psexport pseint/psdrawE pseint/psdraw2 pseint/bin pseint/dist/license.txt pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist pseint/test
 	@echo 
 	@echo -n "DONE: "
 	@ls -sh dist/pseint-src-`cat bin/version`.tgz

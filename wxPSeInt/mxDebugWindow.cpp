@@ -146,7 +146,10 @@ void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 	if (config->reorganize_for_debug) {
 		if (!main_window->IsMaximized()) main_window->Maximize();
 		main_window->ShowDebugPanel(true);
+		main_window->ShowCommandsPanel(false);
 		wxYield();
+		if (main_window->GetNotebookWidth()-500<400)
+			main_window->ShowVarsPanel(false);
 	}
 	
 	if (evaluate_window->IsShown()) evaluate_window->Hide();

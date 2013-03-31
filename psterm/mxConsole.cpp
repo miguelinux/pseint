@@ -247,7 +247,8 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 					i--; break;
 				}
 				int j=i+4; while (j<input.Len() && input[j]!='\n') j++;
-				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+input.SubString(i+4,j-1));
+				wxString title=input.SubString(i+4,j-1); if (title.Last()=='\r') title.RemoveLast();
+				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+title);
 				i=j;
 			} else if (input[i+2]=='z' && input[i+3]=='k') { // getKey
 				if (input_history_position>=int(input_history.size())) { 
