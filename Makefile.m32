@@ -5,7 +5,7 @@ all:
 	make -C updatem -f Makefile.m32
 	make -C psterm -f Makefile.m32
 #	make -C psdraw2 -f Makefile.m32
-	make -C psdraw -f Makefile.m32
+	make -C psdrawE -f Makefile.m32
 
 clean: 
 	make -C pseint -f Makefile.m32 clean
@@ -14,4 +14,4 @@ clean:
 	make -C updatem -f Makefile.m32 clean
 	make -C psterm -f Makefile.m32 clean
 #	make -C psdraw2 -f Makefile.m32 clean
-	make -C psdraw -f Makefile.m32 clean
+	make -C psdrawE -f Makefile.m32 clean
