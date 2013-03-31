@@ -226,7 +226,7 @@ static bool EsArreglo(const string &nombre) {
 
 string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &tipo, bool for_expresion) {
 	if (for_expresion && func->GetTipo(0)==vt_error) {
-		WriteError(999,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
+		WriteError(278,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
 		tipo=vt_error; return "";
 	}
 	// controlar cantidad de argumentos
@@ -234,7 +234,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 	if (ca==1) while ((b=BuscarComa(argumentos,b+1,l))>0) ca++;
 	if (func->cant_arg!=ca) {
 		tipo=vt_error;
-		WriteError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+GetNombreFuncion(func)+(")"));
+		WriteError(279,string("Cantidad de argumentos incorrecta para el subproceso (")+GetNombreFuncion(func)+(")"));
 		return("");
 	}
 	// parsear argumentos
@@ -247,13 +247,13 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 		if (!AplicarTipo(argumentos,p1,p2,func->tipos[i+1])) {
 			stringstream ss;
 			ss<<"Tipo de dato incorrecto en el argumento "<<i+1<<" ("<<argumentos.substr(p1,p2-p1+1)<<")";
-			WriteError(999,ss.str());
+			WriteError(280,ss.str());
 			return("");
 		} else {
 			string arg_actual = argumentos.substr(p1,p2-p1+1);
 			if (EsArreglo(arg_actual)) { // los arreglos siempre pasan por referencia
 				if (func->pasajes[i+1]==PP_VALOR) { // si la funcion explicita por valor, error
-					WriteError(999,string("Los arreglos solo pueden pasarse a subprocesos/funciones por referencia (")+arg_actual+(")"));
+					WriteError(281,string("Los arreglos solo pueden pasarse a subprocesos/funciones por referencia (")+arg_actual+(")"));
 					return "";
 				}
 				args.pasajes[i]=PP_REFERENCIA;
@@ -276,7 +276,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 	if (func->func) {
 		for(int i=0;i<func->cant_arg;i++)
 			if (EsArreglo(args.values[i])) {
-				WriteError(999,string("La función espera un único valor, pero recibe un arreglo (")+args.values[i]+(")"));
+				WriteError(282,string("La función espera un único valor, pero recibe un arreglo (")+args.values[i]+(")"));
 				return "";
 			}
 		ret=func->func(args.values);
@@ -308,7 +308,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 #endif
 	}
 	if (!tipo.can_be(rettipo)) 
-		WriteError(999,"No coinciden los tipos.");
+		WriteError(283,"No coinciden los tipos.");
 	tipo=rettipo;
 	return ret;
 }
@@ -323,7 +323,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op!=-1 && expresion[pos_op]==',') 
-		{ WriteError(999,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
+		{ WriteError(284,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
 		if (p2<p1) ev_return("");
 		char c = expresion[p1];
@@ -354,14 +354,14 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			if (pm==string::npos) { // si es una variable comun
 				string nombre = expresion.substr(p1,p2-p1+1);
 				if (PalabraReservada(nombre)) {
-					WriteError(999,string("Identificador no valido (")+nombre+")");
+					WriteError(285,string("Identificador no valido (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
 				const Funcion *func=EsFuncion(nombre);
 				if (func) {
 					if (func->cant_arg!=0) {
-						WriteError(999,string("Faltan parametros para la funcion (")+nombre+")");
+						WriteError(286,string("Faltan parametros para la funcion (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					} else {
@@ -386,23 +386,13 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				}
 				ev_return(memoria->LeerValor(nombre));
 			} else { // si es un arreglo o funcion
-				// lo que verificaba este código comentado ahora está en el error 239 de SynCheckAux3
-//				int pcierra = BuscarComa(expresion,pm+1,p2,')');
-//				if (pcierra!=p2) {
-//					while (pcierra<=p2 && expresion[pcierra]==' ') pcierra++;
-//					if (pcierra<=p2) {
-//						WriteError(999,string("Falta operador (")+expresion.substr(p1,p2-p1+1)+")");
-//						tipo=vt_error;
-//						ev_return("");
-//					}
-//				}
 				string nombre=expresion.substr(p1,pm-p1);
 				const Funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
 					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
 					if (PalabraReservada(nombre)) {
-						WriteError(999,string("Identificador no valido (")+nombre+")");
+						WriteError(287,string("Identificador no valido (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					}
@@ -414,7 +404,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					string aux=expresion.substr(p1,p2-p1+1);
 					if (CheckDims(aux)) {
 						if (!allow_undef_vars && !memoria->EstaInicializada(aux)) {
-							WriteError(999,string("Posición no inicializada (")+aux+")");
+							WriteError(288,string("Posición no inicializada (")+aux+")");
 							tipo=vt_error;
 							ev_return("");
 						}
@@ -447,7 +437,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			if (!t1.is_known()) AplicarTipo(expresion,p1a,p1b,vt_logica);
 			if (!t2.is_known()) AplicarTipo(expresion,p2a,p2b,vt_logica);
 			if (!t1.is_ok() || !t2.is_ok()) { 
-				WriteError(999,"No coinciden los tipos (|, O, & o Y). Los operandos deben ser logicos.");
+				WriteError(289,"No coinciden los tipos (|, O, & o Y). Los operandos deben ser logicos.");
 				tipo=vt_error; 
 				ev_return("");
 			}
@@ -468,9 +458,9 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				tipo=vt_logica; // el resultado es logico
 				// el operando debe ser logico
 				if (p2a>=p2)
-					WriteError(999,"Falta operando para la negacion (~/NO).");
+					WriteError(290,"Falta operando para la negacion (~/NO).");
 				if (t2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
-					WriteError(999,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
+					WriteError(291,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
 					tipo=vt_error; 
 					ev_return("");
 				}
@@ -491,7 +481,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica);
 				}
 				if (!t1.is_ok() || !t2.is_ok()) { 
-					WriteError(999,"No coinciden los tipos (<, >, <= o >=). Los operandos deben ser logicos.");
+					WriteError(292,"No coinciden los tipos (<, >, <= o >=). Los operandos deben ser logicos.");
 					tipo=vt_error; 
 					ev_return("");
 				}
@@ -574,12 +564,12 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 		case '+':
 			if (allow_concatenation) {
 				if (t1.can_be(vt_logica) && !AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica)) {
-					WriteError(999,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
+					WriteError(293,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
 					tipo = vt_error;
 					ev_return("");
 				} else t1.set(vt_caracter_o_numerica);
 				if (t2.can_be(vt_logica) && !AplicarTipo(expresion,p2a,p2b,vt_caracter_o_numerica)) {
-					WriteError(999,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
+					WriteError(294,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
 					tipo = vt_error;
 					ev_return("");
 				} else t2.set(vt_caracter_o_numerica);
@@ -589,7 +579,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					t2.set(t1);
 					if (!t1.is_ok() || !t2.is_ok() || (ot1!=t1 && !AplicarTipo(expresion,p1a,p1b,t1)) || (ot2!=t2 && !AplicarTipo(expresion,p2a,p2b,t2)) || t1!=t2) {
 						tipo = vt_error;
-						WriteError(999,"No coinciden los tipos (+). Los operandos deben ser de igual tipo.");
+						WriteError(295,"No coinciden los tipos (+). Los operandos deben ser de igual tipo.");
 						ev_return("");
 					}
 				}
@@ -626,7 +616,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			else if (op=='/')
 				if (o2==0) {
 					if (Inter.Running()) {
-						WriteError(999,"Division por cero");
+						WriteError(296,"Division por cero");
 						tipo=vt_error;
 					}
 					ev_return("0");
@@ -637,13 +627,13 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			else if (op=='%')
 				if (o2==0) {
 					if (Inter.Running()) {
-						WriteError(999,"Division por cero");
+						WriteError(297,"Division por cero");
 						tipo=vt_error;
 					}
 					ev_return("0");
 				} else {
 					if (o1!=int(o1)||o2!=int(o2))
-						WriteError(999,"Los operandos para el operador MOD deben ser enteros");
+						WriteError(298,"Los operandos para el operador MOD deben ser enteros");
 					res=int(o1)%int(o2);
 				}
 			else if (op=='^')
@@ -661,16 +651,7 @@ string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 	// <<<el comentario que sigue ya no aplica porque eso ahora se verifica en SynCheckAux3>>
 	// el evaluar comun admite operandos nulos en los extremos, porque pueden ser variables 
 	// sin inicializar que han sido reemplazadas, esta version no 
-//	if (expresion.size()) {
-//		char c0=expresion[0];
-//		char c1=expresion[expresion.size()-1];
-//		if (c0=='*'||c0=='='||c0=='<'||c0=='/'||c0=='&'||c0=='%'||c0=='>'||c0=='|'||c0=='^') {
-//			SynError (999,"Falta un operando al comienzo de la expresión."); /*errores++;*/
-//		}
-//		if (c1=='*'||c1=='='||c1=='<'||c1=='/'||c1=='&'||c1=='%'||c1=='>'||c1=='|'||c1=='^'||c1=='+'||c1=='-') {
-//			SynError (999,"Falta un operando al final de la expresión."); /*errores++;*/
-//		}
-//	}
+//	if (expresion.size()) { ... }
 	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo dé afuera, mejor contextualizado)
 	tipo=vt_desconocido; int p1=0, p2=expresion.size()-1;
 	string retval=Evaluar(expresion,p1,p2,tipo);
@@ -716,7 +697,7 @@ bool CheckDims(string &str) {
 		}
 		// controlar cantidad de dimensiones
 		if (adims[0]!=ca) {
-			WriteError(999,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));
+			WriteError(299,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));
 			return false;
 		}
 		
@@ -747,7 +728,7 @@ bool CheckDims(string &str) {
 	
 	int b=pp,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
 	if (adims[0]!=ca) {
-		WriteError(999,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));
+		WriteError(300,string("Cantidad de indices incorrecta para el arreglo (")+nombre+(")"));
 		return false;
 	}
 	nombre+="(";
@@ -758,18 +739,18 @@ bool CheckDims(string &str) {
 		string ret = Evaluar(str,pp,np,t);
 		if (!t.is_ok()) return false;
 		if (ret.find(".",0)!=string::npos) {
-			WriteError(999,string("Subindice no entero ("+ret+")"));
+			WriteError(301,string("Subindice no entero ("+ret+")"));
 			return false;
 		}
 		int idx=atoi(ret.c_str());
 		if (base_zero_arrays) {
 			if (idx<0||idx>adims[i+1]-1) {
-				WriteError(999,string("Subindice (")+ret+") fuera de rango (0..."+IntToStr(adims[i+1]-1)+")");
+				WriteError(302,string("Subindice (")+ret+") fuera de rango (0..."+IntToStr(adims[i+1]-1)+")");
 				return false;
 			}
 		} else {
 			if (idx<1||idx>adims[i+1]) {
-				WriteError(999,string("Subindice (")+ret+") fuera de rango (1..."+IntToStr(adims[i+1])+")");
+				WriteError(303,string("Subindice (")+ret+") fuera de rango (1..."+IntToStr(adims[i+1])+")");
 				return false;
 			}
 		}

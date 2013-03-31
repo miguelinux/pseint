@@ -655,7 +655,7 @@ int SynCheck(int linea_from, int linea_to) {
 							programa[x+1].instruccion.erase(0,pos_dp+1);
 							cadena.erase(pos_dp+1,cadena.size()-pos_dp-1);
 							flag_pyc+=1; flag_segun=1;
-							if (bucles.top()!="SEGUN") { SynError (999,"Opción fuera de SEGUN."); errores++; }
+							if (bucles.top()!="SEGUN") { SynError (241,"Opción fuera de SEGUN."); errores++; }
 						}
 //					}
 				}
@@ -780,7 +780,7 @@ int SynCheck(int linea_from, int linea_to) {
 				// parsear nombre y valor de retorno
 				string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
 				if (tok=="="||tok=="<-") { // si estaba el igual, lo que se extrajo es el valor de retorno
-					if (!sub) { SynError (999,"El proceso principal no puede retornar ningun valor."); errores++; }
+					if (!sub) { SynError (242,"El proceso principal no puede retornar ningun valor."); errores++; }
 					the_func->nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
 					if (!CheckVariable(the_func->nombres[0])) errores++;
 				} else {
@@ -790,22 +790,22 @@ int SynCheck(int linea_from, int linea_to) {
 					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
 					fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
 				}
-				else if (EsFuncion(fname)) { errores++; SynError (999,string("Ya existe otro proceso/subproceso con el mismo nombre(")+fname+")."); errores++; }
-				else if (!CheckVariable(fname)) { errores++; SynError (999,string("El nombre del proceso/subproceso(")+fname+") no es válido."); errores++; }
+				else if (EsFuncion(fname)) { errores++; SynError (243,string("Ya existe otro proceso/subproceso con el mismo nombre(")+fname+")."); errores++; }
+				else if (!CheckVariable(fname)) { errores++; SynError (244,string("El nombre del proceso/subproceso(")+fname+") no es válido."); errores++; }
 				if (!sub) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
-					if (process_seen) { SynError (999,"Solo puede haber un proceso."); errores++; }
+					if (process_seen) { SynError (245,"Solo puede haber un proceso."); errores++; }
 					else process_seen=true;
 					main_process_name=fname;
 				}
 				// argumentos
 				if (tok=="(") {
-					if (!sub) { SynError (999,"El proceso principal no puede recibir argumentos."); errores++; }
+					if (!sub) { SynError (246,"El proceso principal no puede recibir argumentos."); errores++; }
 					bool closed=false;
 					tok=NextToken(cadena,p);
 					while (tok!="") {
 						if (tok==")") { closed=true; break; }
 						else if (tok==",") { 
-							SynError (999,"Falta nombre de argumento."); errores++;
+							SynError (247,"Falta nombre de argumento."); errores++;
 							tok=NextToken(cadena,p);
 						} else {
 							if (!CheckVariable(tok)) errores++;
@@ -814,24 +814,24 @@ int SynCheck(int linea_from, int linea_to) {
 							if (tok=="POR") {
 								tok=NextToken(cadena,p);
 								if (tok!="REFERENCIA"&&tok!="COPIA"&&tok!="VALOR") {
-									SynError (999,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
+									SynError (248,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
 								} else the_func->SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
 								tok=NextToken(cadena,p);
 							} else if (tok!="," && tok!=")" && tok!="") { 
-								SynError (999,"Se esperaba coma(,) o parentesis ())."); errores++;
+								SynError (249,"Se esperaba coma(,) o parentesis ())."); errores++;
 							} 
 							if (tok==",") { tok=NextToken(cadena,p); }
 						}
 					}
 					if (!closed) {
-						{ SynError (999,"Falta cerrar lista de argumentos."); errores++; }
+						{ SynError (250,"Falta cerrar lista de argumentos."); errores++; }
 					} else if (NextToken(cadena,p).size()) {
-						{ SynError (999,"Se esperaba fin de linea."); errores++; }
+						{ SynError (251,"Se esperaba fin de linea."); errores++; }
 					}
 				} else if (tok!="") { // si no habia argumentos no tiene que haber nada
-					if (!sub) { SynError (999,"Se esperaba el fin de linea."); errores++; } else {
-						if (the_func->nombres[0].size()) { SynError (999,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
-						else { SynError (999,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
+					if (!sub) { SynError (252,"Se esperaba el fin de linea."); errores++; } else {
+						if (the_func->nombres[0].size()) { SynError (253,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
+						else { SynError (254,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
 					}
 				}
 				subprocesos[fname]=the_func;
@@ -1062,7 +1062,7 @@ int SynCheck(int linea_from, int linea_to) {
 								if (!CheckVariable(str,65)) errores++;
 								else {
 									if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
-									if (memoria->LeerTipo(str).dims) SynError(999,"Faltan subindices para el arreglo ("+str+").");
+									if (memoria->LeerTipo(str).dims) SynError(255,"Faltan subindices para el arreglo ("+str+").");
 								}
 							} else if (!memoria->EsArgumento(str.substr(0,str.find("(",0)))) {
 								bool name_ok=true;
@@ -1070,7 +1070,7 @@ int SynCheck(int linea_from, int linea_to) {
 								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
 								else if (!memoria->EstaDefinida(aname)) memoria->DefinirTipo(aname,vt_desconocido); // para que aparezca en la lista de variables
 								if (!memoria->LeerTipo(aname).dims) { 
-									SynError(999,"La variable ("+aname+") no es un arreglo."); name_ok=false;
+									SynError(256,"La variable ("+aname+") no es un arreglo."); name_ok=false;
 								}
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
@@ -1094,7 +1094,7 @@ int SynCheck(int linea_from, int linea_to) {
 									ca++;
 								}
 								if (name_ok && memoria->LeerTipo(aname).dims[0]!=ca) {
-									SynError(999,string("Cantidad de indices incorrecta para el arreglo (")+aname+(")"));
+									SynError(257,string("Cantidad de indices incorrecta para el arreglo (")+aname+(")"));
 									return false;
 								}
 							}
@@ -1170,7 +1170,7 @@ int SynCheck(int linea_from, int linea_to) {
 											str.erase(str.size()-6,6);
 											if (!LeftCompare(str,"CON PASO ")) {
 												if (str=="CON PASO")
-													{SynError (999,"Falta el valor del paso."); errores++;}
+													{SynError (258,"Falta el valor del paso."); errores++;}
 												else
 													{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
 											} else {
@@ -1190,17 +1190,17 @@ int SynCheck(int linea_from, int linea_to) {
 				str=cadena; // cortar instruccion
 				str.erase(0,9);
 				if (str.find(" ",0)==string::npos)
-				{SynError (70,"Faltan parametros."); errores++;} /// 999
+				{SynError (70,"Faltan parametros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
-					else {SynError (71,"Falta HACER."); str+=" HACER"; errores++;} /// 999
+					else {SynError (71,"Falta HACER."); str+=" HACER"; errores++;}
 				}
 				if (RightCompareFix(str," HACER")) {
 					int i=0; while (str[i]!=' ') i++;
-					if (!CheckVariable(str.substr(0,i),999)) errores++;
+					if (!CheckVariable(str.substr(0,i),259)) errores++;
 					if (str.substr(i,4)==" EN ") cadena.replace(9+i,4," DE ");
-					else if (str.substr(i,4)!=" DE ") {SynError (999,"Se esperaba DE o EN."); errores++;} 
-					else if (!CheckVariable(str.substr(i+4,str.size()-i-10),999)) errores++;
+					else if (str.substr(i,4)!=" DE ") {SynError (260,"Se esperaba DE o EN."); errores++;} 
+					else if (!CheckVariable(str.substr(i+4,str.size()-i-10),261)) errores++;
 				}
 			}
 			
@@ -1335,7 +1335,7 @@ int SynCheck(int linea_from, int linea_to) {
 				{ SynError (101,"Falta la condicion en la estructura Mientras."); errores++; }
 				else
 					if (RightCompare(cadena,";")) {
-						SynError (999,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++;
+						SynError (262,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++;
 						cadena.erase(cadena.size()-1,1);
 					}
 					if (!RightCompareFix(cadena," HACER")) {
@@ -1346,7 +1346,7 @@ int SynCheck(int linea_from, int linea_to) {
 						str=cadena; // Comprobar la condicion
 						str.erase(str.size()-6,6);
 						str.erase(0,9);
-						if (str=="") { SynError (999,"Falta la condición en la estructura Mientras."); errores++; }
+						if (str=="") { SynError (263,"Falta la condición en la estructura Mientras."); errores++; }
 						// comprobar que no halla espacios
 						comillas=-1;
 						for (int tmp1=0;tmp1<(int)str.size();tmp1++) {
@@ -1389,10 +1389,10 @@ int SynCheck(int linea_from, int linea_to) {
 				string args=cadena.substr(p);
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
-					if (func->cant_arg!=0) {SynError (999,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
+					if (func->cant_arg!=0) {SynError (264,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
 				} else if (func->cant_arg==0) {
-					if (args!="();") {SynError (999,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
-				} else if (args[0]!='(') {SynError (999,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
+					if (args!="();") {SynError (265,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
+				} else if (args[0]!='(') {SynError (266,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
 				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
 					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
 					if (args_last_pos!=-1) { // si faltaban cerrar parentesis, el error salto antes
@@ -1402,13 +1402,13 @@ int SynCheck(int linea_from, int linea_to) {
 							if (pos_coma==-1) pos_coma=args_last_pos;
 							string arg_actual=args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1);
 							if (!SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
-								if (func->pasajes[cant_args+1]==PP_REFERENCIA) { SynError(999,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
+								if (func->pasajes[cant_args+1]==PP_REFERENCIA) { SynError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
 								else EvaluarSC(arg_actual,tipo,func->tipos[cant_args+1]);
 							}
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
-						if (cant_args!=func->cant_arg) { SynError(999,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
-						else if (args_last_pos!=int(args.length())-2) {SynError (999,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
+						if (cant_args!=func->cant_arg) { SynError(268,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
+						else if (args_last_pos!=int(args.length())-2) {SynError (269,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
 					}
 				}
 			}
@@ -1449,7 +1449,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (!bucles.empty() && bucles.top()=="REPETIR") {
 					bucles.pop();
 				} else {
-					SynError (999,"MIENTRAS QUE mal colocado."); errores++;}
+					SynError (270,"MIENTRAS QUE mal colocado."); errores++;}
 			}
 			if ( (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"SI "))
 				|| (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"ENTONCES")) )
@@ -1475,7 +1475,7 @@ int ParseInspection(string &cadena) {
 	SynCheckAux2(cadena); // word_operators
 	int errores=0, flag_pyc=0;
 	SynCheckAux3(-1,cadena,errores,"<-",flag_pyc); // verificar operadores
-	if (flag_pyc) { SynError (999,"No puede haber más de una expresión."); errores++; }
+	if (flag_pyc) { SynError (271,"No puede haber más de una expresión."); errores++; }
 	return errores+flag_pyc;
 }
 
@@ -1502,7 +1502,7 @@ int SynCheck() {
 				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
 					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
 					if (j==1 && es_proceso) {
-						if (have_proceso) { Inter.SetLineAndInstructionNumber(i); SynError (999,"Solo puede haber un Proceso."); errores++;}
+						if (have_proceso) { Inter.SetLineAndInstructionNumber(i); SynError (272,"Solo puede haber un Proceso."); errores++;}
 						have_proceso=true;
 					}
 					if (i0!=i && era_proceso==(j==1)) {
@@ -1524,7 +1524,7 @@ int SynCheck() {
 				}
 		}
 	}
-	if (!have_proceso) { Inter.SetLineAndInstructionNumber(1); SynError (999,"Debe haber un Proceso."); errores++;}
+	if (!have_proceso) { Inter.SetLineAndInstructionNumber(1); SynError (273,"Debe haber un Proceso."); errores++;}
 	
 	return errores;
 }

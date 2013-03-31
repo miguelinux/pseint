@@ -220,7 +220,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 								ExeError(122,"No coinciden los tipos.");
 						dim[tmp3]=(int)StrToDbl(cadena);
 						if (dim[tmp3]<=0) {
-							ExeError(999,"Las dimensiones deben ser mayores a 0.");
+							ExeError(274,"Las dimensiones deben ser mayores a 0.");
 						}
 						tmp3++; last=tmp1+1; tmp1++;
 					}
@@ -364,7 +364,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					_pos(line);
 					_sub(line,"Se sale de la estructura Si-Entonces");
 				} else {
-					ExeError(999,"No coinciden los tipos.");
+					ExeError(275,"No coinciden los tipos.");
 				}
 			} else 
 			// ---------------- MIENTRAS ------------------ //
@@ -512,7 +512,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 
 				int *dims=memoria->LeerDims(aux2);
-				if (!dims) ExeError(999,"La variable ("+aux2+") no es un arreglo.");
+				if (!dims) ExeError(276,"La variable ("+aux2+") no es un arreglo.");
 				int nelems=1; // cantidad total de iteraciones
 				for (int i=1;i<=dims[0];i++) nelems*=dims[i];
 				
@@ -531,7 +531,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (primer_iteracion) primer_iteracion=false; else { _pos(line); }
 					_sub(line,aux1+" será equivalente a "+elemento+" en esta iteración.");
 					if (!memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento)))
-						ExeError(999,"No coinciden los tipos.");
+						ExeError(277,"No coinciden los tipos.");
 					memoria->EscribirValor(aux1,memoria->LeerValor(elemento));
 					// ejecutar la iteracion
 					Ejecutar(line+1,tmp1-1);
