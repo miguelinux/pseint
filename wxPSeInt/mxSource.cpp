@@ -1476,3 +1476,12 @@ int mxSource::GetStatus ( ) {
 	return status;
 }
 
+wxString mxSource::GetPathForExport() {
+	if (sin_titulo) return config->last_dir;
+	else return wxFileName(filename).GetPath();
+}
+
+wxString mxSource::GetNameForExport() {
+	if (sin_titulo) return _T("sin_titulo");
+	else return wxFileName(filename).GetName();
+}

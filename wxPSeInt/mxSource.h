@@ -145,6 +145,9 @@ public:
 	
 	void StopReloadTimer();
 	
+	wxString GetPathForExport();
+	wxString GetNameForExport();
+	
 	DECLARE_EVENT_TABLE();
 };
 

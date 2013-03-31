@@ -219,10 +219,8 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxString command;
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
-	if (source->sin_titulo) command<<_("\"")<<DIR_PLUS_FILE(config->last_dir,"sin_titulo.png")<<_T("\" ");
-	else command<<_("\"")<<DIR_PLUS_FILE(wxFileName(source->filename).GetPath(),wxFileName(source->filename).GetName())<<_T(".png\" ");
-	if (config->lang.use_nassi_schneiderman) command<<"--nassischneiderman";
-	cerr<<command<<endl;
+	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
+	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -230,7 +228,7 @@ bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT;
 	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
 	wxMessageBox(_T("Si el código define subprocesos o utiliza funciones de manejos de cadenas no se exportará correctamente.\nEstas limitaciones serán solucionadas en las próximas versiones de PSeInt."),_T("Exportar a código C++"),wxOK|wxICON_EXCLAMATION);
-	wxFileDialog dlg (main_window, _T("Guardar Cpp"),config->last_dir,_T(""), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg (main_window, _T("Guardar Cpp"),source->GetPathForExport(),source->GetNameForExport()+_T(".cpp"), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	wxString command;
