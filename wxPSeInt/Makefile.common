@@ -1,92 +1,92 @@
-OBJS=/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/Application.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxMainWindow.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxUtils.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/ConfigManager.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxSource.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxProcess.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/HelpManager.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxBitmapButton.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxFindDialog.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxAboutWindow.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxHelpWindow.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDropTarget.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/DebugManager.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDesktopTest.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDesktopVarsEditor.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxEvaluateDialog.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxUpdatesChecker.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxConfig.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxProfile.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxArt.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxPrintOut.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxInputDialog.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/RTSyntaxManager.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxIconInstaller.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxVarWindow.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDebugWindow.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxSubtitles.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxStatusBar.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/CommunicationsManager.o /mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/HtmlExporter.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxProcess.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxDesktopTest.o ${OBJS_DIR}/mxDesktopVarsEditor.o ${OBJS_DIR}/mxEvaluateDialog.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/mxProfile.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxInputDialog.o ${OBJS_DIR}/RTSyntaxManager.o ${OBJS_DIR}/mxIconInstaller.o ${OBJS_DIR}/mxVarWindow.o ${OBJS_DIR}/mxDebugWindow.o ${OBJS_DIR}/mxSubtitles.o ${OBJS_DIR}/mxStatusBar.o ${OBJS_DIR}/CommunicationsManager.o ${OBJS_DIR}/HtmlExporter.o 
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/Application.o: Application.cpp Application.h mxMainWindow.h mxSource.h version.h ../pseint/version_common.h mxUtils.h ConfigManager.h HelpManager.h DebugManager.h mxProfile.h mxArt.h mxUpdatesChecker.h mxIconInstaller.h CommunicationsManager.h
+${OBJS_DIR}/Application.o: Application.cpp Application.h mxMainWindow.h mxSource.h version.h ../pseint/version_common.h mxUtils.h ConfigManager.h HelpManager.h DebugManager.h mxProfile.h mxArt.h mxUpdatesChecker.h mxIconInstaller.h CommunicationsManager.h
 	${GPP} ${FLAGS} -c Application.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h ids.h ConfigManager.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTest.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h RTSyntaxManager.h mxVarWindow.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h ids.h ConfigManager.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTest.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h RTSyntaxManager.h mxVarWindow.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h
 	${GPP} ${FLAGS} -c mxMainWindow.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h mxBitmapButton.h
+${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h mxBitmapButton.h
 	${GPP} ${FLAGS} -c mxUtils.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxUtils.h version.h ../pseint/version_common.h
+${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxUtils.h version.h ../pseint/version_common.h
 	${GPP} ${FLAGS} -c ConfigManager.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxSource.o: mxSource.cpp mxUtils.h mxSource.h mxStatusBar.h ConfigManager.h ids.h mxProcess.h mxDropTarget.h DebugManager.h mxMainWindow.h RTSyntaxManager.h
+${OBJS_DIR}/mxSource.o: mxSource.cpp mxUtils.h mxSource.h mxStatusBar.h ConfigManager.h ids.h mxProcess.h mxDropTarget.h DebugManager.h mxMainWindow.h RTSyntaxManager.h
 	${GPP} ${FLAGS} -c mxSource.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxProcess.o: mxProcess.cpp mxProcess.h mxSource.h ConfigManager.h mxUtils.h mxMainWindow.h mxStatusBar.h DebugManager.h mxInputDialog.h FlowEditionManager.h mxDebugWindow.h CommunicationsManager.h
+${OBJS_DIR}/mxProcess.o: mxProcess.cpp mxProcess.h mxSource.h ConfigManager.h mxUtils.h mxMainWindow.h mxStatusBar.h DebugManager.h mxInputDialog.h FlowEditionManager.h mxDebugWindow.h CommunicationsManager.h
 	${GPP} ${FLAGS} -c mxProcess.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/HelpManager.o: HelpManager.cpp HelpManager.h mxUtils.h ConfigManager.h
+${OBJS_DIR}/HelpManager.o: HelpManager.cpp HelpManager.h mxUtils.h ConfigManager.h
 	${GPP} ${FLAGS} -c HelpManager.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxBitmapButton.o: mxBitmapButton.cpp mxBitmapButton.h mxUtils.h
+${OBJS_DIR}/mxBitmapButton.o: mxBitmapButton.cpp mxBitmapButton.h mxUtils.h
 	${GPP} ${FLAGS} -c mxBitmapButton.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxFindDialog.o: mxFindDialog.cpp mxFindDialog.h mxUtils.h mxBitmapButton.h mxSource.h mxMainWindow.h ids.h ConfigManager.h mxArt.h
+${OBJS_DIR}/mxFindDialog.o: mxFindDialog.cpp mxFindDialog.h mxUtils.h mxBitmapButton.h mxSource.h mxMainWindow.h ids.h ConfigManager.h mxArt.h
 	${GPP} ${FLAGS} -c mxFindDialog.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxAboutWindow.o: mxAboutWindow.cpp mxAboutWindow.h ConfigManager.h mxBitmapButton.h mxUtils.h version.h ../pseint/version_common.h
+${OBJS_DIR}/mxAboutWindow.o: mxAboutWindow.cpp mxAboutWindow.h ConfigManager.h mxBitmapButton.h mxUtils.h version.h ../pseint/version_common.h
 	${GPP} ${FLAGS} -c mxAboutWindow.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxHelpWindow.o: mxHelpWindow.cpp mxHelpWindow.h mxUtils.h ids.h mxMainWindow.h mxSource.h ConfigManager.h
+${OBJS_DIR}/mxHelpWindow.o: mxHelpWindow.cpp mxHelpWindow.h mxUtils.h ids.h mxMainWindow.h mxSource.h ConfigManager.h
 	${GPP} ${FLAGS} -c mxHelpWindow.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDropTarget.o: mxDropTarget.cpp mxDropTarget.h mxUtils.h mxMainWindow.h mxSource.h
+${OBJS_DIR}/mxDropTarget.o: mxDropTarget.cpp mxDropTarget.h mxUtils.h mxMainWindow.h mxSource.h
 	${GPP} ${FLAGS} -c mxDropTarget.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/DebugManager.o: DebugManager.cpp DebugManager.h mxSource.h mxMainWindow.h mxProcess.h mxDesktopTest.h mxEvaluateDialog.h ConfigManager.h mxDebugWindow.h mxSubtitles.h
+${OBJS_DIR}/DebugManager.o: DebugManager.cpp DebugManager.h mxSource.h mxMainWindow.h mxProcess.h mxDesktopTest.h mxEvaluateDialog.h ConfigManager.h mxDebugWindow.h mxSubtitles.h
 	${GPP} ${FLAGS} -c DebugManager.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDesktopTest.o: mxDesktopTest.cpp mxDesktopTest.h ids.h mxMainWindow.h mxSource.h DebugManager.h
+${OBJS_DIR}/mxDesktopTest.o: mxDesktopTest.cpp mxDesktopTest.h ids.h mxMainWindow.h mxSource.h DebugManager.h
 	${GPP} ${FLAGS} -c mxDesktopTest.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDesktopVarsEditor.o: mxDesktopVarsEditor.cpp mxDesktopVarsEditor.h ids.h mxMainWindow.h mxSource.h
+${OBJS_DIR}/mxDesktopVarsEditor.o: mxDesktopVarsEditor.cpp mxDesktopVarsEditor.h ids.h mxMainWindow.h mxSource.h
 	${GPP} ${FLAGS} -c mxDesktopVarsEditor.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxEvaluateDialog.o: mxEvaluateDialog.cpp mxEvaluateDialog.h DebugManager.h
+${OBJS_DIR}/mxEvaluateDialog.o: mxEvaluateDialog.cpp mxEvaluateDialog.h DebugManager.h
 	${GPP} ${FLAGS} -c mxEvaluateDialog.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxUpdatesChecker.o: mxUpdatesChecker.cpp mxUpdatesChecker.h ids.h mxMainWindow.h mxSource.h mxUtils.h ConfigManager.h mxBitmapButton.h mxHelpWindow.h mxArt.h mxStatusBar.h
+${OBJS_DIR}/mxUpdatesChecker.o: mxUpdatesChecker.cpp mxUpdatesChecker.h ids.h mxMainWindow.h mxSource.h mxUtils.h ConfigManager.h mxBitmapButton.h mxHelpWindow.h mxArt.h mxStatusBar.h
 	${GPP} ${FLAGS} -c mxUpdatesChecker.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxConfig.o: mxConfig.cpp mxConfig.h ConfigManager.h mxUtils.h mxBitmapButton.h mxArt.h
+${OBJS_DIR}/mxConfig.o: mxConfig.cpp mxConfig.h ConfigManager.h mxUtils.h mxBitmapButton.h mxArt.h
 	${GPP} ${FLAGS} -c mxConfig.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxProfile.o: mxProfile.cpp mxProfile.h ConfigManager.h mxUtils.h mxBitmapButton.h mxConfig.h mxArt.h mxMainWindow.h mxSource.h RTSyntaxManager.h
+${OBJS_DIR}/mxProfile.o: mxProfile.cpp mxProfile.h ConfigManager.h mxUtils.h mxBitmapButton.h mxConfig.h mxArt.h mxMainWindow.h mxSource.h RTSyntaxManager.h
 	${GPP} ${FLAGS} -c mxProfile.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxArt.o: mxArt.cpp mxArt.h mxUtils.h ConfigManager.h
+${OBJS_DIR}/mxArt.o: mxArt.cpp mxArt.h mxUtils.h ConfigManager.h
 	${GPP} ${FLAGS} -c mxArt.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxPrintOut.o: mxPrintOut.cpp mxPrintOut.h mxSource.h mxMainWindow.h
+${OBJS_DIR}/mxPrintOut.o: mxPrintOut.cpp mxPrintOut.h mxSource.h mxMainWindow.h
 	${GPP} ${FLAGS} -c mxPrintOut.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxInputDialog.o: mxInputDialog.cpp mxInputDialog.h mxBitmapButton.h mxArt.h
+${OBJS_DIR}/mxInputDialog.o: mxInputDialog.cpp mxInputDialog.h mxBitmapButton.h mxArt.h
 	${GPP} ${FLAGS} -c mxInputDialog.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/RTSyntaxManager.o: RTSyntaxManager.cpp RTSyntaxManager.h mxProcess.h mxSource.h ConfigManager.h mxMainWindow.h mxVarWindow.h
+${OBJS_DIR}/RTSyntaxManager.o: RTSyntaxManager.cpp RTSyntaxManager.h mxProcess.h mxSource.h ConfigManager.h mxMainWindow.h mxVarWindow.h
 	${GPP} ${FLAGS} -c RTSyntaxManager.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxIconInstaller.o: mxIconInstaller.cpp mxIconInstaller.h mxUtils.h mxBitmapButton.h ConfigManager.h mxArt.h
+${OBJS_DIR}/mxIconInstaller.o: mxIconInstaller.cpp mxIconInstaller.h mxUtils.h mxBitmapButton.h ConfigManager.h mxArt.h
 	${GPP} ${FLAGS} -c mxIconInstaller.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxVarWindow.o: mxVarWindow.cpp mxVarWindow.h mxMainWindow.h mxSource.h ConfigManager.h mxUtils.h DebugManager.h mxDebugWindow.h
+${OBJS_DIR}/mxVarWindow.o: mxVarWindow.cpp mxVarWindow.h mxMainWindow.h mxSource.h ConfigManager.h mxUtils.h DebugManager.h mxDebugWindow.h
 	${GPP} ${FLAGS} -c mxVarWindow.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxDebugWindow.o: mxDebugWindow.cpp mxDebugWindow.h mxStatusBar.h ids.h DebugManager.h mxMainWindow.h mxSource.h ConfigManager.h mxProcess.h mxHelpWindow.h mxUtils.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxSubtitles.h
+${OBJS_DIR}/mxDebugWindow.o: mxDebugWindow.cpp mxDebugWindow.h mxStatusBar.h ids.h DebugManager.h mxMainWindow.h mxSource.h ConfigManager.h mxProcess.h mxHelpWindow.h mxUtils.h mxDesktopVarsEditor.h mxEvaluateDialog.h mxSubtitles.h
 	${GPP} ${FLAGS} -c mxDebugWindow.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxSubtitles.o: mxSubtitles.cpp mxSubtitles.h mxBitmapButton.h mxArt.h DebugManager.h mxDebugWindow.h
+${OBJS_DIR}/mxSubtitles.o: mxSubtitles.cpp mxSubtitles.h mxBitmapButton.h mxArt.h DebugManager.h mxDebugWindow.h
 	${GPP} ${FLAGS} -c mxSubtitles.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/mxStatusBar.o: mxStatusBar.cpp mxStatusBar.h mxMainWindow.h mxSource.h
+${OBJS_DIR}/mxStatusBar.o: mxStatusBar.cpp mxStatusBar.h mxMainWindow.h mxSource.h
 	${GPP} ${FLAGS} -c mxStatusBar.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/CommunicationsManager.o: CommunicationsManager.cpp CommunicationsManager.h mxMainWindow.h mxSource.h ConfigManager.h mxHelpWindow.h mxUtils.h DebugManager.h mxStatusBar.h
+${OBJS_DIR}/CommunicationsManager.o: CommunicationsManager.cpp CommunicationsManager.h mxMainWindow.h mxSource.h ConfigManager.h mxHelpWindow.h mxUtils.h DebugManager.h mxStatusBar.h
 	${GPP} ${FLAGS} -c CommunicationsManager.cpp -o $@
 
-/mnt/ex/pseint/wxPSeInt/${OBJS_DIR}/HtmlExporter.o: HtmlExporter.cpp HtmlExporter.h mxSource.h mxMainWindow.h ConfigManager.h
+${OBJS_DIR}/HtmlExporter.o: HtmlExporter.cpp HtmlExporter.h mxSource.h mxMainWindow.h ConfigManager.h
 	${GPP} ${FLAGS} -c HtmlExporter.cpp -o $@
 

@@ -37,7 +37,7 @@ static Entity *DuplicateEntity(Entity *orig) {
 }
 
 void Salir(bool force) {
-	if (!force && modified && !confirm) {
+	if (!force && modified) {
 		confirm=true; confirm_sel=0;
 		return;
 	}
@@ -227,8 +227,8 @@ static void mouse_cb(int button, int state, int x, int y) {
 			}
 		}
 	} else if (confirm) {
-		if (confirm_sel==1) confirm=false;
-		else if (confirm_sel==2) Salir();
+		if (confirm_sel==1) { Salir(true); }
+		else if (confirm_sel==2) { Save(); SendUpdate(); Salir(true); }
 	}
 	y=win_h-y; y/=zoom; x/=zoom;
 	if (button==4||button==3) {
@@ -320,7 +320,11 @@ static void mouse_cb(int button, int state, int x, int y) {
 }
 
 static void keyboard_cb(unsigned char key, int x, int y) {
-	if (!edit) {
+	if (confirm) {
+		if (key=='s'||key==13) { confirm_sel=2; mouse_cb(GLUT_LEFT_BUTTON,GLUT_DOWN,0,0); }
+		else if (key=='n') { confirm_sel=1; mouse_cb(GLUT_LEFT_BUTTON,GLUT_DOWN,0,0); }
+		else if (key==27) { confirm=false; }
+	} else if (!edit) {
 		if (key==27) Salir();
 		return;
 	} else {

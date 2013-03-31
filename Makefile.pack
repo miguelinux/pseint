@@ -28,7 +28,7 @@ lnx:
 	make -f Makefile.pack clean
 	make -f Makefile.lnx -C psterm
 	make -f Makefile.lnx -C wxPSeInt
-	make -f Makefile.`./dist/get_arch` -C psdrawE
+	make -f Makefile.lnx -C psdrawE
 	make -f Makefile.`./dist/get_arch` -C psdraw2
 	make -f Makefile.lnx -C pseint
 	make -f Makefile.lnx -C psexport
@@ -59,7 +59,7 @@ m32: dist/mnt
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
 	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=18
+	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=25
 	mkfs.hfsplus -v PSeInt dist/pseint-m32-`cat bin/version`.dmg
 	sudo mount -o loop dist/pseint-m32-`cat bin/version`.dmg dist/mnt
 	sudo cp -r dist/pseint.app dist/mnt
@@ -83,7 +83,7 @@ ppc: dist/mnt
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
 	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=18
+	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=25
 	mkfs.hfsplus -v PSeInt dist/pseint-ppc-`cat bin/version`.dmg
 	sudo mount -o loop dist/pseint-ppc-`cat bin/version`.dmg dist/mnt
 	sudo cp -r dist/pseint.app dist/mnt

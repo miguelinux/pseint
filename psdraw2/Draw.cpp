@@ -261,8 +261,8 @@ static void DrawConfirm() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLineWidth(menu_line_width);
 	int h,w;
-	const char *text1="Hay cambios sin guardar.";
-	const char *text2="¿Cerrar el editor y perder los cambios?";
+	const char *text1="Hay cambios sin aplicar al pseudocódigo.";
+	const char *text2="¿Aplicar los cambios antes de cerrar el editor?";
 	GetTextSize(text1,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
 	GetTextSize(text2,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
 	
