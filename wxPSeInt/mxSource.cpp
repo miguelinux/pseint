@@ -182,7 +182,7 @@ mxSource::~mxSource() {
 	wxRemoveFile(GetTempFilenamePSD());
 	reload_timer->Stop();
 	rt_timer->Stop();
-	debug->Close(this);
+	if (debug) debug->Close(this);
 	if (flow_socket) {
 		flow_socket->Write("quit\n",5);
 		flow_socket=NULL;

@@ -691,6 +691,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 					return;
 				}
 			}
+			notebook->DeletePage(i);
 		}
 	}
 	
@@ -720,10 +721,10 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 		config->maximized=false;
 	}	
 	config->Save();
-	delete find_replace_dialog;
-	delete help;
-	delete debug;
-	delete config;
+	delete find_replace_dialog; find_replace_dialog=NULL;
+	delete help; help=NULL;
+	delete debug; debug=NULL;
+	delete config; config=NULL;
 	wxExit();
 }
 
