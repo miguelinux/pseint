@@ -19,6 +19,13 @@ void GetTextSize(const string &label, int &w, int &h) {
 	h=15;
 }
 
+void DrawTextRaster(const float *color, int x, int y, const char *t) {
+	glColor3fv(color);
+	glRasterPos2f(x,y);
+	int i=0;
+	while (t[i]!='\0') glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,t[i++]);
+}
+
 void DrawText(const float *color, int x, int y, const char *t) {
 	glColor3fv(color);
 	glPushMatrix();
@@ -224,7 +231,7 @@ static void DrawMenuAndShapeBar() {
 	glEnd();
 	
 	// menu
-	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-230;
+	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-menu_w_max+15;
 	if(menu_sel!=MO_NONE) {
 		glColor3fv(color_menu_sel);
 		glBegin(GL_QUADS);
@@ -234,26 +241,26 @@ static void DrawMenuAndShapeBar() {
 		glVertex2i(3,            win_h-menu_size_h+top-menu_option_height*(menu_sel-0.7)); 
 		glEnd();
 	}
-	DrawText(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
-	DrawText(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
-	DrawText(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar Cambios"); top-=menu_option_height;
-	DrawText(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Ejecutar..."); top-=menu_option_height;
-	DrawText(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
-//	DrawText(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
-	DrawText(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
-	DrawText(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
-	DrawText(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
+	DrawTextRaster(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar Cambios"); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Ejecutar..."); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
+//	DrawTextRaster(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
+	DrawTextRaster(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
 	// shapebar
 	if (shapebar) {
-		if (shapebar_sel==1) DrawText(color_selection,10,10,"Asignacion/Dimension/Definicion");
-		if (shapebar_sel==2) DrawText(color_selection,10,10,"Escribir");
-		if (shapebar_sel==3) DrawText(color_selection,10,10,"Leer");
-		if (shapebar_sel==4) DrawText(color_selection,10,10,"Si-Entonces");
-		if (shapebar_sel==5) DrawText(color_selection,10,10,"Segun");
-		if (shapebar_sel==6) DrawText(color_selection,10,10,"Mientras");
-		if (shapebar_sel==7) DrawText(color_selection,10,10,"Repetir-Hasta que");
-		if (shapebar_sel==8) DrawText(color_selection,10,10,"Para");
-	} else if (trash) DrawText(color_selection,10+trash_size_max,10,"Eliminar");
+		if (shapebar_sel==1) DrawTextRaster(color_selection,10,10,"Asignacion/Dimension/Definicion");
+		if (shapebar_sel==2) DrawTextRaster(color_selection,10,10,"Escribir");
+		if (shapebar_sel==3) DrawTextRaster(color_selection,10,10,"Leer");
+		if (shapebar_sel==4) DrawTextRaster(color_selection,10,10,"Si-Entonces");
+		if (shapebar_sel==5) DrawTextRaster(color_selection,10,10,"Segun");
+		if (shapebar_sel==6) DrawTextRaster(color_selection,10,10,"Mientras");
+		if (shapebar_sel==7) DrawTextRaster(color_selection,10,10,"Repetir-Hasta que");
+		if (shapebar_sel==8) DrawTextRaster(color_selection,10,10,"Para");
+	} else if (trash) DrawTextRaster(color_selection,10+trash_size_max,10,"Eliminar");
 }
 
 static void DrawConfirm() {
@@ -263,8 +270,8 @@ static void DrawConfirm() {
 	int h,w;
 	const char *text1="Hay cambios sin aplicar al pseudocódigo.";
 	const char *text2="¿Aplicar los cambios antes de cerrar el editor?";
-	GetTextSize(text1,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
-	GetTextSize(text2,w,h); DrawText(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
+	GetTextSize(text1,w,h); DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
+	GetTextSize(text2,w,h); DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
 	
 	const char *text3="No";
 	GetTextSize(text3,w,h); 
@@ -277,7 +284,7 @@ static void DrawConfirm() {
 		glVertex2i(win_w/2-100,win_h/2-h+margin);
 		glEnd();
 	}
-	DrawText(confirm_sel==1?color_selection:color_menu,win_w/2-w/2-70,win_h/2-h*2,text3);
+	DrawTextRaster(confirm_sel==1?color_selection:color_menu,win_w/2-w/2-70,win_h/2-h*2,text3);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(win_w/2-100,win_h/2-2*h-2*margin);
 	glVertex2i(win_w/2-40,win_h/2-2*h-2*margin);
@@ -296,7 +303,7 @@ static void DrawConfirm() {
 		glVertex2i(win_w/2+100,win_h/2-h+margin);
 		glEnd();
 	}
-	DrawText(confirm_sel==2?color_selection:color_menu,win_w/2-w/2+70,win_h/2-h*2,text4);
+	DrawTextRaster(confirm_sel==2?color_selection:color_menu,win_w/2-w/2+70,win_h/2-h*2,text4);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(win_w/2+100,win_h/2-2*h-2*margin);
 	glVertex2i(win_w/2+40,win_h/2-2*h-2*margin);

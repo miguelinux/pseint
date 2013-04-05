@@ -1,6 +1,9 @@
 >>RELEASE 20130405<<
 
 20130405
+	Cambiada la fuente para los menúes en el editor de diagramas de flujo.
+	Corregido un segfault al insertar una estructura Según en un diagrama Nassi-Schneiderman.
+	Corregido el problema de refresco por el cual la terminal aparece con caracteres de escape al iniciar la ejecución en algunos sistemas.
 	Corregido un segfault al cerrar el editor.
 
 >>RELEASE 20130331<<
