@@ -7,6 +7,8 @@
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
+#include <cstring>
+using namespace std;
 
 extern const int margin; // para los botones de confirm
 
@@ -23,7 +25,7 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	glColor3fv(color);
 	glRasterPos2f(x,y);
 	int i=0;
-	while (t[i]!='\0') glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,t[i++]);
+	while (t[i]!='\0') glutBitmapCharacter(GLUT_BITMAP_9_BY_15,t[i++]);
 }
 
 void DrawText(const float *color, int x, int y, const char *t) {
@@ -267,11 +269,11 @@ static void DrawConfirm() {
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLineWidth(menu_line_width);
-	int h,w;
-	const char *text1="Hay cambios sin aplicar al pseudocódigo.";
-	const char *text2="¿Aplicar los cambios antes de cerrar el editor?";
-	GetTextSize(text1,w,h); DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
-	GetTextSize(text2,w,h); DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
+	int h=15,w;
+	const static char *text1="Hay cambios sin aplicar al pseudocódigo.";
+	const static char *text2="¿Aplicar los cambios antes de cerrar el editor?";
+	w=strlen(text1)*9; DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*3,text1);
+	w=strlen(text2)*9; DrawTextRaster(color_menu,win_w/2-w/2,win_h/2+h*1,text2);
 	
 	const char *text3="No";
 	GetTextSize(text3,w,h); 
@@ -321,7 +323,7 @@ static void DrawChooseProcess() {
 	
 	glLineWidth(1);
 	glClear(GL_COLOR_BUFFER_BIT); glLineWidth(menu_line_width);
-	DrawText(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para visualizar:");
+	DrawTextRaster(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para visualizar:");
 	
 	int base=win_h-choose_process_d_base, delta=choose_process_d_delta;
 	glColor3fv(color_menu); glBegin(GL_LINES); 
@@ -341,7 +343,7 @@ static void DrawChooseProcess() {
 		base-=delta;
 		
 		if (i==int(procesos.size())) {
-			DrawText(choose_process_sel==i?color_selection:color_menu,20,base+10,"Agregar Nuevo SubProceso");
+			DrawTextRaster(choose_process_sel==i?color_selection:color_menu,20,base+10,"Agregar Nuevo SubProceso");
 		} else {
 			
 			string &s=procesos[i]->label;
