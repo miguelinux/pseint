@@ -35,22 +35,22 @@ END_EVENT_TABLE()
 #define _PROCESS_TIME 10
 
 static wxColour colors[16][2] = {
-	wxColour(0  ,0  ,0),	wxColour(127,127,127),
-	wxColour(127,0  ,0),	wxColour(0,0,0),
-	wxColour(0  ,127,0),	wxColour(0,0,0),
-	wxColour(127,127,0),	wxColour(0,0,0),
-	wxColour(0  ,0  ,255),	wxColour(0,0,0),
-	wxColour(127,0  ,127),	wxColour(0,0,0),
-	wxColour(0  ,127,127),	wxColour(0,0,0),
-	wxColour(127,127,127),	wxColour(0,0,0),
-	wxColour(0  ,  0,0),	wxColour(0,0,0),
-	wxColour(255,  0,0),	wxColour(0,0,0),
-	wxColour(0  ,255,0),	wxColour(0,0,0),
-	wxColour(255,255,0),	wxColour(0,0,0),
-	wxColour(127,127,255),	wxColour(0,0,0),
-	wxColour(255,  0,255),	wxColour(0,0,0),
-	wxColour(0  ,255,255),	wxColour(0,0,0),
-	wxColour(255,255,255),	wxColour(0,0,0)
+	{wxColour(0  ,0  ,0),	wxColour(127,127,127)},
+	{wxColour(127,0  ,0),	wxColour(0,0,0)},
+	{wxColour(0  ,127,0),	wxColour(0,0,0)},
+	{wxColour(127,127,0),	wxColour(0,0,0)},
+	{wxColour(0  ,0  ,255),	wxColour(0,0,0)},
+	{wxColour(127,0  ,127),	wxColour(0,0,0)},
+	{wxColour(0  ,127,127),	wxColour(0,0,0)},
+	{wxColour(127,127,127),	wxColour(0,0,0)},
+	{wxColour(0  ,  0,0),	wxColour(0,0,0)},
+	{wxColour(255,  0,0),	wxColour(0,0,0)},
+	{wxColour(0  ,255,0),	wxColour(0,0,0)},
+	{wxColour(255,255,0),	wxColour(0,0,0)},
+	{wxColour(127,127,255),	wxColour(0,0,0)},
+	{wxColour(255,  0,255),	wxColour(0,0,0)},
+	{wxColour(0  ,255,255),	wxColour(0,0,0)},
+	{wxColour(255,255,255),	wxColour(0,0,0)}
 };
 
 
@@ -241,11 +241,6 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
-				static bool skip=true;
-				if (skip) {
-					skip=false;
-					i--; break;
-				}
 				int j=i+4; while (j<input.Len() && input[j]!='\n') j++;
 				wxString title=input.SubString(i+4,j-1); if (title.Last()=='\r') title.RemoveLast();
 				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+title);

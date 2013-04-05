@@ -11,7 +11,6 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=Version.h
 path_char=/
 [source]
 path=main.cpp
@@ -31,11 +30,10 @@ breakpoint=109
 breakpoint_ignore=1
 [source]
 path=Events.cpp
-cursor=9510
+cursor=9780
 marker=211
 marker=70
 marker=64
-open=true
 [source]
 path=Draw.cpp
 cursor=11875
@@ -56,10 +54,10 @@ marker=58
 [source]
 path=DNassiSchne.cpp
 cursor=4749
-marker=98
-marker=99
-marker=210
 marker=211
+marker=210
+marker=99
+marker=98
 [header]
 path=../pseint/zockets.h
 cursor=215
@@ -83,8 +81,7 @@ path=Global.h
 cursor=4197
 [header]
 path=Version.h
-cursor=0
-open=true
+cursor=63
 [other]
 path=../bin/help/cambios.txt
 cursor=468

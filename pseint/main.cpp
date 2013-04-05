@@ -33,7 +33,7 @@ void checksum(Programa &p) {
 		for(unsigned int i=0;i<s.size();i++) { 
 			n+=s[i]; p=(p*s[i])%1000000;
 		}
-		if (n==839 && p==730880) {
+		if (n==839 && p==102912) { // daba 730880, por que cambio???
 			programa[2].instruccion[9]-=11;
 			programa[2].instruccion[10]+=10;
 			programa[2].instruccion[11]-=7;

@@ -1,3 +1,8 @@
+>>RELEASE 20130405<<
+
+20130405
+	Corregido un segfault al cerrar el editor.
+
 >>RELEASE 20130331<<
 
 20130330
