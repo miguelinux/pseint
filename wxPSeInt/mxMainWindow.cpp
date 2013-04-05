@@ -291,7 +291,7 @@ void mxMainWindow::CreateMenus() {
 	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
-	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Scheiderman"),_T(""),config->lang.use_nassi_schneiderman);
+	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Schneiderman"),_T(""),config->lang.use_nassi_schneiderman);
 	menu->Append(cfg, _T("&Configurar"));
 	
 	wxMenu *run = new wxMenu;
@@ -633,7 +633,7 @@ void mxMainWindow::OnRunStepStep(wxCommandEvent &evt) {
 
 void mxMainWindow::OnRunSubtitles(wxCommandEvent &evt) {
 	debug_panel->SetSubtitles(true);
-	if (!debug->debugging) debug_panel->OnDebugStep(evt);
+	if (!debug->debugging) debug_panel->OnDebugButton(evt);
 }
 
 void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {

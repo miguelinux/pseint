@@ -71,6 +71,7 @@ void Entity::DrawNassiSchne(bool force) {
 			int px=parent->child_dx[child_id]-bwl;
 			int px0=-parent->bwl, px1=parent->child_dx[parent->n_child-1]-parent->child[parent->n_child-1]->bwl;
 			int ax=px1-px; if (ax<0) ax=-ax;
+			if (px1==px0) px1++;
 			int ah=ax*5*h/(px1-px0)/2;
 			glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x-d_bwl,d_y-h/2+ah);
 			if (!child[0]) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
