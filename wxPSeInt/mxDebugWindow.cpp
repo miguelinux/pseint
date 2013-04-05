@@ -143,14 +143,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 	
-	if (config->reorganize_for_debug) {
-		if (!main_window->IsMaximized()) main_window->Maximize();
-		main_window->ShowDebugPanel(true);
-		main_window->ShowCommandsPanel(false);
-		wxYield();
-		if (main_window->GetNotebookWidth()-500<400)
-			main_window->ShowVarsPanel(false);
-	}
+	main_window->ReorganizeForDebugging();
 	
 	if (evaluate_window->IsShown()) evaluate_window->Hide();
 	if (debug->debugging) {
@@ -173,6 +166,7 @@ void mxDebugWindow::OnDebugStep(wxCommandEvent &evt) {
 	if (debug->debugging) {
 		debug->Step();
 	} else {
+		main_window->ReorganizeForDebugging();
 		mxSource *src=main_window->GetCurrentSource();
 		if (src) StartDebugging(src,true);
 	}

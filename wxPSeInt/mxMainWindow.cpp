@@ -1578,3 +1578,15 @@ void mxMainWindow::ParseResults(mxSource *source) {
 int mxMainWindow::GetNotebookWidth ( ) {
 	return notebook->GetSize().GetWidth();
 }
+
+void mxMainWindow::ReorganizeForDebugging ( ) {
+	if (config->reorganize_for_debug) {
+		if (!IsMaximized()) Maximize();
+		ShowDebugPanel(true);
+		ShowCommandsPanel(false);
+		wxYield();
+		if (GetNotebookWidth()-500<400)
+			ShowVarsPanel(false);
+	}
+}
+

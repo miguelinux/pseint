@@ -6,6 +6,7 @@
 #include "mxHelpWindow.h"
 #include "DebugManager.h"
 #include "mxStatusBar.h"
+#include "mxDebugWindow.h"
 using namespace std;
 
 enum {MXS_TYPE_UNKNOWN, MXS_TYPE_DEBUG, MXS_TYPE_FLOW, MXS_TYPE_RUN};
@@ -101,6 +102,9 @@ void mxSocketClient::ProcessCommandRun() {
 	} else if (buffer=="activated") {
 		mxSource *src=main_window->FindSourceById(src_id);
 		if (src && src->GetStatus()==STATUS_RUNNING_CHANGED) src->UpdateRunningTerminal(false);
+	} else if (buffer=="step") {
+		wxCommandEvent evt;
+		if (debug->debugging) debug_panel->OnDebugStep(evt);
 	}
 }
 

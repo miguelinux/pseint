@@ -174,6 +174,8 @@ public:
 	
 	int GetNotebookWidth();
 	
+	void ReorganizeForDebugging();
+	
 	DECLARE_EVENT_TABLE();
 };
 
