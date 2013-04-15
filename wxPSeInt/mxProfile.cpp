@@ -20,6 +20,11 @@ BEGIN_EVENT_TABLE(mxProfile,wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxProfile::OnCancelButton)
 	EVT_CLOSE(mxProfile::OnClose)
 END_EVENT_TABLE()
+	
+static int comp_nocase(const wxString& first, const wxString& second) {
+	return first.CmpNoCase(second);
+}
+
 
 mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
 	
@@ -43,7 +48,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 			cont = dir.GetNext(&filename);
 		}
 	}
-	perfiles.Sort();
+	perfiles.Sort(comp_nocase);
 	int profnum=-1;
 	profnum = perfiles.Index(config->profile,false);
 //	perfiles.Add(_T("<personalizado>"));
