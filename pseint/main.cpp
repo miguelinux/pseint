@@ -268,8 +268,7 @@ int main(int argc, char* argv[]) {
 	}
 	
 	if (user && check) {
-		if (colored_output) setForeColor(COLOR_INFO);
-		cout<<"Leyendo archivo y comprobando sintaxis..."<<endl;
+		show_user_info("Leyendo archivo y comprobando sintaxis...");
 	}
 	string buffer;
 	while (!archivo.eof()) {
@@ -296,20 +295,14 @@ int main(int argc, char* argv[]) {
 				dibujo<<programa[i].instruccion<<endl;
 			}
 			dibujo.close();
-			if (user) {
-				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"Dibujo guardado.\n";
-			}
+			if (user) show_user_info("Dibujo guardado.");
 			ExeInfo.close();
 			ExeInfoOn=false;
 		} else if (run) {
 			allow_undef_vars=undef_vars;
 			force_var_definition=var_definition;
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Ejecucion Iniciada. ***"<<endl;
-			if (user) {
-				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Ejecución Iniciada. ***"<<endl;
-			}
+			if (user) show_user_info("*** Ejecución Iniciada. ***");
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) (it1++)->second->memoria->FakeReset();
 			Inter.SetStarted();
@@ -319,25 +312,16 @@ int main(int argc, char* argv[]) {
 			Ejecutar(main_func->line_start);
 			Inter.SetFinished();
 			if (ExeInfoOn) ExeInfo<<"*** Ejecucion Finalizada. ***";
-			if (user) {
-				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<endl<<"*** Ejecución Finalizada. ***"<<endl;
-			}
+			if (user) show_user_info("*** Ejecución Finalizada. ***");
 		}
 	} else {
 		if (user) cout<<endl;
 		if (errores==1) {
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Se encontro 1 error. ***";
-			if (user) {
-				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Se encontró 1 error. ***"<<endl;
-			}
+			if (user) show_user_info("*** Se encontró 1 error. ***");
 		} else {
-			if (user) {
-				if (colored_output) setForeColor(COLOR_INFO);
-				cout<<"*** Se encontraron "<<errores<<" errores. ***"<<endl;
-			}
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Se encontraron "<<errores<<" errores. ***";
+			if (user) show_user_info("*** Se encontraron ",errores," errores. ***");
 		}
 	}
 	// esperar un enter si es necesario

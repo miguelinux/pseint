@@ -252,7 +252,8 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 	for (int i=0;i<(csize=(int)cadena.size());i++) {
 		char act=cadena[i]; 
 		if (act=='\'') {
-			if (comillas) { w=w_operhand; wext=w_string; }
+			if (!comillas && w==w_operhand) { SynError (304,"Falta operador (antes de la cadena de caracteres)."); errores++; }
+			else if (comillas) { w=w_operhand; wext=w_string; }
 			comillas=!comillas;
 		} else if (!comillas) {
 			if (act==' ') {
@@ -318,6 +319,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 			
 			} else if (act>='0'&&act<='9') {
 				if (w!=w_operhand) { w=w_operhand; wext=w_number_int; }
+				else if (wext==w_string) { SynError (305,"Falta operador (despues de la cadena de caracteres)."); errores++; }
 				else if (wext==w_expr) { SynError (239,"Falta operador (despues de ')')."); errores++; }
 			
 			} else if (act=='.') {
@@ -334,6 +336,8 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 				if (w==w_operhand && wext!=w_id) {
 					if (wext==w_string)
 						{ SynError (233,"Falta operando (después de cadena de texto)."); errores++; }
+					else if (wext==w_expr)
+						{ SynError (307,"Falta operando (posiblemente después de ')')."); errores++; }
 					else
 						{ SynError (238,"Constante numérica no válida."); errores++; }
 				}

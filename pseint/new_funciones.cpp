@@ -77,7 +77,7 @@ string func_atan(string *arg) {
 string func_azar(string *arg) {
 	if (int(StrToDbl(*arg))<=0) {
 		if (Inter.Running())
-			ExeError(999,"Azar de 0 o negativo.");
+			ExeError(306,"Azar de 0 o negativo.");
 		return "";
 	} else
 		return IntToStr(rand() % (int)StrToDbl(*arg));

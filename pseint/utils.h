@@ -7,6 +7,9 @@
 #include "global.h"
 using namespace std;
 
+void show_user_info(string msg);
+void show_user_info(string msg1, int num, string msg2);
+
 // ***************** Conversiones Numeros/Cadenas **********************
 
 // -------------------------------------------------------------------

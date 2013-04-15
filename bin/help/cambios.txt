@@ -1,3 +1,12 @@
+20130412
+	Agregado un mensaje alusivo que indica cuando la nueva terminal de ejecución muestra información desactualizada respecto al editor.
+	Corregida la codifición de caracteres en los mensajes de información al ejecutar en la terminal del sistema de Windows.
+	Corregido un problema de acceso a memoria al utilizar la instrucción para limpiar la pantalla en la terminal propia.
+	Corregido un problema al calcular el scroll en la nueva terminal cuando la ejecución del intérprete finaliza antes de que la terminal complete su inicialización.
+	
+20130409
+	Agregado el perfil UniAmazonia.
+	
 >>RELEASE 20130405<<
 
 20130405

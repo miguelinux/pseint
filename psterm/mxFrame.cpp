@@ -36,14 +36,14 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
 		sizer_in->Add(play_from_here,wxSizerFlags().Right());
 #ifdef DEBUG
-		sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
+//		sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
 #endif
 		sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
 		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
 		SetSizer(sizer);
 		Show();
 		wxTimerEvent evt;
-		if (port!=-1) InitSocket(port);
+		if (port!=-1) InitSocket(port); else socket=NULL;
 		console->Run(command);
 		console->SetFocus();
 		if (props.set_left||props.set_right||props.set_bottom||props.set_top) {

@@ -116,7 +116,6 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 				dc.DrawRectangle(margin+(i%buffer_w)*char_w,margin+(i/buffer_w)*char_h,char_w,char_h);
 	}
 	dc.SetFont(font);
-	bool selected=false;
 	for(int i=0;i<buffer_h;i++) { 
 		int lj=0; wxString line;
 		for(int j=0;j<buffer_w;j++) {
@@ -132,6 +131,20 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (want_input && !wait_one_key && blinking_caret_aux) {
 		dc.SetTextForeground(colors[cur_fg][dimmed]);
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
+	}
+	if (dimmed) {
+		wxString status="El algoritmo fue modificado.\nClick aquí para aplicar los cambios.";
+		static wxColour ct(15,15,15);
+		static wxColour cb(70,70,70);
+		int w=dc.GetSize().GetWidth();
+		int h=dc.GetSize().GetHeight();
+		int tw,th,margin=3;
+		dc.GetTextExtent(status,&tw,&th);
+		dc.SetBrush(wxBrush(cb));
+		dc.SetTextForeground(ct);
+		dc.DrawRectangle(w-tw-2*margin,h-th-2*margin,tw+2*margin,th+2*margin);
+		dc.SetTextForeground(ct);
+		dc.DrawText(status,w-tw-margin,h-th-margin);
 	}
 }
 
@@ -180,7 +193,15 @@ void mxConsole::SetFontSize (int size) {
 
 void mxConsole::Print (wxString text, bool record/*, bool do_print*/) {
 	if (record) history<<text;
-	if (!buffer) return;
+	if (!buffer) {
+		if (record) {
+			int l=text.Len();
+			for(int i=0;i<l;i++) 
+				if (text[i]=='\n') 
+					MarkEvent();
+		}
+		return;
+	}
 	int l=text.Len();
 	for(int i=0;i<l;i++) {
 		if (text[i]=='\n') {
@@ -237,7 +258,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 	int i0=i;
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
-			if (i-i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
+			if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
@@ -297,7 +318,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 				if (x0!=x1 && y0!=y1 && c==';' && input[y1]=='H') {
 					long x; input.Mid(x0,x1-x0).ToLong(&x);
 					long y; input.Mid(y0,y1-y0).ToLong(&y);
-					GotoXY(x-1,y-1,record);
+					GotoXY(x,y,record);
 				}
 				i=y1;
 			}
@@ -305,7 +326,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 		}
 		i++;
 	}
-	if (i-i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
+	if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 }
 
 void mxConsole::OnTimerCaret (wxTimerEvent & event) {
@@ -376,8 +397,8 @@ void mxConsole::OnProcessTerminate( wxProcessEvent &event ) {
 
 void mxConsole::GotoXY (int x, int y, bool record) {
 	if (record) history<<"\033["<<y<<';'<<x<<'H';
-	cur_x=x; if (x>=buffer_w) x=buffer_w;
-	cur_y=y; if (y>=buffer_h) y=buffer_h;
+	cur_x=x-1; if (cur_x>=buffer_w) cur_x=buffer_w;
+	cur_y=y-1; if (cur_y>=buffer_h) cur_y=buffer_h;
 }
 
 void mxConsole::Reload (int to) {
@@ -496,7 +517,6 @@ void mxConsole::OnMouseLeftUp (wxMouseEvent & evt) {
 
 void mxConsole::OnMouseMotion (wxMouseEvent & evt) {
 	if (selecting) {
-		cerr<<selection_start<<","<<selection_end<<"         \r";
 		selection_end=auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
 		Refresh();
 	}

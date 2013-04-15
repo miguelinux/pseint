@@ -52,6 +52,7 @@ void lnx_gotoXY(int x, int y) {
 }
 
 #ifndef __WIN32__
+
 int lnx_getKey(void) {
 	static char buf[256];
 	struct termios oldt,

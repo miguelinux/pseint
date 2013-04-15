@@ -7,6 +7,21 @@
 #include "zcurlib.h"
 #include "new_funciones.h"
 
+
+
+void show_user_info(string msg) {
+	if (fix_win_charset) fixwincharset(msg);
+	if (colored_output) setForeColor(COLOR_INFO);
+	cout<<msg<<endl;
+}
+
+void show_user_info(string msg1, int num, string msg2) {
+	if (fix_win_charset) { fixwincharset(msg1); fixwincharset(msg2); }
+	if (colored_output) setForeColor(COLOR_INFO);
+	cout<<msg1<<num<<msg2<<endl;
+}
+
+
 // ***************** Control de Errores y Depuración **********************
 
 // ------------------------------------------------------------
@@ -36,8 +51,7 @@ void ExeError(int num,string s) {
 			ExeInfo<<"*** Ejecucion Interrumpida. ***"<<endl;
 		} 
 		if (wait_key) {
-			if (colored_output) setForeColor(COLOR_INFO);
-			cout<<"*** Ejecucion Interrumpida. ***"<<endl;
+			show_user_info("*** Ejecución Interrumpida. ***");
 		}
 //		Inter.AddError(s,Inter.GetLineNumber());
 		if (ExeInfoOn) ExeInfo.close();

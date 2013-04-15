@@ -48,7 +48,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	profnum = perfiles.Index(config->profile,false);
 //	perfiles.Add(_T("<personalizado>"));
 	
-	if (profnum==wxNOT_FOUND) profnum=perfiles.GetCount()-1;
+	if (profnum==wxNOT_FOUND) profnum=perfiles.GetCount();
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Perfil");
