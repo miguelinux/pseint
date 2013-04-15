@@ -48,7 +48,7 @@ public:
 	void SetWords();
 	static void SetAutocompletion();
 	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle);
-	void SetFieldIndicator(int p1, int p2); // para los campos a completar en las plantillas de instrucciones/estructuras
+	void SetFieldIndicator(int p1, int p2, bool select=true); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();
 	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString);

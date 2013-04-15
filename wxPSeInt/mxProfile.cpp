@@ -12,10 +12,13 @@
 #include "RTSyntaxManager.h"
 #include <wx/imaglist.h>
 
+#define _PERSONALIZADO "<personalizado>"
+
 BEGIN_EVENT_TABLE(mxProfile,wxDialog)
+	EVT_TEXT(wxID_FIND,mxProfile::OnSearchText)
 	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxProfile::OnListSelect)
 	EVT_LIST_ITEM_ACTIVATED(wxID_ANY,mxProfile::OnListActivate)
-	EVT_BUTTON(wxID_FIND,mxProfile::OnOptionsButton)
+	EVT_BUTTON(wxID_ABOUT,mxProfile::OnOptionsButton)
 	EVT_BUTTON(wxID_OK,mxProfile::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxProfile::OnCancelButton)
 	EVT_CLOSE(mxProfile::OnClose)
@@ -25,7 +28,6 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 	return first.CmpNoCase(second);
 }
 
-
 mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
 	
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
@@ -33,11 +35,16 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	old_config=config->lang;
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-//	wxBoxSizer *opts_sizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	
+	wxBoxSizer *search_sizer = new wxBoxSizer(wxHORIZONTAL);
+	search=new wxTextCtrl(this,wxID_FIND,"");
+	search_sizer->Add(new wxStaticText(this,wxID_ANY,"Buscar: "),wxSizerFlags().Center());
+	search_sizer->Add(search,wxSizerFlags().Proportion(1).Expand());
+	
+	sizer->Add(search_sizer,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
+	
+	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-	wxArrayString perfiles;
 	wxDir dir(config->profiles_dir);
 	if ( dir.IsOpened() ) {
 		wxString filename;
@@ -49,33 +56,31 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 		}
 	}
 	perfiles.Sort(comp_nocase);
-	int profnum=-1;
-	profnum = perfiles.Index(config->profile,false);
-//	perfiles.Add(_T("<personalizado>"));
-	
-	if (profnum==wxNOT_FOUND) profnum=perfiles.GetCount();
+	for(int i=0;i<perfiles.GetCount();i++) { 
+		LangSettings l; l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
+		descripciones.Add(l.desc);
+	}
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Perfil");
 	wxImageList *iml = new wxImageList(24,24,true);
-	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"null.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE(config->profiles_dir,"icons"),"null.png"),wxBITMAP_TYPE_PNG);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
-		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),perfiles[i]+".png");
+		wxString ficon=DIR_PLUS_FILE(DIR_PLUS_FILE(config->profiles_dir,"icons"),perfiles[i]+".png");
 		if (wxFileName::FileExists(ficon))
 			iml->Add(wxBitmap(ficon,wxBITMAP_TYPE_PNG));
 		else
 			iml->Add(noimage);
 	}
-	iml->Add(wxBitmap(DIR_PLUS_FILE(DIR_PLUS_FILE("perfiles","icons"),"personalizado.png"),wxBITMAP_TYPE_PNG));
+	iml->Add(wxBitmap(DIR_PLUS_FILE(DIR_PLUS_FILE(config->profiles_dir,"icons"),"personalizado.png"),wxBITMAP_TYPE_PNG));
 	list->AssignImageList(iml,wxIMAGE_LIST_SMALL);
-	for(unsigned int i=0;i<perfiles.GetCount();i++) list->InsertItem(i,perfiles[i],i);
-	list->InsertItem(perfiles.GetCount(),"<personalizado>",perfiles.GetCount());
 	
-	SetListSelection(profnum);
+	Search();
+	
 	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	LoadProfile();
 	
-	wxButton *options_button = new mxBitmapButton (this, wxID_FIND, bitmaps->buttons.next, _T("Personalizar..."));
+	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.next, _T("Personalizar..."));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Aceptar"));
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
 	button_sizer->Add(options_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
@@ -99,7 +104,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	this->Layout(); // para ajustar el tamaño de la columna de la lista
 	list->SetColumnWidth(0,list->GetSize().GetWidth()-32);
 	
-	list->SetFocus();
+	search->SetFocus();
 	
 	ShowModal();
 }
@@ -135,14 +140,23 @@ void mxProfile::OnOptionsButton(wxCommandEvent &evt) {
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {
-		SetListSelection(list->GetItemCount()-1);
-		LoadProfile();
+		config->profile=_PERSONALIZADO;
+		Search();
 	}
 	list->SetFocus();
 }
 
 void mxProfile::LoadProfile() {
-	if (text) text->SetValue(config->LoadProfile(GetListSelection()));
+	if (!text) return;
+	wxString pname=GetListSelection();
+	if (pname==_PERSONALIZADO) { 
+		text->SetValue("Puede utilizar el botón \"Personalizar\" para definir su propia configuración."); 
+		return;
+	}
+	int p=perfiles.Index(pname);
+	if (p==wxNOT_FOUND) return; // no deberia ocurrir nunca
+	config->LoadProfile(pname);
+	text->SetValue(descripciones[p]);
 }
 
 wxString mxProfile::GetListSelection ( ) {
@@ -154,5 +168,30 @@ wxString mxProfile::GetListSelection ( ) {
 void mxProfile::SetListSelection (int i) {
 	list->SetItemState(i,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
 	list->EnsureVisible(i);
+}
+
+void mxProfile::OnSearchText (wxCommandEvent & evt) {
+	Search();
+}
+
+void mxProfile::Search ( ) {
+	list->DeleteAllItems();
+	int sel=-1, cont=0;
+	wxString pat=search->GetValue().Lower();
+	for(unsigned int i=0;i<perfiles.GetCount();i++) {
+		if (pat.Len()==0 || perfiles[i].Lower().Contains(pat) || descripciones[i].Lower().Contains(pat)) {
+			list->InsertItem(cont,perfiles[i],i);
+			if (perfiles[i].Lower()==config->profile.Lower()) sel=cont;
+			cont++;
+		}
+		
+	}
+	if (!pat) {
+		list->InsertItem(cont,_PERSONALIZADO,perfiles.GetCount());
+		if (sel==-1) sel=cont;
+		cont++;
+	}
+	if (sel!=-1) SetListSelection(sel); 
+	else text->SetValue(wxString()<<"El perfil seleccionado actualmente ("<<config->profile<<") no aparece en esta búsqueda.");
 }
 

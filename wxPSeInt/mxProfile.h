@@ -5,11 +5,15 @@
 #include <wx/listctrl.h>
 #include "ConfigManager.h"
 #include <wx/imaglist.h>
+#include <wx/arrstr.h>
 
 class mxProfile:wxDialog {
 private:
 	wxListCtrl *list;
 	wxTextCtrl *text;
+	wxTextCtrl *search;
+	wxArrayString perfiles;
+	wxArrayString descripciones;
 public:
 	LangSettings old_config;
 	mxProfile(wxWindow *parent);
@@ -23,6 +27,8 @@ public:
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void LoadProfile();
+	void OnSearchText(wxCommandEvent &evt);
+	void Search();
 	DECLARE_EVENT_TABLE();
 };
 

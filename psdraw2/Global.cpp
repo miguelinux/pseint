@@ -71,5 +71,6 @@ const float color_menu_back[3]={.8,.95,.95}; // fondo de los menues
 const float color_menu_sel[3]={.9,1,1}; // fondo de elemento de menu seleccionado
 
 bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
+bool force_semicolons=false; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 
 vector<Entity*> procesos;

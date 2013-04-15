@@ -473,25 +473,39 @@ void Entity::Print(ostream &out, string tab) {
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {
-		out<<tab<<"Escribir "<<label<<";"<<endl;
+		if (!label.size()) label="{lista_de_expresiones}";
+		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		out<<tab<<"Escribir "<<label<<(force_semicolons?";":"")<<endl;
 	} else if (type==ET_LEER) {
-		out<<tab<<"Leer "<<label<<";"<<endl;
+		if (!label.size()) label="{lista_de_variables}";
+		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		out<<tab<<"Leer "<<label<<(force_semicolons?";":"")<<endl;
 	} else if (type==ET_MIENTRAS) {
+		if (!label.size()) label="{condicion}";
 		out<<tab<<"Mientras "<<label<<" Hacer"<<endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinMientras"<<endl;
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
+		if (!label.size()) label="{condicion}";
 		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<endl;
 	} else if (type==ET_PARA) {
-		if (variante)
+		if (variante) {
+			if (!label.size()) label="{variable}<-{valor_inicial}";
+			if (!child[2]->label.size()) child[2]->label="{arreglo}";
 			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<endl;
-		else
+		} else {
+			if (!label.size()) label="{variable}";
+			if (!child[1]->label.size()) child[1]->label="{valor_inicial}";
+			if (!child[2]->label.size()) child[2]->label="{valor_final}";
+			if (!child[3]->label.size()) child[3]->label="{paso}";
 			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<endl;
+		}
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinPara"<<endl;
 	} else if (type==ET_SEGUN) {
+		if (!label.size()) label="{expresion_numerica}";
 		out<<tab<<"Segun "<<label<<" Hacer"<<endl;
 		for(int i=0;i<n_child-1;i++) { 
 			child[i]->Print(out,tab+_tabs);
@@ -501,16 +515,19 @@ void Entity::Print(ostream &out, string tab) {
 		out<<tab<<"FinSegun"<<endl;
 	} else if (type==ET_OPCION) {
 		add_tab=true;
+		if (!label.size()) label="{expresion_numerica}";
 		out<<tab<<label<<":"<<endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 	} else if (type==ET_SI) {
+		if (!label.size()) label="{condicion}";
 		out<<tab<<"Si "<<label<<" Entonces"<<endl;
 		if (child[1]) child[1]->Print(out,tab+_tabs);
 		if (child[0]) out<<tab<<"Sino"<<endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 		out<<tab<<"FinSi"<<endl;
 	} else if (type==ET_ASIGNAR) {
-		out<<tab<<label<<";"<<endl;
+		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<endl;
 	}
 	if (next) next->Print(out,add_tab?tab+_tabs:tab);
 }

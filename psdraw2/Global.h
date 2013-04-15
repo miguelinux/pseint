@@ -88,7 +88,7 @@ extern const float color_menu_back[3]; // fondo de los menues
 extern const float color_menu_sel[3]; // fondo de elemento de menu seleccionado
 
 extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
-
+extern bool force_semicolons; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 // para interpolar en las animaciones, good converge pixel perfect, la otra puede que no
 #ifdef _FOR_EXPORT
 	#define interpolate(a,b) a=b

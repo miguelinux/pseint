@@ -612,12 +612,11 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 	OnCharAdded(evt2);
 }
 
-void mxSource::SetFieldIndicator(int p1, int p2) {
+void mxSource::SetFieldIndicator(int p1, int p2, bool select) {
 	int lse = GetEndStyled();
 	StartStyling(p1,wxSTC_INDICS_MASK);
 	wxStyledTextCtrl::SetStyling(p2-p1,wxSTC_INDIC1_MASK);
-	GotoPos(p1);
-	SetSelection(p1,p2);
+	if (select) { GotoPos(p1); SetSelection(p1,p2); }
 	StartStyling(lse,0x1F);
 }
 
@@ -1070,6 +1069,33 @@ void mxSource::ReloadFromTempPSD () {
 	bool isro=GetReadOnly();
 	if (isro) SetReadOnly(false);
 	LoadFile(file);
+	// convertir en campos lo que esté incompleto
+	for (int i=0;i<GetLineCount();i++) {
+		wxString line=GetLine(i); 
+		int l=line.Len(), j0, l0=PositionFromLine(i);
+		bool comillas=false, campo=false;
+		for(int j=0;j<l;j++) { 
+			if (line[j]=='\''||line[j]=='\"') comillas=!comillas;
+			else if (!comillas) {
+				if (campo) {
+					if (line[j]=='}') {
+						SetTargetStart(l0+j0);
+						SetTargetEnd(l0+j+1);
+						ReplaceTarget(GetTextRange(l0+j0+1,l0+j));
+						SetFieldIndicator(l0+j0,l0+j-1,false);
+						l0-=2; // para compenzar el desfazaje entre line y la linea real
+						campo=false;
+					}
+				} else {
+					if (line[j]=='{') {
+						j0=j;
+						campo=true;
+					}
+				}
+			}
+		}
+	}
+	
 	SetModify(true);
 	if (isro) SetReadOnly(true);
 	if (run_socket) UpdateRunningTerminal();

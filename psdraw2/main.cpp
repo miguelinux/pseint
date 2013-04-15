@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
 			_print_version_info("psDraw2");
 			return 0;
 		}
+		else if (a=="--forcesemicolons") force_semicolons=true;
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
 		else if (a=="--noedit") edit_on=false;
 		else if (a=="--nowordoperators") word_operators=false;

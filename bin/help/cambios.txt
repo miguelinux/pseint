@@ -1,3 +1,14 @@
+>>RELEASE 20130416<<
+
+20130415
+	Si el perfil actual no obliga a colocar punto y coma, al exportar a diagrama de flujo no se agregan automáticamente.
+	Los puntos y coma colocados en las instrucciones secuenciales en el diagrama de flujo ya no aparecen dos veces en el pseudocódigo al aplicar los cambios.
+	Si se dejan campos en blanco en el editor de diagramas de flujo, al aplicar los cambios estos aparecen como campos a completar en el pseudocódigo.
+	Se agreó un cuadro de búsqueda a la ventana de selección del perfil.
+	La lista de perfiles se ordena alfabeticamente sin distinguir mayúsuculas de minúsculas.
+	Agregado el perfil UIN.
+	Corregido un error al detectar expresiones/constantes pegadas (sin operandos o comas en medio).
+	
 20130412
 	Agregado un mensaje alusivo que indica cuando la nueva terminal de ejecución muestra información desactualizada respecto al editor.
 	Corregida la codifición de caracteres en los mensajes de información al ejecutar en la terminal del sistema de Windows.
