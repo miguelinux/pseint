@@ -504,11 +504,12 @@ void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 	wxFileDialog dlg (this, _T("Abrir Archivo"), config->last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 	dlg.SetWildcard(_T("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 	if (dlg.ShowModal() == wxID_OK) {
-		config->last_dir=dlg.GetDirectory();
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-		for (unsigned int i=0;i<paths.GetCount();i++)
+		for (unsigned int i=0;i<paths.GetCount();i++) {
 			OpenProgram(paths[i]);
+		}
+		if (paths.GetCount()) config->last_dir=wxFileName(paths[0]).GetPath();
 	}
 }
 
@@ -592,7 +593,7 @@ void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
 			wxFileName file(dlg.GetPath());
 			if (file.GetExt().Len()==0) file.SetExt(_T("psc"));
 			source->UnExample();
-			config->last_dir=dlg.GetDirectory();
+			config->last_dir=file.GetPath();
 			source->SaveFile(file.GetFullPath());
 			source->SetFileName(file.GetFullPath());
 			source->SetPageText(file.GetFullName());

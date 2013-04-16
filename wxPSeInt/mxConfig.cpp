@@ -6,6 +6,7 @@
 #include "mxArt.h"
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
+#include <wx/filename.h>
 
 BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_BUTTON(wxID_OK,mxConfig::OnOkButton)
@@ -128,7 +129,7 @@ void mxConfig::OnCancelButton(wxCommandEvent &evt) {
 void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, _T("Cargar perfil desde archivo"), config->last_dir, _T(" "), _T("Cualquier Archivo (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 	if (dlg.ShowModal() == wxID_OK) {
-		config->last_dir=dlg.GetDirectory();
+		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 		LangSettings l;
 		l.Load(dlg.GetPath());
 		ReadFromStruct(l);
@@ -138,7 +139,7 @@ void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, _T("Guardar perfil en archivo"), config->last_dir, _T(" "), _T("Cualquier Archivo (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
-		config->last_dir=dlg.GetDirectory();
+		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 		LangSettings l;
 		l.desc=wxGetTextFromUser(_T("Ingrese una descripción breve del perfil."),_T("Guardar Perfil"),_T(""),this);
 		CopyToStruct(l);
