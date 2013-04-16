@@ -9,6 +9,14 @@ using namespace std;
 #include "zockets.h"
 #endif
 
+#ifdef __WIN32__
+	#include<windows.h>
+#else
+	#include<sys/time.h>
+	#define Sleep(x) usleep((x)*1000)
+#endif
+
+
 // *********************** Intercambio ****************************
 
 // estructura auxiliar para guardar datos del backtrace (llamadas a funciones)

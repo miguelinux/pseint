@@ -3,15 +3,6 @@
 #include <cstring>
 using namespace std;
 
-#if defined(_WIN32) || defined(__WIN32__)
-#else
-void Sleep(int delay) {
-	clock_t t1 = clock();
-	while (float(clock()-t1)/CLOCKS_PER_SEC<float(delay)/1000);
-}
-#endif
-
-
 ZOCKET zocket_llamar(short int port, const char *host) {
 #if defined(_WIN32) || defined(__WIN32__)
 	WSADATA wsaData;

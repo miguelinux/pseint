@@ -2,16 +2,15 @@
 #define ZOCKETS_H
 
 #if defined(_WIN32) || defined(__WIN32__)
-#include <windows.h>
-#include <winsock.h>
-#define socklen_t int
-#define ZOCKET_ERROR SOCKET_ERROR
+	#include <windows.h>
+	#include <winsock.h>
+	#define socklen_t int
+	#define ZOCKET_ERROR SOCKET_ERROR
 #else
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netdb.h>
-void Sleep(int delay);
-#define ZOCKET_ERROR -1
+	#include <fcntl.h>
+	#include <sys/socket.h>
+	#include <netdb.h>
+	#define ZOCKET_ERROR -1
 #endif
 #define ZOCKET int
 #include <cstddef>

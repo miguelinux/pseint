@@ -190,6 +190,7 @@ void Intercambio::ProcInput() {
 		}
 		n=255;
 	}
+	Sleep(15); // para evitar que consuma 100% de cpu mientras no hace nada
 }
 #endif
 
