@@ -110,8 +110,8 @@ int main(int argc, char* argv[]) {
 				lazy_syntax=false;
 			else if (str=="--forceinitvars")
 				undef_vars=false;
-			else if (str=="--forcedotandcomma")
-				force_dot_and_comma=true;
+			else if (str=="--forcesemicolon")
+				force_semicolon=true;
 			else if (str=="--hidestringfunctions")
 				enable_string_functions=false;
 			else if (str=="--disableuserfunctions")
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
 		cout<<"      --nouser               no mostrar mensajes de estado ni esperar un tecla al final"<<endl;
 		cout<<"      --forcedefinevars      no permitir utilizar variables sin definir antes su tipo"<<endl;
 		cout<<"      --forceinitvars        no permitir utilizar variables sin inicializar"<<endl;
-		cout<<"      --forcedotandcomma     controlar el uso del punto y coma en las instrucciones secuenciales"<<endl;
+		cout<<"      --forcesemicolon       controlar el uso del punto y coma en las instrucciones secuenciales"<<endl;
 		cout<<"      --allowddims           permitir utilizar variables para dimensionar arreglos"<<endl;
 		cout<<"      --nolazysyntax         no permitir sintaxis flexible (omitir algunas palabras, o utilizar sinonimos)"<<endl;
 		cout<<"      --basezeroarrays       trabajar con arreglos en base 0"<<endl;

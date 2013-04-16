@@ -138,7 +138,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("allow_dinamyc_dimensions="))<<(lang.allow_dinamyc_dimensions?1:0));
 	fil.AddLine(wxString(_T("force_define_vars="))<<(lang.force_define_vars?1:0));
 	fil.AddLine(wxString(_T("force_init_vars="))<<(lang.force_init_vars?1:0));
-	fil.AddLine(wxString(_T("force_dot_and_comma="))<<(lang.force_dot_and_comma?1:0));
+	fil.AddLine(wxString(_T("force_semicolon="))<<(lang.force_semicolon?1:0));
 	fil.AddLine(wxString(_T("enable_string_functions="))<<(lang.enable_string_functions?1:0));
 	fil.AddLine(wxString(_T("enable_user_functions="))<<(lang.enable_user_functions?1:0));
 	fil.AddLine(wxString(_T("allow_word_operators="))<<(lang.word_operators?1:0));
@@ -217,7 +217,8 @@ void ConfigManager::Read() {
 			else if (key==_T("force_init_vars")) lang.force_init_vars=utils->IsTrue(value);
 			else if (key==_T("enable_user_functions")) lang.enable_user_functions=utils->IsTrue(value);
 			else if (key==_T("enable_string_functions")) lang.enable_string_functions=utils->IsTrue(value);
-			else if (key==_T("force_dot_and_comma")) lang.force_dot_and_comma=utils->IsTrue(value);
+			else if (key==_T("force_dot_and_comma")) lang.force_semicolon=utils->IsTrue(value);
+			else if (key==_T("force_semicolon")) lang.force_semicolon=utils->IsTrue(value);
 			else if (key==_T("allow_word_operators")) lang.word_operators=utils->IsTrue(value);
 			else if (key==_T("overload_equal")) lang.overload_equal=utils->IsTrue(value);
 			else if (key==_T("coloquial_conditions")) lang.coloquial_conditions=utils->IsTrue(value);
@@ -307,7 +308,7 @@ bool LangSettings::Load (wxString fname) {
 		else if (key==_T("allow_concatenation")) allow_concatenation=utils->IsTrue(value);
 		else if (key==_T("enable_string_functions")) enable_string_functions=utils->IsTrue(value);
 		else if (key==_T("enable_user_functions")) enable_user_functions=utils->IsTrue(value);
-		else if (key==_T("force_dot_and_comma")) force_dot_and_comma=utils->IsTrue(value);
+		else if (key==_T("force_semicolon")) force_semicolon=utils->IsTrue(value);
 		else if (key==_T("allow_word_operators")) word_operators=utils->IsTrue(value);
 		else if (key==_T("overload_equal")) overload_equal=utils->IsTrue(value);
 		else if (key==_T("coloquial_conditions")) coloquial_conditions=utils->IsTrue(value);
@@ -333,7 +334,7 @@ bool LangSettings::Save (wxString fname) {
 	fil.AddLine(wxString(_T("allow_concatenation="))<<(allow_concatenation?1:0));
 	fil.AddLine(wxString(_T("enable_string_functions="))<<(enable_string_functions?1:0));
 	fil.AddLine(wxString(_T("enable_user_functions="))<<(enable_user_functions?1:0));
-	fil.AddLine(wxString(_T("force_dot_and_comma="))<<(force_dot_and_comma?1:0));
+	fil.AddLine(wxString(_T("force_semicolon="))<<(force_semicolon?1:0));
 	fil.AddLine(wxString(_T("allow_word_operators="))<<(word_operators?1:0));
 	fil.AddLine(wxString(_T("overload_equal="))<<(overload_equal?1:0));
 	fil.AddLine(wxString(_T("coloquial_conditions="))<<(coloquial_conditions?1:0));

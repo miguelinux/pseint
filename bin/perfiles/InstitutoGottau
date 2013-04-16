@@ -7,5 +7,5 @@ base_zero_arrays=0
 allow_dinamyc_dimensions=1
 lazy_syntax=1
 overload_equal=1
-force_dot_and_comma=0
+force_semicolon=0
 coloquial_conditions=0

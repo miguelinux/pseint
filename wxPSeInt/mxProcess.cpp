@@ -209,7 +209,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
-	if (config->lang.force_dot_and_comma) command<<" --forcesemicolons";
+	if (config->lang.force_semicolon) command<<" --forcesemicolons";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -240,8 +240,8 @@ bool mxProcess::ExportCpp(wxString file, bool check_first) {
 
 wxString mxProcess::GetProfileArgs() {
 	wxString command;
-	if (config->lang.force_dot_and_comma)
-		command<<_T(" --forcedotandcomma");
+	if (config->lang.force_semicolon)
+		command<<_T(" --forcesemicolon");
 	if (!config->lang.enable_string_functions)
 		command<<_T(" --hidestringfunctions");
 	if (!config->lang.enable_user_functions)

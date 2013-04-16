@@ -805,7 +805,10 @@ void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText(_T("ASIGNAR")));
 	wxArrayString toins;
-	toins.Add(_T("{variable}<-{expresion};"));
+	if (config->lang.force_semicolon)
+		toins.Add(_T("{variable}<-{expresion};"));
+	else
+		toins.Add(_T("{variable}<-{expresion}"));
 	InsertCode(toins);
 }
 
@@ -813,7 +816,10 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText(_T("LEER")));
 	wxArrayString toins;
-	toins.Add(_T("Leer {lista_de_variables};"));
+	if (config->lang.force_semicolon)
+		toins.Add(_T("Leer {lista_de_variables};"));
+	else
+		toins.Add(_T("Leer {lista_de_variables}"));
 	InsertCode(toins);
 }
 
@@ -821,7 +827,10 @@ void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText(_T("ESCRIBIR")));
 	wxArrayString toins;
-	toins.Add(_T("Escribir {lista_de_expresiones};"));
+	if (config->lang.force_semicolon)
+		toins.Add(_T("Escribir {lista_de_expresiones};"));
+	else
+		toins.Add(_T("Escribir {lista_de_expresiones}"));
 	InsertCode(toins);
 }
 

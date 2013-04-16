@@ -751,7 +751,7 @@ int SynCheck(int linea_from, int linea_to) {
 			bool lleva_pyc=instruccion=="DIMENSION " || instruccion=="DEFINIR " || instruccion=="ESCRIBIR "|| instruccion=="ESCRIBNL " || instruccion=="<-"  || instruccion=="LEER " || instruccion=="ESPERAR " || instruccion=="ESPERARTECLA" || instruccion=="BORRARPANTALLA" || instruccion=="INVOCAR ";
 			if (lleva_pyc) {
 				if (cadena[cadena.size()-1]!=';') {
-					if (force_dot_and_comma)
+					if (force_semicolon)
 					{ SynError (38,"Falta punto y coma."); errores++; }
 					cadena=cadena+';';
 				}

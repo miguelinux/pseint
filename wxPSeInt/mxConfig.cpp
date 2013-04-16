@@ -30,8 +30,8 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 	chk_force_define_vars->SetToolTip(utils->FixTooltip(
 		"Si esta opción está deshabilitada no se puede utilizar una variable sin previamente definir su tipo. Para esto se debe "
 		"utilizar la palabra clave DEFINIR. Ej: \"DEFINIR X COMO REAL\". Los tipos posibles son ENTERO, NUMERICO/REAL, LOGICO, CARACTER/TEXTO."));
-	chk_force_dot_and_comma = utils->AddCheckBox(opts_sizer,this,_T("Controlar el uso de ; al final de sentencias secuenciales"),true);
-	chk_force_dot_and_comma->SetToolTip(utils->FixTooltip(
+	chk_force_semicolon = utils->AddCheckBox(opts_sizer,this,_T("Controlar el uso de ; al final de sentencias secuenciales"),true);
+	chk_force_semicolon->SetToolTip(utils->FixTooltip(
 		"Si esta opción está activada obliga a colocar punto y coma (;) al final de las instrucciones secuenciales, como se hace "
 		"en lenguajes como C++ o Pascal (util para acostumbrarse antes de dar el salto desde el pseudocódigo a un lenguaje real). "
 		"si está desactivada el uso del punto y coma es opcional."));
@@ -149,7 +149,7 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 void mxConfig::ReadFromStruct (LangSettings l) {
 	chk_force_define_vars->SetValue(l.force_define_vars);
 	chk_force_init_vars->SetValue(l.force_init_vars);
-	chk_force_dot_and_comma->SetValue(l.force_dot_and_comma);
+	chk_force_semicolon->SetValue(l.force_semicolon);
 	chk_base_zero_arrays->SetValue(l.base_zero_arrays);
 	chk_allow_concatenation->SetValue(l.allow_concatenation);
 	chk_overload_equal->SetValue(l.overload_equal);
@@ -165,7 +165,7 @@ void mxConfig::ReadFromStruct (LangSettings l) {
 void mxConfig::CopyToStruct (LangSettings & l) {
 	l.force_define_vars=chk_force_define_vars->GetValue();
 	l.force_init_vars=chk_force_init_vars->GetValue();
-	l.force_dot_and_comma=chk_force_dot_and_comma->GetValue();
+	l.force_semicolon=chk_force_semicolon->GetValue();
 	l.base_zero_arrays=chk_base_zero_arrays->GetValue();
 	l.allow_concatenation=chk_allow_concatenation->GetValue();
 	l.overload_equal=chk_overload_equal->GetValue();

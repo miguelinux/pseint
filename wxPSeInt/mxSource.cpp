@@ -587,7 +587,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		wxString what = evt.GetText();
 		while (comp_list[i]!=what) i++;
 		wxString text(comp_list[i].text);
-		if (!config->lang.force_dot_and_comma && text.Last()==';') text.RemoveLast();
+		if (!config->lang.force_semicolon && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()==_T("FIN "))
 			text.Last()='\n';
 		ReplaceTarget(text);
@@ -746,7 +746,7 @@ void mxSource::SetExample() {
 			if (p1==wxNOT_FOUND||p1>p2) {
 				
 				if (p2==2&&aux[1]==';') {
-					if (config->lang.force_dot_and_comma)
+					if (config->lang.force_semicolon)
 						str=str.Mid(0,p0)+";"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+aux.Mid(p2+1);

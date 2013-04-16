@@ -20,7 +20,7 @@ extern bool coloquial_conditions; // permite condiciones en lenguaje coloquial c
 extern bool force_var_definition; // obliga a definir los tipos de todas las variables antes de usarlas
 extern bool allow_undef_vars;
 extern bool allow_concatenation;
-extern bool force_dot_and_comma;
+extern bool force_semicolon;
 extern bool word_operators; // permitir usar las palabras claves Y, O, NO y MOD para reemplazar a los operadores &, |, ~ y %
 extern bool colored_output;
 extern bool allow_dinamyc_dimensions; // permitir usar variables para dimensionar arreglos

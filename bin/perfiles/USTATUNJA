@@ -1,7 +1,7 @@
 desc=Perfil para asignatura de Lógica de Programación de la facultad de Ingenieria Civil de Universidad Santo Tomás seccional Tunja, Colombia (enviado por David Gerónimo Soler Gómez).
 force_init_vars=1
 force_define_vars=1
-force_dot_and_comma=0
+force_semicolon=0
 allow_concatenation=0
 allow_word_operators=1
 base_zero_arrays=1

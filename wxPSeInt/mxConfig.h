@@ -8,7 +8,7 @@ class mxConfig:wxDialog {
 private:
 	wxCheckBox *chk_force_init_vars;
 	wxCheckBox *chk_force_define_vars;
-	wxCheckBox *chk_force_dot_and_comma;
+	wxCheckBox *chk_force_semicolon;
 	wxCheckBox *chk_base_zero_arrays;
 	wxCheckBox *chk_allow_concatenation;
 	wxCheckBox *chk_overload_equal;

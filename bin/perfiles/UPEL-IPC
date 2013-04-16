@@ -1,7 +1,7 @@
 desc=Perfil para la cátedra de Informática del "Instituto Pedagógico de Caracas" de la "Universidad Pedagógica Experimental Libertador" (enviado por el prof. Freddys Rojas).
 force_init_vars=1
 force_define_vars=1
-force_dot_and_comma=1
+force_semicolon=1
 allow_concatenation=1
 allow_word_operators=1
 base_zero_arrays=1

@@ -9,7 +9,7 @@ struct LangSettings {
 	wxString desc;
 	bool force_define_vars;
 	bool force_init_vars;
-	bool force_dot_and_comma;
+	bool force_semicolon;
 	bool base_zero_arrays;
 	bool allow_concatenation;
 	bool use_nassi_schneiderman;
@@ -24,7 +24,7 @@ struct LangSettings {
 		return 
 			force_define_vars!=o.force_define_vars ||
 			force_init_vars!=o.force_init_vars ||
-			force_dot_and_comma!=o.force_dot_and_comma ||
+			force_semicolon!=o.force_semicolon ||
 			base_zero_arrays!=o.base_zero_arrays ||
 			allow_concatenation!=o.allow_concatenation ||
 			use_nassi_schneiderman!=o.use_nassi_schneiderman ||
@@ -40,7 +40,7 @@ struct LangSettings {
 		desc.Clear();
 		force_define_vars=false;
 		force_init_vars=false;
-		force_dot_and_comma=false;
+		force_semicolon=false;
 		base_zero_arrays=false;
 		allow_concatenation=true;
 		use_nassi_schneiderman=false;

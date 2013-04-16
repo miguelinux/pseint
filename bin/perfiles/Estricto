@@ -17,7 +17,7 @@ allow_concatenation=0
 force_init_vars=1
 
 # controlar el uso del ; al final de las instrucciones secuenciales (leer, escribir, asignar(<-), dimension, definir)
-force_dot_and_comma=1
+force_semicolon=1
 
 # permitir reemplazar operadores por palabras clave (&=Y, |=O, ~=NO, %=MOD)
 allow_word_operators=0

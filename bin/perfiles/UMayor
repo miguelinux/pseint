@@ -1,7 +1,7 @@
 desc=Perfil para la cátedra "Computación para Ingeniería" de la facultad de Ingeniería de la Universidad Mayor de Chile (enviado por la directora Alejandra Acuña Villalobos).
 force_init_vars=1
 force_define_vars=0
-force_dot_and_comma=0
+force_semicolon=0
 allow_concatenation=1
 allow_word_operators=1
 base_zero_arrays=1

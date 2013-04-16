@@ -9,7 +9,7 @@ bool wait_key;
 int SynErrores=0; // Contador para errores de Sintaxis
 bool raw_errors=false;
 bool allow_undef_vars=true;
-bool force_dot_and_comma=false;
+bool force_semicolon=false;
 bool word_operators=true;
 bool colored_output=false;
 bool allow_dinamyc_dimensions=false;
