@@ -4,8 +4,6 @@
 #include <wx/textfile.h>
 #include "version.h"
 #include <wx/msgdlg.h>
-#include <iostream>
-using namespace std;
 
 ConfigManager *config;
 
@@ -290,7 +288,7 @@ wxString ConfigManager::GetTTYCommand ( ) {
 }
 
 bool LangSettings::Load (wxString fname) {
-	cerr<<"Loading Profile: "<<fname<<endl;
+//	cerr<<"Loading Profile: "<<fname<<endl;
 	Reset();
 	wxTextFile fil(fname);
 	if (!fil.Exists()) return false;

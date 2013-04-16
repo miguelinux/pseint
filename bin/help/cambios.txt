@@ -1,7 +1,14 @@
 >>RELEASE 20130416<<
 
-20130415
+20130416
+	Simplificado el menú configurar del editor de pseudocódigo.
+	El cuadro de diálogo para evaluar variables y expresiones en el paso a paso ya no se oculta al avanzar un paso.
+	El intérprete ya no consume el 100% de cpu cuando se pausa la ejecución paso a paso.
+	Ahora se recuerda correctamente el último directorio utilizado para los cuadros de abrir/guardar.
+	Si el perfil actual no obliga a colocar punto y coma, al insertar una instrucción desde el panel de comandos.
 	Si el perfil actual no obliga a colocar punto y coma, al exportar a diagrama de flujo no se agregan automáticamente.
+	
+20130415
 	Los puntos y coma colocados en las instrucciones secuenciales en el diagrama de flujo ya no aparecen dos veces en el pseudocódigo al aplicar los cambios.
 	Si se dejan campos en blanco en el editor de diagramas de flujo, al aplicar los cambios estos aparecen como campos a completar en el pseudocódigo.
 	Se agreó un cuadro de búsqueda a la ventana de selección del perfil.

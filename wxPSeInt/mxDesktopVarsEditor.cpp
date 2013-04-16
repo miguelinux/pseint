@@ -99,7 +99,7 @@ void mxDesktopVarsEditor::OnDelete(wxCommandEvent &evt) {
 }
 
 void mxDesktopVarsEditor::OnAdd(wxCommandEvent &evt) {
-	wxString var = wxGetTextFromUser(_T("Expresion"),_T("Ingrese la expresion:"),list->GetString(list->GetSelection()),this);
+	wxString var = wxGetTextFromUser(_T("Expresion"),_T("Ingrese la expresion:"),"",this);
 	if (var.Len())
 		list->Append(var);
 }

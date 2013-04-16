@@ -105,16 +105,15 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
-	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
-	EVT_MENU(mxID_CONFIG_SHOW_VARS, mxMainWindow::OnConfigShowVars)
-	EVT_MENU(mxID_CONFIG_SHOW_COMMANDS, mxMainWindow::OnConfigShowCommands)
+//	EVT_MENU(mxID_CONFIG_SHOW_TOOLBAR, mxMainWindow::OnConfigShowToolbar)
+//	EVT_MENU(mxID_CONFIG_SHOW_VARS, mxMainWindow::OnConfigShowVars)
+//	EVT_MENU(mxID_CONFIG_SHOW_COMMANDS, mxMainWindow::OnConfigShowCommands)
 	EVT_MENU(mxID_CONFIG_HIGHLIGHT_BLOCKS, mxMainWindow::OnConfigHighlightBlocks)
 	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
 	EVT_MENU(mxID_CONFIG_AUTOCOMP, mxMainWindow::OnConfigAutoComp)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
-	EVT_MENU(mxID_CONFIG_SHOW_DEBUG_PANEL, mxMainWindow::OnConfigShowDebugPanel)
-	EVT_MENU(mxID_CONFIG_REALLY_SHOW_DEBUG_PANEL, mxMainWindow::OnToolbarShowDebugPanel)
+//	EVT_MENU(mxID_CONFIG_SHOW_DEBUG_PANEL, mxMainWindow::OnConfigShowDebugPanel)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
 	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
@@ -271,25 +270,23 @@ void mxMainWindow::CreateMenus() {
 	menu->Append(edit, _T("&Editar"));
 	
 	wxMenu *cfg = new wxMenu;
-	mi_autocomp = utils->AddCheckToMenu(cfg,mxID_CONFIG_AUTOCOMP, _T("Utilizar Autocompletado"),_T(""),config->autocomp);
-	mi_autoclose = utils->AddCheckToMenu(cfg,mxID_CONFIG_AUTOCLOSE, _T("Cerrar Repetitivas/Condicionales"),_T(""),config->autoclose);
-	mi_highlight_blocks = utils->AddCheckToMenu(cfg,mxID_CONFIG_HIGHLIGHT_BLOCKS, _T("Resaltar bloques lógicos"),_T(""),config->highlight_blocks);
-	mi_calltip_helps = utils->AddCheckToMenu(cfg,mxID_CONFIG_CALLTIP_HELPS, _T("Utilizar Ayudas Emergentes"),_T(""),config->calltip_helps);
-	mi_smart_indent = utils->AddCheckToMenu(cfg,mxID_CONFIG_SMART_INDENT, _T("Utilizar Indentado Inteligente"),_T(""),config->smart_indent);
 	
-	mi_rt_syntax = utils->AddCheckToMenu(cfg,mxID_CONFIG_RT_SYNTAX, _T("Comprobar Sintaxis Mientras Escribe"),_T(""),config->rt_syntax);
+	wxMenu *cfg_help = new wxMenu;
+	mi_autocomp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCOMP, _T("Utilizar Autocompletado"),_T(""),config->autocomp);
+	mi_autoclose = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCLOSE, _T("Cerrar Repetitivas/Condicionales"),_T(""),config->autoclose);
+	mi_highlight_blocks = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_HIGHLIGHT_BLOCKS, _T("Resaltar bloques lógicos"),_T(""),config->highlight_blocks);
+	mi_calltip_helps = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_CALLTIP_HELPS, _T("Utilizar Ayudas Emergentes"),_T(""),config->calltip_helps);
+	mi_smart_indent = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SMART_INDENT, _T("Utilizar Indentado Inteligente"),_T(""),config->smart_indent);
+	mi_rt_syntax = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_RT_SYNTAX, _T("Comprobar Sintaxis Mientras Escribe"),_T(""),config->rt_syntax);
+	mi_quickhelp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
+	cfg->AppendSubMenu(cfg_help,"Asistencias");
 	
-	cfg->AppendSeparator();
-	mi_quickhelp = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
-	mi_toolbar = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_TOOLBAR, _T("Mostrar Barra de Herramientas"),_T(""),config->show_toolbar);
-	mi_commands = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_COMMANDS, _T("Mostrar Panel de Comandos"),_T(""),config->show_commands);
-	mi_vars_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_VARS, _T("Mostrar Panel de Variables"),_T(""),config->show_vars);
-	mi_debug_panel = utils->AddCheckToMenu(cfg,mxID_CONFIG_SHOW_DEBUG_PANEL, _T("Mostrar Panel de Ejecucion Paso a Paso"),_T(""),config->show_debug_panel);
-	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
-	cfg->AppendSeparator();
-	mi_use_colors = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
-	mi_use_psterm = utils->AddCheckToMenu(cfg,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
-	cfg->AppendSeparator();
+	wxMenu *cfg_pres = new wxMenu;
+	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
+	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
+	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
+	cfg->AppendSubMenu(cfg_pres,"Presentación");
+	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Schneiderman"),_T(""),config->lang.use_nassi_schneiderman);
 	menu->Append(cfg, _T("&Configurar"));
@@ -1017,55 +1014,55 @@ void mxMainWindow::OnHelpIndex(wxCommandEvent &evt) {
 		helpw = new mxHelpWindow();
 }
 
-void mxMainWindow::OnConfigShowToolbar(wxCommandEvent &evt) {
-	if (!mi_toolbar->IsChecked()) {
-		mi_toolbar->Check(false);
-		aui_manager.GetPane(toolbar).Hide();
-	} else {
-		mi_toolbar->Check(true);
-		aui_manager.GetPane(toolbar).Show();
-	}
-	aui_manager.Update();	
-}
+//void mxMainWindow::OnConfigShowToolbar(wxCommandEvent &evt) {
+//	if (!mi_toolbar->IsChecked()) {
+//		mi_toolbar->Check(false);
+//		aui_manager.GetPane(toolbar).Hide();
+//	} else {
+//		mi_toolbar->Check(true);
+//		aui_manager.GetPane(toolbar).Show();
+//	}
+//	aui_manager.Update();	
+//}
 	
-void mxMainWindow::OnConfigShowCommands(wxCommandEvent &evt) {
-	if (!mi_commands->IsChecked()) {
-		mi_commands->Check(false);
-		aui_manager.GetPane(commands).Hide();
-		aui_manager.GetPane("helper_commands").Show();
-	} else {
-		mi_commands->Check(true);
-		aui_manager.GetPane(commands).Show();
-		aui_manager.GetPane("helper_commands").Hide();
-	}
-	aui_manager.Update();	
-}
+//void mxMainWindow::OnConfigShowCommands(wxCommandEvent &evt) {
+//	if (!mi_commands->IsChecked()) {
+//		mi_commands->Check(false);
+//		aui_manager.GetPane(commands).Hide();
+//		aui_manager.GetPane("helper_commands").Show();
+//	} else {
+//		mi_commands->Check(true);
+//		aui_manager.GetPane(commands).Show();
+//		aui_manager.GetPane("helper_commands").Hide();
+//	}
+//	aui_manager.Update();	
+//}
 	
-void mxMainWindow::OnConfigShowVars(wxCommandEvent &evt) {
-	if (!mi_vars_panel->IsChecked()) {
-		mi_vars_panel->Check(false);
-		aui_manager.GetPane(var_window).Hide();
-		aui_manager.GetPane("helper_vars").Show();
-	} else {
-		mi_vars_panel->Check(true);
-		aui_manager.GetPane(var_window).Show();
-		aui_manager.GetPane("helper_vars").Hide();
-	}
-	aui_manager.Update(); CheckIfNeedsRTS();
-}
+//void mxMainWindow::OnConfigShowVars(wxCommandEvent &evt) {
+//	if (!mi_vars_panel->IsChecked()) {
+//		mi_vars_panel->Check(false);
+//		aui_manager.GetPane(var_window).Hide();
+//		aui_manager.GetPane("helper_vars").Show();
+//	} else {
+//		mi_vars_panel->Check(true);
+//		aui_manager.GetPane(var_window).Show();
+//		aui_manager.GetPane("helper_vars").Hide();
+//	}
+//	aui_manager.Update(); CheckIfNeedsRTS();
+//}
 	
-void mxMainWindow::OnConfigShowDebugPanel(wxCommandEvent &evt) {
-	if (!mi_debug_panel->IsChecked()) {
-		mi_debug_panel->Check(false);
-		aui_manager.GetPane(debug_panel).Hide();
-		aui_manager.GetPane("helper_debug").Show();
-	} else {
-		mi_debug_panel->Check(true);
-		aui_manager.GetPane(debug_panel).Show();
-		aui_manager.GetPane("helper_debug").Hide();
-	}
-	aui_manager.Update();	
-}
+//void mxMainWindow::OnConfigShowDebugPanel(wxCommandEvent &evt) {
+//	if (!mi_debug_panel->IsChecked()) {
+//		mi_debug_panel->Check(false);
+//		aui_manager.GetPane(debug_panel).Hide();
+//		aui_manager.GetPane("helper_debug").Show();
+//	} else {
+//		mi_debug_panel->Check(true);
+//		aui_manager.GetPane(debug_panel).Show();
+//		aui_manager.GetPane("helper_debug").Hide();
+//	}
+//	aui_manager.Update();	
+//}
 	
 void mxMainWindow::OnConfigShowQuickHelp(wxCommandEvent &evt) {
 	if (!mi_quickhelp->IsChecked()) {
@@ -1171,19 +1168,20 @@ void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
-	if (event.pane->name == _T("toolbar")) mi_toolbar->Check(config->show_toolbar=false);
-	else if (event.pane->name == _T("commands")) {
-		mi_commands->Check(config->show_commands=false);
+//	if (event.pane->name == _T("toolbar")) mi_toolbar->Check(config->show_toolbar=false);
+//	else 
+	if (event.pane->name == _T("commands")) {
+//		mi_commands->Check(config->show_commands=false);
 		aui_manager.GetPane("helper_commands").Show();
 		aui_manager.Update();	
 	}
 	else if (event.pane->name == _T("debug_panel")) {
-		mi_debug_panel->Check(config->show_debug_panel=false);
+//		mi_debug_panel->Check(config->show_debug_panel=false);
 		aui_manager.GetPane("helper_debug").Show();
 		aui_manager.Update();	
 	}
 	else if (event.pane->name == _T("vars_panel")) { 
-		mi_vars_panel->Check(config->show_vars=false); 
+//		mi_vars_panel->Check(config->show_vars=false); 
 		aui_manager.GetPane("helper_vars").Show();
 		aui_manager.Update(); CheckIfNeedsRTS();
 	}
@@ -1239,14 +1237,14 @@ void mxMainWindow::SetDesktopVars(bool do_dt, const wxArrayString &vars) {
 	ShowDesktopTestGrid(do_dt);
 }
 
-void mxMainWindow::OnToolbarShowDebugPanel(wxCommandEvent &evt) {
-	if (mi_debug_panel->IsChecked()) {
-		mi_debug_panel->Check(true);
-		aui_manager.GetPane(debug_panel).Show();
-		aui_manager.Update();	
-	} else
-		OnRunStepStep(evt);
-}
+//void mxMainWindow::OnToolbarShowDebugPanel(wxCommandEvent &evt) {
+//	if (mi_debug_panel->IsChecked()) {
+//		mi_debug_panel->Check(true);
+//		aui_manager.GetPane(debug_panel).Show();
+//		aui_manager.Update();	
+//	} else
+//		OnRunStepStep(evt);
+//}
 
 void mxMainWindow::SelectLine(mxSource *src, int l) {
 	int index = notebook->GetPageIndex(last_source);
@@ -1436,21 +1434,21 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
-	mi_vars_panel->Check(config->show_vars=true);
+//	mi_vars_panel->Check(config->show_vars=true);
 	aui_manager.GetPane(var_window).Show();
 	aui_manager.GetPane("helper_vars").Hide();
 	aui_manager.Update(); CheckIfNeedsRTS();	
 }
 
 void mxMainWindow::OnHelperDebug (wxCommandEvent & evt) {
-	mi_debug_panel->Check(true);
+//	mi_debug_panel->Check(true);
 	aui_manager.GetPane(debug_panel).Show();
 	aui_manager.GetPane("helper_debug").Hide();
 	aui_manager.Update();	
 }
 
 void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
-	mi_commands->Check(true);
+//	mi_commands->Check(true);
 	aui_manager.GetPane(commands).Show();
 	aui_manager.GetPane("helper_commands").Hide();
 	aui_manager.Update();	
@@ -1527,26 +1525,42 @@ void mxMainWindow::ShowDesktopTestGrid(bool show, bool one_line) {
 }
 
 void mxMainWindow::ShowDebugPanel (bool show) {
-	if (show!=mi_debug_panel->IsChecked()) {
-		wxCommandEvent evt;
-		mi_debug_panel->Check(show);
-		OnConfigShowDebugPanel(evt);
-	}	
+	wxAuiPaneInfo &pi=aui_manager.GetPane(debug_panel);
+	if (pi.IsShown()==show) return;
+	if (show) {
+		pi.Show();
+		aui_manager.GetPane("helper_debug").Hide();
+	} else {
+		pi.Hide();
+		aui_manager.GetPane("helper_debug").Show();
+	}
+	aui_manager.Update();
 }
 
 void mxMainWindow::ShowVarsPanel (bool show) {
-	if (show!=mi_vars_panel->IsChecked()) {
-		wxCommandEvent evt;
-		mi_vars_panel->Check(show);
-		OnConfigShowVars(evt);
-	}	
-}
-void mxMainWindow::ShowCommandsPanel (bool show) {
-	if (show!=mi_commands->IsChecked()) {
-		wxCommandEvent evt;
-		mi_commands->Check(show);
-		OnConfigShowCommands(evt);
+	wxAuiPaneInfo &pi=aui_manager.GetPane(var_window);
+	if (pi.IsShown()==show) return;
+	if (show) {
+		pi.Show();
+		aui_manager.GetPane("helper_vars").Show();
+	} else {
+		pi.Hide();
+		aui_manager.GetPane("helper_vars").Show();
 	}
+	aui_manager.Update(); CheckIfNeedsRTS();
+}
+
+void mxMainWindow::ShowCommandsPanel (bool show) {
+	wxAuiPaneInfo &pi=aui_manager.GetPane(commands);
+		if (pi.IsShown()==show) return;
+	if (show) {
+		pi.Show();
+		aui_manager.GetPane("helper_commands").Hide();
+	} else {
+		pi.Hide();
+		aui_manager.GetPane("helper_commands").Show();
+	}
+	aui_manager.Update();	
 }
 
 void mxMainWindow::ParseResults(mxSource *source) {

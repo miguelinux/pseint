@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 END_EVENT_TABLE()	
 
 mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
+	evaluate_window=NULL;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->AddSpacer(5);
 //	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Estado:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
@@ -139,13 +140,15 @@ void mxDebugWindow::SetState(ds_enum state) {
 		break;
 	}
 	ds_state = state;
+	if (evaluate_window && evaluate_window->IsShown()) evaluate_window->Evaluate();
 }
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 	
 	main_window->ReorganizeForDebugging();
 	
-	if (evaluate_window->IsShown()) evaluate_window->Hide();
+//	if (evaluate_window->IsShown()) evaluate_window->Hide();
+//	if (evaluate_window->IsShown()) evaluate_window->Evaluate();
 	if (debug->debugging) {
 		debug->Stop();
 	} else {
@@ -155,13 +158,15 @@ void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 }
 
 void mxDebugWindow::OnDebugPause(wxCommandEvent &evt) {
-	if (evaluate_window->IsShown()) evaluate_window->Hide();
+//	if (evaluate_window->IsShown()) evaluate_window->Hide();
+//	if (evaluate_window->IsShown()) evaluate_window->Evaluate();
 	if (ds_state==DS_STEP) return;
 	debug->Pause();
 }
 
 void mxDebugWindow::OnDebugStep(wxCommandEvent &evt) {
-	if (evaluate_window->IsShown()) evaluate_window->Hide();
+//	if (evaluate_window->IsShown()) evaluate_window->Hide();
+	if (evaluate_window->IsShown()) evaluate_window->Evaluate();
 	if (ds_state==DS_STEP) return;
 	if (debug->debugging) {
 		debug->Step();

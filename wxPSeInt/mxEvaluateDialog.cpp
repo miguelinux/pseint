@@ -15,35 +15,35 @@ BEGIN_EVENT_TABLE(mxEvaluateDialog, wxDialog)
 END_EVENT_TABLE()
 
 	
-mxEvaluateDialog::mxEvaluateDialog(wxWindow *parent) : wxDialog(parent,wxID_ANY,_T("Evaluar expresiones"),wxDefaultPosition,wxDefaultSize,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxEvaluateDialog::mxEvaluateDialog(wxWindow *parent) : wxDialog(parent,wxID_ANY,_T("Evaluar expresiones"),wxDefaultPosition,wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *comboSizer= new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	mySizer->Add(new wxStaticText(this, wxID_ANY, _T("Introduzca una expresion:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
+	mySizer->Add(new wxStaticText(this, wxID_ANY, _T("Introduzca una expresión y presione Enter:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT,5));
 	
 	combo = new wxComboBox(this, wxID_ANY);
-	comboSizer->Add(combo, wxSizerFlags().Border(wxALL,5).Proportion(1).Expand());
-	wxButton *button_evaluate = new wxButton(this,wxID_OK, _T("&Evaluar"));
-	comboSizer->Add( button_evaluate , wxSizerFlags().Border(wxALL,5));
+	comboSizer->Add(combo, wxSizerFlags()/*.Border(wxALL,5)*/.Proportion(1).Expand());
+//	wxButton *button_evaluate = new wxButton(this,wxID_OK, _T(" &Evaluar "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+//	comboSizer->Add( button_evaluate /*, wxSizerFlags().Border(wxALL,5)*/);
 	
 	mySizer->Add(comboSizer, wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-	mySizer->Add(new wxStaticText(this, wxID_ANY, _T("Valor actual:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
-	result = new wxTextCtrl(this, wxID_ANY, _T("<<Presione Evaluar para ver aqui el resultado>>"), wxDefaultPosition, wxSize(300,70), wxTE_MULTILINE|wxTE_READONLY);
-	mySizer->Add(result, wxSizerFlags().Border(wxALL,5).DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).Proportion(1).Expand());
+	mySizer->Add(new wxStaticText(this, wxID_ANY, _T("Valor actual:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT,5));
+	result = new wxTextCtrl(this, wxID_ANY, _T("<<Presione Evaluar para ver aqui el resultado>>"), wxDefaultPosition, wxSize(200,60), wxTE_MULTILINE|wxTE_READONLY);
+	mySizer->Add(result, wxSizerFlags().Border(wxLEFT|wxRIGHT,5)./*DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).*/Proportion(1).Expand());
 	tipo = new wxTextCtrl(this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 	wxBoxSizer *tipoSizer = new wxBoxSizer(wxHORIZONTAL);
 	tipoSizer->Add(new wxStaticText(this,wxID_ANY,"Tipo: "),wxSizerFlags().Center());
 	tipoSizer->Add(tipo, wxSizerFlags().Proportion(1).Expand());
-	mySizer->Add(tipoSizer, wxSizerFlags().Border(wxALL,5).DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).Proportion(0).Expand());
+	mySizer->Add(tipoSizer, wxSizerFlags().Border(wxALL,5)./*DoubleBorder(wxBOTTOM|wxLEFT|wxRIGHT).*/Proportion(0).Expand());
 	
-	wxButton *button_close = new wxButton(this,wxID_CANCEL, _T("&Cerrar"));
-	bottomSizer->Add( button_close , wxSizerFlags().Border(wxALL,5));
+	wxButton *button_close = new wxButton(this,wxID_CANCEL, _T("&Cerrar"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	bottomSizer->Add( button_close /*, wxSizerFlags().Border(wxALL,5)*/);
 	SetAffirmativeId(wxID_OK);
 	SetEscapeId(wxID_CANCEL);
-	mySizer->Add(bottomSizer,wxSizerFlags().Border(wxALL,5).Right());
+	mySizer->Add(bottomSizer,wxSizerFlags()./*Border(wxALL,5).*/Right());
 	
 	SetMinSize(GetSize());
 	SetSizerAndFit(mySizer);
@@ -56,20 +56,22 @@ mxEvaluateDialog::~mxEvaluateDialog() {
 }
 
 void mxEvaluateDialog::OnEvaluateButton(wxCommandEvent &evt) {
-	if (!debug->debugging || !debug->paused) 
-		result->SetValue(_T("<<La ejecucion paso a paso debe estar iniciada y pausada para poder evaluar expresiones>>"));
-	else if (combo->GetValue().Len()) {
-		result->SetValue(_T("<<evaluando...>>"));
+	Evaluate();
+}
+
+void mxEvaluateDialog::Evaluate() {
+	if (!debug->debugging || !debug->paused) {
+		result->SetValue(_T("<<La ejecución paso a paso debe estar iniciada y pausada para poder evaluar expresiones>>"));
+	} else if (combo->GetValue().Len()) {
+//		result->SetValue(_T("<<evaluando...>>"));
 		act_expression=combo->GetValue();
-		if ( !last_expression.Len() || (act_expression.Len() && last_expression!=act_expression) ) {
+		if ( !last_expression.Len() || (act_expression.Len() && last_expression!=act_expression) )
 			combo->Append(act_expression);
-			
-		}
 		debug->SendEvaluation(act_expression);
 		combo->SetSelection(0,act_expression.Len());
 		last_expression=act_expression;
 	} else
-		result->SetValue(_T("<<Debe ingresar una expresion>>"));
+		result->SetValue(_T("<<Debe ingresar una expresión>>"));
 }
 
 void mxEvaluateDialog::OnCloseButton(wxCommandEvent &evt) {
@@ -96,13 +98,12 @@ void mxEvaluateDialog::SetEvaluationValue(wxString val, char t) {
 	
 void mxEvaluateDialog::OnCharHook(wxKeyEvent &evt)	{
 	if (evt.GetKeyCode()==WXK_RETURN || evt.GetKeyCode()==WXK_NUMPAD_ENTER) {
-		wxCommandEvent evt;
-		OnEvaluateButton(evt);
+		Evaluate();
 	} else evt.Skip();
 }
 	
 void mxEvaluateDialog::Show() {
-	result->SetValue(_T("<<Presione Evaluar para ver aqui el resultado>>"));
+//	result->SetValue(_T("<<Presione Evaluar para ver aqui el resultado>>"));
 	wxDialog::Show();
 }
 

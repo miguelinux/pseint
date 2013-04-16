@@ -16,10 +16,11 @@ public:
 	mxEvaluateDialog(wxWindow *parent);
 	void OnEvaluateButton(wxCommandEvent &evt);
 	void OnCloseButton(wxCommandEvent &evt);
-	void OnClose(wxCloseEvent &evt);
+//	void OnClose(wxCloseEvent &evt);
 	void EvaluateExpression(wxString exp);
 	void SetEvaluationValue(wxString val, char c);
 	void OnCharHook(wxKeyEvent &evt);
+	void Evaluate();
 	void Show();
 	DECLARE_EVENT_TABLE();
 	~mxEvaluateDialog();

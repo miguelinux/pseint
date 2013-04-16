@@ -85,15 +85,15 @@ public:
 	void OnViewNotebookPrev (wxCommandEvent &event);
 	
 //	void OnConfigHighRes(wxCommandEvent &evt);
-	void OnConfigShowToolbar(wxCommandEvent &evt);
+//	void OnConfigShowToolbar(wxCommandEvent &evt);
 	void OnConfigCalltipHelps(wxCommandEvent &evt);
 	void OnConfigAutoComp(wxCommandEvent &evt);
 	void OnConfigHighlightBlocks(wxCommandEvent &evt);
 	void OnConfigAutoClose(wxCommandEvent &evt);
-	void OnConfigShowCommands(wxCommandEvent &evt);
-	void OnConfigShowVars(wxCommandEvent &evt);
-	void OnToolbarShowDebugPanel(wxCommandEvent &evt);
-	void OnConfigShowDebugPanel(wxCommandEvent &evt);
+//	void OnConfigShowCommands(wxCommandEvent &evt);
+//	void OnConfigShowVars(wxCommandEvent &evt);
+//	void OnToolbarShowDebugPanel(wxCommandEvent &evt);
+//	void OnConfigShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowQuickHelp(wxCommandEvent &evt);
 	void OnConfigReorganizeForDebug(wxCommandEvent &evt);
 	void OnConfigUseColors(wxCommandEvent &evt);
@@ -109,8 +109,9 @@ public:
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScrollDegugSpeed(wxScrollEvent &evt);
 	
-	wxMenuItem *mi_toolbar, *mi_commands, *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, *mi_smart_indent, *mi_debug_panel, 
-		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, /**mi_stepstep_h, *mi_stepstep_l, *mi_stepstep_m, */*mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm, *mi_vars_panel;
+	wxMenuItem *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, *mi_smart_indent,
+		//*mi_debug_panel, *mi_toolbar, *mi_commands, *mi_vars_panel
+		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, *mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];
