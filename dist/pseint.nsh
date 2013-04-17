@@ -5,7 +5,7 @@
 #!define PRODUCT_VERSION "20090421"
 ;!define PRODUCT_PUBLISHER "PIPEH"
 !define PRODUCT_WEB_SITE "http://pseint.sourceforge.net"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\wxPSeInt.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\PSeInt"
 
 SetCompressor lzma
 
@@ -43,13 +43,40 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 
 Section "Principal" SEC01
+  SetShellVarContext all
   SetOverwrite on
   SetOutPath "$INSTDIR\"
   File /R "pseint\*"
   CreateShortCut "$SMPROGRAMS\PSeInt.lnk" "$INSTDIR\wxPSeInt.exe"
   CreateShortCut "$DESKTOP\PSeInt.lnk" "$INSTDIR\wxPSeInt.exe"
+  
+  #desinstalador
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PSeInt" "DisplayName" "PSeInt"  
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PSeInt" "UninstallString" "$INSTDIR\uninstall.exe"  
+  writeUninstaller "$INSTDIR\uninstall.exe"  
 SectionEnd
 
 Section -Post
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\wxPSeInt.exe"
 SectionEnd
+
+
+
+# Uninstaller
+
+function un.onInit
+	SetShellVarContext all
+	MessageBox MB_OKCANCEL "¿Desea desinstalar PSeInt?" IDOK next
+		Abort
+	next:
+functionEnd
+
+section "Uninstall"    
+  SetShellVarContext all  
+  Delete "$SMPROGRAMS\PSeInt.lnk"  
+  Delete "$DESKTOP\PSeInt.lnk"  
+  !include "uninstall.nsh"
+  Delete $INSTDIR\uninstall.exe
+  RMDir "$INSTDIR"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PSeInt"    
+sectionEnd  
