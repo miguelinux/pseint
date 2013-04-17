@@ -12,11 +12,11 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/cambios.txt
+current_source=psexport.cpp
 path_char=/
 [source]
 path=psexport.cpp
-cursor=3103
+cursor=4614
 open=true
 [source]
 path=../pseint/utils.cpp
@@ -107,7 +107,7 @@ path=export_chooser.h
 cursor=288
 [other]
 path=../bin/help/cambios.txt
-cursor=43
+cursor=640
 open=true
 [config]
 name=Linux_Debug

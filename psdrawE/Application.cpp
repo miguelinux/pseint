@@ -13,6 +13,7 @@
 #include "../psdraw2/Entity.h"
 #include "GLtoWX.h"
 #include "Version.h"
+#include <wx/choicdlg.h>
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -65,6 +66,16 @@ bool mxApplication::OnInit() {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}
 	edit_on=false;
+	
+	if (procesos.size()>0) {
+		wxArrayString procs;
+		for(unsigned int i=0;i<procesos.size();i++) 
+			procs.Add(procesos[i]->lpre+procesos[i]->label);
+		wxString r=wxGetSingleChoice("Elija el proceso/subproceso a exportar","Exportar diagrama de flujo",procs);
+		int i=procs.Index(r);
+		if (i!=wxNOT_FOUND)
+			SetProc(procesos[i]);
+	}
 	
 	// calcular tamaño total
 	zoom=d_zoom=1;
