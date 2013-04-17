@@ -1,4 +1,7 @@
->>RELEASE 20130416<<
+>>RELEASE 20130417<<
+
+20130417
+	Agregado el desinstalador en el paquete para Windows.
 
 20130416
 	Simplificado el menú configurar del editor de pseudocódigo.

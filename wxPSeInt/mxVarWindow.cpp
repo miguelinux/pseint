@@ -103,9 +103,11 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 
 void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 	if (!debug->debugging || !debug->paused) return;
-	evt.Skip();	
-	wxTreeItemId it=GetSelection();
-	if (it!=-1) debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
+	wxTreeItemId it=evt.GetItem();
+	if (it.IsOk() && tree->GetItemParent(it)!=tree_root) {
+		tree->SelectItem(it);
+		debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
+	}
 }
 
 void mxVarWindow::OnTreeTooltip(wxTreeEvent &evt) {

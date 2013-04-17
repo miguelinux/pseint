@@ -5,6 +5,13 @@
 #include "../pseint/zockets.h"
 #define VERSION 20121211
 #include "../pseint/version_common.h"
+#ifdef __WIN32__
+  #include<windows.h>
+#else
+  #include<sys/time.h>
+  #define Sleep(x) usleep((x)*1000)
+#endif
+
 using namespace std;
 
 int main (int argc, char *argv[]) {
