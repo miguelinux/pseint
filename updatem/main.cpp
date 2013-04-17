@@ -57,7 +57,7 @@ int main (int argc, char *argv[]) {
 	string request("GET ");
 	if (proxy) { request+="http://"; request+=web; }
 	request+="/version HTTP/1.1\nhost:";
-	request+=web+"\n\n";
+	request+=web+"\n\n"; // agregar "Cache-control: no-cache"?
 	zocket_escribir(z,request.c_str(),request.size());
 	char data[1024]; int c=1024;
 	string all_data, site_ver;

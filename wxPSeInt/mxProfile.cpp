@@ -56,7 +56,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 		}
 	}
 	perfiles.Sort(comp_nocase);
-	for(int i=0;i<perfiles.GetCount();i++) { 
+	for(unsigned int i=0;i<perfiles.GetCount();i++) { 
 		LangSettings l; l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
 		descripciones.Add(l.desc);
 	}

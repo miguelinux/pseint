@@ -600,17 +600,17 @@
   * Compruebe que todas las expresiones que se utilizan como indice de arreglos sean de tipo numerico.
 
 200
-  El identificador de variable que produjo el error el error corresponde a un <A href="arreglos.html">arreglo</A> (esta declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizandola sin los correspondientes subindices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
+  El identificador de variable que produjo el error el error corresponde a un <A href="arreglos.html">arreglo</A> (está declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizandola sin los correspondientes subindices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
   * Agregue los subíndices que indican qué posición del arreglo utilizar colocandolos entre paréntesis a continuación del nombre del mismo.
   * Si no quiere que esta variable se comporte como arreglo, elimine la declaración del mismo (busque la directiva DIMENSION).
 
 201
-  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
+  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
 
 202
-  La variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no esta declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
+  La variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION) ni a una función/subproceso. Sin embargo, en esta linea está utilizandolo como si fuera un arreglo (colocando uno o más subíndices entre paréntesis luego del mismo) o como si fuera una función o subproceso (colocando uno o más argumentos para el mismo).
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
   * Si su intención fue utilizar una <A href="funciones.html">función</A> verifique que el nombre de la misma esté correctamente escrito.
@@ -696,8 +696,9 @@
   * Verifique que la variable o expresión utilizada sea de tipo numérica.
 
 220
-  La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
+  El identificador que aparece entre paréntesis en el mensaje de error corresponde a un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarlo en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
   * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.
+  * Si quiere mostrar o procesar todo el arreglo, deberá ubicar la acción dentro de alguna repetitiva que varíe el/los índices para recorrer todas las posiciones del mismo.
 
 221
   La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
@@ -712,3 +713,19 @@
   Los argumentos de un subproceso serán dimensionados por el proceso/subproceso que realice la llamada, y por lo tanto el subproceso los recibirá con un tipo ya dimensionados. Es por esto que no debe volver a dimensionar el tipo de una variable que es argumento otra vez dentro del subproceso.
   * Elimine la instrucción de dimensión del parámetro formal del interior del subproceso.
   * Verifique que el arreglo que actúe como parámetro actual (en la llamada) se encuentre definida dimensionado.
+
+255
+  Uno de los argumentos para la acción de lectura es el nombre de un arreglo (está declarado con la directiva DIMENSION en algún punto anterior de su algoritmo), pero la acción de lectura no puede leer todo un arreglo. Los arreglos se deben leer posición por posición (esto es, una acción de lectura para cada posición). 
+  * Agregue el/los subíndices necesarios para especificar cual posición del arreglo se desea leer.
+  * Si quiere leer todo el arreglo, deberá ubicar esta acción de lectura dentro de alguna repetitiva que varía el/los índices para recorrer todas las posiciones del mismo.
+
+256
+  Uno de los argumentos para la acción de lectura está siendo utilizado como si fuera un arreglo (es decir, incluyendo un conjunto de índices entre paréntesis o corchetes), pero no lo es (no está declarado con la directiva DIMENSION en su algoritmo).
+  * Declare el arreglo previamente utilizando la palabra clave <A href="dimension.html">Dimensión</A>.
+  * O elimine los subíndices en caso de que no lo sea.
+
+308
+  Se encontró la palabra clave FINPROCESO en un lugar donde no se esperaba. Esto puede deberse a uno de los siguientes tres motivos:
+  * Faltan cerrar estructuras de control abiertas dentro del proceso antes de cerrar el proceso. Verifique que las estructuras de control del proceso estén anidadas y cerradas con sus respectivos FINXXX correctamente.
+  * El proceso ya estaba cerrado con una ocurrencia previa de FINPROCESO. Verifique que FINPROCESO se encuentre solo una vez en el algoritmo, y esté ubicado al final de un proceso.
+  * Se encuentra en una función o subproceso, en cuyo caso debe utilizar FINFUNCIÓN o FUNSUBPROCESO.

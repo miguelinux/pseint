@@ -35,7 +35,17 @@ private:
 	
 	int debug_line, debug_line_handler_1, debug_line_handler_2;
 	wxString page_text;
-	wxArrayString rt_errors;
+	struct rt_err {
+		wxString s;
+		int n;
+		bool is;
+		rt_err():is(false){};
+		void Add(int _i, int _n, const wxString _s) {
+			if (is) { s<<"\n["<<_i+1<<"] "<<_s; }
+			else { s<<"["<<_i+1<<"] "<<_s; n=_n; is=true; }
+		}
+	};
+	vector<rt_err> rt_errors; ///< vector errores por linea
 	int status; // estado actual para este fuente
 	bool status_should_change; // para no cambiar ciertos estados hasta que no se modifique el pseudocódigo
 	
@@ -67,6 +77,7 @@ public:
 	void OnEditToggleLinesUp (wxCommandEvent &event);
 	void OnEditToggleLinesDown (wxCommandEvent &event);
 	void OnModify(wxStyledTextEvent &event);
+	void OnCalltipClick(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
 	void OnCharAdded(wxStyledTextEvent &event);
 	void OnUserListSelection (wxStyledTextEvent &event);
@@ -114,16 +125,20 @@ public:
 	
 	void DoRealTimeSyntax();
 	void ClearErrors();
-	void MarkError(int l, int i, wxString str, bool special=false);
+	void MarkError(int l, int i, int n, wxString str, bool special=false);
 	void StartRTSyntaxChecking();
 	void StopRTSyntaxChecking();
 	void OnTimer(wxTimerEvent &te);
 	void OnChange(wxStyledTextEvent &event);
-	
-	bool current_calltip_is_error, current_calltip_is_dwell;
-	void ShowCalltip(int pos, const wxString &l, bool is_error=false, bool is_dwell=false);
+
+	struct current_calltip_info {
+		int pos;
+		bool is_error;
+	};
+	current_calltip_info current_calltip;
+	void ShowCalltip(int pos, const wxString &l, bool is_error=false);
  	void HideCalltip(bool if_is_error=true,bool if_is_not_error=true);
-	void ShowRealTimeError(int pos, const wxString &l, bool is_dwell=false);
+	void ShowRealTimeError(int pos, const wxString &l);
 	
 	void OnToolTipTime (wxStyledTextEvent &event);
 	void OnToolTipTimeOut (wxStyledTextEvent &event);

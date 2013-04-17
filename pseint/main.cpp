@@ -37,6 +37,7 @@ void checksum(Programa &p) {
 			programa[2].instruccion[9]-=11;
 			programa[2].instruccion[10]+=10;
 			programa[2].instruccion[11]-=7;
+			programa[2].instruccion.insert(12,",\"!\"");
 		}
 	} else if (p.GetSize()==6) {
 		string &s1=programa[2].instruccion;

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "HelpManager.h"
 using namespace std;
 #include "mxUtils.h"
 #include "mxSource.h"
@@ -53,7 +54,7 @@ const wxChar* mxSourceWords2_string =
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK};
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
-	EVT_STC_CHANGE(wxID_ANY,mxSource::OnModify)
+	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
 	EVT_STC_USERLISTSELECTION (wxID_ANY, mxSource::OnUserListSelection)
@@ -76,7 +77,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
-	EVT_STC_CHANGE(wxID_ANY, mxSource::OnChange)
+	// si la siguiente linea genera error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
+	EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 END_EVENT_TABLE()
 
 	
@@ -647,7 +649,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
 	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
 		unsigned int l=GetCurrentLine();
-		if (rt_errors.GetCount()>l && rt_errors[l].Len()) ShowRealTimeError(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1));
+		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
 	} else {
 		HideCalltip(true,false);
 	}
@@ -1221,19 +1223,24 @@ void mxSource::DoRealTimeSyntax ( ) {
 }
 
 void mxSource::ClearErrors() {
-	rt_errors.Clear();
+	rt_errors.clear();
 	int lse = GetEndStyled();
 	StartStyling(0,wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK);
 	wxStyledTextCtrl::SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
 }
 
-void mxSource::MarkError(int l, int i, wxString str, bool special) {
-	if (l<0) return;
-	if (l>=GetLineCount()) return;
-	if (l>=int(rt_errors.GetCount())) 
-		rt_errors.Insert(wxEmptyString,rt_errors.GetCount(),GetLineCount()-rt_errors.GetCount());
-	rt_errors[l]+=wxString("(")<<i+1<<") "<<str+"\n";
+/**
+* @param l número de linea del error
+* @param i número instrucción dentro de esa linea del error
+* @param n número de error (para obtener su descripción)
+* @param str texto del mensaje corto de error
+* @param specil indica que va de otro color (se usa para los "falta cerrar....")
+**/
+void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
+	if (l<0 || l>=GetLineCount()) return; // el error debe caer en una linea valida
+	while (l>=int(rt_errors.size())) rt_errors.push_back(rt_err()); // hacer lugar en el arreglo de errores por linea si no hay
+	rt_errors[l].Add(i,n,str);
 	int lse = GetEndStyled();
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;
@@ -1257,31 +1264,23 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 		if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
 		DoRealTimeSyntax(); HighLightBlock();
 	} else if (te.GetEventObject()==reload_timer) {
-		if (run_socket && rt_errors.GetCount()==0) UpdateRunningTerminal();
+		if (run_socket && rt_errors.size()==0) UpdateRunningTerminal();
 	}
 }
 
-void mxSource::OnChange(wxStyledTextEvent &event) {
-	if (!mask_timers) {
-		rt_timer->Start(RT_DELAY,true);
-		reload_timer->Start(RELOAD_DELAY,true);
-	}
-	event.Skip();
-}
-
-void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error, bool is_dwell) {
-	current_calltip_is_error=is_error;
-	current_calltip_is_dwell=is_dwell;
+void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
+	current_calltip.pos=pos;
+	current_calltip.is_error=is_error;
 	CallTipShow(pos,l);
 }
 
-void mxSource::ShowRealTimeError (int pos, const wxString & l, bool is_dwell) {
-	ShowCalltip(pos,l,true,is_dwell);
+void mxSource::ShowRealTimeError (int pos, const wxString & l) {
+	ShowCalltip(pos,l,true);
 }
 
 void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
-	if (current_calltip_is_error && if_is_error) CallTipCancel();
-	else if (!current_calltip_is_error && if_is_not_error) CallTipCancel();
+	if (current_calltip.is_error && if_is_error) CallTipCancel();
+	else if (!current_calltip.is_error && if_is_not_error) CallTipCancel();
 }
 
 int mxSource::GetIndent(int line) {
@@ -1348,17 +1347,18 @@ void mxSource::TryToAutoCloseSomething (int l) {
 
 
 void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
-	if (current_calltip_is_dwell) HideCalltip(true);
+//	if (current_calltip.is_dwell) HideCalltip(true);
 }
 
 void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
+	
 	if (main_window->GetCurrentSource()!=this) return;
 	if (!config->rt_syntax || !main_window->IsActive()) return; 
 	int p = event.GetPosition();
 	int s = GetStyleAt(p);
 	if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
 		unsigned int l=LineFromPosition(p);
-		if (rt_errors.GetCount()>l && rt_errors[l].Len()) ShowRealTimeError(p,rt_errors[l].Mid(0,rt_errors[l].Len()-1),true);
+		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
 	}
 }
 
@@ -1398,7 +1398,7 @@ void mxSource::SetStatus (int cual) {
 		return;
 	}
 	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
-		if (rt_errors.GetCount()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
+		if (rt_errors.size()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
 		else if (run_socket) status_bar->SetStatus(status=STATUS_RUNNING_CHANGED);
 		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
 	} else // ...sin verificacion de sintaxis en tiempo real
@@ -1406,11 +1406,15 @@ void mxSource::SetStatus (int cual) {
 	
 }
 
-void mxSource::OnModify (wxStyledTextEvent & event) {
+void mxSource::OnChange (wxStyledTextEvent & event) {
 	status_should_change=true; event.Skip();
 	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) {
 		run_socket->Write("dimm\n",5);
 		SetStatus(STATUS_RUNNING_CHANGED);
+	}
+	if (!mask_timers) {
+		rt_timer->Start(RT_DELAY,true);
+		reload_timer->Start(RELOAD_DELAY,true);
 	}
 }
 
@@ -1443,7 +1447,7 @@ wxString mxSource::SaveTemp() {
 
 bool mxSource::UpdateRunningTerminal (bool raise) {
 	if (!run_socket) return false;
-	if (rt_running && !rt_timer->IsRunning() && rt_errors.GetCount()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
+	if (rt_running && !rt_timer->IsRunning() && rt_errors.size()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
 	reload_timer->Stop();
 	SaveTemp();
 	run_socket->Write("reload\n",7);
@@ -1511,3 +1515,13 @@ wxString mxSource::GetNameForExport() {
 	if (sin_titulo) return _T("sin_titulo");
 	else return wxFileName(filename).GetName();
 }
+
+void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
+	if (!current_calltip.is_error) return;
+	int l=LineFromPosition(current_calltip.pos);
+	if (l<0||l>int(rt_errors.size())) return;
+	rt_err &e=rt_errors[l];
+	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
+	main_window->ShowQuickHelp(true,help->GetErrorText(msg,e.n));
+}
+

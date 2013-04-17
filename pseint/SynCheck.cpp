@@ -847,7 +847,7 @@ int SynCheck(int linea_from, int linea_to) {
 					if (current_func) { current_func->userline_end=Inter.GetLineNumber(); current_func=NULL; }
 					bucles.pop();
 				} else {
-					SynError (108,sub?"FINSUBPROCESO mal colocado.":"FINPROCESO mal colocado."); errores++;
+					SynError (308,sub?"FINSUBPROCESO mal colocado.":"FINPROCESO mal colocado."); errores++;
 				}
 				memoria=&global_memory;
 			}
