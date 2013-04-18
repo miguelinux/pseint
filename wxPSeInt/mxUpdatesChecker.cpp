@@ -10,6 +10,7 @@
 #include "mxArt.h"
 #include <wx/textfile.h>
 #include "mxStatusBar.h"
+#include "version.h"
 
 BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxUpdatesChecker::OnCloseButton)
@@ -105,7 +106,7 @@ void mxUpdatesChecker::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
-	wxLaunchDefaultBrowser(_T("http://pseint.sourceforge.net?page=descargas.php"));
+	wxLaunchDefaultBrowser(_T("http://pseint.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE));
 	Close();
 }
 
