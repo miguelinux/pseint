@@ -109,10 +109,6 @@ bool CheckVariable(string str, int errcode=-1) ;
 
 
 // *********************** Funciones Auxiliares **************************
-// ----------------------------------------------------------------------
-//    Devuelve el tipo de una variable o una funcion predefinida
-// ----------------------------------------------------------------------
-tipo_var TipoVar(string str) ;
 
 // ----------------------------------------------------------------------
 //    Compara los comienzos de dos cadenas (case sensitive)
@@ -190,7 +186,10 @@ inline bool EsLetra(const char &c) {
 string NextToken(string &cadena, int &p);
 
 
-Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int &errores);
+Funcion *ParsearCabeceraDeSubProceso(string cadena, bool es_proceso, int &errores);
+string ExtraerNombreDeSubProceso(string cadena);
+
+string FirstWord(const string &s);
 
 #endif
 

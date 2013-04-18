@@ -1,4 +1,5 @@
 20130418
+	Ahora se pueden definir los subprocesos en cualquier orden dentro del pseudocódigo.
 	Agregado el soporte para funciones de manejo de cadenas al exportar a C++.
 	Agregado el soporte para subprocesos al exportar a C++.
 

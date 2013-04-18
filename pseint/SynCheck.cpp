@@ -99,6 +99,22 @@ static void SynCheckAux1(string &cadena) {
 	
 // reescribir condiciones coloquiales
 static void SynCheckAux2(string &cadena) {
+	struct coloquial_aux {
+		string cond, pre, post, rep;
+		int csize;
+		// cppcheck-suppress uninitMemberVar
+		coloquial_aux(){}
+		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
+	};
+	static coloquial_aux *coloquial_conditions_list=NULL;
+	static int coloquial_conditions_list_size=0;
+#ifdef _DEBUG
+	if (cadena=="<<<delete coloquial_conditions_list>>>") {
+		delete []coloquial_conditions_list;
+		return;
+	}
+		
+#endif
 	if (!cadena.size() || !coloquial_conditions) return;
 	if (cadena[cadena.size()-1]!=' ') cadena+=" ";
 	int comillas=-1;
@@ -111,15 +127,6 @@ static void SynCheckAux2(string &cadena) {
 	}
 	comillas=-1;
 	
-	struct coloquial_aux {
-		string cond, pre, post, rep;
-		int csize;
-		// cppcheck-suppress uninitMemberVar
-		coloquial_aux(){}
-		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
-	};
-	static coloquial_aux *coloquial_conditions_list=NULL;
-	static int coloquial_conditions_list_size=0;
 	if (!coloquial_conditions_list) {
 		coloquial_conditions_list=new coloquial_aux[200]; int i=0;
 		coloquial_conditions_list[i++]=coloquial_aux(" ES ENTERO ",				"(",	")=TRUNC(",		"<PRE>)"	);
@@ -328,10 +335,6 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					SynError (231,"Constante numérica no válida."); errores++;
 				}
 			
-			} else if (act==',') {
-				if (w==w_operator) {SynError (232,"Falta operando."); errores++; } // 3+,2
-				w=w_null; wext=w_other;
-			
 			} else if (EsLetra(act)) {
 				if (w==w_operhand && wext!=w_id) {
 					if (wext==w_string)
@@ -444,7 +447,7 @@ int SynCheck(int linea_from, int linea_to) {
 //	bucles.push_front(Instruccion("CHECK",1,1)); // para que estaba esto? (para evitar acceder a una posicion no valida?)
 	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
 	int flag_pyc=0, tmp;
-	bool in_process=false, process_seen=false;
+	bool in_process=false;
 	tipo_var tipo;
 	string cadena, instruccion, str;
 	Funcion *current_func; // funcion actual, necesito el puntero para setear line_end cuando encuentre el FinProceso/FinSubProceso
@@ -477,7 +480,6 @@ int SynCheck(int linea_from, int linea_to) {
 				else if (comillas<0 && cadena[tmp]==';' && tmp && cadena[tmp-1]!=' ')
 					cadena.insert(tmp," ");
 			}
-			
 			
 			// Separar si es sino o entonces
 			if (cadena=="ENTONCES" && bucles.back()!="SI" )
@@ -775,16 +777,11 @@ int SynCheck(int linea_from, int linea_to) {
 			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
 				if (in_process) InformUnclosedLoops(bucles,errores); in_process=true;
 				bool es_proceso = instruccion=="PROCESO ";
+				current_func=subprocesos[ExtraerNombreDeSubProceso(cadena.substr(es_proceso?8:11))];
+				current_func->line_start=x;
 				bucles.push_back(programa.GetLoc(x,es_proceso?"PROCESO":"SUBPROCESO"));
-				current_func=ParsearCabeceraDeSubProceso(x,cadena.substr(es_proceso?8:11),es_proceso,errores);
 				current_func->userline_start=Inter.GetLineNumber();
-				subprocesos[current_func->id]=current_func;
-				memoria=current_func->memoria;
-				if (es_proceso) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
-					if (process_seen) { SynError (245,"Solo puede haber un proceso."); errores++; }
-					else process_seen=true;
-					main_process_name=current_func->id;
-				}
+				memoria=current_func->memoria=new Memoria(current_func);
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
@@ -1445,41 +1442,68 @@ int SynCheck() {
 	for(int i=0;i<programa.GetSize();i++) SynCheckAux1(programa[i].instruccion);
 	
 	// parsear primero las funciones/subprocesos (j=0), luego el proceso (j=1)
+//	bool have_proceso=false;
+//	for(int j=0;j<2;j++) {
+//		bool era_proceso=false;
+//		for(int i0=1,i=0;i<programa.GetSize();i++) {
+//			string &s=programa[i].instruccion;
+//			if (i==programa.GetSize()-1 || // para que tome el último proceso/funcion
+//				s=="FUNCION" || LeftCompare(s,"FUNCION ") || 
+//				s=="FUNCIÓN" || LeftCompare(s,"FUNCIÓN ") || 
+//				s=="PROCESO" || LeftCompare(s,"PROCESO ") || 
+//				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
+//					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
+//					if (j==1 && es_proceso) {
+//						if (have_proceso) { Inter.SetLineAndInstructionNumber(i); SynError (272,"Solo puede haber un Proceso."); errores++;}
+//						have_proceso=true;
+//					}
+//					if (i0!=i && era_proceso==(j==1)) {
+//						int i1=i;
+//						errores+=SynCheck(i0,i1);
+//						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
+//						
+//						if (era_proceso) { // los cambios de lineas pueden afectar a funciones ya registradas en la pasada anterior
+//							map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
+//							while (it1!=it2) { 
+//								if (!it1->second->func && it1->second->line_start>=i1) 
+//									it1->second->line_start+=i-i1; 
+//								++it1; 
+//							} 
+//						}
+//						
+//					}
+//					i0=i; era_proceso=es_proceso;
+//				}
+//		}
+//	}
+//	if (!have_proceso) { Inter.SetLineAndInstructionNumber(1); SynError (273,"Debe haber un Proceso."); errores++;}
+	
 	bool have_proceso=false;
-	for(int j=0;j<2;j++) {
-		bool era_proceso=false;
-		for(int i0=1,i=0;i<programa.GetSize();i++) {
-			string &s=programa[i].instruccion;
-			if (i==programa.GetSize()-1 || // para que tome el último proceso/funcion
-				s=="FUNCION" || LeftCompare(s,"FUNCION ") || 
-				s=="FUNCIÓN" || LeftCompare(s,"FUNCIÓN ") || 
-				s=="PROCESO" || LeftCompare(s,"PROCESO ") || 
-				s=="SUBPROCESO" || LeftCompare(s,"SUBPROCESO ")) {
-					bool es_proceso=(s=="PROCESO" || LeftCompare(s,"PROCESO "));
-					if (j==1 && es_proceso) {
-						if (have_proceso) { Inter.SetLineAndInstructionNumber(i); SynError (272,"Solo puede haber un Proceso."); errores++;}
-						have_proceso=true;
-					}
-					if (i0!=i && era_proceso==(j==1)) {
-						int i1=i;
-						errores+=SynCheck(i0,i1);
-						i=programa.GetRefPoint(); // lo setea el SynCheck, es porque va a agregar y sacar lineas, entonces i ya no será i
-						
-						if (era_proceso) { // los cambios de lineas pueden afectar a funciones ya registradas en la pasada anterior
-							map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
-							while (it1!=it2) { 
-								if (!it1->second->func && it1->second->line_start>=i1) 
-									it1->second->line_start+=i-i1; 
-								++it1; 
-							} 
-						}
-						
-					}
-					i0=i; era_proceso=es_proceso;
+	for(int i=0;i<programa.GetSize();i++) {
+		string &s=programa[i].instruccion;
+		string fw=FirstWord(s);
+		if (fw=="FUNCION"||fw=="FUNCIÓN"||fw=="PROCESO"||fw=="SUBPROCESO") {
+				Inter.SetLineAndInstructionNumber(i);
+				bool es_proceso=(fw=="PROCESO");
+				if (s==fw) s+=" ";
+				Funcion *func=ParsearCabeceraDeSubProceso(s.substr(fw.size()+1),es_proceso,errores);
+				func->userline_start=Inter.GetLineNumber();
+				subprocesos[func->id]=func;
+				if (es_proceso) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
+					if (have_proceso) { SynError (272,"Solo puede haber un Proceso."); errores++;}
+					main_process_name=func->id;
+					have_proceso=true;
 				}
-		}
+			}
 	}
-	if (!have_proceso) { Inter.SetLineAndInstructionNumber(1); SynError (273,"Debe haber un Proceso."); errores++;}
+	errores=SynCheck(0,programa.GetSize());
+	
+	if (!have_proceso) { Inter.SetLineAndInstructionNumber(0); SynError (273,"Debe haber un Proceso."); errores++;}
+	
+#ifdef _DEBUG
+	string del_ccl="<<<delete coloquial_conditions_list>>>";
+	SynCheckAux2(del_ccl);
+#endif
 	
 	return errores;
 }

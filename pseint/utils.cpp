@@ -378,10 +378,9 @@ string NextToken(string &cadena, int &p) {
 
 // arma el objeto Funcion analizando la cabecera (cadena, que viene sin la palbra PROCESO/SUBPROCESO)
 // pero no lo registra en el mapa de subprocesos
-Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int &errores) {
-	static int untitled_functions_count=0; // para numerar las funciones sin nombre
+Funcion *ParsearCabeceraDeSubProceso(string cadena, bool es_proceso, int &errores) {
 	
-	Funcion *the_func=new Funcion(x); 
+	Funcion *the_func=new Funcion(0); 
 	
 	// parsear nombre y valor de retorno
 	int p=0 ;string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
@@ -394,6 +393,7 @@ Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int 
 	}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
 	if (fname=="") { 
 		SynError (40,es_proceso?"Falta nombre de proceso.":"Falta nombre de subproceso."); errores++; 
+		static int untitled_functions_count=0; // para numerar las funciones sin nombre
 		fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
 	}
 	else if (EsFuncion(fname)) { 
@@ -443,3 +443,20 @@ Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int 
 	the_func->id=fname;
 	return the_func;
 }
+
+string ExtraerNombreDeSubProceso(string cadena) {
+	int p=0; string fname=NextToken(cadena,p); string tok=NextToken(cadena,p);
+	if (tok=="="||tok=="<-") fname=NextToken(cadena,p);
+	if (fname=="") {
+		static int untitled_functions_count=0;
+		fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
+	}
+	return fname;
+}
+
+string FirstWord(const string & s) {
+	int i=0,l=s.size();
+	while (i<l && EsLetra(s[i])) i++;
+	return s.substr(0,i);
+}
+

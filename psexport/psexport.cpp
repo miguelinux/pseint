@@ -32,7 +32,7 @@ void cargar(list<t_proceso> &algs, string archivo){
 			i.par1=CutString(s,11);
 			p.insert(p.begin(),i);
 			int x;
-			Funcion *f=ParsearCabeceraDeSubProceso(0,i.par1,false,x);
+			Funcion *f=ParsearCabeceraDeSubProceso(i.par1,false,x);
 			subprocesos[f->id]=f;
 		} else if (s=="FINPROCESO" || s=="FINSUBPROCESO"){ 
 			algs.push_back(p); p.clear();

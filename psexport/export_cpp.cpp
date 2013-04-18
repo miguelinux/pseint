@@ -33,7 +33,7 @@ string get_arg(string args, int cual) {
 	while (true) {
 		if (args[i]=='\''||args[i]=='\"') comillas=!comillas;
 		else if (!comillas) {
-			if (parentesis==0 && args[i]==','||args[i]==')') {
+			if (parentesis==0 && (args[i]==','||args[i]==')')) {
 				if (++n==cual) { return args.substr(i0,i-i0); }
 				i0=i+1;
 			} 
@@ -561,7 +561,7 @@ void translate_cpp(t_output &out, t_proceso &proc) {
 		ret="return 0";
 	} else {
 		int x;
-		Funcion *f=ParsearCabeceraDeSubProceso(0,it->par1,false,x);
+		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
 		string dec;
 		if (f->nombres[0]=="") dec="void "; else {
 			ret=MemoriaForExport::get_tipo(f->nombres[0]);

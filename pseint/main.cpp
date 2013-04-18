@@ -191,12 +191,10 @@ int main(int argc, char* argv[]) {
 
 	// inicializaciones varias
 	int errores;
-//	memoria = new Memoria(NULL); // ejecutar crea su propia memoria
 	LoadFunciones();
 	srand(time(NULL));
 	
 	if (real_time_syntax) {
-//		memoria = new Memoria(NULL);
 		while (true) {
 //			memoria->HardReset();
 			programa.HardReset();
@@ -334,7 +332,11 @@ int main(int argc, char* argv[]) {
 		if (wait_key) getKey();
 		showCursor();
 	}
-	
+
+#ifdef _DEBUG	
+	UnloadFunciones();
+	UnloadSubprocesos();
+#endif
 	return 0;
 }
 
