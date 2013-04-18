@@ -407,8 +407,8 @@ void InformUnclosedLoops(deque<Instruccion> &bucles, int &errores) {
 		else if (bucles.back()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="SI") {SynError (117,"Falta cerrar SI.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
-		else if (bucles.back()=="PROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar PROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
-		else if (enable_user_functions && bucles.back()=="SUBPROCESO"/* && Proceso<2*/) {SynError (119,"Falta cerrar SUBPROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
+		else if (bucles.back()=="PROCESO") {SynError (119,"Falta cerrar PROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
+		else if (bucles.back()=="SUBPROCESO") {SynError (119,"Falta cerrar SUBPROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		bucles.pop_back();
 	}
 }
@@ -578,9 +578,9 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="BORRARPANTALLA"; cadena.erase(0,15);
 			} else if (LeftCompare(cadena,"PROCESO ")) {
 				instruccion="PROCESO "; cadena.erase(0,8);
-			} else if (enable_user_functions && LeftCompare(cadena,"SUBPROCESO ")) {
+			} else if (LeftCompare(cadena,"SUBPROCESO ")) {
 				instruccion="SUBPROCESO "; cadena.erase(0,11);
-			} else if (enable_user_functions && (LeftCompare(cadena,"FUNCION ")||LeftCompare(cadena,"FUNCIÓN ")) ) {
+			} else if (LeftCompare(cadena,"FUNCION ")||LeftCompare(cadena,"FUNCIÓN ")) {
 				instruccion="SUBPROCESO "; cadena.erase(0,8);
 			} else if (LeftCompare(cadena,"ENTONCES ")) {
 				instruccion="ENTONCES "; cadena.erase(0,9);
@@ -624,9 +624,9 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
-			} else if (enable_user_functions && (LeftCompare(cadena,"FINFUNCION ")||LeftCompare(cadena,"FINFUNCIÓN "))) {
+			} else if (LeftCompare(cadena,"FINFUNCION ")||LeftCompare(cadena,"FINFUNCIÓN ")) {
 				instruccion="FINSUBPROCESO "; cadena.erase(0,11);
-			} else if (enable_user_functions && LeftCompare(cadena,"FINSUBPROCESO ")) {
+			} else if (LeftCompare(cadena,"FINSUBPROCESO ")) {
 				instruccion="FINSUBPROCESO "; cadena.erase(0,14);
 			} else if (LeftCompare(cadena,"REPETIR ")) {
 				instruccion="REPETIR "; cadena.erase(0,8);
@@ -774,7 +774,7 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," PASO-"," PASO -");
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
-			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
+			if (instruccion=="SUBPROCESO " || instruccion=="PROCESO ") {
 				if (in_process) InformUnclosedLoops(bucles,errores); in_process=true;
 				bool es_proceso = instruccion=="PROCESO ";
 				current_func=subprocesos[ExtraerNombreDeSubProceso(cadena.substr(es_proceso?8:11))];
@@ -1493,7 +1493,8 @@ int SynCheck() {
 					if (have_proceso) { SynError (272,"Solo puede haber un Proceso."); errores++;}
 					main_process_name=func->id;
 					have_proceso=true;
-				}
+				} else if (!enable_user_functions)
+					{ SynError (309,"Este perfil no admite SubProcesos."); errores++;}
 			}
 	}
 	errores=SynCheck(0,programa.GetSize());
