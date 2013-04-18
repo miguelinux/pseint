@@ -159,6 +159,7 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 		wxOutputStream *output=the_process->GetOutputStream();
 		char c=char(event.GetKeyCode());
 		if (wait_one_key) {
+			if (c=='\r') c='\n';
 		 	wait_one_key=false;
 			RecordInput(wxString()<<c);
 			output->Write(&c,1);
