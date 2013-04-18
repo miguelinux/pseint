@@ -774,71 +774,18 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," QUE-"," QUE -");
 			// Comprobar parametros
 			if ((enable_user_functions && instruccion=="SUBPROCESO ") || instruccion=="PROCESO ") {
-				Funcion *the_func=current_func=new Funcion(x); 
+				if (in_process) InformUnclosedLoops(bucles,errores); in_process=true;
+				bool es_proceso = instruccion=="PROCESO ";
+				bucles.push(programa.GetLoc(x,es_proceso?"PROCESO":"SUBPROCESO"));
+				current_func=ParsearCabeceraDeSubProceso(x,cadena.substr(es_proceso?8:11),es_proceso,errores);
 				current_func->userline_start=Inter.GetLineNumber();
-				memoria=the_func->memoria;
-				int p=0; NextToken(cadena,p);
-				if (in_process) InformUnclosedLoops(bucles,errores);
-				bool sub=instruccion[0]=='S'; in_process=true;
-				bucles.push(programa.GetLoc(x,sub?"SUBPROCESO":"PROCESO"));
-				// parsear nombre y valor de retorno
-				string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
-				if (tok=="="||tok=="<-") { // si estaba el igual, lo que se extrajo es el valor de retorno
-					if (!sub) { SynError (242,"El proceso principal no puede retornar ningun valor."); errores++; }
-					the_func->nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
-					if (!CheckVariable(the_func->nombres[0])) errores++;
-				} else {
-					the_func->tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
-				}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
-				if (fname=="") { 
-					SynError (40,sub?"Falta nombre de subproceso.":"Falta nombre de proceso."); errores++; 
-					fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
-				}
-				else if (EsFuncion(fname)) { errores++; SynError (243,string("Ya existe otro proceso/subproceso con el mismo nombre(")+fname+")."); errores++; }
-				else if (!CheckVariable(fname)) { errores++; SynError (244,string("El nombre del proceso/subproceso(")+fname+") no es válido."); errores++; }
-				if (!sub) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
+				subprocesos[current_func->id]=current_func;
+				memoria=current_func->memoria;
+				if (es_proceso) { // si es el proceso principal, verificar que sea el unico, y guardar el nombre en main_process_name para despues saber a cual llamar
 					if (process_seen) { SynError (245,"Solo puede haber un proceso."); errores++; }
 					else process_seen=true;
-					main_process_name=fname;
+					main_process_name=current_func->id;
 				}
-				// argumentos
-				if (tok=="(") {
-					if (!sub) { SynError (246,"El proceso principal no puede recibir argumentos."); errores++; }
-					bool closed=false;
-					tok=NextToken(cadena,p);
-					while (tok!="") {
-						if (tok==")") { closed=true; break; }
-						else if (tok==",") { 
-							SynError (247,"Falta nombre de argumento."); errores++;
-							tok=NextToken(cadena,p);
-						} else {
-							if (!CheckVariable(tok)) errores++;
-							the_func->AddArg(tok);
-							tok=NextToken(cadena,p);
-							if (tok=="POR") {
-								tok=NextToken(cadena,p);
-								if (tok!="REFERENCIA"&&tok!="COPIA"&&tok!="VALOR") {
-									SynError (248,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
-								} else the_func->SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
-								tok=NextToken(cadena,p);
-							} else if (tok!="," && tok!=")" && tok!="") { 
-								SynError (249,"Se esperaba coma(,) o parentesis ())."); errores++;
-							} 
-							if (tok==",") { tok=NextToken(cadena,p); }
-						}
-					}
-					if (!closed) {
-						{ SynError (250,"Falta cerrar lista de argumentos."); errores++; }
-					} else if (NextToken(cadena,p).size()) {
-						{ SynError (251,"Se esperaba fin de linea."); errores++; }
-					}
-				} else if (tok!="") { // si no habia argumentos no tiene que haber nada
-					if (!sub) { SynError (252,"Se esperaba el fin de linea."); errores++; } else {
-						if (the_func->nombres[0].size()) { SynError (253,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
-						else { SynError (254,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
-					}
-				}
-				subprocesos[fname]=the_func;
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {

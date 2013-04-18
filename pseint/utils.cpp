@@ -7,8 +7,6 @@
 #include "zcurlib.h"
 #include "new_funciones.h"
 
-
-
 void show_user_info(string msg) {
 	if (fix_win_charset) fixwincharset(msg);
 	if (colored_output) setForeColor(COLOR_INFO);
@@ -232,7 +230,7 @@ bool MidCompareNC(string a, string b, int from) {
 // ----------------------------------------------------------------------
 //    Pasa una cadena a mayusculas
 // ----------------------------------------------------------------------
-string toUpper(string a) { 
+string ToUpper(string a) { 
 	int l=a.size();
 	for (int x=0;x<l;x++)
 		a[x]=toupper(a[x]);
@@ -242,7 +240,7 @@ string toUpper(string a) {
 // ----------------------------------------------------------------------
 //    Pasa una cadena a mayusculas
 // ----------------------------------------------------------------------
-string toLower(string a) { 
+string ToLower(string a) { 
 	int l=a.size();
 	for (int x=0;x<l;x++)
 		a[x]=tolower(a[x]);
@@ -361,7 +359,7 @@ string NextToken(string &cadena, int &p) {
 	while (p<l && (cadena[p]==' ' || cadena[p]=='\t')) p++;
 	if (p==l) return "";
 	int p1=p;
-	if ((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_') {
+	if (EsLetra(cadena[p])) {
 		while (p<l && parteDePalabra(cadena[p]) ) p++;
 	} else if ((cadena[p]>='0'&&cadena[p]<='9')||cadena[p]=='.') {
 		while (p<l && ((cadena[p]>='0'&&cadena[p]<='9')||cadena[p]=='.')) p++;
@@ -378,3 +376,70 @@ string NextToken(string &cadena, int &p) {
 	return cadena.substr(p1,p-p1);
 }
 
+// arma el objeto Funcion analizando la cabecera (cadena, que viene sin la palbra PROCESO/SUBPROCESO)
+// pero no lo registra en el mapa de subprocesos
+Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int &errores) {
+	static int untitled_functions_count=0; // para numerar las funciones sin nombre
+	
+	Funcion *the_func=new Funcion(x); 
+	
+	// parsear nombre y valor de retorno
+	int p=0 ;string fname=NextToken(cadena,p); string tok=NextToken(cadena,p); // extraer el nombre y el "=" si esta
+	if (tok=="="||tok=="<-") { // si estaba el igual, lo que se extrajo es el valor de retorno
+		if (es_proceso) { SynError (242,"El proceso principal no puede retornar ningun valor."); errores++; }
+		the_func->nombres[0]=fname; fname=NextToken(cadena,p); tok=NextToken(cadena,p); 
+		if (!CheckVariable(the_func->nombres[0])) errores++;
+	} else {
+		the_func->tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
+	}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
+	if (fname=="") { 
+		SynError (40,es_proceso?"Falta nombre de proceso.":"Falta nombre de subproceso."); errores++; 
+		fname=string("<sin_nombre>")+IntToStr(++untitled_functions_count);
+	}
+	else if (EsFuncion(fname)) { 
+		errores++; SynError (243,string("Ya existe otro proceso/subproceso con el mismo nombre(")+fname+")."); errores++;
+	}
+	else if (!CheckVariable(fname)) { 
+		CheckVariable(fname);
+		errores++; SynError (244,string("El nombre del proceso/subproceso(")+fname+") no es válido."); errores++;
+	}
+	// argumentos
+	if (tok=="(") {
+		if (es_proceso) { SynError (246,"El proceso principal no puede recibir argumentos."); errores++; }
+		bool closed=false;
+		tok=NextToken(cadena,p);
+		while (tok!="") {
+			if (tok==")") { closed=true; break; }
+			else if (tok==",") { 
+				SynError (247,"Falta nombre de argumento."); errores++;
+				tok=NextToken(cadena,p);
+			} else {
+				if (!CheckVariable(tok)) errores++;
+				the_func->AddArg(tok);
+				tok=NextToken(cadena,p);
+				if (tok=="POR") {
+					tok=NextToken(cadena,p);
+					if (tok!="REFERENCIA"&&tok!="COPIA"&&tok!="VALOR") {
+						SynError (248,"Tipo de pasaje inválido, se esperaba Referencia, Copia o Valor."); errores++;
+					} else the_func->SetLastPasaje(tok=="REFERENCIA"?PP_REFERENCIA:PP_VALOR);
+					tok=NextToken(cadena,p);
+				} else if (tok!="," && tok!=")" && tok!="") { 
+					SynError (249,"Se esperaba coma(,) o parentesis ())."); errores++;
+				} 
+				if (tok==",") { tok=NextToken(cadena,p); }
+			}
+		}
+		if (!closed) {
+			{ SynError (250,"Falta cerrar lista de argumentos."); errores++; }
+		} else if (NextToken(cadena,p).size()) {
+			{ SynError (251,"Se esperaba fin de linea."); errores++; }
+		}
+	} else if (tok!="") { // si no habia argumentos no tiene que haber nada
+		if (es_proceso) { SynError (252,"Se esperaba el fin de linea."); errores++; } else {
+			if (the_func->nombres[0].size()) { SynError (253,"Se esperaba la lista de argumentos, o el fin de linea."); errores++; }
+			else { SynError (254,"Se esperaba la lista de argumentos, el signo de asignación, o el fin de linea."); errores++; }
+		}
+	}
+	the_func->id=fname;
+	return the_func;
+}

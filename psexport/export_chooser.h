@@ -7,7 +7,7 @@ using namespace std;
 enum PSE_LANG { PSE_CPP };
 
 string translate_function(const string &name, const string &args);
-void translate_main(t_programa &prog, t_algoritmo &alg);
+void translate_programa(t_output &out, t_programa &prog);
 
 extern PSE_LANG language;
 

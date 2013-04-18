@@ -6,13 +6,14 @@
 #include "version.h"
 #include "new_memoria.h"
 #include "exportexp.h"
+#include "new_funciones.h"
 using namespace std;
 
-#define MAIN_LINE_TEXT "int main() {"
-#define USING_NAMESPACE_TEXT "using namespace std;"
-
-bool include_cmath=false;
-bool include_cstdlib=false;
+static bool include_cmath=false;
+static bool include_cstdlib=false;
+static bool use_sin_tipo=false;
+static bool use_string=false;
+t_output prototipos; // forward declarations de las funciones
 
 string cpp_function(string name, string args) {
 	if (name=="sen") {
@@ -61,54 +62,69 @@ string cpp_function(string name, string args) {
 		return name+args; // no deberia pasar esto
 }
 
-// resolucion de tipos
-void declarar_variables(t_programa &prog, bool &use_sin_tipo, bool &use_string) {
+// resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase para que es la unica amiga)
+class MemoriaForExport {
+public:
+	static void declarar_variables(t_output &prog) {
+		map<string,tipo_var>::iterator mit=memoria->var_info.begin(), mit2=memoria->var_info.end();
+		string tab("\t"),stipo;
+		while (mit!=mit2) {
+			prog.push_back(tab+get_tipo(mit)+";");
+			mit++;
+		}
+	}
 	
-	// saltear comentarios??
-	t_programa::iterator it = prog.begin();
-	while (*it!=MAIN_LINE_TEXT) it++; it++; it++;
+	// retorna el tipo y elimina de la memoria a esa variable
+	// se usa para armar las cabeceras de las funciones, las elimina para que no se
+	// vuelvan a declarar adentro
+	static string get_tipo(string name) {
+		map<string,tipo_var>::iterator mit=memoria->var_info.find(name);
+		if (mit==memoria->var_info.end()) return "SIN_TIPO _variable_desconocida_";
+		string ret = get_tipo(mit);
+		memoria->var_info.erase(mit);
+		return ret;
+	}
 	
-	map<string,tipo_var>::iterator mit=memoria->var_info.begin(), mit2=memoria->var_info.end();
-	string tab("\t"),dims, c1="[", c2="]", stipo;
-	
-	use_sin_tipo=false;
-	use_string=false;
-	
-	while (mit!=mit2) {
+	// funcion usada por declarar_variables para las internas de una funcion
+	// y para obtener los tipos de los argumentos de la funcion para las cabeceras
+	static string get_tipo(map<string,tipo_var>::iterator &mit) {
 		tipo_var &t=mit->second;
-		stipo="SIN_TIPO ";
+		string stipo="SIN_TIPO ";
 		if (t==vt_caracter) { stipo="string "; use_string=true; }
 		else if (t==vt_numerica) stipo=t.rounded?"int ":"float ";
 		else if (t==vt_logica) stipo="bool ";
 		else use_sin_tipo=true;
 		if (t.dims) {
-			dims="";
-			for (int j=1;j<=t.dims[0];j++)
-				dims+=c1+IntToStr(t.dims[j])+c2;
-			prog.insert(it,tab+stipo+toLower(mit->first)+dims+";");
+			string dims="", c1="[", c2="][", c3="]";
+			for (int j=1;j<=t.dims[0];j++) {
+				if (j==1) dims+=c1+IntToStr(t.dims[j]);
+				else if (j==t.dims[0]) dims+=IntToStr(t.dims[j])+c3;
+				else dims+=c2+IntToStr(t.dims[j]);
+			}
+			return stipo+ToLower(mit->first)+dims;
 		} else {
-			prog.insert(it,tab+stipo+toLower(mit->first)+";");
+			return stipo+ToLower(mit->first);
 		}
-		mit++;
 	}
-}
+	
+};
 
-void i_esperar(t_programa &prog, string param,string tabs);
-void i_borrar(t_programa &prog, string param,string tabs);
-void i_escribir(t_programa &prog, string param,string tabs);
-void i_leer(t_programa &prog, string param,string tabs);
-void i_secuencial(t_programa &prog, string param,string tabs);
-void i_asignacion(t_programa &prog, string param1, string param2,string tabs);
-void i_si(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, t_algoritmo_it s,string tabs);
-void i_mientras(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs);
-void i_segun(t_programa &prog, list<t_algoritmo_it> its,string tabs);
-void i_repetir(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs);
-void i_paracada(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs);
-void i_para(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs);
-void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs);
-void i_dimension(t_programa &prog, string params, string tabs);
+void i_esperar(t_output &prog, string param,string tabs);
+void i_borrar(t_output &prog, string param,string tabs);
+void i_escribir(t_output &prog, string param,string tabs);
+void i_leer(t_output &prog, string param,string tabs);
+void i_secuencial(t_output &prog, string param,string tabs);
+void i_asignacion(t_output &prog, string param1, string param2,string tabs);
+void i_si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s,string tabs);
+void i_mientras(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
+void i_segun(t_output &prog, list<t_proceso_it> its,string tabs);
+void i_repetir(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
+void i_paracada(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
+void i_para(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
+void i_bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
+void i_dimension(t_output &prog, string params, string tabs);
 
-void i_dimension(t_programa &prog, string params, string tabs) {
+void i_dimension(t_output &prog, string params, string tabs) {
 	params=params+",";
 	while (params.size()>1) {
 		unsigned int i=1;
@@ -155,15 +171,15 @@ void i_dimension(t_programa &prog, string params, string tabs) {
 	}
 }
 
-void i_esperar(t_programa &prog, string param, string tabs){
+void i_esperar(t_output &prog, string param, string tabs){
 	insertar(prog,tabs+"cin.get();");
 }
 
-void i_borrar(t_programa &prog, string param, string tabs){
+void i_borrar(t_output &prog, string param, string tabs){
 	insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
 }
 
-void i_escribir(t_programa &prog, string param, string tabs){
+void i_escribir(t_output &prog, string param, string tabs){
 	bool comillas=false, saltar=true;
 	int parentesis=0;
 	string linea="cout",expr;
@@ -191,7 +207,7 @@ void i_escribir(t_programa &prog, string param, string tabs){
 	insertar(prog,tabs+linea);
 }
 
-void i_leer(t_programa &prog, string param, string tabs){
+void i_leer(t_output &prog, string param, string tabs){
 	param+=",";
 	bool comillas=false;
 	int parentesis=0;
@@ -219,7 +235,7 @@ void i_leer(t_programa &prog, string param, string tabs){
 	insertar(prog,tabs+linea+";");
 }
 
-void i_definir(t_programa &prog, string param, string tabs){
+void i_definir(t_output &prog, string param, string tabs){
 	int lastcoma=0;
 	char tipo='*';
 	if (param.size()>12 && param.substr(param.size()-12,12)==" COMO ENTERO") { tipo='i'; param=param.substr(0,param.size()-12); }
@@ -239,7 +255,7 @@ void i_definir(t_programa &prog, string param, string tabs){
 	}
 }
 
-void i_asignacion(t_programa &prog, string param1, string param2, string tabs){
+void i_asignacion(t_output &prog, string param1, string param2, string tabs){
 	tipo_var t;
 	param1=expresion(param1);
 	param2=expresion(param2,t);
@@ -247,7 +263,7 @@ void i_asignacion(t_programa &prog, string param1, string param2, string tabs){
 	memoria->DefinirTipo(param1,t);
 }
 
-void i_si(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, t_algoritmo_it s, string tabs){
+void i_si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
 	insertar(prog,tabs+"if ("+expresion((*r).par1)+") {");
 	i_bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
@@ -257,16 +273,16 @@ void i_si(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, t_algoritmo_it s
 	insertar(prog,tabs+"}");
 }
 
-void i_mientras(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
+void i_mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"while ("+expresion((*r).par1)+") {");
 	i_bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 }
 
-void i_segun(t_programa &prog, list<t_algoritmo_it> its, string tabs){
-	list<t_algoritmo_it>::iterator p,q,r;
+void i_segun(t_output &prog, list<t_proceso_it> its, string tabs){
+	list<t_proceso_it>::iterator p,q,r;
 	q=p=its.begin();r=its.end();
-	t_algoritmo_it i=*q;
+	t_proceso_it i=*q;
 	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
 	AplicarTipo(opcion,p1,p2,vt_numerica);
 	insertar(prog,tabs+"switch (int("+expresion((*i).par1)+")) {");
@@ -284,15 +300,15 @@ void i_segun(t_programa &prog, list<t_algoritmo_it> its, string tabs){
 	insertar(prog,tabs+"}");
 }
 
-void i_repetir(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
+void i_repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"do {");
 	i_bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"} while ("+invert_expresion(expresion((*q).par1))+");");
 }
 
-void i_para(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
+void i_para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	
-	memoria->DefinirTipo(toLower((*r).par1),vt_numerica);
+	memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
 	
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if ((*r).par4[0]=='-') {
@@ -316,8 +332,8 @@ void i_para(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
 	insertar(prog,tabs+"}");
 }
 
-void i_paracada(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tabs){
-	string var=toLower((*r).par2), aux=toLower((*r).par1);
+void i_paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var,inc=var;
 	int *dims=memoria->LeerDims(var);
 	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
@@ -335,7 +351,7 @@ void i_paracada(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q, string tab
 }
 
 //-----------------------++;
-void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
+void i_bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs){
 	if (r==q) return;
 	int deep;
 	string s;
@@ -350,7 +366,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 		else if (s=="LEER") i_leer(prog,(*r).par1,tabs);
 		else if (s=="ASIGNACION") i_asignacion(prog,(*r).par1,(*r).par2,tabs);
 		else if (s=="MIENTRAS") {
-			t_algoritmo_it r1=r++;
+			t_proceso_it r1=r++;
 			deep=0;
 			while ( ! ((*r).nombre=="FINMIENTRAS"  && deep==0) ) {
 				if ((*r).nombre=="MIENTRAS") deep++;
@@ -359,7 +375,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			}
 			i_mientras(prog,r1,r,tabs);
 		} else if (s=="REPETIR") {
-			t_algoritmo_it r1=r++;
+			t_proceso_it r1=r++;
 			deep=0;
 			while ( ! ((*r).nombre=="HASTAQUE"  && deep==0) ) {
 				if ((*r).nombre=="REPETIR") deep++;
@@ -368,7 +384,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			}
 			i_repetir(prog,r1,r,tabs);
 		} else if (s=="SEGUN") {
-			list<t_algoritmo_it> its;
+			list<t_proceso_it> its;
 			its.insert(its.end(),r);
 			deep=0;
 			r++;
@@ -384,7 +400,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			its.insert(its.end(),r);
 			i_segun(prog,its,tabs);
 		} else if (s=="PARA") {
-			t_algoritmo_it r1=r++;
+			t_proceso_it r1=r++;
 			deep=0;
 			while ( ! ((*r).nombre=="FINPARA" && deep==0) ) {
 				if ((*r).nombre=="PARA"||(*r).nombre=="PARACADA") deep++;
@@ -393,7 +409,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			}
 			i_para(prog,r1,r,tabs);
 		} else if (s=="PARACADA") {
-			t_algoritmo_it r1=r++;
+			t_proceso_it r1=r++;
 			deep=0;
 			while ( ! ((*r).nombre=="FINPARA" && deep==0) ) {
 				if ((*r).nombre=="PARA"||(*r).nombre=="PARACADA") deep++;
@@ -402,7 +418,7 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 			}
 			i_paracada(prog,r1,r,tabs);
 		} else if (s=="SI") {
-			t_algoritmo_it r1=r++,r2;
+			t_proceso_it r1=r++,r2;
 			r++;
 			deep=0;
 			while ( ! ( ( (*r).nombre=="FINSI" || (*r).nombre=="SINO") && deep==0) ) {
@@ -422,60 +438,94 @@ void i_bloque(t_programa &prog, t_algoritmo_it r, t_algoritmo_it q,string tabs){
 	}
 }
 
-void cpp_main(t_programa &prog, t_algoritmo &alg) {
-	
-	
-	t_algoritmo_it r=alg.begin(),q=alg.end();
-	
+void cpp_cabecera(t_output &out) {
 	// cabecera
 	stringstream version; 
 	version<<VERSION<<"-"<<ARCHITECTURE;
-	prog.insert(prog.end(),string("// Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
-	prog.insert(prog.end(),"// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental puede que el codigo generado no sea completamente correcto");
-	prog.insert(prog.end(),"// si encuentra errores, por favor reportelos a zaskar_84@yahoo.com.ar");
-	prog.insert(prog.end(),"");
-	prog.insert(prog.end(),"#include<iostream>");
-	prog.insert(prog.end(),USING_NAMESPACE_TEXT);
-	prog.insert(prog.end(),"");
-	prog.insert(prog.end(),MAIN_LINE_TEXT);
-	prog.insert(prog.end(),"");
-	prog.insert(prog.end(),"");
+	out.push_back(string("// Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
+	out.push_back("// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
+	out.push_back("// puede que el codigo generado no sea completamente correcto. Si encuentra");
+	out.push_back("// errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
+	out.push_back("");
+	out.push_back("#include<iostream>");
+	if (include_cmath) out.push_back("#include<cmath>");
+	if (include_cstdlib) out.push_back("#include<cstdlib>");
+	out.push_back("using namespace std;");
+	out.push_back("");
+	if (use_sin_tipo) {
+		out.push_back("// Para las variables que no se pudo determinar el tipo se utiliza la constante");
+		out.push_back("//  SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
+		out.push_back("// (usualmente int,float,string o bool).");
+		out.push_back("#define SIN_TIPO string");
+		out.push_back("");
+	}
+	if (use_string) {
+		out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que lee solo");
+		out.push_back("// una palabra. Para leer una linea completa se debe utilzar getline (ej, reemplazar");
+		out.push_back("// cin>>x por getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
+		out.push_back("// se leyó otra variable con >>.");
+		out.push_back("");
+	}
+}
+
+
+void translate_cpp(t_output &out, t_proceso &proc) {
+	
+	memoria=new Memoria(NULL);
 	
 	//cuerpo del proceso
-	r++;
-	i_bloque(prog,r,q,"\t");
+	t_output out_proc;
+	i_bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	
-	// cola
-	prog.insert(prog.end(),"");
-	prog.insert(prog.end(),"\treturn 0;");
-	prog.insert(prog.end(),"");
-	prog.insert(prog.end(),"}");
-	prog.insert(prog.end(),"");
-	
-	bool use_sin_tipo, use_string;
-	declarar_variables(prog,use_sin_tipo, use_string);
-	if (include_cmath||include_cstdlib) {
-		t_programa::iterator it=prog.begin();
-		while (*it!=USING_NAMESPACE_TEXT) it++;
-		if (include_cmath) it=prog.insert(it,"#include<cmath>");
-		if (include_cstdlib) it=prog.insert(it,"#include<cstdlib>");
-	}
-	if (use_string||use_sin_tipo) {
-		t_programa::iterator it=prog.begin();
-		while (*it!=MAIN_LINE_TEXT) it++;
-		if (use_sin_tipo) {
-			it=prog.insert(it,"");
-			it=prog.insert(it,"#define SIN_TIPO string");
-			it=prog.insert(it,"// el usuario debe reemplazar sus ocurrencias por el tipo adecuado (usualmente int,float,string o bool)");
-			it=prog.insert(it,"// para las variables que no se pudo determinar el tipo se utiliza la constante SIN_TIPO");
+	// cabecera del proceso
+	t_proceso_it it=proc.begin();
+	string ret; // sentencia "return ..." de la funcion
+	if (it->nombre=="PROCESO") {
+		out.push_back("int main() {");
+		ret="return 0";
+	} else {
+		int x;
+		Funcion *f=ParsearCabeceraDeSubProceso(0,it->par1,false,x);
+		string dec;
+		if (f->nombres[0]=="") dec="void "; else {
+			ret=MemoriaForExport::get_tipo(f->nombres[0]);
+			dec=ret.substr(0,ret.find(" ")+1);
+			ret=string("return ")+ret.substr(ret.find(" "));
 		}
-		if (use_string) {
-			it=prog.insert(it,"");
-			it=prog.insert(it,"// pero obliga a agregar un cin.ignore() si antes del getline se leyó otra variable con >>.");
-			it=prog.insert(it,"// para leer una linea completa se debe utilzar getline (ej, reemplazar cin>>x por getline(cin,x),");
-			it=prog.insert(it,"// para leer variables de texto se utiliza el operador << del objeto cin, que lee solo una palabra");
+		dec+=f->id+"(";
+		for(int i=1;i<=f->cant_arg;i++) {
+			if (i!=1) dec+=", ";
+			dec+=MemoriaForExport::get_tipo(f->nombres[i]);
 		}
+		dec+=")";
+		prototipos.push_back(dec+";");
+		out.push_back(dec+" {");
+		delete f;
 	}
 	
+	MemoriaForExport::declarar_variables(out);
+	
+	copy(out_proc.begin(),out_proc.end(),back_inserter(out));
+	
+	// cola del proceso
+	if (ret.size()) out.push_back(string("\t")+ret+";");
+	out.push_back("}");
+	out.push_back("");
+	
+	delete memoria;
+	
+}
+
+void translate_cpp(t_output &out, t_programa &prog) {
+	t_output aux;
+	for (t_programa_it it=prog.begin();it!=prog.end();++it)
+		translate_cpp(aux,*it);	
+	cpp_cabecera(out);
+	if (prototipos.size()) {
+		out.push_back("// forward declarations");
+		copy(prototipos.begin(),prototipos.end(),back_inserter(out));
+		out.push_back("");
+	}
+	copy(aux.begin(),aux.end(),back_inserter(out));
 }
 

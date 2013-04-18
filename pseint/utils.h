@@ -132,12 +132,12 @@ bool MidCompareNC(string a, string b, int from) ;
 // ----------------------------------------------------------------------
 //    Pasa una cadena a mayusculas
 // ----------------------------------------------------------------------
-string toUpper(string a) ;
+string ToUpper(string a) ;
 
 // ----------------------------------------------------------------------
 //    Pasa una cadena a mayusculas
 // ----------------------------------------------------------------------
-string toLower(string a) ;
+string ToLower(string a) ;
 
 // ----------------------------------------------------------------------
 //    Averigua el tipo de variable para un dato
@@ -164,27 +164,33 @@ bool parteDePalabra(char c) ;
 // corrige diferencias entre la codificación que usa pseint (ascii pelado) y la de la consola de windows
 void fixwincharset(string &s, bool reverse=false);
 
-// determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
-inline bool EsLetra(const char &c) {
-	return ( (c>='A' && c<='Z') || (lazy_syntax && (c=='Á'||c=='É'||c=='Í'||c=='Ó'||c=='Ú'||c=='Ñ'||c=='Ü') ) || c=='_' );
+inline char ToUpper(const char c) {
+	if (c>96 && c<123) return c-32;
+	if (c=='á') return 'Á';
+	if (c=='é') return 'É';
+	if (c=='í') return 'Í';
+	if (c=='ó') return 'Ó';
+	if (c=='ú') return 'Ú';
+	if (c=='ü') return 'Ü';
+	if (c=='ñ') return 'Ñ';
+	return c;
 }
 
-inline char ToUpper(char c) {
-	if (c>96 && c<123) c-=32;
-	else if (c=='á') c='Á';
-	else if (c=='é') c='É';
-	else if (c=='í') c='Í';
-	else if (c=='ó') c='Ó';
-	else if (c=='ú') c='Ú';
-	else if (c=='ü') c='Ü';
-	else if (c=='ñ') c='Ñ';
-	return c;
+// determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
+inline bool EsLetra(const char &c) {
+#ifdef _FOR_PSEXPORT
+	char _c=ToUpper(c);
+#else
+#define _c c
+#endif
+	return ( (_c>='A' && _c<='Z') || (lazy_syntax && (_c=='Á'||_c=='É'||_c=='Í'||_c=='Ó'||_c=='Ú'||_c=='Ñ'||_c=='Ü') ) || _c=='_' );
 }
 
 // "extrae" una palabra, una constante, o un operador, desde la pos p, no modifica la cadena, sino que avanza el indice p
 string NextToken(string &cadena, int &p);
 
 
+Funcion *ParsearCabeceraDeSubProceso(int x, string cadena, bool es_proceso, int &errores);
 
 #endif
 

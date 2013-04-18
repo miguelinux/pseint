@@ -10,14 +10,17 @@ struct t_instruccion{
 	string par1,par2,par3,par4;
 };
 
-#define t_algoritmo list <t_instruccion>
-#define t_algoritmo_it list <t_instruccion>::iterator
-#define t_programa list<string>
+#define t_proceso list <t_instruccion>
+#define t_proceso_it list <t_instruccion>::iterator
+#define t_programa list<t_proceso>
+#define t_programa_it list<t_proceso>::iterator
+#define t_output list<string>
+#define t_output_it list<string>::iterator
 
-#ifndef _USE_COUT
+//#ifndef _USE_COUT
 #define insertar(prog,text) prog.insert(prog.end(),text)
-#else
-#define insertar(prog,text) cerr<<text<<endl
-#endif
+//#else
+//#define insertar(prog,text) cerr<<text<<endl
+//#endif
 
 #endif

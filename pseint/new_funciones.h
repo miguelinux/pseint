@@ -12,11 +12,12 @@ enum PASAJE {PP_VALOR, PP_REFERENCIA, PP_DESCONOCIDO};
 
 // cppcheck-suppress noCopyConstructor
 struct Funcion {
-	int cant_arg;
+	string id; // nombre de la función
+	int cant_arg; // cantidad de argumentos (sin contar el valor de retorno, los argumentos seran nombres[1...cant_arg])
 	vector<PASAJE> pasajes; // tipo de pasaje de parametros (solo para las definidas por el usuario)
 	vector<tipo_var> tipos; // la pos 0 es para el tipo que retorna
 	const tipo_var &GetTipo(int i) const { return tipos[i]; } // para acceder a los tipos desde punteros const
-	vector<string> nombres; // nombres de los argumentos, la pos 0 es para el valor de retorno (solo para las definidas por el usuario)
+	vector<string> nombres; // nombres de los argumentos, la pos 0 es para el valor de retorno (solo para las definidas por el usuario, es "" si no retorna nada)
 	string (*func)(string *args); // NULL si es de las definidas por el usuario como subproceso
 	int line_start; // linea del pseudocodigo parseado donde comienza la funcion (solo para las definidas por el usuario)
 	int userline_start, userline_end; // linea del pseudocodigo original donde empieza y termina la funcion (para pasarsela a la lista de variables del editor)

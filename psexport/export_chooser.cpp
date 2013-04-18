@@ -10,10 +10,10 @@ string translate_function(const string &name, const string &args) {
 //	}
 }
 
-void translate_main(t_programa & prog, t_algoritmo & alg) {
+void translate_programa(t_output &out, t_programa &prog) {
 //	switch (PSE_LANG) {
 //	PSE_CPP: 
-		cpp_main(prog,alg); return;
+		translate_cpp(out,prog); return;
 //	}
 }
 

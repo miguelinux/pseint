@@ -93,7 +93,7 @@ class Memoria {
 	
 	map<string,tipo_var> var_info;
 	map<string,string> var_value;
-	friend void declarar_variables(list<string> &prog, bool &use_sin_tipo, bool &use_string);
+	friend class MemoriaForExport;
 	void QuitarIndices(string &str) {
 		int sz=str.size();
 		for (int i=0;i<sz;i++)

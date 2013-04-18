@@ -19,7 +19,7 @@ string cpp_function(string name, string args);
 * @param prog    argumento de salida, donde colocar las instrucciones traducidas
 * @param alg     argumento de entrada, con el algoritmo ya parseado
 **/
-void cpp_main(t_programa &prog, t_algoritmo &alg);
+void translate_cpp(t_output &prog, t_programa &alg);
 
 #endif
 

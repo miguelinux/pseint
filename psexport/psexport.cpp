@@ -8,25 +8,34 @@
 using namespace std;
 
 // otras funciones
-t_algoritmo cargar(string archivo){
+void cargar(list<t_proceso> &algs, string archivo){
 	char buffer[1024];
-	t_algoritmo p;
+	t_proceso p;
 	ifstream f(archivo.c_str());
-	t_instruccion i;
 	string s;
 	int x;
-	p.insert(p.begin(),i);
 	if (!f.is_open()) {
 		cerr<<"No se pudo abrir el archivo\n"; 
 		(*(p.begin())).nombre="ERROR ERROR ERROR!";
-		return p;
+		return;
 	}
 	while (!f.eof()) {
+		t_instruccion i;
 		f.getline(buffer,256); s=buffer;
 		programa.PushBack(buffer);
 		for (unsigned int ii=0;ii<s.size();ii++) if(s[ii]=='\t') s[ii]=' ';
-		if (s=="FINPROCESO"){ 
-			break;
+		if (LeftCompare(s,"PROCESO ")) { 
+			i.nombre="PROCESO";
+			p.insert(p.begin(),i);
+		} else if (LeftCompare(s,"SUBPROCESO")) { 
+			i.nombre="SUBPROCESO";
+			i.par1=CutString(s,11);
+			p.insert(p.begin(),i);
+			int x;
+			Funcion *f=ParsearCabeceraDeSubProceso(0,i.par1,false,x);
+			subprocesos[f->id]=f;
+		} else if (s=="FINPROCESO" || s=="FINSUBPROCESO"){ 
+			algs.push_back(p); p.clear();
 		} else if (s=="FINSI") {
 			i.nombre="FINSI"; p.insert(p.end(),i);
 		} else if (s=="ENTONCES") {
@@ -41,8 +50,8 @@ t_algoritmo cargar(string archivo){
 			i.nombre="FINMIENTRAS"; p.insert(p.end(),i);
 		} else if (s=="REPETIR") {
 			i.nombre="REPETIR"; p.insert(p.end(),i);
-		} else if (LeftCompare(s,"PROCESO ")) {
-			(*(p.begin())).nombre=CutString(s,8);
+//		} else if (LeftCompare(s,"PROCESO ")) {
+//			(*(p.begin())).nombre=CutString(s,8);
 		} else if (LeftCompare(s,"SEGUN ")) {
 			i.nombre="SEGUN"; i.par1=CutString(s,6,6);
 			p.insert(p.end(),i);
@@ -115,7 +124,7 @@ t_algoritmo cargar(string archivo){
 	}
 	f.close();
 	
-	return p;
+	return;
 }
 
 
@@ -152,26 +161,28 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	memoria=new Memoria(NULL);
 	LoadFunciones(false);
 	
 	//cargar programa
-	t_algoritmo alg=cargar(argv[1]);
-	// convertir
 	t_programa prog;
-	translate_main(prog,alg);
+	cargar(prog,argv[1]);
+	// convertir
+	t_output out;
+	translate_programa(out,prog);
 	
 #ifdef _USE_COUT
 #define fout cout
 #else
 	ofstream fout(argv[2]);
 #endif
-	t_programa::iterator it=prog.begin();
-	while (it!=prog.end()) 
+	t_output::iterator it=out.begin();
+	while (it!=out.end()) 
 		fout<<*(it++)<<endl;
 #ifndef _USE_COUT
 	fout.close();
 #endif
+	
+	UnloadFunciones();
 	return 0;
 }
 	
