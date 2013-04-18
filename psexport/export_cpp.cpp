@@ -13,7 +13,37 @@ static bool include_cmath=false;
 static bool include_cstdlib=false;
 static bool use_sin_tipo=false;
 static bool use_string=false;
+static bool use_func_minusculas=false;
+static bool use_func_mayusculas=false;
+static bool use_func_convertiratexto=false;
 t_output prototipos; // forward declarations de las funciones
+
+// retorna true para un objeto string (variable o expresion), y falso para un cstring (constante de tipo cadena)
+static bool esString(const string &s) {
+	return s[0]=='\''||s[0]=='\"';
+}
+static string convertirAString(const string &s) {
+	if (esString(s)) return string("string("+s+")");
+	else return s;
+}
+
+// recibe los argumentos de una funcion (incluyendo los parentesis que los envuelven, y extra alguno (cual, base 1)
+string get_arg(string args, int cual) {
+	int i=1,i0=1,parentesis=0,n=0; bool comillas=false;
+	while (true) {
+		if (args[i]=='\''||args[i]=='\"') comillas=!comillas;
+		else if (!comillas) {
+			if (parentesis==0 && args[i]==','||args[i]==')') {
+				if (++n==cual) { return args.substr(i0,i-i0); }
+				i0=i+1;
+			} 
+			else if (args[i]=='('||args[i]=='[') parentesis++;
+			else if (args[i]==')'||args[i]==']') parentesis--;
+		}
+		i++;
+	}
+	return "";
+}
 
 string cpp_function(string name, string args) {
 	if (name=="sen") {
@@ -48,7 +78,7 @@ string cpp_function(string name, string args) {
 		return string("exp")+args;
 	} else if (name=="azar") {
 		include_cstdlib=true;
-		return string("(rand()%")+colocarParentesis(args.substr(1,args.size()-2))+")";
+		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
 	} else if (name=="atan") {
 		include_cmath=true;
 		return string("atan")+args;
@@ -57,9 +87,24 @@ string cpp_function(string name, string args) {
 		return string("floor")+args;
 	} else if (name=="redon") {
 		include_cmath=true;
-		return string("floor(")+colocarParentesis(args.substr(1,args.size()-2))+".5)";
-	} else 
+		return string("floor(")+colocarParentesis(get_arg(args,1))+".5)";
+	} else if (name=="concatenar") {
+		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
+	} else if (name=="longitud") {
+		return convertirAString(get_arg(args,1))+".size()";
+	} else if (name=="subcadena") {
+		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+	} else if (name=="convertiranumero") {
+		include_cstdlib=true;
+		string s=get_arg(args,1);
+		if (esString(s)) return string("atof(")+s+")";
+		else return string("atof(")+colocarParentesis(s)+".c_str())";
+	} else {
+		if (name=="minusculas") use_func_minusculas=true;
+		if (name=="mayusculas") use_func_mayusculas=true;
+		if (name=="convertiratexto") use_func_convertiratexto=true;
 		return name+args; // no deberia pasar esto
+	}
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase para que es la unica amiga)
@@ -450,19 +495,50 @@ void cpp_cabecera(t_output &out) {
 	out.push_back("#include<iostream>");
 	if (include_cmath) out.push_back("#include<cmath>");
 	if (include_cstdlib) out.push_back("#include<cstdlib>");
+	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<cctype>");
+	if (use_func_convertiratexto) out.push_back("#include<stringstream>");
 	out.push_back("using namespace std;");
 	out.push_back("");
+	if (use_func_convertiratexto) {
+		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"convertiratexto\".");
+		out.push_back("#include<stringstream>");
+		out.push_back("string convertiratexto(float f) {");
+		out.push_back("\tstringstream ss;");
+		out.push_back("\tss<<f;");
+		out.push_back("\treturn ss.str();");
+		out.push_back("}");
+		out.push_back("");
+	}
+	if (use_func_mayusculas) {
+		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"mayusculas\".");
+		out.push_back("string mayusculas(string s) {");
+		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
+		out.push_back("\t\ts[i]=toupper(s[i]);");
+		out.push_back("\treturn s;");
+		out.push_back("}");
+		out.push_back("");
+	}
+	if (use_func_minusculas) {
+		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"minusculas\".");
+		out.push_back("string minusculas(string s) {");
+		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
+		out.push_back("\t\ts[i]=tolower(s[i]);");
+		out.push_back("\treturn s;");
+		out.push_back("}");
+		out.push_back("");
+	}
 	if (use_sin_tipo) {
 		out.push_back("// Para las variables que no se pudo determinar el tipo se utiliza la constante");
-		out.push_back("//  SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
+		out.push_back("// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
 		out.push_back("// (usualmente int,float,string o bool).");
 		out.push_back("#define SIN_TIPO string");
 		out.push_back("");
 	}
 	if (use_string) {
-		out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que lee solo");
-		out.push_back("// una palabra. Para leer una linea completa se debe utilzar getline (ej, reemplazar");
-		out.push_back("// cin>>x por getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
+		out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que");
+		out.push_back("// lee solo una palabra. Para leer una linea completa (es decir, incluyendo los");
+		out.push_back("// espacios en blanco) se debe utilzar getline (ej, reemplazar cin>>x por");
+		out.push_back("// getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
 		out.push_back("// se leyó otra variable con >>.");
 		out.push_back("");
 	}

@@ -1,3 +1,7 @@
+20130418
+	Agregado el soporte para funciones de manejo de cadenas al exportar a C++.
+	Agregado el soporte para subprocesos al exportar a C++.
+
 20130417
 	Ahora permite elegir cual subproceso exportar al guardar el diagrama de flujo.
 	Al hacer click sobre los mensajes de error de la verificación en tiempo real se abre la descripción completa del mismo.

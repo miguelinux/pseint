@@ -439,7 +439,6 @@ int SynCheck(int linea_from, int linea_to) {
 	programa.SetRefPoint(linea_to);
 	Memoria global_memory(NULL); // para usar al analizar instrucciones fuera de proceso/subprocesos
 	memoria=&global_memory;
-	static int untitled_functions_count=0; // para numerar las funciones sin nombre
 	SynErrores=0;
 	stack <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
 	bucles.push(Instruccion("CHECK",1,1));
@@ -762,7 +761,7 @@ int SynCheck(int linea_from, int linea_to) {
 //				}
 			}
 			// Pegar la instrucción
-			if (instruccion!="." && instruccion!="Error?" && instruccion!="<-" && instruccion!=":")
+			if (instruccion!="Error?" && instruccion!="<-" && instruccion!=":")
 				cadena=instruccion+cadena;
 			if (cadena.size()&&cadena[cadena.size()-1]==' ') cadena.erase(cadena.size()-1,1); // Borrar espacio en blanco al final
 			// Cortar instrucciones despues de sino o entonces

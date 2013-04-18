@@ -123,6 +123,8 @@ string restarUno(string exp) {
 	return exp+"-1";
 }
 
+string expresion(string exp);
+
 string expresion(string exp, tipo_var &tipo){
 	for (unsigned int i=0;i<exp.size();i++) if(exp[i]=='\"') exp[i]='\'';
 	
@@ -210,8 +212,12 @@ string expresion(string exp, tipo_var &tipo){
 						else if (exp[fin]==']' || exp[fin]==')') parentesis--;
 					}
 					exp[fin]=')';
-					if (EsFuncionPredefinida(sub))
-						exp.replace(i-sub.size(),fin-(i-sub.size())+1,translate_function(sub,exp.substr(i,fin-i+1)));
+					if (EsFuncionPredefinida(sub)) {
+						string args="("+expresion(exp.substr(i+1,fin-i-1))+")";
+						string translated=translate_function(sub,args);
+						exp.replace(i-sub.size(),fin-(i-sub.size())+1,translated);
+						i=i-sub.size()+translated.size()-1;
+					}
 				} else {
 					esArreglo.push(true);
 					exp[i]='[';
