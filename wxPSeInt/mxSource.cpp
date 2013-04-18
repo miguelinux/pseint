@@ -77,8 +77,9 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
-	// si la siguiente linea genera error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
-	EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
+#define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
+	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
+	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 END_EVENT_TABLE()
 
 	
