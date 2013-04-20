@@ -1,3 +1,8 @@
+>>RELEASE 20130419<<
+
+20130419
+	Ahora el botón para ir al sitio del cuadro de diálogo que informa sobre actualizaciones carga una página especial con el enlace de descarga para la plataforma que corresponda y el registro de cambios.
+	
 20130418
 	Corregio un problema al presionar enter en la nueva terminal cuando el interprete espera solo una tecla.
 	Ahora se pueden definir los subprocesos en cualquier orden dentro del pseudocódigo.

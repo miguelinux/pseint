@@ -70,7 +70,7 @@ bool mxApplication::OnInit() {
 	if (procesos.size()>0) {
 		wxArrayString procs;
 		for(unsigned int i=0;i<procesos.size();i++) 
-			procs.Add(procesos[i]->lpre+procesos[i]->label);
+			procs.Add((procesos[i]->lpre+procesos[i]->label).c_str());
 		wxString r=wxGetSingleChoice("Elija el proceso/subproceso a exportar","Exportar diagrama de flujo",procs);
 		int i=procs.Index(r);
 		if (i!=wxNOT_FOUND)

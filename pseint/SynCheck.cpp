@@ -109,11 +109,11 @@ static void SynCheckAux2(string &cadena) {
 	static coloquial_aux *coloquial_conditions_list=NULL;
 	static int coloquial_conditions_list_size=0;
 #ifdef _DEBUG
-	if (cadena=="<<<delete coloquial_conditions_list>>>") {
+	if (coloquial_conditions_list && cadena=="<<<delete coloquial_conditions_list>>>") {
 		delete []coloquial_conditions_list;
+		coloquial_conditions_list=NULL;
 		return;
 	}
-		
 #endif
 	if (!cadena.size() || !coloquial_conditions) return;
 	if (cadena[cadena.size()-1]!=' ') cadena+=" ";

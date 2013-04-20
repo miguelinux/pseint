@@ -724,6 +724,12 @@
   * Declare el arreglo previamente utilizando la palabra clave <A href="dimension.html">Dimensión</A>.
   * O elimine los subíndices en caso de que no lo sea.
 
+279
+  El subproceso/función indicado entre paréntesis en el error recibe según su declaración una cantidad de argumentos/parámetros diferente a la proporicionada en esta llamada. Al invocar un subproceso debe incluir en la llamada todos los argumentos necesarios separados por comas.
+  * Verifique que la lista de argumentos esté correctamente escrita (cada argumento separado por coma).
+  * Verifique que la declaración del subproceso (mediante las palabras clave SubProceso o Función en el pseudocódigo) sea correcta.
+  * Compruebe que la cantidad de los mismos sea igual a la cantidad declarada al crear el subproceso mencionado.
+
 308
   Se encontró la palabra clave FINPROCESO en un lugar donde no se esperaba. Esto puede deberse a uno de los siguientes tres motivos:
   * Faltan cerrar estructuras de control abiertas dentro del proceso antes de cerrar el proceso. Verifique que las estructuras de control del proceso estén anidadas y cerradas con sus respectivos FINXXX correctamente.
