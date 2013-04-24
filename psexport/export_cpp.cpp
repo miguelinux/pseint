@@ -107,7 +107,7 @@ string cpp_function(string name, string args) {
 	}
 }
 
-// resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase para que es la unica amiga)
+// resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
 class MemoriaForExport {
 public:
 	static void declarar_variables(t_output &prog) {
@@ -140,11 +140,10 @@ public:
 		else if (t==vt_logica) stipo="bool ";
 		else use_sin_tipo=true;
 		if (t.dims) {
-			string dims="", c1="[", c2="][", c3="]";
+			string dims="[", c2="][", c3="]";
 			for (int j=1;j<=t.dims[0];j++) {
-				if (j==1) dims+=c1+IntToStr(t.dims[j]);
-				else if (j==t.dims[0]) dims+=IntToStr(t.dims[j])+c3;
-				else dims+=c2+IntToStr(t.dims[j]);
+				if (j==t.dims[0]) dims+=IntToStr(t.dims[j])+c3;
+				else dims+=IntToStr(t.dims[j])+c2;
 			}
 			return stipo+ToLower(mit->first)+dims;
 		} else {
