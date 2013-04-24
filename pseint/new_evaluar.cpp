@@ -701,26 +701,24 @@ bool CheckDims(string &str) {
 			return false;
 		}
 		
-		// parche horrible para marcar los indices de arreglos como enteros para que no sean float al exportar a c++
-		if (force_integer_indexes) {
-			string exp=str.substr(str.find("(")+1)+","; int par=0;
-			for (unsigned int i=0,l=0;i<exp.size();i++) {
-				if (exp[i]=='\"') {
+		// marcar los indices de arreglos como numeros (y enteros para que no sean float al exportar a c++)
+		string exp=str.substr(str.find("(")+1)+","; int par=0;
+		for (unsigned int i=0,l=0;i<exp.size();i++) {
+			if (exp[i]=='\"') {
+				i++;
+				while (i<exp.size() && exp[i]!='\"')
 					i++;
-					while (i<exp.size() && exp[i]!='\"')
-						i++;
-					i++;
-					l=i+1;
-				} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-					if (par==0) {
-						string nombre=exp.substr(l,i-l);
-						if (memoria->Existe(nombre)) 
-							memoria->DefinirTipo(nombre,vt_numerica,true);
-					}
-					l=i+1;
-					if (exp[i]=='['||exp[i]=='(') par++;
-					else if (exp[i]==']'||exp[i]==')') par--;
+				i++;
+				l=i+1;
+			} else if (!EsLetra(exp[i])&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+				if (par==0) {
+					string nombre=exp.substr(l,i-l);
+					if (memoria->Existe(nombre)) 
+						memoria->DefinirTipo(nombre,vt_numerica,force_integer_indexes);
 				}
+				l=i+1;
+				if (exp[i]=='['||exp[i]=='(') par++;
+				else if (exp[i]==']'||exp[i]==')') par--;
 			}
 		}
 		return true;

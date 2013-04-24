@@ -127,8 +127,10 @@ void SynError(int num,string s, int line, int inst) {
 // ------------------------------------------------------------
 bool CheckVariable(string str, int errcode) { 
 	size_t pi=str.find("(",0);
-	if (pi!=string::npos && str[str.size()-1]==')')
+	if (pi!=string::npos && str[str.size()-1]==')') {
+		CheckDims(str);
 		str.erase(pi,str.size()-pi); // si es arreglo corta los subindices
+	}
 	bool ret=true;
 	if (!EsLetra(str[0]))
 		ret=false;
