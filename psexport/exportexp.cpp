@@ -195,7 +195,6 @@ string expresion(string exp, tipo_var &tipo){
 			i++;
 			while (i<exp.size() && exp[i]!='\"')
 				i++;
-			i++;
 		} else if (exp[i]=='[' or exp[i]=='(') {
 			posicion.push(i);
 			// ver si es arreglo o funcion, o solo un parentesis de jerarquia

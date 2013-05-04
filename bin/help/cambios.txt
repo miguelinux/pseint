@@ -1,3 +1,5 @@
+>>RELEASE 20130504<<
+
 20130504
 	Ahora se exportan correctamente a C++ las llamadas a subprocesos fuera de expresiones.
 	
