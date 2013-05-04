@@ -344,8 +344,22 @@ void i_segun(t_output &prog, list<t_proceso_it> its, string tabs){
 		i=*q;
 		if ((*i).par1=="DE OTRO MODO")
 			insertar(prog,tabs+"default:");
-		else
-			insertar(prog,tabs+"case "+expresion((*i).par1)+":");
+		else {
+			string e="case "+expresion((*i).par1)+":";
+			bool comillas=false; int parentesis=0, j=0,l=e.size();
+			while(j<l) {
+				if (e[j]=='\''||e[j]=='\"') comillas=!comillas;
+				else if (!comillas) {
+					if (e[j]=='['||e[j]=='(') parentesis++;
+					else if (e[j]==']'||e[j]==')') parentesis--;
+					else if (parentesis==0 && e[j]==',') {
+						e.replace(j,1,": case ");
+					}
+				}
+				j++;
+			}
+			insertar(prog,tabs+e);
+		}
 		i_bloque(prog,++i,*p,tabs+"\t");
 		insertar(prog,tabs+"\tbreak;");
 		q++;
