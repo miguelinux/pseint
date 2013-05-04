@@ -153,6 +153,7 @@ public:
 	
 };
 
+void i_invocar(t_output &prog, string param,string tabs);
 void i_esperar(t_output &prog, string param,string tabs);
 void i_borrar(t_output &prog, string param,string tabs);
 void i_escribir(t_output &prog, string param,string tabs);
@@ -221,6 +222,14 @@ void i_esperar(t_output &prog, string param, string tabs){
 
 void i_borrar(t_output &prog, string param, string tabs){
 	insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
+}
+
+void i_invocar(t_output &prog, string param, string tabs){
+	string linea=expresion(param);
+	if (linea[linea.size()-1]!=')') 
+		linea+="()";
+	linea+=";";
+	insertar(prog,tabs+linea);
 }
 
 void i_escribir(t_output &prog, string param, string tabs){
@@ -403,6 +412,7 @@ void i_bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs){
 	while (r!=q) {
 		s=(*r).nombre;
 		if (s=="ESCRIBIR") i_escribir(prog,(*r).par1,tabs);
+		else if (s=="INVOCAR") i_invocar(prog,(*r).par1,tabs);
 		else if (s=="BORRARPANTALLA") i_borrar(prog,(*r).par1,tabs);
 		else if (s=="ESPERARTECLA") i_esperar(prog,(*r).par1,tabs);
 		else if (s=="DIMENSION") i_dimension(prog,(*r).par1,tabs);

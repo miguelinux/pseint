@@ -1,3 +1,19 @@
+20130504
+	Ahora se exportan correctamente a C++ las llamadas a subprocesos fuera de expresiones.
+	
+20130503
+	Agregados los perfiles USS-ICI y SISE.
+	
+20130416
+	Agregado el perfil BiffiLaSalle.
+	
+20130424
+	Corregido un error de sintaxis al declarar arreglos en los código C++ exportados.
+	Al analizar expresiones con arreglos se marcan las variables que intervienen en los subindices como numericas.
+	
+20130423
+	Agregado el perfil CSS.
+	
 20130422
 	Agregado el perfil UNAMBA.
 	

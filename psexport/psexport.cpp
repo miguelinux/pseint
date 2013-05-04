@@ -95,6 +95,9 @@ void cargar(list<t_proceso> &algs, string archivo){
 		} else if (LeftCompare(s,"ESCRIBIR ")) {
 			i.nombre="ESCRIBIR"; i.par1=CutString(s,9,1);
 			p.insert(p.end(),i);
+		} else if (LeftCompare(s,"INVOCAR ")) {
+			i.nombre="INVOCAR"; i.par1=CutString(s,8,1);
+			p.insert(p.end(),i);
 		} else if (LeftCompare(s,"ESCRIBNL ")) {
 			i.nombre="ESCRIBIR"; i.par1=string("**SINSALTAR**,")+CutString(s,9,1);
 			p.insert(p.end(),i);
