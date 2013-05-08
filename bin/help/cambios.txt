@@ -1,3 +1,6 @@
+20130508
+	Corregido el problema que generaba un cuelgue si se intentaba ejecutar un algoritmo justo cuando el editor estaba analizando su sintaxis para marcar los errores en tiempo real o completar el árbol de procesos y variables.
+	
 >>RELEASE 20130504<<
 
 20130504

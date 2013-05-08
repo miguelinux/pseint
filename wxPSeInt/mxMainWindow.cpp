@@ -1390,9 +1390,12 @@ void mxMainWindow::SelectSource (mxSource * s) {
 }
 
 void mxMainWindow::UpdateRealTimeSyntax() {
-		if (config->rt_syntax)
-			for(unsigned int i=0;i<notebook->GetPageCount();i++)
-				((mxSource*)notebook->GetPage(i))->DoRealTimeSyntax();
+		if (config->rt_syntax) {
+//			for(unsigned int i=0;i<notebook->GetPageCount();i++)
+//				((mxSource*)notebook->GetPage(i))->DoRealTimeSyntax();
+			IF_THERE_IS_SOURCE 
+				CURRENT_SOURCE->DoRealTimeSyntax();
+		}
 }
 
 void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
