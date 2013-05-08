@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/wx_m32_rls
 GPP=i686-apple-darwin8-g++
 FLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=i686-apple-darwin8`
-LIBS= `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8` -lwx_mac_stc-2.8-i686-apple-darwin8
+LIBS= -s `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8` -lwx_mac_stc-2.8-i686-apple-darwin8
 
 all: ${OBJS_DIR} ../bin/wxPSeInt ../bin/mac-terminal-wrapper.bin
 

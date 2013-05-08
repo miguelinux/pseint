@@ -152,6 +152,7 @@ public:
 	
 	void ProfileChanged(); // lo llama mxConfig para que actualice el menu configurar y reinicie el rtsyntax
 	void UpdateRealTimeSyntax(); // lo llama rtsyntax despues de reiniciarse
+	void OnRTSyntaxAuxTimer(wxTimerEvent &event);
 	
 	mxSource *GetCurrentSource();
 	

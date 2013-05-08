@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/int_m32_rls
 GPP=i686-apple-darwin8-g++
 FLAGS= -O3 -DUSE_ZOCKETS
-LIBS=
+LIBS=-s
 
 all: ${OBJS_DIR} ../bin/pseint
 

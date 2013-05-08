@@ -12,17 +12,17 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=../bin/help/cambios.txt
+current_source=main.cpp
 path_char=/
 [source]
 path=main.cpp
-cursor=8135
+cursor=9294
 open=true
 [source]
 path=intercambio.cpp
 cursor=651
-marker=263
 marker=43
+marker=263
 [source]
 path=SynCheck.cpp
 cursor=34490
@@ -182,7 +182,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=
+args=/home/zaskar/Downloads/10.psc --overloadequal --coloquialconditions --allowconcatenation --allowddims --color
 wait_for_key=2
 temp_folder=../temp/int_lnx_rls
 output_file=../bin/pseint

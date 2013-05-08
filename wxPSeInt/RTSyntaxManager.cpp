@@ -1,15 +1,17 @@
+#include <wx/txtstrm.h>
 #include "RTSyntaxManager.h"
 #include "mxProcess.h"
 #include "ConfigManager.h"
-#include <wx/txtstrm.h>
 #include "mxMainWindow.h"
 #include "mxVarWindow.h"
+#include "ids.h"
 
 RTSyntaxManager *RTSyntaxManager::the_one=NULL;
 int RTSyntaxManager::lid=0;
 
 RTSyntaxManager::RTSyntaxManager():wxProcess(wxPROCESS_REDIRECT) {
 	processing=running=restart=false;
+	timer = new wxTimer(main_window->GetEventHandler(),mxID_RT_TIMER);
 	id=++lid;
 }
 
@@ -27,7 +29,7 @@ void RTSyntaxManager::Start ( ) {
 
 void RTSyntaxManager::Stop ( ) {
 	if (the_one && the_one->pid<=0) return;
-	if (the_one) the_one->Kill(the_one->pid,wxSIGKILL);
+	if (the_one) { the_one->Kill(the_one->pid,wxSIGKILL); the_one->src=NULL; }
 }
 
 void RTSyntaxManager::Restart ( ) {
@@ -36,10 +38,11 @@ void RTSyntaxManager::Restart ( ) {
 }
 
 bool RTSyntaxManager::Process (mxSource * src) {
-	if (!the_one) Start(); else if (the_one->restart || the_one->processing) return false;
-	int mid=the_one->id;
+	if (!src) if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
+	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
+//	int mid=the_one->id; // ¿para que era esto?
+	the_one->src=src;
 	wxTextOutputStream output(*(the_one->GetOutputStream()));
-	wxTextInputStream input(*(the_one->GetInputStream()));	
 	the_one->processing=true;
 	for(int i=0;i<src->GetLineCount();i++) {
 		wxString s=src->GetLine(i);
@@ -49,11 +52,18 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	output<<"<!{[END_OF_INPUT]}!>\n";
 	src->ClearErrors();
 	src->ClearBlocks();
-	int fase_num=0;
+	the_one->fase_num=0;
 	var_window->BeginInput();
-	while (true) {
+	the_one->ContinueProcessing();
+	return true;
+}
+
+void RTSyntaxManager::ContinueProcessing() {
+	if (!src) return;
+	wxTextInputStream input(*(GetInputStream()));	
+	while(true) {
 		wxString line; char c;
-		while (the_one->IsInputAvailable()) {
+		while (IsInputAvailable()) {
 			c=input.GetChar();
 			if (c=='\n') break;
 			if (c!='\r') line<<c;
@@ -62,9 +72,11 @@ bool RTSyntaxManager::Process (mxSource * src) {
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
+				var_window->EndInput();
 				fase_num=2;
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
-				break;
+				processing=false;
+				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				long l=-1,i=-1,n;
 				line.AfterFirst(':').BeforeFirst(':').AfterLast(' ').ToLong(&n);
@@ -83,15 +95,11 @@ bool RTSyntaxManager::Process (mxSource * src) {
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 
 					src->AddBlock(l1-1,l2-1);
 			}
-				
 		} else {
-			wxYield(); wxMilliSleep(0);
-			if (!the_one||the_one->id!=mid) return false;
+			timer->Start(100,true);
+			return;
 		}
-		var_window->EndInput();
-	}	
-	the_one->processing=false;
-	return true;
+	}
 }
 
 void RTSyntaxManager::OnTerminate (int pid, int status) {
@@ -103,5 +111,9 @@ void RTSyntaxManager::OnTerminate (int pid, int status) {
 
 bool RTSyntaxManager::IsLoaded ( ) {
 	return the_one!=NULL;
+}
+
+RTSyntaxManager::~RTSyntaxManager ( ) {
+	timer->Stop();
 }
 

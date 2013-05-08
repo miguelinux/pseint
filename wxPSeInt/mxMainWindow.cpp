@@ -153,6 +153,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_BUTTON(mxID_HELPER_VARS,mxMainWindow::OnHelperVars)
 	EVT_BUTTON(mxID_HELPER_DEBUG,mxMainWindow::OnHelperDebug)
 	EVT_BUTTON(mxID_HELPER_COMMANDS,mxMainWindow::OnHelperCommands)
+	
+	EVT_TIMER(mxID_RT_TIMER,mxMainWindow::OnRTSyntaxAuxTimer)
 END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _T("PSeInt"), pos, size, wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
@@ -1612,5 +1614,9 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 		if (GetNotebookWidth()-500<400)
 			ShowVarsPanel(false);
 	}
+}
+
+void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
+	RTSyntaxManager::Process(NULL);
 }
 
