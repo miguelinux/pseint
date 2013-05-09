@@ -69,6 +69,7 @@ void RTSyntaxManager::ContinueProcessing() {
 			if (c!='\r') line<<c;
 		}
 		if (line.Len()) {
+		cerr<<"IN "<<fase_num<<": "<<line<<endl;
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
@@ -84,7 +85,7 @@ void RTSyntaxManager::ContinueProcessing() {
 				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
 				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
 				src->MarkError(l-1,i-1,n,line,line.StartsWith("Falta cerrar "));
-			} else if (fase_num==1 && config->show_vars) {
+			} else if (fase_num==1/* && config->show_vars*/) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
 					vars_window->Add(line.AfterFirst(' '),what=="PROCESO");

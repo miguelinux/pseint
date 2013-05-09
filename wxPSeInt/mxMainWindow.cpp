@@ -1183,7 +1183,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		aui_manager.Update();	
 	}
 	else if (event.pane->name == _T("vars_panel")) { 
-//		mi_vars_panel->Check(config->show_vars=false); 
+		config->show_vars=false;
 		aui_manager.GetPane("helper_vars").Show();
 		aui_manager.Update(); CheckIfNeedsRTS();
 	}
@@ -1444,7 +1444,7 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
-//	mi_vars_panel->Check(config->show_vars=true);
+	config->show_vars=true;
 	aui_manager.GetPane(vars_window).Show();
 	aui_manager.GetPane("helper_vars").Hide();
 	aui_manager.Update(); CheckIfNeedsRTS();	
