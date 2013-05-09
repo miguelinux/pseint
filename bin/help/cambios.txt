@@ -1,4 +1,8 @@
+20130509
+	Agregado un nuevo panel con la lista operadores y funciones predefinidas disponibles.
+
 20130508
+	Al cambiar el perfil se actualiza la corrección de sintaxis y el panel de variables para la pestaña de pseudocódgio actual.
 	Corregido el problema que generaba un cuelgue si se intentaba ejecutar un algoritmo justo cuando el editor estaba analizando su sintaxis para marcar los errores en tiempo real o completar el árbol de procesos y variables.
 	
 >>RELEASE 20130504<<

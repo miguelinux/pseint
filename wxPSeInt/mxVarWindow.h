@@ -24,7 +24,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxVarWindow *var_window;
+extern mxVarWindow *vars_window;
 
 #endif
 

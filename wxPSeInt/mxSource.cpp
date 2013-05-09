@@ -73,7 +73,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_DOWN, mxSource::OnEditToggleLinesDown)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_UP, mxSource::OnEditToggleLinesUp)
 	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
-	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
+//	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
@@ -874,10 +874,10 @@ void mxSource::IndentLine(int l, bool goup) {
 	
 }
 
-void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
-	for (int i=0;i<GetLineCount();i++)
-		IndentLine(i);
-}
+//void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
+//	for (int i=0;i<GetLineCount();i++)
+//		IndentLine(i);
+//}
 
 // si diff_proc_sub_func==false, proceso, subproceso y funcion devuelven BT_PROCESO (para el indentado es lo mismo, cambia para el autoclose)
 int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_func) {

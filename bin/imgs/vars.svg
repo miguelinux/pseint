@@ -217,9 +217,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.0000001"
-     inkscape:cx="954.84138"
-     inkscape:cy="201.96458"
+     inkscape:zoom="0.50000001"
+     inkscape:cx="1829.0578"
+     inkscape:cy="710.2287"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1752,5 +1752,77 @@
          x="965.21399"
          y="836.9574"
          style="fill:#0000ff;stroke:#0000ff;stroke-width:0.53215014999999999">?</tspan></text>
-  </g>
+    <rect
+       style="opacity:0.75;fill:none;stroke:none"
+       id="rect832-0"
+       width="58.588844"
+       height="739.5321"
+       x="1945.7593"
+       y="375.52664"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_opers.png"
+       inkscape:export-xdpi="21.505793"
+       inkscape:export-ydpi="21.505793" />
+    <g
+       id="g4389-6"
+       transform="matrix(0.92148586,0,0,0.92148586,1383.5243,127.119)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_vars.png"
+       inkscape:export-xdpi="24.578049"
+       inkscape:export-ydpi="24.578049">
+      <g
+         id="g4384-1">
+        <g
+           id="g4380-8" />
+      </g>
+    </g>
+    <g
+       id="g991"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_opers.png"
+       inkscape:export-xdpi="21.505793"
+       inkscape:export-ydpi="21.505793">
+      <text
+         transform="matrix(0,1,-1,0,0,0)"
+         xml:space="preserve"
+         style="font-size:57.45009995px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.43625247;font-family:Sans"
+         x="398.84729"
+         y="-1959.8729"
+         id="text44-9"
+         sodipodi:linespacing="125%"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_vars.png"
+         inkscape:export-xdpi="24.578049"
+         inkscape:export-ydpi="24.578049"><tspan
+           dy="12.727921 -9.8994942"
+           dx="0 -1.4142135 -9.6568537 -4 -11.313708 -4 -11.313708"
+           sodipodi:role="line"
+           id="tspan46-3"
+           x="398.84729"
+           y="-1959.8729"
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.43625247">* + = &lt;</tspan></text>
+      <text
+         inkscape:export-ydpi="24.578049"
+         inkscape:export-xdpi="24.578049"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/tb_vars.png"
+         transform="matrix(0,0.92308513,-1.0833237,0,0,0)"
+         sodipodi:linespacing="125%"
+         id="text828-2"
+         y="-1810.4124"
+         x="648.20081"
+         style="font-size:46.14484024px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:0.98692089;font-family:Sans"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.98692089"
+           y="-1810.4124"
+           x="648.20081"
+           id="tspan830-0"
+           sodipodi:role="line">operadores y funciones</tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot983"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion985"><rect
+           id="rect987"
+           width="268.70056"
+           height="401.63663"
+           x="1776.2522"
+           y="263.23105" /></flowRegion><flowPara
+         id="flowPara989"></flowPara></flowRoot>  </g>
 </svg>

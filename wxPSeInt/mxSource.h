@@ -90,7 +90,7 @@ public:
 	void Indent(int l1, int l2);
 	void IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);
-	void OnEditBeautifyCode(wxCommandEvent &evt);
+//	void OnEditBeautifyCode(wxCommandEvent &evt);
 
 	int GetId();
 	

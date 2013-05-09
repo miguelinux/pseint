@@ -31,6 +31,7 @@ private:
 	mxDesktopTest *desktop_test_grid;
 	void CreateDesktopTestGrid();
 	void CreateVarsPanel();
+	void CreateOpersPanel();
 	void CreateMenus();
 	void CreateToolbars();
 	void CreateNotebook();
@@ -129,6 +130,7 @@ public:
 	void OnCmdSi(wxCommandEvent &evt);
 	void OnCmdSegun(wxCommandEvent &evt);
 	void OnCmdSubProceso(wxCommandEvent &evt);
+	void InsertCode(wxString toins);
 	void InsertCode(wxArrayString &toins);
 
 	void OnPaneClose(wxAuiManagerEvent& event);
@@ -156,12 +158,14 @@ public:
 	
 	mxSource *GetCurrentSource();
 	
+	void OnHelperOpers(wxCommandEvent &evt);
 	void OnHelperVars(wxCommandEvent &evt);
 	void OnHelperDebug(wxCommandEvent &evt);
 	void OnHelperCommands(wxCommandEvent &evt);
 	
 	void CheckIfNeedsRTS();
 	
+	void ShowOpersPanel(bool show);
 	void ShowVarsPanel(bool show);
 	void ShowDebugPanel(bool show);
 	void ShowCommandsPanel(bool show);

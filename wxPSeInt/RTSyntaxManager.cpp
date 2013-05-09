@@ -53,7 +53,7 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	src->ClearErrors();
 	src->ClearBlocks();
 	the_one->fase_num=0;
-	var_window->BeginInput();
+	vars_window->BeginInput();
 	the_one->ContinueProcessing();
 	return true;
 }
@@ -72,7 +72,7 @@ void RTSyntaxManager::ContinueProcessing() {
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
-				var_window->EndInput();
+				vars_window->EndInput();
 				fase_num=2;
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				processing=false;
@@ -87,9 +87,9 @@ void RTSyntaxManager::ContinueProcessing() {
 			} else if (fase_num==1 && config->show_vars) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
-					var_window->Add(line.AfterFirst(' '),what=="PROCESO");
+					vars_window->Add(line.AfterFirst(' '),what=="PROCESO");
 				else
-					var_window->Add(what,line.Last());
+					vars_window->Add(what,line.Last());
 			} else if (config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 
