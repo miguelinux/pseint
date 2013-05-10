@@ -1,5 +1,6 @@
 20130510
 	Ahora la ejecución paso a paso se pausa correctamente al activar el modo explicado.
+	Ya no se puede invocar directamente (fuera de expresiones) a subprocesos o funciones que retornan valores.
 
 20130509
 	Corregido el problema por el cual no se actualizaba el panel de variables si no estaba visible al iniciar el editor.

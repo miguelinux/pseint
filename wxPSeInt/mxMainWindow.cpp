@@ -1420,6 +1420,7 @@ void mxMainWindow::ProfileChanged ( ) {
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	button_subproc->Show(config->lang.enable_user_functions);
 	commands->Layout();
+	opers_window->SetWordOperators();
 }
 
 mxSource * mxMainWindow::GetCurrentSource ( ) {
@@ -1624,8 +1625,13 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 		ShowDebugPanel(true);
 		ShowCommandsPanel(false);
 		wxYield();
-		if (GetNotebookWidth()-500<400)
-			ShowVarsPanel(false);
+		if (GetNotebookWidth()-500<400) {
+			ShowOpersPanel(false);
+			wxYield();
+			if (GetNotebookWidth()-500<400) {
+				ShowVarsPanel(false);
+			}
+		}
 	}
 }
 
