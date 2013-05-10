@@ -1558,7 +1558,7 @@ void mxMainWindow::ShowOpersPanel (bool show) {
 	if (pi.IsShown()==show) return;
 	if (show) {
 		pi.Show();
-		aui_manager.GetPane("helper_opers").Show();
+		aui_manager.GetPane("helper_opers").Hide();
 	} else {
 		pi.Hide();
 		aui_manager.GetPane("helper_opers").Show();

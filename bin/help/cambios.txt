@@ -1,3 +1,4 @@
+
 20130510
 	Ahora la ejecución paso a paso se pausa correctamente al activar el modo explicado.
 	Ya no se puede invocar directamente (fuera de expresiones) a subprocesos o funciones que retornan valores.
