@@ -735,3 +735,6 @@
   * Faltan cerrar estructuras de control abiertas dentro del proceso antes de cerrar el proceso. Verifique que las estructuras de control del proceso estén anidadas y cerradas con sus respectivos FINXXX correctamente.
   * El proceso ya estaba cerrado con una ocurrencia previa de FINPROCESO. Verifique que FINPROCESO se encuentre solo una vez en el algoritmo, y esté ubicado al final de un proceso.
   * Se encuentra en una función o subproceso, en cuyo caso debe utilizar FINFUNCIÓN o FUNSUBPROCESO.
+
+310
+  Las funciones o subprocesos que retornan valores deben utilizarse como parte de expresiones. Solo pueden invocarse directamente los subprocesos que no retornan ningún valor.

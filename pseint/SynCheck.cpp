@@ -1339,6 +1339,7 @@ int SynCheck(int linea_from, int linea_to) {
 				string fname=NextToken(cadena,p);
 				const Funcion *func=EsFuncion(fname);
 				string args=cadena.substr(p);
+				if (func->GetTipo(0)!=vt_error) {SynError (310,string("La función retorna un valor, debe ser parte de una expresion (")+fname+")."); errores++;}
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
 					if (func->cant_arg!=0) {SynError (264,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
