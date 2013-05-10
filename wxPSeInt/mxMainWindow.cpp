@@ -1170,27 +1170,22 @@ void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
-//	if (event.pane->name == _T("toolbar")) mi_toolbar->Check(config->show_toolbar=false);
-//	else 
 	if (event.pane->name == _T("commands")) {
-//		mi_commands->Check(config->show_commands=false);
 		aui_manager.GetPane("helper_commands").Show();
 		aui_manager.Update();	
 	}
 	else if (event.pane->name == _T("debug_panel")) {
-//		mi_debug_panel->Check(config->show_debug_panel=false);
 		aui_manager.GetPane("helper_debug").Show();
 		aui_manager.Update();	
 	}
 	else if (event.pane->name == _T("vars_panel")) { 
-		config->show_vars=false;
+		config->show_vars=false; // para que deje de actualizarlo cuando procese el rt_syntax
 		aui_manager.GetPane("helper_vars").Show();
-		aui_manager.Update(); CheckIfNeedsRTS();
+		aui_manager.Update();
 	}
 	else if (event.pane->name == _T("opers_panel")) { 
-//		mi_opers_panel->Check(config->show_opers=false); 
 		aui_manager.GetPane("helper_opers").Show();
-		aui_manager.Update(); CheckIfNeedsRTS();
+		aui_manager.Update();
 	}
 }
 
@@ -1444,31 +1439,19 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
-	config->show_vars=true;
-	aui_manager.GetPane(vars_window).Show();
-	aui_manager.GetPane("helper_vars").Hide();
-	aui_manager.Update(); CheckIfNeedsRTS();	
+	ShowVarsPanel(true);
 }
 
 void mxMainWindow::OnHelperOpers (wxCommandEvent & evt) {
-//	mi_opers_panel->Check(config->show_opers=true);
-	aui_manager.GetPane(opers_window).Show();
-	aui_manager.GetPane("helper_opers").Hide();
-	aui_manager.Update(); CheckIfNeedsRTS();	
+	ShowOpersPanel(true);
 }
 
 void mxMainWindow::OnHelperDebug (wxCommandEvent & evt) {
-//	mi_debug_panel->Check(true);
-	aui_manager.GetPane(debug_panel).Show();
-	aui_manager.GetPane("helper_debug").Hide();
-	aui_manager.Update();	
+	ShowDebugPanel(true);
 }
 
 void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
-//	mi_commands->Check(true);
-	aui_manager.GetPane(commands).Show();
-	aui_manager.GetPane("helper_commands").Hide();
-	aui_manager.Update();	
+	ShowCommandsPanel(true);
 }
 
 void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
@@ -1557,18 +1540,20 @@ void mxMainWindow::ShowDebugPanel (bool show) {
 void mxMainWindow::ShowVarsPanel (bool show) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(vars_window);
 	if (pi.IsShown()==show) return;
+	config->show_vars=show;
 	if (show) {
 		pi.Show();
-		aui_manager.GetPane("helper_vars").Show();
+		aui_manager.GetPane("helper_vars").Hide();
+		CheckIfNeedsRTS();
 	} else {
 		pi.Hide();
 		aui_manager.GetPane("helper_vars").Show();
 	}
-	aui_manager.Update(); CheckIfNeedsRTS();
+	aui_manager.Update(); 
 }
 
 void mxMainWindow::ShowOpersPanel (bool show) {
-	wxAuiPaneInfo &pi=aui_manager.GetPane(vars_window);
+	wxAuiPaneInfo &pi=aui_manager.GetPane(opers_window);
 	if (pi.IsShown()==show) return;
 	if (show) {
 		pi.Show();
@@ -1577,7 +1562,7 @@ void mxMainWindow::ShowOpersPanel (bool show) {
 		pi.Hide();
 		aui_manager.GetPane("helper_opers").Show();
 	}
-	aui_manager.Update(); CheckIfNeedsRTS();
+	aui_manager.Update();
 }
 
 void mxMainWindow::ShowCommandsPanel (bool show) {
