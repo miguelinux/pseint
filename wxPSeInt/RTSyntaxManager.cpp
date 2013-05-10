@@ -5,6 +5,8 @@
 #include "mxMainWindow.h"
 #include "mxVarWindow.h"
 #include "ids.h"
+#include <iostream>
+using namespace std;
 
 RTSyntaxManager *RTSyntaxManager::the_one=NULL;
 int RTSyntaxManager::lid=0;
@@ -38,7 +40,11 @@ void RTSyntaxManager::Restart ( ) {
 }
 
 bool RTSyntaxManager::Process (mxSource * src) {
-	if (!src) if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
+	if (!src) { 
+		if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
+		cerr<<"ERROR: the_one->Process(NULL) && ( !the_one || !the_one->processing)"<<endl;
+		return false; // no deberia pasar (solo si no puede lanzar el interprete o revienta enseguida)
+	}
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
 //	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
@@ -69,7 +75,7 @@ void RTSyntaxManager::ContinueProcessing() {
 			if (c!='\r') line<<c;
 		}
 		if (line.Len()) {
-//		cerr<<"IN "<<fase_num<<": "<<line<<endl;
+//			cerr<<line<<endl;
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
@@ -107,7 +113,8 @@ void RTSyntaxManager::OnTerminate (int pid, int status) {
 	if (restart) {
 		Start(); 
 		main_window->UpdateRealTimeSyntax();
-	} else the_one=NULL;
+	} else 
+		the_one=NULL;
 }
 
 bool RTSyntaxManager::IsLoaded ( ) {
@@ -116,5 +123,6 @@ bool RTSyntaxManager::IsLoaded ( ) {
 
 RTSyntaxManager::~RTSyntaxManager ( ) {
 	timer->Stop();
+	the_one=NULL;
 }
 
