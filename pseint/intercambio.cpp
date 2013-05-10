@@ -42,6 +42,7 @@ void Intercambio::UnInit() {
 }
 #ifdef USE_ZOCKETS
 void Intercambio::ProcData(string order) {
+	cout<<"DEBUG: "<<order<<endl;
 	if (order=="paso" || order=="comenzar") {
 		do_continue=true;
 		if (order=="paso"||subtitles_on) {
@@ -52,8 +53,11 @@ void Intercambio::ProcData(string order) {
 			zocket_escribir(zocket,"estado ejecutando\n",18);
 		}
 	} else if (order=="subtitulos 1") { // se mete en todos los subprocesos
-		subtitles_on=true;
-		if (do_continue) zocket_escribir(zocket,"estado pausa\n",13);
+		subtitles_on=true; 
+		if (do_continue) { 
+			do_continue=false;
+			zocket_escribir(zocket,"estado pausa\n",13);
+		}
 	} else if (order=="subtitulos 0") { // no se mete más alla del subproceso actual
 		subtitles_on=false;
 	} else if (order=="subprocesos 1") { // se mete en todos los subprocesos

@@ -1540,11 +1540,11 @@ void mxMainWindow::ShowDebugPanel (bool show) {
 void mxMainWindow::ShowVarsPanel (bool show) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(vars_window);
 	if (pi.IsShown()==show) return;
-	config->show_vars=show;
+	config->show_vars=show; // rt_syntax actualiza o no el arbol de variables segun este bool
 	if (show) {
 		pi.Show();
 		aui_manager.GetPane("helper_vars").Hide();
-		CheckIfNeedsRTS();
+		CheckIfNeedsRTS(); // aunque el codigo ya esté analizado, el arbol está vacio porque si no se muestra no se actualiza
 	} else {
 		pi.Hide();
 		aui_manager.GetPane("helper_vars").Show();

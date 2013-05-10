@@ -1,4 +1,5 @@
 20130509
+	Corregido el problema por el cual no se actualizaba el panel de variables si no estaba visible al iniciar el editor.
 	Agregado un nuevo panel con la lista operadores y funciones predefinidas disponibles.
 
 20130508
