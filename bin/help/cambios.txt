@@ -1,5 +1,7 @@
+>>RELEASE 20130510<<
 
 20130510
+	Corregidos algunos detalles estéticos en los paneles laterales del editor.
 	Ahora la ejecución paso a paso se pausa correctamente al activar el modo explicado.
 	Ya no se puede invocar directamente (fuera de expresiones) a subprocesos o funciones que retornan valores.
 
