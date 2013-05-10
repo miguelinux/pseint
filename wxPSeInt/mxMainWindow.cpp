@@ -372,7 +372,7 @@ void mxMainWindow::CreateCommandsPanel() {
 	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,_T("subproceso.png"),_T("SubProceso")))->SetToolTip(tt);
 	if (!config->lang.enable_user_functions) button_subproc->Hide();
 	panel->SetSizerAndFit(sizer);
-
+	
 	wxAuiPaneInfo info_helper,info_win;
 	info_win.Name(_T("commands")).Caption(_T("Comandos")).Right().Layer(pcmd[0]).Row(pcmd[1]).Position(pcmd[2]);
 	info_helper.Name(_T("helper_commands")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hcmd[0]).Row(hcmd[1]).Position(hcmd[2]);
@@ -382,7 +382,7 @@ void mxMainWindow::CreateCommandsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(commands, info_win);
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_COMMANDS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_COMMANDS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
@@ -395,7 +395,7 @@ void mxMainWindow::CreateVarsPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_VARS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_VARS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
 	aui_manager.AddPane(vars_window, info_win);
 }
 
@@ -409,27 +409,25 @@ void mxMainWindow::CreateOpersPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_OPERS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_opers.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_OPERS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_opers.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
 	aui_manager.AddPane(opers_window, info_win);
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
-	
 	subtitles=new mxSubtitles(this); // hay que crearlo antes que el debug
 	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name(_T("subtitles")).Bottom().CaptionVisible(false).Hide().Layer(psub[0]).Row(psub[1]).Position(psub[2]));	
-	
 	debug_panel = new mxDebugWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
 	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Layer(pdbg[0]).Row(pdbg[1]).Position(pdbg[2]);
 	info_helper.Name(_T("helper_debug")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hdbg[0]).Row(hdbg[1]).Position(hdbg[2]);
+	
 	if (config->show_debug_panel) {
 		info_win.Show(); info_helper.Hide();
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_DEBUG,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxDefaultSize,wxNO_BORDER), info_helper);
-	
+	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_DEBUG,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
