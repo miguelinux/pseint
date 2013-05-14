@@ -498,7 +498,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				}
 			} else { // se conoce t1
 				if (!t2.is_known()) { // t2 no
-					t=t1; int p2b=p2;
+					t=t1; /*int p2b=p2;*/ // ¿por que se redefinia p2b???
 					if (!AplicarTipo(expresion,p2a,p2b,t1))
 					{ tipo=vt_error; ev_return(""); }
 				} else if (t1!=t2) {// t2 no coincide

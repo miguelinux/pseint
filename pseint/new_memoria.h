@@ -132,10 +132,10 @@ public:
 			(it++)->second.reset();
 		var_value.clear();
 	}
-	void Agregartipo_var(const string &nombre, const tipo_var &tipo=vt_desconocido) {
-		tipo_var &v = var_info[nombre];
-		v.set(tipo);
-	}
+//	void Agregartipo_var(const string &nombre, const tipo_var &tipo=vt_desconocido) {
+//		tipo_var &v = var_info[nombre];
+//		v.set(tipo);
+//	}
 	void AgregarArreglo(const string &nombre, int *dims) {
 		tipo_var &v = var_info[nombre];
 		v.dims=dims;
