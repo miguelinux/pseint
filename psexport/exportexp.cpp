@@ -129,7 +129,7 @@ string expresion(string exp, tipo_var &tipo){
 	for (unsigned int i=0;i<exp.size();i++) if(exp[i]=='\"') exp[i]='\'';
 	
 //	if (!exp.size()) return exp;
-	// pasar todo a minusculas y sacar caracteres no validos
+	// pasar todo a mayúsculas y sacar caracteres no validos
 	for (unsigned int i=0;i<exp.size();i++) 
 		if (exp[i]=='\'') {
 			exp[i]='\"';
@@ -139,50 +139,50 @@ string expresion(string exp, tipo_var &tipo){
 				i++;
 			}
 			exp[i]='\"';
-		} else if (exp[i]>='A' && exp[i]<='Z') exp[i]+=32;
-		else if (exp[i]=='Ñ' || exp[i]=='ñ') exp[i]='n';
-		else if (exp[i]=='Á' || exp[i]=='á') exp[i]='a';
-		else if (exp[i]=='É' || exp[i]=='é') exp[i]='e';
-		else if (exp[i]=='I' || exp[i]=='í') exp[i]='i';
-		else if (exp[i]=='Ó' || exp[i]=='ó') exp[i]='o';
-		else if (exp[i]=='Ú' || exp[i]=='ú') exp[i]='u';
+		} else if (exp[i]>='a' && exp[i]<='z') exp[i]-=32;
+		else if (exp[i]=='ñ' || exp[i]=='Ñ') exp[i]='N';
+		else if (exp[i]=='á' || exp[i]=='Á') exp[i]='A';
+		else if (exp[i]=='é' || exp[i]=='E') exp[i]='E';
+		else if (exp[i]=='í' || exp[i]=='Í') exp[i]='I';
+		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
+		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
 	
 	
 	// cambiar verdadero y falso por VERDADERO y FALSO para que evaluar los reconozca
-	exp=exp+",";
-	for (unsigned int i=0,l=0;i<exp.size();i++) {
-		if (exp[i]=='\"') {
-			i++;
-			while (i<exp.size() && exp[i]!='\"')
-				i++;
-			i++;
-			l=i+1;
-		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-			if (exp.substr(l,i-l)=="verdadero") exp.replace(l,i-l,"VERDADERO");
-			else if (exp.substr(l,i-l)=="falso") exp.replace(l,i-l,"FALSO"); 
-			l=i+1;
-		}
-	}
-	exp=exp.substr(0,exp.size()-1);
+//	exp=exp+",";
+//	for (unsigned int i=0,l=0;i<exp.size();i++) {
+//		if (exp[i]=='\"') {
+//			i++;
+//			while (i<exp.size() && exp[i]!='\"')
+//				i++;
+//			i++;
+//			l=i+1;
+//		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+//			if (exp.substr(l,i-l)=="verdadero") exp.replace(l,i-l,"VERDADERO");
+//			else if (exp.substr(l,i-l)=="falso") exp.replace(l,i-l,"FALSO"); 
+//			l=i+1;
+//		}
+//	}
+//	exp=exp.substr(0,exp.size()-1);
 	
 	Evaluar(string(" ")+exp+" ",tipo); // ¿para que los espacios??? 
 	
 	// cambiar VERDADERO y FALSO por true y false
-	exp=exp+",";
-	for (unsigned int i=0,l=0;i<exp.size();i++) {
-		if (exp[i]=='\"') {
-			i++;
-			while (i<exp.size() && exp[i]!='\"')
-				i++;
-			i++;
-			l=i+1;
-		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
-			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
-			l=i+1;
-		}
-	}
-	exp=exp.substr(0,exp.size()-1);
+//	exp=exp+",";
+//	for (unsigned int i=0,l=0;i<exp.size();i++) {
+//		if (exp[i]=='\"') {
+//			i++;
+//			while (i<exp.size() && exp[i]!='\"')
+//				i++;
+//			i++;
+//			l=i+1;
+//		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+//			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
+//			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
+//			l=i+1;
+//		}
+//	}
+//	exp=exp.substr(0,exp.size()-1);
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	stack<bool> esArreglo;
 	esArreglo.push(false);
@@ -285,7 +285,7 @@ string expresion(string exp, tipo_var &tipo){
 			i++;
 		}
 	}
-	return exp;
+	return ToLower(exp);
 }
 
 string expresion(string exp) {

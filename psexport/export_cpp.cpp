@@ -124,7 +124,8 @@ public:
 	// vuelvan a declarar adentro
 	static string get_tipo(string name) {
 		map<string,tipo_var>::iterator mit=memoria->var_info.find(name);
-		if (mit==memoria->var_info.end()) return "SIN_TIPO _variable_desconocida_";
+		if (mit==memoria->var_info.end()) 
+			return "SIN_TIPO _variable_desconocida_";
 		string ret = get_tipo(mit);
 		memoria->var_info.erase(mit);
 		return ret;
@@ -589,9 +590,9 @@ void translate_cpp(t_output &out, t_proceso &proc) {
 		if (f->nombres[0]=="") dec="void "; else {
 			ret=MemoriaForExport::get_tipo(f->nombres[0]);
 			dec=ret.substr(0,ret.find(" ")+1);
-			ret=string("return ")+ret.substr(ret.find(" "));
+			ret=string("return")+ret.substr(ret.find(" "));
 		}
-		dec+=f->id+"(";
+		dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
 			dec+=MemoriaForExport::get_tipo(f->nombres[i]);

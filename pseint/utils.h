@@ -173,12 +173,7 @@ inline char ToUpper(const char c) {
 }
 
 // determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
-inline bool EsLetra(const char &c) {
-#ifdef _FOR_PSEXPORT
-	char _c=ToUpper(c);
-#else
-#define _c c
-#endif
+inline bool EsLetra(const char &_c) {
 	return ( (_c>='A' && _c<='Z') || (lazy_syntax && (_c=='Á'||_c=='É'||_c=='Í'||_c=='Ó'||_c=='Ú'||_c=='Ñ'||_c=='Ü') ) || _c=='_' );
 }
 

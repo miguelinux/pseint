@@ -1,4 +1,5 @@
 20130514
+	Ahora se determinan correctamente los tipos de argumentos y valores de retorno al declarar funciones en los códigos exportados a c++.
 	Los ejemplos abiertos desde la ayuda se recargan automáticamente al modificar el perfil.
 	Se corrigieron algunos errores en los ejemplos de la ayuda para determinadas configuraciones.
 	Ahora se exportan a C++ correctamente las llamadas a subprocesos.
