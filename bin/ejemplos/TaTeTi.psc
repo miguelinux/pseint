@@ -66,7 +66,7 @@ Proceso TaTeTi
 					Pos<-99;
 				Sino
 					i<-trunc((Pos-1)/3){+1#}{;}
-					j<-((Pos-1) mod 3){+1#}{;}
+					j<-((Pos-1) {%} 3){+1#}{;}
 					Si Tab1[i,j]<>0 Entonces
 						pos<-99{;}
 						Escribir "Posición incorrecta, ingrese nuevamente: "{;}

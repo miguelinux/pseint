@@ -1409,6 +1409,7 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 void mxMainWindow::ProfileChanged ( ) {
 	mxSource::SetAutocompletion();
 	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
+		((mxSource*)(notebook->GetPage(i)))->ProfileChanged();
 		((mxSource*)(notebook->GetPage(i)))->SetWords();
 		((mxSource*)(notebook->GetPage(i)))->Colourise(0,((mxSource*)(notebook->GetPage(i)))->GetLength());
 		((mxSource*)(notebook->GetPage(i)))->KillRunningTerminal();

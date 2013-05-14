@@ -1,4 +1,7 @@
 20130514
+	Los ejemplos abiertos desde la ayuda se recargan automáticamente al modificar el perfil.
+	Se corrigieron algunos errores en los ejemplos de la ayuda para determinadas configuraciones.
+	Ahora se exportan a C++ correctamente las llamadas a subprocesos.
 	Agregado el caracter de escape al exportar a C++ constantes de tipo caracter lo contienen.
 	Corregido un problema al evaluar el operador mayor que generaba identificadores de variables incorrectos.
 	

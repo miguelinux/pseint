@@ -38,9 +38,9 @@ Proceso Romanos
 			nd[{1#0}]<-''; nd[{2#1}]<-'X'; nd[{3#2}]<-'XX'; nd[{4#3}]<-'XXX'; nd[{5#4}]<-'XL'; nd[{6#5}]<-'L'; nd[{7#6}]<-'LX'; nd[{8#7}]<-'LXX'; nd[{9#8}]<-'LXXX'; nd[{10#9}]<-'XC'{;}
 			nc[{1#0}]<-''; nc[{2#1}]<-'C'; nc[{3#2}]<-'CC'; nc[{4#3}]<-'CCC'; nc[{5#4}]<-'CD'; nc[{6#5}]<-'D'; nc[{7#6}]<-'DC'; nc[{8#7}]<-'DCC'; nc[{9#8}]<-'DCCC'; nc[{10#9}]<-'CM'{;}
 			{Definir centenas,decenas,unidades como numeros}{;}
-			centenas<-trunc(Numero/100)mod 10{;}
-			decenas<-trunc(Numero/10)mod 10{;}
-			unidades<-Numero mod 10{;}
+			centenas<-trunc(Numero/100) {%} 10{;}
+			decenas<-trunc(Numero/10) {%} 10{;}
+			unidades<-Numero {%} 10{;}
 			Escribir nc[centenas{+1#}],nd[decenas{+1#}],nu[unidades{+1#}]{;}
 		FinSi
 	FinSi

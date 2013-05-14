@@ -76,7 +76,7 @@ public:
 	void OnEditSelectAll(wxCommandEvent &evt);
 	void OnEditToggleLinesUp (wxCommandEvent &event);
 	void OnEditToggleLinesDown (wxCommandEvent &event);
-	void OnModify(wxStyledTextEvent &event);
+//	void OnModify(wxStyledTextEvent &event);
 	void OnCalltipClick(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
 	void OnCharAdded(wxStyledTextEvent &event);
@@ -162,6 +162,8 @@ public:
 	
 	wxString GetPathForExport();
 	wxString GetNameForExport();
+	
+	void ProfileChanged();
 	
 	DECLARE_EVENT_TABLE();
 };

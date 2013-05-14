@@ -1526,3 +1526,14 @@ void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
 	main_window->ShowQuickHelp(true,help->GetErrorText(msg,e.n));
 }
 
+void mxSource::ProfileChanged ( ) {
+	KillRunningTerminal();
+	SetWords();
+	if (is_example) {
+		SetReadOnly(false);
+		LoadFile(filename); 
+		SetExample();
+	}
+	Colourise(0,GetLength());
+}
+

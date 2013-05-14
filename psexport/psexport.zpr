@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=version.h
+current_source=../pseint/utils.cpp
 path_char=/
 [source]
 path=psexport.cpp
@@ -20,7 +20,8 @@ cursor=5253
 open=true
 [source]
 path=../pseint/utils.cpp
-cursor=13897
+cursor=14624
+breakpoint=397
 open=true
 [source]
 path=../pseint/global.cpp
@@ -34,9 +35,9 @@ cursor=1086
 [source]
 path=../pseint/new_evaluar.cpp
 cursor=22904
-marker=704
-marker=396
 marker=175
+marker=396
+marker=704
 [source]
 path=../pseint/new_funciones.cpp
 cursor=6790

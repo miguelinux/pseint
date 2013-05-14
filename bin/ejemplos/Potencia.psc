@@ -5,6 +5,7 @@
 // El paso base se base en que A^0 = 1
 
 SubProceso  resultado <- Potencia (base, exponente)
+    {Definir resultado como Entero}{;}
     Si exponente=0 Entonces
         resultado <- 1;
     sino 
