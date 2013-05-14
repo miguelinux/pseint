@@ -73,7 +73,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 	proc_for_killing=this;
 }
 
-bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
+bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 	
 	if (what==mxPW_NULL) what=mxPW_CHECK;
 	
@@ -82,8 +82,8 @@ bool mxProcess::CheckSyntax(wxString file, wxString parsed) {
 	
 	command<<GetProfileArgs();
 	
-	if (parsed!=wxEmptyString)
-		command<<_(" --draw \"")<<parsed<<_T("\"");
+	if (extra_args!=wxEmptyString)
+		command<<" "<<extra_args;
 	
 	wxArrayString output;
 	wxExecute(command,output,wxEXEC_SYNC);
@@ -195,7 +195,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 
 bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
+	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -203,7 +203,7 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
+	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdraw2_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
@@ -217,7 +217,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 
 bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_SAVEDRAW:mxPW_SAVEDRAW;
-	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
+	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
@@ -227,7 +227,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 
 bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT;
-	if (check_first) return CheckSyntax(file,source->GetTempFilenamePSD());
+	if (check_first) return CheckSyntax(file,wxString("--draw \"")<<source->GetTempFilenamePSD()<<"\"");
 //	wxMessageBox(_T("Si el código define subprocesos o utiliza funciones de manejos de cadenas no se exportará correctamente.\nEstas limitaciones serán solucionadas en las próximas versiones de PSeInt."),_T("Exportar a código C++"),wxOK|wxICON_EXCLAMATION);
 	wxFileDialog dlg (main_window, _T("Guardar Cpp"),source->GetPathForExport(),source->GetNameForExport()+_T(".cpp"), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;

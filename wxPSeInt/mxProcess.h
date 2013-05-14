@@ -26,7 +26,7 @@ private:
 public:
 	mxProcess *next, *prev;
 	mxProcess(mxSource *src);
-	bool CheckSyntax(wxString file, wxString parsed=wxEmptyString);
+	bool CheckSyntax(wxString file, wxString extra_args=wxEmptyString);
 	bool Run(wxString file, bool check_first=false);
 	bool Debug(wxString file, bool check_first=false);
 	bool Draw(wxString file, bool check_first=false);

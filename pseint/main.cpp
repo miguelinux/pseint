@@ -121,8 +121,9 @@ int main(int argc, char* argv[]) {
 				coloquial_conditions=word_operators=true;
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
-			else if (str=="--draw") {
+			else if (str=="--usecasemap")
 				case_map=new map<string,string>();
+			else if (str=="--draw") {
 				draw=true;
 				run=false;
 			} else if (str=="--easteregg") {
@@ -287,10 +288,10 @@ int main(int argc, char* argv[]) {
 	if (errores==0) {
 	// salida para diagrama
 		if (draw) {
-			CaseMapPurge();
+			if (case_map) CaseMapPurge();
 			ofstream dibujo(fil_args[1]);
 			for (int i=0;i<programa.GetSize();i++) {
-				CaseMapApply(programa[i].instruccion);
+				if (case_map) CaseMapApply(programa[i].instruccion);
 				dibujo<<programa[i].instruccion<<endl;
 			}
 			dibujo.close();

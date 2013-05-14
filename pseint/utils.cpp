@@ -393,6 +393,10 @@ Funcion *ParsearCabeceraDeSubProceso(string cadena, bool es_proceso, int &errore
 	} else {
 		the_func->tipos[0]=vt_error; // para que cuando la quieran usar en una expresión salte un error, porque evaluar no verifica si se devuelve algo porque se use desde Ejecutar parala instrucción INVOCAR
 	}//...en tok2 deberia quedar siempre el parentesis si hay argumentos, o en nada si termina sin argumentos
+#ifdef _FOR_PSEXPORT
+	// el modulo que exporta pasa todo a minusculas
+	fname=ToLower(fname);
+#endif
 	if (fname=="") { 
 		SynError (40,es_proceso?"Falta nombre de proceso.":"Falta nombre de subproceso."); errores++; 
 		static int untitled_functions_count=0; // para numerar las funciones sin nombre
