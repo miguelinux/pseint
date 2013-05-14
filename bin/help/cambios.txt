@@ -1,3 +1,7 @@
+20130514
+	Agregado el caracter de escape al exportar a C++ constantes de tipo caracter lo contienen.
+	Corregido un problema al evaluar el operador mayor que generaba identificadores de variables incorrectos.
+	
 >>RELEASE 20130510<<
 
 20130510

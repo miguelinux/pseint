@@ -134,8 +134,10 @@ string expresion(string exp, tipo_var &tipo){
 		if (exp[i]=='\'') {
 			exp[i]='\"';
 			i++;
-			while (i<exp.size() && exp[i]!='\'')
+			while (i<exp.size() && exp[i]!='\'') {
+				if (exp[i]=='\\') { exp.insert(i,"\\"); i++; }
 				i++;
+			}
 			exp[i]='\"';
 		} else if (exp[i]>='A' && exp[i]<='Z') exp[i]+=32;
 		else if (exp[i]=='Ñ' || exp[i]=='ñ') exp[i]='n';
