@@ -42,7 +42,7 @@ void Intercambio::UnInit() {
 }
 #ifdef USE_ZOCKETS
 void Intercambio::ProcData(string order) {
-	cout<<"DEBUG: "<<order<<endl;
+//	cout<<"DEBUG: "<<order<<endl;
 	if (order=="paso" || order=="comenzar") {
 		do_continue=true;
 		if (order=="paso"||subtitles_on) {
