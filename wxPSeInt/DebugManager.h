@@ -24,7 +24,7 @@ private:
 	wxSocketBase *socket;
 	friend class mxProcess;
 	friend class mxDebugWindow;
-	friend class mxDesktopTest;
+	friend class mxDesktopTestGrid;
 	bool should_pause;
 	int current_line, current_inst; // linea e instruccion actual, como viene del interprete (base 1), para usar en el subtitulo
 public:
@@ -40,7 +40,6 @@ public:
 	bool Pause();
 	void Step();
 	void Stop();
-	void SetDoDesktopTest(bool val);
 	void SendEvaluation(wxString exp);
 	void SetStepIn(bool b);
 	void SetSubtitles(bool b);

@@ -2,7 +2,7 @@
 #include "mxSource.h"
 #include "mxMainWindow.h"
 #include "mxProcess.h"
-#include "mxDesktopTest.h"
+#include "mxDesktopTestGrid.h"
 #include <iostream>
 #include "mxEvaluateDialog.h"
 #include "ConfigManager.h"
@@ -31,8 +31,6 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	paused=false;
 	subtitles->Reset();
 	desktop_test->ResetTest();
-	if (do_desktop_test) 
-		main_window->ShowDesktopTestGrid(true);
 	
 //	if (server!=NULL) return;
 //	
@@ -74,6 +72,7 @@ void DebugManager::ProcSocketData(wxString data) {
 		wxString state = data.AfterFirst(' ');
 		if (state==_T("inicializado")) {
 			// cargar la prueba de escritorio
+			do_desktop_test=debug_panel->IsDesktopTestEnabled();
 			if (do_desktop_test) {
 				const wxArrayString &vars  = desktop_test->GetDesktopVars();
 				for (unsigned int i=0;i<vars.GetCount();i++) {
@@ -155,10 +154,6 @@ void DebugManager::Stop() {
 	if (process && process->pid!=0 && process->Exists(process->pid)) {
 		wxProcess::Kill(process->pid,wxSIGKILL,wxKILL_CHILDREN);
 	}
-}
-
-void DebugManager::SetDoDesktopTest(bool val) {
-	do_desktop_test = val;
 }
 
 void DebugManager::SendEvaluation(wxString exp) {

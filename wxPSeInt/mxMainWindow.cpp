@@ -20,8 +20,7 @@
 #include "mxHelpWindow.h"
 #include "mxDropTarget.h"
 #include "DebugManager.h"
-#include "mxDesktopTest.h"
-#include "mxDesktopVarsEditor.h"
+#include "mxDesktopTestPanel.h"
 #include "mxEvaluateDialog.h"
 #include "mxUpdatesChecker.h"
 #include "mxConfig.h"
@@ -191,7 +190,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 	CreateOpersPanel();
 	CreateDebugControlsPanel();
 	CreateCommandsPanel();
-	CreateDesktopTestGrid();
+	CreateDesktopTestPanel();
 	CreateNotebook();
 	CreateResultsTree();
 	CreateQuickHelp();
@@ -1185,6 +1184,9 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		aui_manager.GetPane("helper_opers").Show();
 		aui_manager.Update();
 	}
+	else if (event.pane->name == _T("desktop_test_panel")) { 
+		debug_panel->OnDesktopTestPanelHide();
+	}
 }
 
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
@@ -1222,20 +1224,20 @@ void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
 }
 
 
-void mxMainWindow::CreateDesktopTestGrid() {
-	desktop_test_grid = new mxDesktopTest(this,wxID_ANY);
-	aui_manager.AddPane(desktop_test_grid, wxAuiPaneInfo().Name(_T("desktop_test")).Caption(_T("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide().Layer(pdkt[0]).Row(pdkt[1]).Position(pdkt[2]));
+void mxMainWindow::CreateDesktopTestPanel() {
+	desktop_test_panel = new mxDesktopTestPanel(this);
+	aui_manager.AddPane(desktop_test_panel, wxAuiPaneInfo().Name(_T("desktop_test_panel")).Caption(_T("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide().Layer(pdkt[0]).Row(pdkt[1]).Position(pdkt[2]));
 }
 
-const wxArrayString &mxMainWindow::GetDesktopVars() {
-	return desktop_test_grid->GetDesktopVars();
-}
+//const wxArrayString &mxMainWindow::GetDesktopVars() {
+//	return desktop_test_panel->GetDesktopVars();
+//}
 
-void mxMainWindow::SetDesktopVars(bool do_dt, const wxArrayString &vars) {
-	debug->SetDoDesktopTest(do_dt);
-	desktop_test_grid->SetDesktopVars(vars);
-	ShowDesktopTestGrid(do_dt);
-}
+//void mxMainWindow::SetDesktopVars(bool do_dt, const wxArrayString &vars) {
+//	debug->SetDoDesktopTest(do_dt);
+//	desktop_test_grid->SetDesktopVars(vars);
+//	ShowDesktopTestGrid(do_dt);
+//}
 
 //void mxMainWindow::OnToolbarShowDebugPanel(wxCommandEvent &evt) {
 //	if (mi_debug_panel->IsChecked()) {
@@ -1515,12 +1517,12 @@ void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
 	}
 }
 
-void mxMainWindow::ShowDesktopTestGrid(bool show, bool one_line) {
+void mxMainWindow::ShowDesktopTestPanel(bool show) {
 	if (show) {
-		aui_manager.GetPane(desktop_test_grid).Show();	
-		if (one_line) aui_manager.GetPane(desktop_test_grid).BestSize(desktop_test_grid->GetSize().GetWidth(),desktop_test_grid->GetColLabelSize()*2);
+		aui_manager.GetPane(desktop_test_panel).Show();	
+//		if (one_line) aui_manager.GetPane(desktop_test_grid).BestSize(desktop_test_grid->GetSize().GetWidth(),desktop_test_grid->GetColLabelSize()*2);
 	} else
-		aui_manager.GetPane(desktop_test_grid).Hide();	
+		aui_manager.GetPane(desktop_test_panel).Hide();	
 	aui_manager.Update();
 }
 

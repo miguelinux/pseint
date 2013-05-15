@@ -12,7 +12,7 @@ class wxHtmlWindow;
 class mxFindDialog;
 class wxStaticText;
 class wxScrollBar;
-class mxDesktopTest;
+class mxDesktopTestPanel;
 
 class mxMainWindow : public wxFrame {
 private:
@@ -28,8 +28,7 @@ private:
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
 	wxPanel *commands;
-	mxDesktopTest *desktop_test_grid;
-	void CreateDesktopTestGrid();
+	void CreateDesktopTestPanel();
 	void CreateVarsPanel();
 	void CreateOpersPanel();
 	void CreateMenus();
@@ -137,8 +136,8 @@ public:
 	void OnNotebookPageChange(wxAuiNotebookEvent& event);
 	void OnNotebookPageClose(wxAuiNotebookEvent& event);
 	
-	const wxArrayString &GetDesktopVars();
-	void SetDesktopVars(bool do_dt, const wxArrayString &vars);
+//	const wxArrayString &GetDesktopVars();
+//	void SetDesktopVars(bool do_dt, const wxArrayString &vars);
 
 	void SelectLine(mxSource *src, int line);
 	
@@ -172,7 +171,7 @@ public:
 	void ShowResults(bool show, bool no_error=true);
 	void ShowQuickHelp(bool show, wxString text="", bool load=false);
 	void ShowSubtitles(bool show);
-	void ShowDesktopTestGrid(bool show, bool one_line=false);
+	void ShowDesktopTestPanel(bool show);
 	
 	void ParseResults(mxSource *source); // analiza el archivo de salida que genera un ejecucion, que contiene los errores de la misma
 	

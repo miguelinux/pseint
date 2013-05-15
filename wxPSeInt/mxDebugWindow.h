@@ -15,11 +15,11 @@ class mxDebugWindow : public wxPanel {
 private:
 	mxEvaluateDialog *evaluate_window;
 	ds_enum ds_state;
-//	wxStaticText *debug_status;
 	wxScrollBar *debug_speed;
-	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_desktop_vars, *dp_button_evaluate;
+	wxButton *dp_button_run, *dp_button_step, *dp_button_pause, *dp_button_evaluate;
 	wxCheckBox *dp_check_step_in;
 	wxCheckBox *dp_check_subtitles;
+	wxCheckBox *dp_check_desktop_test;
 public:
 	mxDebugWindow(wxWindow *parent);
 	void SetSpeed(int speed);
@@ -28,11 +28,13 @@ public:
 	void OnDebugButton(wxCommandEvent &evt);
 	void OnDebugPause(wxCommandEvent &evt);
 	void OnDebugStep(wxCommandEvent &evt);
-	void OnDebugDesktopVars(wxCommandEvent &evt);
+	void OnDebugDesktopTest(wxCommandEvent &evt);
 	void OnDebugEvaluate(wxCommandEvent &evt);
 	void OnDebugHelp(wxCommandEvent &evt);
 	void OnDebugCheckStepIn(wxCommandEvent &evt);
 	void OnDebugCheckSubtitles(wxCommandEvent &evt);
+	void OnDesktopTestPanelHide();
+	bool IsDesktopTestEnabled();
 	void StartDebugging(mxSource *source, bool paused);
 	void SetEvaluationValue(wxString val, char tipo);
 	void ProfileChanged();

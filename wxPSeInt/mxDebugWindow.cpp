@@ -10,7 +10,7 @@
 #include "ConfigManager.h"
 #include "mxProcess.h"
 #include "mxHelpWindow.h"
-#include "mxDesktopVarsEditor.h"
+#include "mxDesktopTestPanel.h"
 #include "mxEvaluateDialog.h"
 #include "mxSubtitles.h"
 
@@ -22,7 +22,7 @@ BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 	EVT_BUTTON(mxID_DEBUG_STEP, mxDebugWindow::OnDebugStep)
 	EVT_BUTTON(mxID_DEBUG_HELP, mxDebugWindow::OnDebugHelp)
 	EVT_BUTTON(mxID_DEBUG_EVALUATE, mxDebugWindow::OnDebugEvaluate)
-	EVT_BUTTON(mxID_DEBUG_DESKTOP_VARS, mxDebugWindow::OnDebugDesktopVars)
+	EVT_CHECKBOX(mxID_DEBUG_DESKTOP_VARS, mxDebugWindow::OnDebugDesktopTest)
 	EVT_CHECKBOX(mxID_DEBUG_STEP_IN, mxDebugWindow::OnDebugCheckStepIn)
 	EVT_CHECKBOX(mxID_DEBUG_SUBTITLES, mxDebugWindow::OnDebugCheckSubtitles)
 END_EVENT_TABLE()	
@@ -37,8 +37,6 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	sizer->Add(dp_button_run = new wxButton(this,mxID_DEBUG_BUTTON,_T("Comenzar")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	sizer->Add(dp_button_pause = new wxButton(this,mxID_DEBUG_PAUSE,_T("Pausar/Continuar")),wxSizerFlags().Proportion(0).Expand());
 	sizer->Add(dp_button_step = new wxButton(this,mxID_DEBUG_STEP,_T("Primer Paso")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_desktop_vars = new wxButton(this,mxID_DEBUG_DESKTOP_VARS,_T("Prueba de Esc...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	dp_button_desktop_vars->SetToolTip(utils->FixTooltip("Con este botón puede configurar una tabla con un conjunto de variables o expresiones para que serán evaluadas en cada paso de la ejecución paso a paso y registradas en dicha tabla automáticamente para analizar luego la evolución de los datos y el algoritmo."));
 	sizer->Add(dp_button_evaluate = new wxButton(this,mxID_DEBUG_EVALUATE,_T("Evaluar...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	dp_button_evaluate->SetToolTip(utils->FixTooltip("Puede utilizar este botón para evaluar una expresión o conocer el valor de una variable durante la ejecución paso a paso. Para ello debe primero pausar el algoritmo."));
 	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Velocidad:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
@@ -54,6 +52,8 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	sizer->Add(dp_check_step_in,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
 	
 //	sizer->AddSpacer(20);
+	sizer->Add(dp_check_desktop_test = new wxCheckBox(this,mxID_DEBUG_DESKTOP_VARS,_T("Prueba de Esc...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	dp_check_desktop_test->SetToolTip(utils->FixTooltip("Con esta opción puede configurar una tabla con un conjunto de variables o expresiones para que serán evaluadas en cada paso de la ejecución paso a paso y registradas en dicha tabla automáticamente para analizar luego la evolución de los datos y el algoritmo."));
 #ifdef __WIN32__
 	dp_check_subtitles=new wxCheckBox(this,mxID_DEBUG_SUBTITLES,"Explicar en detalle c/paso");
 #else
@@ -84,7 +84,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->SetToolTip(utils->FixTooltip("Utilice este botón para avanzar ejecutar solamente la siguiente instrucción del algoritmo."));
 		subtitles->button_next->Disable();
 		subtitles->button_next->SetLabel("Continuar");
-		dp_button_desktop_vars->Disable();
+		dp_check_desktop_test->Disable();
+		desktop_test_panel->SetEditable(false);
 		break;
 	case DS_STOPPED: 
 		subtitles->button_next->SetLabel(_T("Comenzar"));
@@ -95,7 +96,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->SetLabel(_T("Primer Paso"));
 		dp_button_step->SetToolTip(utils->FixTooltip("Utilice este botón para ejecutar solo la primer instrucción del algoritmo y pausar inmediatamente la ejecución del mismo."));
 		dp_button_step->Enable();
-		dp_button_desktop_vars->Enable();
+		dp_check_desktop_test->Enable();
+		if (desktop_test_panel) desktop_test_panel->SetEditable(true);
 		dp_button_evaluate->Disable();
 		dp_button_step->Enable();
 		dp_button_pause->Disable();
@@ -188,8 +190,8 @@ void mxDebugWindow::OnDebugHelp(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("debug.html"));
 }
-void mxDebugWindow::OnDebugDesktopVars(wxCommandEvent &evt) {
-	new mxDesktopVarsEditor(this);
+void mxDebugWindow::OnDebugDesktopTest(wxCommandEvent &evt) {
+	main_window->ShowDesktopTestPanel(dp_check_desktop_test->GetValue());
 }
 void mxDebugWindow::OnDebugEvaluate(wxCommandEvent &evt) {
 	evaluate_window->Show();
@@ -229,5 +231,13 @@ void mxDebugWindow::SetSubtitles(bool on) {
 
 ds_enum mxDebugWindow::GetState ( ) {
 	return ds_state;
+}
+
+void mxDebugWindow::OnDesktopTestPanelHide ( ) {
+	dp_check_desktop_test->SetValue(false);
+}
+
+bool mxDebugWindow::IsDesktopTestEnabled ( ) {
+	return dp_check_desktop_test->GetValue();
 }
 

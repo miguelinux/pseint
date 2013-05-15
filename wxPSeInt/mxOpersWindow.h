@@ -16,9 +16,9 @@ class mxOpersWindow : public wxScrolledWindow {
 		oper_item(wxString _code, wxButton *_but):code(_code),but(_but){}
 	};
 	struct label_item {
-		bool showing;
-		wxButton *but;
 		wxString label;
+		wxButton *but;
+		bool showing;
 		int from,to;
 		label_item(wxString _label, wxButton *_but):label(_label),but(_but),showing(true){}
 	};
