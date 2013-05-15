@@ -268,7 +268,7 @@ string expresion(string exp, tipo_var &tipo){
 			exp[i]='!';
 			exp[++i]='=';
 		}
-		else if (exp[i]=='=' && exp[i-1]!='>' && exp[i-1]!='<'){
+		else if (exp[i]=='=' && exp[i-1]!='>' && exp[i-1]!='<' && exp[i-1]!='=' && exp[i+1]!='='){
 			exp.insert(i,"=");
 			i++;
 		}

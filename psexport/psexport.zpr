@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=exportexp.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=psexport.cpp
@@ -54,7 +54,7 @@ breakpoint=127
 open=true
 [source]
 path=exportexp.cpp
-cursor=8262
+cursor=8336
 open=true
 [source]
 path=export_chooser.cpp
@@ -107,7 +107,7 @@ path=export_chooser.h
 cursor=164
 [other]
 path=../bin/help/cambios.txt
-cursor=975
+cursor=9
 open=true
 [config]
 name=Linux_Debug

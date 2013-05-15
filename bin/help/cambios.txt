@@ -1,4 +1,9 @@
+20130515
+	Corregido un error al exportar a C++ la instrucción Escribir cuando hay argumentos nulos.
+	Corregido un error al exportar a C++ el operador de comparación alternativo (==).
+
 20130514
+	Corregido un error al exportar a C++ el operador de negación.
 	Ahora se determinan correctamente los tipos de argumentos y valores de retorno al declarar funciones en los códigos exportados a c++.
 	Los ejemplos abiertos desde la ayuda se recargan automáticamente al modificar el perfil.
 	Se corrigieron algunos errores en los ejemplos de la ayuda para determinadas configuraciones.

@@ -248,7 +248,7 @@ void i_escribir(t_output &prog, string param, string tabs){
 			else if (parentesis==0 && param[i]==',') {
 				expr=param.substr(lastcoma,i-lastcoma);
 				if (expr=="**SINSALTAR**") saltar=false;
-				else
+				else if (expr.size())
 					linea+=string("<<")+expresion(expr);
 				lastcoma=i+1;
 			}
@@ -256,7 +256,7 @@ void i_escribir(t_output &prog, string param, string tabs){
 	}
 	expr=param.substr(lastcoma,param.size()-lastcoma);
 	if (expr=="**SINSALTAR**") saltar=false;
-	else linea+=string("<<")+expresion(expr);
+	else if (expr.size()) linea+=string("<<")+expresion(expr);
 	if (saltar) linea+="<<endl;"; else linea+=";";
 	insertar(prog,tabs+linea);
 }
