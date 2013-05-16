@@ -5,6 +5,7 @@
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "mxDesktopTestGrid.h"
+#include "mxHelpWindow.h"
 
 mxDesktopTestPanel *desktop_test_panel=NULL;
 
@@ -45,6 +46,8 @@ void mxDesktopTestPanel::OnAdd(wxCommandEvent &evt) {
 }
 
 void mxDesktopTestPanel::OnHelp(wxCommandEvent &evt) {
+	if (!helpw) helpw = new mxHelpWindow();
+	helpw->ShowHelp(_T("prueba.html"));
 }
 
 void mxDesktopTestPanel::SetEditable (bool can_edit) {
