@@ -19,7 +19,7 @@ END_EVENT_TABLE()
 // cantidad de columnas fijas
 #define PRECOLS 2
 	
-mxDesktopTestGrid::mxDesktopTestGrid(wxWindow *parent, wxWindowID id ):wxGrid(parent,id, wxDefaultPosition,wxSize(400,300)) {
+mxDesktopTestGrid::mxDesktopTestGrid(wxWindow *parent, wxWindowID id ):wxGrid(parent,id, wxDefaultPosition,wxDefaultSize) {
 	EnableDragColMove();
 	desktop_test=this;
 	created=false;

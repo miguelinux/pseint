@@ -1,4 +1,12 @@
+>>RELEASE 20130516<<
+
+20130516
+	Agregado el perfil IUTOMS-VE.
+
 20130515
+	Algunas actualizaciones en las secciones de la ayuda correspondientes a la interfaz del editor.
+	Simplificada la interfaz para la Prueba de Escritorio.
+	Eliminado un mensaje de depuración que aparecía por error al ejecutar paso a paso.
 	Corregido un error al exportar a C++ la instrucción Escribir cuando hay argumentos nulos.
 	Corregido un error al exportar a C++ el operador de comparación alternativo (==).
 
