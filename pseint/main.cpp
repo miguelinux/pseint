@@ -27,21 +27,21 @@ void on_signal(int s) {
 }
 
 void checksum(Programa &p) {
-	if (p.GetSize()==5) {
-		string &s=programa[2].instruccion;
+	if (p.GetSize()==3) {
+		string &s=programa[1].instruccion;
 		int n=0,p=1;
 		for(unsigned int i=0;i<s.size();i++) { 
 			n+=s[i]; p=(p*s[i])%1000000;
 		}
 		if (n==839 && p==102912) { // daba 730880, por que cambio???
-			programa[2].instruccion[9]-=11;
-			programa[2].instruccion[10]+=10;
-			programa[2].instruccion[11]-=7;
-			programa[2].instruccion.insert(12,",\"!\"");
+			programa[1].instruccion[9]-=11;
+			programa[1].instruccion[10]+=10;
+			programa[1].instruccion[11]-=7;
+			programa[1].instruccion.insert(12,",\"!\"");
 		}
-	} else if (p.GetSize()==6) {
-		string &s1=programa[2].instruccion;
-		string &s2=programa[3].instruccion;
+	} else if (p.GetSize()==4) {
+		string &s1=programa[1].instruccion;
+		string &s2=programa[2].instruccion;
 		int n1=0,n2=0,p1=1,p2=1;
 		for(unsigned int i=0;i<s1.size();i++) { 
 			n1+=s1[i]; p1=(p1*s1[i])%1000000;
