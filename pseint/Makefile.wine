@@ -1,7 +1,7 @@
 include ../mingw.conf
 OBJS_DIR=../temp/int_w32_rls
 GPP=wine ${MINGW_DIR}/bin/mingw32-g++.exe
-FLAGS= -O3 -DUSE_ZOCKETS
+FLAGS= -O3 -DUSE_ZOCKETS -ffloat-store
 LIBS= -s -lwsock32 -static-libgcc -static-libstdc++ 
 
 all: ${OBJS_DIR} ../bin/pseint.exe
