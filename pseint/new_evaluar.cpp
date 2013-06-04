@@ -518,8 +518,10 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 				tipo = vt_logica;
 				if (t.cb_num) { // comparaciones de numeros
 					if (op=='<') {
-						if (next=='>')
-							ev_return(StrToDbl(s1)!=StrToDbl(s2)?VERDADERO:FALSO);
+						if (next=='>') {
+							double diff=StrToDbl(s1)-StrToDbl(s2); if (diff<0) diff=-diff;
+							ev_return(diff<1e-11?FALSO:VERDADERO); // comparacion "difusa" para evitar problemas numericos
+						}
 						else if (next=='=')
 							ev_return(StrToDbl(s1)<=StrToDbl(s2)?VERDADERO:FALSO);
 						else
