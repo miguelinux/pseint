@@ -19,9 +19,17 @@
 #define ARCHITECTURE "???"
 #endif
 
+#include <iostream>
+#include <fstream>
 #define _print_version_info(what) \
-	cout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<"\n" \
+	std::cout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<"\n" \
 		"  http://pseint.sourceforge.net\n" \
-		"  by Pablo Novara (zaskar_84@yahoo.com.ar)"<<endl
+		"  by Pablo Novara (zaskar_84@yahoo.com.ar)"<<std::endl
+
+#define _write_version_info(what,where) \
+	ofstream fout(where); \
+	if (fout.is_open()) \
+		fout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<std::endl; \
+	fout.close()
 
 #endif

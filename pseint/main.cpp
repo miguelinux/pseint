@@ -70,6 +70,9 @@ int main(int argc, char* argv[]) {
 	if (argc==2 && string(argv[1])==string("--version")) {
 		_print_version_info("PSeInt");
 		exit(0);
+	} else if (argc==3 && string(argv[1])==string("--version")) {
+		_write_version_info("PSeInt",argv[2]);
+		exit(0);
 	}
 
 	bool check=true, run=true, user=true, log_file=false, error=false, draw=false, undef_vars=true, var_definition=false;

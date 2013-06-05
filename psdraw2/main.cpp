@@ -12,6 +12,16 @@ using namespace std;
 #include "Comm.h"
 
 int main(int argc, char **argv) {
+	
+	if (argc==2 && string(argv[1])=="--version") {
+		_print_version_info("psDraw2");
+		return 0;
+	} else if (argc==3 && string(argv[1])=="--version") {
+		_write_version_info("psDraw2",argv[2]);
+		return 0;
+	}
+	
+	
 	for (int i=0;i<circle_steps;i++) {
 		cosx[i]=cos((i*2*M_PI)/circle_steps);
 		sinx[i]=sin((i*2*M_PI)/circle_steps);
@@ -22,11 +32,7 @@ int main(int argc, char **argv) {
 	string fname;
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
-		if (a=="--version") {
-			_print_version_info("psDraw2");
-			return 0;
-		}
-		else if (a=="--forcesemicolons") force_semicolons=true;
+		if (a=="--forcesemicolons") force_semicolons=true;
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
 		else if (a=="--noedit") edit_on=false;
 		else if (a=="--nowordoperators") word_operators=false;

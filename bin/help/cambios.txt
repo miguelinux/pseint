@@ -1,4 +1,5 @@
 20130604
+	Ahora se muestran correctamente todas las versiones en el cuadro de "Acerca de..." y se permite copiar el texto para adjuntar en un reporte de error.
 	Agregado el perfil FPUNA.
 
 20130529

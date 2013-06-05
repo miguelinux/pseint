@@ -41,8 +41,11 @@ bool mxApplication::OnInit() {
 	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--nassischneiderman] <input_file> <output_file>"<<endl;
-	} else if (wxString(argv[1])=="--version") {
+	} else if (argc==2 && wxString(argv[1])=="--version") {
 		_print_version_info("psDrawE");
+		return false;
+	} else if (argc==3 && wxString(argv[1])=="--version") {
+		_write_version_info("psDrawE",argv[2]);
 		return false;
 	}
 	

@@ -25,6 +25,9 @@ bool mxApplication::OnInit() {
 	if (argc==2 && wxString(argv[1])=="--version") {
 		_print_version_info("wxPSeInt");
 		return false;
+	} else if (argc==3 && wxString(argv[1])=="--version") {
+		_write_version_info("wxPSeInt",argv[2]);
+		return false;
 	}
 	
 	wxFileName f_path = wxGetCwd(); 

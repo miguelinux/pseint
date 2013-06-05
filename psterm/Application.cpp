@@ -21,6 +21,9 @@ bool mxApplication::OnInit() {
 	if (argc==2 && wxString(argv[1])=="--version") {
 		_print_version_info("psTerm");
 		return false;
+	} else if (argc==3 && wxString(argv[1])=="--version") {
+		_write_version_info("psTerm",argv[2]);
+		return false;
 	}
 	
 	bool no_arg=false, debug=false;
