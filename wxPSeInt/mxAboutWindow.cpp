@@ -30,7 +30,7 @@ END_EVENT_TABLE()
 	"\t\t\t2: Escribir \" C   L                        ##  ##\";\n\t\t\t5: Escribir \" A   S       @@  @@           ######\";\n\t\t\t15: Escribir \"     R   @@    @@    @@\";\n" \
 	"\t\t\t8: Escribir \" C R T       @@@@@@       ##  ######  ##\";\n\t\t\t1: Escribir \"     B                       ##     ##\";\n\t\t\t14: Escribir \"   . A     @@@@@@@@@@\";\n" \
 	"\t\t\t9: Escribir \" H A .         @@           ##########\";\n\t\t\t10: Escribir \" A C C     @@@@@@@@@@     ##  ######  ##\";\n\t\t\t3: Escribir \" U   O                          ##\";\n" \
-	"\t\t\t12: Escribir \"   N M     @@@@@@@@@@     ##    ##    ##\";\n\t\t\t7: Escribir \" A   O       @@@@@@         ##########\";\n\t\FinSegun\n\tFinPara\n\tEscribir \"\";\nFinProceso"
+	"\t\t\t12: Escribir \"   N M     @@@@@@@@@@     ##    ##    ##\";\n\t\t\t7: Escribir \" A   O       @@@@@@         ##########\";\n\t\tFinSegun\n\tFinPara\n\tEscribir \"\";\nFinProceso"
 	
 mxAboutWindow::mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, _T("Acerca de..."), pos, size, style) {
 		
@@ -61,25 +61,25 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 }
 
 wxString mxAboutWindow::GetVersion(wxString exe) {
+	wxArrayString out; // para que no muestre la consola (ver ayuda de wxExecute)
 	wxString filename=DIR_PLUS_FILE(config->temp_dir,"version.tmp"), retval=exe+": error desconocido";
-	if (wxFileName::FileExists(filename)) {
+	if (wxFileName::FileExists(filename)) 
 		wxRemoveFile(filename);
-		if (wxFileName::FileExists(filename)) {
-			retval=exe+": error 1: No se pudo determinar la version.";
+	if (wxFileName::FileExists(filename)) {
+		retval=exe+": error 1: No se pudo determinar la version.";
+	} else {
+		wxExecute(exe+" --version \""+filename+"\"",out,wxEXEC_SYNC|wxEXEC_NODISABLE);
+		wxTextFile fil(filename);
+		if (!fil.Exists()) {
+			retval=exe+": error 2: No se pudo determinar la version.";
 		} else {
-			wxExecute(exe+" --version \""+filename+"\"",wxEXEC_SYNC|wxEXEC_NODISABLE);
-			wxTextFile fil(filename);
-			if (!fil.Exists()) {
-				retval=exe+": error 2: No se pudo determinar la version.";
+			fil.Open();
+			if (!fil.GetLineCount()) {
+				retval=exe+": error 3: No se pudo determinar la version.";
 			} else {
-				fil.Open();
-				if (!fil.GetLineCount()) {
-					retval=exe+": error 3: No se pudo determinar la version.";
-				} else {
-					retval=fil.GetFirstLine();
-					fil.Close();
-					if (!retval.Len()) retval=exe+": error 4: No se pudo determinar la version";
-				}
+				retval=fil.GetFirstLine();
+				fil.Close();
+				if (!retval.Len()) retval=exe+": error 4: No se pudo determinar la version";
 			}
 		}
 	}
@@ -140,9 +140,8 @@ void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
 		Close();
 	} else if (event.GetLinkInfo().GetHref()=="lala") {
 		static int clicks=0;
-		if (++clicks==4 && wxTheClipboard->Open()) {
-			wxTheClipboard->SetData(new wxTextDataObject(eggcode));
-			wxTheClipboard->Close();
+		if (++clicks==42) {
+			version_info=eggcode;
 			clicks=0;
 		}
 	} else if (event.GetLinkInfo().GetHref()=="copy") {

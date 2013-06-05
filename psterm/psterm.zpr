@@ -12,11 +12,11 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=version.h
+current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=679
+cursor=516
 open=true
 [source]
 path=mxFrame.cpp
