@@ -475,7 +475,7 @@ void Entity::Print(ostream &out, string tab) {
 	} else if (type==ET_ESCRIBIR) {
 		if (!label.size()) label="{lista_de_expresiones}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Escribir "<<label<<(force_semicolons?";":"")<<endl;
+		out<<tab<<"Escribir "<<label<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<endl;
 	} else if (type==ET_LEER) {
 		if (!label.size()) label="{lista_de_variables}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);

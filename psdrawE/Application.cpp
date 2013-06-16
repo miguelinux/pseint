@@ -70,7 +70,8 @@ bool mxApplication::OnInit() {
 	}
 	edit_on=false;
 	
-	if (procesos.size()>0) {
+	// elegir un proceso/subproceso
+	if (procesos.size()>1) {
 		wxArrayString procs;
 		for(unsigned int i=0;i<procesos.size();i++) 
 			procs.Add((procesos[i]->lpre+procesos[i]->label).c_str());
@@ -78,7 +79,7 @@ bool mxApplication::OnInit() {
 		int i=procs.Index(r);
 		if (i!=wxNOT_FOUND)
 			SetProc(procesos[i]);
-	}
+	} else SetProc(procesos[0]);
 	
 	// calcular tamaño total
 	zoom=d_zoom=1;
@@ -121,7 +122,6 @@ bool mxApplication::OnInit() {
 	} while (aux!=start);
 	
 	// guardar
-	
 	wxFileName fn(fout);
 	wxFileDialog fd(NULL,"Guardar imagen",fn.GetPath(),fn.GetName()+".png",
 		_IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP",

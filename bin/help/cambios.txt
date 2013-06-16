@@ -1,3 +1,9 @@
+20130616
+	Corregido un error al generar el diagrama de flujo de la instrucción escribir cuando tiene el agregado "Sin Bajar" o "Sin Saltar".
+	
+20130610
+	Renombrado el perfil UNAB a UNAB-CruzNaranjo y agregado el perfil UNAB-Olivares.
+	
 20130604
 	Ahora se muestran correctamente todas las versiones en el cuadro de "Acerca de..." y se permite copiar el texto para adjuntar en un reporte de error.
 	Agregado el perfil FPUNA.

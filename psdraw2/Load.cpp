@@ -120,6 +120,10 @@ void LoadProc(istream &fin) {
 		else if (StartsWith(str,"ESCRIBIR ")) {
 			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
 		}
+		else if (StartsWith(str,"ESCRIBNL ")) {
+			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
+			aux->variante=true;
+		}
 		else if (StartsWith(str,"LEER ")) {
 			aux=Add(ids,aux,new Entity(ET_LEER,str.substr(5)));
 		}
