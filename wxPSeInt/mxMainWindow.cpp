@@ -981,6 +981,8 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		// insertar el código con su correspondiente formato (en la linea dada por line, que está en blanco)
 		int oline=line;
 		for (unsigned int i=0;i<toins.GetCount();i++) {
+			if (config->lang.lazy_syntax && toins[i].StartsWith("Fin"))
+				toins[i].Replace("Fin","Fin ",false);
 			if (i) source->InsertText(source->PositionFromLine(line),_T("\n"));
 			int pos = source->GetLineIndentPosition(line);
 			wxString toindic = toins[i];
