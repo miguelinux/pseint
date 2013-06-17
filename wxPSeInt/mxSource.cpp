@@ -26,7 +26,11 @@ const wxChar *mxSourceWords1 =
 	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
 	_T("repetir mientras de otro modo escribir finpara ")
 	_T("fin finproceso finsi finmientras finsegun ")
-	_T("verdadero falso numerico caracter logico logica entero entera texto cadena numeros enteros real reales enteras numericos numericas cadenas logicos logicas ")
+	_T("verdadero falso ")
+	_T("numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos ")
+	_T("entero entera enteros enteras real reales ")
+	_T("caracter carácter caracteres texto cadena cadenas ")
+	_T("logico lógico logica lógica logicos lógicos logicas lógicas")
 	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ")
 	_T("según finsegún "); // scintilla no funciona con los acentos
 

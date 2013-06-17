@@ -1,3 +1,8 @@
+20130617
+	En el tipo de dato para la instrucción Definir se pueden utilizar acentos.
+	Se puede agregar la definición del tipo de una variable con el menú contextual del panel de variables.
+	Ahora se muestra el perfil seleccionado en la barra de estado al iniciar.
+	
 20130616
 	Corregido un error al generar el diagrama de flujo de la instrucción escribir cuando tiene el agregado "Sin Bajar" o "Sin Saltar".
 	

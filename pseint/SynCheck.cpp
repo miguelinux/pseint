@@ -504,7 +504,7 @@ int SynCheck(int linea_from, int linea_to) {
 				programa.Insert(x+1,str);
 				flag_pyc+=1;
 			}
-			if (cadena=="FINSEGÚN") cadena="FINSEGUN";
+//			if (cadena=="FINSEGÚN") cadena="FINSEGUN"; // no es necesario, ya esta mas abajo
 			
 			// Cortar la instrucción
 			cadena=cadena+" ";
@@ -808,21 +808,28 @@ int SynCheck(int linea_from, int linea_to) {
 						cadena=cadena+";";
 						SynError (45,"Falta punto y coma."); errores++;
 					}
-					
-					if (RightCompare(cadena," COMO ENTEROS;")||RightCompare(cadena," COMO ENTERAS;")) cadena.replace(cadena.size()-8,8,"ENTERO;");
-					if (RightCompare(cadena," COMO ENTERA;")) cadena.replace(cadena.size()-7,7,"ENTERO;");
-					if (RightCompare(cadena," COMO REALES;")) cadena.replace(cadena.size()-7,7,"REAL;");
-					if (RightCompare(cadena," COMO NUMEROS;")) cadena.replace(cadena.size()-8,8,"REAL;");
-					if (RightCompare(cadena," COMO NUMERO;")) cadena.replace(cadena.size()-7,7,"REAL;");
-					if (RightCompare(cadena," COMO NUMERICA;")||RightCompare(cadena," COMO NUMERICO;")) cadena.replace(cadena.size()-9,9,"REAL;");
-					if (RightCompare(cadena," COMO NUMERICAS;")||RightCompare(cadena," COMO NUMERICOS;")) cadena.replace(cadena.size()-10,10,"REAL;");
-					if (RightCompare(cadena," COMO TEXTO;")) cadena.replace(cadena.size()-6,6,"CARACTER;");
-					if (RightCompare(cadena," COMO CARACTERES;")) cadena.replace(cadena.size()-11,11,"CARACTER;");
-					if (RightCompare(cadena," COMO TEXTOS;")) cadena.replace(cadena.size()-7,7,"CARACTER;");
-					if (RightCompare(cadena," COMO CADENA;")) cadena.replace(cadena.size()-7,7,"CARACTER;");
-					if (RightCompare(cadena," COMO CADENAS;")) cadena.replace(cadena.size()-8,8,"CARACTER;");
-					if (RightCompare(cadena," COMO LOGICOS;")||RightCompare(cadena," COMO LOGICAS;")) cadena.replace(cadena.size()-8,8,"LOGICO;");
-					if (RightCompare(cadena," COMO LOGICA;")) cadena.replace(cadena.size()-7,7,"LOGICO;");
+					size_t pos_como=cadena.find(" COMO ");
+					string def_tipo; if (pos_como!=string::npos) {pos_como+=6; def_tipo=cadena.substr(pos_como); }
+					// corregir acentos
+					if (LeftCompare(def_tipo,"NÚM")) { cadena[pos_como+1]='U'; def_tipo[1]='U'; }
+					else if (LeftCompare(def_tipo,"LÓG")) { cadena[pos_como+1]='O'; def_tipo[1]='O'; }
+					else if (LeftCompare(def_tipo,"NUMÉ")) { cadena[pos_como+2]='E'; def_tipo[2]='E'; }
+					else if (LeftCompare(def_tipo,"CARÁC")) { cadena[pos_como+3]='A'; def_tipo[3]='A'; }
+						
+					if (def_tipo=="ENTEROS;"||def_tipo=="ENTERAS;") cadena.replace(cadena.size()-8,8,"ENTERO;");
+					else if (def_tipo=="ENTERA;") cadena.replace(cadena.size()-7,7,"ENTERO;");
+					else if (def_tipo=="REALES;") cadena.replace(cadena.size()-7,7,"REAL;");
+					else if (def_tipo=="NUMEROS;") cadena.replace(cadena.size()-8,8,"REAL;");
+					else if (def_tipo=="NUMERO;") cadena.replace(cadena.size()-7,7,"REAL;");
+					else if (def_tipo=="NUMERICA;"||def_tipo=="NUMERICO;") cadena.replace(cadena.size()-9,9,"REAL;");
+					else if (def_tipo=="NUMERICAS;"||def_tipo=="NUMERICOS;") cadena.replace(cadena.size()-10,10,"REAL;");
+					else if (def_tipo=="TEXTO;") cadena.replace(cadena.size()-6,6,"CARACTER;");
+					else if (def_tipo=="CARACTERES;") cadena.replace(cadena.size()-11,11,"CARACTER;");
+					else if (def_tipo=="TEXTOS;") cadena.replace(cadena.size()-7,7,"CARACTER;");
+					else if (def_tipo=="CADENA;") cadena.replace(cadena.size()-7,7,"CARACTER;");
+					else if (def_tipo=="CADENAS;") cadena.replace(cadena.size()-8,8,"CARACTER;");
+					else if (def_tipo=="LOGICOS;"||def_tipo=="LOGICAS;") cadena.replace(cadena.size()-8,8,"LOGICO;");
+					else if (def_tipo=="LOGICA;") cadena.replace(cadena.size()-7,7,"LOGICO;");
 					
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
 						{SynError (46,"Falta tipo de dato o tipo no valido."); errores++;}
