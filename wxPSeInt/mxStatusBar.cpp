@@ -31,7 +31,7 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 		fil.Open();
 		texts[STATUS_WELCOME]=st_aux(verde,
 			wxString("Bienvenido a PSeInt v")<<fil.GetFirstLine()<<
-			(config->profile==NO_PROFILE?"":(wxString(" (su perfil actual es: ")<<config->profile<<")")
+			(config->profile==NO_PROFILE?"":(wxString(" (su perfil actual es: ")<<config->profile<<")"))
 			);
 		fil.Close();
 	} else {

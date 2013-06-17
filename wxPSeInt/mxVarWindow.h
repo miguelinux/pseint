@@ -18,6 +18,7 @@ public:
 	void OnTreeClick2(wxTreeEvent &evt);
 	void OnTreeClick(wxTreeEvent &evt);
 	void OnTreeTooltip(wxTreeEvent &evt);
+	void OnDefinir(wxCommandEvent &evt);
 	wxTreeItemId GetSelection();
 	mxVarWindow(wxWindow *parent);
 	~mxVarWindow();

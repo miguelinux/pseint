@@ -5,6 +5,8 @@
 
 #define _no_tty "<<sin configurar>>"
 
+#define NO_PROFILE "..."
+
 struct LangSettings {
 	wxString desc;
 	bool force_define_vars;

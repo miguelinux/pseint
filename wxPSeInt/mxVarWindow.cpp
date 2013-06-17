@@ -3,6 +3,7 @@
 #include "mxMainWindow.h"
 #include <wx/imaglist.h>
 #include "ConfigManager.h"
+#include "ids.h"
 #include "mxUtils.h"
 #include "DebugManager.h"
 #include "mxDebugWindow.h"
@@ -14,6 +15,7 @@ BEGIN_EVENT_TABLE(mxVarWindow,wxPanel)
 	EVT_TREE_ITEM_MIDDLE_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
+	EVT_MENU(mxID_VARS_DEFINIR,mxVarWindow::OnDefinir)
 END_EVENT_TABLE()
 	
 static wxString tooltip;
@@ -102,11 +104,18 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 }
 
 void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
-	if (!debug->debugging || !debug->paused) return;
-	wxTreeItemId it=evt.GetItem();
-	if (it.IsOk() && tree->GetItemParent(it)!=tree_root) {
-		tree->SelectItem(it);
-		debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
+	if (debug->debugging) { // cuando se depura, sirve para inspeccionar
+		if (!debug->paused) return;
+		wxTreeItemId it=evt.GetItem();
+		if (it.IsOk() && tree->GetItemParent(it)!=tree_root) {
+			tree->SelectItem(it);
+			debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
+		}
+	} else { // cuando no se depura muestra un menu contextual
+		if (tree->GetItemParent(evt.GetItem())==tree_root) return;
+		wxMenu menu;
+		menu.Append(mxID_VARS_DEFINIR,"Definir variable..."); // para mostrar en el dialogo
+		PopupMenu(&menu);
 	}
 }
 
@@ -117,5 +126,58 @@ void mxVarWindow::OnTreeTooltip(wxTreeEvent &evt) {
 
 wxTreeItemId mxVarWindow::GetSelection ( ) {
 	return tree->GetSelection();
+}
+
+static bool IsEmpty(const wxString &s, bool comments) {
+	int l=s.Len(), i=0;
+	while (i<l && (s[i]==' '||s[i]=='\t'||s[i]=='\n'||s[i]=='\r')) {
+		if (comments && s[i]=='/' && i+1<l && s[i+1]=='/') return true;
+		i++;
+	}
+	return i==l;
+}
+
+static bool IsDimOrDef(const wxString &s) {
+	int l=s.Len(), i=0;
+	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
+	if (i+7<l && s.Mid(i,7).Upper()=="DEFINIR") return true;
+	if (i+9<l && s.Mid(i,9).Upper()=="DIMENSION") return true;
+	return false;
+}
+
+void mxVarWindow::OnDefinir (wxCommandEvent & evt) {
+	wxTreeItemId it=GetSelection();
+	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
+	mxSource *src=main_window->GetCurrentSource();
+	if (!src) return; // ver que tengamos un fuente abierto
+	wxTreeItemId parent=tree->GetItemParent(it);
+	if (parent==tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
+	range *r=(range*)tree->GetItemData(parent);
+	if (!r) return; // ver que tengamos la informacion del scope del item
+	int n=src->GetLineCount(), where=r->from-1, empty_lines=0;
+	while (where+1<n && IsEmpty(src->GetLine(where+1),false)) // ver si hay lineas en blanco al principio del proceso
+			{ where++; empty_lines++; } 
+	bool add_line=empty_lines && where+1<n && !IsDimOrDef(src->GetLine(where+1));
+	
+	wxString var_name=tree->GetItemText(it); // obtener el nombre de la variable desde el arbol
+	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('['); // cortar las dimensiones si fuera un arreglo
+	
+	wxString var_type;
+	int img=tree->GetItemImage(it); // ver el tipo segun el icono que tiene
+	if (img==1) var_type="Logica";
+	else if (img==2) var_type="Numerica";
+	else if (img==4) var_type="Caracter";
+	else { // si el tipo es ambiguo o desconocido, preguntar
+		wxArrayString types;
+		if (img==0 || (img&1)) types.Add("Logica");
+		if (img==0 || (img&2)) types.Add("Numerica");
+		if (img==0 || (img&4)) types.Add("Caracter");
+		var_type=wxGetSingleChoice("Tipo de variable:",var_name,types);
+		if (!var_type.Len()) return;
+	}
+	// agregar la definicion
+	int x=src->GetLineEndPosition(where);
+	src->SetTargetStart(x); src->SetTargetEnd(x);
+	src->ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(config->lang.force_semicolon?";":"")<<(add_line?"\n\t":""));
 }
 

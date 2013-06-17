@@ -104,6 +104,7 @@ enum {
 		mxID_HELPER_DEBUG,
 		mxID_HELPER_COMMANDS,
 		mxID_RT_TIMER,
+		mxID_VARS_DEFINIR,
 		mxID_LAST,
 };
 
