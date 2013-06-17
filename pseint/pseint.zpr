@@ -24,7 +24,7 @@ cursor=1590
 marker=267
 [source]
 path=SynCheck.cpp
-cursor=36803
+cursor=35931
 open=true
 [source]
 path=Ejecutar.cpp
@@ -132,7 +132,7 @@ path=version_common.h
 cursor=839
 [other]
 path=../bin/help/cambios.txt
-cursor=622
+cursor=83
 open=true
 [other]
 path=../bin/help/errores.hlp
@@ -256,4 +256,5 @@ dont_generate_exe=0
 [inspections]
 name=<current_inspections>
 expr=cadena._M_dataplus._M_p
+expr=def_tipo._M_dataplus._M_p
 [end]

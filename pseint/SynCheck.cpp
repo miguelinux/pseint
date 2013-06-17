@@ -813,7 +813,7 @@ int SynCheck(int linea_from, int linea_to) {
 					// corregir acentos
 					if (LeftCompare(def_tipo,"NÚM")) { cadena[pos_como+1]='U'; def_tipo[1]='U'; }
 					else if (LeftCompare(def_tipo,"LÓG")) { cadena[pos_como+1]='O'; def_tipo[1]='O'; }
-					else if (LeftCompare(def_tipo,"NUMÉ")) { cadena[pos_como+2]='E'; def_tipo[2]='E'; }
+					else if (LeftCompare(def_tipo,"NUMÉ")) { cadena[pos_como+3]='E'; def_tipo[3]='E'; }
 					else if (LeftCompare(def_tipo,"CARÁC")) { cadena[pos_como+3]='A'; def_tipo[3]='A'; }
 						
 					if (def_tipo=="ENTEROS;"||def_tipo=="ENTERAS;") cadena.replace(cadena.size()-8,8,"ENTERO;");
