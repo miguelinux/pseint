@@ -1,3 +1,5 @@
+>>RELEASE 20130617<<
+
 20130617
 	En el tipo de dato para la instrucción Definir se pueden utilizar acentos.
 	Se puede agregar la definición del tipo de una variable con el menú contextual del panel de variables.
