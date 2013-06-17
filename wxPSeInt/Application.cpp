@@ -93,7 +93,7 @@ bool mxApplication::OnInit() {
 	wxMessageBox(_T("Bienvenido a PSeInt para Mac OS X. Esta una de las primeras versiones beta en este sistema operativo y por lo tanto algunas funcionalidades todavia no se encuentran disponibles: La ejecucion paso a paso no funcionara correctamente y la visualizacion de diagramas de flujo solo sera posible si cuenta con las bibliotecas del servidor X."),_T("Advertencia"));
 #endif
 	
-	if (config->profile==_T("...")) {
+	if (config->profile==NO_PROFILE) {
 		wxMessageBox(_T(
 			"Bienvenido a PSeInt. Antes de comenzar debes seleccionar un perfil "
 			"para ajustar el pseudolenguaje  tus necesidades. Si tu universidad "

@@ -5,6 +5,7 @@
 #include "mxMainWindow.h"
 #include <wx/utils.h>
 #include <wx/settings.h>
+#include "ConfigManager.h"
 
 BEGIN_EVENT_TABLE(mxStatusBar,wxPanel)
 	EVT_PAINT(mxStatusBar::OnPaint)
@@ -28,7 +29,10 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	wxTextFile fil(_T("version")); 
 	if (fil.Exists()) {
 		fil.Open();
-		texts[STATUS_WELCOME]=st_aux(verde,wxString("Bienvenido a PSeInt v")<<fil.GetFirstLine());
+		texts[STATUS_WELCOME]=st_aux(verde,
+			wxString("Bienvenido a PSeInt v")<<fil.GetFirstLine()<<
+			(config->profile==NO_PROFILE?"":(wxString(" (su perfil actual es: ")<<config->profile<<")")
+			);
 		fil.Close();
 	} else {
 		texts[STATUS_WELCOME]=st_aux(rojo,"A ocurrido un error al iniciar el editor.");

@@ -41,7 +41,7 @@ ConfigManager::ConfigManager(wxString apath) {
 }
 
 void ConfigManager::LoadDefaults() {
-	profile=_T("...");
+	profile=NO_PROFILE;
 	reorganize_for_debug=true;
 	use_colors=true;
 	show_debug_panel = false;
