@@ -83,7 +83,7 @@ static void ReemplazarOperadores(string &str) {
 }
 
 void LoadProc(istream &fin) {
-	string str,ret;
+	string str;
 	start = new Entity(ET_PROCESO,"SinTitulo");
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
@@ -169,7 +169,7 @@ void LoadProc(istream &fin) {
 			string var=str.substr(0,i);
 			str=str.substr(i+1);
 			i=str.find(" ");
-			string ini=str.substr(0,i);
+//			string ini=str.substr(0,i);
 			str=str.substr(i+1);
 			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
 			aux->variante=true;

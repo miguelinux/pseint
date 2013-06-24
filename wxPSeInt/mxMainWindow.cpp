@@ -1492,7 +1492,7 @@ void mxMainWindow::ShowResults(bool show, bool no_error) {
 			aui_manager.GetPane(results_tree).Show();
 			aui_manager.Update();
 		}
-		results_tree->Expand(results_root);
+		results_tree->ExpandAll(/*results_root*/);
 	} else if (aui_manager.GetPane(results_tree).IsShown()) {
 		aui_manager.GetPane(results_tree).Hide();
 		aui_manager.Update();
@@ -1587,6 +1587,7 @@ void mxMainWindow::ParseResults(mxSource *source) {
 	wxString temp_filename=source->GetTempFilenameOUT();
 	wxTextFile fil(temp_filename);
 	bool happy_ending = false;
+	wxTreeItemId last_item;
 	if (fil.Exists()) {
 		fil.Open();
 		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
@@ -1597,8 +1598,12 @@ void mxMainWindow::ParseResults(mxSource *source) {
 					source->SetStatus(STATUS_RUNNED_OK);
 				}
 			} else {
-				if (str.Len())
-					results_tree->AppendItem(results_root,str,1);
+				if (str.Len()) {
+					if (str.AfterFirst(':').StartsWith(" ...") && last_item.IsOk())
+						results_tree->AppendItem(last_item,str,1);
+					else
+						last_item = results_tree->AppendItem(results_root,str,1);
+				}
 			}
 		}
 		fil.Close();

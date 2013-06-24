@@ -141,6 +141,7 @@ public:
 
 	void SelectLine(mxSource *src, int line);
 	
+	void AppendError(const wxString &error);
 	bool SelectFirstError();
 	
 	void SetAccelerators();

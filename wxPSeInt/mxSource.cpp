@@ -1269,7 +1269,7 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 		if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
 		DoRealTimeSyntax(); HighLightBlock();
 	} else if (te.GetEventObject()==reload_timer) {
-		if (run_socket && rt_errors.size()==0) UpdateRunningTerminal();
+		if (run_socket && rt_errors.empty()) UpdateRunningTerminal();
 	}
 }
 
@@ -1403,7 +1403,7 @@ void mxSource::SetStatus (int cual) {
 		return;
 	}
 	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
-		if (rt_errors.size()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
+		if (!rt_errors.empty()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
 		else if (run_socket) status_bar->SetStatus(status=STATUS_RUNNING_CHANGED);
 		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
 	} else // ...sin verificacion de sintaxis en tiempo real
@@ -1452,7 +1452,7 @@ wxString mxSource::SaveTemp() {
 
 bool mxSource::UpdateRunningTerminal (bool raise) {
 	if (!run_socket) return false;
-	if (rt_running && !rt_timer->IsRunning() && rt_errors.size()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
+	if (rt_running && !rt_timer->IsRunning() && !rt_errors.empty()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
 	reload_timer->Stop();
 	SaveTemp();
 	run_socket->Write("reload\n",7);

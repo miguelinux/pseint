@@ -16,6 +16,8 @@ extern const int margin; // para los botones de confirm
 #ifdef __WIN32__
 #include <windows.h>
 #define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
 #endif
 
 #define mouse_setted_delta 1000
@@ -359,7 +361,7 @@ void ToggleEditable() {
 	static bool old_edit_on;
 	if (edit_on) {
 		old_edit_on=true;
-		edit_on=false; edit=false;
+		edit_on=false; edit=NULL;
 	} else {
 		edit_on=old_edit_on;
 	}

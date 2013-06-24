@@ -150,7 +150,7 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 				(*it1)->ProcessInput(event);
 				return;
 			}
-			it1++;
+			++it1;
 		}
 		_ERROR("CommunicationsManager::SocketEvent::Input error");
 	} else if (event.GetSocketEvent()==wxSOCKET_LOST) { // si por algo anormal se corto una conexion pendiente, liberar en sockets
@@ -162,7 +162,7 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 				clients.erase(it1);
 				return;
 			}
-			it1++;
+			++it1;
 		}
 		_ERROR("CommunicationsManager::SocketEvent::Lost error");
 	}

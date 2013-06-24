@@ -1,4 +1,5 @@
 20130624
+	Cuando hay un error en tiempo de ejecución dentro de un subproceso, las lineas de la pila de llamadas en el mensaje de error se coloca como hijos del item del error en el arbol de errores/resultados.
 	Agregado el perfil CESCA.
 	Corregido un bug al pasar un elemento de un arreglo por referencia a un subproceso.
 	

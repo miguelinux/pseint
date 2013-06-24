@@ -20,7 +20,7 @@ struct alias {
 
 struct tipo_var {
 	friend class Memoria;
-private: // el cliente debe acceder a travez de memoria->LeerDims para que si es alias lo corrija
+//private: // el cliente pseint debe acceder a travez de memoria->LeerDims para que si es alias lo corrija (pero psexport si necesita acceder directo)
 	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
 public:
 	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran

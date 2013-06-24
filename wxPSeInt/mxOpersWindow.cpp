@@ -105,7 +105,7 @@ void mxOpersWindow::SetWordOperators ( ) {
 }
 
 void mxOpersWindow::AddCaterory (wxString label) {
-	if (lista2.size()) lista2.back().to=lista.size();
+	if (!lista2.empty()) lista2.back().to=lista.size();
 	label_item i(label,new wxButton(this,mxID_LAST+250+lista2.size(),wxString("[-]  ")+label,wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_EXACTFIT
 #ifndef __WIN32__
 		|wxBU_LEFT
@@ -125,7 +125,7 @@ void mxOpersWindow::AddCaterory (wxString label) {
 }
 
 void mxOpersWindow::Finish ( ) {
-	if (lista2.size()) lista2.back().to=lista.size();
+	if (!lista2.empty()) lista2.back().to=lista.size();
 	sizer->Add(new wxStaticText(this,wxID_ANY,""));
 	sizer->Add(new wxStaticText(this,wxID_ANY,"Haga click en un operador\no en una función para\ninsertarlo/a en expresiones\ndel pseudocódigo."));
 }

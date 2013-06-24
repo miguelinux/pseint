@@ -403,7 +403,7 @@ void i_para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 void i_paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var,inc=var;
-	int *dims=memoria->LeerDims(var);
+	const int *dims=memoria->LeerDims(var);
 	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
 	for (int i=1;i<=dims[0];i++) {
 		first+="[0]";
