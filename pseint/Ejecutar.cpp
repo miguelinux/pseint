@@ -256,7 +256,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					aux2.erase(tmp2,cadena.size()-tmp2);
 					cadena.erase(0,aux2.size()+1);
 					tmp2-=aux2.size();
-					if (memoria->EstaDefinida(aux2)) 
+					if (memoria->EstaDefinida(aux2) || memoria->EstaInicializada(aux2)) 
 						ExeError(124,string("La variable (")+aux2+") ya estaba definida.");
 					memoria->DefinirTipo(aux2,tipo,rounded);
 					if (tipo==vt_numerica_entera) {

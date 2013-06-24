@@ -149,11 +149,12 @@ public:
 		var_info[nom_here]=mem->var_info[nom_orig];
 		if (nom_orig.find('(')!=string::npos) var_info[nom_here].dims=NULL;
 	}
+	// esta version de definir tipo se usa en las definiciones implicitas
 	bool DefinirTipo(string nombre, const tipo_var &tipo) {
 		QuitarIndices(nombre);
 		if (EsAlias(nombre)) return alias_mem->DefinirTipo(alias_nom,tipo);
 		tipo_var &vi=var_info[nombre];
-		vi.defined=true;
+//		vi.defined=true; // en las implicitas esto no va
 		return vi.set(tipo,true);
 	}
 	// esta version de definir tipo se usa en las definiciones explictas
