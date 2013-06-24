@@ -8,6 +8,7 @@
 	#define ZOCKET_ERROR SOCKET_ERROR
 #else
 	#include <fcntl.h>
+	#include <unistd.h>
 	#include <sys/socket.h>
 	#include <netdb.h>
 	#define ZOCKET_ERROR -1

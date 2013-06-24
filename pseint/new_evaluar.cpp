@@ -221,7 +221,7 @@ struct info_de_llamada {
 };
 
 static bool EsArreglo(const string &nombre) {
-	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerTipo(nombre).dims;
+	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerDims(nombre);
 }
 
 string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &tipo, bool for_expresion) {
@@ -677,7 +677,7 @@ bool CheckDims(string &str) {
 	int pp=str.find("(",0), p2=str.size()-1;
 	// ver que efectivamente sea un arreglo
 	string nombre=str.substr(0,pp);
-	int *adims=memoria->LeerDims(str);
+	const int *adims=memoria->LeerDims(str);
 	if (!adims) {
 		if (!Inter.Running() && memoria->EsArgumento(nombre)) return true; // si es una funcion, no sabemos si lo que van a pasar sera o no arreglo
 		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo o subproceso")); /// @todo: ver que hacer cuando se llama desde psexport, porque genera errores falsos

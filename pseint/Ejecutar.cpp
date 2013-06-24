@@ -123,12 +123,13 @@ void Ejecutar(int LineStart, int LineEnd) {
 						ExeError(208,"Variable no definida ("+aux2+").");
 					}
 					tipo=memoria->LeerTipo(aux2);
+					const int *dims=memoria->LeerDims(aux2);
 					size_t pp=aux2.find("(");
-					if (tipo.dims && pp==string::npos)
+					if (dims && pp==string::npos)
 						ExeError(200,"Faltan subindices para el arreglo ("+aux2+").");
-					else if (!tipo.dims && pp!=string::npos)
+					else if (!dims && pp!=string::npos)
 						ExeError(201,"La variable ("+aux2.substr(0,pp)+") no es un arreglo.");
-					if (tipo.dims) {
+					if (dims) {
 						_sub(line,string("Se alizan las dimensiones de ")+aux2);
 						CheckDims(aux2);
 						_sub(line,string("El resultado es ")+aux2);
@@ -294,7 +295,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					ExeError(211,string("La variable (")+aux1+") no esta definida.");
 				}
 				// verificar indices si es arreglo
-				if (memoria->LeerTipo(aux1).dims) {
+				if (memoria->LeerDims(aux1)) {
 					if (aux1.find("(",0)==string::npos)
 						ExeError(200,"Faltan subindices para el arreglo ("+aux1+").");
 					else
@@ -512,7 +513,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					tmp1++;
 				}
 
-				int *dims=memoria->LeerDims(aux2);
+				const int *dims=memoria->LeerDims(aux2);
 				if (!dims) ExeError(276,"La variable ("+aux2+") no es un arreglo.");
 				int nelems=1; // cantidad total de iteraciones
 				for (int i=1;i<=dims[0];i++) nelems*=dims[i];

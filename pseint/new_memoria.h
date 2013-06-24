@@ -19,7 +19,10 @@ struct alias {
 };
 
 struct tipo_var {
+	friend class Memoria;
+private: // el cliente debe acceder a travez de memoria->LeerDims para que si es alias lo corrija
 	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
+public:
 	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran
 	bool cb_log,cb_num,cb_car; // si puede ser logica, numerica o caracter
 	bool rounded; // para cuando se definen como enteras
@@ -176,7 +179,7 @@ public:
 		vi.used=true;
 		var_value[nombre]=valor;
 	}
-	int *LeerDims(string nombre) {
+	const int *LeerDims(string nombre) {
 		QuitarIndices(nombre);
 		if (EsAlias(nombre)) {
 			if (alias_nom.find('(')!=string::npos) // si el original era una arreglo, pero el alias apunta solo a una posicion

@@ -1021,14 +1021,14 @@ int SynCheck(int linea_from, int linea_to) {
 								if (!CheckVariable(str,65)) errores++;
 								else {
 									if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
-									if (memoria->LeerTipo(str).dims) SynError(255,"Faltan subindices para el arreglo ("+str+").");
+									if (memoria->LeerDims(str)) SynError(255,"Faltan subindices para el arreglo ("+str+").");
 								}
 							} else if (!memoria->EsArgumento(str.substr(0,str.find("(",0)))) {
 								bool name_ok=true;
 								string aname=str.substr(0,str.find("(",0));
 								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
 								else if (!memoria->EstaDefinida(aname)) memoria->DefinirTipo(aname,vt_desconocido); // para que aparezca en la lista de variables
-								if (!memoria->LeerTipo(aname).dims) { 
+								if (!memoria->LeerDims(aname)) { 
 									SynError(256,"La variable ("+aname+") no es un arreglo."); name_ok=false;
 								}
 								str=cadena;
@@ -1052,7 +1052,7 @@ int SynCheck(int linea_from, int linea_to) {
 									str.erase(0,str2.size()+1);
 									ca++;
 								}
-								if (name_ok && memoria->LeerTipo(aname).dims[0]!=ca) {
+								if (name_ok && memoria->LeerDims(aname)[0]!=ca) {
 									SynError(257,string("Cantidad de indices incorrecta para el arreglo (")+aname+(")"));
 									return false;
 								}

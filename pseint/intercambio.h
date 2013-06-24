@@ -12,7 +12,7 @@ using namespace std;
 #ifdef __WIN32__
 	#include<windows.h>
 #else
-	#include<sys/time.h>
+	#include<unistd.h>
 	#define Sleep(x) usleep((x)*1000)
 #endif
 
