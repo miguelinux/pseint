@@ -1616,7 +1616,7 @@ void mxMainWindow::ParseResults(mxSource *source) {
 			wxTreeItemId item(results_tree->GetFirstChild(results_root,v));
 			wxTreeEvent evt(0,results_tree,item);
 			OnSelectError(evt);
-			Raise();
+//			Raise(); // comentado porque con la nueva terminal, al presionar f9 se pasa el foco a la terminal, yu si hay error vuelve al editor sin dejar ver que paso
 		} else {
 			source->SetFocus();
 		}

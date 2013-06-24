@@ -69,6 +69,7 @@ bool mxApplication::OnInit() {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}
 	edit_on=false;
+	draw_shadow=false;
 	
 	// elegir un proceso/subproceso
 	if (procesos.size()>1) {

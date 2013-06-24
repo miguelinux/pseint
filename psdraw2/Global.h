@@ -86,6 +86,7 @@ extern const float color_ghost[3]; // borde fantasma cuando se arrastra una form
 extern const float color_menu[3]; // texto de los menues
 extern const float color_menu_back[3]; // fondo de los menues
 extern const float color_menu_sel[3]; // fondo de elemento de menu seleccionado
+extern bool draw_shadow; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
 
 extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 extern bool force_semicolons; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras

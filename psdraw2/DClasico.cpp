@@ -127,7 +127,7 @@ void Entity::DrawClasico(bool force) {
 	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 	if (this==mouse && (prev||parent)) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
 		DrawShapeBorder(color_ghost,d_dx+x,d_dy+y,bwr+bwl,h);
-	else /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
+	else if (draw_shadow) /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
 		DrawShapeSolid(color_shadow,d_fx+shadow_delta_x,d_fy-shadow_delta_y,d_w,d_h);
 	// flechas
 	glBegin(GL_LINES); 
