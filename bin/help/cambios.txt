@@ -1,3 +1,7 @@
+20130624
+	Agregado el perfil CESCA.
+	Corregido un bug al pasar un elemento de un arreglo por referencia a un subproceso.
+	
 >>RELEASE 20130617<<
 
 20130617
