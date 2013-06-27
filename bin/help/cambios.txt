@@ -1,4 +1,5 @@
-20130624
+>>RELEASE 20130627<<
+	Agregado el perfil UTalca.
 	Corregida la verificación de que las variables de la condición de un Si-Entonces esten definidas previamente si el perfil obliga a definir todas las variables.
 	Los diagramas de flujo se exportan ahora sin sombra en las entidades (para una mejor conversión a blanco y negro si es necesario imprimirlos asi).
 	Cuando hay un error en tiempo de ejecución dentro de un subproceso, las lineas de la pila de llamadas en el mensaje de error se coloca como hijos del item del error en el árbol de errores/resultados.
@@ -6,39 +7,23 @@
 	Corregido un bug al pasar un elemento de un arreglo por referencia a un subproceso.
 	
 >>RELEASE 20130617<<
-
-20130617
 	En el tipo de dato para la instrucción Definir se pueden utilizar acentos.
 	Se puede agregar la definición del tipo de una variable con el menú contextual del panel de variables.
 	Ahora se muestra el perfil seleccionado en la barra de estado al iniciar.
-	
-20130616
 	Corregido un error al generar el diagrama de flujo de la instrucción escribir cuando tiene el agregado "Sin Bajar" o "Sin Saltar".
-	
-20130610
 	Renombrado el perfil UNAB a UNAB-CruzNaranjo y agregado el perfil UNAB-Olivares.
-	
-20130604
 	Ahora se muestran correctamente todas las versiones en el cuadro de "Acerca de..." y se permite copiar el texto para adjuntar en un reporte de error.
 	Agregado el perfil FPUNA.
-
-20130529
 	Agregado el perfil UNSL-FCFMN.
 	Agregado el perfil UNLPam.
-
+	
 >>RELEASE 20130516<<
-
-20130516
 	Agregado el perfil IUTOMS-VE.
-
-20130515
 	Algunas actualizaciones en las secciones de la ayuda correspondientes a la interfaz del editor.
 	Simplificada la interfaz para la Prueba de Escritorio.
 	Eliminado un mensaje de depuración que aparecía por error al ejecutar paso a paso.
 	Corregido un error al exportar a C++ la instrucción Escribir cuando hay argumentos nulos.
 	Corregido un error al exportar a C++ el operador de comparación alternativo (==).
-
-20130514
 	Corregido un error al exportar a C++ el operador de negación.
 	Ahora se determinan correctamente los tipos de argumentos y valores de retorno al declarar funciones en los códigos exportados a c++.
 	Los ejemplos abiertos desde la ayuda se recargan automáticamente al modificar el perfil.
@@ -48,248 +33,142 @@
 	Corregido un problema al evaluar el operador mayor que generaba identificadores de variables incorrectos.
 	
 >>RELEASE 20130510<<
-
-20130510
 	Corregidos algunos detalles estéticos en los paneles laterales del editor.
 	Ahora la ejecución paso a paso se pausa correctamente al activar el modo explicado.
 	Ya no se puede invocar directamente (fuera de expresiones) a subprocesos o funciones que retornan valores.
-
-20130509
 	Corregido el problema por el cual no se actualizaba el panel de variables si no estaba visible al iniciar el editor.
 	Agregado un nuevo panel con la lista operadores y funciones predefinidas disponibles.
-
-20130508
 	Al cambiar el perfil se actualiza la corrección de sintaxis y el panel de variables para la pestaña de pseudocódgio actual.
 	Corregido el problema que generaba un cuelgue si se intentaba ejecutar un algoritmo justo cuando el editor estaba analizando su sintaxis para marcar los errores en tiempo real o completar el árbol de procesos y variables.
 	
 >>RELEASE 20130504<<
-
-20130504
 	Corregido un error al exportar un segun con más de una opción para un mismo conjunto de acciones.
 	Corregido un error al exportar expresiones compuestas a c++.
 	Ahora se exportan correctamente a C++ las llamadas a subprocesos fuera de expresiones.
-	
-20130503
 	Agregados los perfiles USS-ICI y SISE.
-	
-20130416
 	Agregado el perfil BiffiLaSalle.
-	
-20130424
 	Corregido un error de sintaxis al declarar arreglos en los código C++ exportados.
 	Al analizar expresiones con arreglos se marcan las variables que intervienen en los subindices como numericas.
-	
-20130423
 	Agregado el perfil CSS.
-	
-20130422
 	Agregado el perfil UNAMBA.
 	
 >>RELEASE 20130419<<
-
-20130419
 	Ahora el botón para ir al sitio del cuadro de diálogo que informa sobre actualizaciones carga una página especial con el enlace de descarga para la plataforma que corresponda y el registro de cambios.
-	
-20130418
 	Corregio un problema al presionar enter en la nueva terminal cuando el interprete espera solo una tecla.
 	Ahora se pueden definir los subprocesos en cualquier orden dentro del pseudocódigo.
 	Agregado el soporte para funciones de manejo de cadenas al exportar a C++.
 	Agregado el soporte para subprocesos al exportar a C++.
-
-20130417
 	Ahora permite elegir cual subproceso exportar al guardar el diagrama de flujo.
 	Al hacer click sobre los mensajes de error de la verificación en tiempo real se abre la descripción completa del mismo.
 	Agregado el perfil ITP-Putumayo.
 	
 >>RELEASE 20130417<<
-
-20130417
 	Agregado el desinstalador en el paquete para Windows.
-
-20130416
 	Simplificado el menú configurar del editor de pseudocódigo.
 	El cuadro de diálogo para evaluar variables y expresiones en el paso a paso ya no se oculta al avanzar un paso.
 	El intérprete ya no consume el 100% de cpu cuando se pausa la ejecución paso a paso.
 	Ahora se recuerda correctamente el último directorio utilizado para los cuadros de abrir/guardar.
 	Si el perfil actual no obliga a colocar punto y coma, al insertar una instrucción desde el panel de comandos.
 	Si el perfil actual no obliga a colocar punto y coma, al exportar a diagrama de flujo no se agregan automáticamente.
-	
-20130415
 	Los puntos y coma colocados en las instrucciones secuenciales en el diagrama de flujo ya no aparecen dos veces en el pseudocódigo al aplicar los cambios.
 	Si se dejan campos en blanco en el editor de diagramas de flujo, al aplicar los cambios estos aparecen como campos a completar en el pseudocódigo.
 	Se agreó un cuadro de búsqueda a la ventana de selección del perfil.
 	La lista de perfiles se ordena alfabeticamente sin distinguir mayúsuculas de minúsculas.
 	Agregado el perfil UIN.
 	Corregido un error al detectar expresiones/constantes pegadas (sin operandos o comas en medio).
-	
-20130412
 	Agregado un mensaje alusivo que indica cuando la nueva terminal de ejecución muestra información desactualizada respecto al editor.
 	Corregida la codifición de caracteres en los mensajes de información al ejecutar en la terminal del sistema de Windows.
 	Corregido un problema de acceso a memoria al utilizar la instrucción para limpiar la pantalla en la terminal propia.
 	Corregido un problema al calcular el scroll en la nueva terminal cuando la ejecución del intérprete finaliza antes de que la terminal complete su inicialización.
-	
-20130409
 	Agregado el perfil UniAmazonia.
 	
 >>RELEASE 20130405<<
-
-20130405
 	Cambiada la fuente para los menúes en el editor de diagramas de flujo.
 	Corregido un segfault al insertar una estructura Según en un diagrama Nassi-Schneiderman.
 	Corregido el problema de refresco por el cual la terminal aparece con caracteres de escape al iniciar la ejecución en algunos sistemas.
 	Corregido un segfault al cerrar el editor.
-
+	
 >>RELEASE 20130331<<
-
-20130330
 	Mejorados los mensajes de error en los casos en que faltan parámentros en las estructuras de control.
 	Ya no se permite pasar (erroneamente) arreglos a las funciones predefinidas.
-	
-20130329
 	Correcciones en los calculos de tamaños de las etiquetas de proceso y finproceso del diagrama de flujo.
 	Implementado un nuevo mecanismo de exportación de diagramas de flujo a imágenes PNG, JPG o BMP.
-
-20130326
 	Ahora se puede usar PI como constante para el numero 3.14159...
 	Ahora la ejecución se actualiza automáticamente si cambió el pseudocódigo al activar la ventana de ejecución.
 	Ahora se puede exportar el pseudocódigo a HTML desde el menú Archivo.
 	La terminal de ejecución propia muestra el nombre del proceso en la barra de título.
 	Se puede copiar y pegar mediante un menú contextual en la nueva terminal de ejecución.
-
-20130325
 	Corregido el problema por el que no marcaba correctamente los errores cuando faltaban las condiciones en las estructuras de control.
-
+	
 >>RELEASE 20130322<<
-
-20130322
 	Eliminadas las opciones de velocidad de ejecucion paso a paso del menu Configurar (ahora se define siempre desde el panel).
 	Agregada una opción al menú configurar para que acomode automáticamente las ventanas al iniciar la ejecución paso a paso (maximiza el código, y ubica la terminal a la derecha y siempre visible).
 	Corregido un error importante en la evaluación de expresiones relacionado al operador - afectando a un término entre paréntesis.
-	
-20130315
 	Corregida la posición de las ramas del bloque Si-Entonces en el diagrama de Nassi-Schneiderman.
-	
-20130311
 	Corregido un error al exportar a C++ la instrucción Definir.
 	Corregido un loop infinito al exportar a C++ un algoritmo que usa el operador de comparación ~.
-
-20130309
 	Agregado el perfil UPEL-IPC.
-
->>RELEASE 20130302<<
-
-20130302
-	Al ejecutar paso a paso con explicación, las instrucciones de lectura vuelven el foco a la terminal.
 	
-20130301
+>>RELEASE 20130302<<
+	Al ejecutar paso a paso con explicación, las instrucciones de lectura vuelven el foco a la terminal.
 	El editor de diagramas de flujo genera pseudocódigo indentado con tabs en lugar de espacios.
 	Ya no se evalúa dos veces la misma condición antes de entrar en un ciclo Mientras.
 	Ya no se agregan erróneamente nombres de subprocesos como variables internas de un (sub)proceso en el panel de variables.
-	
-20130222
 	Corregido un error al ejecutar condicionales Si-Entonces en los que se omite la palabra Entonces y se colocan las acciones en la misma linea que la condición.
 	Ahora se puede mover el scroll en la nueva terminal con la rueda del ratón.
-	
-20130221
 	Corregidos algunos errores en el nuevo análisis de expresiones, agregados los tests correspondientes, y corregido el ejemplo de matemáticas para ajustarse a las nuevas reglas.
-	
-20130219
 	Se ha rediseñado la verificación de sintaxis de expresiones para mejorar la detección de expresiones incorrectas.
-	
-20130217
 	Ahora se aceptan los operadores == (equivalente al =), y != (quivalente al <>), && (equivalente al &), || (equivalente al |) y ! (equivalente al ~).
 	Agregado el perfil UCSP-MPR; el perfil UCSP ha sido renombrado como UCSP-APV.
-	
-20130215
 	Se eliminaron todos los errores y advertencias detectadas por cppcheck y se aplicaron pequeños cambios para mejorar la eficiencia del intérprete.
 	Ahora se cierran las ejecuciones en curso si cambia el perfil de lenguaje.
 	Corregido un potencial segfault en el intérprete al verificar la sintaxis en tiempo real.
-	
-20130213
 	La nueva terminal utiliza colores más apagados cuando su contenido está desactualizado respecto del editor.
 	Se agregaron botones para guardar y cargar perfiles personalizados desde archivos en el cuadro de configuración del perfil del editor.
 	Agregado el perfil UNLZ para la Universidad Nacional de Lomas de Zamora.
 	Ahora se puede editar el rango del Para haciendo doble click sobre los valores iniciales, finales y del paso en el editor de diagramas de flujo.
 	Los eventos de drag en el editor de diagramas ahora se activan despues de mover el mouse más de una distancia mínima, ya no al hacer el primer click.
 	Corregida la verificación de tipos en las evaluaciones de posiciones en arreglos.
-	
-20130102
 	Corregido el flickering de la nueva terminal en Windows y algunos redibujados innecesarios.
-	
-20121230
 	Corregido el comportamiento del item para elegir la terminal en el menu de configuracion.
 	Corregido el valor por defecto para el comando para llamar a psdraw en GNU/Linux.
 	Agregado el perfil USTATUNJA para la Facultad de Ingenieria Civil de Universidad Santo Tomás seccional Tunja, Colombia.
-	
-20121215
 	Ahora al seleccionar una variable de la Lista de Variables para resaltar, se tiene en cuenta el ámbito de validéz de la misma (su proceso o subproceso).
 	Corregido el resaltado de bloques para la estructura Para Cada.
 	Corregidos errores en las lineas que marcaba la ejecución paso a paso para algunas estructuras.
-	
-20121214
 	El autocompletado del editor ahora mira el tipo de instrucción para determinar las posibles opciones.
-	
-20121213
 	Mejorados los tiempos de respuesta en la comunicación entre el intérprete y el editor en la ejecución paso a paso.
 	Agregadas dos nuevas funciones para convertir datos entre los tipos numérico y caracter.
-	
-20121211
 	La nueva terminal ahora permite hacer zoom con control y la rueda del mouse.
 	Ahora la terminal propia es capaz de volver en el tiempo y retomar la ejecución desde un punto en el pasado.
-	
-20121210
 	Ahora se puede modificar el pseudocódigo de un programa en ejecución y observar sobre la misma ejecución.
 	Ahora se utiliza una terminal propia para ejecutar los algoritmos.
-	
-20121209
 	Implementada una nueva barra de estado más funcional.
-
+	
 >>RELEASE 20121208<<
-
-20121208
 	Ahora se detecta como error antes de ejecutar el intento de redimensionar o redefinir una variable que se recibe como argumento de un subproceso.
 	Corregida la lectura de posiciones de arreglos dentro de un subproceso.
-	
-20121206
 	Mejorado el análisis de condiciones en lenguaje coloquial, y corregidos algunos errores relacionados.
-	
-20121204
 	Corregido un problema al verificar si se usan posiciones sin inicializar en un arreglo que recibe un subproceso.
-	
-20121122
 	La lista de perfiles de lenguajes incluye íconos.
 	Agregado el perfil COEES.
-
->>RELEASE 20121110<<
-
-20121110
-	Corregido el problema que evitaba guardar los cambios luego de editar un diagrama de flujo.
 	
-20121108
+>>RELEASE 20121110<<
+	Corregido el problema que evitaba guardar los cambios luego de editar un diagrama de flujo.
 	Corregido el bug que hacía inusable la versión 20121107.
 	Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux.
-
-20121107
 	Ya no se colorean en verde la lineas que comienzan con numeral, y se colorean correctamente los nombres de las nuevas funciones para manejo de cadenas.
 	Se agregó un nuevo perfil de lenguaje para el "Centro de Estudios Latinoamericano".
 	Ahora se colorean correctamente los nombres de funciones predefinadas para manejo de cadenas.
 	Corregido un error al evaluar expresiones con paréntesis dentro de una cadena de caracteres en la instrucción Escribir.
-
-20121031
 	Al producirse un error en tiempo de ejecución dentro de un subproceso se indica junto al mensaje cómo se llegó a ese subproceso (se muestra la pila de llamadas).
 	Ahora las funciones pueden recibir arreglos correctamente (siempre por referencia).
-	
-20121016
 	Algunos cambios menores en la apariencia del panel de ejecución paso a paso y la politica de visibilidad de los demás paneles en el editor de pseudocódigo.
 	Todas las rutas del archivo de configuración para temporales son ahora relativas.
-	
-20121015
 	Primera implementación de la Ejecución Paso a Paso Explicada (que consiste en informar para cada instrucción qué acciones específicas realiza el intérprete).
 	Ya no se convierten todos los identificadores a mayúsuculas al pasar del pseudocódigo pasar al diagrama de flujo.
-
+	
 >>RELEASE 20121013<<
-
-20121013
 	Ahora el tipo de variable que retorna un SubProceso se aplica correctamente a la expresión que lo invocó.
 	Corregidos algunos errores en la evaluacion de opciones para la estructura Según.
 	Las opciones de comprobacion de sintaxis en tiempo real, resaltado de bloques, y lista de variables en el editor son ahora independientes.
@@ -297,13 +176,9 @@
 	Corregido el problema de los pseudocódigos muy largos en el editor cuando la comprobación de sintaxis en tiempo real está activa.
 	Corregido el tamaño de los iconos de proceso y subproceso en el panel de variables.
 	Corregido el error que genera el intérprete al final de la ejecución paso a paso.
-	
-20121012
 	La ventana de evaluación de la ejecución paso a paso muestra el tipo de la expresión evaluada.
-
+	
 >>RELEASE 20121010<<
-
-20121010
 	Ya se puede crear y eliminar subprocesos desde el diagrama de flujo.
 	La ejecución paso a paso marca las lines Proceso/SubProceso y Función/FinFunción, para poder ver el estado antes y después de ejecutar una función.
 	La prueba de escritorio muestra una columna adicional con el nombre de la función actual.
@@ -313,250 +188,140 @@
 	Ahora el intérprete utiliza evaluación en cortocirtuito al analizar expresiones lógicas en tiempo de ejecución.
 	Actualizada la ayuda relacionada a funciones de manejo de cadenas.
 	Actualizada la ayuda relacionada a subprocesos.
-	
-20121009
 	Ahora el editor de diagramas de flujo permite elegir qué proceso/subproceso editar.
 	Corregido el problema de los tooltips muy largos en Windows.
 	La lista de opciones para el autocompletado ahora varía según el perfil del lenguaje.
 	Mejorado el autocompletado y las ayudas emergentes del editor de pseudocódigo para la sintaxis de subprocesos.
-	
-20121008
 	Ahora se pueden pasar argumentos por referencia a un subproceso.
 	Agregado el perfil ITP-ISIC.
-	
-20120906
 	Los subprocesos que no requieren argumentos se pueden invocar sin paréntesis.
 	El panel Lista de Variables muestra las variables por proceso/subproceso en forma de arbol.
 	Ahora los subprocesos se pueden invocar fuera de una expresión, como una instrucción más, colocando sus argumentos entre paréntesis.
-	
-20120905
 	Agregado soporte experimental para la definición de subprocesos en el intérprete (falta adecuar la gui).
-	
-20120903
 	Agregadas las funciones Longitud, SubCadena, Concatenar, Mayusculas y Minusculas para operar sobre cadenas de caracteres.
 	
 >>RELEASE 20120825<<
-
-20120825
 	Corregido el problema de los acentos y eñes en el editor de diagramas de flujo.
-	
-20120824
 	Se agregó el prefil UNINORTE para la Universidad del Norte (Barranquilla, Colombia).
-
-20120815
 	Se agregó el prefil InstMacedoMartinez para el Instituto Macedo Martinez (Formosa, Argentina).
-	
-20120727
 	Se mejoró la forma en que se aplican los tipos a las variables en las estructuras de control durante el preproceso.
 	
 >>RELEASE 20120716<<
-
-20120716
 	Ahora se cierra correctamente el subproceso que realiza la verificación de sintaxis en tiempo real, y se corrigió además un problema grave con el manejo de memoria.
 	Corregido el problema por el cual no se insertaba automáticamente la palabra "FinMientras" luego de abrir un bucle Mientras en el editor de pseudocódigo.
 	Ahora se resaltan las lineas que componen un bloque lógico (una estructura Si/Para/Mientras/Repetir/Segun) en el editor de pseudocódigo al posicionar el cursor de texto sobra su primer o última linea.
-
-20120715
 	Corregido el problema con las estructuras Segun anidadas al exportar a C++.
-	
-20120714
 	Ahora se reemplaza correctamente el operador de negación al exportar a C++.
 	
 >>RELEASE 20120713<<
-
-20120713
 	Ya no se permite escribir Fin Si, Fin Para, Fin Mientras o Fin Segun separado si no está activada la sintaxis flexible.
 	Corregido un problema de tipos al concatenar variables de tipo caracter en una asignación.
 	Se agregaron botones en los márgenes derecho e izquierdo para acceder facilmente a los paneles de Variables, Ejecución Paso a Paso, y Comandos.
 	Correcciones varias en los calculos de tamaños y posiciones en los diagramas Nassi-Schneiderman.
-
-20120712
 	Ahora el interprete determina el tamaño de los arreglos en el preproceso para mostrar en la lista de variables del editor.
 	Ahora el tipo de variable se muestra como ícono en lugar de estar como texto entre paréntesis en el panel de variables.
-	
-20120706
 	Ahora se fija correctamente el tipo de las variables de una estructura Para como numérico durante la verificacion de sintaxis.
 	Corregido un problema por el cual no determinaba correctamente el tipo del segundo operando de una suma.
 	Mejorada la detección de variables y tipos en la etapa de verificación de syntaxis.
 	Agregado un panel en wxPSeInt con la lista de variables de un algoritmo.
-	
-20120704
 	Ya no se muestra el menú de autocompletado al escribir Es o Fin en un comentario.
 	Ahora el autocompletado reconoce mejor las diferencias entre sintaxis flexible y estricta.
-	
-20120703
 	Ya no aparece un error al cambiar el perfil del lenguaje con la verificación de sintaxis en tiempo real activada.
 	Ahora se puede configurar el tipo de diagrama desde el perfil del lenguaje y desde el menú "Configurar".
-	
-20120702
 	Corregido el efecto de desplazamiento al hacer zoom sobre un diagrama de flujo.
 	Ahora el edito puede graficar diagramas Nassi-Scheiderman en lugar de los diagramas de flujo clásicos.
-	
-20120626
 	Ahora se puede crear un ícono en el escritorio o en el menú del sistema en GNU/Linux durante la primer ejecución.
-	
-20120623
 	Se corrigió la exportación de las palabras clave Verdadero y Falso a C++.
-	
-20120622
 	Se agregó el perfil UNITEC para la "Universidad Tecnológica del Centro", Venezuela.
 	
 >>RELEASE 20120618<<
-
-20120615
 	Ahora se muestran los errores de la verificación en tiempo real al colocar el mouse sobre los mismos.
-	
-20120614
 	Corregidos los makefiles para compilar más facilmente desde Windows.
 	Ahora al abrir una estructura repetitiva o condicional se agrega solo el "Fin..." o "Hasta Que..." si no estaba y el indentado de la siguiente linea no nula coincide.
-	
-20120606
 	Agregado el perfil ITSX, para la asignatura de "Programación I" de la carrera "Ingeniería Electrónica" del "Instituto Tecnológico Superior de Xalapa".
-
-20120601
 	Ahora al exportar a C++ se declaran como int las variables que se usen como índices para arreglos.
 	Ya no se repiten las declaraciones de los contadores de las estructuras Para al exportar a C++.
 	Corregida la traducción a C++ de expresiones que involucra las constantes Verdadero y Falso.
-	
-20120530
 	Al detectarse un identificador no válido en alguna instrucción se incluye ahora el nombre en el mensaje de error.
 	Agregada una opción en el menú "Configurar" para que los errores de sintaxis se resalten automáticamente mientras se escribe el pseudocódigo.
-
-20120529
 	Ahora se verifica que el Entonces de la estructura Si se encuentre inmediatamente despues de la condicion.
 	Ahora se puede utilizar Mientras Hacer seguido de las instrucciones a repetir en una misma linea.
 	Al marcar los errores y en el punto actual en la ejecución paso a paso se distinguen distintas instruc
 	ciones dentro de una misma linea.
-
-20120517
 	Agregado el perfil UDO-Anaco, para la asignatura de "Programación Orientada a Objetos" utilizado en la Universidad de Oriente, Extensión Anaco, Anzoátegui, Venezuela.
-	
-20120509
 	Corregido el ejemplo del TaTeTi para algunas configuraciones de lenguaje.
 	Corregido el problema para mostrar elementos de matrices multidimensionales después del cambio del 20120420.
-
-20120420
 	Ahora se marca como error cuando en una instrucción se utilizan varias expresiones separadas por coma donde iría solo una.
-
+	
 >>RELEASE 20120418<<
-
-20120417
 	Corregido un problema con el anidamiento de estructuras Segun.
 	Corregido el problema al utilizar el igual para la asignación del Para cuando el perfil lo permite.
 	Corregido el problema con las asignaciones en arreglos introducido con los cambios del 20120414
 	Ahora se colorea la flecha de asignación igual que las palabras clave en el editor.
 	Ahora se consideran correctamente acentos y eñes para el coloreado de sintaxis.
-	
-20120416
 	Se permiten ñs y acentos en las variables cuando se habilita la sintaxis flexible (pero aún no se colorean correctamente en el editor).
 	Agregado un argumento especial al intérprete para corregir la codificación de acentos y eñes para la consola de Windows.
 	Agregadas en el coloreado y en el autocompletado algunas diferencias entre sintaxis flexible activada y desactivada.
-
-20120414
 	Ahora se verifica correctamente que no falten operandos al comienzo o al final de una expresión.
 	Corregido el problema de las palabras claves pegadas a las expresiones con parentesis.
-
->>RELEASE 20120409<<
-
-20120409
-	Parcheados los makefiles para Mac para que momentáneamente se compile sin el editor de diagramas de flujo hasta que logre compilar las dependencias.
 	
-20120408
+>>RELEASE 20120409<<
+	Parcheados los makefiles para Mac para que momentáneamente se compile sin el editor de diagramas de flujo hasta que logre compilar las dependencias.
 	Ahora se permiten arreglos de un solo elemento.
-
-20120407
 	Actualizada la información en la ventana de Acerda De...
 	Corregido un problema al evaluar expresiones con restas donde los operandos tienen paréntesis.
-
-20120406
 	Agregada una varianta para la instrucción Eperar para esperar un tiempo dado en segundos o milisegundos.
 	Corregido el comportamiento extraño al redimiensionar las columnas de la tabla de Prueba de Escritorio.
-
-20120404
 	Ya no deja de ser de solo lectura un ejemplo luego de visualizar su diagrama de flujo.
-
+	
 >>RELEASE 20120404<<
-
-20120403
 	Ahora se muestra el nombre del proceso en el título de la ventana del editor de diagramas de flujo.
 	Al presionar Ctrl+Z luego de indentar un bloque se deshace todo el indentado como una sola acción.
 	Al guardar para editar el diagrama o ejecutar y luego presionar Ctrl+Z ya no se mueve el cursor al comienzo del pseudocódigo.
 	Corregido un error al dibujar diagramas de flujo con estructuras SEGUN anidadas.
-
+	
 >>RELEASE 2012030<<
-
-20120330
 	Ahora se utilizan colores para marcar las expresiones que cambiaron o que no pudieron ser evaluadas en la prueba de escritorio.
-
-20120329
 	En el diagrama de flujo se utilizan palabras en lugar de algunos operadores si el perfil del lenguaje lo permite.
-
-20120328
 	Corregido el estado en que queda el panel de ejecución paso a paso cuando finaliza el algoritmo.
 	Ahora se indica con una flecha en el márgen y un fondo de color la linea actual durante la ejecución paso a paso.
 	Ahora se evaluan las inspecciones en la ejecución paso a paso exáctamente igual que las un pseudocódigo.
 	Algunas mejoras visuales en el editor al arrastrar o clickear una entidad.
 	Mejorada la forma en que se inicia la comunicación entre la GUI y el editor de diagramas.
 	Ahora el editor de diagrama de flujo permite editar un texto con doble click.
-
-20120327
 	Ahora funciona correctamente la opción del menú Configurar para definar la velocidad alta de ejecución paso a paso.
 	Ahora se quitan los parentesis adicionales en las asignaciones al pasar del pseucódigo al diagrama de flujo.
-
+	
 >>RELEASE 20120327<<
-
-20120326
 	Al analizar un pseudocódigo sin errores se esconde el panel de ayuda rápida.
 	Ya no cambia de pestaña al ejecutar un pseudocódigo correcto luego de intentar ejecutar otro incorrecto en otra pestaña.
 	Ahora se puede invertir el orden del "CON PASO" y el "HASTA" en un PARA si se activa la sintaxis flexible.
 	Corregida la verificación de sintaxis en la estructura PARA.
 	Corregido un error con la estructura PARA cuando el paso es negativo.
 	Ahora al editar un pseudocódigo con la estructura mientras en el editor de diagramas de flujo la condición se lee correctamente.
-	
-20120324
 	Se actualizaron los makefiles y scripts para generar los instaladores.
-
-20120323
 	Mejoras en el indentado automático cuando hay comentarios.
 	Mejoras varias en el editor de diagramas de flujo.
-
-20120321
 	La ejecución paso a paso ya no consume el 100% de la CPU.
 	Agregada una opción para editar diagramas de flujo en el menú Archivo.
 	Corregido un error al analizar las opciones de un segun cuando se usa una palabra clave (CASO, OPCION, etc) antes del valor.
-
-20120320
 	Agregado un nuevo visualizador y editor para diagramas de flujo, que será invocado desde wxPSeInt.
-
-20120316
 	Corregido un error en la evaluación de algunas expresiones algebraicas con más de un término (por ejemplo, la resolvente).
-	
-20120314
 	Se agregó un item en el menú "Ejecutar" de la GUI para predefinir la entrada que va a tener un algoritmo (los valores que va a leer).
 	Se agregó un argumento a la linea de comandos del intérprete para especificar la entrada del algoritmo.
 	Se corrgieron algunos errores en la verificación de tipos.
 	Ahora se verifica correctamente si se intenta volver a dimensionar un arreglo ya dimensionado.
 	Ahora se puede definir el tipo de un arreglo antes o despues de dimensionarlo.
-
-20120307
 	Se genera un error al intentar dimensionar un arreglo sin haber definido su tipo si la definición es obligatoria.
 	Ahora los enlaces en las ayudas rápidas para los errores se abren correctamente y en la ventana de ayuda.
-	
-20120217
 	Corregidos algunos errores y warnings detectados por CppCheck en el intérprete y la GUI.
-
-20120215
 	Ahora se acepta la construcción HACER...MIENTRAS QUE... o HACER...HASTA QUE si está habilitada la sintaxis flexible (es decir, se puede escribir HACER en lugar de REPETIR).
-
+	
 >>RELEASE 20120210<<
-
-20120210
 	Ahora marca un error si aparecen dos puntos (:) en otro lugar que no sea un caso de la estructura SEGUN.
 	Ahora marca un error cuando la condicion del mientras termina en punto y coma.
 	Agregados tests para todas las estructuras de control escritas de formas validas.
 	Agregados tests para diferentes tipos de expresiones logicas.
-	
-20120209
 	El panel con la ayuda rápida de un error aparece automáticamente si el algoritmo interrumpe su ejecución por un error, y desaparece solo si la ejecución finaliza sin problemas.
 	En la interfaz, en la descripcion de un error, ahora se reemplazan las llaves y demás caracteres especiales de html que no salían en el texto final.
 	Actualizados los scripts de testing automatico. A partir de ahora los ejemplos de algoritmos que evidencian bugs pasaran a formar parte de la bateria de tests automaticos.
@@ -564,58 +329,34 @@
 	Agregado un argumento en la linea de comandos del interprete para que evite mensajes explicativos y de una salida fija para comparar en tests automáticos.
 	Corregida la separacion de argumentos en el escribir cuando se hace con espacios y hay operadores logicos.
 	Corregida la evaluación de expresiones con parentesis, donde en algunos casos eliminaba el ultimo caracter.
-
-20120206
 	Si se activa la sintaxis flexible en el perfil del lenguaje se puede utilizar la estructura opcional REPETIR...MIENTRAS QUE...
 	Corregida la sintaxis del for al exportar a C++ (había llave donde iba paréntesis en algunos casos).
-
->>RELEASE 20120202<<
-
-20120202
-	Corregido el comportamiento de la estructura SEGUN cuando hay múltiples valores para un mismo bloque de acciones.
 	
-20120201
+>>RELEASE 20120202<<
+	Corregido el comportamiento de la estructura SEGUN cuando hay múltiples valores para un mismo bloque de acciones.
 	Ahora se colocan los #include de las biblitocas cstdlib y cmath al exportar a código C++ cuando son necesarios.
 	Corregida la verificación de tipos en la variable de desición de la estructura SEGUN.
 	Se agregó el perfil "DoucUC" para la cátedra "Programación de Algoritmos" de la "Escuela de Informática y Telecomunicaciones" de "Duoc UC Puente Alto".
-
-20111107
 	Ahora los ejemplos de la ayuda contienen una cabecera de dos lineas advirtiendo que solo deben abrirse desde la ayuda (en cuyo caso el mensaje se elimina al abrir).
-
+	
 >>RELEASE 20111106<<
-
-20111106
 	Ahora se pueden graficar algoritmos con la estructura PARA CADA.
 	Ahora se pueden exportar a C++ algoritmos con la estructura PARA CADA.
 	Los tipos de la instrucción definir se pueden poner también en plural.
 	Al cargar un ejemplo de la ayuda se reemplazan los operadores por palabras clave si esta opción está activa en la configuración del lenguaje.
-
-20111105
 	Al cargar un ejemplo de la ayuda se agregan o quitan las definiciones de variables y los punto y coma depediendo del perfil del lenguaje.
 	Se agregó un perfil Estricto configurado de forma que el pseudolenguaje se asemeje más a un lenguaje de programación real.
 	Corregida la aplicación de tipos en expresiones con operadores lógicos.
 	Se agregaron comentarios en la cabecera de los código exportados a C++ con aclaraciones sobre el uso de strings.
-	
-20111104
 	Corregida la condición del while al exportar a C++ un algoritmo con la estructura repetir.
-	
-20111101
 	Se agregó un perfil para la "Programación I" de la carrera "Ingeniería en Sistemas" de la "Universidad Central del Ecuador" (UCE).
-	
-20111031
 	Se agregó lxterminal entre las terminales conocidas en GNU/Linux.
-	
-20111028
 	Ahora en el según se pueden introducir expresiones de tipo caracter si se habilita la sintaxis flexible.
-	
-20111027
 	Ahora el PARA detecta solo cuando el paso no está explicitado pero debe ser negativo (ej: PARA I DESDE 10 HASTA 1 HACER...) si se admite sintaxis flexible.
 	Agregada una forma nueva del PARA cuando se utiliza sintaxis flexible que permite recorrer todos los elementos de un arreglo (ej: PARA CADA ELEMENTO DE A HACER..., donde ELEMENTO va tomando los valores guardados en el arreglo A).
 	Actualizada la lista de palabras clave para la ayuda rápida.
 	Ahora todos los módulos reportan su versión y arquitectura de la misma forma (aaaammdd-xxx).
 	El módulo que exporta a C++ ahora tiene en cuenta la definición explicita de tipos de variables.
-
-20111026
 	Se actualizó la ayuda para incluir los nuevas variantes del lenguaje y se agregó un ejemplo nuevo que las utiliza.
 	Agregada la instruccion "ESPERAR TECLA" para que el algoritmo espere a que el usuario pulse cualquier tecla.
 	Ahora se puede ingresar solo "v", "f", "0" o "1" al leer una variable ya definida de tipo lógica.
@@ -628,8 +369,6 @@
 	Corregida la aplicación del operador de negación cuando la expresión a negar está entre paréntesis.
 	Se agregó una opción al perfil para permitir condiciones con un lenguaje más coloquial (las nuevas construcciones son: "X ES Y", "X ES IGUAL A Y", "X ES PAR", "X ES IMPAR", "X ES DIVISIBLE POR Y", "X ES MULTIPLO DE Y", "X ES DISTINTO DE Y", "X ES POSITIVO", "X ES NEGATIVO", "X ES CERO", "X ES ENTERO", "X ES MAYOR QUE Y", "X ES MAYOR O IGUAL A Y", "X ES MENOR QUE Y", "X ES MENOR O IGUAL A Y", y algunas variaciones menores. En todas se puede reemplazar "ES" por "NO ES" para obtener la opuesta.
 	Al guardar desde la gui, si no se especifica extensión se agrega automáticamente ".psc".
-	
-20111025
 	Ahora la lista de palabras reservadas a resaltar en azul en el editor se ajusta al perfil de lenguaje seleccionado.
 	Mejorado el acoplamiento entre el indentado inteligente y el autocompletado.
 	Ahora al presionar enter se indentan las 2 lineas (la que estaba el cursor y la nueva).
@@ -639,11 +378,8 @@
 	Al limpiar la pantalla, se coloca el cursor nuevamente en la esquina superior izquierda.
 	Ahora se aceptan los comandos "LIMPIAR PANTALLA" y "BORRAR PANTALLA" con y sin espacio entre las palabras.
 	Corregido el indentado inteligente cuando la palabra FIN se escribe separada.
-
-
+	
 >>RELEASE 20111023<<
-
-20111020
 	Se actualizaron algunos ítems en la ayuda y se agregaron algunos ejemplos.
 	Al abrir un ejemplo de la ayuda, se pasa el foco a la ventana con el pseudocódigo, y si la ventana de ayuda estaba maximizada se restaura para evitar que oculte a la ventana principal.
 	Corregido el indentado inteligente para bucles segun.
@@ -660,13 +396,7 @@
 	Corregida la sintaxis del for al exportar a C++ (había llave donde iba paréntesis).
 	
 >>RELEASE 20110801<<
-
-20110801
 	Agregadas las directivas SIN SALTAR, BORRAR PANTALLA y LIMPIAR PANTALLA al coloreado de código y al menu de autocompletado.
-
->>RELEASE 20110801<<
-
-20110801
 	Ahora se utilizar escribir sin que avance de linea agregando "SIN SALTAR" o "SIN BAJAR" antes o despues de los argumentos.
 	Ahora se puede utilizar "FIN SI" en lugar de "FINSI", "FIN SEGUN" en lugar de "FINSEGUN", "FIN PROCESO" en lugar de "FINPROCESO", "FIN MIENTRAS" en lugar de "FINMIENTRAS" y "FIN PARA" en lugar de "FINPARA".
 	Ahora se puede borrar la pantalla con las instrucciones "BORRAR PANTALLA" o "LIMPIAR PANTALLA".
@@ -674,65 +404,35 @@
 	Ahora se interpretan correctamente palabras clave como ENTONCES o HACER cuando tienen comentarios pegados a continuación.
 	Agregado el perfil de la carrera "Tecnología en Computación" perteneciente a la facultad de "Ingeniería de la Universidad de Nariño" (UDENAR).
 	Corregidos varios problemas de indices fuera de rango en el checkeo de syntaxis que podían provocar violaciones de segmento en lineas vacias o con comentarios.
-
+	
 >>RELEASE 20110727<<
-
-20110727
 	Corregido un error por el cual todos los numero, aun enteros, se mostraban con coma (esto hacia que no se puediera usar variables para indexar arreglos).
-
+	
 >>RELEASE 20110629<<
-
-20110628
 	Se agregó un wrapper para lanzar la GUI en GNU/Linux para definir algunas variables de entorno para
 	evitar los problemas de la nueva interfaz de ubuntu (menues que no se muestran y problema de redibujado al hacer scroll).
-
-20110620
 	Ahora se puede imprimir los pseudocódigos coloreados desde la interfaz.
-
+	
 >>RELEASE 20110615<<
-
-20110615
 	Agregado un tiempo muerto en el loop principal del visor de diagramas de flujo para evitar que consuma excesivos ciclos de cpu sin hacer nada.
 	Corregido el comportamiento de las teclas + y - para hacer zoom en el visor de diagramas de flujo.
 	Los archivos manifest para Windows ahora se incluyen dentro del ejecutable como recurso.
-
-20110613
 	Corregida la conversión a texto de valores numéricos muy pequeños.
-	
-20110608
 	Agregado un archivo manifest al programa que busca las actualizaciones para evitar alertas de seguridad innecesarias en Windows 7.
-	
-20110602
 	Ya no se declaran por error funciones como arreglos o variables en los códigos exportados a C++.
-	
-20110531
 	Corregidos los problemas al exportar asignaciones en arreglos a C++.
-	
-20110530
 	Corregidos los archivos de perfiles donde esta mal escrita la palabra clave que define el uso de arreglos en base 0.
 	Al exportar a C++ se tiene en cuenta si el pseudocódigo está configurado para utilizar base 0.
 	Corregida la doble declaración de arreglos al exportar a C++.
 	Agregado el perfil de la Universidad Nacional de Educación de Perú (UNE-LaCantuta).
-	
-20110529
 	Corregido el código de wxPSeInt para que pueda compilarse con las versiones Unicode de wxWidgets.
-
-20110518
 	El comentario acerca de las variables sin tipo al exportar solo aparece si efectivamente hay variables sin tipo.
 	Corregido el cuelgue al exportar a c++ pseudocodigos que utilizan arreglos.
-
-20110428
 	Corregida un potencial problema en la busqueda de actualizaciones si el puerto del proxy es incorrecto.
-
+	
 >>RELEASE 20110425<<
-
-20110424
 	Ahora la interfaz llama correctamente al intérprete aún cuando se instala en directorios con espacios en GNU/Linux.
-
-20110422
 	Implementado un nuevo sistema para notificar automaticamente la disponibilidad de actualizaciones en el sitio.
-
-20110415
 	Al guardar un ejemplo con otro nombre pierde el atributo de solo lectura.
 	Eliminado el mensaje de advertencia de solo lectura al ejecutar ejemplos.
 	Los pseudocódigos de los ejemplos que utilizan arreglos se adaptan a la base seleccionada en el perfil.
@@ -747,25 +447,17 @@
 	Corregido los iconos de deshacer y rehacer en la barra de herramientas.
 	
 >>RELEASE 20110416<<
-
-20110414
 	Corregida la omisión del caso "DE OTRO MODO" de la estructura "SEGUN" cuando la instrucción se encuentra en la misma linea.
 	Corregida la comprobación de presencia/ausencia de subindices en lecturas y escrituras de variables/arreglos.
 	Agregada la version del paquete en la barra de estado de la interfaz.
 	Agregado el evento del doble-click para la lista de perfiles.
-
-20110413
 	Agregado el perfil de la asignatura "Computación Aplicada" de la carrera "Ingeniería en Mecánica" de la "Universidad de la Frontera" (UFRO).
-
-20110411
 	Agregado el perfil del instituto "Taller de Informática" de Uruguay (TInformatica).
 	Al seleccionar un perfil primero se cargan los valores por defecto para evitar problemas si el perfil no contempla todas las variables.
 	Agregado el perfil de la Universidad Salesiana de Bolivia (USalesiana).
 	Agregado el perfil de la Universidad Católica de Temuco (UCTemuco).
-
+	
 >>RELEASE 20110408<<
-
-20110408
 	Ahora al pegar un bloque de código se corrige el indentado automáticamente.
 	Corregida la visualización de estructuras PARA en los diagramas de flujo.
 	Ahora si la GUI encuentra un archivo de configuración (config.here) en su propia carpeta utiliza ese.
@@ -774,44 +466,28 @@
 	Ahora en los diagramas de flujo se reemplazan operadores por palabras.
 	
 >>RELEASE 20110406<<
-
-20110406
 	Corregido el indentado de estructuras para y mientras.
 	Corregida la evaluación de índices en arreglos multidimensionales.
 	Agregada una verificación para dar un error más específico si en un mismo archivo hay más de una declaración de proceso.
 	Ahora la lista de perfiles se muestra ordenada.
 	Corregidos los warnings en la compilación de la interfaz y los errores al compilar en versión unicode.
 	Agregados atajos de teclado en la interfaz para cambiar de pestaña (Ctrl+Tab, Ctrl+AvPag, Ctrl+Shift+Tab, Ctrl+RePag).
-	
-20110405
 	Agregado el perfil de la Universidad Catolica San Pablo (UNCSP).
-
+	
 >>RELEASE 20110404<<
-
-20110404
 	Actualizados los íconos de la barra de Herramientas.
 	Corregido el problema de las asignaciones a elementos de un arreglo.
 	Actualizado el cuadro de "Acerca De...".
-	
-20110403
 	Agregada una opción en el menú "Editar" para corregir automáticamente el indentado de un bloque de pseudocódigo.
-
+	
 >>RELEASE 20110401<<
-
-20110401
 	Corregido el problema por el que no detectaba algunas palabras clave si tenian punto y coma innecesario inmediatamente pegado.
 	Corregido el control de que haya una opcion inmediatamente despues de un SEGUN.
-
-20110330
 	Agregado el perfil de la Universidad Capitan General Gerardo Barrios (UGB).
-	
-20110329
 	Corregido el archivo manifest para que la interfaz tome el estilo correcto tambien en sistemas de 64 bits.
 	Corregido el calculo de tamaños de textos en el graficador cuando se incluyen acentos u otros caracteres especiales.
-
+	
 >>RELEASE 20110325<<
-
-20110325
 	Corregido el tamaño de la imagen exportada cuando el diagrama es mas chico que la potencial ventana.
 	Corregida la violación de segmento al esperar una tecla luego de la ejecución en el intérprete.
 	Agregado un mensaje de advertencia en la versión para mac acerca de las opciones aún no disponibles.
@@ -823,25 +499,17 @@
 	Corregido el comando para lanzar una ejecución en konsole de kde4 y agregado un mensaje de advertencia (esta version trae problemas).
 	La interfaz ahora es capaz de detectar las rutas correctas si se encuentra en un paquete para mac (dmg).
 	Mejorada la verificación de las opciones para la estructura SEGUN.
-	
-20110324
 	Agregado el perfil de la Universidad Nacional del Litoral (UNL-FICH).
 	Agregado el cuadro de seleccion de perfil en la interfaz para configurar rápidamente el pseudolenguaje.
 	Agregada una opción en el intérprete para que no genere un error si se omiten las palabras clave ENTONCES y HACER al final de una linea.
-	
-20110323
 	Corregido el análisis de sintaxis para evitar que la presencia de palabras clave en comentarios genere errores adicionales.
 	Ahora el graficador utiliza caracteres de ancho variable para los textos.
 	Portado el código del graficador a la última versión de CImg (1.4.8).
-	
-20110322
 	El graficador ya no limita ni varia automáticamente el tamaño de la ventana donde dibuja.
 	Agregado un parche para evitar que el proceso del graficador no finalize luego de cerrar la ventana.
 	El graficador de diagramas de flujo evita ahora redibujar constantemente el diagrama si la vista no cambia.
 	Corregido el problema de la perdida de referencia al arrastrar la imagen del graficador en algunos sistemas.
 	Al graficar el diagrama de flujo de la estructura Segun siempre se dibuja el caso por defecto (De Otro Modo....) aunque no esté explicitado en el código.
-	
-20110321
 	Actualizados los scripts de compilación y reorganizado el empaquetado del código fuente.
 	La interfaz wxPSeInt ahora puede compilarse también con versiones unicode de wxWidgets.
 	Implementada la tolerancia a errores numéricos al comparar con igual (se desprecian errores menores a 1e-10).
@@ -849,382 +517,239 @@
 	Corregida la representación de reales en pantalla (ahora se truncan en 10 decimales, aunque la presición iterna es mucho mayor).
 	Corregido el parseo de parentesis en la determinacion y aplicación de tipos en expresiones.
 	Integrado el nuevo evaluador de expresiones en el módulo psexport (exportación a C++).
-	
-20110318
 	Corregida la verificación de tipos en asignaciones.
-
-20110311
 	Agregado un cuadro de dialogo para configurar las opciones del lenguaje desde la interfaz.
 	Implementado un control para evitar que la interfaz se cuelgue si no encuentra la descripcion de un error para la ayuda rapida.
 	Implementado el funcionamiento basico de arreglos en el nuevo evaluador de expresiones.
-
-20110107
 	Integrado el nuevo evaluador de expresiones.
-	
-20100911
 	Corregida la interpretacion de más de una estructara SEGUN anidadas.
-
-20100510
 	Ahora se muestra un mensaje alusivo cuando se quiere editar un pseudocódigo que se está ejecutando paso a paso.
-	
-20090516
 	Corregida la consideración de paréntesis dentro de constantes de caracteres en la evaluación de expresiones.
-
+	
 >>RELEASE 20090421<<
-
-20090421
 	El para ya no se ejecuta nunca si en la primer iteracion el contador no cumple la condicion.
 	Corregida la comprobación de tipos en los limites de un PARA.
 	Corregida la verificacion de las dimensiones de arreglos como constantes.
 	Corregidos algunos errores en la exportación a código C++.
-
+	
 >>RELEASE 20090408<<
-
-20090408
 	Ya no se pueden dimensionar arreglos utilizando variables o funciones. Las expresiones de los indices deben ser constantes.
-
-20090407
 	Agregada un signo mayor a modo de prompt cuando el intérprete espera una entrada de datos (LEER).
 	Corregida la violación de segmento al aceptar el cuadro de dialogo de variables para la prueba de escritorio con la lista vacia.
-
-20090406
 	Corregido el comportamiento de la opcion "Permitir palabras clave como operadores" al ejecutar paso a paso.
 	Agregada una opción al graficador de diagramas de flujo para generar imágenes de mayor resolución.
-
+	
 >>RELEASE 20090404<<
-
-20090404
 	Agregada una opcion en el menu Ayuda para buscar actualizaciones utilizando Internet.
-
-20090402
 	Agregada una opcion en el menu Configurar para ver la interpretacion en colores.
 	Corregido el comportamiento de la opcion "Permitir palabras clave como operadores" al ejecutar.
-
+	
 >>RELEASE 20090325<<
-
-20090325
 	Corregido un error al evaluar productos y divisiones con variables negativas.
-
-20090324
 	Ahora wxPSeInt puede lanzarse desde una carpeta que no sea la propia.
-
-20090318
 	Cambiado el tipo de socket para comunicar interprete y gui para la ejecución paso a paso para que no requiera privilegios de administrador en GNU/Linux.
-
+	
 >>RELEASE 20081211<<
-
-20081211
 	Mejorada la combinacion de autocompletado+indentado inteligente, para reacomodar las palabras que cierran bloques (como FINPARA, HASTA QUE, etc).
 	Implemetadas las ayudas emergentes (se muestra un globo tipo calltip indicando que se debe ingresar, segun cada instruccion).
 	Cambiada la forma en que se muestran los segmentos de codigo a reemplazar en las plantillas para cada instrucción.
-
-20081205
 	Corregido el error al utilizar la función AZAR con una variable.
-
-
+	
 >>RELEASE 20081125<<
-
-20081125
 	El primer error de la lista se selecciona automáticamente si no se pudo ejecutar, y si la ejecución se interrumpió por un error.
 	Corregido el bug que afectaba a los paras con paso negativo.
-
+	
 >>RELEASE 20081106<<
-
-20081106
 	Corregidos los problemas de evaluacion de determinadas expresiones lógicas.
-
-20081105
 	La seleccion de puertos para la comunicacion de depuracion es aleatoria, para poder correr más de una instancia de PSeInt en un misma máquina, y evitar problemas si se bloquea un puerto.
 	Mejorada la comunicacion de estados para la depuracion entre la interfaz y el interprete.
 	Ahora se puede iniciar la depuracion parandola en el primer paso con el boton "Primer Paso".
-
-20081104
 	Al hacer doble click sobre un renglon de la prueba de escritorio se selecciona la linea de codigo correspondiente.
-
+	
 >>RELEASE 20081103<<
-
-20081102
 	Ya no se pueden modificar los algoritmos durante la ejecución paso a paso.
 	Ahora los ejemplos se pueden abrir directamente desde la ventana de ayuda.
 	Agregado un boton en el panel de depuración para evaluar una expresion arbitraria.
 	Agregada la prueba de escritorio al panel de depuración.
-
+	
 >>RELEASE 20081031<<
-
-20081031
 	Corregida la exportación a c++ de bucles PARA.
-
-20081030
 	Corregido el control de la depuración en Windows.
 	Modificados los filtros de cuadro de dialogo para guardar el diagrama de flujo para permitir guardar como bmp o png además de jpg.
 	Ya no se necesita convert de ImageMagick para guardar los diagramas de flujo en jpg o png.
 	Corregidos los errores al dibujar diagramas de flujo (ancho de las estructuras SI y posición del dibujo final).
 	Implementada la habilitación y deshabilitación del los botones del panel de depuración según el estado del depurador.
 	Solucionado provisoriamente el cuelgue al iniciar la ejecución sin cerrar una depuración en proceso.
-
-20080719
 	Corregido el cierre de la aplicación cuando todavía se están ejecutando procesos.
-
-20080718
 	Implementado el panel de ejecucion paso a paso (estado, control de velocidad, pausa, y paso manual).
-
+	
 >>RELEASE 20080711<<
-
-20080711
 	Corregido el operador modulo para no colgar el interprete si el divisor es cero
 	Agregado un ejemplo del uso del nuevo operador mod (o %).
 	Corregido el servidor para depuración en el intérprete para Windows.
-
-20080701
 	Implementado el operador modulo (% o mod).
 	Ahora se pueden utilizar las palabras Y, O y NO en lugar de los operadores lógicos.
-
-20080623
 	Implemenda la ejecución paso a paso (automática).
 	Corregido el nombre de la ventana de la consola.
-
-20080602
 	Reordenada la lista de autocompletado para su correcto despliegue.
-
+	
 >>RELEASE 20080524<<
-
-20080524
 	Corregida la visualizacion del paso del PARA en el diagrama de flujo.
 	Agregado como ejemplo el juego de las torres de Hanoi.
 	Corregido el control de dimensiones de arreglos en determinadas expresiones.
 	Corregido el reemplazo de variables en expresiones logicas.
-
-20080502
 	Corregida la evaluacion de expresiones logicas compuestas donde intervienen variables de distinto tipo.
-
+	
 >>RELEASE 20080429<<
-
-20080429
 	Al salir la GUI ya recuerda el directorio donde abrio/guardo el ultimo archivo.
 	La GUI ahora puede ejecutar varios algoritmos al mismo tiempo sin conflictos.
 	Se agrego un parametro para definir si se controla o no el uso del punto y coma.
 	Se agrego un parametro para verificar que no se intente acceder a variables no inicializadas.
-
+	
 >>RELEASE 20080428<<
-
-20080428
 	Nuevo icono ;).
 	Corregida la definicion del coloreado de sintaxis (ahora es abren mas rapido las pestañas).	
 	Ahora se pueden abrir archivos arrastrandolos a la ventana de wxPSeInt.
 	Ahora se pueden abrir archivos al cargar la GUI si se los pasa como parametros.
 	Agregado un historial con los ultimos cinco archivos abiertos.
 	Se corrigio el incremento del contador en el for al exportar a cpp un para con paso 1.
-
+	
 >>RELEASE 20080427<<
-
-20080427
 	Se corrigio la visualizacion del autocompletado.
 	Se agregaron ejemplos simples nuevos.
 	Se agrego una opcion para abrir ejemplos en el menu ayuda.
 	Se corrigio la determinacion de tipos al comparar numeros leidos de consola.
 	La GUI ahora tambien muestra los errores en tiempo de ejecución.
 	Se agregaron en la base de datos de ayuda rapida de errores los mensajes para errores relacionados a las dimensiones de un arreglo.
-
+	
 >>RELEASE 20080426<<
-
-20080426
 	Se completo la primera verison nueva interfaz.
 	Se agregaron las nuevas funciones (tan, asen, acos) al exportador a pseudocodigo.
-
-20080423
 	Se agregaron nuevos parametros al pseint para interactuar con la nueva GUI.
-
-20080422
 	Se comenzo a programar la nueva interfaz basada en wxWidgets.
-
+	
 >>RELEASE 20080421<<
-
-20080421
 	Se mejoro la determinacion de tipos en la lectura y evaluacion de expresiones.
 	Se corrigió el funcionamiento de la estructura SEGUN.
 	
 >>RELEASE 20080420<<
-
-20080420
 	Se corrigio la codificacion de caracteres en la gui para Linux.
 	Se agregaron las funciones trigonometricas TAN, ASEN y ACOS.
 	Ahora se puede utilizar el guion bajo en los nombres de variables.
 	Se corrigio el manejo interno de numeros con notacion exponencial.
-
+	
 >>RELEASE 20080220<<
-
-20080220
 	Se corrigieron varios memory leaks y errores en el dimensionamiento de los arreglos.
 	Se implemento la primer aproximacion a la determinacion de tipos en psexport.
 	Se incorporo el modulo psexport al paquete (permite exportar los algoritmos a codigo c++).
 	Se colocaron correctamente las dependencias en los makefiles para linux.
 	Se agregaron los makefiles para windows.
-
-20080218
 	Se corrigio el remplazo de nombres de variable de mayor longitud que su contenido.
-
+	
 >>RELEASE 20080125<<
-
-20080126
 	Se corrigio la evaluacion de literales tipo caracter (caso 'q0').
-
-20070505
 	Se corrigio el log de salida del instalador para linux.
 	Se corrigio la sintaxis del cambio de permisos en el script de instalacion para linux.
 	Se colorearon los mensajes del instalador para linux.
-
+	
 >>RELEASE 20070421<<
-
-20070421
 	Se agregaron las funciones para la teclas ESC y las flechas en el nuevo psdraw.
 	Se centro la posición inicial del diagrama en el título del proceso.
 	Se corrigió la función StrToDbl de utils.h para la correcta representación de números presedidos por el signo +.
-
+	
 >>RELEASE 20070327<<
-
-20070327
 	Se agregó la opción para exportar diagramas de flujo en GPSeInt.
 	Se modificó el script de instalación para linux.: si no funciona el graficador nuevo, se intenta utilizar el viejo.
-
-20070326
 	Se agregó la opción para exportar diagramas de flujo en VPSeInt.
 	Se agregó el cuadro de diálogo reemplazar en VPSeInt.
 	Se reescribió psdraw utilizando la libreria CImg.
-	 
+	
 >>RELEASE 20061023<<
-
-20061023
-    Nuevamente se puede utilizar el operador de potenciación '^'.
-
-20061022
+	Nuevamente se puede utilizar el operador de potenciación '^'.
 	Se corrigio la separacion de la expresion y el identificador de variable al ejecutar la asignacion.
-
+	
 >>RELEASE 20060820<<
-
-20060820
 	Se cambio la forma de dibujo en psdraw para Windows (ahora se hace una vez y se copia con BitBlt).
 	Se optimizó el espacio en el dibujo de la estructura SEGUN en psdraw.
 	Se corrigio el problema con las lineas derecha e izquierda del MIENTRAS en psdraw.
 	Se arreglo la copia de las imagenes en el script de instalacios para Linux.
-
-20060814
 	Se corrigio el control del error 84 (demasidos parametros) en la asignación.
 	Se corrigio el control del tipo de expresion para el valos del paso en un PARA.
 	Se corrigio el control de la presencia de la condicion en HASTA QUE.
-
+	
 >>RELEASE 20060813<<
-
-20060813
 	Se agrego el menu de comandos en VPSeInt.
 	Se agrearon las opciones para abrir y volver ejecutar el ultimo algoritmo ejecutado en VPSeInt.
 	Se cambiaron los iconos de VPSeInt por los utilizados en GPSeInt.
 	Se corrigieron porblemas de espaciado y margenes en PSDraw.
 	Se porto PSDraw a Windows y se integro a VPSeInt.
-
-20060812
 	El cuadro de ayuda rapida puede utilizar ahora una barra de desplazamiento en GPSeInt.
 	Se agrego el primero borrador de la ayuda rápida de comandos.
 	Se agrego el menu de comandos en GPSeInt.
 	Se corrigio el control de caracter no valido en el intérprete.
-
+	
 >>RELEASE 20060808<<
-
-20060808
 	Se reemplazo la funcion gets por getline en la interpretacion de LEER en pseint.
 	Se comenzo la optimizacion de espacio en PSDraw.
 	Se completo una la primera versión de prueba de PSDraw.
-
-20060731
 	Se agrego la opcion ver diagrama de flujo en GPSeInt.
 	Se le agrego la opcion --draw al interprete para generar el archivo de entrada a PSDraw.
-
-20060803
 	Se cambio el orden en que se copian los archivos en el script instalar.
 	Se matan los procesos del pseint antes de instalar en el script instalar.
-
-20060731
 	Se agrego la opcion ver diagrama de flujo en la GUI.
 	Se le agrego la opcion --draw al interprete para generar el archivo de entrada a PSDraw.
 	Creacion de PSDraw, programa para graficar diagramas de flujo.
-
+	
 >>RELEASE 20060702<<
-
-20060701
 	Se corrigio el control de la presencia de la expresión del SEGUN.
 	Se corrigio la linea en la que marca las estructuras de control que no se cerraron.
 	Se agrego la ayuda rapida en VPSeInt.
-	
-20060630
 	Se corregio el control de los ENTONCES y SINO fuera de SI.
 	GPSeInt recuerda correctamente ahora las opciones del menú Configuración.
 	Se comenzo la redaccion de la ayuda rapida.
 	Se agrego la ventana de ayuda rapida a GPSeInt.
 	El interprete diferencia los errores por numero.
-
+	
 >>RELEASE 20060610<<
-
-20060610
 	Se corrigio la expresion a evaluar en el SEGUN.
 	Se corrigio el comportamiento en las teclas de edicion modificadas en GPSeInt.
-
-20060604
 	Se corrigio el problema de las variables tipo caracter con numeros en su identificador.
-
+	
 >>RELEASE 20060513<<
-
-20060513
 	Se corrigieron errores en el coloreado de codigo de GPSeInt.
 	Se cambio el directorio temporal de VPSeInt para evitar problemas de permisos.
 	Se corrigieron los warnings de VPSeInt.
-	
-20060508
 	Se optimizo (pero todavia falta mucho mas) el colereado del codigo en la GPSeInt.
 	Se agregaron DEFINIR y COMO a la lista de palabras reservadas.
 	Se corrigio la lista de palabras reservadas a resaltar en GPSeInt.
-
+	
 >>RELEASE 20060507<<
-
-20060507
 	Se el orden de los archivos recientemente utilizados en GPSeInt.
 	Se corrigio el problema de las comparaciones numericas(un "==" mal puesto en expresiones.h).
 	Se agrego el resaltado de palabras claves en GPSeInt.
-
-20060506
 	Se comenzo el resaltado de sintaxis en GPSeInt.
-	
-20060504
 	Se agregaron las opciones del ancho del tabulado al menú de configuración en GPSeInt.
 	Se alteraró el comportamiento de las teclas incio, shift+tab y backspace en GPSeInt.
 	Se corrigió el atajo de teclado para cerrar archivo en la GPSeInt.
-
-20060503
 	Se alteraró el comportamiento de las teclas tab y enter en GPSeInt.
 	Ya no se utiliza GtkSourceBuffer en GPSeInt.
 	Se corrigió el atajo de teclado para salir en GPSeInt.
-
+	
 >>RELEASE 20060501<<
-
-20060501
 	Se corrigio del problema del ENTONCES solo al final del SI.
 	DE OTRO MODO puede ir tambien sin los dos puntos al final.
 	Correccion del problema de restar una variable o expresion negativa.
 	Correccion de la comparacion con operadores compuestos.
 	
 >>RELEASE 20060429<<
-
-20060429
 	Correccion de los errores de redondeo.
 	Se incorporo la posibilidad de recuperar el ultimo codigo ejecutado en GPSeInt.
 	Se completaron los atajos de teclado en GPSeInt.
-
-20060414
 	Se suprimieron los warnings de gtk al cerrar pestañas en GPSeInt.
 	Se modifico la barra de herramientas en la GPSeInt.
 	Se agregaron los ultimos archivos utilizados al menu archivo en GPSeInt.
-
+	
 >>RELEASE 20060413<<
-
-20060413
 	Se corrigio el problema de las comaparaciones con variables vacias.
 	Se corrigio el problema de las comaparaciones con constantes logicas.
 	La entrada de una variable logica con LEER es ahora case insensitive.
@@ -1233,19 +758,13 @@
 	Se pueden utilizar corchetes para los indices y dimensiones de los arreglos.
 	El script de instalacion para Linux ahora controla los problemas de compilacion e intenta utilizar las binarios precompilados.
 	GPSeInt se puede compilar ahora sin GtkSourceView.
-
-20060410
 	El paquete para Linux ahora tambien es autoextraible.
 	GPSeInt solo muestra el nombre del archivo sin el path en las pestañas.
-	
-20060408
 	Ya no aparece en consola el error del GtkSourceView al crear un nuevo archivo en GPSeInt.
 	Al seleccionar un error en la lista de errores se selecciona la linea en el algoritmo ahora tambien en GPSeInt.
 	Se corrigieron los permisos para archivos y carpetas en el script de instalcion para Linux.
-
+	
 >>RELEASE 20060405<<
-
-20060405
 	Se corrigio el punto de salida de la estructura SEGUN.
 	Se corrigio el cambio del SI-ENTONCES del 20060331.
 	Se corrigio el largo del vector prog_lines.
@@ -1254,66 +773,43 @@
 	GPSeInt ya acepta archivos a abrir como parametro.
 	Se corrigio el problema de los signos +/- al comienza la expresion en la asignación del PARA.
 	Se mejoraron los Makefiles.
-
+	
 >>RELEASE 20060331<<
-
-20060331
 	Se reemplazaron los vectores bucles y bucles_line del intérprete por pilas.
 	ENTONCES ahora puede estar en la misma linea que el SI.
- 
-20060330
 	Se corrigio el problema de los signos +/- al comienza la expresion en la asignación.
 	Se agregó el control de existencia de salida por verdadero para el condicional SI.
 	Identado por tabs en el fuente del intérprete.
 	Se agregaron las opciones "deshacer" y "rehacer" a GPSeInt.
-
+	
 >>RELEASE 20060114<<
-
-20060114
 	Se agrego la instruccion DEFINIR para explicitar el tipo de variable.
 	Se agregaron atajos de teclado para ejecutar en GPSeInt.
-
-20051022
 	Se corrigio el problema de las expresiones con < ó > y espacios.
-
+	
 >>RELEASE 20051008<<
-
-20051008
 	Se corrigio el problema de los numeros negativos luego de palabras reservadas (CON PASO, y HASTE QUE).
 	Se fijo a 3 el ancho del identado en GPSeInt.
-
+	
 >>RELEASE 20050822<<
-
-20050822
 	Se actualizo la documentacion de la version para Linux.
 	Se agregaron los numeros de linea en la ventana de edicion.
 	Se cambio el widget TextView por SourceView en GPSeInt para facilitar el identado.
-    
+	
 >>RELEASE 20050814<<
-
-20050814
 	Agregado control de operador incorrecto cuando hay espacios.
 	Se suprimieron las opciones de optimizacion de los makefiles.
-
-20050813
 	Actualización de la imágen del cuadro Acerca de.
-
-20050811
 	Mejoras al script de instalación para Linux.
 	Incorporación de archivos Makefiles.
-
-20050809
 	Mayor modularizacion del codigo para mejorar su lectura y mantenimento.
 	Correcciones varias en el control del uso de arreglos y variables con el mismo nombre.
 	Ya no es necesario el ';' al final de las instrucciones secuenciales.
 	Agregada funcion AZAR(n) que devuelve un entero aleatorio entre 0 y n-1.
-
-20050808
-	Conocí personalmente a dos de los primeros usuarios ;).
 	Correccion de bug en nombres de variables de la forma LetrasNumerosLetras.
 	Agregado control de identificador no valido para el nombre del proceso.
 	Corrección en la primera ejecucion de un bucle REPETIR ... HASTA QUE.
 	Corrección de error (por la división con punto flotante) en la función DblToString().
 	Creación del registro de cambios ;).   
-    
+	
 >>RELEASE 20050319<<
