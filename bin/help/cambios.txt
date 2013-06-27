@@ -1,4 +1,5 @@
 >>RELEASE 20130627<<
+	Agregado el perfil IUGT.
 	Agregado el perfil UTalca.
 	Corregida la verificación de que las variables de la condición de un Si-Entonces esten definidas previamente si el perfil obliga a definir todas las variables.
 	Los diagramas de flujo se exportan ahora sin sombra en las entidades (para una mejor conversión a blanco y negro si es necesario imprimirlos asi).
