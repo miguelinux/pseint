@@ -11,6 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
+current_source=SynCheck.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -21,7 +22,8 @@ cursor=1590
 marker=267
 [source]
 path=SynCheck.cpp
-cursor=62791
+cursor=63100
+open=true
 [source]
 path=Ejecutar.cpp
 cursor=9713
@@ -250,6 +252,17 @@ libraries=wsock32
 strip_executable=0
 console_program=1
 dont_generate_exe=0
+[cppcheck]
+copy_from_config=1
+config_d=
+config_u=
+style=all
+platform=
+standard=
+suppress_file=
+suppress_ids=
+inline_suppr=1
+exclude_list=
 [inspections]
 name=<current_inspections>
 expr=nombre._M_dataplus._M_p

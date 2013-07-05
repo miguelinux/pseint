@@ -53,9 +53,9 @@ void Entity::DrawNassiSchne(bool force) {
 //	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 	if (this==start) DrawBackground();
 	if (mouse==this) DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh);
-	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
-		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
-			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+//	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
+//		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
+//			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	// guardar bb para el gran retangulo blanco de fondo
 	if (d_fy>bk_y1) bk_y1=d_fy;
 	if (d_fy-d_h<bk_y0) bk_y0=d_fy-d_h;

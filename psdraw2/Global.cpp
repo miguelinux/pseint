@@ -23,7 +23,7 @@ Entity *start=NULL; // entidad donde comienza el algoritmo
 int m_x0=0; // click del mouse, para referencia en el motion, se setea en el mouse
 int m_y0=0; // click del mouse, para referencia en el motion, se setea en el mouse
 int blink=0; // cuando se esta editando texto, indica si se muestra o no el cursor, para que parpadee
-int cur_x, cur_y; // ubicacion del raton (en coord del dibujo)
+int cur_x=0, cur_y=0; // ubicacion del raton (durante el passive_motion_cb esta sin aplicar zoom (coord del viewport), durante el motion y click, tiene la correccion del zoom (coord del dibujo))
 
 // barra de entidades
 int shapebar_size=0; // ancho para dibujo de la shapebar

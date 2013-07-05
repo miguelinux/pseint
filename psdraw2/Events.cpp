@@ -136,6 +136,7 @@ static void passive_motion_cb(int x, int y) {
 		shapebar_sel=y/(win_h/8)+1;
 		if (y==9) y=0;
 	}
+	cur_x=x; cur_y=win_h-y; glutPostRedisplay();
 }
 static void motion_cb(int x, int y) {
 	if (confirm) return;

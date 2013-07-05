@@ -391,6 +391,7 @@ void display_cb() {
 	if (entity_to_del) delete entity_to_del;
 	glClear(GL_COLOR_BUFFER_BIT);
 	// dibujar el diagrama
+	float mx=cur_x/zoom, my=cur_y/zoom;
 	Entity *aux=start;
 	bool found=false;
 	glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
@@ -415,7 +416,13 @@ void display_cb() {
 				}
 			}
 		}
-		aux->Draw();
+		if (edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+			glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
+			aux->Draw();
+			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+		} else {
+			aux->Draw();
+		}
 		aux=aux->all_next;
 	} while (aux!=start);
 	if (mouse && mouse->type==ET_OPCION) {
