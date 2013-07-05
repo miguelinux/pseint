@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=DNassiSchne.cpp
+current_source=Events.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -34,15 +34,15 @@ breakpoint_ignore=1
 open=true
 [source]
 path=Events.cpp
-cursor=11490
-marker=214
+cursor=4551
+marker=215
 marker=138
 marker=72
 marker=66
 open=true
 [source]
 path=Draw.cpp
-cursor=16775
+cursor=16781
 open=true
 [source]
 path=Load.cpp
@@ -62,7 +62,7 @@ cursor=11622
 marker=58
 [source]
 path=DNassiSchne.cpp
-cursor=1516
+cursor=2283
 marker=212
 marker=211
 marker=100
@@ -107,7 +107,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=/home/zaskar/.pseint/temp_1.psd --nassischneiderman
+args=/home/zaskar/.pseint/temp_1.psd
 wait_for_key=2
 temp_folder=../temp/drw2_lnx_dbg
 output_file=../temp/drw2_lnx_dbg/psdraw2.bin

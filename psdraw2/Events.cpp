@@ -144,6 +144,7 @@ static void motion_cb(int x, int y) {
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
 	if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
+		if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
 		to_set_mouse->SetMouse(); start->Calculate();
 	}
 	if (selecting_zoom || choose_process_state) {
