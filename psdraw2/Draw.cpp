@@ -386,6 +386,11 @@ static void DrawChooseProcess() {
 }
 
 void display_cb() {
+//	static bool was_arrow=true;
+//	if ((menu|shapebar|confirm|choose_process_state)!=was_arrow) {
+//		glutSetCursor(was_arrow?GLUT_CURSOR_CROSSHAIR:GLUT_CURSOR_INHERIT);
+//		was_arrow=menu|shapebar|confirm|choose_process_state;
+//	}
 	if (choose_process_state) { DrawChooseProcess(); return; }
 	if (confirm) { DrawConfirm(); return; }
 	if (entity_to_del) delete entity_to_del;
@@ -417,9 +422,12 @@ void display_cb() {
 			}
 		}
 		if (edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
-			glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
+//			float color_arrow[3]={.9,0,0}; // flechas que guian el flujo y unen entidades
+			color_shape[2]=.8; color_arrow[1]=.5; color_arrow[2]=.5; //color_arrow[0]=1;
+//			glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
 			aux->Draw();
-			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
+//			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
 		} else {
 			aux->Draw();
 		}

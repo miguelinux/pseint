@@ -77,9 +77,9 @@ extern double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en
 extern const float color_border[3]; // borde de la forma de una entidad
 extern const float color_label[3]; // texto de la etiqueta de una entidad
 extern const float color_label_fix[3]; // texto de la etiqueta de una entidad
-extern const float color_arrow[3]; // flechas que guian el flujo y unen entidades
+extern float color_arrow[3]; // flechas que guian el flujo y unen entidades
 extern const float color_selection[3]; // texto o borde de forma seleccionada
-extern const float color_shape[3]; // fondo de la forma
+extern float color_shape[3]; // fondo de la forma
 extern const float color_shadow[3]; // sombras de las formas
 extern const float color_back[3]; // fondo de la pantalla
 extern const float color_ghost[3]; // borde fantasma cuando se arrastra una forma
