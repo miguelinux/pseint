@@ -421,7 +421,7 @@ void display_cb() {
 				}
 			}
 		}
-		if (edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+		if (!Entity::nassi_schneiderman && !edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
 //			float color_arrow[3]={.9,0,0}; // flechas que guian el flujo y unen entidades
 			color_shape[2]=.75; color_arrow[1]=.5; color_arrow[2]=.5; //color_arrow[0]=1;
 //			glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
