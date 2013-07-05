@@ -85,6 +85,7 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	} else {
 		n_child=0;
 	}
+	Calculate(false); // para que tengan un tamaño inicial no nulo al arrastrarlas desde la shapebar
 }
 
 Entity::~Entity() {
