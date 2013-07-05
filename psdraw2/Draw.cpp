@@ -386,11 +386,8 @@ static void DrawChooseProcess() {
 }
 
 void display_cb() {
-//	static bool was_arrow=true;
-//	if ((menu|shapebar|confirm|choose_process_state)!=was_arrow) {
-//		glutSetCursor(was_arrow?GLUT_CURSOR_CROSSHAIR:GLUT_CURSOR_INHERIT);
-//		was_arrow=menu|shapebar|confirm|choose_process_state;
-//	}
+	static int prev_cursor=GLUT_CURSOR_INHERIT;
+	int cursor=GLUT_CURSOR_CROSSHAIR;
 	if (choose_process_state) { DrawChooseProcess(); return; }
 	if (confirm) { DrawConfirm(); return; }
 	if (entity_to_del) delete entity_to_del;
@@ -431,6 +428,7 @@ void display_cb() {
 		} else {
 			aux->Draw();
 		}
+		if (edit==aux && aux->CheckMouse(mx,my,false)) cursor=GLUT_CURSOR_TEXT;
 		aux=aux->all_next;
 	} while (aux!=start);
 	if (mouse && mouse->type==ET_OPCION) {
@@ -462,5 +460,9 @@ void display_cb() {
 		glPopMatrix();
 	}
 	glutSwapBuffers();
+	if (trash) cursor=GLUT_CURSOR_DESTROY;
+	else if (mouse) cursor=GLUT_CURSOR_NONE;
+	else if (menu||shapebar||confirm||choose_process_sel) cursor=GLUT_CURSOR_INHERIT;
+	if (cursor!=prev_cursor) glutSetCursor(prev_cursor=cursor);
 }
 
