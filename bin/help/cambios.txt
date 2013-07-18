@@ -1,3 +1,8 @@
+	Añadidos los perfiles IUPSM-Guayana y CUL.
+	El cursor del mouse cambia de acuerdo al contexto en el editor de diagramas de flujo.
+	Al pasar el mouse sobre una entidad seleccionable en el editor de diagramas de flujo, la entidad cambia el color.
+	Ya no se puede editar el texto de la entidad de FinProceso en el editor de diagramas de flujo.
+	Ya no se pueden arrastrar las entidades Proceso y FinProceso en el editor de diagramas de flujo.
 >>RELEASE 20130627<<
 	Agregado el perfil IUGT.
 	Agregado el perfil UTalca.
