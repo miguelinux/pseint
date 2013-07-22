@@ -1,4 +1,5 @@
-	Añadidos los perfiles IUPSM-Guayana y CUL.
+	Corregido el funcionamiento del botón Cancelar en el cuadro de selección de perfiles.
+	Añadidos los perfiles IUPSM-Guayana, CUL y UNE.
 	El cursor del mouse cambia de acuerdo al contexto en el editor de diagramas de flujo.
 	Al pasar el mouse sobre una entidad seleccionable en el editor de diagramas de flujo, la entidad cambia el color.
 	Ya no se puede editar el texto de la entidad de FinProceso en el editor de diagramas de flujo.

@@ -14,8 +14,9 @@ private:
 	wxTextCtrl *search;
 	wxArrayString perfiles;
 	wxArrayString descripciones;
+	wxString old_profile; // nombre del perfil que estaba al ingresar a este cuadro (para restaurar si se cancela)
+	LangSettings old_config; // detalles de la configuración que estaba al ingresar a este cuadro (para restaurar si se cancela)
 public:
-	LangSettings old_config;
 	mxProfile(wxWindow *parent);
 	~mxProfile();
 	void OnClose(wxCloseEvent &evt);

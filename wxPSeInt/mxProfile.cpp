@@ -33,6 +33,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
 	old_config=config->lang;
+	old_profile=config->profile;
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
@@ -123,6 +124,7 @@ void mxProfile::OnOkButton(wxCommandEvent &evt) {
 
 void mxProfile::OnCancelButton(wxCommandEvent &evt) {
 	config->lang=old_config;
+	config->profile=old_profile;
 	Close();
 }
 void mxProfile::OnListSelect(wxListEvent &evt) {
