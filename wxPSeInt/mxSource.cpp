@@ -1195,7 +1195,7 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 		if (s[i]!=' '&&s[i]!='\t') {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
-				if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
+				else if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
 				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8])) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;

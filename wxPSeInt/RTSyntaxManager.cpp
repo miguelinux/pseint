@@ -8,6 +8,12 @@
 #include <iostream>
 using namespace std;
 
+#ifdef DEBUG
+	#define _LOG(a) cerr<<a<<endl
+#else
+	#define _LOG(a)
+#endif
+
 RTSyntaxManager *RTSyntaxManager::the_one=NULL;
 int RTSyntaxManager::lid=0;
 
@@ -46,6 +52,7 @@ bool RTSyntaxManager::Process (mxSource * src) {
 		return false; // no deberia pasar (solo si no puede lanzar el interprete o revienta enseguida)
 	}
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
+_LOG("PROCESS IN:  "<<src);
 //	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
 	wxTextOutputStream output(*(the_one->GetOutputStream()));
@@ -61,11 +68,13 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	the_one->fase_num=0;
 	vars_window->BeginInput();
 	the_one->ContinueProcessing();
+_LOG("PROCESS OUT: "<<src);
 	return true;
 }
 
 void RTSyntaxManager::ContinueProcessing() {
 	if (!src) return;
+_LOG("CONTINUE PROCESSING IN:     "<<src);
 	wxTextInputStream input(*(GetInputStream()));	
 	while(true) {
 		wxString line; char c;
@@ -74,8 +83,8 @@ void RTSyntaxManager::ContinueProcessing() {
 			if (c=='\n') break;
 			if (c!='\r') line<<c;
 		}
+_LOG("     ?"<<line<<"¿");
 		if (line.Len()) {
-//			cerr<<line<<endl;
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
@@ -83,6 +92,7 @@ void RTSyntaxManager::ContinueProcessing() {
 				fase_num=2;
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				processing=false;
+_LOG("CONTINUE PROCESSING OUT 2:  "<<src);
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				long l=-1,i=-1,n;
@@ -90,7 +100,9 @@ void RTSyntaxManager::ContinueProcessing() {
 				line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
 				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
 				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
+_LOG("     fase 0a");
 				src->MarkError(l-1,i-1,n,line,line.StartsWith("Falta cerrar "));
+_LOG("     fase 0b");
 			} else if (fase_num==1 && config->show_vars) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
@@ -103,6 +115,7 @@ void RTSyntaxManager::ContinueProcessing() {
 					src->AddBlock(l1-1,l2-1);
 			}
 		} else {
+_LOG("CONTINUE PROCESSING OUT 1:  "<<src);
 			timer->Start(100,true);
 			return;
 		}

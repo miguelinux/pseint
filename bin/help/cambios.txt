@@ -1,3 +1,4 @@
+	Corregido un bug que producía cuelgues al abrir ejemplos con la verificación de sintaxis en tiempo real activada.
 	Corregido el funcionamiento del botón Cancelar en el cuadro de selección de perfiles.
 	Añadidos los perfiles IUPSM-Guayana, CUL y UNE.
 	El cursor del mouse cambia de acuerdo al contexto en el editor de diagramas de flujo.
