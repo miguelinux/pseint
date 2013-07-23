@@ -564,19 +564,20 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 	}
 }
 
-mxSource *mxMainWindow::OpenProgram(wxString path, bool history) {
+mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	
 	if (!wxFileName::FileExists(path)) {
 		wxMessageBox(wxString(_T("No se pudo abrir el archivo "))<<path,_T("Error"));
 		return NULL;
 	}
 	
-	if (history) 
-		RegenFileMenu(path);
+	if (!is_example) RegenFileMenu(path);
 	
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
-	source->LoadFile(path); if (config->rt_syntax) source->DoRealTimeSyntax();
+	source->LoadFile(path); 
+	if (is_example) source->SetExample();
+	if (config->rt_syntax) source->DoRealTimeSyntax();
 	source->SetStatus(STATUS_NEW_SOURCE);
 	return source;
 }
@@ -1331,7 +1332,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 
 void mxMainWindow::OnLink (wxHtmlLinkEvent &event) {
 	if (event.GetLinkInfo().GetHref().StartsWith(_T("example:"))) {
-		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),false)->SetExample();
+		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
 	} else {

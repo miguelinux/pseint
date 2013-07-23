@@ -44,7 +44,7 @@ private:
 public:
 	
 	mxSource *NewProgram();
-	mxSource *OpenProgram(wxString file, bool history=true);
+	mxSource *OpenProgram(wxString file, bool is_example=false);
 	
 	mxMainWindow(wxPoint pos, wxSize size);
 	mxSource *last_source;

@@ -83,8 +83,8 @@ _LOG("CONTINUE PROCESSING IN:     "<<src);
 			if (c=='\n') break;
 			if (c!='\r') line<<c;
 		}
-_LOG("     ?"<<line<<"¿");
 		if (line.Len()) {
+_LOG("     ?"<<line<<"¿");
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {

@@ -237,7 +237,7 @@ void mxHelpWindow::OnTree(wxTreeEvent &event) {
 
 void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 	if (event.GetLinkInfo().GetHref().StartsWith(_T("example:"))) {
-		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),false)->SetExample();
+		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
 	} else {
