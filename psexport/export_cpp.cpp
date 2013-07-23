@@ -354,7 +354,7 @@ void i_segun(t_output &prog, list<t_proceso_it> its, string tabs){
 					if (e[j]=='['||e[j]=='(') parentesis++;
 					else if (e[j]==']'||e[j]==')') parentesis--;
 					else if (parentesis==0 && e[j]==',') {
-						e.replace(j,1,": case ");
+						e.replace(j,1,": case "); l+=6;
 					}
 				}
 				j++;
