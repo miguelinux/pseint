@@ -1,3 +1,4 @@
+>>RELEASE 20130723<<
 	Corregido un error al exportar a C++ opciones multiples en una estructura Segun.
 	Corregido un bug que producía cuelgues al abrir ejemplos con la verificación de sintaxis en tiempo real activada.
 	Corregido el funcionamiento del botón Cancelar en el cuadro de selección de perfiles.
@@ -6,6 +7,7 @@
 	Al pasar el mouse sobre una entidad seleccionable en el editor de diagramas de flujo, la entidad cambia el color.
 	Ya no se puede editar el texto de la entidad de FinProceso en el editor de diagramas de flujo.
 	Ya no se pueden arrastrar las entidades Proceso y FinProceso en el editor de diagramas de flujo.
+	
 >>RELEASE 20130627<<
 	Agregado el perfil IUGT.
 	Agregado el perfil UTalca.
