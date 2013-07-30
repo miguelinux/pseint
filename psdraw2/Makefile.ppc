@@ -1,8 +1,10 @@
+BASE=/opt/mac
+SDK=${BASE}/SDKs/MacOSX10.4u.sdk
 OBJS_DIR=../temp/drw2_ppc_rls
 GPP=powerpc-apple-darwin8-g++
 GCC=gcc
-FLAGS= -O2
-LIBS= -s -lGL -lGLU -lglut  
+FLAGS= -O2 -I${BASE}/freeglut/powerpc/include -I${SDK}/usr/X11R6/include
+LIBS= -s -lGL -lGLU -lglut  -L${BASE}/freeglut/powerpc/lib -L${BASE}/SDKs/MacOSX10.4u.sdk/usr/X11R6/lib
 
 all: ${OBJS_DIR} ../bin/psdraw2
 
