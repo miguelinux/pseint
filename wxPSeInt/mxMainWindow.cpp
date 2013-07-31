@@ -340,10 +340,10 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_RUN_RUN,_T("Ejecutar..."),_T("ejecutar.png"),_T(""));
 	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_T("Ejecutar paso a paso..."),_T("pasos.png"),_T(""));
 //#ifdef __APPLE__
-	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
+//	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
 //#else
 	utils->AddTool(toolbar,mxID_FILE_EDIT_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
-#endif
+//#endif
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_HELP_INDEX,_T("Ayuda..."),_T("ayuda.png"),_T(""));
 //	utils->AddTool(toolbar,mxID_FILE_EXIT,_T("Salir"),_T("salir.png"),_T(""));

@@ -129,7 +129,7 @@ CommunicationsManager::CommunicationsManager() {
 	server=NULL;
 	do {
 		wxIPV4address adrs;
-		adrs.Hostname(_T("127.0.0.1"));
+//		adrs.Hostname(_T("127.0.0.1")); esto puede traer problemas (al menos se cuelga en mi mac de vbox), y localhost:0 es el valor por default, asi que no deberia molestar no ponerlo
 		adrs.Service(server_port=config->GetCommPort());
 		if (server) delete server;
 		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);

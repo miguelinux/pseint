@@ -3,8 +3,8 @@ SDK=${BASE}/SDKs/MacOSX10.4u.sdk
 OBJS_DIR=../temp/drw2_m32_rls
 GPP=i686-apple-darwin8-g++
 GCC=gcc
-FLAGS= -O2 -I${BASE}/freeglut/i686/include -I${SDK}/usr/X11R6/include
-LIBS= -s -lGL -lGLU -lglut  -L${BASE}/freeglut/i686/lib -L${BASE}/SDKs/MacOSX10.4u.sdk/usr/X11R6/lib
+FLAGS= -O2 -framework OpenGL -framework GLUT 
+LIBS= -framework OpenGL -framework GLUT 
 
 all: ${OBJS_DIR} ../bin/psdraw2
 
