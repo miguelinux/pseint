@@ -74,7 +74,7 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_A
 	timer_size=new wxTimer(this,CONSOLE_ID_TIMER_SIZE);
 	timer_caret=new wxTimer(this,CONSOLE_ID_TIMER_CARET);
 	timer_process=new wxTimer(this,CONSOLE_ID_TIMER_PROCESS);
-	buffer=NULL;
+	buffer_h=buffer_w=0; buffer=NULL;
 	Reset(true);
 	SetFontSize(11);
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM); // para evitar el flickering en windows
