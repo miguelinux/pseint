@@ -258,9 +258,9 @@ int main(int argc, char* argv[]) {
 	ifstream archivo(filename);
 	if (!archivo.is_open()) {
 		if (colored_output) setForeColor(COLOR_ERROR);
-		cout<<"ERROR: No se pudo abrir el archivo."<<endl;
+		cout<<"ERROR: No se pudo abrir el archivo \""<<filename<<"\""<<endl;
 		if (ExeInfoOn) {
-			ExeInfo<<"ERROR: No se pudo abrir el archivo."<<endl;
+			ExeInfo<<"ERROR: No se pudo abrir el archivo \""<<filename<<"\""<<endl;
 			if (user) {
 				hideCursor();
 				if (wait_key) getKey();

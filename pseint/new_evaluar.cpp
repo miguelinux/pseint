@@ -291,6 +291,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 				if (args.pasajes[i]==PP_VALOR) { // por valor
 					memoria->EscribirValor(func->nombres[i+1],args.values[i]);
 					memoria->DefinirTipo(func->nombres[i+1],args.tipos[i]);
+					if (force_var_definition) memoria->DefinirTipo(func->nombres[i+1],args.tipos[i],args.tipos[i].rounded); // para que no genere error con force_var_definition, porque no se deja redefinir argumentos dentro del subproceso
 				} else { // por referencia
 					memoria->AgregarAlias(func->nombres[i+1],args.values[i],caller_memoria);
 				}

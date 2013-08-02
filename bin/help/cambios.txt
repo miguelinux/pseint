@@ -1,3 +1,7 @@
+>>RELEASE 20130802<<
+	Corregido un problema al utilizar subprocesos en perfiles con definición de tipos obligatoria.
+	Corregido un cuelgue el iniciar el programa en algunos sistemas.
+	Agregado el perfil UValencia.
 	Disponible el nuevo editor de diagramas de flujo ahora tambien en las versiones para mac.
 
 >>RELEASE 20130723<<
