@@ -11,6 +11,7 @@
 #include <wx/textfile.h>
 #include "mxStatusBar.h"
 #include "version.h"
+#include "Logger.h"
 
 BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxUpdatesChecker::OnCloseButton)
@@ -80,6 +81,7 @@ void mxUpdatesChecker::CheckNow() {
 	
 	if (process) process->Detach();
 	process = new wxProcess(this->GetEventHandler(),wxID_ANY);
+	_LOG("mxUpdatesChecker::CheckNow "<<command);
 	if (wxExecute(command,wxEXEC_ASYNC,process)<=0) {
 		if (shown) {
 			text->SetLabel(_T("Error al conectarse al servidor."));

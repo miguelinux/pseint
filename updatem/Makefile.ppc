@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/upd_ppc_rls
 GPP=powerpc-apple-darwin8-g++
-FLAGS=-O2
+CXXFLAGS=-O2
 LIBS=-s
 
 all: ../temp/upd_ppc_rls ../bin/updatem.bin

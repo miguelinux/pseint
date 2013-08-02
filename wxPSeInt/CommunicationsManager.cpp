@@ -7,15 +7,10 @@
 #include "DebugManager.h"
 #include "mxStatusBar.h"
 #include "mxDebugWindow.h"
+#include "Logger.h"
 using namespace std;
 
 enum {MXS_TYPE_UNKNOWN, MXS_TYPE_DEBUG, MXS_TYPE_FLOW, MXS_TYPE_RUN};
-
-#ifdef DEBUG
-#define _ERROR(str) wxMessageBox(str)
-#else
-#define _ERROR(str)
-#endif
 
 CommunicationsManager *comm_manager=NULL;
 
@@ -36,7 +31,7 @@ void mxSocketClient::ProcessLost() {
 	if (type==MXS_TYPE_DEBUG) debug->ProcSocketData(buffer);
 	else if (type==MXS_TYPE_FLOW) ProcessLostFlow();
 	else if (type==MXS_TYPE_RUN) ProcessLostRun();
-	else _ERROR("mxSocketClient::ProcessLost error");
+	else _LOG("mxSocketClient::ProcessLost error");
 }
 
 void mxSocketClient::ProcessLostRun() {
@@ -77,12 +72,12 @@ void mxSocketClient::ProcessCommand ( ) {
 	else if (buffer.StartsWith("hello-")) {
 		wxString stype=buffer.AfterFirst('-').BeforeFirst(' ');
 		if (stype=="flow") {
-			long id=-1; if (!buffer.AfterFirst(' ').ToLong(&id)) { _ERROR("mxSocketClient::ProcessCommand::hello-id error"); return; } src_id=id;
+			long id=-1; if (!buffer.AfterFirst(' ').ToLong(&id)) { _LOG("mxSocketClient::ProcessCommand hello-id error"); return; } src_id=id;
 			type=MXS_TYPE_FLOW;
 			mxSource *src=main_window->FindSourceById(src_id);
 			if (src) src->SetFlowSocket(socket);
 		} else if (stype=="run") {
-			long id=-1; if (!buffer.AfterFirst(' ').ToLong(&id)) { _ERROR("mxSocketClient::ProcessCommand::hello-id error"); return; } src_id=id;
+			long id=-1; if (!buffer.AfterFirst(' ').ToLong(&id)) { _LOG("mxSocketClient::ProcessCommand hello-id error"); return; } src_id=id;
 			type=MXS_TYPE_RUN;
 			mxSource *src=main_window->FindSourceById(src_id);
 			if (src) src->SetRunSocket(socket);
@@ -90,7 +85,7 @@ void mxSocketClient::ProcessCommand ( ) {
 			type=MXS_TYPE_DEBUG;
 			debug->SetSocket(socket);
 		}
-		else { _ERROR("mxSocketClient::ProcessCommand::hello-type error"); return; }
+		else { _LOG("mxSocketClient::ProcessCommand hello-type error"); return; }
 		
 	}
 }
@@ -115,7 +110,7 @@ void mxSocketClient::ProcessCommandFlow() {
 		return;
 	}
 	mxSource *src=main_window->FindSourceById(src_id);
-	if (!src) { _ERROR("mxSocketClient::ProcessCommandFlow::src error"); return; }
+	if (!src) { _LOG("mxSocketClient::ProcessCommandFlow src error"); return; }
 	if (buffer=="reload"||buffer=="run"||buffer=="export") {
 		src->ReloadFromTempPSD();
 		main_window->SelectSource(src);
@@ -127,9 +122,17 @@ void mxSocketClient::ProcessCommandFlow() {
 CommunicationsManager::CommunicationsManager() {
 	server_port=-1;
 	server=NULL;
+	_LOG("CommunicationsManager::CommunicationsManager in");
+	_LOG("   server_port: "<<server_port);
 	do {
 		wxIPV4address adrs;
-//		adrs.Hostname(_T("127.0.0.1")); esto puede traer problemas (al menos se cuelga en mi mac de vbox), y localhost:0 es el valor por default, asi que no deberia molestar no ponerlo
+#ifndef __APPLE__
+		// esto puede traer problemas (al menos se cuelga en mi mac de vbox), 
+		// y localhost:0 es el valor por default supestamente, asi que no 
+		// deberia molestar no ponerlo, pero si no lo pongo en Windows salta
+		// el firewall
+		adrs.Hostname("localhost"); 
+#endif
 		adrs.Service(server_port=config->GetCommPort());
 		if (server) delete server;
 		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
@@ -137,6 +140,7 @@ CommunicationsManager::CommunicationsManager() {
 		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 		server->Notify(true);
 	} while (!server->IsOk());
+	_LOG("CommunicationsManager::CommunicationsManager out");
 }
 
 void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
@@ -152,7 +156,7 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 			}
 			++it1;
 		}
-		_ERROR("CommunicationsManager::SocketEvent::Input error");
+		_LOG("CommunicationsManager::SocketEvent::Input error");
 	} else if (event.GetSocketEvent()==wxSOCKET_LOST) { // si por algo anormal se corto una conexion pendiente, liberar en sockets
 		list<mxSocketClient*>::iterator it1=clients.begin(), it2=clients.end();
 		while (it1!=it2) {
@@ -164,7 +168,7 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 			}
 			++it1;
 		}
-		_ERROR("CommunicationsManager::SocketEvent::Lost error");
+		_LOG("CommunicationsManager::SocketEvent::Lost error");
 	}
 }
 

@@ -1,6 +1,6 @@
 include ..\mingw.conf
 OBJS_DIR=..\temp\upd_w32_rls
-FLAGS=-O2
+CXXFLAGS=-O2
 LIBS=-s -lwsock32 -static-libgcc -mwindows -static-libstdc++
 
 all: ${OBJS_DIR} ..\bin\updatem.exe

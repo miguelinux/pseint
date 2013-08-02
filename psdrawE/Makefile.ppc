@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/drwE_ppc_rls
 GPP=powerpc-apple-darwin8-g++
-FLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=powerpc-apple-darwin8` -D_FOR_EXPORT -I.
+CXXFLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=powerpc-apple-darwin8` -D_FOR_EXPORT -I.
 LIBS=-s `/opt/mac/wx/bin/wx-config --libs --host=powerpc-apple-darwin8` -lwx_mac_stc-2.8-powerpc-apple-darwin8
 
 all: ${OBJS_DIR} ../bin/psdrawE

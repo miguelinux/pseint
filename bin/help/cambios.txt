@@ -1,4 +1,5 @@
 >>RELEASE 20130802<<
+	Agregado un argumento "--logger" al ejecutable de la interfaz para obtener detalles para futuros reportes de error.
 	Corregido un problema al utilizar subprocesos en perfiles con definición de tipos obligatoria.
 	Corregido un cuelgue el iniciar el programa en algunos sistemas.
 	Agregado el perfil UValencia.

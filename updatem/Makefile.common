@@ -1,8 +1,8 @@
 OBJS=${OBJS_DIR}/main.o ${OBJS_DIR}/zockets.o 
 
 ${OBJS_DIR}/main.o: main.cpp ../pseint/zockets.h
-	${GPP} ${FLAGS} -c main.cpp -o $@
+	${GPP} ${CXXFLAGS} -c main.cpp -o $@
 
 ${OBJS_DIR}/zockets.o: ../pseint/zockets.cpp ../pseint/zockets.h
-	${GPP} ${FLAGS} -c ../pseint/zockets.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../pseint/zockets.cpp -o $@
 

@@ -1,11 +1,11 @@
 OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/mxFrame.o ${OBJS_DIR}/mxConsole.o 
 
 ${OBJS_DIR}/Application.o: Application.cpp Application.h mxFrame.h
-	${GPP} ${FLAGS} -c Application.cpp -o $@
+	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
 ${OBJS_DIR}/mxFrame.o: mxFrame.cpp mxFrame.h mxConsole.h
-	${GPP} ${FLAGS} -c mxFrame.cpp -o $@
+	${GPP} ${CXXFLAGS} -c mxFrame.cpp -o $@
 
 ${OBJS_DIR}/mxConsole.o: mxConsole.cpp mxConsole.h
-	${GPP} ${FLAGS} -c mxConsole.cpp -o $@
+	${GPP} ${CXXFLAGS} -c mxConsole.cpp -o $@
 

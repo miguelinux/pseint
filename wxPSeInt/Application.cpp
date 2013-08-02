@@ -3,6 +3,7 @@
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
 #include <iostream>
+#include "Logger.h"
 using namespace std;
 #include "Application.h"
 #include "mxMainWindow.h"
@@ -29,6 +30,8 @@ bool mxApplication::OnInit() {
 		_write_version_info("wxPSeInt",argv[2]);
 		return false;
 	}
+	
+	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);
 	
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();
@@ -75,7 +78,7 @@ bool mxApplication::OnInit() {
 		main_window = new mxMainWindow(wxPoint(config->pos_x,config->pos_y), wxSize(config->size_x,config->size_y));
 	main_window->Maximize(config->maximized);
 	main_window->Show(true);
-	if (argc==1)
+	if (logger || argc==1)
 		main_window->NewProgram();
 	else
 		for (int i=1;i<argc;i++)

@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/int_ppc_rls
 GPP=powerpc-apple-darwin8-g++
-FLAGS= -O3 -DUSE_ZOCKETS -ffloat-store
+CXXFLAGS= -O3 -DUSE_ZOCKETS -ffloat-store
 LIBS=-s
 
 all: ${OBJS_DIR} ../bin/pseint

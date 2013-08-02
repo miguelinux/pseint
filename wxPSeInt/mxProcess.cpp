@@ -13,6 +13,7 @@
 #include "mxDebugWindow.h"
 #include "CommunicationsManager.h"
 #include <iostream>
+#include "Logger.h"
 using namespace std;
 
 mxProcess *proc_list;
@@ -25,7 +26,7 @@ int mxProcess::cont=0;
 
 mxProcess::mxProcess(mxSource *src) {
 	
-	cerr<<"new mxProcess "<<this<<endl;
+	_LOG("mxProcess::mxProcess "<<src);
 	
 	prev=NULL;
 	next=proc_list;
@@ -56,6 +57,7 @@ mxProcess::~mxProcess() {
 }
 
 void mxProcess::OnTerminate(int pid, int status) {
+	_LOG("mxProcess::OnTerminate "<<status);
 	if (this==debug->process) {
 		debug->debugging=false;
 		debug_panel->SetState(DS_STOPPED);
@@ -86,6 +88,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 		command<<" "<<extra_args;
 	
 	wxArrayString output;
+	_LOG("mxProcess::CheckSyntax "<<command);
 	wxExecute(command,output,wxEXEC_SYNC);
 	
 	main_window->last_source=NULL; // para evitar que al modificar el arbol actúe el evento de seleccionar un item
@@ -153,6 +156,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 #endif
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	if (source)	source->SetStatus(STATUS_RUNNING);
+	_LOG("mxProcess::Run "<<command);
 	return wxExecute(command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, this)!=0;
 }
 
@@ -189,6 +193,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
 	was_readonly = source->GetReadOnly();
 	if (pid) source->SetReadOnly(true);
+	_LOG("mxProcess::Debug "<<command);
 	pid = wxExecute(command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, this);
 	return pid!=0;
 }
@@ -198,6 +203,7 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
+	_LOG("mxProcess::Draw "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -212,6 +218,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	if (config->lang.force_semicolon) command<<" --forcesemicolons";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
+	_LOG("mxProcess::DrawAndEdit "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -222,6 +229,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
+	_LOG("mxProcess::SaveDraw "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
@@ -235,6 +243,7 @@ bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	wxString command;
 	command<<config->psexport_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
 	if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
+	_LOG("mxProcess::ExportCpp "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 

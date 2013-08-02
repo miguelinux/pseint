@@ -11,6 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
+current_source=CommunicationsManager.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -168,7 +169,8 @@ path=mxStatusBar.cpp
 cursor=1090
 [source]
 path=CommunicationsManager.cpp
-cursor=4024
+cursor=4192
+open=true
 [source]
 path=HtmlExporter.cpp
 cursor=1722

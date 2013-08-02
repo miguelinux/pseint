@@ -1,6 +1,6 @@
 include ..\mingw.conf
 OBJS_DIR=..\temp\drw2_w32_rls
-FLAGS= -O2 -DFREEGLUT_STATIC -I ${OPENGL_DIR}\include
+CXXFLAGS= -O2 -DFREEGLUT_STATIC -I ${OPENGL_DIR}\include
 LIBS= -L ${OPENGL_DIR}\lib -s -lfreeglut_static -lopengl32 -lglu32 -lwinmm -lgdi32 -mwindows -static-libgcc -static-libstdc++ -lwsock32
 
 all: ${OBJS_DIR} ..\bin\psdraw2.exe

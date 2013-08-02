@@ -1,23 +1,23 @@
 OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/GLtoWX.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o 
 
 ${OBJS_DIR}/Application.o: Application.cpp ../psdraw2/Load.h ../psdraw2/Global.h ../psdraw2/Entity.h GLtoWX.h Version.h ../pseint/version_common.h
-	${GPP} ${FLAGS} -c Application.cpp -o $@
+	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
 ${OBJS_DIR}/GLtoWX.o: GLtoWX.cpp GLtoWX.h
-	${GPP} ${FLAGS} -c GLtoWX.cpp -o $@
+	${GPP} ${CXXFLAGS} -c GLtoWX.cpp -o $@
 
 ${OBJS_DIR}/DClasico.o: ../psdraw2/DClasico.cpp GLtoWX.h ../psdraw2/Entity.h ../psdraw2/Global.h ../psdraw2/Draw.h
-	${GPP} ${FLAGS} -c ../psdraw2/DClasico.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../psdraw2/DClasico.cpp -o $@
 
 ${OBJS_DIR}/DNassiSchne.o: ../psdraw2/DNassiSchne.cpp GLtoWX.h ../psdraw2/Entity.h ../psdraw2/Global.h ../psdraw2/Draw.h
-	${GPP} ${FLAGS} -c ../psdraw2/DNassiSchne.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../psdraw2/DNassiSchne.cpp -o $@
 
 ${OBJS_DIR}/Entity.o: ../psdraw2/Entity.cpp GLtoWX.h ../psdraw2/Entity.h ../psdraw2/Global.h ../psdraw2/Draw.h
-	${GPP} ${FLAGS} -c ../psdraw2/Entity.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../psdraw2/Entity.cpp -o $@
 
 ${OBJS_DIR}/Global.o: ../psdraw2/Global.cpp ../psdraw2/Global.h
-	${GPP} ${FLAGS} -c ../psdraw2/Global.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../psdraw2/Global.cpp -o $@
 
 ${OBJS_DIR}/Load.o: ../psdraw2/Load.cpp ../psdraw2/Load.h ../psdraw2/Global.h ../psdraw2/Entity.h ../psdraw2/Events.h
-	${GPP} ${FLAGS} -c ../psdraw2/Load.cpp -o $@
+	${GPP} ${CXXFLAGS} -c ../psdraw2/Load.cpp -o $@
 

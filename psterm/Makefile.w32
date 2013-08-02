@@ -1,6 +1,6 @@
 include ..\mingw.conf
 OBJS_DIR=..\temp\trm_w32_rls
-FLAGS=-O2 -I${WX_DIR}\include 
+CXXFLAGS=-O2 -I${WX_DIR}\include 
 LIBS=-s -mwindows -L${WX_DIR}\lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
 
 all: ${OBJS_DIR} ..\bin\psterm.exe
