@@ -40,6 +40,7 @@
 #include "CommunicationsManager.h"
 #include "HtmlExporter.h"
 #include "mxOpersWindow.h"
+#include "mxPanelHelper.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -381,7 +382,7 @@ void mxMainWindow::CreateCommandsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(commands, info_win);
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_COMMANDS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png"))), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
@@ -394,7 +395,7 @@ void mxMainWindow::CreateVarsPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_VARS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png"))), info_helper);
 	aui_manager.AddPane(vars_window, info_win);
 }
 
@@ -408,7 +409,7 @@ void mxMainWindow::CreateOpersPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_OPERS,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_opers.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile(_T("imgs"),_T("tb_opers.png"))), info_helper);
 	aui_manager.AddPane(opers_window, info_win);
 }
 
@@ -426,7 +427,7 @@ void mxMainWindow::CreateDebugControlsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new wxBitmapButton(this,mxID_HELPER_DEBUG,wxBitmap(utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png")),wxBITMAP_TYPE_PNG),wxDefaultPosition,wxSize(20,-1),wxNO_BORDER), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png"))), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
