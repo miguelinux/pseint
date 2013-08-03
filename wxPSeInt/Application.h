@@ -11,6 +11,4 @@ public:
 	virtual bool OnInit();
 };
 
-IMPLEMENT_APP(mxApplication)
-
 #endif

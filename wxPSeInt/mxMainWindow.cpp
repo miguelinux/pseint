@@ -152,7 +152,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_TIMER(mxID_RT_TIMER,mxMainWindow::OnRTSyntaxAuxTimer)
 END_EVENT_TABLE()
 
-mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _T("PSeInt"), pos, size, wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _T("PSeInt"), pos, size, wxDEFAULT_FRAME_STYLE) {
 
 	wxTheColourDatabase->AddColour(_T("Z LIGHT GRAY"),wxColour(240,240,240));
 	wxTheColourDatabase->AddColour(_T("Z LIGHT BLUE"),wxColour(240,240,255));

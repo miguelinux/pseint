@@ -19,6 +19,13 @@ using namespace std;
 #include "CommunicationsManager.h"
 using namespace std;
 
+#ifdef __WXMAC__
+// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
+IMPLEMENT_APP(mxApplication)
+	
 wxSplashScreen *splash;
 
 bool mxApplication::OnInit() {
@@ -30,6 +37,14 @@ bool mxApplication::OnInit() {
 		_write_version_info("wxPSeInt",argv[2]);
 		return false;
 	}
+	
+#ifdef __WXMAC__
+	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
+	ProcessSerialNumber PSN;
+	GetCurrentProcess(&PSN);
+	TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
+	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
+#endif
 	
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);
 	
