@@ -16,7 +16,7 @@ public:
 	void OnLeave(wxMouseEvent &evt);
 	void OnClick(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);
-//	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE();
 };
 
 #endif

@@ -1,4 +1,7 @@
->>RELEASE 20130802<<
+>>RELEASE 20130805<<
+	Corregida la ejecución paso a paso en la versión para Mac.
+	Corregido el dibujado de los botones que muestran los paneles laterales el la versión para Mac.
+	Corregido el problema de foco al lanzar la terminal o el diálogo para exportar el diagrama de flujo en la versión para Mac.
 	Corregido un error en la terminal propia que podía ocasionar un segfault en algunos sistemas.
 	Agregado un argumento "--logger" al ejecutable de la interfaz para obtener detalles para futuros reportes de error.
 	Corregido un problema al utilizar subprocesos en perfiles con definición de tipos obligatoria.

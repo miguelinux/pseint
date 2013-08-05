@@ -42,8 +42,25 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
 		SetSizer(sizer);
 		Show();
-		wxTimerEvent evt;
 		if (port!=-1) InitSocket(port); else socket=NULL;
+#ifdef __APPLE__
+		// en wx para mac, si no abro un puerto no funciona la redireccion de entrada/salida del proceso
+		// depurando dentro de wxWidgets-2.8.12, veo que la linea que hace la diferencia (a la cual se llega
+		// gracias al connect del socket) es la 198 de src/mac/corefoundation/gsockosx.cpp:
+		//     CFRunLoopAddSource(s_mainRunLoop, data->source, kCFRunLoopCommonModes);
+		// como no se que argumentos pasarle para llamarla "a mano" sin crear un socket, creo aca
+		// un socket que no se usa, pero obliga a hacer esa llamada
+		if (port==-1) {
+			wxSocketClient *socket=new wxSocketClient(wxSOCKET_NOWAIT);
+			socket->SetEventHandler(*(this->GetEventHandler()),wxID_ANY);
+			wxIPV4address address;
+			address.Hostname("localhost");
+			address.Service(80);
+			socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG|wxSOCKET_CONNECTION_FLAG);
+			socket->Notify(true);
+			socket->Connect(address,false);
+		}
+#endif
 		console->Run(command);
 		console->SetFocus();
 		if (props.set_left||props.set_right||props.set_bottom||props.set_top) {
@@ -73,6 +90,9 @@ void mxFrame::InitSocket (int port) {
 }
 
 void mxFrame::OnSocketEvent (wxSocketEvent & event) {
+#ifdef __APPLE__
+	if (event.GetSocket()!=socket) return; // hay un socket demas que no se usa, ver nota en el ctor
+#endif
 	if (event.GetSocketEvent()==wxSOCKET_CONNECTION) {
 		wxString msg("hello-run "); msg<<src_id<<"\n";
 		socket->Write(msg.c_str(),msg.Len());

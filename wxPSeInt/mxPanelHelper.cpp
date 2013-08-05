@@ -1,12 +1,12 @@
 #include "mxPanelHelper.h"
 #include "mxMainWindow.h"
 
-//BEGIN_EVENT_TABLE(mxPanelHelper,wxPanel)
-//	EVT_ENTER_WINDOW(mxPanelHelper::OnEnter)
-//	EVT_LEAVE_WINDOW(mxPanelHelper::OnLeave)
-//	EVT_PAINT(mxPanelHelper::OnPaint)
-//	EVT_LEFT_DOWN(mxPanelHelper::OnClick)
-//END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(mxPanelHelper,wxPanel)
+	EVT_ENTER_WINDOW(mxPanelHelper::OnEnter)
+	EVT_LEAVE_WINDOW(mxPanelHelper::OnLeave)
+	EVT_PAINT(mxPanelHelper::OnPaint)
+	EVT_LEFT_DOWN(mxPanelHelper::OnClick)
+END_EVENT_TABLE()
 	
 mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
 	mid=id; selected=false;
