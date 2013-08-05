@@ -131,7 +131,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 			return ExportCpp(file,false);
 		else if (what==mxPW_CHECK) {
 			source->SetStatus(STATUS_SYNTAX_CHECK_OK);
-			main_window->ShowResults(true);
+			main_window->ShowResults(true,true);
 		}
 	}
 	return output.GetCount()==0;

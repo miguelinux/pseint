@@ -22,7 +22,7 @@ static wxString tooltip;
 
 mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(150,100)) {
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
-	tree = new wxTreeCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTR_FULL_ROW_HIGHLIGHT|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_NO_BUTTONS/*|wxTR_ROW_LINES*/);
+	tree = new wxTreeCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(150,50),wxTR_FULL_ROW_HIGHLIGHT|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_NO_BUTTONS/*|wxTR_ROW_LINES*/);
 	wxImageList* imglist = new wxImageList(16, 16,true,7);
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_desc.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log.png")),wxBITMAP_TYPE_PNG));

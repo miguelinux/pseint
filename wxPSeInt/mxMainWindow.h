@@ -95,6 +95,7 @@ public:
 //	void OnToolbarShowDebugPanel(wxCommandEvent &evt);
 //	void OnConfigShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowQuickHelp(wxCommandEvent &evt);
+	void OnConfigAnimateGui(wxCommandEvent &evt);
 	void OnConfigReorganizeForDebug(wxCommandEvent &evt);
 	void OnConfigUseColors(wxCommandEvent &evt);
 	void OnConfigUsePSTerm(wxCommandEvent &evt);
@@ -111,7 +112,7 @@ public:
 	
 	wxMenuItem *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, *mi_smart_indent,
 		//*mi_debug_panel, *mi_toolbar, *mi_commands, *mi_vars_panel
-		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, *mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm;
+		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, *mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm, *mi_animate_gui;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];
@@ -165,14 +166,14 @@ public:
 	
 	void CheckIfNeedsRTS();
 	
-	void ShowOpersPanel(bool show);
-	void ShowVarsPanel(bool show);
-	void ShowDebugPanel(bool show);
-	void ShowCommandsPanel(bool show);
-	void ShowResults(bool show, bool no_error=true);
+	void ShowOpersPanel(bool show, bool anim=false);
+	void ShowVarsPanel(bool show, bool anim=false);
+	void ShowDebugPanel(bool show, bool anim=false);
+	void ShowCommandsPanel(bool show, bool anim=false);
+	void ShowResults(bool show, bool no_error);
 	void ShowQuickHelp(bool show, wxString text="", bool load=false);
-	void ShowSubtitles(bool show);
-	void ShowDesktopTestPanel(bool show);
+	void ShowSubtitles(bool show, bool anim=false);
+	void ShowDesktopTestPanel(bool show, bool anim=false);
 	
 	void ParseResults(mxSource *source); // analiza el archivo de salida que genera un ejecucion, que contiene los errores de la misma
 	
@@ -181,6 +182,13 @@ public:
 	int GetNotebookWidth();
 	
 	void ReorganizeForDebugging();
+	
+	// para los paneles laterales
+	void ShowPanel(wxString helper, wxWindow *panel, bool anim=true);
+	void HidePanel(wxString helper, wxWindow *panel, bool anim=true);
+	// para los paneles inferiores
+	void ShowPanel(wxWindow *panel, bool anim=true);
+	void HidePanel(wxWindow *panel, bool anim=true);
 	
 	DECLARE_EVENT_TABLE();
 };

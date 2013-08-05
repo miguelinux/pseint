@@ -95,6 +95,7 @@ public:
 	LangSettings lang;
 	
 	bool reorganize_for_debug; // si reacomoda las ventanas al lanzar la ejecución paso a paso
+	bool animate_gui; // si reacomoda las ventanas al lanzar la ejecución paso a paso
 	bool use_colors;
 	bool colour_sintax;
 	bool show_toolbar;

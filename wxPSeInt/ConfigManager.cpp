@@ -42,6 +42,7 @@ ConfigManager::ConfigManager(wxString apath) {
 
 void ConfigManager::LoadDefaults() {
 	profile=NO_PROFILE;
+	animate_gui=true;
 	reorganize_for_debug=true;
 	use_colors=true;
 	show_debug_panel = false;
@@ -131,6 +132,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("autoclose="))<<(autoclose?1:0));
 	fil.AddLine(wxString(_T("auto_quickhelp="))<<(auto_quickhelp?1:0));
 	fil.AddLine(wxString(_T("use_colors="))<<(use_colors?1:0));
+	fil.AddLine(wxString(_T("animate_gui="))<<(animate_gui?1:0));
 	fil.AddLine(wxString(_T("reorganize_for_debug="))<<(reorganize_for_debug?1:0));
 	fil.AddLine(wxString(_T("base_zero_arrays="))<<(lang.base_zero_arrays?1:0));
 	fil.AddLine(wxString(_T("allow_concatenation="))<<(lang.allow_concatenation?1:0));
@@ -209,6 +211,7 @@ void ConfigManager::Read() {
 			else if (key==_T("autoclose")) autoclose=utils->IsTrue(value);
 			else if (key==_T("colour_sintax")) colour_sintax=utils->IsTrue(value);
 			else if (key==_T("use_colors")) use_colors=utils->IsTrue(value);
+			else if (key==_T("animate_gui")) animate_gui=utils->IsTrue(value);
 			else if (key==_T("reorganize_for_debug")) reorganize_for_debug=utils->IsTrue(value);
 			else if (key==_T("use_nassi_schneiderman")) lang.use_nassi_schneiderman=utils->IsTrue(value);
 			else if (key==_T("allow_dinamyc_dimensions")) lang.allow_dinamyc_dimensions=utils->IsTrue(value);

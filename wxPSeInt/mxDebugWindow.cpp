@@ -190,8 +190,9 @@ void mxDebugWindow::OnDebugHelp(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
 	helpw->ShowHelp(_T("debug.html"));
 }
+
 void mxDebugWindow::OnDebugDesktopTest(wxCommandEvent &evt) {
-	main_window->ShowDesktopTestPanel(dp_check_desktop_test->GetValue());
+	main_window->ShowDesktopTestPanel(dp_check_desktop_test->GetValue(),true);
 }
 void mxDebugWindow::OnDebugEvaluate(wxCommandEvent &evt) {
 	evaluate_window->Show();
@@ -214,7 +215,7 @@ void mxDebugWindow::OnDebugCheckStepIn(wxCommandEvent &evt) {
 void mxDebugWindow::OnDebugCheckSubtitles(wxCommandEvent &evt) {
 	evt.Skip();
 	debug->SetSubtitles(dp_check_subtitles->GetValue());
-	main_window->ShowSubtitles(dp_check_subtitles->GetValue());
+	main_window->ShowSubtitles(dp_check_subtitles->GetValue(),true);
 }
 
 void mxDebugWindow::ShowInEvaluateDialog(wxString s) {

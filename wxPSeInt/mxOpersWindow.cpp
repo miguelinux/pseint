@@ -142,6 +142,7 @@ void mxOpersWindow::OnLabel (wxCommandEvent & evt) {
 	for(int j=lista2[i].from;j<lista2[i].to;j++) {
 		if (lista2[i].showing) lista[j].but->Hide();
 		else lista[j].but->Show();
+		if (!config->animate_gui) continue;
 		sizer->Layout();
 		FitInside();
 		wxYield();

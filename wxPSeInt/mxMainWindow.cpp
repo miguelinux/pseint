@@ -105,6 +105,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_STEP, mxMainWindow::OnDebugShortcut)
 	EVT_MENU(mxID_DO_THAT, mxMainWindow::OnDoThat)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
+	EVT_MENU(mxID_CONFIG_ANIMATE_GUI, mxMainWindow::OnConfigAnimateGui)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
@@ -281,6 +282,7 @@ void mxMainWindow::CreateMenus() {
 	cfg->AppendSubMenu(cfg_help,"Asistencias");
 	
 	wxMenu *cfg_pres = new wxMenu;
+	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _T("Animar paneles"),_T(""),config->animate_gui);
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
@@ -1160,6 +1162,16 @@ void mxMainWindow::OnConfigReorganizeForDebug(wxCommandEvent &evt) {
 	}
 }
 
+void mxMainWindow::OnConfigAnimateGui(wxCommandEvent &evt) {
+	if (!mi_animate_gui->IsChecked()) {
+		mi_animate_gui->Check(false);
+		config->animate_gui=false;
+	} else {
+		mi_animate_gui->Check(true);
+		config->animate_gui=true;
+	}
+}
+
 void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 	if (!mi_use_psterm->IsChecked()) {
 		mi_use_psterm->Check(false);
@@ -1171,26 +1183,17 @@ void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
-	if (event.pane->name == _T("commands")) {
-		aui_manager.GetPane("helper_commands").Show();
-		aui_manager.Update();	
-	}
-	else if (event.pane->name == _T("debug_panel")) {
-		aui_manager.GetPane("helper_debug").Show();
-		aui_manager.Update();	
-	}
-	else if (event.pane->name == _T("vars_panel")) { 
-		config->show_vars=false; // para que deje de actualizarlo cuando procese el rt_syntax
-		aui_manager.GetPane("helper_vars").Show();
-		aui_manager.Update();
-	}
-	else if (event.pane->name == _T("opers_panel")) { 
-		aui_manager.GetPane("helper_opers").Show();
-		aui_manager.Update();
-	}
-	else if (event.pane->name == _T("desktop_test_panel")) { 
+	if (event.pane->name == _T("commands"))
+		ShowCommandsPanel(false,true);
+	else if (event.pane->name == _T("debug_panel"))
+		ShowDebugPanel(false,true);
+	else if (event.pane->name == _T("vars_panel"))
+		ShowVarsPanel(false,true);
+	else if (event.pane->name == _T("opers_panel"))
+		ShowOpersPanel(false,true);
+	else if (event.pane->name == _T("desktop_test_panel"))
+		ShowDesktopTestPanel(false,true);
 		debug_panel->OnDesktopTestPanelHide();
-	}
 }
 
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
@@ -1445,19 +1448,19 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {
-	ShowVarsPanel(true);
+	ShowVarsPanel(true,true);
 }
 
 void mxMainWindow::OnHelperOpers (wxCommandEvent & evt) {
-	ShowOpersPanel(true);
+	ShowOpersPanel(true,true);
 }
 
 void mxMainWindow::OnHelperDebug (wxCommandEvent & evt) {
-	ShowDebugPanel(true);
+	ShowDebugPanel(true,true);
 }
 
 void mxMainWindow::OnHelperCommands (wxCommandEvent & evt) {
-	ShowCommandsPanel(true);
+	ShowCommandsPanel(true,true);
 }
 
 void mxMainWindow::OnDebugShortcut (wxCommandEvent & evt) {
@@ -1479,12 +1482,9 @@ void mxMainWindow::CheckIfNeedsRTS() {
 	}
 }
 
-void mxMainWindow::ShowSubtitles(bool show) {
-	if (show)
-		aui_manager.GetPane(subtitles).Show();
-	else
-		aui_manager.GetPane(subtitles).Hide();
-	aui_manager.Update();	
+void mxMainWindow::ShowSubtitles(bool show, bool anim) {
+	if (show) ShowPanel(subtitles,anim);
+	else HidePanel(subtitles,anim);
 }
 
 void mxMainWindow::ShowResults(bool show, bool no_error) {
@@ -1521,67 +1521,31 @@ void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
 	}
 }
 
-void mxMainWindow::ShowDesktopTestPanel(bool show) {
-	if (show) {
-		aui_manager.GetPane(desktop_test_panel).Show();	
-//		if (one_line) aui_manager.GetPane(desktop_test_grid).BestSize(desktop_test_grid->GetSize().GetWidth(),desktop_test_grid->GetColLabelSize()*2);
-	} else
-		aui_manager.GetPane(desktop_test_panel).Hide();	
-	aui_manager.Update();
+void mxMainWindow::ShowDesktopTestPanel(bool show, bool anim) {
+	if (show) ShowPanel(desktop_test_panel,anim);	
+	else HidePanel(desktop_test_panel,anim);	
 }
 
-void mxMainWindow::ShowDebugPanel (bool show) {
-	wxAuiPaneInfo &pi=aui_manager.GetPane(debug_panel);
-	if (pi.IsShown()==show) return;
-	if (show) {
-		pi.Show();
-		aui_manager.GetPane("helper_debug").Hide();
-	} else {
-		pi.Hide();
-		aui_manager.GetPane("helper_debug").Show();
-	}
-	aui_manager.Update();
+void mxMainWindow::ShowDebugPanel (bool show, bool anim) {
+	if (show) ShowPanel("helper_debug",debug_panel,anim);
+	else HidePanel("helper_debug",debug_panel,anim);
 }
 
-void mxMainWindow::ShowVarsPanel (bool show) {
-	wxAuiPaneInfo &pi=aui_manager.GetPane(vars_window);
-	if (pi.IsShown()==show) return;
+void mxMainWindow::ShowVarsPanel (bool show, bool anim) {
 	config->show_vars=show; // rt_syntax actualiza o no el arbol de variables segun este bool
-	if (show) {
-		pi.Show();
-		aui_manager.GetPane("helper_vars").Hide();
-		CheckIfNeedsRTS(); // aunque el codigo ya esté analizado, el arbol está vacio porque si no se muestra no se actualiza
-	} else {
-		pi.Hide();
-		aui_manager.GetPane("helper_vars").Show();
-	}
-	aui_manager.Update(); 
+	if (show) CheckIfNeedsRTS(); // aunque el codigo ya esté analizado, el arbol está vacio porque si no se muestra no se actualiza
+	if (show) ShowPanel("helper_vars",vars_window,anim);
+	else HidePanel("helper_vars",vars_window,anim);
 }
 
-void mxMainWindow::ShowOpersPanel (bool show) {
-	wxAuiPaneInfo &pi=aui_manager.GetPane(opers_window);
-	if (pi.IsShown()==show) return;
-	if (show) {
-		pi.Show();
-		aui_manager.GetPane("helper_opers").Hide();
-	} else {
-		pi.Hide();
-		aui_manager.GetPane("helper_opers").Show();
-	}
-	aui_manager.Update();
+void mxMainWindow::ShowOpersPanel (bool show, bool anim) {
+	if (show) ShowPanel("helper_opers",opers_window,anim);
+	else HidePanel("helper_opers",opers_window,anim);
 }
 
-void mxMainWindow::ShowCommandsPanel (bool show) {
-	wxAuiPaneInfo &pi=aui_manager.GetPane(commands);
-		if (pi.IsShown()==show) return;
-	if (show) {
-		pi.Show();
-		aui_manager.GetPane("helper_commands").Hide();
-	} else {
-		pi.Hide();
-		aui_manager.GetPane("helper_commands").Show();
-	}
-	aui_manager.Update();	
+void mxMainWindow::ShowCommandsPanel (bool show, bool anim) {
+	if (show) ShowPanel("helper_commands",commands,anim);
+	else HidePanel("helper_commands",commands,anim);
 }
 
 void mxMainWindow::ParseResults(mxSource *source) {
@@ -1647,5 +1611,112 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 
 void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
 	RTSyntaxManager::Process(NULL);
+}
+
+#define time_ms 200
+
+void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
+	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
+	if (pi.IsShown()) return;
+	int final_w=panel->GetSizer()->Fit(panel).GetWidth();
+	pi.Show(); 
+	if (anim && config->animate_gui) {
+		long w=5; wxStopWatch sw;
+		pi.Fixed(); 
+		do {
+			int d=sw.Time();
+			w=(d*final_w)/time_ms;
+			if (w<5) w=5; else if (w>final_w) w=final_w;
+			pi.MinSize(w,-1);
+			pi.MaxSize(w,-1);
+			pi.BestSize(w,-1);
+			aui_manager.Update(); 
+			wxTheApp->Yield(true);
+		} while (w!=final_w);
+		pi.MinSize(-1,-1);
+		pi.MaxSize(-1,-1);
+		pi.BestSize(-1,-1);
+	} else {
+		pi.MinSize(final_w,-1);
+	}
+	pi.Resizable(); 
+	if (helper.Len()) aui_manager.GetPane(helper).Hide();	
+	aui_manager.Update(); 
+}
+
+void mxMainWindow::HidePanel (wxString helper, wxWindow * panel, bool anim) {
+	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
+	if (!pi.IsShown()) return;
+	if (anim && config->animate_gui) {
+		aui_manager.Update(); 
+		int start_w=panel->GetSize().GetWidth();
+		pi.Fixed(); 
+		long w=5; wxStopWatch sw;
+		do {
+			int d=sw.Time();
+			w=start_w-(d*start_w)/time_ms;
+			if (w<5) w=5;
+			pi.MinSize(w,-1);
+			pi.MaxSize(w,-1);
+			pi.BestSize(w,-1);
+			aui_manager.Update(); 
+			wxTheApp->Yield(true);
+		} while (w!=5);
+	}
+	pi.Hide(); 
+	if (helper.Len()) aui_manager.GetPane(helper).Show();	
+	aui_manager.Update(); 
+}
+
+
+void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
+	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
+	if (pi.IsShown()) return;
+	int final_h=panel->GetSizer()->Fit(panel).GetHeight();
+	pi.Show(); 
+	if (anim && config->animate_gui) {
+		pi.Fixed(); 
+		long h=5; wxStopWatch sw;
+		do {
+			int d=sw.Time();
+			h=(d*final_h)/time_ms;
+			if (h<5) h=5; else if (h>final_h) h=final_h;
+			pi.MinSize(-1,h);
+			pi.MaxSize(-1,h);
+			pi.BestSize(-1,h);
+			aui_manager.Update(); 
+			wxTheApp->Yield(true);
+		} while (h!=final_h);
+		pi.MinSize(-1,-1);
+		pi.MaxSize(-1,-1);
+		pi.BestSize(-1,-1);
+	} else {
+		pi.MinSize(-1,final_h);
+	}
+	pi.Resizable(); 
+	aui_manager.Update(); 
+}
+
+void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
+	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
+	if (!pi.IsShown()) return;
+	if (anim && config->animate_gui) {
+		aui_manager.Update(); 
+		int start_h=panel->GetSize().GetHeight();
+		pi.Fixed(); 
+		long h=5; wxStopWatch sw;
+		do {
+			int d=sw.Time();
+			h=start_h-(d*start_h)/time_ms;
+			if (h<5) h=5;
+			pi.MinSize(-1,h);
+			pi.MaxSize(-1,h);
+			pi.BestSize(-1,h);
+			aui_manager.Update(); 
+			wxTheApp->Yield(true);
+		} while (h!=5);
+	}
+	pi.Hide(); 
+	aui_manager.Update(); 
 }
 
