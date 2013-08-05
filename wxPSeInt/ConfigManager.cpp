@@ -244,6 +244,8 @@ void ConfigManager::Read() {
 	}
 	fil.Close();
 	LoadProfile(profile);
+	
+	if (version<20130805) use_psterm=true;
 }
 
 ConfigManager::~ConfigManager() {
