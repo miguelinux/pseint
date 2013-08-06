@@ -1,3 +1,5 @@
+	Se agregaron animaciones para cuando se muestran o se ocultan los paneles acoplables en el editor.
+	
 >>RELEASE 20130805<<
 	Corregida la ejecución paso a paso en la versión para Mac.
 	Corregido el dibujado de los botones que muestran los paneles laterales el la versión para Mac.

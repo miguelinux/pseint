@@ -1191,9 +1191,14 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		ShowVarsPanel(false,true);
 	else if (event.pane->name == _T("opers_panel"))
 		ShowOpersPanel(false,true);
-	else if (event.pane->name == _T("desktop_test_panel"))
+	else if (event.pane->name == _T("quick_html"))
+		ShowQuickHelp(false);
+	else if (event.pane->name == _T("symbols_tree"))
+		ShowResults(false,false);
+	else if (event.pane->name == _T("desktop_test_panel")) {
 		ShowDesktopTestPanel(false,true);
 		debug_panel->OnDesktopTestPanelHide();
+	}
 }
 
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
@@ -1489,16 +1494,16 @@ void mxMainWindow::ShowSubtitles(bool show, bool anim) {
 
 void mxMainWindow::ShowResults(bool show, bool no_error) {
 	if (show) {
-		if (no_error) aui_manager.GetPane(quick_html).Hide();
-		if (!aui_manager.GetPane(results_tree).IsShown()) {
-			aui_manager.GetPane(results_tree).Show();
-			aui_manager.Update();
-		}
-		results_tree->ExpandAll(/*results_root*/);
-	} else if (aui_manager.GetPane(results_tree).IsShown()) {
-		aui_manager.GetPane(results_tree).Hide();
-		aui_manager.Update();
-	}
+//		if (no_error) aui_manager.GetPane(quick_html).Hide();
+//		if (!aui_manager.GetPane(results_tree).IsShown()) {
+//			aui_manager.GetPane(results_tree).Show();
+//			aui_manager.Update();
+//		}
+		results_tree->ExpandAll();
+		if (no_error) HidePanel(quick_html,false);
+		ShowPanel(results_tree,!aui_manager.GetPane(quick_html).IsShown());
+	} else 
+		HidePanel(results_tree,!aui_manager.GetPane(quick_html).IsShown());
 }
 
 // show=false, oculta
@@ -1511,14 +1516,9 @@ void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
 			if (load) quick_html->LoadPage(str); 
 			else quick_html->SetPage(str);
 		}
-		if (!aui_manager.GetPane(quick_html).IsShown()) {
-			aui_manager.GetPane(quick_html).Show();
-			aui_manager.Update();
-		}
-	} else if (aui_manager.GetPane(quick_html).IsShown()) {
-		aui_manager.GetPane(quick_html).Hide();
-		aui_manager.Update();
-	}
+		ShowPanel(quick_html,!aui_manager.GetPane(results_tree).IsShown());
+	} else 
+		HidePanel(quick_html,!aui_manager.GetPane(results_tree).IsShown());
 }
 
 void mxMainWindow::ShowDesktopTestPanel(bool show, bool anim) {
@@ -1613,7 +1613,8 @@ void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
 	RTSyntaxManager::Process(NULL);
 }
 
-#define time_ms 200
+#define _time_ms 200
+#define _min_size 1
 
 void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
@@ -1625,7 +1626,7 @@ void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
 		pi.Fixed(); 
 		do {
 			int d=sw.Time();
-			w=(d*final_w)/time_ms;
+			w=(d*final_w)/_time_ms;
 			if (w<5) w=5; else if (w>final_w) w=final_w;
 			pi.MinSize(w,-1);
 			pi.MaxSize(w,-1);
@@ -1633,18 +1634,17 @@ void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
 			aui_manager.Update(); 
 			wxTheApp->Yield(true);
 		} while (w!=final_w);
-		pi.MinSize(-1,-1);
-		pi.MaxSize(-1,-1);
-		pi.BestSize(-1,-1);
+		pi.MinSize(-1,_min_size);
+		pi.MaxSize(-1,-1); pi.BestSize(-1,-1);
 	} else {
-		pi.MinSize(final_w,-1);
+		pi.MinSize(final_w,_min_size);
 	}
 	pi.Resizable(); 
 	if (helper.Len()) aui_manager.GetPane(helper).Hide();	
 	aui_manager.Update(); 
 }
 
-void mxMainWindow::HidePanel (wxString helper, wxWindow * panel, bool anim) {
+void mxMainWindow::HidePanel(wxString helper, wxWindow * panel, bool anim) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (!pi.IsShown()) return;
 	if (anim && config->animate_gui) {
@@ -1654,9 +1654,9 @@ void mxMainWindow::HidePanel (wxString helper, wxWindow * panel, bool anim) {
 		long w=5; wxStopWatch sw;
 		do {
 			int d=sw.Time();
-			w=start_w-(d*start_w)/time_ms;
+			w=start_w-(d*start_w)/_time_ms;
 			if (w<5) w=5;
-			pi.MinSize(w,-1);
+			pi.MinSize(w,_min_size);
 			pi.MaxSize(w,-1);
 			pi.BestSize(w,-1);
 			aui_manager.Update(); 
@@ -1672,26 +1672,26 @@ void mxMainWindow::HidePanel (wxString helper, wxWindow * panel, bool anim) {
 void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (pi.IsShown()) return;
-	int final_h=panel->GetSizer()->Fit(panel).GetHeight();
+	int final_h= panel->GetSizer()?panel->GetSizer()->Fit(panel).GetHeight()
+		         :(GetClientSize().GetHeight()*0.3-aui_manager.GetArtProvider()->GetMetric(wxAUI_DOCKART_CAPTION_SIZE));
 	pi.Show(); 
 	if (anim && config->animate_gui) {
 		pi.Fixed(); 
 		long h=5; wxStopWatch sw;
 		do {
 			int d=sw.Time();
-			h=(d*final_h)/time_ms;
+			h=(d*final_h)/_time_ms;
 			if (h<5) h=5; else if (h>final_h) h=final_h;
-			pi.MinSize(-1,h);
+			pi.MinSize(_min_size,h);
 			pi.MaxSize(-1,h);
 			pi.BestSize(-1,h);
 			aui_manager.Update(); 
 			wxTheApp->Yield(true);
 		} while (h!=final_h);
-		pi.MinSize(-1,-1);
-		pi.MaxSize(-1,-1);
-		pi.BestSize(-1,-1);
+		pi.MinSize(_min_size,-1);
+		pi.MaxSize(-1,-1); pi.BestSize(-1,-1);
 	} else {
-		pi.MinSize(-1,final_h);
+		pi.MinSize(_min_size,final_h);
 	}
 	pi.Resizable(); 
 	aui_manager.Update(); 
@@ -1707,9 +1707,9 @@ void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
 		long h=5; wxStopWatch sw;
 		do {
 			int d=sw.Time();
-			h=start_h-(d*start_h)/time_ms;
+			h=start_h-(d*start_h)/_time_ms;
 			if (h<5) h=5;
-			pi.MinSize(-1,h);
+			pi.MinSize(_min_size,h);
 			pi.MaxSize(-1,h);
 			pi.BestSize(-1,h);
 			aui_manager.Update(); 
