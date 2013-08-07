@@ -92,6 +92,7 @@ void RTSyntaxManager::ContinueProcessing() {
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				processing=false;
 				_LOG("RTSyntaxManager::ContinueProcessing out 1 "<<src);
+				src->SetStatus(); // para que diga en la barra de estado si hay o no errores
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				long l=-1,i=-1,n;

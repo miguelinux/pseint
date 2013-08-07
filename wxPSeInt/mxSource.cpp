@@ -1224,7 +1224,7 @@ void mxSource::SelectInstruccion (int _l, int _i) {
 
 void mxSource::DoRealTimeSyntax ( ) {
 	RTSyntaxManager::Process(this);
-	SetStatus();
+//	SetStatus(); // si lo hago aca setea el estado antes de terminar de analizar todo, mejor que lo haga el rt_syntax
 }
 
 void mxSource::ClearErrors() {

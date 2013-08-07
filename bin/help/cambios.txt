@@ -1,3 +1,5 @@
+	Corregida la desincronización en algunos casos entre el mensaje de la barra de estados y los resultados de la verificación de sintaxis en tiempo real.
+	Agregado el perfil CECyTEM.
 	Se agregaron animaciones para cuando se muestran o se ocultan los paneles acoplables en el editor.
 	
 >>RELEASE 20130805<<
