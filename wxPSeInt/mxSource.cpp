@@ -919,7 +919,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						else if (word==_T("FUNCION")||word==_T("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
 						else if (word==_T("SUBPROCESO")) { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
 						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) { cur+=4; btype=BT_MIENTRAS; }
-						else if (word==_T("SEGUN")) { cur+=8; btype=BT_SEGUN; }
+						else if (word==_T("SEGUN")||word==_T("SEGÚN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
 						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
 						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
