@@ -2,7 +2,7 @@
 	Se agregó en la ayuda un ejemplo simple para las estructuras Según y Repetir
 	Corregido un error en el indentado del pseudocódigo cuando Según se escribe con acento.
 	Corregida la desincronización en algunos casos entre el mensaje de la barra de estados y los resultados de la verificación de sintaxis en tiempo real.
-	Agregado el perfil CECyTEM.
+	Agregados los perfiles CECyTEM y UACM-SLT.
 	Se agregaron animaciones para cuando se muestran o se ocultan los paneles acoplables en el editor.
 	
 >>RELEASE 20130805<<
