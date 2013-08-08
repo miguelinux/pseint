@@ -114,18 +114,20 @@ mxProfile::~mxProfile() {
 }
 
 void mxProfile::OnClose(wxCloseEvent &evt) {
+	config->lang=old_config;
+	config->profile=old_profile;
 	Destroy();
 }
 
 void mxProfile::OnOkButton(wxCommandEvent &evt) {
+	old_config=config->lang; // para que el evento on_close no lo deshaga
+	old_profile=config->profile; // para que el evento on_close no lo deshaga
 	main_window->ProfileChanged();
 	Close(); 
 }
 
 void mxProfile::OnCancelButton(wxCommandEvent &evt) {
-	config->lang=old_config;
-	config->profile=old_profile;
-	Close();
+	Close(); // el evento OnClose vuelve al perfil anterior
 }
 void mxProfile::OnListSelect(wxListEvent &evt) {
 	evt.Skip();
