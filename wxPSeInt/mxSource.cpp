@@ -652,11 +652,17 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 			if (s1>p+1) SetAnchor(p+1);
 		}
 		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
-	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
+	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy sobre un error del rt_syntax muestra el calltip con el mensaje
 		unsigned int l=GetCurrentLine();
 		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
-	} else {
-		HideCalltip(true,false);
+	} else { 
+		if (p) p--; s = GetStyleAt(p);
+		if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy justo despues de un error del rt_syntax tambien muestra el calltip con el mensaje
+			unsigned int l=GetCurrentLine();
+			if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
+		} else { // si no estoy sobre ningun error, oculta el calltip si es que habia
+			HideCalltip(true,false);
+		}
 	}
 	if (blocks_markers.GetCount()) UnHighLightBlock(); 
 	if (config->highlight_blocks && !rt_timer->IsRunning()) HighLightBlock();
@@ -1274,9 +1280,17 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 }
 
 void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
+	// muestra el tip
 	current_calltip.pos=pos;
 	current_calltip.is_error=is_error;
 	CallTipShow(pos,l);
+	// si era un error y está el panel de ayuda rápida muestra también la descripción larga
+	if (!current_calltip.is_error || !main_window->aui_manager.GetPane(main_window->quick_html).IsShown()) return;
+	int il=LineFromPosition(current_calltip.pos);
+	if (il<0||il>int(rt_errors.size())) return;
+	rt_err &e=rt_errors[il];
+	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
+	main_window->quick_html->SetPage(help->GetErrorText(msg,e.n));
 }
 
 void mxSource::ShowRealTimeError (int pos, const wxString & l) {
