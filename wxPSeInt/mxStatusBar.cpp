@@ -39,6 +39,7 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	}
 	texts[STATUS_SYNTAX_OK]=st_aux(verde,"El pseudocódigo es correcto. Presione F9 para ejecutarlo.");
 	texts[STATUS_SYNTAX_ERROR]=st_aux(rojo,"El pseudocódigo contiene errores. Presione F9 para una mejor descripción.");
+	texts[STATUS_SYNTAX_ERROR_DETAIL]=st_aux(rojo,"El pseudocódigo contiene errores. Seleccione un error para ver su descripción.");
 	texts[STATUS_SYNTAX_CHECK_OK]=st_aux(verde,"La sintaxis es correcta.");
 	texts[STATUS_SYNTAX_CHECK_ERROR]=st_aux(azul,"Seleccione un error para ver su descripción.");
 	texts[STATUS_FLOW]=st_aux(azul,"Este pseudocódigo está siendo editado como diagrama de flujo.");
@@ -89,6 +90,7 @@ void mxStatusBar::OnClick (wxMouseEvent & event) {
 
 void mxStatusBar::SetStatus (int what) {
 	if (what==STATUS_NEW_SOURCE && status<STATUS_NEW_SOURCE) return;
+	else if (what==STATUS_SYNTAX_ERROR && main_window->IsQuickHelpVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
 	status=what;
 	Refresh();
 }

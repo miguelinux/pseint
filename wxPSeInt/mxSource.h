@@ -124,12 +124,18 @@ public:
 	void SelectInstruccion(int _l, int _i);
 	
 	void DoRealTimeSyntax();
-	void ClearErrors();
+	void ClearErrorData();
+	void ClearErrorMarks();
 	void MarkError(int l, int i, int n, wxString str, bool special=false);
 	void StartRTSyntaxChecking();
 	void StopRTSyntaxChecking();
 	void OnTimer(wxTimerEvent &te);
 	void OnChange(wxStyledTextEvent &event);
+	
+	void OnMarginClick(wxStyledTextEvent &event);
+	
+	void RTOuputStarts();
+	void RTOuputEnds();
 
 	struct current_calltip_info {
 		int pos;

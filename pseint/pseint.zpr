@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=new_memoria.h
+current_source=SynCheck.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -24,7 +24,7 @@ cursor=1590
 marker=267
 [source]
 path=SynCheck.cpp
-cursor=63100
+cursor=47448
 open=true
 [source]
 path=Ejecutar.cpp
@@ -83,8 +83,8 @@ cursor=211
 [header]
 path=utils.h
 cursor=5893
-marker=111
 marker=160
+marker=111
 [header]
 path=version.h
 cursor=24

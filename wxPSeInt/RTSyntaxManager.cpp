@@ -61,8 +61,7 @@ bool RTSyntaxManager::Process (mxSource * src) {
 		output<<s<<"\n"; wxMilliSleep(0); // el millisleep evita problemas cuando se manda mucho y no alcanza a "flushear" (en wx 2.9 ya hay un .flush(), tendria que probar con eso, en 2.8 no hay caso)
 	}
 	output<<"<!{[END_OF_INPUT]}!>\n";
-	src->ClearErrors();
-	src->ClearBlocks();
+	src->RTOuputStarts();
 	the_one->fase_num=0;
 	vars_window->BeginInput();
 	the_one->ContinueProcessing();
@@ -92,7 +91,7 @@ void RTSyntaxManager::ContinueProcessing() {
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				processing=false;
 				_LOG("RTSyntaxManager::ContinueProcessing out 1 "<<src);
-				src->SetStatus(); // para que diga en la barra de estado si hay o no errores
+				src->RTOuputEnds();
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				long l=-1,i=-1,n;

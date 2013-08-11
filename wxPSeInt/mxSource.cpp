@@ -55,7 +55,7 @@ const wxChar* mxSourceWords2_string =
 //const wxChar* mxSourceWords3 = 
 //	_T("hacer entonces para ");
 
-enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK};
+enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
@@ -81,6 +81,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
+	EVT_STC_MARGINCLICK (wxID_ANY, mxSource::OnMarginClick)
 #define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
 	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
 	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
@@ -153,6 +154,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	
 	SetMarginType (0, wxSTC_MARGIN_NUMBER);
 	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
+	SetMarginSensitive (1, true);
 	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour (_T("DARK GRAY")));
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
@@ -164,6 +166,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	IndicatorSetForeground (1, 0x005555);
 	IndicatorSetForeground (2, 0x004499);
 	
+	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, _T("WHITE"), _T("RED"));
 	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
 	MarkerDefine(MARKER_DEBUG_RUNNING_BACK,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
 	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
@@ -428,56 +431,22 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (AutoCompActive()) {
 		comp_to=GetCurrentPos();
 	} else if (chr==' ' && config->autocomp) {
-		int p2=comp_to=GetCurrentPos();
-		int s=GetStyleAt(p2-2);
+		int p2=comp_to=GetCurrentPos(), s=GetStyleAt(p2-2);
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2-1,true);
-		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("FIN")) {
-			wxString res;
-			for (int i=0;i<comp_count;i++) {
-				if (comp_list[i].label.StartsWith("Fin ")) {
-					if (res.Len())
-						res<<_T("|")<<comp_list[i];
-					else
-						res=comp_list[i];
-				}
+		wxString st=GetTextRange(p1,p2).Lower(), res; st[0]=toupper(st[0]);
+		for (int i=0;i<comp_count;i++) {
+			if (comp_list[i].label.StartsWith(st)) {
+				if (res.Len())
+					res<<_T("|")<<comp_list[i];
+				else
+					res=comp_list[i];
 			}
+		}
+		if (res.Len()) {
 			SetCurrentPos(p1);
 			UserListShow(1,res);
 			SetCurrentPos(p2);
-		} else
-		if (p2-p1==4 && GetTextRange(p1,p2-1).Upper()==_T("POR")) {
-			wxString res;
-			for (int i=0;i<comp_count;i++) {
-				if (comp_list[i].label.StartsWith("Por ")) {
-					if (res.Len())
-						res<<_T("|")<<comp_list[i];
-					else
-						res=comp_list[i];
-				}
-			}
-			SetCurrentPos(p1);
-			UserListShow(1,res);
-			SetCurrentPos(p2);
-		} else
-		if (config->lang.coloquial_conditions) {
-			int s=GetStyleAt(p2-2);
-			if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
-			int p1=comp_from=WordStartPosition(p2-1,true);
-			if (p2-p1==3 && GetTextRange(p1,p2-1).Upper()==_T("ES")) {
-				wxString res;
-				for (int i=0;i<comp_count;i++) {
-					if (comp_list[i].label.StartsWith("Es ")) {
-						if (res.Len())
-							res<<_T("|")<<comp_list[i];
-						else
-							res=comp_list[i];
-					}
-				}
-				SetCurrentPos(p1);
-				UserListShow(1,res);
-				SetCurrentPos(p2);
-			}
 		}
 	} else if ((chr|32)>='a' && (chr|32)<='z' && config->autocomp) {
 		int p2=comp_to=GetCurrentPos();
@@ -1044,7 +1013,7 @@ void mxSource::SetAutocompletion() {
 	comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "),_T(""));
 	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Opcion"),_T("Opcion "),_T(""));
 	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Caso"),_T("Caso "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Otro Modo:"),_T("Otro Modo:\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item(_T("De Otro Modo:"),_T("De Otro Modo:\n"),_T(""));
 	comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),_T(""));
 	comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),_T(""));
 	
@@ -1233,7 +1202,7 @@ void mxSource::DoRealTimeSyntax ( ) {
 //	SetStatus(); // si lo hago aca setea el estado antes de terminar de analizar todo, mejor que lo haga el rt_syntax
 }
 
-void mxSource::ClearErrors() {
+void mxSource::ClearErrorData() {
 	rt_errors.clear();
 	int lse = GetEndStyled();
 	StartStyling(0,wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK);
@@ -1255,6 +1224,7 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	int lse = GetEndStyled();
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;
+	if (!(MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerAdd(l,MARKER_ERROR_LINE);
 	l=PositionFromLine(l);
 	StartStyling(l+v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
 	wxStyledTextCtrl::SetStyling(v[2*i+1]-v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
@@ -1267,7 +1237,7 @@ void mxSource::StartRTSyntaxChecking ( ) {
 
 void mxSource::StopRTSyntaxChecking ( ) {
 	rt_running=false; rt_timer->Stop(); 
-	ClearErrors(); ClearBlocks(); UnHighLightBlock();
+	ClearErrorData(); ClearErrorMarks(); ClearBlocks(); UnHighLightBlock();
 }
 
 void mxSource::OnTimer (wxTimerEvent & te) {
@@ -1553,5 +1523,35 @@ void mxSource::ProfileChanged ( ) {
 		SetExample();
 	}
 	Colourise(0,GetLength());
+}
+
+void mxSource::RTOuputStarts ( ) {
+	ClearErrorData();
+	ClearBlocks();
+}
+
+void mxSource::RTOuputEnds ( ) {
+	ClearErrorMarks();
+	SetStatus(); // para que diga en la barra de estado si hay o no errores
+}
+
+void mxSource::ClearErrorMarks ( ) {
+	int sl=GetLineCount(), el=rt_errors.size();
+	int n=sl>el?el:sl;
+	for(int l=0;l<n;l++) { 
+		if (!rt_errors[l].is && (MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerDelete(l,MARKER_ERROR_LINE);
+	}
+	for(int l=el;l<sl;l++) { 
+		if ((MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerDelete(l,MARKER_ERROR_LINE);
+	}
+}
+
+void mxSource::OnMarginClick (wxStyledTextEvent & event) {
+	event.Skip();
+	main_window->ShowQuickHelp(true);
+	int l = LineFromPosition(event.GetPosition());
+	int p = PositionFromLine(l), pl=GetLineEndPosition(l);
+	while ( p<pl && !(GetStyleAt(p)&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) ) p++;
+	if (p<pl) GotoPos(p);
 }
 

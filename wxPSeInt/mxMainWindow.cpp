@@ -1275,7 +1275,6 @@ bool mxMainWindow::SelectFirstError() {
 	else
 		return false;
 	return true;
-	
 }
 
 void mxMainWindow::OnHelpUpdates(wxCommandEvent &evt) {
@@ -1494,11 +1493,6 @@ void mxMainWindow::ShowSubtitles(bool show, bool anim) {
 
 void mxMainWindow::ShowResults(bool show, bool no_error) {
 	if (show) {
-//		if (no_error) aui_manager.GetPane(quick_html).Hide();
-//		if (!aui_manager.GetPane(results_tree).IsShown()) {
-//			aui_manager.GetPane(results_tree).Show();
-//			aui_manager.Update();
-//		}
 		results_tree->ExpandAll();
 		if (no_error) HidePanel(quick_html,false);
 		ShowPanel(results_tree,!aui_manager.GetPane(quick_html).IsShown());
@@ -1718,5 +1712,9 @@ void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
 	}
 	pi.Hide(); 
 	aui_manager.Update(); 
+}
+
+bool mxMainWindow::IsQuickHelpVisible ( ) {
+	return aui_manager.GetPane(quick_html).IsShown();
 }
 

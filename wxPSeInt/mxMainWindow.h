@@ -142,7 +142,6 @@ public:
 
 	void SelectLine(mxSource *src, int line);
 	
-	void AppendError(const wxString &error);
 	bool SelectFirstError();
 	
 	void SetAccelerators();
@@ -182,6 +181,8 @@ public:
 	int GetNotebookWidth();
 	
 	void ReorganizeForDebugging();
+	
+	bool IsQuickHelpVisible();
 	
 	// para los paneles laterales
 	void ShowPanel(wxString helper, wxWindow *panel, bool anim=true);

@@ -1066,8 +1066,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="PARA "){  // ------------ PARA -----------//
 				str=cadena; // cortar instruccion
 				str.erase(0,5);
-				if (str.find(" ",0)==string::npos)
-				{SynError (70,"Faltan parametros."); errores++;}
+				if (str.find(" ",0)==string::npos) {SynError (70,"Faltan parametros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
 					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); errores++;}
