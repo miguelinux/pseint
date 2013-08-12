@@ -22,8 +22,6 @@ private:
 	friend class mxProcess;
 	friend class mxFindDialog;
 	wxHtmlWindow *quick_html;
-	wxTreeCtrl *results_tree;
-	wxTreeItemId results_root;
 	int last_proc;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
@@ -190,6 +188,17 @@ public:
 	// para los paneles inferiores
 	void ShowPanel(wxWindow *panel, bool anim=true);
 	void HidePanel(wxWindow *panel, bool anim=true);
+	
+private:
+	bool result_tree_done;
+	wxTreeItemId results_root, results_last;
+	wxTreeCtrl *results_tree_ctrl; // si no hay rt_syntax mejor no usar el result_tree y poner todo en el...
+	wxString results_tree_text; // ...si no se usa el resulttree, aca va acumulando el equivalente para mostrarlo en el quick_html
+	int result_tree_text_level;
+public:
+	void RTreeReset();
+	void RTreeAdd(wxString text, int type, mxSource *source=NULL);
+	void RTreeDone(bool show, bool error);
 	
 	DECLARE_EVENT_TABLE();
 };

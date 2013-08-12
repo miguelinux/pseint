@@ -94,12 +94,7 @@ void RTSyntaxManager::ContinueProcessing() {
 				src->RTOuputEnds();
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
-				long l=-1,i=-1,n;
-				line.AfterFirst(':').BeforeFirst(':').AfterLast(' ').ToLong(&n);
-				line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
-				line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
-				line=line.AfterFirst(':').AfterFirst(':').Mid(1);
-				src->MarkError(l-1,i-1,n,line,line.StartsWith("Falta cerrar "));
+				src->MarkError(line);
 			} else if (fase_num==1 && config->show_vars) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")

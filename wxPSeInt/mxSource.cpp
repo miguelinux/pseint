@@ -1210,6 +1210,15 @@ void mxSource::ClearErrorData() {
 	StartStyling(lse,0x1F);
 }
 
+void mxSource::MarkError(wxString line) {
+	long l=-1,i=-1,n;
+	line.AfterFirst(':').BeforeFirst(':').AfterLast(' ').ToLong(&n);
+	line.AfterFirst(' ').BeforeFirst(' ').ToLong(&l);
+	line.BeforeFirst(':').AfterLast(' ').BeforeLast(')').ToLong(&i);
+	line=line.AfterFirst(':').AfterFirst(':').Mid(1);
+	MarkError(l-1,i-1,n,line,line.StartsWith("Falta cerrar "));
+}
+
 /**
 * @param l número de linea del error
 * @param i número instrucción dentro de esa linea del error
@@ -1526,12 +1535,12 @@ void mxSource::ProfileChanged ( ) {
 }
 
 void mxSource::RTOuputStarts ( ) {
-	ClearErrorData();
+	if (config->rt_syntax) ClearErrorData();
 	ClearBlocks();
 }
 
 void mxSource::RTOuputEnds ( ) {
-	ClearErrorMarks();
+	if (config->rt_syntax) ClearErrorMarks();
 	SetStatus(); // para que diga en la barra de estado si hay o no errores
 }
 

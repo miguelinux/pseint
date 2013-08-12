@@ -50,8 +50,8 @@ mxMainWindow *main_window;
 //#define _debug_speed_l 20
 
 // organizacion de los elementos de la ventana (layer,row,position para el wxAuiPaneInfo, p es el panel, h es el helper(boton para hacerlo visible))
-static const int hvar[]={1,0,0};
-static const int hopr[]={1,0,1};
+static const int hvar[]={2,0,0};
+static const int hopr[]={2,0,1};
 static const int hcmd[]={2,0,0};
 static const int hdbg[]={2,0,1};
 static const int pvar[]={0,1,0};
@@ -743,13 +743,13 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 
 void mxMainWindow::CreateResultsTree() {
 
-	results_tree = new wxTreeCtrl(this, wxID_ANY, wxPoint(0,0), wxSize(160,250), wxTR_DEFAULT_STYLE | wxNO_BORDER );
+	results_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxPoint(0,0), wxSize(160,250), wxTR_DEFAULT_STYLE | wxNO_BORDER );
 	wxImageList* imglist = new wxImageList(16, 16, true, 2);
 	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,_T("tree.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,_T("error.png")),wxBITMAP_TYPE_PNG));
-	results_tree->AssignImageList(imglist);
-	results_root = results_tree->AddRoot(wxString(_T("PSeInt "))<<VERSION, 0);
-	aui_manager.AddPane(results_tree, wxAuiPaneInfo().Name(_T("symbols_tree")).Caption(_T("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
+	results_tree_ctrl->AssignImageList(imglist);
+	results_root = results_tree_ctrl->AddRoot(wxString(_T("PSeInt "))<<VERSION, 0);
+	aui_manager.AddPane(results_tree_ctrl, wxAuiPaneInfo().Name(_T("results_tree")).Caption(_T("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
 	
 }
 
@@ -788,10 +788,11 @@ void mxMainWindow::CreateQuickHelp() {
 }
 
 void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
+	if (!result_tree_done) return;
 	int index = notebook->GetPageIndex(last_source);
 	if (index==wxNOT_FOUND) return;
 	notebook->SetSelection(index);
-	wxString text = results_tree->GetItemText(evt.GetItem());
+	wxString text = results_tree_ctrl->GetItemText(evt.GetItem());
 	if (text.StartsWith(_T("Lin "))) {
 		long l,i=-1;
 		wxString where=text.AfterFirst(' ').BeforeFirst(':');
@@ -1093,9 +1094,14 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 	if (!mi_rt_syntax->IsChecked()) {
 		mi_rt_syntax->Check(false);
 		config->rt_syntax=false;
+		for(unsigned int i=0;i<notebook->GetPageCount();i++) {
+			((mxSource*)notebook->GetPage(i))->ClearErrorData();
+			((mxSource*)notebook->GetPage(i))->ClearErrorMarks();
+		}
 	} else {
 		mi_rt_syntax->Check(true);
 		config->rt_syntax=true;
+		ShowResults(false,true);
 	}
 	CheckIfNeedsRTS();
 }
@@ -1193,7 +1199,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		ShowOpersPanel(false,true);
 	else if (event.pane->name == _T("quick_html"))
 		ShowQuickHelp(false);
-	else if (event.pane->name == _T("symbols_tree"))
+	else if (event.pane->name == _T("results_tree"))
 		ShowResults(false,false);
 	else if (event.pane->name == _T("desktop_test_panel")) {
 		ShowDesktopTestPanel(false,true);
@@ -1269,10 +1275,13 @@ void mxMainWindow::SelectLine(mxSource *src, int l) {
 
 bool mxMainWindow::SelectFirstError() {
 	wxTreeItemIdValue v;
-	wxTreeItemId item(results_tree->GetFirstChild(results_root,v));
-	if (item.IsOk())
-		results_tree->SelectItem(item);
-	else
+	wxTreeItemId item(results_tree_ctrl->GetFirstChild(results_root,v));
+	if (item.IsOk()) {
+		results_tree_ctrl->SelectItem(item);
+		wxTreeEvent evt(0,main_window->results_tree_ctrl,item);
+		main_window->OnSelectError(evt);
+		main_window->Raise();
+	} else
 		return false;
 	return true;
 }
@@ -1492,12 +1501,13 @@ void mxMainWindow::ShowSubtitles(bool show, bool anim) {
 }
 
 void mxMainWindow::ShowResults(bool show, bool no_error) {
+//	if (_avoid_results_tree) { ShowQuickHelp(show); return; }
 	if (show) {
-		results_tree->ExpandAll();
+		results_tree_ctrl->ExpandAll();
 		if (no_error) HidePanel(quick_html,false);
-		ShowPanel(results_tree,!aui_manager.GetPane(quick_html).IsShown());
+		ShowPanel(results_tree_ctrl,!aui_manager.GetPane(quick_html).IsShown());
 	} else 
-		HidePanel(results_tree,!aui_manager.GetPane(quick_html).IsShown());
+		HidePanel(results_tree_ctrl,!aui_manager.GetPane(quick_html).IsShown());
 }
 
 // show=false, oculta
@@ -1510,9 +1520,9 @@ void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
 			if (load) quick_html->LoadPage(str); 
 			else quick_html->SetPage(str);
 		}
-		ShowPanel(quick_html,!aui_manager.GetPane(results_tree).IsShown());
+		ShowPanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
 	} else 
-		HidePanel(quick_html,!aui_manager.GetPane(results_tree).IsShown());
+		HidePanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
 }
 
 void mxMainWindow::ShowDesktopTestPanel(bool show, bool anim) {
@@ -1543,7 +1553,7 @@ void mxMainWindow::ShowCommandsPanel (bool show, bool anim) {
 }
 
 void mxMainWindow::ParseResults(mxSource *source) {
-	results_tree->DeleteChildren(results_root);	
+	RTreeReset();
 	wxString temp_filename=source->GetTempFilenameOUT();
 	wxTextFile fil(temp_filename);
 	bool happy_ending = false;
@@ -1552,36 +1562,26 @@ void mxMainWindow::ParseResults(mxSource *source) {
 		fil.Open();
 		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 			if (str[0]=='*') {
-				if (str.Contains(_T("Finalizada"))) {
+				if (str.Contains("Finalizada")) {
 					happy_ending=true;
-					results_tree->SetItemText(results_root,source->GetPageText()+_T(": Ejecucion Finalizada"));
+					if (!_avoid_results_tree) RTreeAdd(source->GetPageText()+": Ejecución Finalizada",0);
 					source->SetStatus(STATUS_RUNNED_OK);
 				}
-			} else {
-				if (str.Len()) {
-					if (str.AfterFirst(':').StartsWith(" ...") && last_item.IsOk())
-						results_tree->AppendItem(last_item,str,1);
-					else
-						last_item = results_tree->AppendItem(results_root,str,1);
-				}
+			} else if (str.Len()) {
+					RTreeAdd(str,str.AfterFirst(':').StartsWith(" ...")?2:1);
 			}
 		}
 		fil.Close();
 //		wxRemoveFile(temp_filename);
 		if (!happy_ending) {
 			source->SetStatus(STATUS_RUNNED_INT);
-			results_tree->SetItemText(results_root,source->GetPageText()+_T(": Ejecucion Interrumpida"));
-			SelectFirstError();
-			wxTreeItemIdValue v;
-			wxTreeItemId item(results_tree->GetFirstChild(results_root,v));
-			wxTreeEvent evt(0,results_tree,item);
-			OnSelectError(evt);
+			RTreeAdd(source->GetPageText()+": Ejecucion Interrumpida",0);
 //			Raise(); // comentado porque con la nueva terminal, al presionar f9 se pasa el foco a la terminal, yu si hay error vuelve al editor sin dejar ver que paso
 		} else {
 			source->SetFocus();
 		}
 	}
-	if (!happy_ending) ShowResults(true,false);
+	RTreeDone(!happy_ending,true);
 }
 int mxMainWindow::GetNotebookWidth ( ) {
 	return notebook->GetSize().GetWidth();
@@ -1716,5 +1716,63 @@ void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
 
 bool mxMainWindow::IsQuickHelpVisible ( ) {
 	return aui_manager.GetPane(quick_html).IsShown();
+}
+
+void mxMainWindow::RTreeReset ( ) {
+	result_tree_done=false; 
+	result_tree_text_level=0; 
+	results_tree_text.Clear();
+	results_tree_ctrl->DeleteChildren(results_root);	
+}
+
+static wxString ToHtml(wxString str) {
+	str.Replace("&","&amp;");
+	str.Replace(">","&gt;");
+	str.Replace("<","&lt;");
+	if (str.StartsWith("Lin "))
+		return wxString("<A href=\"goto:label\">")<<str<<"</A>";
+	return str;
+}
+
+/**
+* @param type 0=en el root, 1=hijo, 2=hijo del hijo, 3=comentario solo para el html
+**/
+void mxMainWindow::RTreeAdd (wxString text, int type, mxSource *source) {
+	if (_avoid_results_tree && source) source->MarkError(text);
+	if (type==0) {
+		results_tree_text=wxString("<B>")<<ToHtml(text)<<"</B><BR><BR>"<<results_tree_text;
+		results_tree_ctrl->SetItemText(results_root,text);
+	} else if (type==1) {
+		if (result_tree_text_level==0) results_tree_text<<"<UL><LI>";
+		else if (result_tree_text_level==2) results_tree_text<<"</LI></UL></LI><LI>";
+		else results_tree_text<<"</LI><LI>";
+		result_tree_text_level=1;
+		results_tree_text<<ToHtml(text);
+		results_last=results_tree_ctrl->AppendItem(results_root,text,1);
+	} else if (type==2) {
+		if (result_tree_text_level==1) results_tree_text<<"<UL><LI>";
+		else results_tree_text<<"</LI><LI>";
+		result_tree_text_level=2;
+		results_tree_text<<ToHtml(text)<<"<BR>";
+		results_tree_ctrl->AppendItem(results_last,text,1);
+	} else {
+		if (result_tree_text_level==2) results_tree_text<<"</LI></UL></LI></UL><BR>";
+		else if (result_tree_text_level==1) results_tree_text<<"</LI></UL><BR>";
+//		else results_tree_text;
+		result_tree_text_level=0;
+		results_tree_text<<ToHtml(text)<<"<BR>";
+	}	
+}
+
+void mxMainWindow::RTreeDone (bool show, bool error) {
+	if (result_tree_text_level==2) results_tree_text<<"</LI></UL></LI></UL>";
+	else if (result_tree_text_level==1) results_tree_text<<"</LI></UL>";
+	result_tree_done=true;
+	if (_avoid_results_tree) {
+		if (results_tree_text.Len()) ShowQuickHelp(true,results_tree_text);
+	} else {
+		ShowResults(show,!error);
+		SelectFirstError();
+	}
 }
 

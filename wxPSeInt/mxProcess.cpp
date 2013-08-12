@@ -81,42 +81,31 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 	
 	wxString command;	
 	command<<config->pseint_command<<_T(" --nouser --norun \"")<<file<<_T("\"");
-	
 	command<<GetProfileArgs();
-	
-	if (extra_args!=wxEmptyString)
-		command<<" "<<extra_args;
+	if (extra_args!=wxEmptyString) command<<" "<<extra_args;
 	
 	wxArrayString output;
 	_LOG("mxProcess::CheckSyntax "<<command);
 	wxExecute(command,output,wxEXEC_SYNC);
 	
-	main_window->last_source=NULL; // para evitar que al modificar el arbol actúe el evento de seleccionar un item
-	main_window->results_tree->DeleteChildren(main_window->results_root);
-	for (unsigned int i=0;i<output.GetCount();i++)
-		main_window->results_tree->AppendItem(main_window->results_root,output[i],1);
+	main_window->RTreeReset();
 	main_window->last_source=source;
-	
-	main_window->last_source = source;
-	
+	if (_avoid_results_tree) source->ClearErrorData();
 	if (output.GetCount()) {
-		if (source) source->SetStatus(STATUS_SYNTAX_CHECK_ERROR);
-		main_window->ShowResults(true,false);
 		if (output.GetCount()==1)
-			main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Incorrecta: un error."));
+			main_window->RTreeAdd(filename+": Sintaxis Incorrecta: un error.",0);
 		else
-			main_window->results_tree->SetItemText(main_window->results_root,filename+wxString(_T(": Sintaxis Incorrecta: "))<<output.GetCount()<<_T(" errores."));
-		main_window->SelectFirstError();
-		wxTreeItemIdValue v;
-		wxTreeItemId item(main_window->results_tree->GetFirstChild(main_window->results_root,v));
-		wxTreeEvent evt(0,main_window->results_tree,item);
-		main_window->OnSelectError(evt);
-		main_window->Raise();
+			main_window->RTreeAdd(filename+wxString(": Sintaxis Incorrecta: ")<<output.GetCount()<<" errores.",0);
+		for (unsigned int i=0;i<output.GetCount();i++) 
+			main_window->RTreeAdd(output[i],1,source);
+		if (source) source->SetStatus(STATUS_SYNTAX_CHECK_ERROR);
+		main_window->RTreeAdd("",3);
+		main_window->RTreeAdd("Las lineas con errores se marcan con una cruz sobre el margen izquierdo. Seleccione un error para ver su descripción:",3);
+		main_window->RTreeDone(true,true);
 		proc_for_killing = this;
 	} else {
 		if (!source) return false; // si el fuente se cerro mientras se analizaba (muy poco probable)
-		main_window->results_tree->SetItemText(main_window->results_root,filename+_T(": Sintaxis Correcta"));
-		main_window->HideQuickHelp();
+		main_window->RTreeAdd(filename+": Sintaxis Correcta",0);
 		if (what==mxPW_CHECK_AND_RUN)
 			return Run(file,false);
 		else if (what==mxPW_CHECK_AND_DEBUG)
@@ -131,9 +120,11 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 			return ExportCpp(file,false);
 		else if (what==mxPW_CHECK) {
 			source->SetStatus(STATUS_SYNTAX_CHECK_OK);
-			main_window->ShowResults(true,true);
+			main_window->RTreeAdd("Presione F9 para ejecutar el algoritmo.",3);
+			main_window->RTreeDone(true,false);
 		}
 	}
+	if (_avoid_results_tree) source->ClearErrorMarks();
 	return output.GetCount()==0;
 }
 

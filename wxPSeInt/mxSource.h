@@ -126,6 +126,7 @@ public:
 	void DoRealTimeSyntax();
 	void ClearErrorData();
 	void ClearErrorMarks();
+	void MarkError(wxString line);
 	void MarkError(int l, int i, int n, wxString str, bool special=false);
 	void StartRTSyntaxChecking();
 	void StopRTSyntaxChecking();

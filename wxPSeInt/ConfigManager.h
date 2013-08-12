@@ -127,13 +127,12 @@ public:
 	int GetCommPort();
 	int GetDebugPort();
 	
-//	wxString GetTempPSC();
-//	wxString GetTempPSD();
-//	wxString GetTempOUT();
-	
 };
 
 extern ConfigManager *config;
+
+// para probar como seria la interfaz sin el result tree (usando el marcado de errores sobre el código y el panel de ayuda rápida para la información adicional)
+#define _avoid_results_tree config->rt_syntax
 
 #endif
 
