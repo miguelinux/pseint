@@ -117,6 +117,7 @@ public:
 	
 	void OnClose(wxCloseEvent &evt);
 	void OnSelectError(wxTreeEvent &evt);
+	void SelectError(wxString text);
 	void HideQuickHelp();
 
 	void OnCmdEscribir(wxCommandEvent &evt);
@@ -194,7 +195,9 @@ private:
 	wxTreeItemId results_root, results_last;
 	wxTreeCtrl *results_tree_ctrl; // si no hay rt_syntax mejor no usar el result_tree y poner todo en el...
 	wxString results_tree_text; // ...si no se usa el resulttree, aca va acumulando el equivalente para mostrarlo en el quick_html
-	int result_tree_text_level;
+	wxArrayString results_tree_errors; // lista de errores para obtener el texto completo al hacer click en los mismos como links en el quick_html
+	int result_tree_text_level; // al ir armando por partes con el RTreeAdd el texto del html, se dejan listas e items incompletos (<OL>,<LI>), esto indica qué
+	wxString RTreeAdd_auxHtml(wxString str); // pasa a html un mesaje de error, reemplazando caracteres especiales y convirtiendolo en hyperlink si corresponde
 public:
 	void RTreeReset();
 	void RTreeAdd(wxString text, int type, mxSource *source=NULL);

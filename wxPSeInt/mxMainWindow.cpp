@@ -787,32 +787,36 @@ void mxMainWindow::CreateQuickHelp() {
 	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name(_T("quick_html")).Caption(_T("Ayuda Rapida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }
 
-void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
-	if (!result_tree_done) return;
+void mxMainWindow::SelectError(wxString text) {
+	// elegir el fuente que generó al error
 	int index = notebook->GetPageIndex(last_source);
 	if (index==wxNOT_FOUND) return;
 	notebook->SetSelection(index);
-	wxString text = results_tree_ctrl->GetItemText(evt.GetItem());
-	if (text.StartsWith(_T("Lin "))) {
-		long l,i=-1;
-		wxString where=text.AfterFirst(' ').BeforeFirst(':');
-		if (where.Contains(_T("inst "))) {
-			where.BeforeFirst(' ').ToLong(&l); l--;
-			where.AfterLast(' ').BeforeFirst(')').ToLong(&i); i--;
-			last_source->SelectInstruccion(l,i);
-		} else {
-			where.ToLong(&l); l--;
-			last_source->SetSelection(last_source->GetLineIndentPosition(l),last_source->GetLineEndPosition(l));
-		}
-		last_source->SetFocus();
-		text = text.AfterFirst(':');
-		if (text.StartsWith(_T(" ERROR "))) {
-			long e=0;
-			text.Mid(7).ToLong(&e);
-			if (config->auto_quickhelp) 
-				ShowQuickHelp(true,help->GetErrorText(text,e));
-		}
+	// seleccionar esa esa linea e instruccion
+	long l,i=-1;
+	wxString where=text.AfterFirst(' ').BeforeFirst(':');
+	if (where.Contains(_T("inst "))) {
+		where.BeforeFirst(' ').ToLong(&l); l--;
+		where.AfterLast(' ').BeforeFirst(')').ToLong(&i); i--;
+		last_source->SelectInstruccion(l,i);
+	} else {
+		where.ToLong(&l); l--;
+		last_source->SetSelection(last_source->GetLineIndentPosition(l),last_source->GetLineEndPosition(l));
 	}
+	last_source->SetFocus();
+	text = text.AfterFirst(':');
+	if (text.StartsWith(_T(" ERROR "))) {
+		long e=0;
+		text.Mid(7).ToLong(&e);
+		if (config->auto_quickhelp) 
+			ShowQuickHelp(true,help->GetErrorText(text,e));
+	}	
+}
+
+void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
+	if (!result_tree_done) return;
+	wxString text = results_tree_ctrl->GetItemText(evt.GetItem());
+	if (text.StartsWith(_T("Lin "))) SelectError(text);
 }
 
 void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
@@ -1348,10 +1352,14 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnLink (wxHtmlLinkEvent &event) {
-	if (event.GetLinkInfo().GetHref().StartsWith(_T("example:"))) {
+	if (event.GetLinkInfo().GetHref().StartsWith("example:")) {
 		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
+	} else if (event.GetLinkInfo().GetHref().StartsWith("goto-error:")) {
+		long l; if(!event.GetLinkInfo().GetHref().AfterFirst(':').ToLong(&l)) return;
+		if (l<0||l>=int(results_tree_errors.GetCount())) return;
+		SelectError(results_tree_errors[l]);
 	} else {
 		if (!helpw) helpw = new mxHelpWindow();
 		helpw->ShowHelp(event.GetLinkInfo().GetHref());
@@ -1719,18 +1727,21 @@ bool mxMainWindow::IsQuickHelpVisible ( ) {
 }
 
 void mxMainWindow::RTreeReset ( ) {
+	results_tree_errors.Clear();
 	result_tree_done=false; 
 	result_tree_text_level=0; 
 	results_tree_text.Clear();
 	results_tree_ctrl->DeleteChildren(results_root);	
 }
 
-static wxString ToHtml(wxString str) {
+wxString mxMainWindow::RTreeAdd_auxHtml(wxString str) {
+	bool is_error=str.StartsWith("Lin ");
+	if (is_error) main_window->results_tree_errors.Add(str);
 	str.Replace("&","&amp;");
 	str.Replace(">","&gt;");
 	str.Replace("<","&lt;");
-	if (str.StartsWith("Lin "))
-		return wxString("<A href=\"goto:label\">")<<str<<"</A>";
+	if (is_error)
+		return wxString("<A href=\"goto-error:")<<(results_tree_errors.GetCount()-1)<<"\">"<<str<<"</A>";
 	return str;
 }
 
@@ -1740,27 +1751,27 @@ static wxString ToHtml(wxString str) {
 void mxMainWindow::RTreeAdd (wxString text, int type, mxSource *source) {
 	if (_avoid_results_tree && source) source->MarkError(text);
 	if (type==0) {
-		results_tree_text=wxString("<B>")<<ToHtml(text)<<"</B><BR><BR>"<<results_tree_text;
+		results_tree_text=wxString("<B>")<<RTreeAdd_auxHtml(text)<<"</B><BR><BR>"<<results_tree_text;
 		results_tree_ctrl->SetItemText(results_root,text);
 	} else if (type==1) {
 		if (result_tree_text_level==0) results_tree_text<<"<UL><LI>";
 		else if (result_tree_text_level==2) results_tree_text<<"</LI></UL></LI><LI>";
 		else results_tree_text<<"</LI><LI>";
 		result_tree_text_level=1;
-		results_tree_text<<ToHtml(text);
+		results_tree_text<<RTreeAdd_auxHtml(text);
 		results_last=results_tree_ctrl->AppendItem(results_root,text,1);
 	} else if (type==2) {
 		if (result_tree_text_level==1) results_tree_text<<"<UL><LI>";
 		else results_tree_text<<"</LI><LI>";
 		result_tree_text_level=2;
-		results_tree_text<<ToHtml(text)<<"<BR>";
+		results_tree_text<<RTreeAdd_auxHtml(text)<<"<BR>";
 		results_tree_ctrl->AppendItem(results_last,text,1);
 	} else {
 		if (result_tree_text_level==2) results_tree_text<<"</LI></UL></LI></UL><BR>";
 		else if (result_tree_text_level==1) results_tree_text<<"</LI></UL><BR>";
 //		else results_tree_text;
 		result_tree_text_level=0;
-		results_tree_text<<ToHtml(text)<<"<BR>";
+		results_tree_text<<RTreeAdd_auxHtml(text)<<"<BR>";
 	}	
 }
 
