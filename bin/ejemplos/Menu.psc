@@ -35,9 +35,9 @@ Proceso sin_titulo
 				Escribir " + Gaia (Mägo de Oz, 2003)"{;}
 			4:
 				Escribir "Videojuegos clásicos recomendables"{;}
-				Escribir " + Death Rally (Remedy, 1996)"{;}
-				Escribir " + Myst (Cyan, 1993)"{;}
 				Escribir " + Día del tentáculo (LucasArts, 1993)"{;}
+				Escribir " + Terminal Velocity (Terminal Reality/3D Realms, 1995)"{;}
+				Escribir " + Death Rally (Remedy/Apogee, 1996)"{;}
 			5:
 				Escribir "Gracias, vuelva prontos"{;}
 			De otro modo:
