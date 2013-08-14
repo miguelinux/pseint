@@ -240,6 +240,8 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
+	} else if (event.GetLinkInfo().GetHref().StartsWith(_T("http://"))) {
+		wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		wxString fname = event.GetLinkInfo().GetHref().BeforeFirst('#');
 		if (fname.Len()) {

@@ -1,4 +1,5 @@
 >>RELEASE 201308??<<
+	Corregido un error que hacía que PSeInt se cerrase al salir del cuadro de diálogo de búsqueda de actualizaciones.
 	Cuando la verificación de sintaxis en tiempo real está activa ya no se utiliza para ninguna acción el panel de resultados.
 	Agregado el perfil CESCA-JKDRC y renombrado el anterior perfil CESCA a CESCA-HNTG.
 	Al identificar los errores en tiempo real se resaltan en el margen del pseudocódigo las lineas con uno o más errores.
