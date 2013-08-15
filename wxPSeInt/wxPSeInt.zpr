@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=mxHelpWindow.cpp
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=Application.cpp
@@ -296,7 +296,8 @@ path=mxPanelHelper.h
 cursor=641
 [other]
 path=../bin/help/cambios.txt
-cursor=1886
+cursor=0
+open=true
 [other]
 path=../bin/help/errores.hlp
 cursor=0

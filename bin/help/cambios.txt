@@ -1,13 +1,13 @@
 >>RELEASE 201308??<<
+	Agregados los perfiles CECyTEM, UACM-SLT, FCA-UNAM y UARM-TIC.
+	Agregado el perfil CESCA-JKDRC y renombrado el anterior perfil CESCA a CESCA-HNTG.
 	Corregido un error que hacía que PSeInt se cerrase al salir del cuadro de diálogo de búsqueda de actualizaciones.
 	Cuando la verificación de sintaxis en tiempo real está activa ya no se utiliza para ninguna acción el panel de resultados.
-	Agregado el perfil CESCA-JKDRC y renombrado el anterior perfil CESCA a CESCA-HNTG.
 	Al identificar los errores en tiempo real se resaltan en el margen del pseudocódigo las lineas con uno o más errores.
 	Al posicionarse sobre un error (del marcado en tiempo real) con el panel de ayuda rápida visible, el panel muestra el detalle del error.
 	Se agregó en la ayuda un ejemplo simple para las estructuras Según y Repetir
 	Corregido un error en el indentado del pseudocódigo cuando Según se escribe con acento.
 	Corregida la desincronización en algunos casos entre el mensaje de la barra de estados y los resultados de la verificación de sintaxis en tiempo real.
-	Agregados los perfiles CECyTEM y UACM-SLT.
 	Se agregaron animaciones para cuando se muestran o se ocultan los paneles acoplables en el editor.
 	
 >>RELEASE 20130805<<
@@ -31,12 +31,10 @@
 	Ya no se pueden arrastrar las entidades Proceso y FinProceso en el editor de diagramas de flujo.
 	
 >>RELEASE 20130627<<
-	Agregado el perfil IUGT.
-	Agregado el perfil UTalca.
+	Agregados los perfiles CESCA, IUGT y UTalca.
 	Corregida la verificación de que las variables de la condición de un Si-Entonces esten definidas previamente si el perfil obliga a definir todas las variables.
 	Los diagramas de flujo se exportan ahora sin sombra en las entidades (para una mejor conversión a blanco y negro si es necesario imprimirlos asi).
 	Cuando hay un error en tiempo de ejecución dentro de un subproceso, las lineas de la pila de llamadas en el mensaje de error se coloca como hijos del item del error en el árbol de errores/resultados.
-	Agregado el perfil CESCA.
 	Corregido un bug al pasar un elemento de un arreglo por referencia a un subproceso.
 	
 >>RELEASE 20130617<<
@@ -45,10 +43,8 @@
 	Ahora se muestra el perfil seleccionado en la barra de estado al iniciar.
 	Corregido un error al generar el diagrama de flujo de la instrucción escribir cuando tiene el agregado "Sin Bajar" o "Sin Saltar".
 	Renombrado el perfil UNAB a UNAB-CruzNaranjo y agregado el perfil UNAB-Olivares.
+	Agregados los perfiles FPUNA, UNSL-FCFMN y UNLPam.
 	Ahora se muestran correctamente todas las versiones en el cuadro de "Acerca de..." y se permite copiar el texto para adjuntar en un reporte de error.
-	Agregado el perfil FPUNA.
-	Agregado el perfil UNSL-FCFMN.
-	Agregado el perfil UNLPam.
 	
 >>RELEASE 20130516<<
 	Agregado el perfil IUTOMS-VE.
@@ -78,12 +74,9 @@
 	Corregido un error al exportar un segun con más de una opción para un mismo conjunto de acciones.
 	Corregido un error al exportar expresiones compuestas a c++.
 	Ahora se exportan correctamente a C++ las llamadas a subprocesos fuera de expresiones.
-	Agregados los perfiles USS-ICI y SISE.
-	Agregado el perfil BiffiLaSalle.
+	Agregados los perfiles CSS, UNAMBA, USS-ICI, SISE y BiffiLaSalle.
 	Corregido un error de sintaxis al declarar arreglos en los código C++ exportados.
 	Al analizar expresiones con arreglos se marcan las variables que intervienen en los subindices como numericas.
-	Agregado el perfil CSS.
-	Agregado el perfil UNAMBA.
 	
 >>RELEASE 20130419<<
 	Ahora el botón para ir al sitio del cuadro de diálogo que informa sobre actualizaciones carga una página especial con el enlace de descarga para la plataforma que corresponda y el registro de cambios.
