@@ -45,7 +45,7 @@ mxProcess::mxProcess(mxSource *src) {
 
 mxProcess::~mxProcess() {
 	
-	cerr<<"delete mxProcess"<<this<<endl;
+	_LOG("mxProcess::~mxProcess "<<this);
 	
 	if (this==proc_for_killing) proc_for_killing=NULL;
 	if (prev)

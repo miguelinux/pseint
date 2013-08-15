@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include "HelpManager.h"
+#include "Logger.h"
 using namespace std;
 #include "mxUtils.h"
 #include "mxSource.h"
@@ -715,13 +716,13 @@ void mxSource::SetExample() {
 	wxString total;
 	for (int i=2;i<GetLineCount();i++) {
 		wxString str=GetLine(i),aux;
-//		cerr<<str<<endl;
 		int p0=str.Index('{'),p1,p2;
 		while (p0!=wxNOT_FOUND) {
 			aux=str.Mid(p0);
 			p1=aux.Index('#');
 			p2=aux.Index('}');
 			if (p2==wxNOT_FOUND) {
+				_LOG("mxSource::SetExample ERROR 1 parsing example: "<<page_text);
 				wxMessageBox(_T("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocodigo no sea correcto."));
 				break;
 			}
@@ -764,7 +765,7 @@ void mxSource::SetExample() {
 						str="";
 				
 				} else {
-					cerr<<"ERROR PARSING EXAMPLE!!!"<<endl;
+					_LOG("mxSource::SetExample ERROR 2 parsing example: "<<page_text);
 					str=str.Mid(0,p0)+str.Mid(p0+1,p2-1)+aux.Mid(p2+1);
 				}
 				

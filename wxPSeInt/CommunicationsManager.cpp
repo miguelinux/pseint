@@ -16,14 +16,14 @@ CommunicationsManager *comm_manager=NULL;
 
 
 mxSocketClient::mxSocketClient(wxSocketBase *s):type(MXS_TYPE_UNKNOWN),src_id(-1),socket(s){
-	cerr<<"new mxSocketClient "<<this<<endl;
+	_LOG("mxSocketClient::mxSocketClient "<<this);
 	socket->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
 	socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);
 	socket->Notify(true);
 }
 
 mxSocketClient::~mxSocketClient() {
-	cerr<<"delete mxSocketClient "<<this<<endl;
+	_LOG("mxSocketClient::~mxSocketClient "<<this);
 	if (socket) delete socket;
 }
 

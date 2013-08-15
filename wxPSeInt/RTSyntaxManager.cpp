@@ -46,7 +46,7 @@ void RTSyntaxManager::Restart ( ) {
 bool RTSyntaxManager::Process (mxSource * src) {
 	if (!src) { 
 		if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
-		cerr<<"ERROR: the_one->Process(NULL) && ( !the_one || !the_one->processing)"<<endl;
+		_LOG("RTSyntaxManager::Process ERROR: the_one->Process(NULL) && (!the_one || !the_one->processing): "<<the_one);
 		return false; // no deberia pasar (solo si no puede lanzar el interprete o revienta enseguida)
 	}
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
