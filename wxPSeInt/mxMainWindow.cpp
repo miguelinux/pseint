@@ -41,6 +41,7 @@
 #include "HtmlExporter.h"
 #include "mxOpersWindow.h"
 #include "mxPanelHelper.h"
+#include "Logger.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -215,6 +216,7 @@ void mxMainWindow::OnFileSourceHistory (wxCommandEvent &event) {
 mxMainWindow::~mxMainWindow() {
 	RTSyntaxManager::Stop();
 	aui_manager.UnInit();
+	if (logger) delete logger;
 }
 
 void mxMainWindow::CreateMenus() {

@@ -5,7 +5,7 @@ CXXFLAGS=-O2 -I${MINGW_DIR}/wx/include
 LIBS=-s -mwindows -L${MINGW_DIR}/wx/lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
 WINDRES=wine ${MINGW_DIR}\\bin\\windres.exe
 
-all: ${OBJS_DIR} ../bin/wxPSeInt.exe
+all: ${OBJS_DIR} ../bin/wxPSeInt.exe ../bin/log.exe
 
 include Makefile.common
 
@@ -18,6 +18,10 @@ clean:
 
 ../bin/wxPSeInt.exe: ../temp/wx_w32_rls/icon.o ${OBJS}
 	${GPP} ${OBJS} ${LIBS} ../temp/wx_w32_rls/icon.o -o $@
+
+../bin/log.exe: log-launcher.cpp
+	${GPP} -mwindows -static-libgcc -static-libstdc++ log-launcher.cpp -o $@
+
 
 ${OBJS_DIR}:
 	mkdir -p ${OBJS_DIR}

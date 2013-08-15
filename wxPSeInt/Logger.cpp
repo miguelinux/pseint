@@ -14,7 +14,7 @@ Logger::Logger(string where) {
 }
 
 Logger::~Logger() {
-	file<<endl<<"LOG END"<<endl;
+	file<<"LOG END"<<endl<<endl;
 	file.close();
 }
 

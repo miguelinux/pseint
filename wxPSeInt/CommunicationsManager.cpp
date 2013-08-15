@@ -122,8 +122,7 @@ void mxSocketClient::ProcessCommandFlow() {
 CommunicationsManager::CommunicationsManager() {
 	server_port=-1;
 	server=NULL;
-	_LOG("CommunicationsManager::CommunicationsManager in");
-	_LOG("   server_port: "<<server_port);
+	_LOG("CommunicationsManager::CommunicationsManager in "<<server_port);
 	do {
 		wxIPV4address adrs;
 #ifndef __APPLE__
@@ -140,7 +139,7 @@ CommunicationsManager::CommunicationsManager() {
 		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 		server->Notify(true);
 	} while (!server->IsOk());
-	_LOG("CommunicationsManager::CommunicationsManager out");
+	_LOG("CommunicationsManager::CommunicationsManager out "<<server_port);
 }
 
 void CommunicationsManager::SocketEvent(wxSocketEvent &event) {

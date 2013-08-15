@@ -3,7 +3,7 @@ OBJS_DIR=..\temp\wx_w32_rls
 CXXFLAGS=-O2 -I${WX_DIR}\include 
 LIBS=-s -mwindows -L${WX_DIR}\lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
 
-all: ${OBJS_DIR} ..\bin\wxPSeInt.exe
+all: ${OBJS_DIR} ..\bin\wxPSeInt.exe ..\bin\log.exe
 
 include Makefile.common
 
@@ -15,6 +15,9 @@ ${OBJS_DIR}\icon.o: icon.rc ..\bin\imgs\icon.ico manifest.xml
 
 ..\bin\wxPSeInt.exe: ${OBJS_DIR}\icon.o ${OBJS}
 	${GPP} ${OBJS} ${LIBS} ${OBJS_DIR}\icon.o -o $@
+
+..\bin\log.exe: log-launcher.cpp
+	${GPP} -mwindows -static-libgcc -static-libstdc++ log-launcher.cpp -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
