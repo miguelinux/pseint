@@ -1526,6 +1526,7 @@ void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
 
 void mxSource::ProfileChanged ( ) {
 	KillRunningTerminal();
+	config->lang.Log();
 	SetWords();
 	if (is_example) {
 		SetReadOnly(false);

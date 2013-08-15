@@ -57,6 +57,7 @@ struct LangSettings {
 	LangSettings() { Reset(); }
 	bool Load(wxString fname);
 	bool Save(wxString fname);
+	void Log();
 };
 
 class ConfigManager {

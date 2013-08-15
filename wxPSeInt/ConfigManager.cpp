@@ -4,6 +4,7 @@
 #include <wx/textfile.h>
 #include "version.h"
 #include <wx/msgdlg.h>
+#include "Logger.h"
 
 ConfigManager *config;
 
@@ -38,6 +39,8 @@ ConfigManager::ConfigManager(wxString apath) {
 //	pseint_command = DIR_PLUS_FILE(f_path.GetFullPath(),_T("pseint"));
 //	if (pseint_command.Contains(_T(" "))) pseint_command=wxString(_T("\""))<<pseint_command<<_T("\"");
 #endif
+	
+	lang.Log();
 }
 
 void ConfigManager::LoadDefaults() {
@@ -349,5 +352,22 @@ bool LangSettings::Save (wxString fname) {
 	fil.Write();
 	fil.Close();
 	return true;
+}
+
+void LangSettings::Log ( ) {
+	_LOG("Profile:"
+		<<" ac:"<<(allow_concatenation?1:0)
+		<<" add:"<<(allow_dinamyc_dimensions?1:0)
+		<<" bza:"<<(base_zero_arrays?1:0)
+		<<" cc:"<<(coloquial_conditions?1:0)
+		<<" esf:"<<(enable_string_functions?1:0)
+		<<" euf:"<<(enable_user_functions?1:0)
+		<<" fdv:"<<(force_define_vars?1:0)
+		<<" fiv:"<<(force_init_vars?1:0)
+		<<" fs:"<<(force_semicolon?1:0)
+		<<" ls:"<<(lazy_syntax?1:0)
+		<<" oe:"<<(overload_equal?1:0)
+		<<" wo:"<<(word_operators?1:0)
+		);	
 }
 
