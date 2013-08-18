@@ -5,6 +5,7 @@
 #include <wx/toolbar.h>
 #include <wx/sizer.h>
 #include "mxBitmapButton.h"
+#include <wx/textfile.h>
 
 mxUtils *utils;
 
@@ -106,3 +107,28 @@ wxString mxUtils::FixTooltip (wxString tooltip) {
 	return tooltip;
 }
 
+wxString mxUtils::GetVersion(wxString exe) {
+	wxArrayString out; // para que no muestre la consola (ver ayuda de wxExecute)
+	wxString filename=DIR_PLUS_FILE(config->temp_dir,"version.tmp"), retval=exe+": error desconocido";
+	if (wxFileName::FileExists(filename)) 
+		wxRemoveFile(filename);
+	if (wxFileName::FileExists(filename)) {
+		retval=exe+": error 1: No se pudo determinar la version.";
+	} else {
+		wxExecute(exe+" --version \""+filename+"\"",out,wxEXEC_SYNC|wxEXEC_NODISABLE);
+		wxTextFile fil(filename);
+		if (!fil.Exists()) {
+			retval=exe+": error 2: No se pudo determinar la version.";
+		} else {
+			fil.Open();
+			if (!fil.GetLineCount()) {
+				retval=exe+": error 3: No se pudo determinar la version.";
+			} else {
+				retval=fil.GetFirstLine();
+				fil.Close();
+				if (!retval.Len()) retval=exe+": error 4: No se pudo determinar la version";
+			}
+		}
+	}
+	return retval;
+}

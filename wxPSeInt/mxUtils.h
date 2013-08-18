@@ -29,6 +29,7 @@ public:
 	wxString GetOutput(wxString command);
 	wxString ToHtml(wxString text);
 	wxString FixTooltip(wxString tooltip);
+	wxString GetVersion(wxString exe);
 };
 
 extern mxUtils *utils;

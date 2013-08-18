@@ -60,33 +60,6 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 	Destroy();
 }
 
-wxString mxAboutWindow::GetVersion(wxString exe) {
-	wxArrayString out; // para que no muestre la consola (ver ayuda de wxExecute)
-	wxString filename=DIR_PLUS_FILE(config->temp_dir,"version.tmp"), retval=exe+": error desconocido";
-	if (wxFileName::FileExists(filename)) 
-		wxRemoveFile(filename);
-	if (wxFileName::FileExists(filename)) {
-		retval=exe+": error 1: No se pudo determinar la version.";
-	} else {
-		wxExecute(exe+" --version \""+filename+"\"",out,wxEXEC_SYNC|wxEXEC_NODISABLE);
-		wxTextFile fil(filename);
-		if (!fil.Exists()) {
-			retval=exe+": error 2: No se pudo determinar la version.";
-		} else {
-			fil.Open();
-			if (!fil.GetLineCount()) {
-				retval=exe+": error 3: No se pudo determinar la version.";
-			} else {
-				retval=fil.GetFirstLine();
-				fil.Close();
-				if (!retval.Len()) retval=exe+": error 4: No se pudo determinar la version";
-			}
-		}
-	}
-	version_info<<retval<<"\n";
-	return retval;
-}
-
 wxString mxAboutWindow::MakePageText(bool full) {
 	wxString text(_T("<HTML><HEAD><TITLE>PSeInt</TITLE></HEAD><BODY>"));
 //	text<<_T("<CENTER><IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("about1.png"))<<_T("\"/>");
@@ -155,3 +128,10 @@ void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
 
 
 	
+
+wxString mxAboutWindow::GetVersion (wxString exe) {
+	wxString retval=utils->GetVersion(exe);
+	version_info<<retval<<"\n";
+	return retval;
+}
+

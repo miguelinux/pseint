@@ -46,6 +46,7 @@ bool mxApplication::OnInit() {
 	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 #endif
 	
+	utils = new mxUtils;
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);
 	
 	wxFileName f_path = wxGetCwd(); 
@@ -79,11 +80,11 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxXPMHandler);
 	
 	config = new ConfigManager(zpath);
+	if (logger) logger->DumpVersions();
 	
 	wxSocketBase::Initialize();
 	
 	bitmaps = new mxArt(config->images_path);
-	utils = new mxUtils;
 	help = new HelpManager;
 	
 	// create main window

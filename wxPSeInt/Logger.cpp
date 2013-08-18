@@ -3,6 +3,8 @@
 #include <wx/string.h>
 #include "Logger.h"
 #include "version.h"
+#include "mxUtils.h"
+#include "ConfigManager.h"
 
 Logger *logger=NULL;
 
@@ -18,8 +20,19 @@ Logger::~Logger() {
 	file.close();
 }
 
+
+
 void Logger::Write (const wxString & s) {
 	file<<"   "<<wxDateTime::Now().FormatISOTime().c_str()<<"  "<<s.c_str()<<endl;
 	file.flush();
+}
+
+void Logger::DumpVersions ( ) {
+	Write("Logger::DumpVersions");
+	Write(wxString()<<"   pseint: "<<utils->GetVersion(config->pseint_command));
+	Write(wxString()<<"   psterm: "<<utils->GetVersion(config->psterm_command));
+	Write(wxString()<<"   psdraw2: "<<utils->GetVersion(config->psdraw2_command));
+	Write(wxString()<<"   psdrawe: "<<utils->GetVersion(config->psdrawe_command));
+	Write(wxString()<<"   psexport: "<<utils->GetVersion(config->psexport_command));	
 }
 

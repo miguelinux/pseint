@@ -46,11 +46,11 @@ void RTSyntaxManager::Restart ( ) {
 bool RTSyntaxManager::Process (mxSource * src) {
 	if (!src) { 
 		if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
-		_LOG("RTSyntaxManager::Process ERROR: the_one->Process(NULL) && (!the_one || !the_one->processing): "<<the_one);
+		_LOG("RTSyntaxManager::Process ERROR: the_one->Process(NULL) && (!the_one || !the_one->processing): the_one="<<the_one);
 		return false; // no deberia pasar (solo si no puede lanzar el interprete o revienta enseguida)
 	}
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
-	_LOG("RTSyntaxManager::Process in "<<src);
+	_LOG("RTSyntaxManager::Process in src="<<src);
 //	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
 	wxTextOutputStream output(*(the_one->GetOutputStream()));
@@ -65,13 +65,13 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	the_one->fase_num=0;
 	vars_window->BeginInput();
 	the_one->ContinueProcessing();
-	_LOG("RTSyntaxManager::Process out "<<src);
+	_LOG("RTSyntaxManager::Process out src="<<src);
 	return true;
 }
 
 void RTSyntaxManager::ContinueProcessing() {
 	if (!src) return;
-	_LOG("RTSyntaxManager::ContinueProcessing in "<<src);
+	_LOG("RTSyntaxManager::ContinueProcessing in src="<<src);
 	wxTextInputStream input(*(GetInputStream()));	
 	while(true) {
 		wxString line; char c;
@@ -82,15 +82,15 @@ void RTSyntaxManager::ContinueProcessing() {
 		}
 		if (line.Len()) {
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
-				_LOG("RTSyntaxManager::ContinueProcessing fase 1 "<<src);
+				_LOG("RTSyntaxManager::ContinueProcessing fase 1 src="<<src);
 				fase_num=1;
 			} else if (line=="<!{[END_OF_VARS]}!>") {
-				_LOG("RTSyntaxManager::ContinueProcessing fase 2 "<<src);
+				_LOG("RTSyntaxManager::ContinueProcessing fase 2 src="<<src);
 				vars_window->EndInput();
 				fase_num=2;
 			} else if (line=="<!{[END_OF_BLOCKS]}!>") {
 				processing=false;
-				_LOG("RTSyntaxManager::ContinueProcessing out 1 "<<src);
+				_LOG("RTSyntaxManager::ContinueProcessing out end src="<<src);
 				src->RTOuputEnds();
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
@@ -107,7 +107,7 @@ void RTSyntaxManager::ContinueProcessing() {
 					src->AddBlock(l1-1,l2-1);
 			}
 		} else {
-			_LOG("RTSyntaxManager::ContinueProcessing out 2 "<<src);
+			_LOG("RTSyntaxManager::ContinueProcessing out continue src="<<src);
 			timer->Start(100,true);
 			return;
 		}
@@ -115,7 +115,7 @@ void RTSyntaxManager::ContinueProcessing() {
 }
 
 void RTSyntaxManager::OnTerminate (int pid, int status) {
-	_LOG("RTSyntaxManager::OnTerminate "<<src);
+	_LOG("RTSyntaxManager::OnTerminate src="<<src);
 	if (restart) {
 		Start(); 
 		main_window->UpdateRealTimeSyntax();
