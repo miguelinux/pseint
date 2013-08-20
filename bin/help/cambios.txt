@@ -1,6 +1,6 @@
 >>RELEASE 201308??<<
 	Se mejoró el sistema de log interno y se agregó un nuevo ejecutable/script (log.exe/log.sh) para facilitar el reporte de errores.
-	Agregados los perfiles CECyTEM, UACM-SLT, FCA-UNAM, UARM-TIC y CUFM.
+	Agregados los perfiles CECyTEM, UACM-SLT, FCA-UNAM, UARM-TIC, CUFM e ITTux.
 	Agregado el perfil CESCA-JKDRC y renombrado el anterior perfil CESCA a CESCA-HNTG.
 	Corregido un error que hacía que PSeInt se cerrase al salir del cuadro de diálogo de búsqueda de actualizaciones.
 	Cuando la verificación de sintaxis en tiempo real está activa ya no se utiliza para ninguna acción el panel de resultados.
