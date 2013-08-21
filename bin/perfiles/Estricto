@@ -2,7 +2,7 @@
 # descripcion del perfil
 
 # puede utilizar varias lineas desc=...... para escribir una descripcion del perfil para mostrar en el cuadro de configuracion
-desc=Este perfil configura el pseudolenguaje para parecerce a un lenguaje de programación real.
+desc=Este perfil configura el pseudolenguaje para parecerse a un lenguaje de programación real.
 
 
 # configuracion de perfil, para los siguientes valores se acepta 1 como verdadero, 0 como falso
