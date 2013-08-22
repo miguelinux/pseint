@@ -2,6 +2,7 @@
 #define GLOBAL_H
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 class Entity;
@@ -109,8 +110,8 @@ extern bool force_semicolons; // al cargar el pseudocódigo, reemplaza algunos op
 extern vector<Entity*> procesos;
 
 // para asociar las lineas de código al diagrama de flujo
-struct LineInfo { Entity *proceso, *entidad; LineInfo (Entity *p, Entity *e):proceso(p),entidad(e) {} };
-extern vector<LineInfo> code2draw;
+struct LineInfo { Entity *proceso, *entidad; LineInfo (Entity *p=NULL, Entity *e=NULL):proceso(p),entidad(e) {} };
+extern map<string,LineInfo> code2draw;
 extern Entity *debug_current;  // la entidad que se esta ejecutando actualmente en el paso a paso
 
 #endif

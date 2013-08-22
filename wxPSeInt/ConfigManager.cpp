@@ -299,7 +299,7 @@ wxString ConfigManager::GetTTYCommand ( ) {
 }
 
 bool LangSettings::Load (wxString fname) {
-//	cerr<<"Loading Profile: "<<fname<<endl;
+	_LOG("LangSettings::Load "<<fname);
 	Reset();
 	wxTextFile fil(fname);
 	if (!fil.Exists()) return false;

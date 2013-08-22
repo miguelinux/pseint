@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 		exit(0);
 	}
 
-	bool check=true, run=true, user=true, log_file=false, error=false, draw=false, undef_vars=true, var_definition=false;
+	bool check=true, run=true, user=true, log_file=false, error=false, draw=false, undef_vars=true, var_definition=false, write_positions=false;
 	int fil_count=0,delay=0; char *fil_args[5];
 	for (int i=1;i<argc;i++) {
 		if (argv[i][0]=='-') {
@@ -136,6 +136,8 @@ int main(int argc, char* argv[]) {
 				real_time_syntax=true;
 			} else if (str=="--forpseintterminal") {
 				for_pseint_terminal=true;
+			} else if (str=="--writepositions") {
+				write_positions=true;
 			} else 
 				error=true;
 		} else {
@@ -178,6 +180,8 @@ int main(int argc, char* argv[]) {
 		cout<<"      --input=<str>          sirve para predefinir uno o más valores de entrada para acciones LEER"<<endl;
 		cout<<"      --fixwincharset        corrige la codificación de algunos caracteres para que se muestren correctamente"<<endl;
 		cout<<"                             en la consola de Windows"<<endl;
+		cout<<"       --writepositions      al generar el archivo parseado para el editor de diagrams de flujo incluye los"<<endl;
+		cout<<"                             numeros de linea e instrucción necesarios para marcar la ejecución paso a paso"<<endl;
 		exit(1);
 	}
 	
@@ -295,6 +299,7 @@ int main(int argc, char* argv[]) {
 			ofstream dibujo(fil_args[1]);
 			for (int i=0;i<programa.GetSize();i++) {
 				if (case_map) CaseMapApply(programa[i].instruccion);
+				if (write_positions) dibujo<<"#pos "<<programa[i].num_linea<<":"<<programa[i].num_instruccion<<endl;
 				dibujo<<programa[i].instruccion<<endl;
 			}
 			dibujo.close();

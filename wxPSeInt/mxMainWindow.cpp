@@ -1594,23 +1594,25 @@ void mxMainWindow::ParseResults(mxSource *source) {
 	RTreeDone(!happy_ending,true);
 }
 
+#define _yield Layout(); aui_manager.Update(); wxYield()
+
 void mxMainWindow::ReorganizeForDebugging ( ) {
 	if (config->reorganize_for_debug) {
 		if (!IsMaximized()) Maximize();
 		ShowDebugPanel(true);
 		ShowCommandsPanel(false);
-		wxYield();
+		_yield;
 		int notebook_width = notebook->GetSize().GetWidth();
 		if (notebook_width-500<400) {
 			ShowOpersPanel(false);
-			wxYield();
+			_yield;
 			if (notebook_width-500<400) {
 				ShowVarsPanel(false);
 			}
 		}
 		mxSource *src=CURRENT_SOURCE;
 		if (src && src->GetFlowSocket()) {
-			aui_manager.Update();
+			_yield;
 			wxString pos; pos<<"pos ";
 			int notebook_x,notebook_y;
 			notebook->GetScreenPosition(&notebook_x,&notebook_y);
@@ -1620,7 +1622,6 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 			int notebook_width,notebook_height;
 			notebook->GetSize(&notebook_width,&notebook_height);
 			size<<notebook_width-500<<" "<<notebook_height<<"\n";
-			cerr<<"SIIIIIZE : "<<size<<endl;
 			src->GetFlowSocket()->Write(size.c_str(),size.Len());
 		}
 	}

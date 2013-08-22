@@ -76,5 +76,5 @@ bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operad
 bool force_semicolons=false; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 
 vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
-vector<LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
+map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
 Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en el paso a paso

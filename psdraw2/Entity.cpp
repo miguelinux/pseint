@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
+#include <sstream>
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -463,76 +464,78 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 
 #define _tabs "\t"
 
-#define _endl endl; code2draw.push_back(LineInfo(NULL,this))
+#define _endl_this endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(process,this);} line_num++;
+#define _endl_prev endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,this);} line_num++;
+#define _endl_none endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,NULL);} line_num++;
 
-void Entity::Print(ostream &out, string tab) {
+void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
-			out<<tab<<lpre<<label<<_endl;
-			if (next) next->Print(out,add_tab?tab+_tabs:tab);
-			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl;
+			out<<tab<<lpre<<label<<_endl_this;
+			if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
+			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {
 		if (!label.size()) label="{lista_de_expresiones}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Escribir "<<label<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<_endl;
+		out<<tab<<"Escribir "<<label<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<_endl_this;
 	} else if (type==ET_LEER) {
 		if (!label.size()) label="{lista_de_variables}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Leer "<<label<<(force_semicolons?";":"")<<_endl;
+		out<<tab<<"Leer "<<label<<(force_semicolons?";":"")<<_endl_this;
 	} else if (type==ET_MIENTRAS) {
 		if (!label.size()) label="{condicion}";
-		out<<tab<<"Mientras "<<label<<" Hacer"<<_endl;
-		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinMientras"<<_endl;
+		out<<tab<<"Mientras "<<label<<" Hacer"<<_endl_this;
+		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		out<<tab<<"FinMientras"<<_endl_prev;
 	} else if (type==ET_REPETIR) {
-		out<<tab<<"Repetir"<<_endl;
-		if (child[0]) child[0]->Print(out,tab+_tabs);
+		out<<tab<<"Repetir"<<_endl_prev;
+		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
 		if (!label.size()) label="{condicion}";
-		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<_endl;
+		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<_endl_this;
 	} else if (type==ET_PARA) {
 		if (variante) {
 			if (!label.size()) label="{variable}<-{valor_inicial}";
 			if (!child[2]->label.size()) child[2]->label="{arreglo}";
-			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<_endl;
+			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<_endl_this;
 		} else {
 			if (!label.size()) label="{variable}";
 			if (!child[1]->label.size()) child[1]->label="{valor_inicial}";
 			if (!child[2]->label.size()) child[2]->label="{valor_final}";
 			if (!child[3]->label.size()) child[3]->label="{paso}";
-			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<_endl;
+			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<_endl_this;
 		}
-		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinPara"<<_endl;
+		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		out<<tab<<"FinPara"<<_endl_prev;
 	} else if (type==ET_SEGUN) {
 		if (!label.size()) label="{expresion_numerica}";
-		out<<tab<<"Segun "<<label<<" Hacer"<<_endl;
+		out<<tab<<"Segun "<<label<<" Hacer"<<_endl_this;
 		for(int i=0;i<n_child-1;i++) { 
-			child[i]->Print(out,tab+_tabs);
+			child[i]->Print(out,tab+_tabs,process,line_num);
 		}
 		if (child[n_child-1]->child[0]) // de otro modo
-			child[n_child-1]->Print(out,tab+_tabs);
-		out<<tab<<"FinSegun"<<_endl;
+			child[n_child-1]->Print(out,tab+_tabs,process,line_num);
+		out<<tab<<"FinSegun"<<_endl_prev;
 	} else if (type==ET_OPCION) {
 		add_tab=true;
 		if (!label.size()) label="{expresion_numerica}";
-		out<<tab<<label<<":"<<_endl;
-		if (child[0]) child[0]->Print(out,tab+_tabs);
+		out<<tab<<label<<":"<<_endl_this;
+		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
 	} else if (type==ET_SI) {
 		if (!label.size()) label="{condicion}";
-		out<<tab<<"Si "<<label<<" Entonces"<<_endl;
-		if (child[1]) child[1]->Print(out,tab+_tabs);
-		if (child[0]) out<<tab<<"Sino"<<_endl;
-		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinSi"<<_endl;
+		out<<tab<<"Si "<<label<<" Entonces"<<_endl_this;
+		if (child[1]) child[1]->Print(out,tab+_tabs,process,line_num);
+		if (child[0]) out<<tab<<"Sino"<<_endl_prev;
+		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
 		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<_endl;
+		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<_endl_this;
 	}
-	if (next) next->Print(out,add_tab?tab+_tabs:tab);
+	if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }
 
 Entity *Entity::all_any=NULL;

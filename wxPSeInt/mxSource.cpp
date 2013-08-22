@@ -1124,7 +1124,7 @@ void mxSource::SetDebugLine(int l, int i) {
 		if (i!=-1) SelectInstruccion(l,i);
 	}
 	if (flow_socket) {
-		wxString s; s<<"step "<<l<<"\n";
+		wxString s; s<<"step "<<l+1<<":"<<i+1<<"\n";
 		flow_socket->Write(s.c_str(),s.Len());
 	}
 }

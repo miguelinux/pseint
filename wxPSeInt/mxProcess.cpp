@@ -168,7 +168,6 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 			int x,y,h,w, delta=10;
 			main_window->notebook->GetScreenPosition(&x,&y);
 			main_window->notebook->GetSize(&w,&h);
-cerr<<"SIIIIIZE 2 : "<<w<<"x"<<h<<endl;
 			command<<_T(" --right=")<<x+w-delta<<_T(" ");
 			command<<_T(" --top=")<<y+delta<<_T(" ");
 			command<<_T(" --alwaysontop ");
@@ -195,7 +194,7 @@ cerr<<"SIIIIIZE 2 : "<<w<<"x"<<h<<endl;
 
 bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
+	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdraw2_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
 	_LOG("mxProcess::Draw this="<<this);
@@ -205,7 +204,7 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
+	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
 	command<<config->psdraw2_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();

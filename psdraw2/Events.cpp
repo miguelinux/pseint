@@ -396,7 +396,10 @@ void initialize() {
 	glClearColor(color_back[0],color_back[1],color_back[2],1.f);
 }
 
-void FocusEntity(Entity * e) {
-	debug_current=e;
+void FocusEntity(LineInfo *li) {
+	if (li) { 
+		if (li->proceso) debug_current=li->entidad;
+		else if (!li->proceso) debug_current=NULL;
+	} else debugging=NULL;
 }
 

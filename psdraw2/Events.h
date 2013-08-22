@@ -18,8 +18,8 @@ void ProcessMenu(int op);
 
 void ToggleEditable();
 
-class Entity;
-void FocusEntity(Entity *e=NULL);
+class LineInfo;
+void FocusEntity(LineInfo *li);
 
 #endif
 

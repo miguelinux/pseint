@@ -8,6 +8,8 @@
 #include "Entity.h"
 #include "Events.h"
 #include "Load.h"
+#include <iostream>
+using namespace std;
 
 ZOCKET zocket=ZOCKET_ERROR; // para comunicarse con wxPSeInt
 
@@ -62,10 +64,11 @@ void ReadComm( ) {
 			else if (sr=="raise") Raise();
 			else if (sr=="quit") Salir();
 			else if (sr.substr(0,5)=="step ") {
-				int l=atoi(sr.substr(5).c_str());
-				if (l>=0 && l<code2draw.size() && code2draw[l].entidad) 
-					FocusEntity(code2draw[l].entidad);
-				else FocusEntity();
+				sr=sr.substr(5);
+				map<string,LineInfo>::iterator it = code2draw.find(sr);
+				if (it!=code2draw.end()) 
+					FocusEntity(&(it->second));
+				else FocusEntity(NULL);
 			}
 			else if (sr=="debug start") { 
 				debugging=true;

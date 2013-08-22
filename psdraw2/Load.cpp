@@ -82,9 +82,16 @@ static void ReemplazarOperadores(string &str) {
 	}
 }
 
+#define _new_this(e) if (cur_pos.size()) code2draw[cur_pos]=LineInfo(cur_proc,e)
+#define _new_prev() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,cur_proc)
+#define _new_none() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,NULL)
+
 void LoadProc(istream &fin) {
+	code2draw.clear();
+	string cur_pos; Entity *cur_proc; // para llenar code2draw
+	
 	string str;
-	start = new Entity(ET_PROCESO,"SinTitulo");
+	cur_proc = start = new Entity(ET_PROCESO,"SinTitulo");
 	Entity *aux=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(fin,str)) {
@@ -104,41 +111,58 @@ void LoadProc(istream &fin) {
 				else if (str[i]=='|') { str.replace(i,1," | "); i+=2; }
 			}
 		}
-		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")) {
+		if (StartsWith(str,"#pos ")) {
+			cur_pos=str.substr(5);
+		}
+		else if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")) {
 			string s1=str.substr(0,str.find(' '));
 			string s2=str.substr(str.find(' ')+1);
 			if (s1=="PROCESO") { start->lpre="Proceso "; start->SetLabel(s2); }
 			else if (s1=="SUBPROCESO") { start->lpre="SubProceso "; start->SetLabel(s2); }
+			_new_this(start); cur_proc=start;
 			continue;
 		}
-		if (!str.size()||str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="ENTONCES") {
+		else if (str=="FINPROCESO") {
+			_new_none();
+			continue;
+		}
+		else if (!str.size()||str=="FINSUBPROCESO"||str=="ENTONCES") {
+			_new_prev();
 			continue;
 		}
 		else if (StartsWith(str,"INVOCAR ")) {
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str.substr(8)));
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
 			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"ESCRIBNL ")) {
 			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
 			aux->variante=true;
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"LEER ")) {
 			aux=Add(ids,aux,new Entity(ET_LEER,str.substr(5)));
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"HASTA QUE ")) {
 			aux=Up(ids,aux); aux->SetLabel(str.substr(10),false);
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"MIENTRAS QUE ")) {
 			aux=Up(ids,aux); aux->SetLabel(str.substr(13),false);
 			aux->variante=true;
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"MIENTRAS ")) {
 			aux=Add(ids,aux,new Entity(ET_MIENTRAS,str.substr(9,str.size()-15)),0);
+			_new_this(aux);
 		}
 		else if (str=="REPETIR") {
 			aux=Add(ids,aux,new Entity(ET_REPETIR,""),0);
+			_new_prev();
 		}
 		else if (StartsWith(str,"PARA ")) {
 			str=str.substr(5,str.size()-11);
@@ -162,6 +186,7 @@ void LoadProc(istream &fin) {
 			aux->child[1]->SetLabel(ini);
 			aux->child[2]->SetLabel(paso);
 			aux->child[3]->SetLabel(fin);
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"PARACADA ")) {
 			str=str.substr(9,str.size()-15);
@@ -176,15 +201,19 @@ void LoadProc(istream &fin) {
 //			aux->child[1]->SetLabel("");
 			aux->child[2]->SetLabel(str);
 //			aux->child[3]->SetLabel("");
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"SI ")) {
 			aux=Add(ids,aux,new Entity(ET_SI,str.substr(3)),1);
+			_new_this(aux);
 		}
 		else if (StartsWith(str,"SINO")) {
 			aux=aux->parent; ids.pop(); ids.push(0);
+			_new_prev();
 		}
 		else if (StartsWith(str,"SEGUN ")) {
 			aux=Add(ids,aux,new Entity(ET_SEGUN,str.substr(6,str.size()-6-5)),0);
+			_new_this(aux);
 		}
 		else if (str.size() && str[str.size()-1]==':') {
 			str.erase(str.size()-1,1);
@@ -196,10 +225,12 @@ void LoadProc(istream &fin) {
 				if (str=="DE OTRO MODO") str="De Otro Modo";
 				aux=Add(ids,aux,new Entity(ET_OPCION,str),0);
 			}
+			_new_this(aux);
 		}
 		else if (str=="FINPARA"||str=="FINSI"||str=="FINMIENTRAS"||str=="FINSEGUN") {
 			if (str=="FINSEGUN" && aux->type!=ET_SEGUN) { aux=Up(ids,aux); aux=Up(ids,aux); }
 			aux=Up(ids,aux);
+			_new_prev();
 		}
 		else { // asignacion, dimension, definicion
 			int i=0,l=str.size();
@@ -211,6 +242,7 @@ void LoadProc(istream &fin) {
 				str=s1+s2;
 			}
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
+			_new_this(aux);
 		}
 	}
 	Entity *efin=new Entity(ET_PROCESO,""); 
@@ -224,13 +256,13 @@ bool Load(const char *filename) {
 	else { New(); return false; }
 	ifstream file(filename);
 	if (!file.is_open()) { New(); return false; }
-	string str; int imain=0;
+	string str, lstr; int imain=0;
 	while (getline(file,str)) {
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
 			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
 			Entity::all_any=start=NULL;
 			stringstream ss;
-			ss<<str<<"\n";
+			ss<<lstr<<"\n"<<str<<"\n";
 			while (getline(file,str)) {
 				ss<<str<<"\n";
 				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") break;
@@ -238,6 +270,7 @@ bool Load(const char *filename) {
 			LoadProc(ss);
 			procesos.push_back(start);
 		}
+		lstr=str;
 	}
 	SetProc(procesos[choose_process_sel=imain]);
 	choose_process_state=procesos.size()>1?2:0;
@@ -250,10 +283,10 @@ bool Save(const char *filename) {
 	ofstream fout(fname.c_str());
 	if (!fout.is_open()) return false;
 	code2draw.clear(); debug_current=NULL;
+	int line=1;
 	for(unsigned int i=0;i<procesos.size();i++) {
-		procesos[i]->Print(fout);
+		procesos[i]->Print(fout,"",procesos[i],line);
 		fout<<endl; 
-		code2draw.push_back(LineInfo(NULL,NULL));
 	}
 	fout.close();
 	modified=false;
