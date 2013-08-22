@@ -61,8 +61,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 	if (this==debug->process) {
 		debug->debugging=false;
 		debug_panel->SetState(DS_STOPPED);
-		if (source) source->SetReadOnly(was_readonly);
-		if (source) source->SetDebugLine();
+		if (source) source->DebugMode(false);
 		debug->process=NULL;
 	}
 	if (what==mxPW_RUN) {
@@ -169,6 +168,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 			int x,y,h,w, delta=10;
 			main_window->notebook->GetScreenPosition(&x,&y);
 			main_window->notebook->GetSize(&w,&h);
+cerr<<"SIIIIIZE 2 : "<<w<<"x"<<h<<endl;
 			command<<_T(" --right=")<<x+w-delta<<_T(" ");
 			command<<_T(" --top=")<<y+delta<<_T(" ");
 			command<<_T(" --alwaysontop ");
@@ -184,8 +184,9 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	if (config->use_colors) command<<_T(" --color");
 	if (config->use_psterm) command<<_T(" --forpseintterminal");
 	command<<GetProfileArgs()<<" "<<GetInputArgs();
-	was_readonly = source->GetReadOnly();
-	if (pid) source->SetReadOnly(true);
+//	was_readonly = source->GetReadOnly();
+//	if (pid) source->SetReadOnly(true);
+	source->DebugMode(true);
 	_LOG("mxProcess::Debug this="<<this);
 	_LOG("    "<<command);
 	pid = wxExecute(command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, this);

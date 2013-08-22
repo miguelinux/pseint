@@ -172,6 +172,8 @@ public:
 	
 	void ProfileChanged();
 	
+	void DebugMode(bool on);
+	
 	DECLARE_EVENT_TABLE();
 };
 

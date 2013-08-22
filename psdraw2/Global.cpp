@@ -2,6 +2,7 @@
 #include "Global.h"
 
 bool edit_on=true; // indica si se puede editar el diagrama
+bool debugging=false; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)
 string fname; // archivo que recibe como argumento
 string pname; // nombre original del proceso
 
@@ -74,4 +75,6 @@ bool draw_shadow=true; // si debe o no dibujar sombra (para la pantalla si, para
 bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 bool force_semicolons=false; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 
-vector<Entity*> procesos;
+vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
+vector<LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
+Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en el paso a paso

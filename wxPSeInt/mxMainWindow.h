@@ -177,8 +177,6 @@ public:
 	
 	void RunCurrent(bool raise); // ejecuta o re-ejecuta el source actual (si ya estaba corriendo en un psterm, raise indica si debe pasar al frente esa ventana)
 	
-	int GetNotebookWidth();
-	
 	void ReorganizeForDebugging();
 	
 	bool IsQuickHelpVisible();

@@ -249,9 +249,11 @@ bool Save(const char *filename) {
 	if (filename) fname=filename;
 	ofstream fout(fname.c_str());
 	if (!fout.is_open()) return false;
+	code2draw.clear(); debug_current=NULL;
 	for(unsigned int i=0;i<procesos.size();i++) {
 		procesos[i]->Print(fout);
-		fout<<endl;
+		fout<<endl; 
+		code2draw.push_back(LineInfo(NULL,NULL));
 	}
 	fout.close();
 	modified=false;

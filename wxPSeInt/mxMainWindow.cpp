@@ -1381,7 +1381,7 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		if (source->GetFlowSocket()) { 
-			source->GetFlowSocket()->Write("raise",5); 
+			source->GetFlowSocket()->Write("raise\n",6); 
 			return;
 		} else if (!source->GetReadOnly() && source->HaveComments()) {
 			wxMessageBox(_T("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
@@ -1593,9 +1593,6 @@ void mxMainWindow::ParseResults(mxSource *source) {
 	}
 	RTreeDone(!happy_ending,true);
 }
-int mxMainWindow::GetNotebookWidth ( ) {
-	return notebook->GetSize().GetWidth();
-}
 
 void mxMainWindow::ReorganizeForDebugging ( ) {
 	if (config->reorganize_for_debug) {
@@ -1603,12 +1600,28 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 		ShowDebugPanel(true);
 		ShowCommandsPanel(false);
 		wxYield();
-		if (GetNotebookWidth()-500<400) {
+		int notebook_width = notebook->GetSize().GetWidth();
+		if (notebook_width-500<400) {
 			ShowOpersPanel(false);
 			wxYield();
-			if (GetNotebookWidth()-500<400) {
+			if (notebook_width-500<400) {
 				ShowVarsPanel(false);
 			}
+		}
+		mxSource *src=CURRENT_SOURCE;
+		if (src && src->GetFlowSocket()) {
+			aui_manager.Update();
+			wxString pos; pos<<"pos ";
+			int notebook_x,notebook_y;
+			notebook->GetScreenPosition(&notebook_x,&notebook_y);
+			pos<<notebook_x<<" "<<notebook_y<<"\n";
+			src->GetFlowSocket()->Write(pos.c_str(),pos.Len());
+			wxString size; size<<"size ";
+			int notebook_width,notebook_height;
+			notebook->GetSize(&notebook_width,&notebook_height);
+			size<<notebook_width-500<<" "<<notebook_height<<"\n";
+			cerr<<"SIIIIIZE : "<<size<<endl;
+			src->GetFlowSocket()->Write(size.c_str(),size.Len());
 		}
 	}
 }

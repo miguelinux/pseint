@@ -463,72 +463,74 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 
 #define _tabs "\t"
 
+#define _endl endl; code2draw.push_back(LineInfo(NULL,this))
+
 void Entity::Print(ostream &out, string tab) {
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (next) {
-			out<<tab<<lpre<<label<<endl;
+			out<<tab<<lpre<<label<<_endl;
 			if (next) next->Print(out,add_tab?tab+_tabs:tab);
-			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<endl;
+			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl;
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {
 		if (!label.size()) label="{lista_de_expresiones}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Escribir "<<label<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<endl;
+		out<<tab<<"Escribir "<<label<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<_endl;
 	} else if (type==ET_LEER) {
 		if (!label.size()) label="{lista_de_variables}";
 		else if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Leer "<<label<<(force_semicolons?";":"")<<endl;
+		out<<tab<<"Leer "<<label<<(force_semicolons?";":"")<<_endl;
 	} else if (type==ET_MIENTRAS) {
 		if (!label.size()) label="{condicion}";
-		out<<tab<<"Mientras "<<label<<" Hacer"<<endl;
+		out<<tab<<"Mientras "<<label<<" Hacer"<<_endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinMientras"<<endl;
+		out<<tab<<"FinMientras"<<_endl;
 	} else if (type==ET_REPETIR) {
-		out<<tab<<"Repetir"<<endl;
+		out<<tab<<"Repetir"<<_endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 		if (!label.size()) label="{condicion}";
-		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<endl;
+		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<label<<_endl;
 	} else if (type==ET_PARA) {
 		if (variante) {
 			if (!label.size()) label="{variable}<-{valor_inicial}";
 			if (!child[2]->label.size()) child[2]->label="{arreglo}";
-			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<endl;
+			out<<tab<<"Para Cada"<<label<<" de "<<child[2]->label<<" Hacer"<<_endl;
 		} else {
 			if (!label.size()) label="{variable}";
 			if (!child[1]->label.size()) child[1]->label="{valor_inicial}";
 			if (!child[2]->label.size()) child[2]->label="{valor_final}";
 			if (!child[3]->label.size()) child[3]->label="{paso}";
-			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<endl;
+			out<<tab<<"Para "<<label<<"<-"<<child[1]->label<<" Hasta "<<child[3]->label<<" Con Paso "<<child[2]->label<<" Hacer"<<_endl;
 		}
 		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinPara"<<endl;
+		out<<tab<<"FinPara"<<_endl;
 	} else if (type==ET_SEGUN) {
 		if (!label.size()) label="{expresion_numerica}";
-		out<<tab<<"Segun "<<label<<" Hacer"<<endl;
+		out<<tab<<"Segun "<<label<<" Hacer"<<_endl;
 		for(int i=0;i<n_child-1;i++) { 
 			child[i]->Print(out,tab+_tabs);
 		}
 		if (child[n_child-1]->child[0]) // de otro modo
 			child[n_child-1]->Print(out,tab+_tabs);
-		out<<tab<<"FinSegun"<<endl;
+		out<<tab<<"FinSegun"<<_endl;
 	} else if (type==ET_OPCION) {
 		add_tab=true;
 		if (!label.size()) label="{expresion_numerica}";
-		out<<tab<<label<<":"<<endl;
+		out<<tab<<label<<":"<<_endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
 	} else if (type==ET_SI) {
 		if (!label.size()) label="{condicion}";
-		out<<tab<<"Si "<<label<<" Entonces"<<endl;
+		out<<tab<<"Si "<<label<<" Entonces"<<_endl;
 		if (child[1]) child[1]->Print(out,tab+_tabs);
-		if (child[0]) out<<tab<<"Sino"<<endl;
+		if (child[0]) out<<tab<<"Sino"<<_endl;
 		if (child[0]) child[0]->Print(out,tab+_tabs);
-		out<<tab<<"FinSi"<<endl;
+		out<<tab<<"FinSi"<<_endl;
 	} else if (type==ET_ASIGNAR) {
 		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<endl;
+		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<_endl;
 	}
 	if (next) next->Print(out,add_tab?tab+_tabs:tab);
 }

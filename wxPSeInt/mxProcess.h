@@ -12,7 +12,7 @@ private:
 	static int cont;
 	int command_on_death_time;
 	mxSource *source;
-	bool was_readonly;
+//	bool was_readonly;
 	wxString temp;
 	int what;
 	long pid;

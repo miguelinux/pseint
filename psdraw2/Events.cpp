@@ -194,14 +194,10 @@ void ProcessMenu(int op) {
 		choose_process_d_base=choose_process_d_delta=0;
 		choose_process_state=1; edit=NULL;
 		if (mouse) mouse->UnSetMouse();
-	} else if (op==MO_SAVE) {
-		SendUpdate();
-	} else if (op==MO_RUN) {
-		SendUpdate(true);
+	} else if (op==MO_SAVE||op==MO_RUN||op==MO_EXPORT||op==MO_DEBUG) {
+		SendUpdate(op);
 //	} else if (op==MO_SAVE_CLOSE) {
 //		SendUpdate(); Salir();
-	} else if (op==MO_SAVE_EXPORT) {
-		SendUpdate(false,true);
 	} else if (op==MO_CLOSE) {
 		Salir();
 	} else if (op==MO_HELP) {
@@ -232,7 +228,7 @@ static void mouse_cb(int button, int state, int x, int y) {
 		}
 	} else if (confirm) {
 		if (confirm_sel==1) { Salir(true); }
-		else if (confirm_sel==2) { Save(); SendUpdate(); Salir(true); }
+		else if (confirm_sel==2) { Save(); SendUpdate(MO_SAVE); Salir(true); }
 	}
 	y=win_h-y; y/=zoom; x/=zoom;
 	if (button==4||button==3) {
@@ -375,9 +371,10 @@ static void keyboard_esp_cb(int key, int x, int y) {
 	if (key==GLUT_KEY_F5) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F3) ProcessMenu(MO_FUNCTIONS);
+	else if (key==GLUT_KEY_F5) ProcessMenu(MO_DEBUG);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
 	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
-	else if (key==GLUT_KEY_F7) ToggleEditable();
+	else if (key==GLUT_KEY_F7) if (!debugging) ToggleEditable();
 	else if (key==GLUT_KEY_F11) ToggleFullScreen();
 	else if (key==GLUT_KEY_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);
@@ -398,3 +395,8 @@ void initialize() {
 	glutPassiveMotionFunc(passive_motion_cb);
 	glClearColor(color_back[0],color_back[1],color_back[2],1.f);
 }
+
+void FocusEntity(Entity * e) {
+	debug_current=e;
+}
+

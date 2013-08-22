@@ -8,6 +8,7 @@ class Entity;
 
 // comunicacion con wxPseInt
 extern bool edit_on; // indica si se puede editar el diagrama
+extern bool debugging; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)
 extern string fname; // archivo que recibe como argumento
 //extern string pname; // nombre original del proceso
 
@@ -106,6 +107,11 @@ extern bool force_semicolons; // al cargar el pseudocódigo, reemplaza algunos op
 // vez pero independientes, para lo cual trucheo start y Entity::all_any en 
 // Load y SetProc
 extern vector<Entity*> procesos;
+
+// para asociar las lineas de código al diagrama de flujo
+struct LineInfo { Entity *proceso, *entidad; LineInfo (Entity *p, Entity *e):proceso(p),entidad(e) {} };
+extern vector<LineInfo> code2draw;
+extern Entity *debug_current;  // la entidad que se esta ejecutando actualmente en el paso a paso
 
 #endif
 

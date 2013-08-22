@@ -245,9 +245,9 @@ static void DrawMenuAndShapeBar() {
 	}
 	DrawTextRaster(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_SAVE       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar Cambios"); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_RUN        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Ejecutar..."); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_SAVE_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_RUN       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ejecutar..."); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_DEBUG        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ejecutar Paso a Paso..."); top-=menu_option_height;
+	DrawTextRaster(menu_sel==MO_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
 //	DrawTextRaster(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
@@ -347,7 +347,7 @@ static void DrawChooseProcess() {
 		} else {
 			
 			string &s=procesos[i]->label;
-			int l=s.size(),p=0,f=s.find('<');
+			int l=s.size(),p=0; size_t f=s.find('<');
 			if (f==string::npos) f=s.find('='); else f++;
 			if (f==string::npos) f=0; else f++;
 			int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
@@ -425,6 +425,16 @@ void display_cb() {
 			aux->Draw();
 			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 //			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+		} else if (debugging && debug_current==aux) {
+			if (Entity::nassi_schneiderman) {
+				glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
+				aux->Draw();
+				glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+			} else {
+				color_shape[2]=.65; color_arrow[1]=.4; color_arrow[2]=.4; //color_arrow[0]=1;
+				aux->Draw();
+				color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
+			}
 		} else {
 			aux->Draw();
 		}

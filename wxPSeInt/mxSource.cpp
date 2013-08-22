@@ -1123,6 +1123,10 @@ void mxSource::SetDebugLine(int l, int i) {
 		EnsureVisibleEnforcePolicy(l);
 		if (i!=-1) SelectInstruccion(l,i);
 	}
+	if (flow_socket) {
+		wxString s; s<<"step "<<l<<"\n";
+		flow_socket->Write(s.c_str(),s.Len());
+	}
 }
 
 bool mxSource::HaveComments() {
@@ -1564,5 +1568,16 @@ void mxSource::OnMarginClick (wxStyledTextEvent & event) {
 	int p = PositionFromLine(l), pl=GetLineEndPosition(l);
 	while ( p<pl && !(GetStyleAt(p)&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) ) p++;
 	if (p<pl) GotoPos(p);
+}
+
+void mxSource::DebugMode (bool on) {
+	if (on) {
+		SetReadOnly(true);
+		if (flow_socket) flow_socket->Write("debug start\n",12);
+	} else {
+		SetReadOnly(is_example);
+		SetDebugLine();
+		if (flow_socket) flow_socket->Write("debug stop\n",11);
+	}
 }
 
