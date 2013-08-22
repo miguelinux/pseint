@@ -368,8 +368,7 @@ void ToggleEditable() {
 
 static void keyboard_esp_cb(int key, int x, int y) {
 	if (confirm) return;
-	if (key==GLUT_KEY_F5) ProcessMenu(MO_SAVE);
-	else if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
+	if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
 	else if (key==GLUT_KEY_F3) ProcessMenu(MO_FUNCTIONS);
 	else if (key==GLUT_KEY_F5) ProcessMenu(MO_DEBUG);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
@@ -401,5 +400,11 @@ void FocusEntity(LineInfo *li) {
 		if (li->proceso) debug_current=li->entidad;
 		else if (!li->proceso) debug_current=NULL;
 	} else debugging=NULL;
+}
+
+void SetModified( ) {
+	if (modified) return;
+	modified=true;
+	if (!loading) NotifyModification();
 }
 

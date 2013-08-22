@@ -1,5 +1,6 @@
 #ifdef _FOR_EXPORT
 #include <GLtoWX.h>
+void SetModified() {}
 #else
 #include <GL/glut.h>
 #endif
@@ -9,6 +10,7 @@
 #include "Global.h"
 #include "Draw.h"
 #include <sstream>
+#include "Events.h"
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -190,7 +192,7 @@ void Entity::EditLabel(unsigned char key) {
 }
 
 void Entity::SetLabel(string _label, bool recalc) {
-	modified=true;
+	SetModified();
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 	label=_label; GetTextSize(label,t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
@@ -235,7 +237,7 @@ bool Entity::CheckLinkNext(int x, int y) {
 }
 
 void Entity::UnLink() {
-	modified=true;
+	SetModified();
 	if (next) next->prev=prev;
 	if (prev) prev->next=next;
 	if (parent) {
@@ -250,7 +252,7 @@ void Entity::UnLink() {
 }
 
 void Entity::LinkNext(Entity *e) {
-	modified=true;
+	SetModified();
 	e->prev=this; e->next=next;
 	if (next) next->prev=e;
 	next=e;
@@ -259,7 +261,7 @@ void Entity::LinkNext(Entity *e) {
 }
 
 void Entity::RemoveChild(int j) { // elimina un hijo de la lista, reduciendo n_child
-	modified=true;
+	SetModified();
 	for (int i=j;i<n_child-1;i++) {
 		child[i]=child[i+1];
 		child_dx[i]=child_dx[i+1];
@@ -270,13 +272,13 @@ void Entity::RemoveChild(int j) { // elimina un hijo de la lista, reduciendo n_c
 }
 
 void Entity::InsertChild(int i, Entity *e) { // similar a LinkChild, pero agrega un hijo, no reemplaza a uno que ya estaba
-	modified=true;
+	SetModified();
 	LinkChild(n_child,e); // agrega al final
 	MoveChild(n_child-1,i);
 }
 void Entity::MoveChild(int i0, int i1) {
 	if (i0==i1) return;
-	modified=true;
+	SetModified();
 	Entity *e0=child[i0];
 	if (i0>i1) {
 		for (int j=i0;j>i1;j--)
@@ -295,7 +297,7 @@ void Entity::MoveChild(int i0, int i1) {
 	}
 }
 void Entity::LinkChild(int i, Entity *e) { // i esta en base 0 y no puede ser negativo ni mayor a n_child
-	modified=true;
+	SetModified();
 	if (!n_child) { // si no tenia hijos, inicializar los arreglos child y child_dx
 		n_child=1;
 		child=(Entity**)malloc(sizeof(Entity*));

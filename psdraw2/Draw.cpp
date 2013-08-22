@@ -396,7 +396,8 @@ void display_cb() {
 	float mx=cur_x/zoom, my=cur_y/zoom;
 	Entity *aux=start;
 	bool found=false;
-	glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+	int line_width=2*d_zoom<1?1:int(d_zoom*2);
+	glLineWidth(line_width);
 	glPushMatrix();
 	glScalef(d_zoom,d_zoom,1);
 	do {
@@ -426,15 +427,15 @@ void display_cb() {
 			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 //			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
 		} else if (debugging && debug_current==aux) {
-			if (Entity::nassi_schneiderman) {
-				glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
-				aux->Draw();
-				glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
-			} else {
+			glLineWidth(line_width+1);
+			if (!Entity::nassi_schneiderman) {
 				color_shape[2]=.65; color_arrow[1]=.4; color_arrow[2]=.4; //color_arrow[0]=1;
-				aux->Draw();
+			}
+			aux->Draw();
+			if (!Entity::nassi_schneiderman) {
 				color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 			}
+			glLineWidth(line_width);
 		} else {
 			aux->Draw();
 		}

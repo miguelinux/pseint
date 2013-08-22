@@ -78,3 +78,5 @@ bool force_semicolons=false; // al cargar el pseudocódigo, reemplaza algunos ope
 vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
 map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
 Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en el paso a paso
+
+bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion

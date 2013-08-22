@@ -11,5 +11,7 @@ void CloseComm();
 
 void ReadComm();
 
+void NotifyModification();
+
 #endif
 

@@ -114,5 +114,7 @@ struct LineInfo { Entity *proceso, *entidad; LineInfo (Entity *p=NULL, Entity *e
 extern map<string,LineInfo> code2draw;
 extern Entity *debug_current;  // la entidad que se esta ejecutando actualmente en el paso a paso
 
+extern bool loading; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
+
 #endif
 

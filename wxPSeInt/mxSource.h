@@ -22,6 +22,7 @@ private:
 	bool mask_timers; // para evitar lanzar el timer en la modificacion que hace SaveTemp
 	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
 	wxTimer *reload_timer; // se activa al modificar el algoritmo si se estaba ejecutando en psterm, para mandar a reejecutar
+	wxTimer *flow_timer; // se activa al recibir el foco con el editor de diagramas abierto para pedir el pseudocódigo actualizado
 	
 	int comp_from, comp_to;
 	int last_s1,last_s2;
@@ -173,6 +174,9 @@ public:
 	void ProfileChanged();
 	
 	void DebugMode(bool on);
+	
+	void OnSetFocus(wxFocusEvent &evt);
+	void UpdateFromFlow();
 	
 	DECLARE_EVENT_TABLE();
 };

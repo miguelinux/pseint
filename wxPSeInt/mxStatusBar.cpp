@@ -43,6 +43,7 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	texts[STATUS_SYNTAX_CHECK_OK]=st_aux(verde,"La sintaxis es correcta.");
 	texts[STATUS_SYNTAX_CHECK_ERROR]=st_aux(azul,"Seleccione un error para ver su descripción.");
 	texts[STATUS_FLOW]=st_aux(azul,"Este pseudocódigo está siendo editado como diagrama de flujo.");
+	texts[STATUS_FLOW_CHANGED]=st_aux(azul,"El diagrama de flujo ha sido modificado. Click aquí para actualizar el pseudocódigo.");
 	texts[STATUS_RUNNING]=st_aux(azul,"El pseudocódigo está siendo ejecutado.");
 	texts[STATUS_RUNNING_CHANGED]=st_aux(azul,"El pseudocódigo ha cambiado. Presione F9 para ver los cambios en la ejecución.");
 	texts[STATUS_RUNNING_UPDATED]=st_aux(azul,"La ejecución se ha actualizado para reflejar los cambios.");
@@ -84,7 +85,9 @@ void mxStatusBar::OnClick (wxMouseEvent & event) {
 	} else if (status==STATUS_NEW_SOURCE) {
 		main_window->ShowCommandsPanel(true);
 	} else if (status==STATUS_RUNNING_CHANGED) {
-		main_window->GetCurrentSource()->UpdateRunningTerminal();
+		if (main_window->GetCurrentSource()) main_window->GetCurrentSource()->UpdateRunningTerminal();
+	} else if (status==STATUS_FLOW_CHANGED) {
+		if (main_window->GetCurrentSource()) main_window->GetCurrentSource()->UpdateFromFlow();
 	}
 }
 

@@ -86,6 +86,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 #define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
 	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
 	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
+	EVT_SET_FOCUS (mxSource::OnSetFocus)
 END_EVENT_TABLE()
 
 	
@@ -178,6 +179,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	SetDropTarget(new mxDropTarget());
 	
 	rt_timer = new wxTimer(GetEventHandler());
+	flow_timer = new wxTimer(GetEventHandler());
 	reload_timer = new wxTimer(GetEventHandler());
 	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnTimer),NULL,this);
 	
@@ -1048,6 +1050,7 @@ void mxSource::SetAutocompletion() {
 }
 
 void mxSource::ReloadFromTempPSD () {
+	int cl=GetCurrentLine(), cp=GetCurrentPos(); cp-=PositionFromLine(cl);
 	wxString file=GetTempFilenamePSD();
 	bool isro=GetReadOnly();
 	if (isro) SetReadOnly(false);
@@ -1079,9 +1082,16 @@ void mxSource::ReloadFromTempPSD () {
 		}
 	}
 	
+	// reestablecer la posición del cursor en el nuevo código
+	int lc=GetLineCount(); if (cl>=lc) cl=lc-1;
+	int pl=PositionFromLine(cl);
+	int le=GetLineEndPosition(cl)-pl; if (cp>=le) cp=le-1;
+	SetSelection(pl+cp,pl+cp);
+	
 	SetModify(true);
 	if (isro) SetReadOnly(true);
 	if (run_socket) UpdateRunningTerminal();
+	
 }
 
 wxSocketBase * mxSource::GetFlowSocket ( ) {
@@ -1255,7 +1265,9 @@ void mxSource::StopRTSyntaxChecking ( ) {
 }
 
 void mxSource::OnTimer (wxTimerEvent & te) {
-	if (te.GetEventObject()==rt_timer) {
+	if (te.GetEventObject()==flow_timer) {
+		UpdateFromFlow();
+	} else if (te.GetEventObject()==rt_timer) {
 		if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
 		DoRealTimeSyntax(); HighLightBlock();
 	} else if (te.GetEventObject()==reload_timer) {
@@ -1579,5 +1591,14 @@ void mxSource::DebugMode (bool on) {
 		SetDebugLine();
 		if (flow_socket) flow_socket->Write("debug stop\n",11);
 	}
+}
+
+void mxSource::OnSetFocus (wxFocusEvent & evt) {
+	flow_timer->Start(100,true);
+	evt.Skip();
+}
+
+void mxSource::UpdateFromFlow ( ) {
+	if (flow_socket) flow_socket->Write("send update\n",12);
 }
 

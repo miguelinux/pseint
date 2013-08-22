@@ -25,10 +25,17 @@ bool Connect(int port, int id) {
 	return true;
 }
 
+void NotifyModification() {
+	if (zocket==ZOCKET_ERROR) return;
+	zocket_escribir(zocket,"modified\n",9);
+}
 bool SendUpdate(int action) {
+	if (!modified) return true;
 	if (!Save()) return false;
 	if (zocket==ZOCKET_ERROR) return false;
-	if (action==MO_EXPORT)
+	if (action==MO_UPDATE)
+		zocket_escribir(zocket,"update\n",7);
+	else if (action==MO_EXPORT)
 		zocket_escribir(zocket,"export\n",7);
 	else if (action==MO_RUN)
 		zocket_escribir(zocket,"run\n",4);
@@ -60,9 +67,18 @@ void ReadComm( ) {
 		size_t pn=sr_full.find('\n'),lpn=0;
 		while (pn!=string::npos) {
 			string sr=sr_full.substr(lpn,pn-lpn); lpn=pn+1;
-			if (sr=="edit") { edit_on=true; Raise(); }
-			else if (sr=="raise") Raise();
-			else if (sr=="quit") Salir();
+			if (sr=="edit") { 
+				edit_on=true; Raise();
+			}
+			else if (sr=="send update") { 
+				SendUpdate(MO_UPDATE);
+			} 
+			else if (sr=="raise") { 
+				Raise();
+			}
+			else if (sr=="quit") {
+				Salir();
+			}
 			else if (sr.substr(0,5)=="step ") {
 				sr=sr.substr(5);
 				map<string,LineInfo>::iterator it = code2draw.find(sr);

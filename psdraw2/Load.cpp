@@ -252,6 +252,7 @@ void LoadProc(istream &fin) {
 }
 
 bool Load(const char *filename) {
+	loading=true;
 	if (filename) fname=filename;
 	else { New(); return false; }
 	ifstream file(filename);
@@ -274,7 +275,7 @@ bool Load(const char *filename) {
 	}
 	SetProc(procesos[choose_process_sel=imain]);
 	choose_process_state=procesos.size()>1?2:0;
-	modified=false;
+	loading=false; modified=false;
 	return true;
 }
 
