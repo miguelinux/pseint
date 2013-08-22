@@ -1598,7 +1598,20 @@ void mxMainWindow::ParseResults(mxSource *source) {
 
 void mxMainWindow::ReorganizeForDebugging ( ) {
 	if (config->reorganize_for_debug) {
-		if (!IsMaximized()) Maximize();
+		static int screen_w=0, screen_h=0;
+		if (screen_w==0) {
+			if (!IsMaximized()) Maximize();
+			_yield;
+			GetSize(&screen_w,&screen_h);
+		}
+		mxSource *src=CURRENT_SOURCE;
+		if (src && src->GetFlowSocket()) {
+			if (IsMaximized()) Maximize(false);
+			SetSize(screen_w/2,screen_h);
+			Move(screen_w/2,0);
+		} else {
+			if (!IsMaximized()) Maximize();
+		}
 		ShowDebugPanel(true);
 		ShowCommandsPanel(false);
 		_yield;
@@ -1610,18 +1623,21 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 				ShowVarsPanel(false);
 			}
 		}
-		mxSource *src=CURRENT_SOURCE;
 		if (src && src->GetFlowSocket()) {
 			_yield;
-			wxString pos; pos<<"pos ";
-			int notebook_x,notebook_y;
-			notebook->GetScreenPosition(&notebook_x,&notebook_y);
-			pos<<notebook_x<<" "<<notebook_y<<"\n";
-			src->GetFlowSocket()->Write(pos.c_str(),pos.Len());
-			wxString size; size<<"size ";
-			int notebook_width,notebook_height;
-			notebook->GetSize(&notebook_width,&notebook_height);
-			size<<notebook_width-500<<" "<<notebook_height<<"\n";
+//			wxString pos; pos<<"pos ";
+//			int notebook_x,notebook_y;
+//			notebook->GetScreenPosition(&notebook_x,&notebook_y);
+//			pos<<notebook_x<<" "<<notebook_y<<"\n";
+//			src->GetFlowSocket()->Write(pos.c_str(),pos.Len());
+//			wxString size; size<<"size ";
+//			int notebook_width,notebook_height;
+//			notebook->GetSize(&notebook_width,&notebook_height);
+//			size<<notebook_width-500<<" "<<notebook_height<<"\n";
+//			src->GetFlowSocket()->Write(size.c_str(),size.Len());
+			
+			src->GetFlowSocket()->Write("pos 0 0\n",8);
+			wxString size; size<<"size "<<screen_w/2<<" "<<screen_h<<"\n";
 			src->GetFlowSocket()->Write(size.c_str(),size.Len());
 		}
 	}

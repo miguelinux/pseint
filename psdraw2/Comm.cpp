@@ -84,7 +84,6 @@ void ReadComm( ) {
 				map<string,LineInfo>::iterator it = code2draw.find(sr);
 				if (it!=code2draw.end()) 
 					FocusEntity(&(it->second));
-				else FocusEntity(NULL);
 			}
 			else if (sr=="debug start") { 
 				debugging=true;

@@ -403,7 +403,7 @@ void FocusEntity(LineInfo *li) {
 				float fx=(win_w/2)/zoom;
 				float fy=(win_h/2)/zoom;
 				int dx=-li->entidad->x+fx;
-				int dy=-li->entidad->y+fy;
+				int dy=-li->entidad->y+li->entidad->bh/2+fy;
 				if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
 				if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
 			}

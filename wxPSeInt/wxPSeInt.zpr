@@ -12,15 +12,14 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=CommunicationsManager.cpp
+current_source=mxMainWindow.cpp
 path_char=/
 [source]
 path=Application.cpp
 cursor=2714
 [source]
 path=mxMainWindow.cpp
-cursor=48185
-breakpoint=1624
+cursor=60540
 marker=1587
 open=true
 [source]
@@ -176,7 +175,7 @@ cursor=4499
 open=true
 [source]
 path=CommunicationsManager.cpp
-cursor=3573
+cursor=4021
 marker=120
 open=true
 [source]
