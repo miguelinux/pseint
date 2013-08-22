@@ -397,7 +397,17 @@ void initialize() {
 
 void FocusEntity(LineInfo *li) {
 	if (li) { 
-		if (li->proceso) debug_current=li->entidad;
+		if (li->proceso) {
+			debug_current=li->entidad;
+			if (li->entidad) {
+				float fx=(win_w/2)/zoom;
+				float fy=(win_h/2)/zoom;
+				int dx=-li->entidad->x+fx;
+				int dy=-li->entidad->y+fy;
+				if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
+				if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
+			}
+		}
 		else if (!li->proceso) debug_current=NULL;
 	} else debugging=NULL;
 }

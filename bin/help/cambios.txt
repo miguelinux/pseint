@@ -1,6 +1,6 @@
 >>RELEASE 20130???<<
 	Al modificar el diagrama de flujo se indica en la barra de estado que el pseudocódigo queda desactualizado; al volver el foco al pseudocódigo éste se actualizar automáticamente.
-	Ahora la ejeución paso a paso se puede ver también en el diagrama de flujo.
+	Ahora la ejeución paso a paso se puede ver también en el diagrama de flujo (se van resaltando las entidades ejecutadas).
 	
 >>RELEASE 20130821<<
 	Se mejoró el sistema de log interno y se agregó un nuevo ejecutable/script (log.exe/log.sh) para facilitar el reporte de errores.
