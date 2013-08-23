@@ -9,7 +9,7 @@ ${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h
 ${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h mxBitmapButton.h
 	${GPP} ${CXXFLAGS} -c mxUtils.cpp -o $@
 
-${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxUtils.h version.h ../pseint/version_common.h
+${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxUtils.h version.h ../pseint/version_common.h Logger.h
 	${GPP} ${CXXFLAGS} -c ConfigManager.cpp -o $@
 
 ${OBJS_DIR}/mxSource.o: mxSource.cpp HelpManager.h mxUtils.h Logger.h mxSource.h mxStatusBar.h ConfigManager.h ids.h mxProcess.h mxDropTarget.h DebugManager.h mxMainWindow.h RTSyntaxManager.h
@@ -93,7 +93,7 @@ ${OBJS_DIR}/HtmlExporter.o: HtmlExporter.cpp HtmlExporter.h mxSource.h mxMainWin
 ${OBJS_DIR}/mxOpersWindow.o: mxOpersWindow.cpp mxOpersWindow.h ids.h mxMainWindow.h mxSource.h mxUtils.h ConfigManager.h
 	${GPP} ${CXXFLAGS} -c mxOpersWindow.cpp -o $@
 
-${OBJS_DIR}/Logger.o: Logger.cpp Logger.h version.h ../pseint/version_common.h
+${OBJS_DIR}/Logger.o: Logger.cpp Logger.h version.h ../pseint/version_common.h mxUtils.h ConfigManager.h
 	${GPP} ${CXXFLAGS} -c Logger.cpp -o $@
 
 ${OBJS_DIR}/mxPanelHelper.o: mxPanelHelper.cpp mxPanelHelper.h mxMainWindow.h mxSource.h
