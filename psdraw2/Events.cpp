@@ -49,6 +49,13 @@ void Salir(bool force) {
 
 static void reshape_cb (int w, int h) {
 	if (w==0||h==0) return;
+	if (win_w!=0&&win_h!=0) {
+		float zw=float(w)/win_w;
+		float zh=float(h)/win_h;
+		d_dx*=zw/zh;
+//		if (zh>zw) zoom*=zh; else zoom*=zw;
+		zoom*=zh;
+	}	
 	win_h=h; win_w=w;
 	glViewport(0,0,w,h);
 	glMatrixMode (GL_PROJECTION);
@@ -118,23 +125,25 @@ static void passive_motion_cb(int x, int y) {
 		shapebar=false; menu=false;
 		return;
 	}
-	menu=x<menu_size_w&&y<menu_size_h;
-	shapebar=x>win_w-shapebar_size;
-	if (menu) {
-//		y=win_h-y;
-		y=y-10;
-		menu_sel=y/menu_option_height+1;
-		if (menu_sel<1 || menu_sel>MO_HELP) menu_sel=0;
-//		if (y>win_h-menu_size_h+245) menu_sel=1;
-//		else if (y>win_h-menu_size_h+205) menu_sel=2;
-//		else if (y>win_h-menu_size_h+165) menu_sel=3;
-//		else if (y>win_h-menu_size_h+125) menu_sel=4;
-//		else if (y>win_h-menu_size_h+85) menu_sel=5;
-//		else if (y>win_h-menu_size_h+45) menu_sel=6;
-//		else menu_sel=0;
-	} else if (shapebar) {
-		shapebar_sel=y/(win_h/8)+1;
-		if (y==9) y=0;
+	if (edit_on) {
+		menu=x<menu_size_w&&y<menu_size_h;
+		shapebar=x>win_w-shapebar_size;
+		if (menu) {
+	//		y=win_h-y;
+			y=y-10;
+			menu_sel=y/menu_option_height+1;
+			if (menu_sel<1 || menu_sel>MO_HELP) menu_sel=0;
+	//		if (y>win_h-menu_size_h+245) menu_sel=1;
+	//		else if (y>win_h-menu_size_h+205) menu_sel=2;
+	//		else if (y>win_h-menu_size_h+165) menu_sel=3;
+	//		else if (y>win_h-menu_size_h+125) menu_sel=4;
+	//		else if (y>win_h-menu_size_h+85) menu_sel=5;
+	//		else if (y>win_h-menu_size_h+45) menu_sel=6;
+	//		else menu_sel=0;
+		} else if (shapebar) {
+			shapebar_sel=y/(win_h/8)+1;
+			if (y==9) y=0;
+		}
 	}
 	cur_x=x; cur_y=win_h-y; glutPostRedisplay();
 }
@@ -402,9 +411,18 @@ void FocusEntity(LineInfo *li) {
 			if (li->entidad) {
 				float fx=(win_w/2)/zoom;
 				float fy=(win_h/2)/zoom;
+				// que se vea el centro en x de la entidad
 				int dx=-li->entidad->x+fx;
-				int dy=-li->entidad->y+li->entidad->bh/2+fy;
 				if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
+				if (li->entidad->bwl+li->entidad->bwr+fx/20<fx*2) { // si se puede ver todo el ancho... 
+					// ..asegurar que se ven los bordes laterales
+					int dx0=-(li->entidad->x-li->entidad->bwl-fx/40);
+					int dx1=-(li->entidad->x+li->entidad->bwr+fx/40-2*fx);
+					if (dx0>d_dx) d_dx=dx0;
+					else if (dx1<d_dx) d_dx=dx1;
+				}
+				// que se vea el centro en y de la entidad
+				int dy=-li->entidad->y+li->entidad->bh/2+fy;
 				if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
 			}
 		}
