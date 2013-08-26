@@ -241,6 +241,20 @@ void LoadProc(istream &fin) {
 				RemoveParentesis(s2);
 				str=s1+s2;
 			}
+			if (str=="ESPERARTECLA") str="Esperar Tecla";
+			else if (str=="BORRARPANTALLA") str="Borrar Pantalla";
+			else if (str.find(' ')!=string::npos) {
+				size_t p=str.find(' '); string aux=str.substr(0,p);
+				if (aux=="DEFINIR") {
+					size_t p2=str.rfind("COMO "); string aux2=str.substr(p2);
+					if (aux2=="COMO CARACTER") aux2="Como Caracter";
+					else if (aux2=="COMO LOGICO") aux2="Como Logico";
+					else if (aux2=="COMO ENTERO") aux2="Como Entero";
+					else if (aux2=="COMO REAL") aux2="Como Real";
+					str=string("Definir ")+str.substr(p+1,p2-p)+" "+aux2;
+				}
+				else if (aux=="DIMENSION") str=string("Dimension ")+str.substr(p+1);
+			}
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
 			_new_this(aux);
 		}
