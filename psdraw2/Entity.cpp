@@ -529,13 +529,13 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_SI) {
 		if (!label.size()) label="{condicion}";
 		out<<tab<<"Si "<<label<<" Entonces"<<_endl_this;
-		if (child[1]) child[1]->Print(out,tab+_tabs,process,line_num);
-		if (child[0]) out<<tab<<"Sino"<<_endl_prev;
-		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		if (child[1]) { child[1]->Print(out,tab+_tabs,process,line_num); }
+		if (child[0]) { out<<tab<<"Sino"<<_endl_prev; }
+		if (child[0]) { child[0]->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
 		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		if (label.size()) out<<tab<<label<<(force_semicolons?";":"")<<_endl_this;
+		if (label.size()) { out<<tab<<label<<(force_semicolons?";":"")<<_endl_this; }
 	}
 	if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }

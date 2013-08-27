@@ -301,7 +301,7 @@ bool Save(const char *filename) {
 	int line=1;
 	for(unsigned int i=0;i<procesos.size();i++) {
 		procesos[i]->Print(fout,"",procesos[i],line);
-		fout<<endl; 
+		fout<<endl; line++;
 	}
 	fout.close();
 	modified=false;
