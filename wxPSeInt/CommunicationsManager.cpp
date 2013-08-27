@@ -66,6 +66,7 @@ void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
 }
 
 void mxSocketClient::ProcessCommand ( ) {
+	cerr<<"MESSAGE: *"<<buffer<<"*"<<endl;
 	if (type==MXS_TYPE_DEBUG) debug->ProcSocketData(buffer);
 	else if (type==MXS_TYPE_FLOW) ProcessCommandFlow();
 	else if (type==MXS_TYPE_RUN) ProcessCommandRun();

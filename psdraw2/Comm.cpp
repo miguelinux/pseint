@@ -30,7 +30,7 @@ void NotifyModification() {
 	zocket_escribir(zocket,"modified\n",9);
 }
 bool SendUpdate(int action) {
-	if (!modified) return true;
+	if (!modified && action==MO_UPDATE) return true;
 	if (!Save()) return false;
 	if (zocket==ZOCKET_ERROR) return false;
 	if (action==MO_UPDATE)
