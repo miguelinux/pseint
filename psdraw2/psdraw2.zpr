@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=Version.h
+current_source=../bin/help/cambios.txt
 path_char=/
 [source]
 path=main.cpp
@@ -61,10 +61,10 @@ marker=58
 [source]
 path=DNassiSchne.cpp
 cursor=2283
-marker=212
-marker=211
-marker=100
 marker=99
+marker=100
+marker=211
+marker=212
 [header]
 path=../pseint/zockets.h
 cursor=215
@@ -93,7 +93,7 @@ cursor=24
 open=true
 [other]
 path=../bin/help/cambios.txt
-cursor=64
+cursor=1263
 open=true
 [config]
 name=Debug_Linux

@@ -31,7 +31,7 @@ const wxChar *mxSourceWords1 =
 	_T("numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos ")
 	_T("entero entera enteros enteras real reales ")
 	_T("caracter carácter caracteres texto cadena cadenas ")
-	_T("logico lógico logica lógica logicos lógicos logicas lógicas")
+	_T("logico lógico logica lógica logicos lógicos logicas lógicas ")
 	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ")
 	_T("según finsegún "); // scintilla no funciona con los acentos
 
@@ -1587,7 +1587,7 @@ void mxSource::DebugMode (bool on) {
 		SetReadOnly(true);
 		if (flow_socket) flow_socket->Write("debug start\n",12);
 	} else {
-		SetReadOnly(is_example);
+		SetReadOnly(is_example||flow_socket);
 		SetDebugLine();
 		if (flow_socket) flow_socket->Write("debug stop\n",11);
 	}
