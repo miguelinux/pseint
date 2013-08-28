@@ -1,4 +1,5 @@
 >>RELEASE 20130???<<
+	Los errores de sintaxis también se marcan en el diagrama de flujo.
 	Al generar el diagrama de flujo, las palabras claves que aparecen en las entidades (como Dimension, o Definir) se muestran ahora con solamente su inicial en mayúsculas.
 	Agregados los perfiles FIME-UANL y UniTru.
 	Al redimensionar la ventana del editor de diagramas de flujo el zoom y el panning se reajustan automáticamente.

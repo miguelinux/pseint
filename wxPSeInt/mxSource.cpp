@@ -1218,6 +1218,7 @@ void mxSource::DoRealTimeSyntax ( ) {
 }
 
 void mxSource::ClearErrorData() {
+	if (flow_socket) flow_socket->Write("errors reset\n",13);
 	rt_errors.clear();
 	int lse = GetEndStyled();
 	StartStyling(0,wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK);
@@ -1244,7 +1245,12 @@ void mxSource::MarkError(wxString line) {
 void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	if (l<0 || l>=GetLineCount()) return; // el error debe caer en una linea valida
 	while (l>=int(rt_errors.size())) rt_errors.push_back(rt_err()); // hacer lugar en el arreglo de errores por linea si no hay
-	rt_errors[l].Add(i,n,str);
+	rt_errors[l].Add(i,n,str); // guardarlo en el vector de errores
+	if (flow_socket) { // avisarle al diagrama de flujo
+		wxString msg("errors add "); msg<<l+1<<':'<<i+1<<' '<<str<<'\n';
+		flow_socket->Write(msg.c_str(),msg.Len());
+	}
+	// marcarlo en el pseudocódigo subrayando la instrucción y poniendo la cruz en el margen
 	int lse = GetEndStyled();
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;

@@ -79,6 +79,19 @@ void ReadComm( ) {
 			else if (sr=="quit") {
 				Salir();
 			}
+			else if (sr=="errors reset") {
+				Entity *aux=Entity::all_any;
+				do {
+					aux->error.clear();
+					aux=aux->all_next;
+				} while (aux && aux!=Entity::all_any);
+			}
+			else if (sr.substr(0,11)=="errors add ") {
+				sr=sr.substr(11);
+				size_t p=sr.find(' ');
+				map<string,LineInfo>::iterator it = code2draw.find(sr.substr(0,p));
+				if (it!=code2draw.end()) it->second.entidad->error+=sr.substr(p+1)+"  ";
+			}
 			else if (sr.substr(0,5)=="step ") {
 				sr=sr.substr(5);
 				map<string,LineInfo>::iterator it = code2draw.find(sr);

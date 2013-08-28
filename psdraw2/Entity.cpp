@@ -117,6 +117,7 @@ Entity::~Entity() {
 void Entity::SetEdit() {
 	edit=this; EditLabel(0);
 	edit_pos=label.size();
+	error.clear();
 }
 
 void Entity::SetMouse() {
@@ -471,6 +472,7 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 #define _endl_none endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,NULL);} line_num++;
 
 void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
+	string label=this->label; // para que al completar los campos vacios salga en el pseucodigo pero no altere el diagrama
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;

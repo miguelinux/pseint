@@ -55,6 +55,7 @@ struct Entity {
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
 	string label, lpre; // rotulo(editable) y prefijo(no editable)
+	string error; // mensaje de error si es que la estructura tiene un error de sintaxis
 	Entity(ETYPE _type, string _label);
 	~Entity();
 	void SetEdit();

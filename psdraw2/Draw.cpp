@@ -385,6 +385,79 @@ static void DrawChooseProcess() {
 	
 }
 
+// dibuja una marca al lado de la entidad que indica que tiene un error de sintaxis
+void draw_error_mark(Entity *e, float delta) {
+	float x=e->d_fx-e->w/2+delta;//-2*delta;
+	float y=e->d_fy-e->h/2+2*delta;
+	glColor3f(1,.85,.85);
+	glBegin(GL_QUADS);
+	glVertex2f(x+delta,y);
+	glVertex2f(x,y-2*delta);
+	glVertex2f(x-2*delta,y-2*delta);
+	glVertex2f(x,y+2*delta);
+	glVertex2f(x-2*delta,y-2*delta);
+	glVertex2f(x-3*delta,y);
+	glVertex2f(x-2*delta,y+2*delta);
+	glVertex2f(x,y+2*delta);
+	glEnd();
+	glColor3fv(color_error);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(x+delta,y);
+	glVertex2f(x,y-2*delta);
+	glVertex2f(x-2*delta,y-2*delta);
+	glVertex2f(x-3*delta,y);
+	glVertex2f(x-2*delta,y+2*delta);
+	glVertex2f(x,y+2*delta);
+	glEnd();
+	glBegin(GL_LINES);
+	glVertex2f(x,y-delta);
+	glVertex2f(x-2*delta,y+delta);
+	glVertex2f(x,y+delta);
+	glVertex2f(x-2*delta,y-delta);
+	glEnd();
+}
+
+void draw_error_mark_simple(Entity *e, float delta) {
+	float x=e->d_fx-e->w/2-delta;
+	float y=e->d_fy-e->h/2+2*delta;
+	glColor3fv(color_error);
+	glBegin(GL_LINES);
+	glVertex2f(x,y-delta);
+	glVertex2f(x-2*delta,y+delta);
+	glVertex2f(x,y+delta);
+	glVertex2f(x-2*delta,y-delta);
+	glEnd();
+}
+
+// dibuja una flecha al lado de la entidad que indica que es el punto actual de la ejecucion paso a paso
+void draw_debug_arrow(Entity *e, float delta) {
+	float x=e->d_fx-e->w/2-2*delta;
+	float y=e->d_fy-e->h/2;
+	glColor3f(0,1,0);
+	glBegin(GL_TRIANGLES);
+	glVertex2f(x,y-2*delta);
+	glVertex2f(x,y+2*delta);
+	glVertex2f(x+delta,y);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex2f(x-delta,y-delta);
+	glVertex2f(x,y-delta);
+	glVertex2f(x,y+delta);
+	glVertex2f(x-delta,y+delta);
+	glEnd();
+	glColor3f(0,.5,0);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(x-delta,y-delta);
+	glVertex2f(x,y-delta);
+	glVertex2f(x,y-2*delta);
+	glVertex2f(x+delta,y);
+	glVertex2f(x,y+2*delta);
+	glVertex2f(x,y+delta);
+	glVertex2f(x-delta,y+delta);
+	glEnd();
+}
+
+
 void display_cb() {
 	static int prev_cursor=GLUT_CURSOR_INHERIT;
 	int cursor=GLUT_CURSOR_CROSSHAIR;
@@ -426,6 +499,7 @@ void display_cb() {
 			aux->Draw();
 			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 //			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+			if (aux->error.size()) DrawTextRaster(color_error,10,10,aux->error.c_str());
 		} else if (debugging && debug_current==aux) {
 			glLineWidth(line_width+1);
 			if (!Entity::nassi_schneiderman) {
@@ -436,9 +510,11 @@ void display_cb() {
 				color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 			}
 			glLineWidth(line_width);
+			draw_debug_arrow(debug_current,5);
 		} else {
 			aux->Draw();
 		}
+		if (!aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
 		if (edit==aux && aux->CheckMouse(mx,my,false)) cursor=GLUT_CURSOR_TEXT;
 		aux=aux->all_next;
 	} while (aux!=start);
@@ -449,6 +525,7 @@ void display_cb() {
 			mouse->parent->Calculate();
 		}
 	}
+	
 	if (selecting_zoom) {
 		glColor3fv(color_menu);
 		glBegin(GL_LINE_LOOP);
