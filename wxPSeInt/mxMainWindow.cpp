@@ -628,9 +628,13 @@ void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
 	RunCurrent(true);
 }
 
-void mxMainWindow::RunCurrent(bool raise) {
+void mxMainWindow::RunCurrent(bool raise, bool from_psdraw) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
+		if (!from_psdraw && source->GetFlowSocket()) {
+			source->GetFlowSocket()->Write("send run\n",9);
+			return;
+		}
 		if (!source->UpdateRunningTerminal(raise)) {
 			wxString fname=source->SaveTemp();
 			if (debug->debugging)
@@ -642,12 +646,12 @@ void mxMainWindow::RunCurrent(bool raise) {
 }
 
 void mxMainWindow::OnRunStepStep(wxCommandEvent &evt) {
-	debug_panel->OnDebugButton(evt);
+	debug_panel->DebugStartFromGui();
 }
 
 void mxMainWindow::OnRunSubtitles(wxCommandEvent &evt) {
 	debug_panel->SetSubtitles(true);
-	if (!debug->debugging) debug_panel->OnDebugButton(evt);
+	if (!debug->debugging) debug_panel->DebugStartFromGui();
 }
 
 void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {

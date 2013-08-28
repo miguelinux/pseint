@@ -25,6 +25,7 @@ public:
 	void SetSpeed(int speed);
 	void SetState(ds_enum state);
 	ds_enum GetState();
+	void DebugStartFromGui(bool from_psdraw=false);
 	void OnDebugButton(wxCommandEvent &evt);
 	void OnDebugPause(wxCommandEvent &evt);
 	void OnDebugStep(wxCommandEvent &evt);

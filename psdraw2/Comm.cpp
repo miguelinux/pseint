@@ -73,6 +73,12 @@ void ReadComm( ) {
 			else if (sr=="send update") { 
 				SendUpdate(MO_UPDATE);
 			} 
+			else if (sr=="send debug") { 
+				SendUpdate(MO_DEBUG);
+			} 
+			else if (sr=="send run") { 
+				SendUpdate(MO_RUN);
+			} 
 			else if (sr=="raise") { 
 				Raise();
 			}

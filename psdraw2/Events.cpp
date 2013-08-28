@@ -382,7 +382,7 @@ static void keyboard_esp_cb(int key, int x, int y) {
 	else if (key==GLUT_KEY_F5) ProcessMenu(MO_DEBUG);
 	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
 	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
-	else if (key==GLUT_KEY_F7) if (!debugging) ToggleEditable();
+	else if (key==GLUT_KEY_F7) { if (!debugging) ToggleEditable(); }
 	else if (key==GLUT_KEY_F11) ToggleFullScreen();
 	else if (key==GLUT_KEY_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);

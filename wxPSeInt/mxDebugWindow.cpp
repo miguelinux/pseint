@@ -146,17 +146,29 @@ void mxDebugWindow::SetState(ds_enum state) {
 }
 
 void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
-	
+	if (debug->debugging)
+		debug->Stop();
+	else
+		DebugStartFromGui(true);
+}
+
+void mxDebugWindow::DebugStartFromGui(bool from_psdraw) {
+	mxSource *src=main_window->GetCurrentSource();
+	if (!src) return;
+	if (!from_psdraw && src->GetFlowSocket()) {
+		src->GetFlowSocket()->Write("send debug\n",11);
+		return;
+	}
 	main_window->ReorganizeForDebugging();
 	
 //	if (evaluate_window->IsShown()) evaluate_window->Hide();
 //	if (evaluate_window->IsShown()) evaluate_window->Evaluate();
-	if (debug->debugging) {
-		debug->Stop();
-	} else {
-		mxSource *src=main_window->GetCurrentSource();
+//	if (debug->debugging) {
+//		debug->Stop();
+//	} else {
+//		mxSource *src=main_window->GetCurrentSource();
 		if (src) StartDebugging(src,false);
-	}
+//	}
 }
 
 void mxDebugWindow::OnDebugPause(wxCommandEvent &evt) {
