@@ -155,11 +155,11 @@ void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 void mxDebugWindow::DebugStartFromGui(bool from_psdraw) {
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
+	main_window->ReorganizeForDebugging();
 	if (!from_psdraw && src->GetFlowSocket()) {
 		src->GetFlowSocket()->Write("send debug\n",11);
 		return;
 	}
-	main_window->ReorganizeForDebugging();
 	
 //	if (evaluate_window->IsShown()) evaluate_window->Hide();
 //	if (evaluate_window->IsShown()) evaluate_window->Evaluate();

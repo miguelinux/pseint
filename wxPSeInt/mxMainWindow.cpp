@@ -1602,19 +1602,21 @@ void mxMainWindow::ParseResults(mxSource *source) {
 
 void mxMainWindow::ReorganizeForDebugging ( ) {
 	if (config->reorganize_for_debug) {
-		static int screen_w=0, screen_h=0;
-		if (screen_w==0) {
-			if (!IsMaximized()) Maximize();
-			_yield;
-			GetSize(&screen_w,&screen_h);
-		}
+		int screen_w=wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+		int win_w,win_h;
+#ifdef __WIN32__
+		GetClientSize(&win_w,&win_h);
+#else
+		GetSize(&win_w,&win_h);
+#endif
 		mxSource *src=CURRENT_SOURCE;
 		if (src && src->GetFlowSocket()) {
 			if (IsMaximized()) Maximize(false);
-			SetSize(screen_w/2,screen_h);
+			_yield;
+			SetSize(screen_w/2,win_h);
 			Move(screen_w/2,0);
 		} else {
-			if (!IsMaximized()) Maximize();
+			if (!IsMaximized()) Maximize(true);
 		}
 		ShowDebugPanel(true);
 		ShowCommandsPanel(false);
@@ -1641,7 +1643,7 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 //			src->GetFlowSocket()->Write(size.c_str(),size.Len());
 			
 			src->GetFlowSocket()->Write("pos 0 0\n",8);
-			wxString size; size<<"size "<<screen_w/2<<" "<<screen_h<<"\n";
+			wxString size; size<<"size "<<screen_w/2<<" "<<win_h<<"\n";
 			src->GetFlowSocket()->Write(size.c_str(),size.Len());
 		}
 	}
