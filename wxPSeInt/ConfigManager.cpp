@@ -27,9 +27,6 @@ ConfigManager::ConfigManager(wxString apath) {
 		filename = DIR_PLUS_FILE(home_dir,_T("config"));
 	LoadDefaults();
 	Read();
-#ifndef __WIN32__
-	if (psdrawe_command.Len()==0) psdrawe_command="./psdrawe";
-#endif
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
 	tty_command=_T("./mac-terminal-wrapper.bin");
@@ -108,11 +105,11 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString(_T("# generado por PSeInt "))<<VERSION<<_T("-"ARCHITECTURE));
 	fil.AddLine(wxString(_T("version="))<<VERSION);
 	fil.AddLine(wxString(_T("images_path="))<<images_path);
-	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
-	fil.AddLine(wxString(_T("psterm_command="))<<psterm_command);
-	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
-	fil.AddLine(wxString(_T("psdrawe_command="))<<psdrawe_command);
-	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
+//	fil.AddLine(wxString(_T("pseint_command="))<<pseint_command);
+//	fil.AddLine(wxString(_T("psterm_command="))<<psterm_command);
+//	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
+//	fil.AddLine(wxString(_T("psdrawe_command="))<<psdrawe_command);
+//	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
 	fil.AddLine(wxString(_T("last_dir="))<<last_dir);
@@ -238,12 +235,11 @@ void ConfigManager::Read() {
 			else if (key==_T("examples_dir")) examples_dir=value;
 			else if (key==_T("last_dir")) last_dir=value;
 			else if (key==_T("temp_dir")) temp_dir=value;
-			else if (key==_T("pseint_command")) pseint_command=value;
-			else if (key==_T("psterm_command")) psterm_command=value;
-			else if (key==_T("psterm_command")) psterm_command=value;
-			else if (key==_T("psexport_command")) psexport_command=value;
-			else if (key==_T("psdrawe_command")) psdrawe_command=value;
-			else if (key==_T("psdraw2_command")) psdraw2_command=value;
+//			else if (key==_T("pseint_command")) pseint_command=value;
+//			else if (key==_T("psterm_command")) psterm_command=value;
+//			else if (key==_T("psexport_command")) psexport_command=value;
+//			else if (key==_T("psdrawe_command")) psdrawe_command=value;
+//			else if (key==_T("psdraw2_command")) psdraw2_command=value;
 			else if (key==_T("terminal")) { tty_command=value; }
 			else if (key==_T("history")) last_files.Add(value);
 		}

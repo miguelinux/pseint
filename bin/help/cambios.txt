@@ -1,4 +1,5 @@
 >>RELEASE 201309??<<
+	Corregidos problemas al ejecutar desde la interfaz que se producían al actualizar pseint desde versiones muy viejas o mover el directorio de instalación.
 	Los errores de sintaxis también se marcan en el diagrama de flujo.
 	Al generar el diagrama de flujo, las palabras claves que aparecen en las entidades (como Dimension, o Definir) se muestran ahora con solamente su inicial en mayúsculas.
 	Agregados los perfiles FIME-UANL, UniTru y UNI-FIC.
