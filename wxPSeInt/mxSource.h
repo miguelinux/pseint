@@ -100,7 +100,7 @@ public:
 	void KillRunningTerminal();
 	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();
-	void ReloadFromTempPSD();
+	void ReloadFromTempPSD(bool check_syntax);
 	bool HaveComments();
 	
 	void SetDebugLine(int l=-1, int i=-1); // para marcar donde va el paso a paso, -1 para desmarcar
@@ -129,9 +129,12 @@ public:
 	void ClearErrorMarks();
 	void MarkError(wxString line);
 	void MarkError(int l, int i, int n, wxString str, bool special=false);
-	void StartRTSyntaxChecking();
-	void StopRTSyntaxChecking();
-	void OnTimer(wxTimerEvent &te);
+	
+	void StartRTSyntaxChecking(); // habilita la verificacion de sintaxis en tiempo real para este fuente (coloca rt_running en true y lanza la primer verificacion)
+	void DoRTSyntaxChecking(); // marca que se debe rehacer la verificacion (inicia el timer, pero solo si esta habilitada, segun rt_running)
+	void StopRTSyntaxChecking(); // deshabilita la verificacion de sintaxis en tiempo real para este fuente (coloca rt_running en false, limpia las marcas y detiene el timer)
+	
+	void OnTimer(wxTimerEvent &te); // event dispatcher para los timers, mira que timer es e invoca al metodo que le corresponda
 	void OnChange(wxStyledTextEvent &event);
 	
 	void OnMarginClick(wxStyledTextEvent &event);

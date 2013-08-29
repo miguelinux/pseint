@@ -114,8 +114,9 @@ void mxSocketClient::ProcessCommandFlow() {
 	if (buffer=="modified") {
 		if (src==main_window->GetCurrentSource()) src->SetStatus(STATUS_FLOW_CHANGED);
 	} else if (buffer=="update"||buffer=="reload"||buffer=="run"||buffer=="export"||buffer=="debug") {
-		src->ReloadFromTempPSD();
-		if (buffer=="update") return;
+		bool only_update = buffer=="update";
+		src->ReloadFromTempPSD(only_update);
+		if (only_update) return;
 		main_window->SelectSource(src);
 		if (buffer=="run") main_window->RunCurrent(true,true);
 		else if (buffer=="debug") { wxCommandEvent evt; debug_panel->DebugStartFromGui(true); }

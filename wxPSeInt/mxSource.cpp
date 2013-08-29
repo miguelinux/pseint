@@ -1049,7 +1049,8 @@ void mxSource::SetAutocompletion() {
 	sort(comp_list,comp_list+comp_count);
 }
 
-void mxSource::ReloadFromTempPSD () {
+void mxSource::ReloadFromTempPSD (bool check_syntax) {
+	mask_timers=true;
 	int cl=GetCurrentLine(), cp=GetCurrentPos(); cp-=PositionFromLine(cl);
 	wxString file=GetTempFilenamePSD();
 	bool isro=GetReadOnly();
@@ -1091,7 +1092,8 @@ void mxSource::ReloadFromTempPSD () {
 	SetModify(true);
 	if (isro) SetReadOnly(true);
 	if (run_socket) UpdateRunningTerminal();
-	
+	if (check_syntax) DoRTSyntaxChecking();
+	mask_timers=false;
 }
 
 wxSocketBase * mxSource::GetFlowSocket ( ) {
@@ -1262,7 +1264,7 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 }
 
 void mxSource::StartRTSyntaxChecking ( ) {
-	rt_running=true; rt_timer->Start(RT_DELAY,true);
+	rt_running=true; DoRTSyntaxChecking();
 }
 
 void mxSource::StopRTSyntaxChecking ( ) {
@@ -1434,7 +1436,7 @@ void mxSource::OnChange (wxStyledTextEvent & event) {
 		SetStatus(STATUS_RUNNING_CHANGED);
 	}
 	if (!mask_timers) {
-		rt_timer->Start(RT_DELAY,true);
+		DoRTSyntaxChecking();
 		reload_timer->Start(RELOAD_DELAY,true);
 	}
 }
@@ -1606,5 +1608,9 @@ void mxSource::OnSetFocus (wxFocusEvent & evt) {
 
 void mxSource::UpdateFromFlow ( ) {
 	if (flow_socket) flow_socket->Write("send update\n",12);
+}
+
+void mxSource::DoRTSyntaxChecking ( ) {
+	if (rt_running) rt_timer->Start(RT_DELAY,true);
 }
 
