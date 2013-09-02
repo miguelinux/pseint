@@ -407,6 +407,7 @@ void initialize() {
 void FocusEntity(LineInfo *li) {
 	if (li) { 
 		if (li->proceso) {
+			if (start!=li->proceso) SetProc(li->proceso);
 			debug_current=li->entidad;
 			if (li->entidad) {
 				float fx=(win_w/2)/zoom;
