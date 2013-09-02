@@ -3,7 +3,7 @@ SDK=${BASE}/SDKs/MacOSX10.4u.sdk
 OBJS_DIR=../temp/drw2_ppc_rls
 GPP=powerpc-apple-darwin8-g++
 GCC=gcc
-CXXFLAGS= -O2 -framework OpenGL -framework GLUT 
+CXXFLAGS= -O2
 LIBS= -framework OpenGL -framework GLUT 
 
 all: ${OBJS_DIR} ../bin/psdraw2

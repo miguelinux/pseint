@@ -1,15 +1,14 @@
-#include <GL/glut.h>
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include "GLstuff.h"
 #include "Entity.h"
-using namespace std;
-
 #include "Global.h"
 #include "Version.h"
 #include "Events.h"
 #include "Load.h"
 #include "Comm.h"
+using namespace std;
 
 int main(int argc, char **argv) {
 	

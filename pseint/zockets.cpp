@@ -99,9 +99,9 @@ bool zocket_leer(ZOCKET z, char *data, int &cant) {
 } 
 
 bool zocket_escribir(ZOCKET z, const char *data, int cant) {
-	int es=0,n;
+	int es=0;
 	do {
-		n = send (z, data+es, cant, 0);
+		int n = send (z, data+es, cant, 0);
 		if (n>0) 
 			es+=n;
 		else

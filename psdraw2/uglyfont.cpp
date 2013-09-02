@@ -26,8 +26,7 @@
 #endif
 
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include "GLstuff.h"
 
 // The following integer arrays define the ugly font geometry
 // Coordinate ranges in the arrays are 0<=x<=100 and 0<=y<=100.
@@ -79,11 +78,12 @@ static int Ptn038[]={   /* & */
 		1,11,87,33,62,0,25,0,0,16,0,41,75,83,75,91,62,100,37,100,25,83,87,0,
 		-1
 };
-static int Ptn039[]={   /* ' */
-	39,
-		1,3,50,73,50,100,62,100,
-		-1
-};
+// se muestra siempre con comillas dobles (Ptn034)
+//static int Ptn039[]={   /* ' */
+//	39,
+//		1,3,50,73,50,100,62,100,
+//		-1
+//};
 static int Ptn040[]={   /* ( */
 	40,
 		1,6,62,100,37,83,25,58,25,41,37,16,62,0,

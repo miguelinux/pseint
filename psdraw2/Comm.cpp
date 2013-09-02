@@ -1,14 +1,14 @@
 #include <cstdlib>
 #include <sstream>
 #include <fstream>
-#include <GL/glut.h>
+#include <iostream>
+#include "GLstuff.h"
 #include "../pseint/zockets.h"
 #include "Comm.h"
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
 #include "Load.h"
-#include <iostream>
 using namespace std;
 
 ZOCKET zocket=ZOCKET_ERROR; // para comunicarse con wxPSeInt

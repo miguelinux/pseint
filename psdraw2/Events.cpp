@@ -1,13 +1,11 @@
+#include <cstdlib>
+#include <iostream>
+#include "GLstuff.h"
 #include "Events.h"
 #include "Entity.h"
 #include "Global.h"
 #include "Comm.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include "Draw.h"
-#include <cstdlib>
-#include <iostream>
 #include "Load.h"
 using namespace std;
 

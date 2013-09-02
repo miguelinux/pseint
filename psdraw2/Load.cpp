@@ -1,12 +1,11 @@
-#include "Load.h"
-
 #include <fstream>
 #include <stack>
+#include <iostream>
+#include <sstream>
+#include "Load.h"
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
-#include <iostream>
-#include <sstream>
 using namespace std;
 
 

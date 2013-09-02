@@ -1,10 +1,6 @@
-#ifdef _FOR_EXPORT
-#include <GLtoWX.h>
-#else
-#include <GL/glut.h>
-#endif
 #include <iostream>
 #include <cstdlib>
+#include "GLstuff.h"
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"

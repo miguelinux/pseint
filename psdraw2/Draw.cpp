@@ -1,8 +1,4 @@
-#ifdef _FOR_EXPORT
-#include <GLtoWX.h>
-#else
-#include <GL/glut.h>
-#endif
+#include "GLstuff.h"
 #include "Draw.h"
 #include "Global.h"
 #include "Entity.h"
@@ -347,7 +343,7 @@ static void DrawChooseProcess() {
 		} else {
 			
 			string &s=procesos[i]->label;
-			int l=s.size(),p=0; size_t f=s.find('<');
+			int l=s.size(),p=0; int f=s.find('<');
 			if (f==string::npos) f=s.find('='); else f++;
 			if (f==string::npos) f=0; else f++;
 			int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;

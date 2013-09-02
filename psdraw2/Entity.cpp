@@ -1,15 +1,10 @@
-#ifdef _FOR_EXPORT
-#include <GLtoWX.h>
-void SetModified() {}
-#else
-#include <GL/glut.h>
-#endif
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
+#include "GLstuff.h"
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
-#include <sstream>
 #include "Events.h"
 using namespace std;
 
@@ -20,6 +15,10 @@ bool Entity::nassi_schneiderman=false; // alterna el formato entre diagrama de f
 // tamaño de las letras
 #define char_w 12
 #define char_h 18
+
+#ifdef _FOR_EXPORT
+#define SetModified()
+#endif
 
 void Entity::GetTextSize(const string &label, int &w, int &h) {
 	w=label.size()*char_w;
