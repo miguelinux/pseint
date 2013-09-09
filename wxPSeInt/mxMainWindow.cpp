@@ -1218,7 +1218,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 }
 
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
-	mxSource *source = CURRENT_SOURCE;
+	mxSource *source = (mxSource*)notebook->GetPage(event.GetSelection());
 	if (source->GetModify()) {
 		int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
 		if (res==wxCANCEL) {

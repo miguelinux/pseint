@@ -1,3 +1,4 @@
+	Corregido un error al cerrar una pestaña de pseudocódigo que no sea la actual utilizando el botón del medio del ratón.
 	Corregido un error al exportar la instrucción definir desde el pseudocódigo al diagrama de flujo.
 	Agregados los perfiles FP-UNE, UETS, UNIFIP e ITChilpancingo.
 	
