@@ -66,7 +66,7 @@ path=Version.h
 cursor=24
 open=true
 [other]
-path=../bin/help/cambios.txt
+path=../bin/help/cambios.html
 cursor=677
 open=true
 [config]

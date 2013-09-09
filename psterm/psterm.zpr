@@ -50,7 +50,7 @@ open=true
 path=manifest.xml
 cursor=0
 [other]
-path=../bin/help/cambios.txt
+path=../bin/help/cambios.html
 cursor=2356
 open=true
 [config]

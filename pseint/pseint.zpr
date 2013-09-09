@@ -136,7 +136,7 @@ cursor=331
 path=version_common.h
 cursor=839
 [other]
-path=../bin/help/cambios.txt
+path=../bin/help/cambios.html
 cursor=1409
 [other]
 path=../bin/help/errores.hlp
