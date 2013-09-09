@@ -250,7 +250,8 @@ void LoadProc(istream &fin) {
 					else if (aux2=="COMO LOGICO") aux2="Como Logico";
 					else if (aux2=="COMO ENTERO") aux2="Como Entero";
 					else if (aux2=="COMO REAL") aux2="Como Real";
-					str=string("Definir ")+str.substr(p+1,p2-p)+" "+aux2;
+					str.erase(p2);
+					str=string("Definir ")+str.substr(p+1)+aux2;
 				}
 				else if (aux=="DIMENSION") str=string("Dimension ")+str.substr(p+1);
 			}
