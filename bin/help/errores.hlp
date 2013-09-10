@@ -4,155 +4,155 @@
   * Si no hay una instrucción SI antes, retire la palabra clave ENTONCES o incluya el SI y la condición correspondiente.
 
 2
-  La palabra clave SINO se utiliza en la estructura condiciónal del tipo SI-ENTONCES y debe colocarse a continuación de las instrucciónes por verdadero (las que siguen a la palabra ENTONCES), en una nueva linea.
+  La palabra clave SINO se utiliza en la estructura condicional del tipo SI-ENTONCES y debe colocarse a continuación de las instrucciones por verdadero (las que siguen a la palabra ENTONCES), en una nueva linea.
   * Compruebe que la condición del SI anterior este bien expresada.
   * Si no hay una instrucción SI antes, retire la palabra clave SINO o incluya el SI y la condición correspondiente.
   
 3
-  Se encontró una coma cuando debiera encontrarse una expresión o una palabra clave de acuerdo a la instrucción que corresponda. Si la instrucción recibe parametros, no puede omitir ninguno.
-  * Si deseaba omitir un parametro, en su lugar utilice 0, FALSO, o "" de acuerdo al tipo de dato (número, logico y caracter respectivamente).
-  * Si no va un parametro retire la coma.
+  Se encontró una coma cuando debiera encontrarse una expresión o una palabra clave de acuerdo a la instrucción que corresponda. Si la instrucción recibe parámetros, no puede omitir ninguno.
+  * Si deseaba omitir un parámetro, en su lugar utilice 0, FALSO, o "" de acuerdo al tipo de dato (número, lógico y carácter respectivamente).
+  * Si no va un parámetro retire la coma.
   
 4
   Una constante de tipo número no puede tener mas de un punto. El punto se utiliza como separador de la parte entera y la parte decimal del número, nunca como separador de miles.
-  *Revise las constantes numericas en las expresiónes y retire el punto que no corresponde.
+  *Revise las constantes numéricas en las expresiones y retire el punto que no corresponde.
 
 5
-  Una constante de tipo número solo puede incluir números y un punto separador de decimales. Alguna constante numerica incluye una letra o un caracter no permitido como un parentesis o una comilla.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes numericas en cada expresión de esta linea.
+  Una constante de tipo número solo puede incluir números y un punto separador de decimales. Alguna constante numérica incluye una letra o un carácter no permitido como un paréntesis o una comilla.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes numéricas en cada expresión de esta linea.
   
 6
-  Hay una constante de tipo caracter colocada a continuación de algun simbolo logico o matematico que no corresponde ( parentesis, /,~,*,^,&amp;,|,.,+,&lt;,etc).
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+  Hay una constante de tipo carácter colocada a continuación de algún símbolo lógico o matemático que no corresponde ( paréntesis, /,~,*,^,&amp;,|,.,+,&lt;,etc).
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 7
-  Hay una constante de tipo caracter colocada a continuacion de una palabra clave o un identificador sin el correspondiente espacio u operador en medio.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+  Hay una constante de tipo carácter colocada a continuación de una palabra clave o un identificador sin el correspondiente espacio u operador en medio.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 8
-  Hay una constante de tipo caracter colocada a continuación de una constante numerica sin el correspondiente espacio u operador en medio.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+  Hay una constante de tipo carácter colocada a continuación de una constante numérica sin el correspondiente espacio u operador en medio.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 9
-   Hay algun simbolo logico o matematico que no corresponde ( parentesis, /,~,*,^,&amp;,|,.,+,&lt;,etc) colocado a continuación de una constante de tipo caracter.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+   Hay algún símbolo lógico o matemático que no corresponde ( paréntesis, /,~,*,^,&amp;,|,.,+,&lt;,etc) colocado a continuación de una constante de tipo carácter.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 10
-  Hay una palabra clave o un identificador colocada a continuacion de una constante de tipo caracter sin el correspondiente espacio u operador en medio.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+  Hay una palabra clave o un identificador colocada a continuación de una constante de tipo carácter sin el correspondiente espacio u operador en medio.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 11
-  Hay una constante de tipo numérico colocada a continuación de una constante de tipo caracter sin el correspondiente espacio u operador en medio.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise la correcta formulacion de las constantes de caracter en cada expresión de esta linea.
+  Hay una constante de tipo numérico colocada a continuación de una constante de tipo carácter sin el correspondiente espacio u operador en medio.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise la correcta formulación de las constantes de carácter en cada expresión de esta linea.
 
 12
-  Se encontro en esta linea algun caracter desconocido.
-  * Compruebe que los operadores utilizados sean validos y que las constantes no incluyan ningun simbolo extraño.
+  Se encontró en esta linea algún carácter desconocido.
+  * Compruebe que los operadores utilizados sean validos y que las constantes no incluyan ningún símbolo extraño.
 
 13
-  Se encontro un identificador o una palabra reservada a continuacion de un punto. El punto se utiliza solo para separar decimales en una constante numerica, por lo que debe seguir un número a continuacion.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise que las constantes numericas esten correctamente expresadas.
+  Se encontró un identificador o una palabra reservada a continuación de un punto. El punto se utiliza solo para separar decimales en una constante numérica, por lo que debe seguir un número a continuación.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise que las constantes numéricas estén correctamente expresadas.
   * Introduzca el espacio, la coma o el número si falta, o suprima el punto si no corresponde.
   
 14
-  Se encontro un punto a continuacion de un identificador o una palabra reservada. El punto se utiliza solo para separar decimales en una constante numerica, por lo que siempre debe estar precedido por un número o un operador matematico.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise que las constantes numericas esten correctamente expresadas.
+  Se encontró un punto a continuación de un identificador o una palabra reservada. El punto se utiliza solo para separar decimales en una constante numérica, por lo que siempre debe estar precedido por un número o un operador matemático.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise que las constantes numéricas estén correctamente expresadas.
   * Introduzca el espacio, la coma o el número si falta, o suprima el punto si no corresponde.
   
 15
-  Se encontro un simbolo, caracter u operador a continuacion de un punto. El punto se utiliza solo para separar decimales en una constante numerica, por lo que debe seguir un número a continuacion.
-  * Revise que las constantes esten correctamente separadas de palabras claves u otros parametros con comas y/o espacios donde corresponda.
-  * Revise que las constantes numericas esten correctamente expresadas.
+  Se encontró un símbolo, carácter u operador a continuación de un punto. El punto se utiliza solo para separar decimales en una constante numérica, por lo que debe seguir un número a continuación.
+  * Revise que las constantes estén correctamente separadas de palabras claves u otros parámetros con comas y/o espacios donde corresponda.
+  * Revise que las constantes numéricas estén correctamente expresadas.
   * Introduzca el espacio, la coma o el número si falta, o suprima el punto si no corresponde.
 
 16
-  Hay una coma seguida de un operador logico o matematico o un fin de instrucción. La coma se utiliza para separar parametros en instrucciónes que acepten mas de uno (como LEER, ESCRIBIR), para separar dos constantes numéricas a comparar en la estructura SEGUN, o para separar dos o mas indices en un arreglo.
-  * Si es un arreglo, compruebe la cantidad de indices y complete si falta o retire la coma.
+  Hay una coma seguida de un operador lógico o matemático o un fin de instrucción. La coma se utiliza para separar parámetros en instrucciones que acepten mas de uno (como LEER, ESCRIBIR), para separar dos constantes numéricas a comparar en la estructura SEGUN, o para separar dos o mas índices en un arreglo.
+  * Si es un arreglo, compruebe la cantidad de índices y complete si falta o retire la coma.
   * Si es una instrucción LEER agregue el identificador de variable que corresponda o retire la coma.
-  * Si es una instrucción ESCRIBIR o esta dentro de una estrucutura SEGUN, compruebe que las expresiónes sean correctas y que no se halla omitido ningun elemento.
+  * Si es una instrucción ESCRIBIR o esta dentro de una estructura SEGUN, compruebe que las expresiones sean correctas y que no se halla omitido ningún elemento.
 
 17
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo mayor (&gt;) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ ; , &amp; | ~ ) ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo mayor (&gt;) seguido de otro carácter que no corresponde ( &lt; &gt; / * ^ ; , &amp; | ~ ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 18
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menor (&lt;) seguido de otro caracter que no corresponde ( &lt; / * ^ ; , &amp; | ~ ) ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menor (&lt;) seguido de otro carácter que no corresponde ( &lt; / * ^ ; , &amp; | ~ ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 19
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo igual (=) seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; , ; | ~ = ) ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo igual (=) seguido de otro carácter que no corresponde ( &lt; &gt; / * ^ &amp; , ; | ~ = ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 20
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo pipe (|) seguido de otro caracter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo pipe (|) seguido de otro carácter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que el operador lógico de disyunción (|) va espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 21
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo andpersand (&amp;) seguido de otro caracter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo ampersand (&amp;) seguido de otro carácter que no corresponde ( &lt; &gt; + - / * ^ ; , &amp; | ~ ( ) = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
   * Recuerde que el operador lógico de conjunción (&amp;) va espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 22
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay una negación (~ ó NO) seguida de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; | , ; ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay una negación (~ ó NO) seguida de otro carácter que no corresponde ( &lt; &gt; / * ^ &amp; | , ; ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 23
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo más (+) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo más (+) seguido de otro carácter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
 
 24
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menos (-) seguido de otro caracter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo menos (-) seguido de otro carácter que no corresponde ( &lt; &gt; - + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 25
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo asterisco (*) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo asterisco (*) seguido de otro carácter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 26
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo barra (/) seguido de otro caracter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo barra (/) seguido de otro carácter que no corresponde ( &lt; &gt; + ) / * ^ &amp; , ; | ~ = ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 27
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo (^) seguido de otro caracter que no corresponde ( &lt; &gt; + / * ^ &amp; | , ; ) ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un signo (^) seguido de otro carácter que no corresponde ( &lt; &gt; + / * ^ &amp; | , ; ) ). 
   * Verifique que las expresiones estén correctamente formuladas: verifique que no falte algún operando y que los operadores sean válidos.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 28
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis izquierdo (() seguido de otro caracter que no corresponde ( &lt; &gt; / * ^ &amp; | = ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis izquierdo (() seguido de otro carácter que no corresponde ( &lt; &gt; / * ^ &amp; | = ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
-  * Recuerde que algnos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Recuerde que algunos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 29
-  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis derecho ()) seguido de otro caracter que no corresponde ( &amp; | ~ ( ). 
+  Se encontró un operador incorrecto o mal expresado. En algún punto de esta línea hay un paréntesis derecho ()) seguido de otro carácter que no corresponde ( &amp; | ~ ( ). 
   * Verifique que las expresiones estén correctamente formuladas. (Verifique que no falte algún operando, que los operadores sean válidos, y que se existan los espacios necesarios).
-  * Recuerde que algnos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
-  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aqui</A>.
+  * Recuerde que algunos operadores (como &amp; y |) van espaciados de las expresiones a izquierda y derecha del mismo.
+  * Para una lista completa de posibles operadores haga click <A href="operadores.html">aquí</A>.
   
 31
   Falta alguna expresión en esta linea. Puede deberse a que dentro de dos paréntesis no hay ninguna expresión o a que falta la expresión de la derecha en alguna asignación. 
-  * Verifique que no halla paréntesis vacios () en esta linea.
-  * Si es una asignación complete la expresión a asigar.
+  * Verifique que no halla paréntesis vacíos () en esta linea.
+  * Si es una asignación complete la expresión a asignar.
   
 32
   Luego de la condición de la instrucción SI (o en la siguiente linea) debe colocarse la palabra clave ENTONCES para indicar el comienzo de las acciones por verdadero.
@@ -180,18 +180,18 @@
 
 35
   Alguna de las expresiones que utilizó en esta linea está mal formulada debido a que se cerró algún paréntesis o corchete que no se había abierto anteriormente.
-  * Compruebe que la cantidad de parentesis que se abren y cierran sea la misma y que la ubicación sea la adecuada.
+  * Compruebe que la cantidad de paréntesis que se abren y cierran sea la misma y que la ubicación sea la adecuada.
   * Compruebe que la cantidad de corchetes que se abren y cierran sea la misma y que la ubicación sea la adecuada.
   
 36
   Alguna de las expresiones que utilizó en esta linea está mal formulada debido a que se abrió algún paréntesis o corchete que luego no se cerró.
-  * Compruebe que la cantidad de parentesis que se abren y cierran sea la misma y que la ubicación sea la adecuada.
+  * Compruebe que la cantidad de paréntesis que se abren y cierran sea la misma y que la ubicación sea la adecuada.
   * Compruebe que la cantidad de corchetes que se abren y cierran sea la misma y que la ubicación sea la adecuada.
 
 37
-  Alguna de las constantes de tipo caracter que utilizó en esta linea está mal formulada debido a que no delimitó correctamente con sus comillas. 
-  * Compruebe que todas las comillas que se abren tambien se cierren.
-  * Compruebe que no halla comillas demás marcando el inicio de una constante de tipo caracter que donde no debe.
+  Alguna de las constantes de tipo carácter que utilizó en esta linea está mal formulada debido a que no delimitó correctamente con sus comillas. 
+  * Compruebe que todas las comillas que se abren también se cierren.
+  * Compruebe que no halla comillas demás marcando el inicio de una constante de tipo carácter que donde no debe.
   
 38
   Las instrucciones secuenciales como LEER, ESCRIBIR, DIMENSION, DEFINIR o la asignación (&lt;-) deben estar finalizadas por un punto y coma (;). 
@@ -204,20 +204,20 @@
 40
   La palabra clave PROCESO se utiliza para definir el nombre y comienzo del proceso, por lo que debe estar seguida de dicho nombre.
   * Complete el nombre del proceso a continuación de la palabra PROCESO.
-  * Recuerde que los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  * Recuerde que los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
 
 41
-  El nombre del proceso no es válido. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  El nombre del proceso no es válido. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Corrija el identificador del nombre del proceso.
   
 42
   Se encontró una expresión o instrucción en lugar de la definición del proceso (esto es la palabra clave PROCESO seguida del nombre del mismo). Antes de esta definición solo puede haber lineas en blanco o lineas con comentarios. 
   * Compruebe que la palabra proceso esté bien escrita.
   * Si definió el nombre del proceso mas abajo, mueva la linea hacia arriba.
-  * Si no lo denifinió debe hacerlo aquí o antes para marcar el comienzo del algoritmo.
+  * Si no lo definió debe hacerlo aquí o antes para marcar el comienzo del algoritmo.
 
 43
-  Las instrucciones que componen el algoritmo están delimitadas por las palabras clave PROOSESO seguida del nombre del mismo FINPROCESO, por lo que no debe haber ninguna instrucción después de FINPROCESO.
+  Las instrucciones que componen el algoritmo están delimitadas por las palabras clave PROCESO seguida del nombre del mismo FINPROCESO, por lo que no debe haber ninguna instrucción después de FINPROCESO.
   * Retire esta instrucción o reubíquela antes de la palabra FINPROCESO.
   
 45
@@ -225,35 +225,35 @@
   * Agregue punto y coma al final de la linea.
 
 48
-  El nombre de la variable no es válida. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  El nombre de la variable no es válida. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Corrija el identificador del nombre de la variable.
    
 49
-  El nombre de la variable no es válida. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  El nombre de la variable no es válida. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Corrija el identificador del nombre de la variable.
 
 51
-  La palabra clave ENTONCES debe colocarse a continuacion de la condición de un SI separado por un espacio, o en la siguiente linea sin ninguna otra instrucción o expresión en medio.
+  La palabra clave ENTONCES debe colocarse a continuación de la condición de un SI separado por un espacio, o en la siguiente linea sin ninguna otra instrucción o expresión en medio.
   * Compruebe que la condición del SI anterior este bien expresada.
   * Si no hay una instrucción SI antes, retire la palabra clave ENTONCES o incluya el SI y la condición correspondiente.
 
 53
   La instrucción ESCRIBIR debe estar seguida de las expresiones a mostrar separadas por comas en caso de haber más de una. Faltan dichas expresiones en esta línea.
   * Complete la línea con las expresiones correspondientes.
-  * Si sólo quiere mostrar una linea en blanco puede utilizar una cadena de caracteres vacia (ESCRIBIR "").
+  * Si sólo quiere mostrar una linea en blanco puede utilizar una cadena de caracteres vacía (ESCRIBIR "").
 
 54
   Alguna de las expresiones en esta línea no es correcta debido a que está compuesta por dos expresiones, identificadores o palabras claves separadas por un espacio. Si desea mostrar más de una expresión debe separarlas por comas.
-  * Verifique que las expresiones esten correctamente formuladas.
+  * Verifique que las expresiones estén correctamente formuladas.
   * Verifique que no falte alguna coma o algún operador.
   
 55
-  La palabra clave SINO se utiliza en la estructura condiciónal del tipo SI-ENTONCES y debe colocarse a continuacion de las instrucciónes por verdadero (las que siguen a la palabra ENTONCES), en una nueva linea.
+  La palabra clave SINO se utiliza en la estructura condicional del tipo SI-ENTONCES y debe colocarse a continuación de las instrucciones por verdadero (las que siguen a la palabra ENTONCES), en una nueva linea.
   * Compruebe que la condición del SI anterior este bien expresada.
   * Si no hay una instrucción SI antes, retire la palabra clave SINO o incluya el SI y la condición correspondiente.
 
 56
-  Para dimensionar un arreglo debe utilizar la palabra DIMENSION seguida el o los nombre del arreglo con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separandolos por comas. 
+  Para dimensionar un arreglo debe utilizar la palabra DIMENSION seguida el o los nombre del arreglo con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separándolos por comas. 
   Ejemplo: DIMENSION ArregloA(10,3),ArregloB(15),ArregloC(10,15,25);
   * Complete la instrucción agregando los identificadores de los arreglos que desea dimensionar con sus correspondientes tamaños entre paréntesis.
   
@@ -263,10 +263,10 @@
   * Verifique que no falte alguna coma o sobre algún espacio.
 
 58
-  Para dimensionar uno o varios arreglo debe utilizar la palabra DIMENSION seguida el o los nombres de los arreglos con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separandolos por comas. 
+  Para dimensionar uno o varios arreglo debe utilizar la palabra DIMENSION seguida el o los nombres de los arreglos con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separándolos por comas. 
   Ejemplo: DIMENSION ArregloA(10,3),ArregloB(15),ArregloC(10,15,25);
   En esta línea alguno de los nombres de arreglos no tiene las dimensiones correspondientes entre paréntesis a continuación.
-  * Agregue las dimensiones entre parentesis al lado de los arreglos que no las tengan.
+  * Agregue las dimensiones entre paréntesis al lado de los arreglos que no las tengan.
 
 59
   Alguno de los nombres de arreglos propuestos en esta línea no es válido. Los identificadores válidos sólo pueden contener letras y números y siempre deben comenzar con una letra.
@@ -277,7 +277,7 @@
   * Repase los identificadores utilizados y corrija los que no sean válidos.
 
 61
-  Para dimensionar uno o varios arreglos debe utilizar la palabra DIMENSION seguida el o los nombres de los arreglos con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separandolos por comas. 
+  Para dimensionar uno o varios arreglos debe utilizar la palabra DIMENSION seguida el o los nombres de los arreglos con sus correspondientes dimensiones entre corchetes y separadas por comas si fuesen más de una. Opcionalmente puede dimensionar mas de un arreglo en una misma linea separándolos por comas. 
   Ejemplo: DIMENSION ArregloA(10,3),ArregloB(15),ArregloC(10,15,25);
   Alguno de los arreglos que está intentando dimensionar no tiene todas sus dimensiones completas.
   * Agregue las dimensiones de los arreglos que faltan, o retire las comas si están sobrando.
@@ -296,38 +296,38 @@
   * Verifique que no falte alguna coma o sobre algún espacio.
 
 65
-  La instrucción LEER lleva por parámetros la lista de identificadores de variables en donde se colocarán los datos leidos. Alguno de los parámetros no es un identificador de variable válido. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  La instrucción LEER lleva por parámetros la lista de identificadores de variables en donde se colocarán los datos leídos. Alguno de los parámetros no es un identificador de variable válido. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Compruebe que todos los parámetros sean identificadores y no expresiones.
   * Verifique que los identificadores sean válidos (es decir que no contengan caracteres no permitidos, espacios u operadores, y que comiencen con una letra).
 
 66
-  La instrucción LEER lleva por parámetros la lista de identificadores de variables en donde se colocarán los datos leidos. Alguno de los parámetros no es un identificador de variable válido. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  La instrucción LEER lleva por parámetros la lista de identificadores de variables en donde se colocarán los datos leídos. Alguno de los parámetros no es un identificador de variable válido. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Compruebe que todos los parámetros sean identificadores y no expresiones.
   * Verifique que los identificadores sean válidos (es decir que no contengan caracteres no permitidos, espacios u operadores, y que comiencen con una letra).
 
 67
-  /* Error inalcanzable - Comentado en el codigo */
+  /* Error inalcanzable - Comentado en el código */
 
 68
-  Esta linea contiene alguna caracter llave ( "{" ó "}" ). Estos caracteres no son válidos en pseudocódigo. 
-  * Elimine estos caracteres y corriga la(s) expresion(es).
-  * Si utilizó el menu de comandos para insertar esta linea debe completar la instrucción reemplazando los campos marcados entre llaves por las expresiones o los identificadores de variable que correspondan.
+  Esta linea contiene alguna carácter llave ( "{" ó "}" ). Estos caracteres no son válidos en pseudocódigo. 
+  * Elimine estos caracteres y corrija la(s) expresión(es).
+  * Si utilizó el menú de comandos para insertar esta linea debe completar la instrucción reemplazando los campos marcados entre llaves por las expresiones o los identificadores de variable que correspondan.
 
 69
   Alguno de los índices utilizados en los arreglos de esta línea no es de tipo numérico. Un índice puede ser cualquier constante, variable o expresión de tipo numérica.
   * Compruebe que las expresiones de los índices estén bien escritas y sean numéricas.
 
 70
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
   Ej: PARA iv-1 HASTA 15 CON PASO 2 HACER
   * Complete la instrucción.
 
 71
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. Falta la palabra clave HACER al final de la linea.
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. Falta la palabra clave HACER al final de la linea.
   * Agregue la palabra HACER al final de la linea.
     
 72
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
   Ej: PARA iv-1 HASTA 15 CON PASO 2 HACER
   La asignación inicial no esta correctamente expresada o se omitió.
   * Agregue la asignación inicial luego de la palabra PARA.
@@ -338,7 +338,7 @@
   * Complete la asignación que va a continuación de la palabra PARA.
   
 74
-  El identificador de variable de la asignación del PARA no es correcto. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  El identificador de variable de la asignación del PARA no es correcto. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Compruebe que sea un identificador y no una expresión.
   * Verifique que no contenga caracteres no permitidos, espacios u operadores, y que comiencen con una letra.
 
@@ -351,7 +351,7 @@
   * Verifique que la variable y la expresión sean de tipo numérico y que estén correctamente expresadas.
 
 78
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
   Ej: PARA i&lt;-1 HASTA 15 CON PASO 2 HACER
   Falta el valor final entre las palabras claves HASTA y HACER.
   * Agregue el valor final luego de la asignación inicial.
@@ -360,7 +360,7 @@
   * Si la instrucción contiene la palabra HASTA, verifique que la expresión para el valor inicial sea correcta.
 
 79
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
   Ej: PARA i&lt;-1 HASTA 15 CON PASO 2 HACER
   Falta la palabra clave HASTA.
   * Agregue la palabra clave HASTA junto con el valor final luego de la asignación inicial.
@@ -374,7 +374,7 @@
   * Reemplace el valor final por una variable, constante o expresión de tipo numérica.
   
 82
-  La instruccion PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
+  La instrucción PARA debe estar seguida de la asignación inicial, la palabra clave HASTA, el valor final, opcionalmente la palabra clave CON PASO y el valor del paso y finalmente la palabra HACER. 
   Ej: PARA i&lt;-1 HASTA 15 CON PASO 2 HACER
   Luego del valor final sólo pueden continuar las palabras claves CON PASO o HACER.
   * Verifique que la expresión del valor final sea correcta.
@@ -382,14 +382,14 @@
 
 84
   El valor del paso en el bucle PARA (el que se encuentra luego de la palabra clave PASO) debe ser de tipo numérico.
-  * Reemplace eldel paso por una variable, constante o expresión de tipo numérica.
+  * Reemplace el valor del paso por una variable, constante o expresión de tipo numérica.
   
 85
   Falta el nombre identificador de la variable en la que se desea asignar la expresión.
   * Agregue el identificador de variable antes del operador de asignación.
 
 86
-  El identificador de variable de la asignación no es correcto. Los identificadores válidos entan formados sólamente por números y letras, comenzando siempre con una letra.
+  El identificador de variable de la asignación no es correcto. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Compruebe que sea un identificador y no una expresión.
   * Verifique que no contenga caracteres no permitidos, espacios u operadores, y que comiencen con una letra.
 
@@ -398,15 +398,15 @@
   * Verifique que la expresión de la derecha sea correcta.
 
 88
-  En una asignación, a la derecha del operador de asignación (&lt;-) debe colocarse la expresión a evaluar para asignar a la variable de la izquierda. En esta líne se colocó más de una expresión separadas por coma.
-  * Corrija la expresión de la derecha convirtiendola en un sólo parámetro.
+  En una asignación, a la derecha del operador de asignación (&lt;-) debe colocarse la expresión a evaluar para asignar a la variable de la izquierda. En esta linea se colocó más de una expresión separadas por coma.
+  * Corrija la expresión de la derecha convirtiéndola en un sólo parámetro.
   * Compruebe que los índices de los arreglos se encuentren entre corchetes.
   * Verifique que los operadores sean correctos y que no haya una coma mal ubicada.
   * Recuerde que el separador de decimales es el punto, no la coma. Compruebe que las constantes numéricas estén correctamente escritas.
 
 89
-  En una asiganción, luego del operador de asignación (&lt;-) debe colocarse la expresión que será evaluada y cuyo resultado se asignará a la variable de la izquierda. En esta línea falta la expresión de la derecha.
-  * Comlete la expresión a la derecha del operador de asignación.
+  En una asignación, luego del operador de asignación (&lt;-) debe colocarse la expresión que será evaluada y cuyo resultado se asignará a la variable de la izquierda. En esta línea falta la expresión de la derecha.
+  * Complete la expresión a la derecha del operador de asignación.
 
 90
   Luego de la palabra clave SI debe colocarse la condición a evaluar para decidir que acciones ejecutar.
@@ -432,7 +432,7 @@
   * Verifique que la condición esté expresada correctamente.
 
 95
-  La condición de salida del bulce REPETIR que debe colocarse luego de la palabra clave HASTA QUE debe ser una expresión de tipo lógico.
+  La condición de salida del bucle REPETIR que debe colocarse luego de la palabra clave HASTA QUE debe ser una expresión de tipo lógico.
   * Compruebe que la condición esté correctamente formulada y sea de tipo lógico.
 
 96
@@ -458,7 +458,7 @@
 102
   La correcta sintaxis para la estructura de control MIENTRAS debe incluir la palabra HACER luego de la condición, antes del conjunto de instrucciones a repetir.
   Ej: MIENTRAS n&lt;&gt;0 HACER
-  * Comprube que la haya colocado y que esté bien escrita. En caso contrario, corríjalo o agréguela.
+  * Compruebe que la haya colocado y que esté bien escrita. En caso contrario, corríjalo o agréguela.
 
 103
   
@@ -467,7 +467,7 @@
   
 
 105
-  Luego de las instrucciones FINPARA, FINSEGUN, FINSI, FINMIENTRAS, REPETIR, BORRARPANTALLA y ESPERARTECLA no debe colocar ningun parametro. Verifique que a continuación de estas palabras claves se encuentre un salto de linea o un punto, o utilice el punto y coma para indicar el comienzo de una nueva instrucción en la misma linea.
+  Luego de las instrucciones FINPARA, FINSEGUN, FINSI, FINMIENTRAS, REPETIR, BORRARPANTALLA y ESPERARTECLA no debe colocar ningún parámetro. Verifique que a continuación de estas palabras claves se encuentre un salto de linea o un punto, o utilice el punto y coma para indicar el comienzo de una nueva instrucción en la misma linea.
   
 106
   La instrucción de esta linea no se reconoce como una instrucción válida. Puede haber errores de tipeo.
@@ -476,55 +476,55 @@
   
 107
   Se encontró la palabra clave FINSEGUN, pero la ultima estructura de control abierta no fue una estructura del tipo SEGUN. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el FINSEGUN donde corresponda, o cierre antes las estructuras anidadas dentro de este SEGUN.
 
 108
   Se encontró la palabra clave FINPARA, pero la ultima estructura de control abierta no fue una estructura del tipo PARA. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el FINPARA donde corresponda, o cierre antes las estructuras anidadas dentro de este PARA.
 
 109
   Se encontró la palabra clave FINMIENTRAS, pero la ultima estructura de control abierta no fue una estructura del tipo MIENTRAS. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el FINMIENTRAS donde corresponda, o cierre antes las estructuras anidadas dentro de este MIENTRAS.
 
 110
   Se encontró la palabra clave FINSI, pero la ultima estructura de control abierta no fue una estructura del tipo SI. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el FINSI donde corresponda, o cierre antes las estructuras anidadas dentro de este SI.
 
 111
   Se encontró la palabra clave HASTA QUE, pero la ultima estructura de control abierta no fue una estructura del tipo REPETIR. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el HASTA QUE donde corresponda, o cierre antes las estructuras anidadas dentro de este REPETIR.
 
 112
   Se encontró la palabra clave FINPROCESO, pero la ultima estructura de control abierta no fue una estructura del tipo PROCESO. 
-  * Verifique que las estructuras anidadas esten correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
+  * Verifique que las estructuras anidadas estén correctamente planteadas, es decir que sus puntos de entrada y salida se encuentren bien ubicados y que cada una se abra y se cierre en un mismo nivel.
   * Reubique el FINPROCESO donde corresponda, o cierre antes las estructuras anidadas dentro de este PROCESO.
 
 114
-  El conjunto de instrucciones que repite la estructura repetitiva PARA esta delimitado por la palabra clave FINPARA al final del mismo. Esta instruccion PARA que no tiene su correspondiente FINPARA (o esta mal ubicado).
+  El conjunto de instrucciones que repite la estructura repetitiva PARA esta delimitado por la palabra clave FINPARA al final del mismo. Esta instrucción PARA que no tiene su correspondiente FINPARA (o esta mal ubicado).
   * Verifique que exista el FINPARA correspondiente a este PARA y que este bien escrito.
   * Recuerde que FINPARA va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN PARA).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
 
 115
-  El conjunto de instrucciones que repite la estructura repetitiva REPETIR-HASTA QUE esta delimitado por la palabra clave HASTA QUE y la condicion de salida al final del mismo. Esta instruccion REPETIR que no tiene su correspondiente HASTA QUE (o esta mal ubicado).
+  El conjunto de instrucciones que repite la estructura repetitiva REPETIR-HASTA QUE esta delimitado por la palabra clave HASTA QUE y la condición de salida al final del mismo. Esta instrucción REPETIR que no tiene su correspondiente HASTA QUE (o esta mal ubicado).
   * Verifique que exista el HASTA QUE correspondiente a este PARA y que este bien escrito.
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este PARA.
   * Si su <A href="perfiles.html">perfil</A> de lenguaje admite sintaxis flexible, recuerde que las palabras REPETIR y HACER marcan el comienzo de un bucle que debe finalizar con las construcciones HASTA QUE... o MIENTRAS QUE...
 
 116
-  El conjunto de instrucciones que repite la estructura repetitiva MIENTRAS esta delimitado por la palabra clave FINMIENTRAS al final del mismo. Esta instruccion MIENTRAS que no tiene su correspondiente FINMIENTRAS (o esta mal ubicado).
+  El conjunto de instrucciones que repite la estructura repetitiva MIENTRAS esta delimitado por la palabra clave FINMIENTRAS al final del mismo. Esta instrucción MIENTRAS que no tiene su correspondiente FINMIENTRAS (o esta mal ubicado).
   * Verifique que exista el FINMIENTRAS correspondiente a este MIENTRAS y que este bien escrito.
   * Recuerde que FINMIENTRAS va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN MIENTRAS).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este MIENTRAS.
   * Si estaba intentando utilizar la palabra "MIENTRAS" para cerrar un bucle REPETIR...MIENTRAS QUE o HACER...MIENTRAS QUE, debe reemplazarla por "MIENTRAS QUE" para evitar la ambigüedad que se produce con el bucle MIENTRAS...FINMINETRAS. Esto solo es posible si su <A href="perfiles.html">perfil</A> admite sintaxis flexible.
 
 117
-  El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SI-ENTONCES esta delimitado por la palabra clave FINSI al final del mismo. Esta instruccion SI que no tiene su correspondiente FINSI (o esta mal ubicado).
+  El conjunto de instrucciones que pueden ejecutarse por la estructura condicional SI-ENTONCES esta delimitado por la palabra clave FINSI al final del mismo. Esta instrucción SI que no tiene su correspondiente FINSI (o esta mal ubicado).
   * Verifique que exista el FINSI correspondiente a este SI y que este bien escrito.
   * Recuerde que FINSI va todo junto si su <A href="perfiles.html">perfil</A> no admite sintaxis flexible (no FIN SI).
   * Verifique que se hallan cerrado correctamente las estructuras de control anidadas dentro de este SI.
@@ -552,93 +552,93 @@
   Está intentando asignar en una variable de cierto tipo de dato de otro tipo (por ejemplo, una cadena de texto en una variable numérica). Verifique que los tipos de datos a ambos lados de la asignación coincidan. Recuerde que el tipo de dato de una variable se define explícitamente con la instrucción <A href="definir.html">DEFINIR</A> o se deduce a partir de los operadores y operandos que interactúan con la variable en las expresiones, o a partir de los valores asignados o leídos en la misma.
   
 134
-  La cantidad de subindices o parametros que utilizo en la expresion para un arreglo no coincide con las dimensiones declaradas para el mismo. Si se trata de una funcion:
-  * Verifique que sea una funcion valida y que este correctamente escrita.
-  * Recuerde que todas las funciones reciben un solo parametro.
+  La cantidad de subíndices o parámetros que utilizo en la expresión para un arreglo no coincide con las dimensiones declaradas para el mismo. Si se trata de una función:
+  * Verifique que sea una función valida y que este correctamente escrita.
+  * Recuerde que todas las funciones reciben un solo parámetro.
   Si se trata de un arreglo:
-  * Busque mas arriba en su codigo la linea donde dimensiono el arreglo y verifique que la cantidad de dimensiones coincida con la utilizada en la expresión.
+  * Busque mas arriba en su código la linea donde dimensiono el arreglo y verifique que la cantidad de dimensiones coincida con la utilizada en la expresión.
   * Si el arreglo se dimensiona mas abajo, mueva esa linea hacia arriba. El arreglo debe ser dimensionado antes de utilizarlo por primera vez.
-  * Si no dimensiono el arreglo anteriormente hagalo utilizando la palara Dimension seguida del nombre del arreglo y finalmente sus dimensiones entre corchetes y separadas por comas.
+  * Si no dimensiono el arreglo anteriormente hágalo utilizando la palabra Dimension seguida del nombre del arreglo y finalmente sus dimensiones entre corchetes y separadas por comas.
   * Recuerde que las dimensiones van siempre entre corchetes y separadas por comas.
   * Si ya estaba dimensionado, compruebe que el identificador este correctamente escrito tanto en esta linea como la de su dimensionamiento.
 
 140
-  La cantidad de subindices que utilizo en la expresion para un arreglo no coincide con las dimensiones declaradas para el mismo.
-  * Busque mas arriba en su codigo la linea donde dimensiono el arreglo y verifique que la cantidad de dimensiones coincida con la utilizada en la expresión.
+  La cantidad de subíndices que utilizo en la expresión para un arreglo no coincide con las dimensiones declaradas para el mismo.
+  * Busque mas arriba en su código la linea donde dimensiono el arreglo y verifique que la cantidad de dimensiones coincida con la utilizada en la expresión.
   * Si el arreglo se dimensiona mas abajo, mueva esa linea hacia arriba. El arreglo debe ser dimensionado antes de utilizarlo por primera vez.
   * Recuerde que las dimensiones van siempre entre corchetes y separadas por comas.
 
 149
   Esta utilizando un nombre de variable como arreglo, pero no fue previamente dimensionado.
-  * Si no dimensiono el arreglo anteriormente hagalo utilizando la palara Dimension seguida del nombre del arreglo y finalmente sus dimensiones entre corchetes y separadas por comas.
+  * Si no dimensiono el arreglo anteriormente hágalo utilizando la palabra Dimension seguida del nombre del arreglo y finalmente sus dimensiones entre corchetes y separadas por comas.
   * Si el arreglo se dimensiona mas abajo, mueva esa linea hacia arriba. El arreglo debe ser dimensionado antes de utilizarlo por primera vez.
   * Recuerde que las dimensiones van siempre entre corchetes y separadas por comas.
   * Si ya estaba dimensionado, compruebe que el identificador este correctamente escrito tanto en esta linea como la de su dimensionamiento.
 
 151
-  Esta intentando utilizar un elemento de un arreglo (probablemente para escribir, o en una expresion) que aun no ha sido inicializado.
-  * Verifique que el elemento sea inicializado (mediante una lectura o una asignacion) antes de utilizarlo.
+  Esta intentando utilizar un elemento de un arreglo (probablemente para escribir, o en una expresión) que aun no ha sido inicializado.
+  * Verifique que el elemento sea inicializado (mediante una lectura o una asignación) antes de utilizarlo.
   * Recuerde que debe inicializar en cero los contadores o acumuladores antes de utilizarlos.
 
 150
-  Esta intentando utilizar una variable (probablemente para escribir, o en una expresion) que aun no ha sido inicializada o definida.
-  * Verifique que la variable sea inicializada (mediante una lectura o una asignacion) antes de utilizarla.
+  Esta intentando utilizar una variable (probablemente para escribir, o en una expresión) que aun no ha sido inicializada o definida.
+  * Verifique que la variable sea inicializada (mediante una lectura o una asignación) antes de utilizarla.
   * Recuerde que debe inicializar en cero los contadores o acumuladores antes de utilizarlos.
 
 152
   Falta alguna expresión en esta linea. Puede deberse a que dentro de dos paréntesis no hay ninguna expresión o a que falta la expresión de la derecha en alguna asignación. 
-  * Verifique que no halla paréntesis o corechetes [] vacios () en esta linea.
+  * Verifique que no halla paréntesis o corchetes [] vacíos () en esta linea.
   * Si es una asignación complete la expresión a asignar.
 
 153
   Los tamaños de los arreglos deben ser constantes numéricas. No puede utilizar variables o funciones para dimensionarlos.
-  * Compruebe que todos los indices sean constantes y que no incluyan ninguna variable o función.
+  * Compruebe que todos los índices sean constantes y que no incluyan ninguna variable o función.
   * Si no conoce la cantidad de elementos que va a necesitar, deberá sobredimensionar el arreglo con dimensiones suficientemente grandes para cualquier caso, y luego utilizar solo los elementos de los mismos que sean necesarios.
 
 154
-  Los indices de los arreglos deben ser de tipo numérico. Uno o más indices en algun arreglo de esta linea es de tipo logico o caracter.
-  * Compruebe que todas las expresiones que se utilizan como indice de arreglos sean de tipo numerico.
+  Los índices de los arreglos deben ser de tipo numérico. Uno o más índices en algún arreglo de esta linea es de tipo lógico o carácter.
+  * Compruebe que todas las expresiones que se utilizan como índice de arreglos sean de tipo numérico.
 
 200
-  El identificador de variable que produjo el error el error corresponde a un <A href="arreglos.html">arreglo</A> (está declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizandola sin los correspondientes subindices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
-  * Agregue los subíndices que indican qué posición del arreglo utilizar colocandolos entre paréntesis a continuación del nombre del mismo.
+  El identificador de variable que produjo el error el error corresponde a un <A href="arreglos.html">arreglo</A> (está declarado con la directiva DIMENSION en su algoritmo). Sin embargo, en esta linea esta utilizándola sin los correspondientes subíndices. Recuerde que no puede leer en una instrucción todo un arreglo, sino que debe leer una por una las posiciones del mismo. En esta linea no se especificó qué posición leer.
+  * Agregue los subíndices que indican qué posición del arreglo utilizar colocándolos entre paréntesis a continuación del nombre del mismo.
   * Si no quiere que esta variable se comporte como arreglo, elimine la declaración del mismo (busque la directiva DIMENSION).
 
 201
-  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizandolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
+  El identificador de variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION). Sin embargo, en esta linea está utilizándolo como si fuera un arreglo, colocando uno o más subíndices entre paréntesis luego del mismo.
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
 
 202
-  La variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION) ni a una función/subproceso. Sin embargo, en esta linea está utilizandolo como si fuera un arreglo (colocando uno o más subíndices entre paréntesis luego del mismo) o como si fuera una función o subproceso (colocando uno o más argumentos para el mismo).
+  La variable que produjo el error no corresponde a un <A href="arreglos.html">arreglo</A> (no está declarado anteriormente con la directiva DIMENSION) ni a una función/subproceso. Sin embargo, en esta linea está utilizándolo como si fuera un arreglo (colocando uno o más subíndices entre paréntesis luego del mismo) o como si fuera una función o subproceso (colocando uno o más argumentos para el mismo).
   * Si la variable debe ser un arreglo agregue la directiva DIMENSION para declararla antes de utilizarla.
   * Si la variable no debe ser un arreglo, compruebe que no haya omitido algún operador o elimine los paréntesis y los subíndices luego de la misma.
   * Si su intención fue utilizar una <A href="funciones.html">función</A> verifique que el nombre de la misma esté correctamente escrito.
 
 203
-  Las opciones posibles para la variable de desición de la estructura <A href="segun.html">SEGUN</I> deben ser, al igual que dicha variable, de tipo numérico. En la expresión ingresada hay algún elemento que indica que la expresión resulta de tipo caracter o lógico.
+  Las opciones posibles para la variable de decisión de la estructura <A href="segun.html">SEGUN</I> deben ser, al igual que dicha variable, de tipo numérico. En la expresión ingresada hay algún elemento que indica que la expresión resulta de tipo carácter o lógico.
   * Verifique que la expresión no incluya operadores lógicos o relacionales
-  * Verifique que la expresión no incluya constantes de tipo caracater
+  * Verifique que la expresión no incluya constantes de tipo carácter
 
 204
-  Para colocar más de un valor posible para la variable de desición de la estructura <A href="segun.html">SEGUN</A> debe utilizar la coma (,) como separador. En esta linea hay más de una expresión separadas por espacios:
-  * Si su intención era colocar más de una posible expresíón utilice la coma para separarlas
+  Para colocar más de un valor posible para la variable de decisión de la estructura <A href="segun.html">SEGUN</A> debe utilizar la coma (,) como separador. En esta linea hay más de una expresión separadas por espacios:
+  * Si su intención era colocar más de una posible expresión utilice la coma para separarlas
   * Si su intención era colocar una sola expresión verifique que se encuentre escrita correctamente y que no haya omitido ningún operador
 
 205
-  La expresion colocada a continuacion de la palabra clave segun es de un tipo de dato incorrecto.
-  * La expresion puede ser de tipo NUMERICA o CARACTER. 
-  * Verifique que las variables y operadores que intervienen generen una expresion de uno de estos tipos.
+  La expresión colocada a continuación de la palabra clave según es de un tipo de dato incorrecto.
+  * La expresión puede ser de tipo NUMERICA o CARACTER. 
+  * Verifique que las variables y operadores que intervienen generen una expresión de uno de estos tipos.
 
 206
-  La expresion colocada a continuacion de la palabra clave segun es de un tipo de dato incorrecto.
-  * La expresion puede ser de tipo NUMERICA. 
+  La expresión colocada a continuación de la palabra clave según es de un tipo de dato incorrecto.
+  * La expresión puede ser de tipo NUMERICA. 
   * Verifique que las variables que intervienen sean de tipo numérica y los operadores de tipo algebraico.
   * Solo se puede utilizar expresiones de texto en <A href="perfiles.html">perfiles</A> de sintaxis flexible, pero su perfil de lenguaje actual no lo permite.
 
 207
   Esta intentando comparar dos expresiones de diferente tipo.
-  * Si esta utilizando una comparacion explicita (los operadores &lt;, &lt;=, &gt;, &gt;=, &lt;&gt;, o =), verifique que los operandos (las expresiones a ambos lados del operador) sean del mismo tipo:
+  * Si esta utilizando una comparación explicita (los operadores &lt;, &lt;=, &gt;, &gt;=, &lt;&gt;, o =), verifique que los operandos (las expresiones a ambos lados del operador) sean del mismo tipo:
      * Verifique tanto las variables como los operadores que intervienen en los operandos.
      * Verifique el correcto uso de paréntesis en la expresión.
   * Puede darse este error en una comparación implícita:
@@ -663,10 +663,10 @@
   * Si se trata de un arreglo, el tipo se define una vez y para todo el arreglo.
 
 212
-  En la instrucción definir, los identificadores de arreglos se deben colocar sin subindices, ya que se define un único tipo para todos los elementos del mismo.
+  En la instrucción definir, los identificadores de arreglos se deben colocar sin subíndices, ya que se define un único tipo para todos los elementos del mismo.
 
 213
-  Esta intentando untilizar un operador matemático (+,-,*,/,^,% o MOD) con dos operandos que no son de tipo numérico.
+  Esta intentando utilizar un operador matemático (+,-,*,/,^,% o MOD) con dos operandos que no son de tipo numérico.
   * Busque estos operadores en las expresiones de esta línea y verifique que los operandos sobre los que actúan sean de tipo numérico.
   * Si está intentando concatenar cadenas con el signo +, la configuración actual del lenguaje no lo permite.
 
@@ -684,7 +684,7 @@
   * Reordene la instrucción siguiendo la forma: PARA <I>contador</I>&lt;-<I>val_inicial</I> HASTA <I>val_final</I> CON PASO <I>paso</I> HACER
 
 217
-  Faltan parametros para la instrucción ESPERAR. Debe colocar a continuación de la palabra clave ESPERAR un intervalo de tiempo o la palabra clave TECLA para esperar a que el usuario presone una tecla. El intervalo de tiempo debe ser un número seguido de la unidad (SEGUNDOS o MILISEGUNDOS).
+  Faltan parámetros para la instrucción ESPERAR. Debe colocar a continuación de la palabra clave ESPERAR un intervalo de tiempo o la palabra clave TECLA para esperar a que el usuario presione una tecla. El intervalo de tiempo debe ser un número seguido de la unidad (SEGUNDOS o MILISEGUNDOS).
   
 218
   Debe colocar a continuación de la palabra clave ESPERAR un intervalo de tiempo (constante, variable o expresión numérica) seguido de la unidad (SEGUNDOS o MILISEGUNDOS).
@@ -692,16 +692,16 @@
   * Verifique que el nombre de la unidad de tiempo esté escrito correctamente.
 
 219
-  La cantidad de segundos/milisengundos a esperar debe ser numérica. 
+  La cantidad de segundos/milisegundos a esperar debe ser numérica. 
   * Verifique que la variable o expresión utilizada sea de tipo numérica.
 
 220
-  El identificador que aparece entre paréntesis en el mensaje de error corresponde a un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarlo en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
+  El identificador que aparece entre paréntesis en el mensaje de error corresponde a un arreglo, ya que fue dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarlo en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
   * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.
   * Si quiere mostrar o procesar todo el arreglo, deberá ubicar la acción dentro de alguna repetitiva que varíe el/los índices para recorrer todas las posiciones del mismo.
 
 221
-  La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fué dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
+  La variable que aparece entre paréntesis en el mensaje de error es un arreglo, ya que fue dimensionada previamente con la directiva "Dimension ...", pero está intentando utilizarla en alguna expresión o instrucción sin los subíndices correspondientes. Recuerde que no puede leer, escribir o evaluar un arreglo completo, sino que debe hacerlo posición por posición.
   * Agregue los subíndices entre corchetes especificando a qué elemento del arreglo desea hacer referencia.
 
 222
@@ -725,7 +725,7 @@
   * O elimine los subíndices en caso de que no lo sea.
 
 279
-  El subproceso/función indicado entre paréntesis en el error recibe según su declaración una cantidad de argumentos/parámetros diferente a la proporicionada en esta llamada. Al invocar un subproceso debe incluir en la llamada todos los argumentos necesarios separados por comas.
+  El subproceso/función indicado entre paréntesis en el error recibe según su declaración una cantidad de argumentos/parámetros diferente a la proporcionada en esta llamada. Al invocar un subproceso debe incluir en la llamada todos los argumentos necesarios separados por comas.
   * Verifique que la lista de argumentos esté correctamente escrita (cada argumento separado por coma).
   * Verifique que la declaración del subproceso (mediante las palabras clave SubProceso o Función en el pseudocódigo) sea correcta.
   * Compruebe que la cantidad de los mismos sea igual a la cantidad declarada al crear el subproceso mencionado.
