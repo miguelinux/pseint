@@ -12,5 +12,7 @@
     <string>pseint.icns</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
   </dict>
 </plist>

@@ -1,4 +1,4 @@
-desc=UNLa - Programacion de Computadoras
+desc=Perfil para la asignatura Programacion de Computadoras de la carrera Licenciatura en Análisis de Sistemas de la Universidad Nacional de Lanús.
 allow_dinamyc_dimensions=1
 use_nassi_schneiderman=1
 force_define_vars=1
