@@ -474,12 +474,12 @@ int SynCheck(int linea_from, int linea_to) {
 			if (lazy_syntax && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
 			if (LeftCompare(cadena,"BORRAR ")) { cadena="BORRAR"+cadena.substr(7); len--; }
 			// si hay un ; pegado a finalgo puede traer problema
-			comillas=-1;
-			for (tmp=0;tmp<len;tmp++) {
-				if (cadena[tmp]=='\'') comillas=-comillas;
-				else if (comillas<0 && cadena[tmp]==';' && tmp && cadena[tmp-1]!=' ')
-					cadena.insert(tmp," ");
-			}
+//			comillas=-1;
+//			for (tmp=0;tmp<len;tmp++) {
+//				if (cadena[tmp]=='\'') comillas=-comillas;
+//				else if (comillas<0 && cadena[tmp]==';' && tmp && cadena[tmp-1]!=' ')
+//					cadena.insert(tmp," ");
+//			}
 			
 			// Separar si es sino o entonces
 			if (cadena=="ENTONCES" && bucles.back()!="SI" )
@@ -701,9 +701,26 @@ int SynCheck(int linea_from, int linea_to) {
 									}
 								}
 							} 
+						} 
+					}
+					if (lazy_syntax && instruccion!="<-") { // definición de tipos alternativa (x es entero)
+						size_t pos=cadena.rfind(' ',cadena.size()-2);
+						if (pos!=string::npos) {
+							pos=cadena.rfind(' ',pos-1);
+							if (pos!=string::npos && cadena.substr(pos+1,4)=="SON ") {
+								instruccion="DEFINIR "; cadena.replace(pos+1,3,"COMO");
+							} else if (pos!=string::npos && cadena.substr(pos+1,3)=="ES ") {
+								instruccion="DEFINIR "; cadena.replace(pos+1,2,"COMO");
+							}
 						}
 					}
 					if (instruccion!="<-") {
+						int p=0, l=cadena.length();
+						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
+						const Funcion *func=EsFuncion(cadena.substr(0,p));
+						if (func) instruccion=string("INVOCAR ");
+					}
+					if (instruccion!="<-" && instruccion!="DEFINIR ") {
 						int p=0, l=cadena.length();
 						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
 						const Funcion *func=EsFuncion(cadena.substr(0,p));

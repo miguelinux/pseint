@@ -39,7 +39,7 @@ const wxChar *mxSourceWords1_op =
 	_T("y no o mod ");
 
 const wxChar *mxSourceWords1_extra =
-	_T("es sies opcion caso desde imprimir cada mostrar opción ");
+	_T("es sies opcion caso desde imprimir cada mostrar opción son ");
 
 const wxChar *mxSourceWords1_conds =
 	_T("es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ");
@@ -51,7 +51,7 @@ const wxChar* mxSourceWords2_math =
 	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon pi ");
 
 const wxChar* mxSourceWords2_string =
-	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto");
+	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ");
 
 //const wxChar* mxSourceWords3 = 
 //	_T("hacer entonces para ");
@@ -1045,6 +1045,15 @@ void mxSource::SetAutocompletion() {
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"),_T("*"));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Par"),_T("Es Par"),_T("*"));
 	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Positivo"),_T("Es Positivo"),_T("*"));
+	
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Real"),_T("Es Real;"),_T("Es"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Caracter"),_T("Es Caracter;"),_T("Es"));
+	if (config->lang.lazy_syntax && !config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero;"),_T("Es"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Logico"),_T("Es Logico;"),_T("Es"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Reales"),_T("Son Reales;"),_T("Son"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Caracteres"),_T("Son Caracteres;"),_T("Son"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Enteros"),_T("Son Enteros;"),_T("Son"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Logicos"),_T("Son Logicos;"),_T("Son"));
 	
 	sort(comp_list,comp_list+comp_count);
 }
