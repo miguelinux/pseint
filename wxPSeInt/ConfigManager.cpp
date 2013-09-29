@@ -296,11 +296,11 @@ wxString ConfigManager::GetTTYCommand ( ) {
 
 bool LangSettings::Load (wxString fname) {
 	_LOG("LangSettings::Load "<<fname);
-	Reset();
 	wxTextFile fil(fname);
 	if (!fil.Exists()) return false;
 	fil.Open();
 	if (!fil.IsOpened()) return false;
+	Reset(); // reset va despues de los "return false" para evitar resetear el perfile personalizado cuando se llama desde el ConfigManager
 	wxString key, value;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str[0]=='#') continue;

@@ -689,6 +689,8 @@ void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
 
 void mxMainWindow::OnClose(wxCloseEvent &evt) {
 	
+	if (helpw && helpw->IsShown()) helpw->Close();
+	
 	IF_THERE_IS_SOURCE {
 		for (int i=notebook->GetPageCount()-1;i>=0;i--) {
 			mxSource *source = (mxSource*)(notebook->GetPage(i));

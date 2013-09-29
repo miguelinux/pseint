@@ -19,6 +19,7 @@ DebugManager::DebugManager() {
 //	port=-1;
 	step_in=true;
 	subtitles_on=false;
+	source=NULL;
 }
 
 void DebugManager::Start(mxProcess *proc, mxSource *src) {

@@ -104,6 +104,7 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_("arreglo")) str=_T("arreglos.html");
 	else if (key==_("vector")) str=_T("arreglos.html");
 	else if (key==_("vectores")) str=_T("arreglos.html");
+	else if (key==_("son")) str=_T("definir.html");
 	else if (key==_("definir")) str=_T("definir.html");
 	else if (key==_("definición")) str=_T("definir.html");
 	else if (key==_("definicion")) str=_T("definir.html");
