@@ -458,7 +458,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			if (op!='!'||next!='=') {
 				tipo=vt_logica; // el resultado es logico
 				// el operando debe ser logico
-				if (p2a>=p2)
+				if (p2a>p2) // tal vez nunca se llegue a este error, porque lo detecta en otro lado
 					WriteError(290,"Falta operando para la negacion (~/NO).");
 				if (t2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
 					WriteError(291,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
