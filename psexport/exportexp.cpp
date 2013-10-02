@@ -9,6 +9,15 @@
 #include "export_chooser.h"
 using namespace std;
 
+string ToLowerExp(string s) {
+	bool comillas=false;
+	for(int i=0;i<s.size();i++) { 
+		if (s[i]=='\"') comillas=!comillas;
+		else if (!comillas) s[i]=tolower(s[i]);
+	}
+	return s;
+}
+
 string invert_expresion(string expr) {
 	int i=0,iop=-1,nop=0,l=expr.size();
 	bool comillas=false;
@@ -286,7 +295,7 @@ string expresion(string exp, tipo_var &tipo){
 	}
 	exp=exp.substr(0,exp.size()-1);
 	
-	return ToLower(exp);
+	return ToLowerExp(exp);
 }
 
 string expresion(string exp) {
