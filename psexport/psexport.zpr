@@ -31,9 +31,9 @@ cursor=1086
 [source]
 path=../pseint/new_evaluar.cpp
 cursor=3595
-marker=704
-marker=396
 marker=175
+marker=396
+marker=704
 [source]
 path=../pseint/new_funciones.cpp
 cursor=6046
@@ -100,7 +100,7 @@ path=export_chooser.h
 cursor=164
 [other]
 path=../bin/help/cambios.html
-cursor=150
+cursor=432
 open=true
 [config]
 name=Linux_Debug
