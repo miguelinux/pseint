@@ -64,7 +64,7 @@ string modificarConstante(string s,int diff) {
 string buscarOperando(const string &exp, int comienzo, int direccion) {
 	unsigned int i=comienzo;
 	int parentesis=0;
-	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='a' && exp[i]<='z') || exp[i]=='[' || exp[i]=='(' || exp[i]==']' || exp[i]==')')) {
+	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || exp[i]=='[' || exp[i]=='(' || exp[i]==']' || exp[i]==')')) {
 		if (exp[i]=='(' || exp[i]=='[') parentesis++;
 		if (exp[i]==')' || exp[i]==']') parentesis--;  
 		i+=direccion;
@@ -80,7 +80,7 @@ string colocarParentesis(const string &exp) {
 	for (i=0;i<=final;i++) {
 		if (exp[i]=='[' || exp[i]=='(') parentesis++;
 		else if (exp[i]==']' || exp[i]==')') parentesis++;
-		else if (!parentesis && exp[i]!='.' && exp[i]!='+' && exp[i]!='-' && !(exp[i]>='a' && exp[i]<='z') && !(exp[i]>='0' && exp[i]<='9') && exp[i]!=' ') break;
+		else if (!parentesis && exp[i]!='.' && exp[i]!='+' && exp[i]!='-' && !(exp[i]>='A' && exp[i]<='Z') && !(exp[i]>='0' && exp[i]<='9') && exp[i]!=' ') break;
 	}
 	if (i>final) return exp;
 	return string("(")+exp+")";
@@ -167,22 +167,6 @@ string expresion(string exp, tipo_var &tipo){
 	
 	Evaluar(string(" ")+exp+" ",tipo); // ¿para que los espacios??? 
 	
-	// cambiar VERDADERO y FALSO por true y false
-//	exp=exp+",";
-//	for (unsigned int i=0,l=0;i<exp.size();i++) {
-//		if (exp[i]=='\"') {
-//			i++;
-//			while (i<exp.size() && exp[i]!='\"')
-//				i++;
-//			i++;
-//			l=i+1;
-//		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-//			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
-//			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
-//			l=i+1;
-//		}
-//	}
-//	exp=exp.substr(0,exp.size()-1);
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	stack<bool> esArreglo;
 	esArreglo.push(false);
@@ -200,7 +184,7 @@ string expresion(string exp, tipo_var &tipo){
 		} else if (exp[i]=='[' or exp[i]=='(') {
 			posicion.push(i);
 			// ver si es arreglo o funcion, o solo un parentesis de jerarquia
-			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='a' && exp[i-1]<='z')) ) {
+			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z')) ) {
 				// determinar si es arreglo o funcion
 				sub=buscarOperando(exp,i-1,-1);
 				if (EsFuncion(sub)) {
@@ -285,6 +269,23 @@ string expresion(string exp, tipo_var &tipo){
 			i++;
 		}
 	}
+	
+	// reemplazar VERDADERO Y FALSO por true y false
+	exp=exp+",";
+	for (unsigned int i=0,l=0;i<exp.size();i++) {
+		if (exp[i]=='\"') {
+			i++;
+			while (i<exp.size() && exp[i]!='\"')
+				i++;
+			l=i+1;
+		} else if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
+			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
+			l=i+1;
+		}
+	}
+	exp=exp.substr(0,exp.size()-1);
+	
 	return ToLower(exp);
 }
 

@@ -46,64 +46,64 @@ string get_arg(string args, int cual) {
 }
 
 string cpp_function(string name, string args) {
-	if (name=="sen") {
+	if (name=="SEN") {
 		include_cmath=true;
 		return string("sin")+args;
-	} else if (name=="tan") {
+	} else if (name=="TAN") {
 		include_cmath=true;
 		return string("tan")+args;
-	} else if (name=="asen") {
+	} else if (name=="ASEN") {
 		include_cmath=true;
 		return string("asin")+args;
-	} else if (name=="acos") {
+	} else if (name=="ACOS") {
 		include_cmath=true;
 		return string("acos")+args;
-	} else if (name=="cos") {
+	} else if (name=="COS") {
 		include_cmath=true;
 		return string("cos")+args;
-	} else if (name=="raiz") {
+	} else if (name=="RAIZ") {
 		include_cmath=true;
 		return string("sqrtf")+args;
-	} else if (name=="rc") {
+	} else if (name=="RC") {
 		include_cmath=true;
 		return string("sqrtf")+args;
-	} else if (name=="abs") {
+	} else if (name=="ABS") {
 		include_cmath=true;
 		return string("abs")+args;
-	} else if (name=="ln") {
+	} else if (name=="LN") {
 		include_cmath=true;
 		return string("log")+args;
-	} else if (name=="exp") {
+	} else if (name=="EXP") {
 		include_cmath=true;
 		return string("exp")+args;
-	} else if (name=="azar") {
+	} else if (name=="AZAR") {
 		include_cstdlib=true;
 		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
-	} else if (name=="atan") {
+	} else if (name=="ATAN") {
 		include_cmath=true;
 		return string("atan")+args;
-	} else if (name=="trunc") {
+	} else if (name=="TRUNC") {
 		include_cmath=true;
 		return string("floor")+args;
-	} else if (name=="redon") {
+	} else if (name=="REDON") {
 		include_cmath=true;
 		return string("floor(")+colocarParentesis(get_arg(args,1))+".5)";
-	} else if (name=="concatenar") {
+	} else if (name=="CONCATENAR") {
 		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
-	} else if (name=="longitud") {
+	} else if (name=="LONGITUD") {
 		return convertirAString(get_arg(args,1))+".size()";
-	} else if (name=="subcadena") {
+	} else if (name=="SUBCADENA") {
 		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
-	} else if (name=="convertiranumero") {
+	} else if (name=="CONVERTIRANUMERO") {
 		include_cstdlib=true;
 		string s=get_arg(args,1);
 		if (esString(s)) return string("atof(")+s+")";
 		else return string("atof(")+colocarParentesis(s)+".c_str())";
 	} else {
-		if (name=="minusculas") use_func_minusculas=true;
-		if (name=="mayusculas") use_func_mayusculas=true;
-		if (name=="convertiratexto") use_func_convertiratexto=true;
-		return name+args; // no deberia pasar esto
+		if (name=="MINUSCULAS") use_func_minusculas=true;
+		if (name=="MAYUSCULAS") use_func_mayusculas=true;
+		if (name=="CONVERTIRATEXTO") use_func_convertiratexto=true;
+		return ToLower(name)+args; // no deberia pasar esto
 	}
 }
 

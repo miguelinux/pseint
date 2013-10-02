@@ -169,7 +169,7 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	LoadFunciones(false);
+	LoadFunciones();
 	
 	//cargar programa
 	t_programa prog;

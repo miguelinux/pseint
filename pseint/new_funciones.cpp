@@ -165,33 +165,33 @@ string func_pi(string *arg) {
 	return "3.141592653589793238462643383279502884197169399375105820974944592";
 }
 
-void LoadFunciones(bool u) {
-	funciones[u?"PI":"pi"]=new Funcion(vt_numerica,func_pi); 
-	funciones[u?"RC":"rc"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
-	funciones[u?"RAIZ":"raiz"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
-	funciones[u?"ABS":"abs"]=new Funcion(vt_numerica,func_abs,vt_numerica);
-	funciones[u?"LN":"ln"]=new Funcion(vt_numerica,func_ln,vt_numerica);
-	funciones[u?"EXP":"exp"]=new Funcion(vt_numerica,func_exp,vt_numerica);
-	funciones[u?"SEN":"sen"]=new Funcion(vt_numerica,func_sen,vt_numerica);
-	funciones[u?"ASEN":"asen"]=new Funcion(vt_numerica,func_asen,vt_numerica);
-	funciones[u?"ACOS":"acos"]=new Funcion(vt_numerica,func_acos,vt_numerica);
-	funciones[u?"COS":"cos"]=new Funcion(vt_numerica,func_cos,vt_numerica);
-	funciones[u?"TAN":"tan"]=new Funcion(vt_numerica,func_tan,vt_numerica);
-	funciones[u?"ATAN":"atan"]=new Funcion(vt_numerica,func_atan,vt_numerica);
-	funciones[u?"AZAR":"azar"]=new Funcion(vt_numerica,func_azar,vt_numerica_entera);
-	funciones[u?"TRUNC":"trunc"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
-	funciones[u?"REDON":"redon"]=new Funcion(vt_numerica,func_redon,vt_numerica);
+void LoadFunciones() {
+	funciones["PI"]=new Funcion(vt_numerica,func_pi); 
+	funciones["RC"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
+	funciones["RAIZ"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
+	funciones["ABS"]=new Funcion(vt_numerica,func_abs,vt_numerica);
+	funciones["LN"]=new Funcion(vt_numerica,func_ln,vt_numerica);
+	funciones["EXP"]=new Funcion(vt_numerica,func_exp,vt_numerica);
+	funciones["SEN"]=new Funcion(vt_numerica,func_sen,vt_numerica);
+	funciones["ASEN"]=new Funcion(vt_numerica,func_asen,vt_numerica);
+	funciones["ACOS"]=new Funcion(vt_numerica,func_acos,vt_numerica);
+	funciones["COS"]=new Funcion(vt_numerica,func_cos,vt_numerica);
+	funciones["TAN"]=new Funcion(vt_numerica,func_tan,vt_numerica);
+	funciones["ATAN"]=new Funcion(vt_numerica,func_atan,vt_numerica);
+	funciones["AZAR"]=new Funcion(vt_numerica,func_azar,vt_numerica_entera);
+	funciones["TRUNC"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
+	funciones["REDON"]=new Funcion(vt_numerica,func_redon,vt_numerica);
 	if (enable_string_functions) {
-		funciones[u?"CONVERTIRANÚMERO":"convertiranumero"]=new Funcion(vt_numerica,func_atof,vt_caracter);
-		funciones[u?"CONVERTIRANUMERO":"convertiranumero"]=new Funcion(vt_numerica,func_atof,vt_caracter);
-		funciones[u?"CONVERTIRATEXTO":"convertiratexto"]=new Funcion(vt_caracter,func_ftoa,vt_numerica);
-		funciones[u?"LONGITUD":"longitud"]=new Funcion(vt_numerica,func_longitud,vt_caracter);
-		funciones[u?"SUBCADENA":"subcadena"]=new Funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
-		funciones[u?"MAYUSCULAS":"mayusculas"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
-		funciones[u?"MINUSCULAS":"minusculas"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
-		funciones[u?"MAYÚSCULAS":"mayúsculas"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
-		funciones[u?"MINÚSCULAS":"minúsculas"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
-		funciones[u?"CONCATENAR":"concatenar"]=new Funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
+		funciones["CONVERTIRANÚMERO"]=new Funcion(vt_numerica,func_atof,vt_caracter);
+		funciones["CONVERTIRANUMERO"]=new Funcion(vt_numerica,func_atof,vt_caracter);
+		funciones["CONVERTIRATEXTO"]=new Funcion(vt_caracter,func_ftoa,vt_numerica);
+		funciones["LONGITUD"]=new Funcion(vt_numerica,func_longitud,vt_caracter);
+		funciones["SUBCADENA"]=new Funcion(vt_caracter,func_subcadena,vt_caracter,vt_numerica_entera,vt_numerica_entera);
+		funciones["MAYUSCULAS"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones["MINUSCULAS"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
+		funciones["MAYÚSCULAS"]=new Funcion(vt_caracter,func_mayusculas,vt_caracter);
+		funciones["MINÚSCULAS"]=new Funcion(vt_caracter,func_minusculas,vt_caracter);
+		funciones["CONCATENAR"]=new Funcion(vt_caracter,func_concatenar,vt_caracter,vt_caracter);
 	}
 }
 

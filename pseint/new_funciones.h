@@ -54,7 +54,7 @@ struct Funcion {
 extern map<string,Funcion*> funciones; ///< funciones predefinidas del lenguaje
 extern map<string,Funcion*> subprocesos; ///< funciones definidas por el usuario (proceso y subprocesos)
 
-void LoadFunciones(bool u=true); ///< carga la lista de funciones predefinidas, el argumento es para saber si van en mayúsculas o minúsculas
+void LoadFunciones(); ///< carga la lista de funciones predefinidas (los nombres se cargan en mayusculas)
 const Funcion* EsFuncion(const string &nombre, bool include_main_process=false); ///< busca una funcion (predefinida o subproceso del usuario), devuelve NULL si no la encuetra
 const Funcion* EsFuncionPredefinida(const string &nombre); ///< busca una funcion predefinida, devuelve NULL si no la encuetra
 const Funcion* EsFuncionDelUsuario(const string &nombre, bool include_main_process); ///< busca una funcion predefinida, devuelve NULL si no la encuetra
