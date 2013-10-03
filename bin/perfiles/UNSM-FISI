@@ -1,6 +1,6 @@
 desc=Perfil para la clase de Lógica Computacional de la Universidad Nacional de San Martin con el Ing. Kemy Valera Valles.
 allow_dinamyc_dimensions=1
-use_nassi_schneiderman=1
+use_nassi_schneiderman=0
 force_define_vars=1
 force_init_vars=1
 allow_concatenation=1
