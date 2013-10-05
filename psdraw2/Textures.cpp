@@ -175,10 +175,15 @@ Texture texture_menu;
 Texture texture_trash;
 
 void LoadTextures() {
-	texture_shapes.Load("imgs/flow/shapes.png"); texture_shapes.r/=8;
-	texture_commands.Load("imgs/flow/commands.png");
-	texture_menu.Load("imgs/flow/menu.png");
-	texture_trash.Load("imgs/flow/trash.png");
+#ifdef __WIN32__ 
+#define _path "imgs\\flow\\"
+#else
+#define _path "imgs/flow/"
+#endif
+	texture_shapes.Load(_path"shapes.png"); texture_shapes.r/=8;
+	texture_commands.Load(_path"commands.png");
+	texture_menu.Load(_path"menu.png");
+	texture_trash.Load(_path"trash.png");
 }
 
 #endif
