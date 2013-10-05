@@ -7,6 +7,7 @@
 #include "Comm.h"
 #include "Draw.h"
 #include "Load.h"
+#include "Textures.h"
 using namespace std;
 
 extern const int margin; // para los botones de confirm
@@ -400,6 +401,11 @@ void initialize() {
 	glutSpecialFunc(keyboard_esp_cb);
 	glutPassiveMotionFunc(passive_motion_cb);
 	glClearColor(color_back[0],color_back[1],color_back[2],1.f);
+#if _USE_TEXTURES
+	LoadTextures();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+#endif
 }
 
 void FocusEntity(LineInfo *li) {
