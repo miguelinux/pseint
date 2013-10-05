@@ -280,9 +280,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.87641968"
-     inkscape:cx="3905.9148"
-     inkscape:cy="16.89423"
+     inkscape:zoom="0.10955246"
+     inkscape:cx="2245.8859"
+     inkscape:cy="180.12954"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -310,9 +310,9 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       inkscape:export-ydpi="35.146439"
-       inkscape:export-xdpi="35.146439"
-       inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
        id="g1230"
        transform="matrix(3,0,0,3,391.97439,-943.23396)"
        style="stroke-width:1.66666663;stroke-miterlimit:4;stroke-dasharray:none">
@@ -388,9 +388,9 @@
          style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.46221983;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
     <g
-       inkscape:export-ydpi="35.146439"
-       inkscape:export-xdpi="35.146439"
-       inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/escribir.png"
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
        id="g1250"
        transform="matrix(3,0,0,3,413.61809,-882.36672)">
       <path
@@ -466,9 +466,9 @@
          style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.46221983;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
     <g
-       inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/leer.png"
-       inkscape:export-ydpi="35.146439"
-       inkscape:export-xdpi="35.146439"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
        id="g1290"
        transform="matrix(3,0,0,3,378.16209,-849.36672)"
        style="stroke-width:1.66666663;stroke-miterlimit:4;stroke-dasharray:none">
@@ -533,9 +533,9 @@
          inkscape:connector-curvature="0" />
     </g>
     <g
-       inkscape:export-ydpi="8.7112408"
-       inkscape:export-xdpi="8.7112408"
-       inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/si.png"
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
        id="g1310"
        transform="matrix(1.6155338,0,0,1.6155338,1097.1054,-602.29791)">
       <path
@@ -659,7 +659,10 @@
     </g>
     <g
        id="g1360"
-       transform="matrix(1.324759,0,0,1.324759,4224.4609,1343.3917)">
+       transform="matrix(1.324759,0,0,1.324759,4224.4609,1343.3917)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
       <path
          style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m -1935.9622,-493.76451 0,32.26052"
@@ -844,7 +847,10 @@
     </g>
     <g
        id="g1434"
-       transform="matrix(1.3880466,0,0,1.3880466,3515.395,1468.8023)">
+       transform="matrix(1.3880466,0,0,1.3880466,3515.395,1468.8023)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
       <path
          style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m -1331.8416,-392.8155 0,14.00803"
@@ -978,7 +984,10 @@
     </g>
     <g
        id="g1480"
-       transform="matrix(1.3848368,0,0,1.3848368,2856.7154,1576.9617)">
+       transform="matrix(1.3848368,0,0,1.3848368,2856.7154,1576.9617)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
       <g
          id="g1518">
         <path
@@ -1082,7 +1091,10 @@
     </g>
     <g
        transform="matrix(1.4463811,0,0,1.4463811,1653.3532,960.64528)"
-       id="g1554">
+       id="g1554"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
       <g
          id="g1612">
         <path
@@ -1245,9 +1257,9 @@
        height="256"
        x="1352.7142"
        y="-498.63782"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        y="-240.63782"
        x="1352.7142"
@@ -1255,9 +1267,9 @@
        width="616"
        id="rect1670"
        style="fill:none;stroke:none"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        style="fill:none;stroke:none"
        id="rect1672"
@@ -1265,9 +1277,9 @@
        height="256"
        x="1352.7142"
        y="17.362183"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        y="275.36218"
        x="1352.7142"
@@ -1275,9 +1287,9 @@
        width="616"
        id="rect1674"
        style="fill:none;stroke:none"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        style="fill:none;stroke:none"
        id="rect1676"
@@ -1285,9 +1297,9 @@
        height="256"
        x="1352.7142"
        y="533.36218"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        y="791.36218"
        x="1352.7142"
@@ -1295,9 +1307,9 @@
        width="616"
        id="rect1678"
        style="fill:none;stroke:none"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        style="fill:none;stroke:none"
        id="rect1680"
@@ -1305,9 +1317,9 @@
        height="256"
        x="1352.7142"
        y="1049.3622"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <rect
        y="1307.3622"
        x="1352.7142"
@@ -1315,9 +1327,9 @@
        width="616"
        id="rect1682"
        style="fill:none;stroke:none"
-       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/menu/shapebar.png"
-       inkscape:export-xdpi="70.510002"
-       inkscape:export-ydpi="70.510002" />
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
     <g
        id="g3595"
        transform="translate(0,44.049648)"
