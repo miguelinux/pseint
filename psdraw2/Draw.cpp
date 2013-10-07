@@ -626,7 +626,7 @@ void display_cb() {
 			aux->Draw();
 		}
 		if (!aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
-		if (edit==aux && aux->CheckMouse(mx,my,false)) cursor=GLUT_CURSOR_TEXT;
+		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) cursor=GLUT_CURSOR_TEXT;
 		aux=aux->all_next;
 	} while (aux!=start);
 	if (mouse && mouse->type==ET_OPCION) {
