@@ -24,6 +24,29 @@ mxProcess *proc_for_killing=NULL;
 
 int mxProcess::cont=0;
 
+static void CheckDeps(wxString cmd) {
+	_LOG("mxProcess::CheckDeps cmd="<<cmd);
+	wxArrayString ostd,oerr,ofin;
+	cmd=wxString("/usr/bin/ldd \"")+cmd+"\"";
+	wxExecute(cmd,ostd,oerr);
+	for(unsigned int i=0;i<ostd.GetCount();i++) if (ostd[i].Contains("not found")) ofin.Add(ostd[i]);
+	for(unsigned int i=0;i<oerr.GetCount();i++) if (oerr[i].Contains("not found")) ofin.Add(oerr[i]);
+	if (ofin.GetCount()==0) { 
+		_LOG("mxProcess::CheckDeps ends no missing deps");
+		return;
+	}
+	wxString msg;
+	msg<<"Puede que su sistema no tenga todas las bibliotecas necesarias para ejecutar PSeInt.\n";
+	msg<<"Instale las bibliotecas faltantes con el gestor de paquetes de su distribución.\n";
+	msg<<"Las bibliotecas faltantes son:\n";
+	_LOG("mxProcess::CheckDeps ends missing deps");
+	for(unsigned int i=0;i<ofin.GetCount();i++) {
+		_LOG("     "<<ofin[i]);
+		msg<<ofin[i].BeforeFirst('.');
+	}
+	wxMessageBox(msg,"Error",wxOK|wxICON_ERROR);
+}
+
 mxProcess::mxProcess(mxSource *src) {
 	
 	_LOG("mxProcess::mxProcess this="<<this<<" src="<<src);
@@ -58,6 +81,9 @@ mxProcess::~mxProcess() {
 
 void mxProcess::OnTerminate(int pid, int status) {
 	_LOG("mxProcess::OnTerminate this="<<this<<" status="<<status);
+	if ((what==mxPW_DRAW||mxPW_DRAWEDIT) && status==127) { // si psdraw2 sale con errores, ver si le faltaban dependencias
+		CheckDeps(config->psdraw2_command);
+	}
 	if (this==debug->process) {
 		debug->debugging=false;
 		debug_panel->SetState(DS_STOPPED);
