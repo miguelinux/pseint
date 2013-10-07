@@ -88,6 +88,8 @@ int main(int argc, char* argv[]) {
 				Inter.SetPort(atoi(str.substr(7,str.size()-7).c_str()));
 			else if (str=="--rawerrors")
 				raw_errors=true;
+			else if (str=="--fortest")
+				for_test=true;
 			else if (str=="--norun")
 				run=false;
 			else if (str=="--forcedefinevars")
@@ -175,6 +177,7 @@ int main(int argc, char* argv[]) {
 		cout<<"      --hidestringfunctions  deshabilitar funciones para el manejo de cadenas (ej: longitud(x), subcadena(x,i,j))"<<endl;
 		cout<<"      --disableuserfunctions no permitir la definición de subprocesos"<<endl;
 		cout<<"      --port=<num>           define el puerto tpc para comunicar controlar la depuracion"<<endl;
+		cout<<"      --fortest              ignora algunas instrucciones particulares para evitar ciertas entradas/salidas"<<endl;
 		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
 		cout<<"      --noinput              en lugar realizar las lecturas desde el teclado, lo hace desde los argumentos"<<endl;
 		cout<<"      --input=<str>          sirve para predefinir uno o más valores de entrada para acciones LEER"<<endl;

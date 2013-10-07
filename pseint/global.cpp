@@ -7,6 +7,7 @@ ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno
 bool ExeInfoOn=false;
 bool wait_key;
 int SynErrores=0; // Contador para errores de Sintaxis
+bool for_test=false;
 bool raw_errors=false;
 bool allow_undef_vars=true;
 bool force_semicolon=false;

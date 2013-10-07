@@ -473,42 +473,38 @@ int SynCheck(int linea_from, int linea_to) {
 			int len = cadena.size();
 			if (lazy_syntax && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
 			if (LeftCompare(cadena,"BORRAR ")) { cadena="BORRAR"+cadena.substr(7); len--; }
-			// si hay un ; pegado a finalgo puede traer problema
-//			comillas=-1;
-//			for (tmp=0;tmp<len;tmp++) {
-//				if (cadena[tmp]=='\'') comillas=-comillas;
-//				else if (comillas<0 && cadena[tmp]==';' && tmp && cadena[tmp-1]!=' ')
-//					cadena.insert(tmp," ");
-//			}
+			// poner un espacio al final para evitar casos especiales cuando no hay punto y coma y la instruccion es una sola palabra (ej: borrarpantalla; finalgo )
+			if (len>2 && cadena[len-1]==';' && cadena[len-2]!=' ') { cadena.insert(len-1," "); len++; }
+			else if (len>1 && cadena[len-1]!=';') { cadena+=" "; len++; } 
 			
-			// Separar si es sino o entonces
-			if (cadena=="ENTONCES" && bucles.back()!="SI" )
-				{SynError (51,"ENTONCES mal colocado."); errores++;}
-			if (cadena=="SINO" && bucles.back()!="SI" )
-				{SynError (55,"SINO mal colocado."); errores++;}
+			
+			// en esta parte (chorrera de if {} else if {} else if...) se identifica la instruccion... 
+			//       primero se busca si empieza con alguna palabra clave
+			//       sino, se mira si puede ser opcion de un segun viendo si estamos en un segun y hay : en la cadena
+			//       sino, se mira si puede asignacion buscando alguno de los operadores de asignacion
+			//       sino, se mira si puede ser la nueva definicion (x es entero), mirando si la anteultima palabra es ES o SON
+			// si se identifica la instrucción, se quita del string cadena y se guarda en el string instruccion
 			if (LeftCompare(cadena,"ENTONCES ")) {
 				if (bucles.back()!="SI" && programa[x-1]!="SI")
 					{SynError (1,"ENTONCES mal colocado."); errores++;}
 				str=cadena;
-				str.erase(0,9);
-				cadena="ENTONCES";
-				programa.Insert(x+1,str);
-				flag_pyc+=1;
-			}
-			if (LeftCompare(cadena,"SINO ")) {
+				instruccion="ENTONCES "; cadena="";
+				if (str.size()>9) {
+					str.erase(0,9);
+					programa.Insert(x+1,str);
+					flag_pyc+=1;
+				}
+			} else if (LeftCompare(cadena,"SINO ")) {
 				if (bucles.back()!="SI")
 					{SynError (2,"SINO mal colocado."); errores++;}
 				str=cadena;
-				cadena="SINO";
-				str.erase(0,5);
-				programa.Insert(x+1,str);
-				flag_pyc+=1;
-			}
-//			if (cadena=="FINSEGÚN") cadena="FINSEGUN"; // no es necesario, ya esta mas abajo
-			
-			// Cortar la instrucción
-			cadena=cadena+" ";
-			if (LeftCompare(cadena,"ESCRIBIR ") || (lazy_syntax && (LeftCompare(cadena,"IMPRIMIR ") || LeftCompare(cadena,"MOSTRAR ") || LeftCompare(cadena,"INFORMAR "))) ) {
+				instruccion="SINO "; cadena="";
+				if (str.size()>0) {
+					str.erase(0,5);
+					programa.Insert(x+1,str);
+					flag_pyc+=1;
+				}
+			} else if (LeftCompare(cadena,"ESCRIBIR ") || (lazy_syntax && (LeftCompare(cadena,"IMPRIMIR ") || LeftCompare(cadena,"MOSTRAR ") || LeftCompare(cadena,"INFORMAR "))) ) {
 				instruccion="ESCRIBIR "; cadena.erase(0,cadena.find(" ")+1);
 				if (ReplaceIfFound(cadena,"SIN SALTAR","",true)||ReplaceIfFound(cadena,"SIN BAJAR","",true)||ReplaceIfFound(cadena,"SINBAJAR","",true)||ReplaceIfFound(cadena,"SINSALTAR","",true))
 					instruccion="ESCRIBNL ";
@@ -582,10 +578,6 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="SUBPROCESO "; cadena.erase(0,11);
 			} else if (LeftCompare(cadena,"FUNCION ")||LeftCompare(cadena,"FUNCIÓN ")) {
 				instruccion="SUBPROCESO "; cadena.erase(0,8);
-			} else if (LeftCompare(cadena,"ENTONCES ")) {
-				instruccion="ENTONCES "; cadena.erase(0,9);
-			} else if (LeftCompare(cadena,"SINO ")) {
-				instruccion="SINO "; cadena.erase(0,5);
 			} else if (lazy_syntax && LeftCompare(cadena,"PARACADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,9);
 				bucles.push_back(programa.GetLoc(x,"PARACADA"));
@@ -704,7 +696,7 @@ int SynCheck(int linea_from, int linea_to) {
 						} 
 					}
 					if (lazy_syntax && instruccion!="<-") { // definición de tipos alternativa (x es entero)
-						size_t pos=cadena.rfind(' ',cadena.size()-2);
+						size_t pos=cadena.rfind(' ',cadena.size()-(cadena[cadena.size()-1]==';'?3:2));
 						if (pos!=string::npos) {
 							pos=cadena.rfind(' ',pos-1);
 							if (pos!=string::npos && cadena.substr(pos+1,4)=="SON ") {
@@ -790,7 +782,9 @@ int SynCheck(int linea_from, int linea_to) {
 			ReplaceIfFound(cadena," HASTA-"," HASTA -");
 			ReplaceIfFound(cadena," PASO-"," PASO -");
 			ReplaceIfFound(cadena," QUE-"," QUE -");
-			// Comprobar parametros
+			
+			
+			// En esta parte, según cada instrucción se verifican si los argumentos están bien. Los argumentos quedaron solos en cadena, la instrucción ya fué cortada.
 			if (instruccion=="SUBPROCESO " || instruccion=="PROCESO ") {
 				if (in_process) InformUnclosedLoops(bucles,errores); in_process=true;
 				bool es_proceso = instruccion=="PROCESO ";

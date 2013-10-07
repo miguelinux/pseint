@@ -50,13 +50,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			_pos(line);
 			if (cadena=="BORRARPANTALLA;") {
-				clrscr();
-				gotoXY(1,1);
+				if (for_test) cout<<"***LimpiarPantalla***"<<endl; else { clrscr(); gotoXY(1,1); }
 				_sub(line,"Se borra la pantalla");
 			} else if (cadena=="ESPERARTECLA;") {
 				_sub_msg(line,"Se espera a que el usuario presione una tecla.");
 				_sub_raise();
-				getKey();
+				if (for_test) cout<<"***EsperarTecla***"<<endl; else getKey();
 				_sub_wait();
 			} else if (LeftCompare(cadena,"INVOCAR ")) {
 				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el "invocar" y el ";"
