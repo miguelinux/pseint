@@ -1,3 +1,4 @@
+#include <sys/wait.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -22,7 +23,28 @@ int main(int argc, char *argv[]) {
 	setenv("LANG","",1); // for fixing the problem with utf8 locale and ansi wx build
 	setenv("LC_CTYPE","",1); // for fixing the problem with utf8 locale and ansi wx build
 	fix_argv(argv);
-	execvp(argv[0],argv);
+	pid_t pid=fork();
+	if (pid==0) {
+		execvp(argv[0],argv);
+	} else {
+		int ret=0;
+		waitpid(pid,&ret,0);
+		if (ret) { // si algo falló en la ejecución, ver si faltan bibliotecas
+			string s;
+			s+="ldd \""; s+=argv[0]; s+="\""; 
+			s+=" | grep \"not found\" >/dev/null";
+			if (system(s.c_str())==0) {
+				cerr<<endl<<endl;
+				cerr<<"Puede que su sistema no tenga todas las bibliotecas necesarias para ejecutar PSeInt."<<endl;
+				cerr<<"Instale las bibliotecas faltantes con el gestor de paquetes de su distribución."<<endl;
+				cerr<<"Las bibliotecas faltantes son:"<<endl;
+				string s; s+="ldd \""; s+=argv[0]; s+="\""; 
+				s+=" | grep \"not found\" | cut -d . -f 1";
+				system(s.c_str());
+			}
+		}
+		
+	}
 	return 0;
 }
 
