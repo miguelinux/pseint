@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include "Textures.h"
 
+bool use_textures=true;
+
 // png_texture_load function by David Grayson, 
 //    https://github.com/DavidEGrayson/ahrs-visualizer/blob/master/png_texture.cpp, 
 //   reached from http://stackoverflow.com/questions/11296644/loading-png-textures-to-opengl-with-libpng-only
@@ -148,6 +150,7 @@ static GLuint png_texture_load(const char * file_name, int * width, int * height
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
+	if (glGetError()!=GL_NO_ERROR) texture=0;
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
@@ -159,9 +162,10 @@ static GLuint png_texture_load(const char * file_name, int * width, int * height
 	return texture;
 }
 
-void Texture::Load (const char * fname) {
+bool Texture::Load (const char * fname) {
 	id=png_texture_load(fname,&w,&h);
 	r=float(w)/h;
+	return id!=0;
 }
 
 void Texture::Select ( ) {
@@ -174,16 +178,13 @@ Texture texture_commands;
 Texture texture_menu;
 Texture texture_trash;
 
-void LoadTextures() {
-#ifdef __WIN32__ 
-#define _path "imgs\\flow\\"
-#else
-#define _path "imgs/flow/"
-#endif
-	texture_shapes.Load(_path"shapes.png"); texture_shapes.r/=8;
-	texture_commands.Load(_path"commands.png");
-	texture_menu.Load(_path"menu.png");
-	texture_trash.Load(_path"trash.png");
+bool LoadTextures() {
+	if (!texture_shapes.Load("imgs/flow/shapes.png")) return use_textures=false;
+	texture_shapes.r/=8;
+	if (!texture_commands.Load("imgs/flow/commands.png")) return use_textures=false;
+	if (!texture_menu.Load("imgs/flow/menu.png")) return use_textures=false;
+	if (!texture_trash.Load("imgs/flow/trash.png")) return use_textures=false;
+	return true;
 }
 
 #endif

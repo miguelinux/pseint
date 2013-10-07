@@ -47,12 +47,14 @@ extern int menu_size_h; // ancho para dibujo de la shapebar
 extern int menu_size_w; // ancho para dibujo de la shapebar
 extern bool menu; // indica si el mouse esta sobre la papelera
 extern int menu_sel; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
+#define menu_w_max_base 240
+#define menu_w_min_base 70
 #ifdef _USE_TEXTURES
-#define menu_w_max 260
-#define menu_w_min 80
+#define menu_w_max (menu_w_max_base+(use_textures?20:0))
+#define menu_w_min (menu_w_min_base+(use_textures?10:0))
 #else
-#define menu_w_max 240
-#define menu_w_min 70
+#define menu_w_max menu_w_max_base
+#define menu_w_min menu_w_min_base
 #endif
 #define menu_h_min 30
 #define menu_line_width 1

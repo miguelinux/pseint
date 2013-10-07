@@ -97,6 +97,7 @@ ppc: dist/mnt
 	@echo
 
 clean:
+	rm -f bin/temp.psd
 	rm -f bin/log.exe
 	rm -f bin/updatem.bin
 	rm -f bin/updatem.exe

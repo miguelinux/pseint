@@ -50,6 +50,7 @@ static void DrawTrash() {
 	glVertex2i(0,trash_size); glVertex2i(trash_size,trash_size);
 	glVertex2i(trash_size,0); glVertex2i(trash_size,trash_size);
 #ifdef _USE_TEXTURES
+if (use_textures) {
 	glEnd();
 	glEnable(GL_TEXTURE_2D);
 	texture_trash.Select();
@@ -68,7 +69,8 @@ static void DrawTrash() {
 	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
-#else
+} else {
+#endif
 	if (trash) {
 		glColor3fv(color_selection);
 		int tm=trash_size/6;
@@ -95,6 +97,8 @@ static void DrawTrash() {
 		glVertex2i(t6,4*t6); glVertex2i(4*t6,t6);
 	}
 	glEnd();
+#ifdef _USE_TEXTURES
+}
 #endif
 }
 static void DrawMenuAndShapeBar() {
@@ -137,6 +141,7 @@ static void DrawMenuAndShapeBar() {
 			glBegin(GL_LINES);
 		}
 #ifdef _USE_TEXTURES
+if (use_textures) {
 		glEnd();
 		glEnable(GL_TEXTURE_2D);
 		texture_shapes.Select();
@@ -167,8 +172,8 @@ static void DrawMenuAndShapeBar() {
 			glVertex2i(win_w-shapebar_size,y0);
 			glVertex2i(win_w,y0);
 		}
-#else
-		
+} else {
+#endif
 		int x0,x1,y0,y1,xm,ym;
 		x0=x+shapebar_size/5; x1=x+shapebar_size-shapebar_size/5;
 		y0=y-3*sh/10; y1=y-7*sh/10; xm=(x0+x1)/2; ym=(y0+y1)/2;
@@ -275,9 +280,12 @@ static void DrawMenuAndShapeBar() {
 		glVertex2i(xm-3*delta,y1-  delta); glVertex2i(xm+2*delta,y1-  delta); 
 		glVertex2i(xm+2*delta,y1-2*delta); glVertex2i(xm+2*delta,y0+2*delta); // line vertical
 		glColor3fv(color_menu); 
+#ifdef _USE_TEXTURES
+}
 #endif
 	} else { 
 #ifdef _USE_TEXTURES
+if (use_textures) {
 		glEnd();
 		glEnable(GL_TEXTURE_2D);
 		texture_commands.Select();
@@ -290,10 +298,13 @@ static void DrawMenuAndShapeBar() {
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 		glBegin(GL_LINES);
-#else
+} else {
+#endif
 		// en la shapebar cerrada se dibuja una flecha para abrirla
 		glVertex2i(win_w-2*shapebar_size/3,win_h/2); glVertex2i(win_w-shapebar_size/3,win_h/2-2*shapebar_size/3);
 		glVertex2i(win_w-2*shapebar_size/3,win_h/2); glVertex2i(win_w-shapebar_size/3,win_h/2+2*shapebar_size/3);
+#ifdef _USE_TEXTURES
+}
 #endif
 	}
 	glEnd();
@@ -301,7 +312,7 @@ static void DrawMenuAndShapeBar() {
 	// menu
 	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-menu_w_max+15;
 #ifdef _USE_TEXTURES 
-	left+=25;
+	if (use_textures) left+=25;
 #endif
 	if(menu_sel!=MO_NONE) {
 		glColor3fv(color_menu_sel);
@@ -322,6 +333,7 @@ static void DrawMenuAndShapeBar() {
 	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
 	
 #ifdef _USE_TEXTURES
+if (use_textures) {
 	glEnable(GL_TEXTURE_2D);
 	texture_trash.Select();
 	glColor3f(1,1,1);
@@ -344,8 +356,11 @@ static void DrawMenuAndShapeBar() {
 	glTexCoord2f(0,1); glVertex2d(left,win_h-menu_size_h+top+texture_menu.h);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
-#else
+} else {
+#endif
 	DrawTextRaster(color_menu,menu_size_w-55,win_h-menu_size_h+10,"Menu");
+#ifdef _USE_TEXTURES
+}
 #endif
 	
 	// shapebar
@@ -636,7 +651,7 @@ void display_cb() {
 	glLineWidth(2);
 	if (edit_on) { DrawMenuAndShapeBar(); DrawTrash(); }
 	// dibujar la seleccion para que quede delante de todo
-	if (mouse) {
+	if (mouse && !trash) {
 		glLineWidth(zoom*2);
 		glPushMatrix();
 		glScalef(d_zoom,d_zoom,1);

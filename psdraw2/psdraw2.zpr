@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=
-current_source=Textures.cpp
+current_source=Draw.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -42,7 +42,7 @@ marker=74
 open=true
 [source]
 path=Draw.cpp
-cursor=13392
+cursor=23309
 breakpoint=149
 open=true
 [source]
@@ -71,7 +71,7 @@ marker=211
 marker=212
 [source]
 path=Textures.cpp
-cursor=78
+cursor=4956
 open=true
 [header]
 path=../pseint/zockets.h

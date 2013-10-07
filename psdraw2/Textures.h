@@ -3,12 +3,13 @@
 
 #ifdef _USE_TEXTURES
 #include <GL/gl.h>
-void LoadTextures();
+extern bool use_textures;
+bool LoadTextures();
 struct Texture {
 	GLuint id; 
 	int w,h; float r;
 	bool smooth;
-	void Load(const char *fname);
+	bool Load(const char *fname);
 	void Select();
 };
 extern Texture texture_shapes;
