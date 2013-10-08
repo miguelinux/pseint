@@ -2,7 +2,7 @@
 #define TEXTURES_H
 
 #ifdef _USE_TEXTURES
-#include <GL/gl.h>
+#include "GLstuff.h"
 extern bool use_textures;
 bool LoadTextures();
 struct Texture {

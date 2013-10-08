@@ -33,8 +33,8 @@ open=true
 [source]
 path=Events.cpp
 cursor=12242
-breakpoint=377
 breakpoint=330
+breakpoint=377
 marker=225
 marker=148
 marker=80
@@ -42,7 +42,7 @@ marker=74
 open=true
 [source]
 path=Draw.cpp
-cursor=22854
+cursor=21
 open=true
 [source]
 path=Load.cpp
@@ -64,10 +64,10 @@ open=true
 [source]
 path=DNassiSchne.cpp
 cursor=6233
-marker=212
-marker=211
-marker=100
 marker=99
+marker=100
+marker=211
+marker=212
 [source]
 path=Textures.cpp
 cursor=0
@@ -102,11 +102,11 @@ path=GLstuff.h
 cursor=50
 [header]
 path=Textures.h
-cursor=122
+cursor=80
 open=true
 [other]
 path=../bin/help/cambios.html
-cursor=188
+cursor=67
 open=true
 [config]
 name=Debug_Linux
