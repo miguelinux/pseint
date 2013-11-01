@@ -10,7 +10,7 @@ Proceso Adivina_Numero
 	
 	Escribir "Adivine el numero (de 1 a 100):"{;}
 	Leer num_ingresado{;}
-	Mientras num_secreto<>num_ingresado {&} intentos>0 Hacer
+	Mientras num_secreto<>num_ingresado {&} intentos>1 Hacer
 		Si num_secreto>num_ingresado Entonces
 			Escribir "Muy bajo"{;}
 		Sino 
@@ -21,10 +21,10 @@ Proceso Adivina_Numero
 		Leer num_ingresado{;}
 	FinMientras
 	
-	Si intentos=0 Entonces
-		Escribir "El numero era: ",num_secreto{;}
-	Sino
+	Si num_secreto=num_ingresado Entonces
 		Escribir "Exacto! Usted adivino en ",11-intentos," intentos."{;}
+	Sino
+		Escribir "El numero era: ",num_secreto{;}
 	FinSi
 	
 FinProceso
