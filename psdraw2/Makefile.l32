@@ -1,8 +1,8 @@
 OBJS_DIR=../temp/drw2_lnx_rls
-GPP=g++ -fshow-column
+GPP=g++ -fshow-column -D_USE_TEXTURES
 GCC=gcc
 CXXFLAGS= -O2
-LIBS= -s -lGL -lGLU /usr/lib/libglut.a
+LIBS= -s -lGL -lGLU /usr/lib/libglut.a -lpng
 
 all: ${OBJS_DIR} ../bin/psdraw2
 
