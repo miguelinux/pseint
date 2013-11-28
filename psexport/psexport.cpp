@@ -147,21 +147,29 @@ int main(int argc, char *argv[]){
 	}
 	
 	for (int i=1;i<argc;i++) {
-		if (string(argv[i])=="--install-test") {
+		string s=argv[i];
+		if (s=="--install-test") {
 			cout<<"OK";
 			return 0;
-		} else if (string(argv[i])=="--help") {
-			cerr<<"Use: "<<argv[0]<<" [--basezeroarrays] <in_file.drw> <out_file.cpp>\n";
+		} else if (s=="--help") {
+			cerr<<"Use: "<<argv[0]<<" [--basezeroarrays] [--lang=<lenguaje>] <in_file.drw> <out_file.cpp>\n";
 			return 1;
-		} else if (string(argv[i])=="--basezeroarrays") {
+		} else if (s.substr(0,7)=="--lang=") {
+			s.erase(0,7); language=get_lang(s);
+			if (language==PSE_COUNT) {
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son:";
+				for(int i=0;i<PSE_COUNT;i++) cout<<" "<<lang_names[i];
+				cout<<endl; return 1;
+			}
+		} else if (s=="--basezeroarrays") {
 			base_zero_arrays=true;
 		} else if (fname_in.size() && fname_out.size()) {
 			cerr<<"Argumentos incorrectos"<<endl;
 			return 1;
 		} else if (fname_in.size()) {
-			fname_out=argv[i];
+			fname_out=s;
 		} else {
-			fname_in=argv[i];
+			fname_in=s;
 		}
 	}
 	if (!fname_out.size()) {

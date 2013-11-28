@@ -155,7 +155,7 @@ public:
 		// esto es porque el parseo que hace la funcion expresion pasa todo a minuscula,
 		// pero despues los i_* pueden llamar a DefinirTipo por su cuenta con la expresion 
 		// ya parseada y pasada a minusculas
-		for(int i=0;i<nombre.size();i++) nombre[i]=toupper(nombre[i]);
+		for(unsigned int i=0;i<nombre.size();i++) nombre[i]=toupper(nombre[i]);
 #endif
 		QuitarIndices(nombre);
 		if (EsAlias(nombre)) return alias_mem->DefinirTipo(alias_nom,tipo);

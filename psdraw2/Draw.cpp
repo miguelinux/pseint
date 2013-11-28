@@ -671,7 +671,7 @@ void display_cb() {
 	// dibujar menues y demases
 	glLineWidth(2);
 	if (edit_on) { DrawMenuAndShapeBar(); DrawTrash(); }
-	if (edit && !status_color) {
+	if (edit && !mouse && !status_color) {
 		switch (edit->type) {
 		case ET_LEER: SetStatus(color_selection,"Lista de variables a leer, separadas por coma."); break;
 		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "?"Nombre del proceso.":"Prototipo del subproceso."); break;

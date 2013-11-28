@@ -11,7 +11,7 @@ using namespace std;
 
 string ToLowerExp(string s) {
 	bool comillas=false;
-	for(int i=0;i<s.size();i++) { 
+	for(unsigned int i=0;i<s.size();i++) { 
 		if (s[i]=='\"') comillas=!comillas;
 		else if (!comillas) s[i]=tolower(s[i]);
 	}

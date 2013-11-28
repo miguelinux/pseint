@@ -1730,7 +1730,7 @@ void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 			aui_manager.Update(); 
 			wxTheApp->Yield(true);
 		} while (h!=final_h);
-		pi.MinSize(_min_size,-1);
+		pi.MinSize(_min_size,final_h);
 		pi.MaxSize(-1,-1); pi.BestSize(-1,-1);
 	} else {
 		pi.MinSize(_min_size,final_h);
