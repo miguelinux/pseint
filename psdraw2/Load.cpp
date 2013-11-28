@@ -174,7 +174,7 @@ void LoadProc(istream &fin) {
 			i=str.find(" CON PASO ");
 			string paso,fin;
 			if (i==string::npos) {
-				paso="1"; fin=str;
+				paso=""; fin=str;
 			} else {
 				fin=str.substr(0,i);
 				paso=str.substr(i+10);

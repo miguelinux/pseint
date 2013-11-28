@@ -501,7 +501,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (variante) {
 			out<<tab<<"Para Cada"<<_fix(label,"{variable}")<<" de "<<_fix(child[2]->label,"{arreglo}")<<" Hacer"<<_endl_this;
 		} else {
-			bool has_paso=child[2]->label!="1"&&child[2]->label!="+1";
+			bool has_paso=child[2]->label!="1"&&child[2]->label!="+1"&&child[2]->label!="";
 			out<<tab<<"Para "<<_fix(label,"{variable}")<<"<-"<<_fix(child[1]->label,"{valor_inicial}")<<" Hasta "<<_fix(child[3]->label,"{valor_final}")
 				<<(has_paso?" Con Paso ":"")<<(has_paso?_fix(child[2]->label,"{paso}"):"") <<" Hacer"<<_endl_this;
 		}
