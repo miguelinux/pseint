@@ -12,6 +12,13 @@ extern const int margin; // para los botones de confirm
 #define mouse_link_delta 250
 static int mouse_link_x=0,mouse_link_y=0; 
 
+static string status_text; // texto para la barra de estado
+static const float *status_color; // color del texto para la barra de estado
+void SetStatus(const float *color, const string &text) {
+	status_color=color;
+	status_text=text;
+}
+
 
 void GetTextSize(const string &label, int &w, int &h) {
 	w=label.size()*10;
@@ -331,6 +338,16 @@ if (use_textures) {
 //	DrawTextRaster(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
+	switch(menu_sel) {
+	case MO_ZOOM_EXTEND: SetStatus(color_selection,"Ajusta el zoom para visualizar todo el diagrama."); break;
+	case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
+	case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
+	case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
+	case MO_EXPORT: SetStatus(color_selection,"Permite guardar el diagrama como imagen."); break;
+	case MO_CLOSE: SetStatus(color_selection,"Cierra el editor, preguntando antes si se deben aplicar los cambios en el pseudocodigo"); break;
+	case MO_HELP: SetStatus(color_selection,"Muestra una ventana de ayuda que explica como utilizar este editor y cuales son sus atajos de teclado."); break;
+	default:;
+	}
 	
 #ifdef _USE_TEXTURES
 if (use_textures) {
@@ -365,14 +382,17 @@ if (use_textures) {
 	
 	// shapebar
 	if (shapebar) {
-		if (shapebar_sel==1) DrawTextRaster(color_selection,10,10,"Asignacion/Dimension/Definicion");
-		if (shapebar_sel==2) DrawTextRaster(color_selection,10,10,"Escribir");
-		if (shapebar_sel==3) DrawTextRaster(color_selection,10,10,"Leer");
-		if (shapebar_sel==4) DrawTextRaster(color_selection,10,10,"Si-Entonces");
-		if (shapebar_sel==5) DrawTextRaster(color_selection,10,10,"Segun");
-		if (shapebar_sel==6) DrawTextRaster(color_selection,10,10,"Mientras");
-		if (shapebar_sel==7) DrawTextRaster(color_selection,10,10,"Repetir-Hasta que");
-		if (shapebar_sel==8) DrawTextRaster(color_selection,10,10,"Para");
+		switch(shapebar_sel) {
+		case 1: SetStatus(color_selection,"Asignacion/Dimension/Definicion"); break;
+		case 2: SetStatus(color_selection,"Escribir (instruccion para generar salidas)"); break;
+		case 3: SetStatus(color_selection,"Leer (instruccion para obtener entradas)"); break;
+		case 4: SetStatus(color_selection,"Si-Entonces (estructura condicional simple)"); break;
+		case 5: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
+		case 6: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
+		case 7: SetStatus(color_selection,"Repetir-Hasta que (estructura repetitiva)"); break;
+		case 8: SetStatus(color_selection,"Para (estructura repetitiva)"); break;
+		default:;
+		}
 	} else if (trash) DrawTextRaster(color_selection,10+trash_size_max,10,"Eliminar");
 }
 
@@ -574,6 +594,7 @@ void display_cb() {
 	int cursor=GLUT_CURSOR_CROSSHAIR;
 	if (choose_process_state) { DrawChooseProcess(); return; }
 	if (confirm) { DrawConfirm(); return; }
+	status_color=NULL;
 	if (entity_to_del) delete entity_to_del;
 	glClear(GL_COLOR_BUFFER_BIT);
 	// dibujar el diagrama
@@ -610,7 +631,7 @@ void display_cb() {
 			aux->Draw();
 			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
 //			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
-			if (aux->error.size()) DrawTextRaster(color_error,10,10,aux->error.c_str());
+			if (aux->error.size()) SetStatus(color_error,aux->error);
 		} else if (debugging && debug_current==aux) {
 			glLineWidth(line_width+1);
 			if (!Entity::nassi_schneiderman) {
@@ -650,6 +671,22 @@ void display_cb() {
 	// dibujar menues y demases
 	glLineWidth(2);
 	if (edit_on) { DrawMenuAndShapeBar(); DrawTrash(); }
+	if (edit && !status_color) {
+		switch (edit->type) {
+		case ET_LEER: SetStatus(color_selection,"Lista de variables a leer, separadas por coma."); break;
+		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "?"Nombre del proceso.":"Prototipo del subproceso."); break;
+		case ET_ESCRIBIR: SetStatus(color_selection,"Lista de expresiones a mostrar, separadas por comas."); break;
+		case ET_SI: SetStatus(color_selection,"Expresion logica."); break;
+		case ET_SEGUN: SetStatus(color_selection,"Expresion de control para la estructura."); break;
+		case ET_OPCION: SetStatus(color_selection,"Posible valor para la expresion de control."); break;
+		case ET_PARA: SetStatus(color_selection,"Identificador de la variable de control (contador)."); break;
+		case ET_MIENTRAS: SetStatus(color_selection,"Expresion de control (logica)."); break;
+		case ET_REPETIR: SetStatus(color_selection,"Expresion de control (logica)."); break;
+		case ET_ASIGNAR: SetStatus(color_selection,"Asignacion o instruccion secuencial."); break;
+		case ET_AUX_PARA: SetStatus(color_selection,edit->parent->child[1]==edit?"Valor inicial para el contador.":(edit->parent->child[2]==edit?"Paso, incremento del contador por cada iteracion.":"Valor final para el contador.")); break;
+		default:;
+		}
+	}
 	// dibujar la seleccion para que quede delante de todo
 	if (mouse && !trash) {
 		glLineWidth(zoom*2);
@@ -657,6 +694,19 @@ void display_cb() {
 		glScalef(d_zoom,d_zoom,1);
 		mouse->Draw();
 		glPopMatrix();
+	}
+	// barra de estado
+	if (status_color) {
+		glColor3fv(color_back);
+		int w=status_text.size()*9,bh=10,bw=10,h=15;
+		bw-=3; w+=6; h+=6; bh-=6;
+		glBegin(GL_QUADS);
+		glVertex2i(bw,bh);
+		glVertex2i(bw,bh+h);
+		glVertex2i(bw+w,bh+h);
+		glVertex2i(bw+w,bh);
+		glEnd();
+		DrawTextRaster(status_color,10,10,status_text.c_str());
 	}
 	glutSwapBuffers();
 	if (trash) cursor=GLUT_CURSOR_DESTROY;
