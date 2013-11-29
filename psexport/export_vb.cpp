@@ -14,7 +14,7 @@
 VbExporter::VbExporter() {}
 
 void VbExporter::esperar(t_output &prog, string param, string tabs){
-#warning TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
+#warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
 	insertar(prog,tabs+"Console.ReadLine()");
 }
 
@@ -29,85 +29,49 @@ void VbExporter::invocar(t_output &prog, string param, string tabs){
 		insertar(prog,tabs+linea);
 }
 
-void VbExporter::escribir(t_output &prog, string param, string tabs){
-	bool comillas=false, saltar=true;
-	int parentesis=0;
-	string linea,expr;
-	int lastcoma=0;
-	param+=",";
-	for (unsigned int i=0;i<param.size();i++) {
-		if (param[i]=='\'') {
-			comillas=!comillas;
-			param[i]='"';
-		} else if (!comillas) {
-			if (param[i]=='(') parentesis++;
-			else if (param[i]==')') parentesis--;
-			else if (parentesis==0 && param[i]==',') {
-				expr=param.substr(lastcoma,i-lastcoma);
-				if (expr=="**SINSALTAR**") saltar=false;
-				else if (expr.size())
-					linea+=string(",")+expresion(expr);
-				lastcoma=i+1;
-			}
-		}
+void VbExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
+	t_arglist_it it=args.begin();
+	string linea;
+	while (it!=args.end()) {
+		if (linea.size()) linea+=",";
+		linea+=expresion(*it);
+		it++;
 	}
-	
 	if (saltar) linea=string("Console.WriteLine(")+linea+")"; 
 	else linea=string("Console.Write(")+linea+")";
 	insertar(prog,tabs+linea);
 }
 
-void VbExporter::leer(t_output &prog, string param, string tabs){
-	param+=",";
-	bool comillas=false;
-	int parentesis=0;
-	int lastcoma=0;
-	for (unsigned int i=0;i<param.size();i++) {
-		if (param[i]=='\'') {
-			comillas=!comillas;
-			param[i]='"';
-		} else if (!comillas) {
-			if (param[i]=='(') parentesis++;
-			else if (param[i]==')') parentesis--;
-			else if (parentesis==0 && param[i]==',') {
-				tipo_var t;
-				string varname=expresion(param.substr(lastcoma,i-lastcoma),t);
-				if (t==vt_numerica_entera) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
-				else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
-				else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolena.Parse(Console.ReadLine())");
-				else  insertar(prog,tabs+varname+" = Console.ReadLine()");
-				lastcoma=i+1;
-				// no se para qué estaba esto???
-				if (varname.find('[')==string::npos) {
-					tipo_var t;
-					memoria->DefinirTipo(varname,t);
-				}
-			}
-		}
+void VbExporter::leer(t_output &prog, t_arglist args, string tabs){
+	t_arglist_it it=args.begin();
+	while (it!=args.end()) {
+		tipo_var t;
+		string varname=expresion(*it,t);
+		if (t==vt_numerica_entera) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
+		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
+		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean.Parse(Console.ReadLine())");
+		else  insertar(prog,tabs+varname+" = Console.ReadLine()");
+		it++;
 	}
 }
 
 void VbExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	tipo_var t;
-	param1=expresion(param1);
-	param2=expresion(param2,t);
-	insertar(prog,tabs+param1+"="+param2);
-	memoria->DefinirTipo(param1,t);
+	insertar(prog,tabs+param1+" = "+param2);
 }
 
 void VbExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
 	insertar(prog,tabs+"If "+expresion((*r).par1)+" Then");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
 		insertar(prog,tabs+"Else");
-		common_bloque(prog,++q,s,tabs+"\t");
+		bloque(prog,++q,s,tabs+"\t");
 	}
 	insertar(prog,tabs+"End If");
 }
 
 void VbExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"While "+expresion((*r).par1)+"");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"End While");
 }
 
@@ -139,7 +103,7 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 			}
 			insertar(prog,tabs+e);
 		}
-		common_bloque(prog,++i,*p,tabs+"\t");
+		bloque(prog,++i,*p,tabs+"\t");
 		q++;
 	}
 	insertar(prog,tabs+"End Select");
@@ -147,7 +111,7 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 
 void VbExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"Do ");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
 		insertar(prog,tabs+"Loop Until "+invert_expresion(expresion((*q).par1)));
 	else
@@ -155,9 +119,6 @@ void VbExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string 
 }
 
 void VbExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	
-	memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
-	
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if ((*r).par4[0]=='-') {
 		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso.substr(1,paso.size()-1)));
@@ -167,15 +128,14 @@ void VbExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tab
 		else
 			insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso));
 	}
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"Next "+var);
 }
 
 void VbExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
-	const int *dims=memoria->LeerDims(var);
 	insertar(prog,tabs+"For Each "+var+" In "+aux);
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"Next");
 }
 
@@ -209,9 +169,9 @@ if (name=="SEN") {
 } else if (name=="REDON") {
 	return string("Math.Round")+args;
 } else if (name=="CONCATENAR") {
-	return string("(")+common_get_arg(args,1)+" & "+common_get_arg(args,2)+")";
+	return string("(")+get_arg(args,1)+" & "+get_arg(args,2)+")";
 } else if (name=="LONGITUD") {
-	return common_get_arg(args,1)+".Length()";
+	return get_arg(args,1)+".Length()";
 } else if (name=="SUBCADENA") {
 	return string("Mid")+args;
 } else if (name=="CONVERTIRANUMERO") {
@@ -219,9 +179,9 @@ if (name=="SEN") {
 } else if (name=="CONVERTIRATEXTO") {
 	return string("CStr")+args;
 } else if (name=="MINUSCULAS") {
-	return string("(")+common_get_arg(args,1)+").ToUpper()";
+	return string("(")+get_arg(args,1)+").ToUpper()";
 } else if (name=="MAYUSCULAS") {
-	return string("(")+common_get_arg(args,1)+").ToLower()";
+	return string("(")+get_arg(args,1)+").ToLower()";
 } else {
 	return ToLower(name)+args; // no deberia pasar esto
 }
@@ -237,7 +197,7 @@ else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
 else if (t==vt_logica) stipo="Boolean";
 //else use_sin_tipo=true;
 if (t.dims) {
-	return string("Dim ")+ToLower(mit->first)+common_make_dims(t.dims,"[","][","]")+" As "+stipo;
+	return string("Dim ")+ToLower(mit->first)+make_dims(t.dims,"[","][","]")+" As "+stipo;
 } else {
 	return string("Dim ")+ToLower(mit->first)+" As "+stipo;
 }
@@ -271,7 +231,7 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
-	common_bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
+	bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
 	
 	// cabecera del proceso
 	bool is_sub=true;
@@ -331,5 +291,40 @@ void VbExporter::translate(t_output & prog, t_programa & alg) {
 	for (t_programa_it it=alg.begin();it!=alg.end();++it)
 		translate(prog,*it);	
 	prog.push_back("End Module");
+}
+
+string VbExporter::get_constante(string name) {
+	if (name=="PI") return "Math.Pi";
+	if (name=="VERDADERO") return "True";
+	if (name=="FALSO") return "False";
+	return name;
+}
+
+string VbExporter::get_operator(string op, bool for_string) {
+	if (for_string) {
+		if (op=="+") return "&"; 
+		if (op=="=") return "arg1.Equals(arg2)"; 
+		if (op=="<>") return "(Not arg1.Equals(arg2))"; 
+		if (op=="<") return "(String.Compare(arg1,arg)<0)"; 
+		if (op==">") return "(String.Compare(arg1,arg)>0)"; 
+		if (op=="<=") return "(String.Compare(arg1,arg)<=0)"; 
+		if (op==">=") return "(String.Compare(arg1,arg)>=0)"; 
+	}
+	if (op=="+") return "+"; 
+	if (op=="-") return "-"; 
+	if (op=="/") return "/"; 
+	if (op=="*") return "*";
+	if (op=="^") return "^";
+	if (op=="%") return " Mod ";
+	if (op=="=") return "="; 
+	if (op=="<>") return "<>"; 
+	if (op=="<") return "<"; 
+	if (op==">") return ">"; 
+	if (op=="<=") return "<="; 
+	if (op==">=") return "<="; 
+	if (op=="&") return " And "; 
+	if (op=="|") return " Or "; 
+	if (op=="~") return "Not "; 
+	return op; // no deberia pasar nunca
 }
 

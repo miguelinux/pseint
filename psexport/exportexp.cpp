@@ -34,10 +34,10 @@ string invert_expresion(string expr) {
 	}
 	if (nop==1) {
 		i=iop;
-		if (expr[i]=='='&&expr[i+1]=='=') { expr.replace(i,2,"!=");  return expr; }
-		if (expr[i]=='!'&&expr[i+1]=='=') { expr.replace(i,2,"==");  return expr; }
-		if (expr[i]=='<'&&expr[i+1]=='=') { expr.replace(i,2,">");  return expr; }
-		if (expr[i]=='>'&&expr[i+1]=='=') { expr.replace(i,2,"<");  return expr; }
+		if (expr[i]=='='&&expr[i+1]=='=') { expr.replace(i,2,"!="); return expr; }
+		if (expr[i]=='!'&&expr[i+1]=='=') { expr.replace(i,2,"=="); return expr; }
+		if (expr[i]=='<'&&expr[i+1]=='=') { expr.replace(i,2,">"); return expr; }
+		if (expr[i]=='>'&&expr[i+1]=='=') { expr.replace(i,2,"<"); return expr; }
 		if (expr[i]=='<') { expr.replace(i,1,">=");  return expr; }
 		if (expr[i]=='>') { expr.replace(i,1,"<=");  return expr; }
 	}
@@ -269,14 +269,20 @@ string expresion(string exp, tipo_var &tipo){
 				i++;
 			l=i+1;
 		} else if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-			if (exp.substr(l,i-l)=="VERDADERO") { exp.replace(l,i-l,"true"); i=i-5; }
-			else if (exp.substr(l,i-l)=="FALSO") { exp.replace(l,i-l,"false"); i=i-5; }
+			string word=exp.substr(l,i-l);
+			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
+				string rep=exporter->get_constante(word);
+				exp.replace(l,i-l,rep); i=i-(word.size()-rep.size());
+			} else {
+				exp.replace(l,i-l,ToLowerExp(word));
+				
+			}
 			l=i+1;
 		}
 	}
 	exp=exp.substr(0,exp.size()-1);
 	
-	return ToLowerExp(exp);
+	return exp;
 }
 
 string expresion(string exp) {

@@ -24,6 +24,7 @@ bool cargar(list<t_proceso> &algs, string archivo){
 		for (unsigned int ii=0;ii<s.size();ii++) if(s[ii]=='\t') s[ii]=' ';
 		if (LeftCompare(s,"PROCESO ")) { 
 			i.nombre="PROCESO";
+			main_process_name=s.substr(8);
 			p.insert(p.begin(),i);
 		} else if (LeftCompare(s,"SUBPROCESO")) { 
 			i.nombre="SUBPROCESO";

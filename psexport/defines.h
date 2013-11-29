@@ -16,6 +16,9 @@ struct t_instruccion{
 #define t_programa_it list<t_proceso>::iterator
 #define t_output list<string>
 #define t_output_it list<string>::iterator
+#define t_arglist list<string>
+#define t_arglist_it list<string>::iterator
+
 
 //#ifndef _USE_COUT
 #define insertar(prog,text) prog.insert(prog.end(),text)

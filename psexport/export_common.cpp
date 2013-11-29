@@ -7,7 +7,7 @@ using namespace std;
 
 ExporterBase *exporter=NULL;
 
-string common_make_dims(const int *tdims, string c1, string c2, string c3, bool numbers) {
+string ExporterBase::make_dims(const int *tdims, string c1, string c2, string c3, bool numbers) {
 	string dims=c1;
 	for (int j=1;j<=tdims[0];j++) {
 		if (j==dims[0]) dims+=(numbers?IntToStr(dims[j]):"")+c3;
@@ -17,21 +17,71 @@ string common_make_dims(const int *tdims, string c1, string c2, string c3, bool 
 }
 
 
-void common_bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs){
+void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs){
 	if (r==q) return;
 	int deep;
 	string s;
 	
 	while (r!=q) {
 		s=(*r).nombre;
-		if (s=="ESCRIBIR") exporter->escribir(prog,(*r).par1,tabs);
+		if (s=="ESCRIBIR") {
+			t_arglist args; string param=(*r).par1+",";
+			bool comillas=false, saltar=true;
+			int parentesis=0, lastcoma=0;
+			for (unsigned int i=0;i<param.size();i++) {
+				if (param[i]=='\'') {
+					comillas=!comillas;
+					param[i]='"';
+				} else if (!comillas) {
+					if (param[i]=='(') parentesis++;
+					else if (param[i]==')') parentesis--;
+					else if (parentesis==0 && param[i]==',') {
+						string expr=param.substr(lastcoma,i-lastcoma);
+						if (expr=="**SINSALTAR**") saltar=false;
+						else args.push_back(expr); 
+						lastcoma=i+1;
+					}
+				}
+			}
+			exporter->escribir(prog,args,saltar,tabs);
+		}
 		else if (s=="INVOCAR") exporter->invocar(prog,(*r).par1,tabs);
 		else if (s=="BORRARPANTALLA") exporter->borrar(prog,(*r).par1,tabs);
 		else if (s=="ESPERARTECLA") exporter->esperar(prog,(*r).par1,tabs);
 		else if (s=="DIMENSION") exporter->dimension(prog,(*r).par1,tabs);
 		else if (s=="DEFINIR") exporter->definir(prog,(*r).par1,tabs);
-		else if (s=="LEER") exporter->leer(prog,(*r).par1,tabs);
-		else if (s=="ASIGNACION") exporter->asignacion(prog,(*r).par1,(*r).par2,tabs);
+		else if (s=="LEER") {
+			t_arglist args;
+			bool comillas=false; string param=(*r).par1+",";
+			int parentesis=0, lastcoma=0;
+			for (unsigned int i=0;i<param.size();i++) {
+				if (param[i]=='\'') {
+					comillas=!comillas;
+					param[i]='"';
+				} else if (!comillas) {
+					if (param[i]=='(') parentesis++;
+					else if (param[i]==')') parentesis--;
+					else if (parentesis==0 && param[i]==',') {
+						string varname=param.substr(lastcoma,i-lastcoma);
+						args.push_back(varname);
+						lastcoma=i+1;
+						// para que registre las variables en la memoria?
+						if (varname.find('(')==string::npos) {
+							tipo_var t;
+							memoria->DefinirTipo(varname,t);
+						}
+					}
+				}
+			}
+			exporter->leer(prog,args,tabs);
+		}
+		else if (s=="ASIGNACION") {
+			tipo_var t;
+			string param1=expresion((*r).par1);
+			string param2=expresion((*r).par2,t);
+			exporter->asignacion(prog,param1,param2,tabs);
+			memoria->DefinirTipo(param1,t);
+		}
 		else if (s=="MIENTRAS") {
 			t_proceso_it r1=r++;
 			deep=0;
@@ -75,6 +125,7 @@ void common_bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs){
 				else if ((*r).nombre=="FINPARA") deep--;
 				r++;
 			}
+			memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
 			exporter->para(prog,r1,r,tabs);
 		} else if (s=="PARACADA") {
 			t_proceso_it r1=r++;
@@ -174,7 +225,7 @@ void ExporterBase::dimension(t_output &prog, string params, string tabs) {
 }
 
 // recibe los argumentos de una funcion (incluyendo los parentesis que los envuelven, y extra alguno (cual, base 1)
-string common_get_arg(string args, int cual) {
+string ExporterBase::get_arg(string args, int cual) {
 	int i=1,i0=1,parentesis=0,n=0; bool comillas=false;
 	while (true) {
 		if (args[i]=='\''||args[i]=='\"') comillas=!comillas;
@@ -190,3 +241,4 @@ string common_get_arg(string args, int cual) {
 	}
 	return "";
 }
+

@@ -18,6 +18,7 @@ CppExporter::CppExporter() {
 	use_func_minusculas=false;
 	use_func_mayusculas=false;
 	use_func_convertiratexto=false;
+	base_zero_arrays=true;
 }
 
 void CppExporter::esperar(t_output &prog, string param, string tabs){
@@ -36,83 +37,45 @@ void CppExporter::invocar(t_output &prog, string param, string tabs){
 		insertar(prog,tabs+linea);
 }
 
-void CppExporter::escribir(t_output &prog, string param, string tabs){
-	bool comillas=false, saltar=true;
-	int parentesis=0;
-	string linea="cout",expr;
-	int lastcoma=0;
-	param+=",";
-	for (unsigned int i=0;i<param.size();i++) {
-		if (param[i]=='\'') {
-			comillas=!comillas;
-			param[i]='"';
-		} else if (!comillas) {
-			if (param[i]=='(') parentesis++;
-			else if (param[i]==')') parentesis--;
-			else if (parentesis==0 && param[i]==',') {
-				expr=param.substr(lastcoma,i-lastcoma);
-				if (expr=="**SINSALTAR**") saltar=false;
-				else if (expr.size())
-					linea+=string("<<")+expresion(expr);
-				lastcoma=i+1;
-			}
-		}
+void CppExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
+	t_arglist_it it=args.begin();
+	string linea="cout";
+	while (it!=args.end()) {
+		linea+="<<";
+		linea+=expresion(*it);
+		it++;
 	}
-	
-	if (saltar) linea+="<<endl;"; else linea+=";";
-	insertar(prog,tabs+linea);
+	insertar(prog,tabs+linea+(saltar?"<<endl;":";"));
 }
 
-void CppExporter::leer(t_output &prog, string param, string tabs){
-	param+=",";
-	bool comillas=false;
-	int parentesis=0;
+void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
+	t_arglist_it it=args.begin();
 	string linea="cin";
-	int lastcoma=0;
-	for (unsigned int i=0;i<param.size();i++) {
-		if (param[i]=='\'') {
-			comillas=!comillas;
-			param[i]='"';
-		} else if (!comillas) {
-			if (param[i]=='(') parentesis++;
-			else if (param[i]==')') parentesis--;
-			else if (parentesis==0 && param[i]==',') {
-				string varname=expresion(param.substr(lastcoma,i-lastcoma));
-				linea+=">>";
-				linea+=varname;
-				lastcoma=i+1;
-				// no se para qué estaba esto???
-				if (varname.find('[')==string::npos) {
-					tipo_var t;
-					memoria->DefinirTipo(varname,t);
-				}
-			}
-		}
+	while (it!=args.end()) {
+		linea+=">>";
+		linea+=expresion(*it);
+		it++;
 	}
 	insertar(prog,tabs+linea+";");
 }
 
 void CppExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	tipo_var t;
-	param1=expresion(param1);
-	param2=expresion(param2,t);
 	insertar(prog,tabs+param1+"="+param2+";");
-	memoria->DefinirTipo(param1,t);
 }
 
 void CppExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
 	insertar(prog,tabs+"if ("+expresion((*r).par1)+") {");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
 		insertar(prog,tabs+"} else {");
-		common_bloque(prog,++q,s,tabs+"\t");
+		bloque(prog,++q,s,tabs+"\t");
 	}
 	insertar(prog,tabs+"}");
 }
 
 void CppExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"while ("+expresion((*r).par1)+") {");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 }
 
@@ -144,7 +107,7 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 			}
 			insertar(prog,tabs+e);
 		}
-		common_bloque(prog,++i,*p,tabs+"\t");
+		bloque(prog,++i,*p,tabs+"\t");
 		insertar(prog,tabs+"\tbreak;");
 		q++;
 	}
@@ -153,7 +116,7 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 
 void CppExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"do {");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
 		insertar(prog,tabs+"} while ("+invert_expresion(expresion((*q).par1))+");");
 	else
@@ -161,30 +124,19 @@ void CppExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string
 }
 
 void CppExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	
-	memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
-	
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if ((*r).par4[0]=='-') {
-//		if (lang_cpp) {
 		if (paso=="-1")
 			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+">="+fin+";"+var+"--) {");
 		else
 			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+">="+fin+";"+var+"-="+expresion(paso.substr(1,paso.size()-1))+") {");
-//		} else
-//			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+">="+fin+";"+var+"="+var+"-"+expresion(paso)+") {");
-
 	} else {
-//		if (lang_cpp) {
 		if (paso=="1")
 			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+"<="+fin+";"+var+"++) {");
 		else
 			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+"<="+fin+";"+var+"+="+expresion(paso)+") {");
-//		} else
-//			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+"<="+fin+";"+var+"="+var+"+"+expresion(paso)+") {");
-
 	}
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 }
 
@@ -202,7 +154,7 @@ void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 	}
 	insertar(prog,tabs+"for (typeof(&("+first+")) ptr_aux=&("+first+");ptr_aux<=&("+last+");ptr_aux++) {");
 	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*ptr_aux;");
-	common_bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 }
 
@@ -249,7 +201,7 @@ string CppExporter::function(string name, string args) {
 		return string("exp")+args;
 	} else if (name=="AZAR") {
 		include_cstdlib=true;
-		return string("(rand()%")+colocarParentesis(common_get_arg(args,1))+")";
+		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
 	} else if (name=="ATAN") {
 		include_cmath=true;
 		return string("atan")+args;
@@ -258,16 +210,16 @@ string CppExporter::function(string name, string args) {
 		return string("floor")+args;
 	} else if (name=="REDON") {
 		include_cmath=true;
-		return string("floor(")+colocarParentesis(common_get_arg(args,1))+".5)";
+		return string("floor(")+colocarParentesis(get_arg(args,1))+".5)";
 	} else if (name=="CONCATENAR") {
-		return string("(")+convertirAString(common_get_arg(args,1))+"+"+common_get_arg(args,2)+")";
+		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
 	} else if (name=="LONGITUD") {
-		return convertirAString(common_get_arg(args,1))+".size()";
+		return convertirAString(get_arg(args,1))+".size()";
 	} else if (name=="SUBCADENA") {
-		return convertirAString(common_get_arg(args,1))+".substr("+common_get_arg(args,2)+","+common_get_arg(args,3)+"-"+common_get_arg(args,2)+"+1)";
+		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
 	} else if (name=="CONVERTIRANUMERO") {
 		include_cstdlib=true;
-		string s=common_get_arg(args,1);
+		string s=get_arg(args,1);
 		if (esString(s)) return string("atof(")+s+")";
 		else return string("atof(")+colocarParentesis(s)+".c_str())";
 	} else {
@@ -288,7 +240,7 @@ string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
 	else if (t==vt_logica) stipo="bool ";
 	else use_sin_tipo=true;
 	if (t.dims) {
-		return stipo+ToLower(mit->first)+common_make_dims(t.dims,"[","][","]");
+		return stipo+ToLower(mit->first)+make_dims(t.dims,"[","][","]");
 	} else {
 		return stipo+ToLower(mit->first);
 	}
@@ -384,7 +336,7 @@ void CppExporter::translate(t_output &out, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
-	common_bloque(out_proc,++proc.begin(),proc.end(),"\t");
+	bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	
 	// cabecera del proceso
 	t_proceso_it it=proc.begin();
@@ -438,5 +390,31 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 		out.push_back("");
 	}
 	copy(aux.begin(),aux.end(),back_inserter(out));
+}
+
+string CppExporter::get_constante(string name) {
+	if (name=="PI") { include_cmath=true; return "M_PI"; }
+	if (name=="VERDADERO") return "true";
+	if (name=="FALSO") return "false";
+	return name;
+}
+
+string CppExporter::get_operator(string op, bool for_string) {
+	if (op=="+") return "+"; 
+	if (op=="-") return "-"; 
+	if (op=="/") return "/"; 
+	if (op=="*") return "*";
+	if (op=="^") return "func pow(arg1,arg2)";
+	if (op=="%") return "%";
+	if (op=="=") return "=="; 
+	if (op=="<>") return "!="; 
+	if (op=="<") return "<"; 
+	if (op==">") return ">"; 
+	if (op=="<=") return "<="; 
+	if (op==">=") return "<="; 
+	if (op=="&") return "&&"; 
+	if (op=="|") return "||"; 
+	if (op=="~") return "!"; 
+	return op; // no deberia pasar nunca
 }
 
