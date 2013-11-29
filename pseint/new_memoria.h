@@ -96,7 +96,6 @@ class Memoria {
 	
 	map<string,tipo_var> var_info;
 	map<string,string> var_value;
-	friend class MemoriaForExport;
 	void QuitarIndices(string &str) {
 		int sz=str.size();
 		for (int i=0;i<sz;i++)
@@ -266,6 +265,10 @@ public:
 		}
 		
 	}
+	
+#ifdef _FOR_PSEXPORT
+	map<string,tipo_var> &GetVarInfo() { return var_info; }
+#endif
 	
 };
 

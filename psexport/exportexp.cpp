@@ -6,7 +6,8 @@
 #include "../pseint/new_evaluar.h"
 #include "../pseint/new_funciones.h"
 #include "../pseint/global.h"
-#include "export_chooser.h"
+#include "export_common.h"
+#include "exportexp.h"
 using namespace std;
 
 string ToLowerExp(string s) {
@@ -132,8 +133,6 @@ string restarUno(string exp) {
 	return exp+"-1";
 }
 
-string expresion(string exp);
-
 string expresion(string exp, tipo_var &tipo){
 	for (unsigned int i=0;i<exp.size();i++) if(exp[i]=='\"') exp[i]='\'';
 	
@@ -155,24 +154,6 @@ string expresion(string exp, tipo_var &tipo){
 		else if (exp[i]=='í' || exp[i]=='Í') exp[i]='I';
 		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
 		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
-	
-	
-	// cambiar verdadero y falso por VERDADERO y FALSO para que evaluar los reconozca
-//	exp=exp+",";
-//	for (unsigned int i=0,l=0;i<exp.size();i++) {
-//		if (exp[i]=='\"') {
-//			i++;
-//			while (i<exp.size() && exp[i]!='\"')
-//				i++;
-//			i++;
-//			l=i+1;
-//		} else if ((exp[i]<'a'||exp[i]>'z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
-//			if (exp.substr(l,i-l)=="verdadero") exp.replace(l,i-l,"VERDADERO");
-//			else if (exp.substr(l,i-l)=="falso") exp.replace(l,i-l,"FALSO"); 
-//			l=i+1;
-//		}
-//	}
-//	exp=exp.substr(0,exp.size()-1);
 	
 	Evaluar(string(" ")+exp+" ",tipo); // ¿para que los espacios??? 
 	
@@ -208,7 +189,7 @@ string expresion(string exp, tipo_var &tipo){
 					exp[fin]=')';
 					if (EsFuncionPredefinida(sub)) {
 						string args="("+expresion(exp.substr(i+1,fin-i-1))+")";
-						string translated=translate_function(sub,args);
+						string translated=exporter->function(sub,args);
 						exp.replace(i-sub.size(),fin-(i-sub.size())+1,translated);
 						i=i-sub.size()+translated.size()-1;
 					}

@@ -4,21 +4,19 @@
 #include "../pseint/utils.h"
 #include "defines.h"
 #include "version.h"
-#include "export_chooser.h"
+#include "export_common.h"
+#include "export_cpp.h"
+#include "export_vb.h"
 using namespace std;
 
 // otras funciones
-void cargar(list<t_proceso> &algs, string archivo){
+bool cargar(list<t_proceso> &algs, string archivo){
 	char buffer[1024];
 	t_proceso p;
 	ifstream f(archivo.c_str());
 	string s;
 	int x;
-	if (!f.is_open()) {
-		cerr<<"No se pudo abrir el archivo\n"; 
-		(*(p.begin())).nombre="ERROR ERROR ERROR!";
-		return;
-	}
+	if (!f.is_open()) return false;
 	while (!f.eof()) {
 		t_instruccion i;
 		f.getline(buffer,256); s=buffer;
@@ -48,6 +46,12 @@ void cargar(list<t_proceso> &algs, string archivo){
 			i.nombre="FINPARA"; p.insert(p.end(),i);
 		} else if (s=="FINMIENTRAS") {
 			i.nombre="FINMIENTRAS"; p.insert(p.end(),i);
+		} else if (LeftCompare(s,"HASTA QUE ")) {
+			i.nombre="HASTAQUE"; i.par1=CutString(s,10);
+			p.insert(p.end(),i);
+		} else if (LeftCompare(s,"MIENTRAS QUE ")) {
+			i.nombre="MIENTRASQUE"; i.par1=CutString(s,13);
+			p.insert(p.end(),i);
 		} else if (s=="REPETIR") {
 			i.nombre="REPETIR"; p.insert(p.end(),i);
 //		} else if (LeftCompare(s,"PROCESO ")) {
@@ -89,9 +93,6 @@ void cargar(list<t_proceso> &algs, string archivo){
 		} else if (LeftCompare(s,"ESPERARTECLA")) {
 			i.nombre="ESPERARTECLA"; i.par1="";
 			p.insert(p.end(),i);
-		} else if (LeftCompare(s,"HASTA QUE ")) {
-			i.nombre="HASTAQUE"; i.par1=CutString(s,10);
-			p.insert(p.end(),i);
 		} else if (LeftCompare(s,"ESCRIBIR ")) {
 			i.nombre="ESCRIBIR"; i.par1=CutString(s,9,1);
 			p.insert(p.end(),i);
@@ -127,7 +128,7 @@ void cargar(list<t_proceso> &algs, string archivo){
 	}
 	f.close();
 	
-	return;
+	return true;
 }
 
 
@@ -155,11 +156,11 @@ int main(int argc, char *argv[]){
 			cerr<<"Use: "<<argv[0]<<" [--basezeroarrays] [--lang=<lenguaje>] <in_file.drw> <out_file.cpp>\n";
 			return 1;
 		} else if (s.substr(0,7)=="--lang=") {
-			s.erase(0,7); language=get_lang(s);
-			if (language==PSE_COUNT) {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son:";
-				for(int i=0;i<PSE_COUNT;i++) cout<<" "<<lang_names[i];
-				cout<<endl; return 1;
+			s.erase(0,7); 
+			if (s=="cpp") exporter=new CppExporter();
+			else if (s=="vb") exporter=new VbExporter();
+			else {
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb";
 			}
 		} else if (s=="--basezeroarrays") {
 			base_zero_arrays=true;
@@ -181,10 +182,13 @@ int main(int argc, char *argv[]){
 	
 	//cargar programa
 	t_programa prog;
-	cargar(prog,argv[1]);
+	if (!cargar(prog,fname_in)) {
+		cerr<<"No se pudo abrir el archivo "<<fname_in<<".\n"; 
+		return 1;
+	}
 	// convertir
 	t_output out;
-	translate_programa(out,prog);
+	exporter->translate(out,prog);
 	
 #ifdef _USE_COUT
 #define fout cout

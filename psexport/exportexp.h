@@ -3,6 +3,7 @@
 #include<stack>
 #include "new_memoria.h"
 
+class ExpIntrucciones;
 
 // conversion de expresiones
 string modificarConstante(string s,int diff);

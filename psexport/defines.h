@@ -19,6 +19,7 @@ struct t_instruccion{
 
 //#ifndef _USE_COUT
 #define insertar(prog,text) prog.insert(prog.end(),text)
+#define mem_iterator map<string,tipo_var>::iterator
 //#else
 //#define insertar(prog,text) cerr<<text<<endl
 //#endif

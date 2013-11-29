@@ -4,12 +4,332 @@
 * Las traducciones están basadas en los ejemplos enviados por el Prof. Tito Sánchez
 **/
 #include "export_vb.h"
+#include "../pseint/new_funciones.h"
+#include "../pseint/utils.h"
+#include "export_common.h"
+#include "version.h"
+#include "exportexp.h"
+#include "../pseint/new_evaluar.h"
 
-string vb_function(string name, string args) {
+VbExporter::VbExporter() {}
+
+void VbExporter::esperar(t_output &prog, string param, string tabs){
+#warning TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
+	insertar(prog,tabs+"Console.ReadLine()");
+}
+
+void VbExporter::borrar(t_output &prog, string param, string tabs){
+	insertar(prog,tabs+"Console.Clear()");
+}
+
+void VbExporter::invocar(t_output &prog, string param, string tabs){
+	string linea=expresion(param);
+	if (linea[linea.size()-1]!=')') 
+		linea+="()";
+		insertar(prog,tabs+linea);
+}
+
+void VbExporter::escribir(t_output &prog, string param, string tabs){
+	bool comillas=false, saltar=true;
+	int parentesis=0;
+	string linea,expr;
+	int lastcoma=0;
+	param+=",";
+	for (unsigned int i=0;i<param.size();i++) {
+		if (param[i]=='\'') {
+			comillas=!comillas;
+			param[i]='"';
+		} else if (!comillas) {
+			if (param[i]=='(') parentesis++;
+			else if (param[i]==')') parentesis--;
+			else if (parentesis==0 && param[i]==',') {
+				expr=param.substr(lastcoma,i-lastcoma);
+				if (expr=="**SINSALTAR**") saltar=false;
+				else if (expr.size())
+					linea+=string(",")+expresion(expr);
+				lastcoma=i+1;
+			}
+		}
+	}
+	
+	if (saltar) linea=string("Console.WriteLine(")+linea+")"; 
+	else linea=string("Console.Write(")+linea+")";
+	insertar(prog,tabs+linea);
+}
+
+void VbExporter::leer(t_output &prog, string param, string tabs){
+	param+=",";
+	bool comillas=false;
+	int parentesis=0;
+	int lastcoma=0;
+	for (unsigned int i=0;i<param.size();i++) {
+		if (param[i]=='\'') {
+			comillas=!comillas;
+			param[i]='"';
+		} else if (!comillas) {
+			if (param[i]=='(') parentesis++;
+			else if (param[i]==')') parentesis--;
+			else if (parentesis==0 && param[i]==',') {
+				tipo_var t;
+				string varname=expresion(param.substr(lastcoma,i-lastcoma),t);
+				if (t==vt_numerica_entera) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
+				else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
+				else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolena.Parse(Console.ReadLine())");
+				else  insertar(prog,tabs+varname+" = Console.ReadLine()");
+				lastcoma=i+1;
+				// no se para qué estaba esto???
+				if (varname.find('[')==string::npos) {
+					tipo_var t;
+					memoria->DefinirTipo(varname,t);
+				}
+			}
+		}
+	}
+}
+
+void VbExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
+	tipo_var t;
+	param1=expresion(param1);
+	param2=expresion(param2,t);
+	insertar(prog,tabs+param1+"="+param2);
+	memoria->DefinirTipo(param1,t);
+}
+
+void VbExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
+	insertar(prog,tabs+"If "+expresion((*r).par1)+" Then");
+	common_bloque(prog,++r,q,tabs+"\t");
+	if (q!=s) {
+		insertar(prog,tabs+"Else");
+		common_bloque(prog,++q,s,tabs+"\t");
+	}
+	insertar(prog,tabs+"End If");
+}
+
+void VbExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+	insertar(prog,tabs+"While "+expresion((*r).par1)+"");
+	common_bloque(prog,++r,q,tabs+"\t");
+	insertar(prog,tabs+"End While");
+}
+
+void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
+	list<t_proceso_it>::iterator p,q,r;
+	q=p=its.begin();r=its.end();
+	t_proceso_it i=*q;
+	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
+	AplicarTipo(opcion,p1,p2,vt_numerica);
+	insertar(prog,tabs+"Select Case "+expresion((*i).par1));
+	q++;p++;
+	while (++p!=r) {
+		i=*q;
+		if ((*i).par1=="DE OTRO MODO")
+			insertar(prog,tabs+"Case Else");
+		else {
+			string e="Case "+expresion((*i).par1);
+			bool comillas=false; int parentesis=0, j=0,l=e.size();
+			while(j<l) {
+				if (e[j]=='\''||e[j]=='\"') comillas=!comillas;
+				else if (!comillas) {
+					if (e[j]=='['||e[j]=='(') parentesis++;
+					else if (e[j]==']'||e[j]==')') parentesis--;
+					else if (parentesis==0 && e[j]==',') {
+						e.replace(j,1,", "); l+=6;
+					}
+				}
+				j++;
+			}
+			insertar(prog,tabs+e);
+		}
+		common_bloque(prog,++i,*p,tabs+"\t");
+		q++;
+	}
+	insertar(prog,tabs+"End Select");
+}
+
+void VbExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+	insertar(prog,tabs+"Do ");
+	common_bloque(prog,++r,q,tabs+"\t");
+	if ((*q).nombre=="HASTAQUE")
+		insertar(prog,tabs+"Loop Until "+invert_expresion(expresion((*q).par1)));
+	else
+		insertar(prog,tabs+"Loop While "+expresion((*q).par1));
+}
+
+void VbExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+	
+	memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
+	
+	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
+	if ((*r).par4[0]=='-') {
+		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso.substr(1,paso.size()-1)));
+	} else {
+		if (paso=="1")
+			insertar(prog,tabs+"For "+var+"="+ini+" To "+fin);
+		else
+			insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso));
+	}
+	common_bloque(prog,++r,q,tabs+"\t");
+	insertar(prog,tabs+"Next "+var);
+}
+
+void VbExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
+	const int *dims=memoria->LeerDims(var);
+	insertar(prog,tabs+"For Each "+var+" In "+aux);
+	common_bloque(prog,++r,q,tabs+"\t");
+	insertar(prog,tabs+"Next");
+}
+
+string VbExporter::function(string name, string args) {
+if (name=="SEN") {
+	return string("Math.Sin")+args;
+} else if (name=="TAN") {
+	return string("Math.Tan")+args;
+} else if (name=="ASEN") {
+	return string("Math.Asin")+args;
+} else if (name=="ACOS") {
+	return string("Math.Acos")+args;
+} else if (name=="COS") {
+	return string("Math.Cos")+args;
+} else if (name=="RAIZ") {
+	return string("Math.Sqrt")+args;
+} else if (name=="RC") {
+	return string("Math.Sqrt")+args;
+} else if (name=="ABS") {
+	return string("Math.Abs")+args;
+} else if (name=="LN") {
+	return string("Math.Log")+args;
+} else if (name=="EXP") {
+	return string("Math.Exp")+args;
+} else if (name=="AZAR") {
+	return string("New Random().Next")+args;
+} else if (name=="ATAN") {
+	return string("Math.Atan")+args;
+} else if (name=="TRUNC") {
+	return string("Math.Truncate")+args;
+} else if (name=="REDON") {
+	return string("Math.Round")+args;
+} else if (name=="CONCATENAR") {
+	return string("(")+common_get_arg(args,1)+" & "+common_get_arg(args,2)+")";
+} else if (name=="LONGITUD") {
+	return common_get_arg(args,1)+".Length()";
+} else if (name=="SUBCADENA") {
+	return string("Mid")+args;
+} else if (name=="CONVERTIRANUMERO") {
+	return string("CDbl")+args;
+} else if (name=="CONVERTIRATEXTO") {
+	return string("CStr")+args;
+} else if (name=="MINUSCULAS") {
+	return string("(")+common_get_arg(args,1)+").ToUpper()";
+} else if (name=="MAYUSCULAS") {
+	return string("(")+common_get_arg(args,1)+").ToLower()";
+} else {
+	return ToLower(name)+args; // no deberia pasar esto
+}
+}
+
+// funcion usada por declarar_variables para las internas de una funcion
+// y para obtener los tipos de los argumentos de la funcion para las cabeceras
+string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
+tipo_var &t=mit->second;
+string stipo="String";
+if (t==vt_caracter) { stipo="String"; }
+else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
+else if (t==vt_logica) stipo="Boolean";
+//else use_sin_tipo=true;
+if (t.dims) {
+	return string("Dim ")+ToLower(mit->first)+common_make_dims(t.dims,"[","][","]")+" As "+stipo;
+} else {
+	return string("Dim ")+ToLower(mit->first)+" As "+stipo;
+}
+}
+
+// resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
+void VbExporter::declarar_variables(t_output &prog) {
+	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
+	string tab("\t\t"),stipo;
+	while (mit!=mit2) {
+		prog.push_back(tab+get_tipo(mit)+";");
+		mit++;
+	}
+}
+
+// retorna el tipo y elimina de la memoria a esa variable
+// se usa para armar las cabeceras de las funciones, las elimina para que no se
+// vuelvan a declarar adentro
+string VbExporter::get_tipo(string name) {
+	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
+	if (mit==memoria->GetVarInfo().end()) 
+		return "Dim _variable_desconocida_ As String"; // no debería pasar
+	string ret = get_tipo(mit);
+	memoria->GetVarInfo().erase(mit);
+	return ret;
+}
+
+void VbExporter::translate(t_output &out, t_proceso &proc) {
+	
+	memoria=new Memoria(NULL);
+	
+	//cuerpo del proceso
+	t_output out_proc;
+	common_bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
+	
+	// cabecera del proceso
+	bool is_sub=true;
+	t_proceso_it it=proc.begin();
+	string ret; // sentencia "Return ..." de la funcion
+	if (it->nombre=="PROCESO") {
+		out.push_back("\tSub Main()");
+	} else {
+		int x;
+		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
+		string dec;
+		if (f->nombres[0]=="") {
+			dec="\tPublic Sub "; 
+		} else {
+			is_sub=false;
+			dec="\tPublic Function ";
+			ret=get_tipo(f->nombres[0]); 
+			ret=string("Return")+ret.substr(ret.rfind(" "));
+		}
+		dec+=ToLower(f->id)+"(";
+		for(int i=1;i<=f->cant_arg;i++) {
+			if (i!=1) dec+=", ";
+			dec+=f->pasajes[i]==PP_REFERENCIA?"ByRef ":"ByVal ";
+			dec+=get_tipo(f->nombres[i]);
+		}
+		dec+=")";
+		out.push_back(dec);
+		delete f;
+	}
+	
+	declarar_variables(out);
+	
+	copy(out_proc.begin(),out_proc.end(),back_inserter(out));
+	
+	// cola del proceso
+	if (ret.size()) out.push_back(string("\t")+ret);
+	out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
+	out.push_back("");
+	
+	delete memoria;
 	
 }
 
-void translate_vb(t_output & prog, t_programa & alg) {
-	
+void VbExporter::translate(t_output & prog, t_programa & alg) {
+	t_output aux;
+	// cabecera
+	stringstream version; 
+	version<<VERSION<<"-"<<ARCHITECTURE;
+	prog.push_back(string("' Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
+	prog.push_back("' dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
+	prog.push_back("' puede que el codigo generado no sea completamente correcto. Si encuentra");
+	prog.push_back("' errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
+	prog.push_back("");
+	prog.push_back(string("Module ")+main_process_name);
+	prog.push_back("");
+	// procesos y subprocesos
+	for (t_programa_it it=alg.begin();it!=alg.end();++it)
+		translate(prog,*it);	
+	prog.push_back("End Module");
 }
 

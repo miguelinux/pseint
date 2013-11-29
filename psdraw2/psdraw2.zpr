@@ -7,7 +7,7 @@ macros_file=
 autocomp_extra=OpenGL_gl OpenGL_glu OpenGL_glut OpenGL_glx
 active_configuration=Debug_Linux
 version_saved=20131127
-version_required=0
+version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
@@ -34,10 +34,10 @@ open=true
 path=Events.cpp
 cursor=0
 breakpoint=330
-marker=225
-marker=148
-marker=80
 marker=74
+marker=80
+marker=148
+marker=225
 [source]
 path=Draw.cpp
 cursor=24738
@@ -60,10 +60,10 @@ marker=58
 [source]
 path=DNassiSchne.cpp
 cursor=6233
-marker=212
-marker=211
-marker=100
 marker=99
+marker=100
+marker=211
+marker=212
 [source]
 path=Textures.cpp
 cursor=36
