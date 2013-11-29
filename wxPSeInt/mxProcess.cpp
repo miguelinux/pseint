@@ -143,7 +143,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 		else if (what==mxPW_CHECK_AND_SAVEDRAW)
 			return SaveDraw(file,false);
 		else if (what==mxPW_CHECK_AND_EXPORT)
-			return ExportCpp(file,false);
+			return ExportLang(file,export_lang,false);
 		else if (what==mxPW_CHECK) {
 			source->SetStatus(STATUS_SYNTAX_CHECK_OK);
 			main_window->RTreeAdd("Presione F9 para ejecutar el algoritmo.",3);
@@ -256,8 +256,8 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
 }
 
-bool mxProcess::ExportCpp(wxString file, bool check_first) {
-	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT;
+bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
+	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT; export_lang=lang;
 	if (check_first) return CheckSyntax(file,wxString("--draw \"")<<source->GetTempFilenamePSD()<<"\"");
 //	wxMessageBox(_T("Si el código define subprocesos o utiliza funciones de manejos de cadenas no se exportará correctamente.\nEstas limitaciones serán solucionadas en las próximas versiones de PSeInt."),_T("Exportar a código C++"),wxOK|wxICON_EXCLAMATION);
 	wxFileDialog dlg (main_window, _T("Guardar Cpp"),source->GetPathForExport(),source->GetNameForExport()+_T(".cpp"), _T("Archivo C++|*.cpp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -266,6 +266,7 @@ bool mxProcess::ExportCpp(wxString file, bool check_first) {
 	wxString command;
 	command<<config->psexport_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
 	if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
+	if (lang.size()) command<<" --lang="<<lang;
 	_LOG("mxProcess::ExportCpp this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;

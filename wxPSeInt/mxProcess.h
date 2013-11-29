@@ -16,7 +16,7 @@ private:
 	wxString temp;
 	int what;
 	long pid;
-	wxString file_code, file_log, file_other;
+	wxString file_code, file_log, file_other, export_lang;
 	wxOutputStream *output;
 	wxInputStream *input;
 	wxString filename;
@@ -32,7 +32,7 @@ public:
 	bool Draw(wxString file, bool check_first=false);
 	bool DrawAndEdit(wxString file, bool check_first=false);
 	bool SaveDraw(wxString file, bool check_first=false);
-	bool ExportCpp(wxString file, bool check_first=false);
+	bool ExportLang(wxString file, wxString lang, bool check_first=false);
 	static wxString GetProfileArgs();
 	wxString GetInputArgs();
 	~mxProcess();

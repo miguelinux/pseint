@@ -57,7 +57,7 @@ public:
 	void OnFilePrint(wxCommandEvent &event);
 	void OnFileEditFlow(wxCommandEvent &evt);
 	void OnFileExportHtml(wxCommandEvent &evt);
-	void OnFileExportCpp(wxCommandEvent &evt);
+	void OnFileExportLang(wxCommandEvent &evt);
 	void OnFileClose(wxCommandEvent &evt);
 	void OnFileExit(wxCommandEvent &evt);
 	void OnFileSourceHistory (wxCommandEvent &event);
