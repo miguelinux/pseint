@@ -400,6 +400,17 @@ string CppExporter::get_constante(string name) {
 }
 
 string CppExporter::get_operator(string op, bool for_string) {
+	// para agrupar operaciones y alterar la jerarquia
+	if (op=="(") return "("; 
+	if (op==")") return ")";
+	// para llamadas a funciones
+	if (op=="{") return "("; 
+	if (op=="}") return ")";
+	// para indices de arreglos
+	if (op=="[") return "[";
+	if (op==",") return "][";
+	if (op=="]") return "]";
+	// algebraicos, logicos, relaciones
 	if (op=="+") return "+"; 
 	if (op=="-") return "-"; 
 	if (op=="/") return "/"; 
@@ -411,10 +422,16 @@ string CppExporter::get_operator(string op, bool for_string) {
 	if (op=="<") return "<"; 
 	if (op==">") return ">"; 
 	if (op=="<=") return "<="; 
-	if (op==">=") return "<="; 
+	if (op==">=") return ">="; 
 	if (op=="&") return "&&"; 
 	if (op=="|") return "||"; 
 	if (op=="~") return "!"; 
 	return op; // no deberia pasar nunca
+}
+
+string CppExporter::make_string (string cont) {
+	for(int i=0;i<cont.size();i++)
+		if (cont[i]=='\\') cont.insert(i++,"\\");
+	return string("\"")+cont+"\"";
 }
 

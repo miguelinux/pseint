@@ -10,6 +10,12 @@
 #include "exportexp.h"
 using namespace std;
 
+static void Replace(string &src, int from, int to, string rep, unsigned int &i) {
+	int l=to-from+1;
+	src.replace(from,l,rep);
+	i+=rep.size()-l;
+}
+
 string ToLowerExp(string s) {
 	bool comillas=false;
 	for(unsigned int i=0;i<s.size();i++) { 
@@ -133,149 +139,151 @@ string restarUno(string exp) {
 	return exp+"-1";
 }
 
-string expresion(string exp, tipo_var &tipo){
-	for (unsigned int i=0;i<exp.size();i++) if(exp[i]=='\"') exp[i]='\'';
-	
-//	if (!exp.size()) return exp;
-	// pasar todo a mayúsculas y sacar caracteres no validos
-	for (unsigned int i=0;i<exp.size();i++) 
-		if (exp[i]=='\'') {
-			exp[i]='\"';
-			i++;
-			while (i<exp.size() && exp[i]!='\'') {
-				if (exp[i]=='\\') { exp.insert(i,"\\"); i++; }
-				i++;
+static void ReplaceOper(string &exp, unsigned int &i, string oper) {
+	// evaluar el segundo operando para ver si es string (algunos operadores son iguales para numeros y cadenas en pseudocódigo pero diferentes en otros lenguajes)
+	string oper2=buscarOperando(exp,i+1,+1);
+	tipo_var t; Evaluar(oper2,t); 
+	// obtener el operador/funcion que lo reemplaza
+	string rep=exporter->get_operator(oper,t==vt_caracter);
+	if (rep.size()>5 && rep.substr(0,5)=="func ") { // si el operador es reemplazado por una función, colocar los argumentos y reemplazar todo (operador y operandos)
+		string oper1=buscarOperando(exp,i-1,-1);
+		int i0=i-oper1.size(); i+=oper2.size();
+		oper2=expresion(oper2);
+		
+		for(unsigned int j=0;j+3<rep.size();j++) { 
+			if (rep[j]=='a' && rep[j+1]=='r' && rep[j+2]=='g') {
+				if (rep[j+3]=='1') {
+					Replace(rep,j,j+3,oper1,j); j+=3;
+				} else if (rep[j+3]=='2') {
+					Replace(rep,j,j+3,oper2,j); j+=3;
+				}
 			}
-			exp[i]='\"';
-		} else if (exp[i]>='a' && exp[i]<='z') exp[i]-=32;
+		}
+		Replace(exp,i0,i,rep,i);
+	} else // si el operador es reemplazado por otro operador, los operandos no se tocan
+		Replace(exp,i,i+oper.length()-1,rep,i); 
+}
+
+string expresion(string exp, tipo_var &tipo) {
+	
+	// las cadenas por ahora van con comillas simples (porque Evaluar las quiere así)
+	for (unsigned int i=0;i<exp.size();i++) 
+		if (exp[i]=='\"') exp[i]='\'';
+	
+	// pasar todo a mayúsculas, sacar caracteres no validos
+	for (unsigned int i=0;i<exp.size();i++) {
+		if (exp[i]=='\'') { i++; while (i<exp.size() && exp[i]!='\'') i++; } 
+		else if (exp[i]>='a' && exp[i]<='z') exp[i]-=32;
 		else if (exp[i]=='ñ' || exp[i]=='Ñ') exp[i]='N';
 		else if (exp[i]=='á' || exp[i]=='Á') exp[i]='A';
 		else if (exp[i]=='é' || exp[i]=='E') exp[i]='E';
 		else if (exp[i]=='í' || exp[i]=='Í') exp[i]='I';
 		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
 		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
-	
-	Evaluar(string(" ")+exp+" ",tipo); // ¿para que los espacios??? 
+	}
+	Evaluar(string(" ")+exp+" ",tipo); // ¿para qué eran los espacios??? 
 	
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	stack<bool> esArreglo;
 	esArreglo.push(false);
 	stack<int> posicion;
 	string sub;
-	if (exp[0]=='[' || exp[0]=='(') { 
-		esArreglo.push(false);
-		posicion.push(0);
-	}
+		
+	esArreglo.push(false); posicion.push(0); // por si encontramos una coma y preguntamos por el esArreglo.top() sin haber metido nada antes
+	
 	for (unsigned int i=0;i<exp.size();i++) {
-		if (exp[i]=='\"') {
-			i++;
-			while (i<exp.size() && exp[i]!='\"')
-				i++;
-		} else if (exp[i]=='[' or exp[i]=='(') {
-			posicion.push(i);
+		if (exp[i]=='\'') { // saltear cadenas (se corrigen más abajo)
+			i++; while (i<exp.size() && exp[i]!='\'') i++;
+		} else if (exp[i]=='[' or exp[i]=='(') { // arreglos, llamadas a funciones, o simplemente parentesis para denotar orden de operaciones
 			// ver si es arreglo o funcion, o solo un parentesis de jerarquia
-			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z')) ) {
+			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z')) ) { // si lo que hay antes parece identificador, sera arreglo o funcion, pero no parentesis por jerarquia de operaciones
 				// determinar si es arreglo o funcion
 				sub=buscarOperando(exp,i-1,-1);
-				if (EsFuncion(sub)) {
-					esArreglo.push(false);
-					exp[i]='(';
-					int parentesis=1,fin=i;
-					while(parentesis>0) {
+				if (EsFuncion(sub)) { // funcion, puede ser subproceso del usuario o funcion predefinida
+					// buscar donde terminan los argumentos
+					int parentesis=1; unsigned int fin=i;
+					while(parentesis>0) { 
 						fin++;
 						if (exp[fin]=='[' || exp[fin]=='(') parentesis++;
 						else if (exp[fin]==']' || exp[fin]==')') parentesis--;
 					}
-					exp[fin]=')';
-					if (EsFuncionPredefinida(sub)) {
-						string args="("+expresion(exp.substr(i+1,fin-i-1))+")";
-						string translated=exporter->function(sub,args);
-						exp.replace(i-sub.size(),fin-(i-sub.size())+1,translated);
-						i=i-sub.size()+translated.size()-1;
+					if (EsFuncionPredefinida(sub)) { // funcion predefinida del lenguaje
+						string args=exporter->get_operator("{")+expresion(exp.substr(i+1,fin-i-1))+exporter->get_operator("}"); // argumentos, con parentesis incluidos
+						int ini=i-sub.size(); i=fin;
+						Replace(exp,ini,fin,exporter->function(sub,args),i); // traduccion de la llamada con argumentos y todo
+					} else { // subproceso del usuario
+						Replace(exp,i,i,exporter->get_operator("{"),fin);
+						Replace(exp,fin,fin,exporter->get_operator("}"),fin);
+						i=fin;
 					}
-				} else {
-					esArreglo.push(true);
-					exp[i]='[';
+				} else { // aca empiezan los indices de arreglo
+					Replace(exp,i,i,exporter->get_operator("["),i);
+					posicion.push(i); esArreglo.push(true);
 				}
-			} else {
-				esArreglo.push(false);
-				exp[i]='(';
+			} else { // parentesis que solo indica orden de operaciones
+				Replace(exp,i,i,exporter->get_operator("("),i);
+				posicion.push(i); esArreglo.push(false);
 			}
 		}
-		else if (exp[i]==',' && esArreglo.top()) {
-			sub=restarUno(exp.substr(posicion.top()+1,i-posicion.top()-1));
-			exp.replace(posicion.top()+1,i-posicion.top()-1,sub);
-			i+=sub.size()-i+posicion.top()+1;
-			exp.replace(i++,1,"][");
-			posicion.pop();
-			posicion.push(i);
+		else if (exp[i]==',' && esArreglo.top()) { // la coma puede separar argumentos de una llamada a función o instrucción, o indices de arreglo... en el segundo caso...
+			sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
+			if (base_zero_arrays) {
+				sub=restarUno(sub);
+				Replace(exp,posicion.top()+1,i-1,sub,i);
+			}
+			Replace(exp,i,i,exporter->get_operator(","),i);
+			posicion.pop();	posicion.push(i);
 		}
-		else if (exp[i]==']' or exp[i]==')') {
+		else if (exp[i]==']' or exp[i]==')') { // se cierra un arreglo o un paréntesis por orden de operaciones (nunca deberia llegar con llamadas a funciones)
 			if (esArreglo.top()) {
-				sub=restarUno(exp.substr(posicion.top()+1,i-posicion.top()-1));
-				exp.replace(posicion.top()+1,i-posicion.top()-1,sub);
-				i+=sub.size()-i+posicion.top()+1;
-				exp[i]=']';
-			} else 
-				exp[i]=')';
-			esArreglo.pop();
-			posicion.pop();
-		} 
-		else if (exp[i]=='^') {
-			string s1=buscarOperando(exp,i-1,-1),s2=buscarOperando(exp,i+1,+1);
-			exp[i]=',';
-			if (s2[0]=='(' && s2[s2.size()-1]==')') {
-				exp.erase(i+1,1);
-			} else
-				exp.insert(i+s2.size()+1,")");
-				if (s1[0]=='(' && s1[s1.size()-1]==')') {
-					exp.erase(i-1,1);
-					exp.insert(i-s1.size(),"powf");
-					i-=2;
-				} else
-					exp.insert(i-s1.size(),"powf(");
-				i+=5;
-				esArreglo.push(false);
-				posicion.push(i);
-		} 
-		else if (exp[i]=='<' && exp[i+1]=='>'){
-			exp[i]='!';
-			exp[++i]='=';
+				sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
+				if (base_zero_arrays) {
+					sub=restarUno(sub);
+					Replace(exp,posicion.top()+1,i-1,sub,i);
+				}
+				Replace(exp,i,i,exporter->get_operator("]"),i);
+			} else {
+				Replace(exp,i,i,exporter->get_operator(")"),i);
+			}
+			esArreglo.pop(); posicion.pop();
 		}
-		else if (exp[i]=='=' && exp[i-1]!='>' && exp[i-1]!='<' && exp[i-1]!='=' && exp[i+1]!='='){
-			exp.insert(i,"=");
-			i++;
-		}
-		else if (exp[i]=='|'){
-			exp.insert(i,"|");
-			i++;
-		}
-		else if (exp[i]=='&'){
-			exp.insert(i,"&");
-			i++;
-		}
-		else if (exp[i]=='~'){
-			exp[i]='!';
-			i++;
-		}
+		
+		// no recuerdo si estos operadores pueden aparecer o ya fueron reemplazados antes por SyntaxCheck
+		else if (exp[i]=='&' && exp[i+1]=='&') exp.erase(i--,1);
+		else if (exp[i]=='|' && exp[i+1]=='|') exp.erase(i--,1);
+		else if (exp[i]=='=' && exp[i+1]=='=') exp.erase(i--,1);
+		// operadores
+		else if (exp[i]=='<' && exp[i+1]=='>') ReplaceOper(exp,i,"<>"); 
+		else if (exp[i]=='>' && exp[i+1]=='=') ReplaceOper(exp,i,"<="); 
+		else if (exp[i]=='<' && exp[i+1]=='=') ReplaceOper(exp,i,"<="); 
+		else if (exp[i]=='=') ReplaceOper(exp,i,"="); 
+		else if (exp[i]=='&') ReplaceOper(exp,i,"&"); 
+		else if (exp[i]=='|') ReplaceOper(exp,i,"|"); 
+		else if (exp[i]=='+') ReplaceOper(exp,i,"+"); 
+		else if (exp[i]=='-') ReplaceOper(exp,i,"-"); 
+		else if (exp[i]=='/') ReplaceOper(exp,i,"/"); 
+		else if (exp[i]=='*') ReplaceOper(exp,i,"*");
+		else if (exp[i]=='^') ReplaceOper(exp,i,"^");
+		else if (exp[i]=='%') ReplaceOper(exp,i,"%");
+		else if (exp[i]=='<') ReplaceOper(exp,i,"<"); 
+		else if (exp[i]=='>') ReplaceOper(exp,i,">"); 
+		else if (exp[i]=='~') ReplaceOper(exp,i,"~"); 
 	}
 	
-	// reemplazar VERDADERO Y FALSO por true y false
+	// reemplazar constantes predefinidas y corregir cadenas literales
 	exp=exp+",";
 	for (unsigned int i=0,l=0;i<exp.size();i++) {
-		if (exp[i]=='\"') {
-			i++;
-			while (i<exp.size() && exp[i]!='\"')
-				i++;
+		if (exp[i]=='\'') { // corregir cadenas de caracteres constantes
+			l=i++; while (i<exp.size() && exp[i]!='\'') i++;
+			string cont=exp.substr(l+1,i-l-1);
+			Replace(exp,l,i,exporter->make_string(cont),i);
 			l=i+1;
-		} else if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') {
+		} else if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
 			string word=exp.substr(l,i-l);
 			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
-				string rep=exporter->get_constante(word);
-				exp.replace(l,i-l,rep); i=i-(word.size()-rep.size());
+				Replace(exp,i,l-1,exporter->get_constante(word),i);
 			} else {
 				exp.replace(l,i-l,ToLowerExp(word));
-				
 			}
 			l=i+1;
 		}

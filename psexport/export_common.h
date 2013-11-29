@@ -34,6 +34,13 @@ public:
 	// funciones para traducir expresiones
 	
 	/**
+	* @brief returns a literal string with the given contend, adding colons and escape chars if required
+	*
+	* @param the string content, without colons
+	**/
+	virtual string make_string(string cont)=0;
+	
+	/**
 	* @brief traduce una constante
 	*
 	* @param name    nombre de la constante
@@ -46,7 +53,7 @@ public:
 	* @param name        nombre de la constante
 	* @param for_string  indica si el operador se aplica sobre operandos de tipo string
 	**/
-	virtual string get_operator(string op, bool for_string)=0;
+	virtual string get_operator(string op, bool for_string=false)=0;
 	
 	/**
 	* @brief traduce la llamada a una función predefinida

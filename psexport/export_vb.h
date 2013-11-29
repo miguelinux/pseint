@@ -25,6 +25,7 @@ class VbExporter:public ExporterBase {
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	
 public:
+	string make_string(string cont);
 	string function(string name, string args);
 	string get_constante(string name);
 	string get_operator(string op, bool for_string=false);

@@ -11,7 +11,9 @@
 #include "exportexp.h"
 #include "../pseint/new_evaluar.h"
 
-VbExporter::VbExporter() {}
+VbExporter::VbExporter() {
+	base_zero_arrays=false;
+}
 
 void VbExporter::esperar(t_output &prog, string param, string tabs){
 #warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
@@ -301,14 +303,25 @@ string VbExporter::get_constante(string name) {
 }
 
 string VbExporter::get_operator(string op, bool for_string) {
+	// para agrupar operaciones y alterar la jerarquia
+	if (op=="(") return "("; 
+	if (op==")") return ")";
+	// para llamadas a funciones
+	if (op=="{") return "("; 
+	if (op=="}") return ")";
+	// para indices de arreglos
+	if (op=="[") return "(";
+	if (op==",") return ",";
+	if (op=="]") return ")";
+	// otros
 	if (for_string) {
 		if (op=="+") return "&"; 
-		if (op=="=") return "arg1.Equals(arg2)"; 
-		if (op=="<>") return "(Not arg1.Equals(arg2))"; 
-		if (op=="<") return "(String.Compare(arg1,arg)<0)"; 
-		if (op==">") return "(String.Compare(arg1,arg)>0)"; 
-		if (op=="<=") return "(String.Compare(arg1,arg)<=0)"; 
-		if (op==">=") return "(String.Compare(arg1,arg)>=0)"; 
+		if (op=="=") return "func (arg1).Equals(arg2)"; 
+		if (op=="<>") return "func (Not (arg1).Equals(arg2))"; 
+		if (op=="<") return "func (String.Compare(arg1,arg)<0)"; 
+		if (op==">") return "func (String.Compare(arg1,arg)>0)"; 
+		if (op=="<=") return "func (String.Compare(arg1,arg)<=0)"; 
+		if (op==">=") return "func (String.Compare(arg1,arg)>=0)"; 
 	}
 	if (op=="+") return "+"; 
 	if (op=="-") return "-"; 
@@ -321,10 +334,14 @@ string VbExporter::get_operator(string op, bool for_string) {
 	if (op=="<") return "<"; 
 	if (op==">") return ">"; 
 	if (op=="<=") return "<="; 
-	if (op==">=") return "<="; 
+	if (op==">=") return ">="; 
 	if (op=="&") return " And "; 
 	if (op=="|") return " Or "; 
 	if (op=="~") return "Not "; 
 	return op; // no deberia pasar nunca
+}
+
+string VbExporter::make_string (string cont) {
+	return string("\"")+cont+"\"";
 }
 
