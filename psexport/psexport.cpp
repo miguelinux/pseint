@@ -161,7 +161,7 @@ int main(int argc, char *argv[]){
 			if (s=="cpp") exporter=new CppExporter();
 			else if (s=="vb") exporter=new VbExporter();
 			else {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb";
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb"<<endl;
 			}
 		} else if (s=="--basezeroarrays") {
 			base_zero_arrays=true;
@@ -194,10 +194,10 @@ int main(int argc, char *argv[]){
 #ifdef _USE_COUT
 #define fout cout
 #else
-	ofstream fout(argv[2]);
+	ofstream fout(fname_out.c_str());
 #endif
 	t_output::iterator it=out.begin();
-	while (it!=out.end()) 
+	while (it!=out.end())
 		fout<<*(it++)<<endl;
 #ifndef _USE_COUT
 	fout.close();
