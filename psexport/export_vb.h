@@ -11,9 +11,10 @@ class VbExporter:public ExporterBase {
 	string get_tipo(string name);
 	void translate(t_output &out, t_proceso &proc);
 	
-	void esperar(t_output &prog, string param, string tabs);
-	void borrar(t_output &prog, string param, string tabs);
 	void invocar(t_output &prog, string param, string tabs);
+	void esperar_tiempo(t_output &prog, float t, bool mili, string tabs);
+	void esperar_tecla(t_output &prog, string param,string tabs);
+	void borrar_pantalla(t_output &prog, string param,string tabs);
 	void escribir(t_output &prog, t_arglist args, bool saltar, string tabs);
 	void leer(t_output &prog, t_arglist args, string tabs);
 	void asignacion(t_output &prog, string param1, string param2, string tabs);

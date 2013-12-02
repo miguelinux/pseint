@@ -40,6 +40,7 @@ public:
 	bool set(const tipo_var &v, bool) {
 		enabled=true;
 		bool error = ((cb_log&&v.cb_log)?1:0)+((cb_num&&v.cb_num)?1:0)+((cb_car&&v.cb_car)?1:0)==0;
+		if (v.rounded) rounded=true;
 		if (!error) {
 			cb_log=cb_log&&v.cb_log;
 			cb_num=cb_num&&v.cb_num;
@@ -103,6 +104,10 @@ class Memoria {
 				str.erase(i);
 				break;
 			}
+#ifdef _FOR_PSEXPORT
+			else str[i]=toupper(str[i]);
+#endif
+		
 	}
 	bool EsAlias(const string &s) { // mira si la variable que recibe es un alias, setea it_alias
 		map<string,alias>::iterator it_alias=var_alias.find(s);
@@ -138,7 +143,10 @@ public:
 //		tipo_var &v = var_info[nombre];
 //		v.set(tipo);
 //	}
-	void AgregarArreglo(const string &nombre, int *dims) {
+	void AgregarArreglo(string nombre, int *dims) {
+#ifdef _FOR_PSEXPORT
+		for(unsigned int i=0;i<nombre.size();i++) nombre[i]=toupper(nombre[i]);
+#endif
 		tipo_var &v = var_info[nombre];
 		v.dims=dims;
 	}
@@ -268,6 +276,11 @@ public:
 	
 #ifdef _FOR_PSEXPORT
 	map<string,tipo_var> &GetVarInfo() { return var_info; }
+	void RemoveVar(string nombre) {
+		for(unsigned int i=0;i<nombre.size();i++) nombre[i]=toupper(nombre[i]);
+		if (var_info.find(nombre)!=var_info.end()) var_info.erase(var_info.find(nombre));
+		if (var_value.find(nombre)!=var_value.end()) var_value.erase(var_value.find(nombre));
+	}
 #endif
 	
 };

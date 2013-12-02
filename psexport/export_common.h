@@ -4,6 +4,8 @@
 #include "defines.h"
 using namespace std;
 
+extern bool for_testing; ///< si la salidad es para testing, se ignoran los comentarios y las lineas en blanco
+
 class ExporterBase {
 
 protected:
@@ -14,9 +16,10 @@ protected:
 	string make_dims(const int *tdims, string c1="[", string c2=",", string c3="]", bool numbers=true);
 	
 	// funciones que traducen instrucciones y estructuras de control
+	virtual void esperar_tiempo(t_output &prog, float tiempo, bool mili, string tabs)=0;
+	virtual void esperar_tecla(t_output &prog, string param,string tabs)=0;
+	virtual void borrar_pantalla(t_output &prog, string param,string tabs)=0;
 	virtual void invocar(t_output &prog, string param,string tabs)=0;
-	virtual void esperar(t_output &prog, string param,string tabs)=0;
-	virtual void borrar(t_output &prog, string param,string tabs)=0;
 	virtual void escribir(t_output &prog, t_arglist args, bool saltar, string tabs)=0;
 	virtual void leer(t_output &prog, t_arglist args, string tabs)=0;
 	virtual void asignacion(t_output &prog, string param1, string param2,string tabs)=0;

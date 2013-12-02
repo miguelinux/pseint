@@ -1,16 +1,20 @@
-// Este codigo ha sido generado por el modulo psexport 20131129-l64 de PSeInt
-// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental
-// puede que el codigo generado no sea completamente correcto. Si encuentra
-// errores por favor reportelos en el foro (http://pseint.sourceforge.net).
-
 #include<iostream>
 #include<cmath>
+#include<ctime>
 using namespace std;
-
+void esperar(double t);
 int main() {
-	cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar
+	cout<<endl;
 	cin.get();
-	cout<<PIM_P<<endl;
+	esperar(100);
+	esperar((1)*1000);
+	cout<<M_PI<<endl;
 	return 0;
 }
-
+void esperar(double t) {
+	clock_t t0=clock();
+	double e=0;
+	do {
+		e=1000*double(clock()-t0)/CLOCKS_PER_SEC;
+	} while (e<t);
+}

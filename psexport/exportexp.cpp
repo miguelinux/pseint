@@ -8,6 +8,7 @@
 #include "../pseint/global.h"
 #include "export_common.h"
 #include "exportexp.h"
+#include "export_cpp.h"
 using namespace std;
 
 static void Replace(string &src, int from, int to, string rep, unsigned int &i) {
@@ -17,6 +18,8 @@ static void Replace(string &src, int from, int to, string rep, unsigned int &i) 
 }
 
 string ToLowerExp(string s) {
+//	if (s=="")
+//		cerr<<"VACIO!";
 	bool comillas=false;
 	for(unsigned int i=0;i<s.size();i++) { 
 		if (s[i]=='\"') comillas=!comillas;
@@ -80,7 +83,7 @@ string modificarConstante(string s,int diff) {
 string buscarOperando(const string &exp, int comienzo, int direccion) {
 	unsigned int i=comienzo;
 	int parentesis=0;
-	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || exp[i]=='[' || exp[i]=='(' || exp[i]==']' || exp[i]==')')) {
+	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || exp[i]=='[' || exp[i]=='(' || (parentesis && (exp[i]==']' || exp[i]==')')))) {
 		if (exp[i]=='(' || exp[i]=='[') parentesis++;
 		if (exp[i]==')' || exp[i]==']') parentesis--;  
 		i+=direccion;
@@ -103,7 +106,6 @@ string colocarParentesis(const string &exp) {
 }
 
 string restarUno(string exp) {
-	if (base_zero_arrays) return exp;
 	int i=exp.size()-1,fin=0,parentesis=0;
 	bool numero=false;
 	while (i>=0) {
@@ -146,6 +148,7 @@ static void ReplaceOper(string &exp, unsigned int &i, string oper) {
 	// obtener el operador/funcion que lo reemplaza
 	string rep=exporter->get_operator(oper,t==vt_caracter);
 	if (rep.size()>5 && rep.substr(0,5)=="func ") { // si el operador es reemplazado por una función, colocar los argumentos y reemplazar todo (operador y operandos)
+		rep.erase(0,5);
 		string oper1=buscarOperando(exp,i-1,-1);
 		int i0=i-oper1.size(); i+=oper2.size();
 		oper2=expresion(oper2);
@@ -162,6 +165,7 @@ static void ReplaceOper(string &exp, unsigned int &i, string oper) {
 		Replace(exp,i0,i,rep,i);
 	} else // si el operador es reemplazado por otro operador, los operandos no se tocan
 		Replace(exp,i,i+oper.length()-1,rep,i); 
+	i+=oper.size()-1;
 }
 
 string expresion(string exp, tipo_var &tipo) {
@@ -184,16 +188,20 @@ string expresion(string exp, tipo_var &tipo) {
 	Evaluar(string(" ")+exp+" ",tipo); // ¿para qué eran los espacios??? 
 	
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
+	exp+=",";
 	stack<bool> esArreglo;
 	esArreglo.push(false);
 	stack<int> posicion;
 	string sub;
-		
+	int id_start=0;
 	esArreglo.push(false); posicion.push(0); // por si encontramos una coma y preguntamos por el esArreglo.top() sin haber metido nada antes
-	
 	for (unsigned int i=0;i<exp.size();i++) {
-		if (exp[i]=='\'') { // saltear cadenas (se corrigen más abajo)
-			i++; while (i<exp.size() && exp[i]!='\'') i++;
+		
+		if (exp[i]=='\'') { // corregir cadenas de caracteres constantes
+			int l=i++; while (i<exp.size() && exp[i]!='\'') i++;
+			string cont=exp.substr(l+1,i-l-1);
+			Replace(exp,l,i,exporter->make_string(cont),i);
+		
 		} else if (exp[i]=='[' or exp[i]=='(') { // arreglos, llamadas a funciones, o simplemente parentesis para denotar orden de operaciones
 			// ver si es arreglo o funcion, o solo un parentesis de jerarquia
 			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z')) ) { // si lo que hay antes parece identificador, sera arreglo o funcion, pero no parentesis por jerarquia de operaciones
@@ -225,6 +233,7 @@ string expresion(string exp, tipo_var &tipo) {
 				posicion.push(i); esArreglo.push(false);
 			}
 		}
+		
 		else if (exp[i]==',' && esArreglo.top()) { // la coma puede separar argumentos de una llamada a función o instrucción, o indices de arreglo... en el segundo caso...
 			sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
 			if (base_zero_arrays) {
@@ -234,6 +243,7 @@ string expresion(string exp, tipo_var &tipo) {
 			Replace(exp,i,i,exporter->get_operator(","),i);
 			posicion.pop();	posicion.push(i);
 		}
+		
 		else if (exp[i]==']' or exp[i]==')') { // se cierra un arreglo o un paréntesis por orden de operaciones (nunca deberia llegar con llamadas a funciones)
 			if (esArreglo.top()) {
 				sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
@@ -254,7 +264,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='=' && exp[i+1]=='=') exp.erase(i--,1);
 		// operadores
 		else if (exp[i]=='<' && exp[i+1]=='>') ReplaceOper(exp,i,"<>"); 
-		else if (exp[i]=='>' && exp[i+1]=='=') ReplaceOper(exp,i,"<="); 
+		else if (exp[i]=='>' && exp[i+1]=='=') ReplaceOper(exp,i,">="); 
 		else if (exp[i]=='<' && exp[i+1]=='=') ReplaceOper(exp,i,"<="); 
 		else if (exp[i]=='=') ReplaceOper(exp,i,"="); 
 		else if (exp[i]=='&') ReplaceOper(exp,i,"&"); 
@@ -268,25 +278,18 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='<') ReplaceOper(exp,i,"<"); 
 		else if (exp[i]=='>') ReplaceOper(exp,i,">"); 
 		else if (exp[i]=='~') ReplaceOper(exp,i,"~"); 
-	}
-	
-	// reemplazar constantes predefinidas y corregir cadenas literales
-	exp=exp+",";
-	for (unsigned int i=0,l=0;i<exp.size();i++) {
-		if (exp[i]=='\'') { // corregir cadenas de caracteres constantes
-			l=i++; while (i<exp.size() && exp[i]!='\'') i++;
-			string cont=exp.substr(l+1,i-l-1);
-			Replace(exp,l,i,exporter->make_string(cont),i);
-			l=i+1;
-		} else if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
-			string word=exp.substr(l,i-l);
+		
+		// corregir identificadores de constantes
+		if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
+			string word=exp.substr(id_start,i-id_start);
 			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
-				Replace(exp,i,l-1,exporter->get_constante(word),i);
+				Replace(exp,id_start,i-1,exporter->get_constante(word),i);
 			} else {
-				exp.replace(l,i-l,ToLowerExp(word));
+				exp.replace(id_start,i-id_start,ToLowerExp(word));
 			}
-			l=i+1;
+			id_start=i+1;
 		}
+		
 	}
 	exp=exp.substr(0,exp.size()-1);
 	

@@ -21,10 +21,10 @@ else
     
     $ibin --allowddims --nouser $A --draw ../temp/$B
     
-    if ! test -e ../$1/$A; then
-      $ebin --lang=$1 ../temp/$B ../$1/$C >/dev/null
+    if ! test -e ../$1/$C; then
+      $ebin --for-testing --lang=$1 ../temp/$B ../$1/$C >/dev/null
     else
-      eibin --lang=$1 ../temp/$B ../temp/$C >/dev/null
+      $ebin --for-testing --lang=$1 ../temp/$B ../temp/$C >/dev/null
       diff ../temp/$C ../$1/$C
     fi
   done

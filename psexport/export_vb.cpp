@@ -15,12 +15,17 @@ VbExporter::VbExporter() {
 	base_zero_arrays=false;
 }
 
-void VbExporter::esperar(t_output &prog, string param, string tabs){
+void VbExporter::esperar_tecla(t_output &prog, string param, string tabs){
 #warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
 	insertar(prog,tabs+"Console.ReadLine()");
 }
 
-void VbExporter::borrar(t_output &prog, string param, string tabs){
+void VbExporter::esperar_tiempo(t_output &prog, float t, bool milis, string tabs){
+#warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
+	insertar(prog,tabs+"Console.ReadLine()");
+}
+
+void VbExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 	insertar(prog,tabs+"Console.Clear()");
 }
 
@@ -192,17 +197,17 @@ if (name=="SEN") {
 // funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
-tipo_var &t=mit->second;
-string stipo="String";
-if (t==vt_caracter) { stipo="String"; }
-else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
-else if (t==vt_logica) stipo="Boolean";
-//else use_sin_tipo=true;
-if (t.dims) {
-	return string("Dim ")+ToLower(mit->first)+make_dims(t.dims,"[","][","]")+" As "+stipo;
-} else {
-	return string("Dim ")+ToLower(mit->first)+" As "+stipo;
-}
+	tipo_var &t=mit->second;
+	string stipo="String";
+	if (t==vt_caracter) { stipo="String"; }
+	else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
+	else if (t==vt_logica) stipo="Boolean";
+	//else use_sin_tipo=true;
+	if (t.dims) {
+		return string("Dim ")+ToLower(mit->first)+make_dims(t.dims,"[","][","]")+" As "+stipo;
+	} else {
+		return string("Dim ")+ToLower(mit->first)+" As "+stipo;
+	}
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
@@ -271,7 +276,7 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret);
 	out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
-	out.push_back("");
+	if (!for_testing) out.push_back("");
 	
 	delete memoria;
 	

@@ -24,7 +24,6 @@ bool force_var_definition=false;
 bool noinput=false;
 bool fix_win_charset=false;
 bool real_time_syntax=false;
-bool force_integer_indexes=false;
 bool enable_user_functions=true;
 bool remembar_case=false;
 bool for_pseint_terminal=false;

@@ -66,6 +66,9 @@ void SynError(int num,string s, InstruccionLoc il) {
 }
 
 void SynError(int num,string s, int line, int inst) { 
+#ifdef _FOR_PSEXPORT
+	return;
+#endif
 	if (line==-1) {
 		line=Inter.GetLineNumber();
 		inst=Inter.GetInstNumber();

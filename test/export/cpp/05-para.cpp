@@ -1,29 +1,13 @@
-// Este codigo ha sido generado por el modulo psexport 20131129-l64 de PSeInt
-// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental
-// puede que el codigo generado no sea completamente correcto. Si encuentra
-// errores por favor reportelos en el foro (http://pseint.sourceforge.net).
-
 #include<iostream>
 using namespace std;
-
-// Para las variables que no se pudo determinar el tipo se utiliza la constante
-// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado
-// (usualmente int,float,string o bool).
-#define SIN_TIPO string
-
 int main() {
-	float ;
-	float a;
-	SIN_TIPO b;
+	float a[10];
+	float b[3][6];
 	float c;
-	SIN_TIPO elemento;
-	float i;
-	SIN_TIPO j;
-	float x;
-	SIN_TIPO a[0][;
-	SIN_TIPO b[0][93][;
+	int i;
+	int j;
 	for (i=1;i<=10;i++) {
-		a[i]=i*10;
+		a[i-1]=i*10;
 	}
 	for (typeof(&(a[0])) ptr_aux=&(a[0]);ptr_aux<=&(a[9]);ptr_aux++) {
 		typeof(a[0]) &elemento=*ptr_aux;
@@ -37,9 +21,8 @@ int main() {
 	}
 	for (i=3;i>=1;i--) {
 		for (j=1;j<=5;j+=2) {
-			cout<<b[i][j]<<endl;
+			cout<<b[i-1][j-1]<<endl;
 		}
 	}
 	return 0;
 }
-

@@ -11,22 +11,41 @@
 using namespace std;
 
 CppExporter::CppExporter() {
+	has_matrix_func=false;
 	include_cmath=false;
 	include_cstdlib=false;
 	use_sin_tipo=false;
 	use_string=false;
+	use_func_esperar=false;
 	use_func_minusculas=false;
 	use_func_mayusculas=false;
 	use_func_convertiratexto=false;
 	base_zero_arrays=true;
+	use_arreglo_max=false;
 }
 
-void CppExporter::esperar(t_output &prog, string param, string tabs){
-	insertar(prog,tabs+"cin.get();");
+void CppExporter::borrar_pantalla(t_output &prog, string param, string tabs){
+	if (for_testing)
+		insertar(prog,tabs+"cout<<endl;");
+	else
+		insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
 }
 
-void CppExporter::borrar(t_output &prog, string param, string tabs){
-	insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
+void CppExporter::esperar_tecla(t_output &prog, string param, string tabs){
+	if (for_testing)
+		insertar(prog,tabs+"cin.get();");
+	else
+		insertar(prog,tabs+"cin.get(); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
+}
+
+void CppExporter::esperar_tiempo(t_output &prog, float tiempo, bool mili, string tabs) {
+	use_func_esperar=true;
+	stringstream inst;
+	inst<<"esperar(";
+	if (mili) inst<<tiempo; 
+	else inst<<"("<<tiempo<<")*1000";
+	inst<<");";
+	insertar(prog,tabs+inst.str());
 }
 
 void CppExporter::invocar(t_output &prog, string param, string tabs){
@@ -84,8 +103,8 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
 	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
-	AplicarTipo(opcion,p1,p2,vt_numerica);
-	insertar(prog,tabs+"switch (int("+expresion((*i).par1)+")) {");
+	AplicarTipo((*i).par1,p1,p2,vt_numerica_entera);
+	insertar(prog,tabs+"switch ("+expresion((*i).par1)+") {");
 	q++;p++;
 	while (++p!=r) {
 		i=*q;
@@ -210,7 +229,7 @@ string CppExporter::function(string name, string args) {
 		return string("floor")+args;
 	} else if (name=="REDON") {
 		include_cmath=true;
-		return string("floor(")+colocarParentesis(get_arg(args,1))+".5)";
+		return string("floor(")+colocarParentesis(get_arg(args,1))+"+.5)";
 	} else if (name=="CONCATENAR") {
 		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
 	} else if (name=="LONGITUD") {
@@ -232,7 +251,7 @@ string CppExporter::function(string name, string args) {
 
 // funcion usada por cpp_declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
-string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
+string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
 	string stipo="SIN_TIPO ";
 	if (t==vt_caracter) { stipo="string "; use_string=true; }
@@ -240,8 +259,14 @@ string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
 	else if (t==vt_logica) stipo="bool ";
 	else use_sin_tipo=true;
 	if (t.dims) {
-		return stipo+ToLower(mit->first)+make_dims(t.dims,"[","][","]");
+		string ret=stipo+ToLower(mit->first)+make_dims(t.dims,"[","][","]",!for_func);
+		while (ret.find("[0]")!=string::npos) {
+			use_arreglo_max=true;
+			ret.replace(ret.find("[0]"),3,"[ARREGLO_MAX]");
+		}
+		return ret;
 	} else {
+		if (by_ref) stipo+="&";
 		return stipo+ToLower(mit->first);
 	}
 }
@@ -259,73 +284,123 @@ void CppExporter::declarar_variables(t_output &prog) {
 // retorna el tipo y elimina de la memoria a esa variable
 // se usa para armar las cabeceras de las funciones, las elimina para que no se
 // vuelvan a declarar adentro
-string CppExporter::get_tipo(string name) {
+string CppExporter::get_tipo(string name, bool by_ref) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
 		return "SIN_TIPO _variable_desconocida_"; // no debería pasar
-	string ret = get_tipo(mit);
+	string ret = get_tipo(mit,true,by_ref);
 	memoria->GetVarInfo().erase(mit);
 	return ret;
 }
 
-void CppExporter::cabecera(t_output &out) {
+void CppExporter::header(t_output &out) {
 	// cabecera
 	stringstream version; 
 	version<<VERSION<<"-"<<ARCHITECTURE;
-	out.push_back(string("// Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
-	out.push_back("// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
-	out.push_back("// puede que el codigo generado no sea completamente correcto. Si encuentra");
-	out.push_back("// errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
-	out.push_back("");
+	if (!for_testing) {
+		out.push_back(string("// Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
+		out.push_back("// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
+		out.push_back("// puede que el codigo generado no sea completamente correcto. Si encuentra");
+		out.push_back("// errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
+		if (!for_testing) out.push_back("");
+	}
 	out.push_back("#include<iostream>");
 	if (include_cmath) out.push_back("#include<cmath>");
 	if (include_cstdlib) out.push_back("#include<cstdlib>");
+	if (use_func_esperar) out.push_back("#include<ctime>");
 	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<cctype>");
 	if (use_func_convertiratexto) out.push_back("#include<stringstream>");
 	out.push_back("using namespace std;");
-	out.push_back("");
+	if (!for_testing) out.push_back("");
+	if (use_func_esperar) {
+		if (!for_testing) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar");
+		out.push_back("void esperar(double t);");
+		if (!for_testing) out.push_back("");
+	}
 	if (use_func_convertiratexto) {
-		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"convertiratexto\".");
-		out.push_back("#include<stringstream>");
+		if (!for_testing) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente.");
+		out.push_back("string convertiratexto(float f);");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_func_mayusculas) {
+		if (!for_testing) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"mayusculas\", pero puede programarse una equivalente.");
+		out.push_back("string mayusculas(string s);");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_func_minusculas) {
+		if (!for_testing) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"minusculas\", pero puede programarse una equivalente.");
+		out.push_back("string minusculas(string s);");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_arreglo_max) {
+		if (!for_testing) {
+			out.push_back("// En C++ no se puede dimensionar un arreglo estático con una dimensión no constante.");
+			out.push_back("// PSeInt sobredimensionará el arreglo utilizando un valor simbólico ARREGLO_MAX.");
+			out.push_back("// Sería posible crear un arreglo dinámicamente con los operadores new y delete, pero");
+			out.push_back("// este mecanismo aún no está soportado en las traducciones automáticas de PSeInt.");
+		}
+		out.push_back("#define ARREGLO_MAX 100");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_sin_tipo) {
+		if (!for_testing) {
+			out.push_back("// Para las variables que no se pudo determinar el tipo se utiliza la constante");
+			out.push_back("// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
+			out.push_back("// (usualmente int,float,string o bool).");
+		}
+		out.push_back("#define SIN_TIPO string");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_string) {
+		if (!for_testing) {
+			out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que");
+			out.push_back("// lee solo una palabra. Para leer una linea completa (es decir, incluyendo los");
+			out.push_back("// espacios en blanco) se debe utilzar getline (ej, reemplazar cin>>x por");
+			out.push_back("// getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
+			out.push_back("// se leyó otra variable con >>.");
+			out.push_back("");
+		}
+	}
+}
+
+void CppExporter::footer(t_output &out) {
+	if (use_func_esperar) {
+		if (!for_testing) out.push_back("");
+		out.push_back("void esperar(double t) {");
+		out.push_back("\tclock_t t0=clock();");
+		out.push_back("\tdouble e=0;");
+		out.push_back("\tdo {");
+		out.push_back("\t\te=1000*double(clock()-t0)/CLOCKS_PER_SEC;");
+		out.push_back("\t} while (e<t);");
+		out.push_back("}");
+		if (!for_testing) out.push_back("");
+	}
+	if (use_func_convertiratexto) {
+		if (!for_testing) out.push_back("");
 		out.push_back("string convertiratexto(float f) {");
 		out.push_back("\tstringstream ss;");
 		out.push_back("\tss<<f;");
 		out.push_back("\treturn ss.str();");
 		out.push_back("}");
-		out.push_back("");
+		if (!for_testing) out.push_back("");
 	}
 	if (use_func_mayusculas) {
-		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"mayusculas\".");
+		if (!for_testing) out.push_back("");
 		out.push_back("string mayusculas(string s) {");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
 		out.push_back("\t\ts[i]=toupper(s[i]);");
 		out.push_back("\treturn s;");
 		out.push_back("}");
-		out.push_back("");
+		if (!for_testing) out.push_back("");
 	}
 	if (use_func_minusculas) {
-		out.push_back("// No hay en el C++ estandar una funcion equivalente a \"minusculas\".");
+		if (!for_testing) out.push_back("");
 		out.push_back("string minusculas(string s) {");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
 		out.push_back("\t\ts[i]=tolower(s[i]);");
 		out.push_back("\treturn s;");
 		out.push_back("}");
-		out.push_back("");
-	}
-	if (use_sin_tipo) {
-		out.push_back("// Para las variables que no se pudo determinar el tipo se utiliza la constante");
-		out.push_back("// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
-		out.push_back("// (usualmente int,float,string o bool).");
-		out.push_back("#define SIN_TIPO string");
-		out.push_back("");
-	}
-	if (use_string) {
-		out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que");
-		out.push_back("// lee solo una palabra. Para leer una linea completa (es decir, incluyendo los");
-		out.push_back("// espacios en blanco) se debe utilzar getline (ej, reemplazar cin>>x por");
-		out.push_back("// getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
-		out.push_back("// se leyó otra variable con >>.");
-		out.push_back("");
+		if (!for_testing) out.push_back("");
 	}
 }
 
@@ -358,7 +433,7 @@ void CppExporter::translate(t_output &out, t_proceso &proc) {
 		dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
-			dec+=get_tipo(f->nombres[i]);
+			dec+=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
 		}
 		dec+=")";
 		prototipos.push_back(dec+";");
@@ -373,7 +448,7 @@ void CppExporter::translate(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret+";");
 	out.push_back("}");
-	out.push_back("");
+	if (!for_testing) out.push_back("");
 	
 	delete memoria;
 	
@@ -383,13 +458,23 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 	t_output aux;
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
 		translate(aux,*it);	
-	cabecera(out);
+	header(out);
 	if (prototipos.size()) {
-		out.push_back("// forward declarations");
+		if (!for_testing) {
+			out.push_back("// Declaraciones adelantadas de las funciones");
+			if (has_matrix_func) {
+				out.push_back("// Las funciones que reciben arreglos en C++ deben especificar en sus");
+				out.push_back("// prototipos las dimensiones de los mismos para todas las dimensiones,");
+				out.push_back("// excepto la primera (que puede quedar vacía). Las funciones traducidas");
+				out.push_back("// del pseudocódigo tienen todas sus dimensiones vacías, ya que PSeInt");
+				out.push_back("// aún no determina automáticamente las mismas. Deberá completar las");
+				out.push_back("// requeridas para poder compilar el programa.");
+			}
+		}
 		copy(prototipos.begin(),prototipos.end(),back_inserter(out));
-		out.push_back("");
 	}
 	copy(aux.begin(),aux.end(),back_inserter(out));
+	footer(out);
 }
 
 string CppExporter::get_constante(string name) {
@@ -430,7 +515,7 @@ string CppExporter::get_operator(string op, bool for_string) {
 }
 
 string CppExporter::make_string (string cont) {
-	for(int i=0;i<cont.size();i++)
+	for(unsigned int i=0;i<cont.size();i++)
 		if (cont[i]=='\\') cont.insert(i++,"\\");
 	return string("\"")+cont+"\"";
 }

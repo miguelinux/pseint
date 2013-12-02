@@ -673,7 +673,6 @@ string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
 	return Evaluar(expresion,p1,p2,tipo);
 }
 
-
 bool CheckDims(string &str) {
 	int pp=str.find("(",0), p2=str.size()-1;
 	// ver que efectivamente sea un arreglo
@@ -681,6 +680,15 @@ bool CheckDims(string &str) {
 	const int *adims=memoria->LeerDims(str);
 	if (!adims) {
 		if (!Inter.Running() && memoria->EsArgumento(nombre)) return true; // si es una funcion, no sabemos si lo que van a pasar sera o no arreglo
+#ifdef _FOR_PSEXPORT
+		// cuando una expresion con un arreglo se utiliza desde un subproceso, la dimension del mismo
+		// no esta en el subproceso y entonces no se sabe, pero es neceria para exportar, por ejemplo
+		// para las cabeceras de las funciones en C++, así que al menos con esto detectamos que se trata
+		// de un arreglo, y sabemos la cantidad de dimensiones, aunque no sepamos sus tamaños
+		int b=pp+1,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
+		int *dims=new int[ca+1]; for(int i=0;i<ca;i++) dims[i+1]=0; dims[0]=ca;
+		memoria->AgregarArreglo(nombre,dims);
+#endif
 		WriteError(202,string("El identificador ")+str.substr(0,pp)+(" no corresponde a un arreglo o subproceso")); /// @todo: ver que hacer cuando se llama desde psexport, porque genera errores falsos
 		return false;
 	}
@@ -705,7 +713,8 @@ bool CheckDims(string &str) {
 		}
 		
 		// marcar los indices de arreglos como numeros (y enteros para que no sean float al exportar a c++)
-		string exp=str.substr(str.find("(")+1)+","; int par=0;
+#ifdef _FOR_PSEXPORT
+		string exp=str.substr(str.find("(")+1)/*+","*/; int par=0;
 		for (unsigned int i=0,l=0;i<exp.size();i++) {
 			if (exp[i]=='\"') {
 				i++;
@@ -717,13 +726,14 @@ bool CheckDims(string &str) {
 				if (par==0) {
 					string nombre=exp.substr(l,i-l);
 					if (memoria->Existe(nombre)) 
-						memoria->DefinirTipo(nombre,vt_numerica,force_integer_indexes);
+						memoria->DefinirTipo(nombre,vt_numerica,true);
 				}
 				l=i+1;
 				if (exp[i]=='['||exp[i]=='(') par++;
 				else if (exp[i]==']'||exp[i]==')') par--;
 			}
 		}
+#endif
 		return true;
 	} 
 	

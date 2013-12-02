@@ -12,5 +12,5 @@ Proceso sin_titulo
 	Dimension e[n];
 	Leer a[1];
 	a[10]<-a[1];
-	Escribir a[10];
+	Escribir b[10,10];
 FinProceso

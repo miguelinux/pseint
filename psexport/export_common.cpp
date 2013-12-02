@@ -5,13 +5,15 @@
 #include <cstdlib>
 using namespace std;
 
+bool for_testing=false;
+
 ExporterBase *exporter=NULL;
 
 string ExporterBase::make_dims(const int *tdims, string c1, string c2, string c3, bool numbers) {
 	string dims=c1;
 	for (int j=1;j<=tdims[0];j++) {
-		if (j==dims[0]) dims+=(numbers?IntToStr(dims[j]):"")+c3;
-		else dims+=(numbers?IntToStr(dims[j]):"")+c2;
+		if (j==tdims[0]) dims+=(numbers?IntToStr(tdims[j]):"")+c3;
+		else dims+=(numbers?IntToStr(tdims[j]):"")+c2;
 	}
 	return dims;
 }
@@ -46,8 +48,10 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 			exporter->escribir(prog,args,saltar,tabs);
 		}
 		else if (s=="INVOCAR") exporter->invocar(prog,(*r).par1,tabs);
-		else if (s=="BORRARPANTALLA") exporter->borrar(prog,(*r).par1,tabs);
-		else if (s=="ESPERARTECLA") exporter->esperar(prog,(*r).par1,tabs);
+		else if (s=="BORRARPANTALLA") exporter->borrar_pantalla(prog,(*r).par1,tabs);
+		else if (s=="ESPERARTECLA") exporter->esperar_tecla(prog,(*r).par1,tabs);
+		else if (s=="ESPERAR") 
+			exporter->esperar_tiempo(prog,atof((*r).par1.c_str()),(*r).par2.substr(0,4)=="MILI",tabs);
 		else if (s=="DIMENSION") exporter->dimension(prog,(*r).par1,tabs);
 		else if (s=="DEFINIR") exporter->definir(prog,(*r).par1,tabs);
 		else if (s=="LEER") {
@@ -125,7 +129,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				else if ((*r).nombre=="FINPARA") deep--;
 				r++;
 			}
-			memoria->DefinirTipo(ToLower((*r).par1),vt_numerica);
+			memoria->DefinirTipo(ToLower((*r1).par1),vt_numerica);
 			exporter->para(prog,r1,r,tabs);
 		} else if (s=="PARACADA") {
 			t_proceso_it r1=r++;
@@ -136,6 +140,8 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				r++;
 			}
 			exporter->paracada(prog,r1,r,tabs);
+			memoria->DefinirTipo(ToLower((*r1).par2),memoria->LeerTipo(ToLower((*r1).par1)));
+			memoria->RemoveVar(ToLower((*r1).par1));
 		} else if (s=="SI") {
 			t_proceso_it r1=r++,r2;
 			r++;
@@ -167,7 +173,7 @@ void ExporterBase::definir(t_output &prog, string param, string tabs){
 	param+=",";
 	for (unsigned int i=0;i<param.size();i++) {
 		if (param[i]==',') {
-			string varname=expresion(param.substr(lastcoma,i-lastcoma));
+			string varname=ToUpper(expresion(param.substr(lastcoma,i-lastcoma)));
 			if (tipo=='i') memoria->DefinirTipo(varname,vt_numerica,true);
 			else if (tipo=='f') memoria->DefinirTipo(varname,vt_numerica,false);
 			else if (tipo=='s') memoria->DefinirTipo(varname,vt_caracter,false);

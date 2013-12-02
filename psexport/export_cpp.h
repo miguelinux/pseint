@@ -11,19 +11,25 @@ class CppExporter:public ExporterBase {
 	bool include_cstdlib;
 	bool use_sin_tipo;
 	bool use_string;
+	bool use_func_esperar;
 	bool use_func_minusculas;
 	bool use_func_mayusculas;
 	bool use_func_convertiratexto;
+	bool use_arreglo_max;
+	bool has_matrix_func;
 	t_output prototipos; // forward declarations de las funciones
 	
-	string get_tipo(map<string,tipo_var>::iterator &mit);
+	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false);
+public:
 	void declarar_variables(t_output &prog);
-	string get_tipo(string name);
-	void cabecera(t_output &out);
+	string get_tipo(string name, bool by_ref=false);
+	void header(t_output &out);
+	void footer(t_output &out);
 	void translate(t_output &out, t_proceso &proc);
 	
-	void esperar(t_output &prog, string param, string tabs);
-	void borrar(t_output &prog, string param, string tabs);
+	void esperar_tiempo(t_output &prog, float tiempo, bool mili, string tabs);
+	void esperar_tecla(t_output &prog, string param,string tabs);
+	void borrar_pantalla(t_output &prog, string param,string tabs);
 	void invocar(t_output &prog, string param, string tabs);
 	void escribir(t_output &prog, t_arglist args, bool saltar, string tabs);
 	void leer(t_output &prog, t_arglist args, string tabs);

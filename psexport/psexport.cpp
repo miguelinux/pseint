@@ -91,6 +91,13 @@ bool cargar(list<t_proceso> &algs, string archivo){
 		} else if (LeftCompare(s,"BORRARPANTALLA")) {
 			i.nombre="BORRARPANTALLA"; i.par1="";
 			p.insert(p.end(),i);
+		} else if (LeftCompare(s,"ESPERAR ")) {
+			i.nombre="ESPERAR"; 
+			i.par1=s.substr(s.find(" ",0)+1);
+			i.par2=i.par1.substr(i.par1.find(" ",0)+1);
+			i.par1=i.par1.substr(0,i.par1.find(" ",0));
+			if (i.par2[i.par2.size()-1]==';') i.par2=i.par2.substr(0,i.par2.size()-1);
+			p.insert(p.end(),i);
 		} else if (LeftCompare(s,"ESPERARTECLA")) {
 			i.nombre="ESPERARTECLA"; i.par1="";
 			p.insert(p.end(),i);
@@ -138,7 +145,6 @@ int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
 	base_zero_arrays=false;
-	force_integer_indexes=true;
 
 	if (argc==2 && string(argv[1])=="--version") {
 		_print_version_info("psExport");
@@ -163,8 +169,8 @@ int main(int argc, char *argv[]){
 			else {
 				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb"<<endl;
 			}
-		} else if (s=="--basezeroarrays") {
-			base_zero_arrays=true;
+		} else if (s=="--for-testing") {
+			for_testing=true;
 		} else if (fname_in.size() && fname_out.size()) {
 			cerr<<"Argumentos incorrectos"<<endl;
 			return 1;
