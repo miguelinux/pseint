@@ -16,13 +16,19 @@ VbExporter::VbExporter() {
 }
 
 void VbExporter::esperar_tecla(t_output &prog, string param, string tabs){
-#warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
-	insertar(prog,tabs+"Console.ReadLine()");
+	insertar(prog,tabs+"Console.ReadKey()");
 }
 
 void VbExporter::esperar_tiempo(t_output &prog, float t, bool milis, string tabs){
-#warning VB: TRADUCCION INCOMPLETA, PEDIR EJEMPLO 10
-	insertar(prog,tabs+"Console.ReadLine()");
+	stringstream inst;
+	inst<<"Thread.Sleep(";
+	if (milis) inst<<t; 
+	else {
+		stringstream st; st<<t;
+		inst<<colocarParentesis(st.str())<<"*1000";
+	}
+	inst<<")";
+	insertar(prog,tabs+inst.str());
 }
 
 void VbExporter::borrar_pantalla(t_output &prog, string param, string tabs){
@@ -200,7 +206,7 @@ string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, 
 	else if (t==vt_logica) stipo="Boolean";
 	//else use_sin_tipo=true;
 	if (t.dims) {
-		string pre=for_func?"ByRef ":"Dim ";
+		string pre=for_func?"ByVal ":"Dim ";
 		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" As "+stipo;
 	} else {
 		string pre=for_func?(by_ref?"ByRef ":"ByVal "):"Dim ";

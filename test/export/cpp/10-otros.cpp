@@ -7,7 +7,7 @@ int main() {
 	cout<<endl;
 	cin.get();
 	esperar(100);
-	esperar((1)*1000);
+	esperar(1*1000);
 	cout<<M_PI<<endl;
 	return 0;
 }

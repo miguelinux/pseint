@@ -21,10 +21,10 @@ Module SIN_TITULO
 	Public Sub porreferencia(ByRef b As Double)
 		b = 7
 	End Sub
-	Public Sub recibevector(ByRef v() As String)
+	Public Sub recibevector(ByVal v() As String)
 		v(1) = Console.ReadLine()
 	End Sub
-	Public Sub recibematriz(ByRef m(,) As String)
+	Public Sub recibematriz(ByVal m(,) As String)
 		m(1,1) = Console.ReadLine()
 	End Sub
 End Module
