@@ -220,7 +220,7 @@ void ExporterBase::dimension(t_output &prog, string params, string tabs) {
 			else if (arr[p]==')')
 				pars++;
 			else if (arr[p]==',' && pars==0) {
-				tipo_var ch;
+				tipo_var ch=vt_numerica_entera;
 				dims[c++]=atoi(Evaluar(arr.substr(f,p-f),ch).c_str());
 				f=p+1;
 			}

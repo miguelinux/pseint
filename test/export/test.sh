@@ -25,7 +25,7 @@ else
       $ebin --for-testing --lang=$1 ../temp/$B ../$1/$C >/dev/null
     else
       $ebin --for-testing --lang=$1 ../temp/$B ../temp/$C >/dev/null
-      diff ../temp/$C ../$1/$C
+      if ! diff --strip-trailing-cr ../temp/$C ../$1/$C; then read; fi
     fi
   done
 fi  

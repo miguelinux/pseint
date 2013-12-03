@@ -21,8 +21,8 @@
 
 Proceso sin_titulo
 	x<-1.5;
-	Escribir rc(a); // raiz cuadrada
-	Escribir abs(i); // valor absoluto
+	Escribir rc(x); // raiz cuadrada
+	Escribir abs(x); // valor absoluto
 	Escribir ln(x); // logaritmo natural
 	Escribir exp(x); // exponencial, e^x
 	Escribir sen(x); // seno
@@ -33,7 +33,7 @@ Proceso sin_titulo
 	Escribir atan(x); // arco-tangente
 	Escribir redon(x); // redondo a entero
 	Escribir trunc(x); // truncamiento a entero
-	Escribir azar(x); // numero al azar entre 0 y x-1 inclusive
+	Escribir azar(15); // numero al azar menor a 15 (entre 0 y 14 inclusive)
 	s<-"Hola";
 	Escribir Longitud(s); // cantidad de letras
 	Escribir Minusculas(s); // retorna una copia toda en mayusculas

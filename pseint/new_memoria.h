@@ -69,6 +69,7 @@ public:
 		cb_log=t.cb_log;
 		cb_num=t.cb_num;
 		cb_car=t.cb_car;
+		rounded=t.rounded;
 		dims=t.dims;
 		return *this;
 	}

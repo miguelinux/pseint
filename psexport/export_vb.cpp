@@ -54,7 +54,7 @@ void VbExporter::leer(t_output &prog, t_arglist args, string tabs){
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica_entera) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
 		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
 		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean.Parse(Console.ReadLine())");
 		else  insertar(prog,tabs+varname+" = Console.ReadLine()");
@@ -117,86 +117,82 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 }
 
 void VbExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"Do ");
+	insertar(prog,tabs+"Do");
 	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
-		insertar(prog,tabs+"Loop Until "+invert_expresion(expresion((*q).par1)));
+		insertar(prog,tabs+"Loop Until "+expresion((*q).par1));
 	else
 		insertar(prog,tabs+"Loop While "+expresion((*q).par1));
 }
 
 void VbExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
-	if ((*r).par4[0]=='-') {
-		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso.substr(1,paso.size()-1)));
-	} else {
-		if (paso=="1")
-			insertar(prog,tabs+"For "+var+"="+ini+" To "+fin);
-		else
-			insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso));
-	}
+	if (paso=="1")
+		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin);
+	else
+		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso));
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"Next "+var);
 }
 
 void VbExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
-	insertar(prog,tabs+"For Each "+var+" In "+aux);
+	insertar(prog,tabs+"For Each "+aux+" In "+var);
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"Next");
 }
 
 string VbExporter::function(string name, string args) {
-if (name=="SEN") {
-	return string("Math.Sin")+args;
-} else if (name=="TAN") {
-	return string("Math.Tan")+args;
-} else if (name=="ASEN") {
-	return string("Math.Asin")+args;
-} else if (name=="ACOS") {
-	return string("Math.Acos")+args;
-} else if (name=="COS") {
-	return string("Math.Cos")+args;
-} else if (name=="RAIZ") {
-	return string("Math.Sqrt")+args;
-} else if (name=="RC") {
-	return string("Math.Sqrt")+args;
-} else if (name=="ABS") {
-	return string("Math.Abs")+args;
-} else if (name=="LN") {
-	return string("Math.Log")+args;
-} else if (name=="EXP") {
-	return string("Math.Exp")+args;
-} else if (name=="AZAR") {
-	return string("New Random().Next")+args;
-} else if (name=="ATAN") {
-	return string("Math.Atan")+args;
-} else if (name=="TRUNC") {
-	return string("Math.Truncate")+args;
-} else if (name=="REDON") {
-	return string("Math.Round")+args;
-} else if (name=="CONCATENAR") {
-	return string("(")+get_arg(args,1)+" & "+get_arg(args,2)+")";
-} else if (name=="LONGITUD") {
-	return get_arg(args,1)+".Length()";
-} else if (name=="SUBCADENA") {
-	return string("Mid")+args;
-} else if (name=="CONVERTIRANUMERO") {
-	return string("CDbl")+args;
-} else if (name=="CONVERTIRATEXTO") {
-	return string("CStr")+args;
-} else if (name=="MINUSCULAS") {
-	return string("(")+get_arg(args,1)+").ToUpper()";
-} else if (name=="MAYUSCULAS") {
-	return string("(")+get_arg(args,1)+").ToLower()";
-} else {
-	return ToLower(name)+args; // no deberia pasar esto
-}
+	if (name=="SEN") {
+		return string("Math.Sin")+args;
+	} else if (name=="TAN") {
+		return string("Math.Tan")+args;
+	} else if (name=="ASEN") {
+		return string("Math.Asin")+args;
+	} else if (name=="ACOS") {
+		return string("Math.Acos")+args;
+	} else if (name=="COS") {
+		return string("Math.Cos")+args;
+	} else if (name=="RAIZ") {
+		return string("Math.Sqrt")+args;
+	} else if (name=="RC") {
+		return string("Math.Sqrt")+args;
+	} else if (name=="ABS") {
+		return string("Math.Abs")+args;
+	} else if (name=="LN") {
+		return string("Math.Log")+args;
+	} else if (name=="EXP") {
+		return string("Math.Exp")+args;
+	} else if (name=="AZAR") {
+		return string("New Random().Next")+args;
+	} else if (name=="ATAN") {
+		return string("Math.Atan")+args;
+	} else if (name=="TRUNC") {
+		return string("Math.Truncate")+args;
+	} else if (name=="REDON") {
+		return string("Math.Round")+args;
+	} else if (name=="CONCATENAR") {
+		return get_arg(args,1)+" & "+get_arg(args,2);
+	} else if (name=="LONGITUD") {
+		return get_arg(args,1)+".Length()";
+	} else if (name=="SUBCADENA") {
+		return string("Mid")+args;
+	} else if (name=="CONVERTIRANUMERO") {
+		return string("CDbl")+args;
+	} else if (name=="CONVERTIRATEXTO") {
+		return string("CStr")+args;
+	} else if (name=="MINUSCULAS") {
+		return get_arg(args,1)+".ToUpper()";
+	} else if (name=="MAYUSCULAS") {
+		return get_arg(args,1)+".ToLower()";
+	} else {
+		return ToLower(name)+args; // no deberia pasar esto
+	}
 }
 
 // funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
-string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
+string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
 	string stipo="String";
 	if (t==vt_caracter) { stipo="String"; }
@@ -204,9 +200,11 @@ string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit) {
 	else if (t==vt_logica) stipo="Boolean";
 	//else use_sin_tipo=true;
 	if (t.dims) {
-		return string("Dim ")+ToLower(mit->first)+make_dims(t.dims,"[","][","]")+" As "+stipo;
+		string pre=for_func?"ByRef ":"Dim ";
+		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" As "+stipo;
 	} else {
-		return string("Dim ")+ToLower(mit->first)+" As "+stipo;
+		string pre=for_func?(by_ref?"ByRef ":"ByVal "):"Dim ";
+		return pre+ToLower(mit->first)+" As "+stipo;
 	}
 }
 
@@ -215,7 +213,7 @@ void VbExporter::declarar_variables(t_output &prog) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
 	string tab("\t\t"),stipo;
 	while (mit!=mit2) {
-		prog.push_back(tab+get_tipo(mit)+";");
+		prog.push_back(tab+get_tipo(mit));
 		mit++;
 	}
 }
@@ -223,11 +221,11 @@ void VbExporter::declarar_variables(t_output &prog) {
 // retorna el tipo y elimina de la memoria a esa variable
 // se usa para armar las cabeceras de las funciones, las elimina para que no se
 // vuelvan a declarar adentro
-string VbExporter::get_tipo(string name) {
+string VbExporter::get_tipo(string name, bool by_ref) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
 		return "Dim _variable_desconocida_ As String"; // no debería pasar
-	string ret = get_tipo(mit);
+	string ret = get_tipo(mit,true,by_ref);
 	memoria->GetVarInfo().erase(mit);
 	return ret;
 }
@@ -256,13 +254,12 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 			is_sub=false;
 			dec="\tPublic Function ";
 			ret=get_tipo(f->nombres[0]); 
-			ret=string("Return")+ret.substr(ret.rfind(" "));
+			ret=string("\tReturn ")+ToLower(f->nombres[0]);
 		}
 		dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
-			dec+=f->pasajes[i]==PP_REFERENCIA?"ByRef ":"ByVal ";
-			dec+=get_tipo(f->nombres[i]);
+			dec+=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
 		}
 		dec+=")";
 		out.push_back(dec);
@@ -286,14 +283,16 @@ void VbExporter::translate(t_output & prog, t_programa & alg) {
 	t_output aux;
 	// cabecera
 	stringstream version; 
+	if (!for_testing) {
 	version<<VERSION<<"-"<<ARCHITECTURE;
-	prog.push_back(string("' Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
-	prog.push_back("' dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
-	prog.push_back("' puede que el codigo generado no sea completamente correcto. Si encuentra");
-	prog.push_back("' errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
-	prog.push_back("");
+		prog.push_back(string("' Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
+		prog.push_back("' dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
+		prog.push_back("' puede que el codigo generado no sea completamente correcto. Si encuentra");
+		prog.push_back("' errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
+		prog.push_back("");
+	}
 	prog.push_back(string("Module ")+main_process_name);
-	prog.push_back("");
+	if (!for_testing) prog.push_back("");
 	// procesos y subprocesos
 	for (t_programa_it it=alg.begin();it!=alg.end();++it)
 		translate(prog,*it);	
@@ -321,12 +320,12 @@ string VbExporter::get_operator(string op, bool for_string) {
 	// otros
 	if (for_string) {
 		if (op=="+") return "&"; 
-		if (op=="=") return "func (arg1).Equals(arg2)"; 
-		if (op=="<>") return "func (Not (arg1).Equals(arg2))"; 
-		if (op=="<") return "func (String.Compare(arg1,arg)<0)"; 
-		if (op==">") return "func (String.Compare(arg1,arg)>0)"; 
-		if (op=="<=") return "func (String.Compare(arg1,arg)<=0)"; 
-		if (op==">=") return "func (String.Compare(arg1,arg)>=0)"; 
+		if (op=="=") return "func arg1.Equals(arg2)"; 
+		if (op=="<>") return "func Not arg1.Equals(arg2)"; 
+		if (op=="<") return "func arg1.CompareTo(arg2)<0"; 
+		if (op==">") return "func arg1.CompareTo(arg2)>0"; 
+		if (op=="<=") return "func arg1.CompareTo(arg2)<=0"; 
+		if (op==">=") return "func arg1.CompareTo(arg2)>=0"; 
 	}
 	if (op=="+") return "+"; 
 	if (op=="-") return "-"; 

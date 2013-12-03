@@ -9,11 +9,11 @@ Proceso sin_titulo
 	segun c hacer
 		1: 
 			Escribir "1";
-		3,4,9: 
+		3,5,9: 
 			Escribir "3, 5 o 9";
 		7:
 			Escribir "7";
 		De otro modo:
-			Escribir "ni 1, ni 3, ni 5, ni 9, ni 7";
+			Escribir "ni 1, ni 3, ni 5, ni 7, ni 9";
 	FinSegun
 FinProceso

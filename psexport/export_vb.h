@@ -6,9 +6,9 @@ using namespace std;
 
 class VbExporter:public ExporterBase {
 	
-	string get_tipo(map<string,tipo_var>::iterator &mit);
+	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
 	void declarar_variables(t_output &prog);
-	string get_tipo(string name);
+	string get_tipo(string name,bool by_ref=false); // solo se usa para cabeceras de funciones
 	void translate(t_output &out, t_proceso &proc);
 	
 	void invocar(t_output &prog, string param, string tabs);

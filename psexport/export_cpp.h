@@ -19,10 +19,9 @@ class CppExporter:public ExporterBase {
 	bool has_matrix_func;
 	t_output prototipos; // forward declarations de las funciones
 	
-	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false);
-public:
+	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
 	void declarar_variables(t_output &prog);
-	string get_tipo(string name, bool by_ref=false);
+	string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	void header(t_output &out);
 	void footer(t_output &out);
 	void translate(t_output &out, t_proceso &proc);

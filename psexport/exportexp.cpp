@@ -83,7 +83,8 @@ string modificarConstante(string s,int diff) {
 string buscarOperando(const string &exp, int comienzo, int direccion) {
 	unsigned int i=comienzo;
 	int parentesis=0;
-	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || exp[i]=='[' || exp[i]=='(' || (parentesis && (exp[i]==']' || exp[i]==')')))) {
+	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' ||  exp[i]=='\'' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') || exp[i]=='[' || exp[i]=='(' || (parentesis && (exp[i]==']' || exp[i]==')')))) {
+		if (exp[i]=='\'') { i+=direccion; while (exp[i]!='\'') i+=direccion; }
 		if (exp[i]=='(' || exp[i]=='[') parentesis++;
 		if (exp[i]==')' || exp[i]==']') parentesis--;  
 		i+=direccion;
@@ -143,16 +144,15 @@ string restarUno(string exp) {
 
 static void ReplaceOper(string &exp, unsigned int &i, string oper) {
 	// evaluar el segundo operando para ver si es string (algunos operadores son iguales para numeros y cadenas en pseudocódigo pero diferentes en otros lenguajes)
-	string oper2=buscarOperando(exp,i+1,+1);
+	string oper2=buscarOperando(exp,i+oper.size(),+1);
 	tipo_var t; Evaluar(oper2,t); 
 	// obtener el operador/funcion que lo reemplaza
 	string rep=exporter->get_operator(oper,t==vt_caracter);
 	if (rep.size()>5 && rep.substr(0,5)=="func ") { // si el operador es reemplazado por una función, colocar los argumentos y reemplazar todo (operador y operandos)
 		rep.erase(0,5);
-		string oper1=buscarOperando(exp,i-1,-1);
-		int i0=i-oper1.size(); i+=oper2.size();
+		string oper1=buscarOperando(exp,i-1,-1); // todo: ojo que este busca en la parte de la cadena que ya está convertida, podría traer problemas
+		int i0=i-oper1.size(); i+=oper2.size()+oper.size()-1;
 		oper2=expresion(oper2);
-		
 		for(unsigned int j=0;j+3<rep.size();j++) { 
 			if (rep[j]=='a' && rep[j+1]=='r' && rep[j+2]=='g') {
 				if (rep[j+3]=='1') {
@@ -169,7 +169,7 @@ static void ReplaceOper(string &exp, unsigned int &i, string oper) {
 }
 
 string expresion(string exp, tipo_var &tipo) {
-	
+//cerr<<"IN :"<<exp<<endl;	
 	// las cadenas por ahora van con comillas simples (porque Evaluar las quiere así)
 	for (unsigned int i=0;i<exp.size();i++) 
 		if (exp[i]=='\"') exp[i]='\'';
@@ -197,16 +197,29 @@ string expresion(string exp, tipo_var &tipo) {
 	esArreglo.push(false); posicion.push(0); // por si encontramos una coma y preguntamos por el esArreglo.top() sin haber metido nada antes
 	for (unsigned int i=0;i<exp.size();i++) {
 		
+		// corregir identificadores de constantes
+		if (id_start<=i && (exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
+			string word=exp.substr(id_start,i-id_start);
+			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
+				Replace(exp,id_start,i-1,exporter->get_constante(word),i);
+			} else {
+				exp.replace(id_start,i-id_start,ToLowerExp(word));
+			}
+			id_start=i+1;
+		}
+		
+		
 		if (exp[i]=='\'') { // corregir cadenas de caracteres constantes
 			int l=i++; while (i<exp.size() && exp[i]!='\'') i++;
 			string cont=exp.substr(l+1,i-l-1);
 			Replace(exp,l,i,exporter->make_string(cont),i);
-		
+			id_start=i+1;
 		} else if (exp[i]=='[' or exp[i]=='(') { // arreglos, llamadas a funciones, o simplemente parentesis para denotar orden de operaciones
 			// ver si es arreglo o funcion, o solo un parentesis de jerarquia
-			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z')) ) { // si lo que hay antes parece identificador, sera arreglo o funcion, pero no parentesis por jerarquia de operaciones
+			if  ( i>0 && ((exp[i-1]>='0' && exp[i-1]<='9') || (exp[i-1]>='A' && exp[i-1]<='Z') || (exp[i-1]>='a' && exp[i-1]<='z')) ) { // si lo que hay antes parece identificador, sera arreglo o funcion, pero no parentesis por jerarquia de operaciones
 				// determinar si es arreglo o funcion
 				sub=buscarOperando(exp,i-1,-1);
+				sub=ToUpper(sub); // para que EsFuncion lo reconozca
 				if (EsFuncion(sub)) { // funcion, puede ser subproceso del usuario o funcion predefinida
 					// buscar donde terminan los argumentos
 					int parentesis=1; unsigned int fin=i;
@@ -215,15 +228,14 @@ string expresion(string exp, tipo_var &tipo) {
 						if (exp[fin]=='[' || exp[fin]=='(') parentesis++;
 						else if (exp[fin]==']' || exp[fin]==')') parentesis--;
 					}
+					string args=exporter->get_operator("{")+expresion(exp.substr(i+1,fin-i-1))+exporter->get_operator("}"); // argumentos, con parentesis incluidos
+					int ini=i-sub.size(); i=fin;
 					if (EsFuncionPredefinida(sub)) { // funcion predefinida del lenguaje
-						string args=exporter->get_operator("{")+expresion(exp.substr(i+1,fin-i-1))+exporter->get_operator("}"); // argumentos, con parentesis incluidos
-						int ini=i-sub.size(); i=fin;
 						Replace(exp,ini,fin,exporter->function(sub,args),i); // traduccion de la llamada con argumentos y todo
 					} else { // subproceso del usuario
-						Replace(exp,i,i,exporter->get_operator("{"),fin);
-						Replace(exp,fin,fin,exporter->get_operator("}"),fin);
-						i=fin;
+						Replace(exp,ini,fin,ToLower(sub)+args,i); // traduccion de la llamada con argumentos y todo
 					}
+					id_start=i+1; 
 				} else { // aca empiezan los indices de arreglo
 					Replace(exp,i,i,exporter->get_operator("["),i);
 					posicion.push(i); esArreglo.push(true);
@@ -263,36 +275,25 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='|' && exp[i+1]=='|') exp.erase(i--,1);
 		else if (exp[i]=='=' && exp[i+1]=='=') exp.erase(i--,1);
 		// operadores
-		else if (exp[i]=='<' && exp[i+1]=='>') ReplaceOper(exp,i,"<>"); 
-		else if (exp[i]=='>' && exp[i+1]=='=') ReplaceOper(exp,i,">="); 
-		else if (exp[i]=='<' && exp[i+1]=='=') ReplaceOper(exp,i,"<="); 
-		else if (exp[i]=='=') ReplaceOper(exp,i,"="); 
-		else if (exp[i]=='&') ReplaceOper(exp,i,"&"); 
-		else if (exp[i]=='|') ReplaceOper(exp,i,"|"); 
-		else if (exp[i]=='+') ReplaceOper(exp,i,"+"); 
-		else if (exp[i]=='-') ReplaceOper(exp,i,"-"); 
-		else if (exp[i]=='/') ReplaceOper(exp,i,"/"); 
-		else if (exp[i]=='*') ReplaceOper(exp,i,"*");
-		else if (exp[i]=='^') ReplaceOper(exp,i,"^");
-		else if (exp[i]=='%') ReplaceOper(exp,i,"%");
-		else if (exp[i]=='<') ReplaceOper(exp,i,"<"); 
-		else if (exp[i]=='>') ReplaceOper(exp,i,">"); 
-		else if (exp[i]=='~') ReplaceOper(exp,i,"~"); 
-		
-		// corregir identificadores de constantes
-		if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
-			string word=exp.substr(id_start,i-id_start);
-			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
-				Replace(exp,id_start,i-1,exporter->get_constante(word),i);
-			} else {
-				exp.replace(id_start,i-id_start,ToLowerExp(word));
-			}
-			id_start=i+1;
-		}
+		else if (exp[i]=='<' && exp[i+1]=='>') { ReplaceOper(exp,i,"<>"); id_start=i+1; }
+		else if (exp[i]=='>' && exp[i+1]=='=') { ReplaceOper(exp,i,">="); id_start=i+1; }
+		else if (exp[i]=='<' && exp[i+1]=='=') { ReplaceOper(exp,i,"<="); id_start=i+1; }
+		else if (exp[i]=='=') { ReplaceOper(exp,i,"="); id_start=i+1; }
+		else if (exp[i]=='&') { ReplaceOper(exp,i,"&"); id_start=i+1; }
+		else if (exp[i]=='|') { ReplaceOper(exp,i,"|"); id_start=i+1; }
+		else if (exp[i]=='+') { ReplaceOper(exp,i,"+"); id_start=i+1; }
+		else if (exp[i]=='-') { ReplaceOper(exp,i,"-"); id_start=i+1; } 
+		else if (exp[i]=='/') { ReplaceOper(exp,i,"/"); id_start=i+1; }
+		else if (exp[i]=='*') { ReplaceOper(exp,i,"*"); id_start=i+1; }
+		else if (exp[i]=='^') { ReplaceOper(exp,i,"^"); id_start=i+1; }
+		else if (exp[i]=='%') { ReplaceOper(exp,i,"%"); id_start=i+1; }
+		else if (exp[i]=='<') { ReplaceOper(exp,i,"<"); id_start=i+1; }
+		else if (exp[i]=='>') { ReplaceOper(exp,i,">"); id_start=i+1; }
+		else if (exp[i]=='~') { ReplaceOper(exp,i,"~"); id_start=i+1; }
 		
 	}
 	exp=exp.substr(0,exp.size()-1);
-	
+//cerr<<"OUt:"<<exp<<endl;	
 	return exp;
 }
 

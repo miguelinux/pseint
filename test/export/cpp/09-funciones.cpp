@@ -8,13 +8,11 @@ string convertiratexto(float f);
 string mayusculas(string s);
 string minusculas(string s);
 int main() {
-	float a;
-	float i;
 	string s;
 	float x;
 	x=1.5;
-	cout<<sqrtf(a)<<endl;
-	cout<<abs(i)<<endl;
+	cout<<sqrtf(x)<<endl;
+	cout<<abs(x)<<endl;
 	cout<<log(x)<<endl;
 	cout<<exp(x)<<endl;
 	cout<<sin(x)<<endl;
@@ -25,7 +23,7 @@ int main() {
 	cout<<atan(x)<<endl;
 	cout<<floor((x)+.5)<<endl;
 	cout<<floor(x)<<endl;
-	cout<<(rand()%(x))<<endl;
+	cout<<(rand()%15)<<endl;
 	s="Hola";
 	cout<<s.size()<<endl;
 	cout<<minusculas(s)<<endl;
