@@ -12,7 +12,7 @@ class VbExporter:public ExporterBase {
 	void translate(t_output &out, t_proceso &proc);
 	
 	void invocar(t_output &prog, string param, string tabs);
-	void esperar_tiempo(t_output &prog, float t, bool mili, string tabs);
+	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	void esperar_tecla(t_output &prog, string param,string tabs);
 	void borrar_pantalla(t_output &prog, string param,string tabs);
 	void escribir(t_output &prog, t_arglist args, bool saltar, string tabs);

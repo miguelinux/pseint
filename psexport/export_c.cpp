@@ -353,5 +353,6 @@ string CExporter::get_operator(string op, bool for_string) {
 			if (op=="<=") return "func strcmp(arg1,arg2)<=0"; 
 			if (op==">=") return "func strcmp(arg1,arg2)>=0"; 
 		}
-	} else return CppExporter::get_operator(op,false);
+	} 
+	return CppExporter::get_operator(op,false);
 }

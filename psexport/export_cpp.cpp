@@ -38,14 +38,13 @@ void CppExporter::esperar_tecla(t_output &prog, string param, string tabs){
 		insertar(prog,tabs+"cin.get(); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
 }
 
-void CppExporter::esperar_tiempo(t_output &prog, float t, bool mili, string tabs) {
+void CppExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
 	use_func_esperar=true;
 	stringstream inst;
 	inst<<"esperar(";
-	if (mili) inst<<t; 
+	if (mili) inst<<tiempo; 
 	else {
-		stringstream st; st<<t;
-		inst<<colocarParentesis(st.str())<<"*1000";
+		inst<<colocarParentesis(tiempo)<<"*1000";
 	}
 	inst<<");";
 	insertar(prog,tabs+inst.str());

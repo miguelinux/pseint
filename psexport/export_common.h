@@ -19,7 +19,7 @@ protected:
 	bool es_cadena_constante(string s);
 	
 	// funciones que traducen instrucciones y estructuras de control
-	virtual void esperar_tiempo(t_output &prog, float tiempo, bool mili, string tabs)=0;
+	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs)=0;
 	virtual void esperar_tecla(t_output &prog, string param,string tabs)=0;
 	virtual void borrar_pantalla(t_output &prog, string param,string tabs)=0;
 	virtual void invocar(t_output &prog, string param,string tabs)=0;
@@ -33,11 +33,18 @@ protected:
 	virtual void paracada(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs)=0;
 	virtual void para(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs)=0;
 	virtual void dimension(t_output &prog, string params, string tabs);
-	virtual void definir(t_output &prog, string param, string tabs);
+	virtual void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
 
 public:
 	
 	// funciones para traducir expresiones
+	
+	/**
+	* @brief retorna un identificador de variable, convirtiendo todo a minuscula y agregando algun prefijo si es necesario (como el $ en php)
+	*
+	* @param nombre de la variable, puede ser en mayusculas o minusculas, pero el valor de retorno debe ser siempre case-insensitive
+	**/
+	virtual string make_varname(string varname);
 	
 	/**
 	* @brief returns a literal string with the given contend, adding colons and escape chars if required

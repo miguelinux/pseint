@@ -8,6 +8,7 @@
 #include "export_cpp.h"
 #include "export_vb.h"
 #include "export_c.h"
+#include "export_php.h"
 using namespace std;
 
 // otras funciones
@@ -168,6 +169,7 @@ int main(int argc, char *argv[]){
 			if (s=="c") exporter=new CExporter();
 			else if (s=="cpp") exporter=new CppExporter();
 			else if (s=="vb") exporter=new VbExporter();
+			else if (s=="php") exporter=new PhpExporter();
 			else {
 				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb"<<endl;
 			}

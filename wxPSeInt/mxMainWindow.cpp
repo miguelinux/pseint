@@ -239,7 +239,7 @@ void mxMainWindow::CreateMenus() {
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _T("Convertir a código JavaScript (js)..."),_T(""),_T("exp_js.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _T("Convertir a código C (c)..."),_T(""),_T("exp_c.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP, _T("Convertir a código C++ (cpp)..."),_T(""),_T("exp_cpp.png"));
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _T("Convertir a código PHP (php)..."),_T(""),_T("exp_php.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _T("Convertir a código PHP (php)..."),_T(""),_T("exp_php.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_VB, _T("Convertir a código Visual Basic .NET (vb)..."),_T(""),_T("exp_vb.png"));
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PRG, _T("Convertir a código Visual Fox Pro (prg)..."),_T(""),_T("exp_prg.png"));
 	export_menu->AppendSeparator();

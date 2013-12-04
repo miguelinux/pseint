@@ -19,13 +19,12 @@ void VbExporter::esperar_tecla(t_output &prog, string param, string tabs){
 	insertar(prog,tabs+"Console.ReadKey()");
 }
 
-void VbExporter::esperar_tiempo(t_output &prog, float t, bool milis, string tabs){
+void VbExporter::esperar_tiempo(t_output &prog, string tiempo, bool milis, string tabs){
 	stringstream inst;
 	inst<<"Thread.Sleep(";
-	if (milis) inst<<t; 
+	if (milis) inst<<tiempo; 
 	else {
-		stringstream st; st<<t;
-		inst<<colocarParentesis(st.str())<<"*1000";
+		inst<<colocarParentesis(tiempo)<<"*1000";
 	}
 	inst<<")";
 	insertar(prog,tabs+inst.str());

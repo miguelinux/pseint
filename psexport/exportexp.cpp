@@ -200,17 +200,19 @@ string expresion(string exp, tipo_var &tipo) {
 	esArreglo.push(false);
 	stack<int> posicion;
 	string sub;
-	int id_start=0;
+	unsigned int id_start=0;
 	esArreglo.push(false); posicion.push(0); // por si encontramos una coma y preguntamos por el esArreglo.top() sin haber metido nada antes
 	for (unsigned int i=0;i<exp.size();i++) {
 		
 		// corregir identificadores de constantes
-		if (id_start<=i && (exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
-			string word=exp.substr(id_start,i-id_start);
-			if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
-				Replace(exp,id_start,i-1,exporter->get_constante(word),i);
-			} else {
-				exp.replace(id_start,i-id_start,ToLowerExp(word));
+		if ((exp[i]<'A'||exp[i]>'Z')&&(exp[i]<'0'||exp[i]>'9')&&exp[i]!='_') { // corregir identificadores de constantes
+			if (id_start<i) {
+				string word=exp.substr(id_start,i-id_start);
+				if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
+					Replace(exp,id_start,i-1,exporter->get_constante(word),i);
+				} else if (exp[id_start]<'0'||exp[id_start]>='9') {
+					Replace(exp,id_start,i-1,exporter->make_varname(word),i);
+				}
 			}
 			id_start=i+1;
 		}
@@ -261,6 +263,7 @@ string expresion(string exp, tipo_var &tipo) {
 			}
 			Replace(exp,i,i,exporter->get_operator(","),i);
 			posicion.pop();	posicion.push(i);
+			id_start=i+1;
 		}
 		
 		else if (exp[i]==']' or exp[i]==')') { // se cierra un arreglo o un paréntesis por orden de operaciones (nunca deberia llegar con llamadas a funciones)

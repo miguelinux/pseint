@@ -31,7 +31,7 @@ protected:
 	virtual void footer(t_output &out);
 	virtual void translate(t_output &out, t_proceso &proc);
 	
-	virtual void esperar_tiempo(t_output &prog, float t, bool mili, string tabs);
+	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	virtual void esperar_tecla(t_output &prog, string param,string tabs);
 	virtual void borrar_pantalla(t_output &prog, string param,string tabs);
 	virtual void invocar(t_output &prog, string param, string tabs);

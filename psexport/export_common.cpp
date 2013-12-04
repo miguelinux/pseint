@@ -52,9 +52,27 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 		else if (s=="BORRARPANTALLA") exporter->borrar_pantalla(prog,(*r).par1,tabs);
 		else if (s=="ESPERARTECLA") exporter->esperar_tecla(prog,(*r).par1,tabs);
 		else if (s=="ESPERAR") 
-			exporter->esperar_tiempo(prog,atof((*r).par1.c_str()),(*r).par2.substr(0,4)=="MILI",tabs);
+			exporter->esperar_tiempo(prog,(*r).par1,(*r).par2.substr(0,4)=="MILI",tabs);
 		else if (s=="DIMENSION") exporter->dimension(prog,(*r).par1,tabs);
-		else if (s=="DEFINIR") exporter->definir(prog,(*r).par1,tabs);
+		else if (s=="DEFINIR") {
+			string param=(*r).par1;
+			string tipo=param.substr(param.rfind(" ")+1);
+			param.erase(param.size()-tipo.size()-6);
+			int lastcoma=0;	param+=",";
+			t_arglist arglist;
+			for (unsigned int i=0;i<param.size();i++) {
+				if (param[i]==',') {
+					string varname=ToUpper(expresion(param.substr(lastcoma,i-lastcoma)));
+					if (tipo=="ENTERO") memoria->DefinirTipo(varname,vt_numerica,true);
+					else if (tipo=="REAL") memoria->DefinirTipo(varname,vt_numerica,false);
+					else if (tipo=="CARACTER") memoria->DefinirTipo(varname,vt_caracter,false);
+					else if (tipo=="LOGICO") memoria->DefinirTipo(varname,vt_logica,false);
+					arglist.push_back(varname);
+					lastcoma=i+1;
+				}
+			}
+			exporter->definir(prog,arglist,tipo,tabs);
+		}
 		else if (s=="LEER") {
 			t_arglist args;
 			bool comillas=false; string param=(*r).par1+",";
@@ -164,24 +182,8 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 	}
 }
 
-void ExporterBase::definir(t_output &prog, string param, string tabs){
-	int lastcoma=0;
-	char tipo='*';
-	if (param.size()>12 && param.substr(param.size()-12,12)==" COMO ENTERO") { tipo='i'; param=param.substr(0,param.size()-12); }
-	if (param.size()>10 && param.substr(param.size()-10,10)==" COMO REAL") { tipo='f'; param=param.substr(0,param.size()-10); }
-	if (param.size()>14 && param.substr(param.size()-14,14)==" COMO CARACTER") { tipo='s'; param=param.substr(0,param.size()-14); }
-	if (param.size()>12 && param.substr(param.size()-12,12)==" COMO LOGICO") { tipo='b'; param=param.substr(0,param.size()-12); }
-	param+=",";
-	for (unsigned int i=0;i<param.size();i++) {
-		if (param[i]==',') {
-			string varname=ToUpper(expresion(param.substr(lastcoma,i-lastcoma)));
-			if (tipo=='i') memoria->DefinirTipo(varname,vt_numerica,true);
-			else if (tipo=='f') memoria->DefinirTipo(varname,vt_numerica,false);
-			else if (tipo=='s') memoria->DefinirTipo(varname,vt_caracter,false);
-			else if (tipo=='b') memoria->DefinirTipo(varname,vt_logica,false);
-			lastcoma=i+1;
-		}
-	}
+void ExporterBase::definir(t_output &prog, t_arglist &arglist, string tipo, string tabs) {
+	
 }
 
 void ExporterBase::dimension(t_output &prog, string params, string tabs) {
@@ -292,4 +294,8 @@ void ExporterBase::replace_var(t_output &out, string src, string dst) {
 		*it=s;
 		it++;
 	}
+}
+
+string ExporterBase::make_varname(string varname) {
+	return ToLower(varname);
 }
