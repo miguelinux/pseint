@@ -9,6 +9,7 @@ extern bool for_testing; ///< si la salidad es para testing, se ignoran los come
 class ExporterBase {
 
 protected:
+	void replace_var(t_output &out, string src, string dst);
 	
 	// funciones de utilería para las demás
 	void init_header(t_output &out, string comment_pre, string comment_post="");

@@ -271,3 +271,25 @@ void ExporterBase::init_header(t_output &out, string comment_pre, string comment
 		if (!for_testing) out.push_back("");
 	}
 }
+
+void ExporterBase::replace_var(t_output &out, string src, string dst) {
+	t_output_it it=out.begin();
+	while (it!=out.end()) {
+		string s=*it;
+		bool comillas=false;
+		for(unsigned int i=0, l=0;i<s.size();i++) { 
+			if (s[i]=='\''||s[i]=='\"') comillas=!comillas;
+			if (!comillas) {
+				if (s[i]!='_'&&s[i]!='.'&&(s[i]<'0'||s[i]>'9')&&(s[i]<'a'||s[i]>'z')&&(s[i]<'A'||s[i]>'Z')) {
+					if (i!=l && s.substr(l,i-l)==src) {
+						s.replace(l,i-l,dst);
+						i+=dst.size()-src.size();
+					} 
+					l=i+1;
+				}
+			}
+		}
+		*it=s;
+		it++;
+	}
+}

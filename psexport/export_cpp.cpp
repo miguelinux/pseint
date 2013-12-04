@@ -436,7 +436,7 @@ void CppExporter::translate(t_output &out, t_proceso &proc) {
 	
 	declarar_variables(out);
 	
-	copy(out_proc.begin(),out_proc.end(),back_inserter(out));
+	insertar_out(out,out_proc);
 	
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret+";");
@@ -464,9 +464,9 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 				out.push_back("// requeridas para poder compilar el programa.");
 			}
 		}
-		copy(prototipos.begin(),prototipos.end(),back_inserter(out));
+		insertar_out(out,prototipos);
 	}
-	copy(aux.begin(),aux.end(),back_inserter(out));
+	insertar_out(out,aux);
 	footer(out);
 }
 

@@ -83,11 +83,18 @@ string modificarConstante(string s,int diff) {
 string buscarOperando(const string &exp, int comienzo, int direccion) {
 	unsigned int i=comienzo;
 	int parentesis=0;
-	while (i>=0 && i<exp.size() && (parentesis ||  exp[i]=='.' ||  exp[i]=='\'' || (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') || exp[i]=='[' || exp[i]=='(' || (parentesis && (exp[i]==']' || exp[i]==')')))) {
-		if (exp[i]=='\'') { i+=direccion; while (exp[i]!='\'') i+=direccion; }
-		if (exp[i]=='(' || exp[i]=='[') parentesis++;
-		if (exp[i]==')' || exp[i]==']') parentesis--;  
-		i+=direccion;
+//	if (exp[i]==')'||exp[i]==']') { i--; parentesis++; }
+	while (i>=0 && i<exp.size() && (
+		parentesis ||  exp[i]=='.' ||  exp[i]=='\'' || exp[i]=='\"' 
+		|| (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') 
+		|| (direccion>0 && (exp[i]=='[' || exp[i]=='('))
+		|| (direccion<0 && (exp[i]==')' || exp[i]==']'))
+		)){
+//		|| exp[i]=='[' || exp[i]=='(' || (parentesis && (exp[i]==']' || exp[i]==')')))) {
+			if (exp[i]=='\''||exp[i]=='\"') { i+=direccion; while (exp[i]!='\''&&exp[i]!='\"') i+=direccion; }
+			if (exp[i]=='(' || exp[i]=='[') parentesis++;
+			if (exp[i]==')' || exp[i]==']') parentesis--;  
+			i+=direccion;
 	}
 	if (direccion>0) 
 		return exp.substr(comienzo,i-comienzo);

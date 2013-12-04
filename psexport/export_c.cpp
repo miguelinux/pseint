@@ -80,7 +80,6 @@ void CExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs
 }
 
 void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-#warning FALTA TRADUCIR PARACADA
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var,inc=var;
 	const int *dims=memoria->LeerDims(var);
@@ -92,9 +91,11 @@ void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string 
 		last+=IntToStr(dims[i]-1);
 		last+="]";
 	}
-	insertar(prog,tabs+"for (typeof(&("+first+")) ptr_aux=&("+first+");ptr_aux<=&("+last+");ptr_aux++) {");
-	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*ptr_aux;");
-	bloque(prog,++r,q,tabs+"\t");
+	insertar(prog,tabs+"for (typeof(&("+first+")) "+aux+"=&("+first+");"+aux+"<=&("+last+");"+aux+"++) {");
+	t_output out;
+	bloque(out,++r,q,tabs+"\t");
+	replace_var(out,aux,string("(*"+aux+")"));
+	insertar_out(prog,out);
 	insertar(prog,tabs+"}");
 }
 
@@ -240,7 +241,7 @@ void CExporter::footer(t_output &out) {
 		out.push_back("\tstatic char buffers[MAX_BUFFERS][MAX_STRLEN];");
 		out.push_back("\tstatic int count=-1;");
 		out.push_back("\tcount=count+1;");
-		out.push_back("\tif(count==MAX_BUFFERS) count)=0;");
+		out.push_back("\tif(count==MAX_BUFFERS) count=0;");
 		out.push_back("\treturn buffers[count];");
 		out.push_back("}");
 		if (!for_testing) out.push_back("");
@@ -289,7 +290,6 @@ void CExporter::footer(t_output &out) {
 
 
 void CExporter::translate(t_output &out, t_proceso &proc) {
-#warning FALTA LO DE LAS VARIABLES POR REFERENCIA
 	memoria=new Memoria(NULL);
 	
 	//cuerpo del proceso
@@ -316,7 +316,10 @@ void CExporter::translate(t_output &out, t_proceso &proc) {
 		dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
-			dec+=CppExporter::get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
+			string var_dec=CppExporter::get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
+			dec+=var_dec;
+			if (f->pasajes[i]==PP_REFERENCIA && var_dec.find("[")==string::npos) 
+				replace_var(out_proc,ToLower(f->nombres[i]),ToLower(string("(*")+f->nombres[i]+(")")));
 		}
 		dec+=")";
 		prototipos.push_back(dec+";");
@@ -326,7 +329,7 @@ void CExporter::translate(t_output &out, t_proceso &proc) {
 	
 	declarar_variables(out);
 	
-	copy(out_proc.begin(),out_proc.end(),back_inserter(out));
+	insertar_out(out,out_proc);
 	
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret+";");
@@ -342,7 +345,7 @@ string CExporter::get_operator(string op, bool for_string) {
 	if (for_string) {
 		if (for_string) {
 			use_string=true;
-			if (op=="+") { use_get_aux_buffer=true; return "func strcat(strcpy(get_aux_buffer(),arg1,arg2))"; }
+			if (op=="+") { use_get_aux_buffer=true; return "func strcat(strcpy(get_aux_buffer(),arg1),arg2)"; }
 			if (op=="=") return "func strcmp(arg1,arg2)==0"; 
 			if (op=="<>") return "func strcmp(arg1,arg2)!=0"; 
 			if (op=="<") return "func strcmp(arg1,arg2)<0"; 

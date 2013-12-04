@@ -274,7 +274,7 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 	
 	declarar_variables(out);
 	
-	copy(out_proc.begin(),out_proc.end(),back_inserter(out));
+	insertar_out(out,out_proc);
 	
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret);
