@@ -286,17 +286,8 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 }
 
 void VbExporter::translate(t_output & prog, t_programa & alg) {
-	t_output aux;
 	// cabecera
-	stringstream version; 
-	if (!for_testing) {
-	version<<VERSION<<"-"<<ARCHITECTURE;
-		prog.push_back(string("' Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
-		prog.push_back("' dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
-		prog.push_back("' puede que el codigo generado no sea completamente correcto. Si encuentra");
-		prog.push_back("' errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
-		prog.push_back("");
-	}
+	init_header(prog,"' ");
 	prog.push_back(string("Module ")+main_process_name);
 	if (!for_testing) prog.push_back("");
 	// procesos y subprocesos

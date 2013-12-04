@@ -3,6 +3,7 @@
 #include "exportexp.h"
 #include "../pseint/new_evaluar.h"
 #include <cstdlib>
+#include "version.h"
 using namespace std;
 
 bool for_testing=false;
@@ -248,3 +249,25 @@ string ExporterBase::get_arg(string args, int cual) {
 	return "";
 }
 
+bool ExporterBase::es_cadena_constante(string s) {
+	if (s[0]!='\'' && s[0]!='\"') return false;
+	int l=s.size()-1;
+	if (s[l]!='\'' && s[l]!='\"') return false;
+	for(int i=1;i<l;i++) { 
+		if (s[i]=='\'' || s[i]=='\"') return false;
+	}
+	return true;
+}
+
+void ExporterBase::init_header(t_output &out, string comment_pre, string comment_post) {
+	stringstream version; 
+	version<<VERSION<<"-"<<ARCHITECTURE;
+	if (!for_testing) {
+		out.push_back(comment_pre+"Este codigo ha sido generado por el modulo psexport "+version.str()+" de PSeInt");
+		if (comment_post.size()) comment_pre="";
+		out.push_back(comment_pre+"dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
+		out.push_back(comment_pre+"puede que el codigo generado no sea completamente correcto. Si encuentra");
+		out.push_back(comment_pre+"errores por favor reportelos en el foro (http://pseint.sourceforge.net)."+comment_post);
+		if (!for_testing) out.push_back("");
+	}
+}

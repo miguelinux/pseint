@@ -1,4 +1,5 @@
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -26,6 +27,14 @@ int main(int argc, char *argv[]) {
 	pid_t pid=fork();
 	if (pid==0) {
 		execvp(argv[0],argv);
+		// ver si es porque no tiene permiso de ejecución, en cuyo caso intentamos cambiarlos
+		struct stat sb;
+		if (stat(argv[0],&sb)!=-1 && !(sb.st_mode&S_IXUSR)) { 
+			string cmd("chmod a+x \""); cmd+=argv[0]; cmd+="\"";
+			system(cmd.c_str());
+			execvp(argv[0],argv);
+			cerr<<"Necesita darle permisos de ejecución al archivo wxPSeInt.bin"<<endl;
+		}
 	} else {
 		int ret=0;
 		waitpid(pid,&ret,0);

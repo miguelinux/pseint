@@ -3,7 +3,10 @@
 if [ "$1" = "" ]; then 
   echo "Use: $0 langcode"
 else
-  
+
+  make -C ../../psexport -f Makefile.lnx || exit 1
+  make -C ../../pseint -f Makefile.lnx || exit 1
+
   if ! test -e $1; then
     mkdir $1
   fi

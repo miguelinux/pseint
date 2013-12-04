@@ -75,7 +75,9 @@ void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	string linea="cin";
 	while (it!=args.end()) {
 		linea+=">>";
-		linea+=expresion(*it);
+		tipo_var t;
+		linea+=expresion(*it,t);
+		if (t==vt_caracter) read_strings=true;
 		it++;
 	}
 	insertar(prog,tabs+linea+";");
@@ -181,12 +183,8 @@ void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 }
 
 
-// retorna true para un objeto string (variable o expresion), y falso para un cstring (constante de tipo cadena)
-bool esString(const string &s) {
-	return s[0]=='\''||s[0]=='\"';
-}
-string convertirAString(const string &s) {
-	if (esString(s)) return string("string("+s+")");
+string CppExporter::convertirAString(const string &s) {
+	if (es_cadena_constante(s)) return string("string("+s+")");
 	else return s;
 }
 
@@ -242,7 +240,7 @@ string CppExporter::function(string name, string args) {
 	} else if (name=="CONVERTIRANUMERO") {
 		include_cstdlib=true;
 		string s=get_arg(args,1);
-		if (esString(s)) return string("atof(")+s+")";
+		if (es_cadena_constante(s)) return string("atof(")+s+")";
 		else return string("atof(")+colocarParentesis(s)+".c_str())";
 	} else {
 		if (name=="MINUSCULAS") use_func_minusculas=true;
@@ -252,7 +250,7 @@ string CppExporter::function(string name, string args) {
 	}
 }
 
-// funcion usada por cpp_declarar_variables para las internas de una funcion
+// funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
@@ -298,15 +296,7 @@ string CppExporter::get_tipo(string name, bool by_ref) {
 
 void CppExporter::header(t_output &out) {
 	// cabecera
-	stringstream version; 
-	version<<VERSION<<"-"<<ARCHITECTURE;
-	if (!for_testing) {
-		out.push_back(string("// Este codigo ha sido generado por el modulo psexport ")+version.str()+" de PSeInt");
-		out.push_back("// dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
-		out.push_back("// puede que el codigo generado no sea completamente correcto. Si encuentra");
-		out.push_back("// errores por favor reportelos en el foro (http://pseint.sourceforge.net).");
-		if (!for_testing) out.push_back("");
-	}
+	init_header(out,"// ");
 	out.push_back("#include<iostream>");
 	if (include_cmath) out.push_back("#include<cmath>");
 	if (include_cstdlib) out.push_back("#include<cstdlib>");
@@ -354,12 +344,12 @@ void CppExporter::header(t_output &out) {
 		out.push_back("#define SIN_TIPO string");
 		if (!for_testing) out.push_back("");
 	}
-	if (use_string) {
+	if (read_strings) {
 		if (!for_testing) {
 			out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que");
 			out.push_back("// lee solo una palabra. Para leer una linea completa (es decir, incluyendo los");
 			out.push_back("// espacios en blanco) se debe utilzar getline (ej, reemplazar cin>>x por");
-			out.push_back("// getline(cin,x), pero obliga a agregar un cin.ignore() si antes del getline");
+			out.push_back("// getline(cin,x)), pero obliga a agregar un cin.ignore() si antes del getline");
 			out.push_back("// se leyó otra variable con >>.");
 			out.push_back("");
 		}
@@ -466,7 +456,7 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 		if (!for_testing) {
 			out.push_back("// Declaraciones adelantadas de las funciones");
 			if (has_matrix_func) {
-				out.push_back("// Las funciones que reciben arreglos en C++ deben especificar en sus");
+				out.push_back("// Las funciones que reciben arreglos en c/C++ deben especificar en sus");
 				out.push_back("// prototipos las dimensiones de los mismos para todas las dimensiones,");
 				out.push_back("// excepto la primera (que puede quedar vacía). Las funciones traducidas");
 				out.push_back("// del pseudocódigo tienen todas sus dimensiones vacías, ya que PSeInt");

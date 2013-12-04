@@ -11,9 +11,11 @@ class ExporterBase {
 protected:
 	
 	// funciones de utilería para las demás
+	void init_header(t_output &out, string comment_pre, string comment_post="");
 	void bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
 	string get_arg(string args, int cual);
 	string make_dims(const int *tdims, string c1="[", string c2=",", string c3="]", bool numbers=true);
+	bool es_cadena_constante(string s);
 	
 	// funciones que traducen instrucciones y estructuras de control
 	virtual void esperar_tiempo(t_output &prog, float tiempo, bool mili, string tabs)=0;

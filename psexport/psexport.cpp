@@ -7,6 +7,7 @@
 #include "export_common.h"
 #include "export_cpp.h"
 #include "export_vb.h"
+#include "export_c.h"
 using namespace std;
 
 // otras funciones
@@ -164,7 +165,8 @@ int main(int argc, char *argv[]){
 			return 1;
 		} else if (s.substr(0,7)=="--lang=") {
 			s.erase(0,7); 
-			if (s=="cpp") exporter=new CppExporter();
+			if (s=="c") exporter=new CExporter();
+			else if (s=="cpp") exporter=new CppExporter();
 			else if (s=="vb") exporter=new VbExporter();
 			else {
 				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: cpp, vb"<<endl;
