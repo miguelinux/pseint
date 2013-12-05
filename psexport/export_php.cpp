@@ -13,6 +13,7 @@ using namespace std;
 PhpExporter::PhpExporter():CppExporter() {
 	use_stdin=false;
 	read_strings=false;
+	base_zero_arrays=false;
 }
 
 void PhpExporter::borrar_pantalla(t_output &prog, string param, string tabs){
@@ -54,9 +55,9 @@ void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+"fscanf(\"%d\",&"+varname+");");
-		else if (t==vt_numerica) insertar(prog,tabs+"fscanf(\"%f\",&"+varname+");");
-		else if (t==vt_logica) insertar(prog,tabs+"fscanf(\"%d\",&"+varname+");");
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+"fscanf($stdin,\"%d\","+varname+");");
+		else if (t==vt_numerica) insertar(prog,tabs+"fscanf($stdin,\"%f\","+varname+");");
+		else if (t==vt_logica) insertar(prog,tabs+"fscanf($stdin,\"%d\","+varname+");");
 		else { read_strings=true; insertar(prog,tabs+varname+"=rtrim(fgets($stdin),\"\\n\");"); }
 		it++;
 	}
@@ -135,12 +136,7 @@ string PhpExporter::function(string name, string args) {
 void PhpExporter::header(t_output &out) {
 	out.push_back("<?php");
 	init_header(out,"/* "," */");
-	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin', 'r');");
-	if (use_func_convertiratexto) {
-		if (!for_testing) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente.");
-		out.push_back("string convertiratexto(float f);");
-		if (!for_testing) out.push_back("");
-	}
+	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin','r');");
 	if (use_arreglo_max) {
 		if (!for_testing) {
 			out.push_back("// En C++ no se puede dimensionar un arreglo estático con una dimensión no constante.");
@@ -182,8 +178,14 @@ void PhpExporter::translate(t_output &out, t_proceso &proc) {
 		out.push_back(dec+") {");
 		delete f;
 	}
+	t_output_it ito=out_proc.begin();
+	while (ito!=out_proc.end()) {
+		if ( (*ito).find("($stdin,")!=string::npos || (*ito).find("($stdin)")!=string::npos) {
+			insertar(out,"\t\tglobal $stdin;"); break;
+		} else ito++;
+	}
 	insertar_out(out,out_proc);
-	out.push_back("}");
+	insertar(out,"\t}");
 	if (!for_testing) out.push_back("");
 	delete memoria;
 }
@@ -213,7 +215,7 @@ void PhpExporter::definir(t_output &prog, t_arglist &arglist, string tipo, strin
 	else tipo="string";
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
-		insertar(prog,tabs+"settype("+ToLower(*it)+",'"+tipo+"');");
+		insertar(prog,tabs+"settype("+*it+",'"+tipo+"');");
 		it++;
 	}
 }
@@ -224,4 +226,14 @@ string PhpExporter::make_varname(string varname) {
 
 void PhpExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
 	insertar(prog,tabs+param1+" = "+param2+";");
+}
+
+void PhpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
+	t_arglist_it it=args.begin();
+	while (it!=args.end()) {
+		string name=*it;
+		name.erase(name.find("("));
+		insertar(prog,tabs+"$"+ToLower(name)+" = array();");
+		it++;
+	}
 }

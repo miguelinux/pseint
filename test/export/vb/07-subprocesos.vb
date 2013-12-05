@@ -1,13 +1,13 @@
 Module SIN_TITULO
 	Sub Main()
-		Dim a(10) As String
-		Dim b(3,4) As String
 		Dim c As Double
 		Console.WriteLine(funciondoble(5))
 		noretornanada(3,9)
 		c = 0
 		porreferencia(c)
 		Console.WriteLine(c)
+		Dim a(10) As String
+		Dim b(3,4) As String
 		recibevector(a)
 		recibematriz(b)
 	End Sub

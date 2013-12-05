@@ -13,5 +13,4 @@ Module SIN_TITULO
 			Console.WriteLine("ni 1, ni 3, ni 5, ni 7, ni 9")
 		End Select
 	End Sub
-
 End Module

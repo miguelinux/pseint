@@ -53,7 +53,19 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 		else if (s=="ESPERARTECLA") exporter->esperar_tecla(prog,(*r).par1,tabs);
 		else if (s=="ESPERAR") 
 			exporter->esperar_tiempo(prog,(*r).par1,(*r).par2.substr(0,4)=="MILI",tabs);
-		else if (s=="DIMENSION") exporter->dimension(prog,(*r).par1,tabs);
+		else if (s=="DIMENSION") {
+			t_arglist arglist;
+			
+			string params=(*r).par1+",";
+			while (params.size()>1) {
+				unsigned int i=1;
+				while (params[i]!=')') i++;
+				while (params[i]!=',') i++;
+				arglist.push_back(params.substr(0,i));
+				params.erase(0,i+1);
+			}
+			exporter->dimension(prog,arglist,tabs);
+		}
 		else if (s=="DEFINIR") {
 			string param=(*r).par1;
 			string tipo=param.substr(param.rfind(" ")+1);
@@ -62,12 +74,12 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 			t_arglist arglist;
 			for (unsigned int i=0;i<param.size();i++) {
 				if (param[i]==',') {
-					string varname=ToUpper(expresion(param.substr(lastcoma,i-lastcoma)));
+					string varname=ToUpper(param.substr(lastcoma,i-lastcoma));
 					if (tipo=="ENTERO") memoria->DefinirTipo(varname,vt_numerica,true);
 					else if (tipo=="REAL") memoria->DefinirTipo(varname,vt_numerica,false);
 					else if (tipo=="CARACTER") memoria->DefinirTipo(varname,vt_caracter,false);
 					else if (tipo=="LOGICO") memoria->DefinirTipo(varname,vt_logica,false);
-					arglist.push_back(varname);
+					arglist.push_back(expresion(varname));
 					lastcoma=i+1;
 				}
 			}
@@ -186,15 +198,11 @@ void ExporterBase::definir(t_output &prog, t_arglist &arglist, string tipo, stri
 	
 }
 
-void ExporterBase::dimension(t_output &prog, string params, string tabs) {
-	params=params+",";
-	while (params.size()>1) {
-		unsigned int i=1;
-		while (params[i]!=')') i++;
-		while (params[i]!=',') i++;
-		string arr = params.substr(0,i);
-		params.erase(0,i+1);
-		i=0;
+void ExporterBase::dimension(t_output &prog, t_arglist &args, string tabs) {
+	t_arglist_it it=args.begin();
+	while (it!=args.end()) {
+		string arr = *it;
+		unsigned int i=0;
 		while(i<arr.size())
 			if (arr[i]==' ' || arr[i]=='\t')
 				arr.erase(i,1);
@@ -230,6 +238,7 @@ void ExporterBase::dimension(t_output &prog, string params, string tabs) {
 			p++;
 		}
 		memoria->AgregarArreglo(nom,dims);
+		it++;
 	}
 }
 

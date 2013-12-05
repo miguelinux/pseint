@@ -205,6 +205,7 @@ string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, 
 	else if (t==vt_logica) stipo="Boolean";
 	//else use_sin_tipo=true;
 	if (t.dims) {
+		if (!for_func) return "";
 		string pre=for_func?"ByVal ":"Dim ";
 		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" As "+stipo;
 	} else {
@@ -218,7 +219,8 @@ void VbExporter::declarar_variables(t_output &prog) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
 	string tab("\t\t"),stipo;
 	while (mit!=mit2) {
-		prog.push_back(tab+get_tipo(mit));
+		string dec=get_tipo(mit);
+		if (dec.size()) prog.push_back(tab+dec);
 		mit++;
 	}
 }
@@ -345,3 +347,17 @@ string VbExporter::make_string (string cont) {
 	return string("\"")+cont+"\"";
 }
 
+void VbExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
+	t_arglist_it it=args.begin();
+	while (it!=args.end()) {
+		string name=*it;
+		name.erase(name.find("("));
+		tipo_var t = memoria->LeerTipo(name);
+		string stipo="String";
+		if (t==vt_caracter) { stipo="String"; }
+		else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
+		else if (t==vt_logica) stipo="Boolean";
+		insertar(prog,tabs+"Dim "+expresion(*it)+" As "+stipo);
+		it++;
+	}
+}

@@ -23,7 +23,6 @@ void make_trig() {
 }
 
 void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
-	return;
 	glColor3fv(color);
 	glBegin(GL_QUAD_STRIP);
 	if (type==ET_PARA) {
