@@ -311,6 +311,18 @@ string ExporterBase::make_varname(string varname) {
 	return ToLower(varname);
 }
 
+/**
+* Esta funcion está para que varias instancias derivadas de ExporterBase puedan
+* utilizar la el mismo mapa de memorias (que contiene una instancia de Memoria
+* por proceso/subproceso). Esto es por ejemplo, para que el que exporta a c++
+* primero pueda hacer una pasada del algoritmo com TiposExport para que las 
+* variables ya tengan sus tipos definidos en cada ambito. Sino, por ejemplo
+* podría declararse una variable como string o sin_tipo en un paso por no 
+* conocer su tipo y luego darse cuenta que un paso siguiente se utiliza como
+* indice o dimensión de un arreglo y entonces debió ser int. Lo mismo se aplica
+* a las lecturas en lenguajes donde no son iguales para todos los tipos (como
+* c o vb).
+**/
 void ExporterBase::set_memoria(string key) {
 	map<string,Memoria*>::iterator it=mapa_memorias.find(key);
 	if (it==mapa_memorias.end()) {

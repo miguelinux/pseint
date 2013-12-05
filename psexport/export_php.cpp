@@ -64,7 +64,7 @@ void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	}
 }
 
-static string make_aux_var(int n) { stringstream ss; ss<<"$aux_var_"<<n; return ss.str(); }
+static string make_aux_var(int n) { stringstream ss; ss<<"aux_var_"<<n; return ss.str(); }
 
 void PhpExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
@@ -73,15 +73,15 @@ void PhpExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 	int n=dims[0];
 	for(int i=0;i<n;i++) { 
 		string aux_2=aux, var_2=var;
-		if (i!=0) var_2=make_aux_var(n);
-		if (i+1!=n) aux_2=make_aux_var(n+1);
-		insertar(prog,tabs+"foreach ("+var_2+" as "+aux_2+") {");
+		if (i!=0) var_2=make_aux_var(i);
+		if (i+1!=n) aux_2=make_aux_var(i+1);
+		insertar(prog,tabs+"foreach ($"+var_2+" as $"+aux_2+") {");
 		tabs+="\t";
 	}
-	bloque(prog,++r,q,tabs+"\t");
+	bloque(prog,++r,q,tabs);
 	for(int i=0;i<n;i++) { 
-		insertar(prog,tabs+"}");
 		tabs.erase(tabs.size()-1);
+		insertar(prog,tabs+"}");
 	}
 }
 
@@ -169,17 +169,17 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (!f) {
 		bloque(out,++proc.begin(),proc.end(),"\t");
 		return;
-	} else {
-		bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
-		string dec="\tfunction "; dec+=ToLower(f->id)+"(";
-		for(int i=1;i<=f->cant_arg;i++) {
-			if (i!=1) dec+=", ";
-			if (f->pasajes[i]==PP_REFERENCIA) dec+="&";
-			dec+="$"; dec+=ToLower(f->nombres[i]);
-		}
-		out.push_back(dec+") {");
-		delete f;
+	} 
+	
+	bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
+	string dec="\tfunction "; dec+=ToLower(f->id)+"(";
+	for(int i=1;i<=f->cant_arg;i++) {
+		if (i!=1) dec+=", ";
+		if (f->pasajes[i]==PP_REFERENCIA) dec+="&";
+		dec+="$"; dec+=ToLower(f->nombres[i]);
 	}
+	out.push_back(dec+") {");
+	
 	t_output_it ito=out_proc.begin();
 	while (ito!=out_proc.end()) {
 		if ( (*ito).find("($stdin,")!=string::npos || (*ito).find("($stdin)")!=string::npos) {
@@ -187,8 +187,11 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 		} else ito++;
 	}
 	insertar_out(out,out_proc);
+	if (f && f->nombres[0]!="") 
+		insertar(out,string("\t\treturn ")+make_varname(f->nombres[0])+";");
 	insertar(out,"\t}");
 	if (!for_testing) out.push_back("");
+	delete f;
 	delete memoria;
 }
 
@@ -234,6 +237,7 @@ void PhpExporter::asignacion(t_output &prog, string param1, string param2, strin
 }
 
 void PhpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
+	ExporterBase::dimension(prog,args,tabs);
 	t_arglist_it it=args.begin();
 	while (it!=args.end()) {
 		string name=*it;

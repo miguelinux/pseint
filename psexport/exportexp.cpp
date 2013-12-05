@@ -210,8 +210,9 @@ string expresion(string exp, tipo_var &tipo) {
 				string word=exp.substr(id_start,i-id_start);
 				if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
 					Replace(exp,id_start,i-1,exporter->get_constante(word),i);
-				} else if (exp[id_start]<'0'||exp[id_start]>='9') {
-					Replace(exp,id_start,i-1,exporter->make_varname(word),i);
+				} else if (exp[id_start]<'0'||exp[id_start]>'9') {
+					if (!EsFuncionDelUsuario(word,false))
+						Replace(exp,id_start,i-1,exporter->make_varname(word),i);
 				}
 			}
 			id_start=i+1;
