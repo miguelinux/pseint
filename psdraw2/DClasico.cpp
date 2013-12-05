@@ -263,8 +263,12 @@ void Entity::DrawClasico(bool force) {
 			glBegin(GL_LINES);
 			glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
 			if (!variante) {
-				glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
-				glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
+				if (edit_on||child[2]->label.size()) {
+					glVertex2i(d_x+child_dx[1],d_fy-d_h/2); glVertex2i(d_x+child_dx[1],d_fy-d_h+margin);
+					glVertex2i(d_x+child_dx[2],d_fy-d_h/2); glVertex2i(d_x+child_dx[2],d_fy-d_h+margin);
+				} else {
+					glVertex2i(d_x+(child_dx[1]+child_dx[2])/2,d_fy-d_h/2); glVertex2i(d_x+(child_dx[1]+child_dx[2])/2,d_fy-d_h+margin);
+				}
 				glEnd();
 				child[1]->DrawText();
 				child[2]->DrawText();
@@ -388,6 +392,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			child[3]->Calculate(vl,vr,vh); 
 			int v3=vl+vr;
 			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
+			else if (!edit_on && !child[2]->label.size()) { v2=0; child[2]->w==0; }
 			
 			// calcular el acnho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;
