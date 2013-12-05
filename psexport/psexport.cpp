@@ -13,7 +13,6 @@ using namespace std;
 
 // otras funciones
 bool cargar(list<t_proceso> &algs, string archivo){
-	char buffer[1024];
 	t_proceso p;
 	ifstream f(archivo.c_str());
 	string s;
@@ -21,8 +20,8 @@ bool cargar(list<t_proceso> &algs, string archivo){
 	if (!f.is_open()) return false;
 	while (!f.eof()) {
 		t_instruccion i;
-		f.getline(buffer,256); s=buffer;
-		programa.PushBack(buffer);
+		getline(f,s);
+		programa.PushBack(s);
 		for (unsigned int ii=0;ii<s.size();ii++) if(s[ii]=='\t') s[ii]=' ';
 		if (LeftCompare(s,"PROCESO ")) { 
 			i.nombre="PROCESO";

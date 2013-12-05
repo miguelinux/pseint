@@ -75,7 +75,19 @@ int main(int argc, char* argv[]) {
 		exit(0);
 	}
 
-	bool check=true, run=true, user=true, log_file=false, error=false, draw=false, undef_vars=true, var_definition=false, write_positions=false;
+	bool 
+		check=true, // checkear syntaxis?
+		run=true, // ejecutar?
+		user=true, // 
+		log_file=false, // guardar errores en un archivo de log
+		error=false, 
+		for_draw=false, // generar entrada para psdraw
+		undef_vars=true, 
+		var_definition=false, 
+		write_positions=false,
+		real_time_syntax=false; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
+	
+	
 	int fil_count=0,delay=0; char *fil_args[5];
 	for (int i=1;i<argc;i++) {
 		if (argv[i][0]=='-') {
@@ -129,7 +141,7 @@ int main(int argc, char* argv[]) {
 			else if (str=="--usecasemap")
 				case_map=new map<string,string>();
 			else if (str=="--draw") {
-				draw=true;
+				for_draw=true;
 				run=false;
 			} else if (str=="--easteregg") {
 				cerr<<"Bazinga!"<<endl;
@@ -146,8 +158,8 @@ int main(int argc, char* argv[]) {
 			fil_args[fil_count++]=argv[i];
 		}
 	}
-	error = error&&((fil_count<(draw?2:1))||(fil_count>(draw?3:2)));
-	log_file = fil_count>(draw?2:1);
+	error = error&&((fil_count<(for_draw?2:1))||(fil_count>(for_draw?3:2)));
+	log_file = fil_count>(for_draw?2:1);
 #ifdef __APPLE__
 	wait_key=false;
 #else
@@ -157,7 +169,7 @@ int main(int argc, char* argv[]) {
 	// comprobar parametros
 	if (error || (fil_count==0 && !real_time_syntax)) {
 		cout<<"Use: pseint FileName.psc [<options>] [LogFile]\n";
-		cout<<"     pseint FileName.psc --draw DrawFile.psd [LogFile]\n";
+		cout<<"     pseint FileName.psc --draw DrawTempFile.psd [LogFile]\n";
 		cout<<" <options> puede ser una o mas de las siguientes:"<<endl;
 		cout<<"      --color                utilizar colores para formatear la salida"<<endl;
 		cout<<"      --nocheck              no revisar la sintaxis"<<endl;
@@ -196,7 +208,7 @@ int main(int argc, char* argv[]) {
 	}
 	
 	if (log_file) {
-		ExeInfo.open(fil_args[draw?2:1]);
+		ExeInfo.open(fil_args[for_draw?2:1]);
 		if (ExeInfo.is_open()) ExeInfoOn=true;
 	}
 
@@ -297,7 +309,7 @@ int main(int argc, char* argv[]) {
 	//ejecutar
 	if (errores==0) {
 	// salida para diagrama
-		if (draw) {
+		if (for_draw) {
 			if (case_map) CaseMapPurge();
 			ofstream dibujo(fil_args[1]);
 			for (int i=0;i<programa.GetSize();i++) {
@@ -339,7 +351,7 @@ int main(int argc, char* argv[]) {
 	if (ExeInfoOn) {   
 		ExeInfo.close();
 	}
-	if (user && !draw) {
+	if (user && !for_draw) {
 		hideCursor();
 		if (wait_key) getKey();
 		showCursor();

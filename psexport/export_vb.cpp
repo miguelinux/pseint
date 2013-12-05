@@ -10,6 +10,7 @@
 #include "version.h"
 #include "exportexp.h"
 #include "../pseint/new_evaluar.h"
+#include "export_tipos.h"
 
 VbExporter::VbExporter() {
 	base_zero_arrays=false;
@@ -92,7 +93,6 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
 	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
-	AplicarTipo(opcion,p1,p2,vt_numerica);
 	insertar(prog,tabs+"Select Case "+expresion((*i).par1));
 	q++;p++;
 	while (++p!=r) {
@@ -237,9 +237,11 @@ string VbExporter::get_tipo(string name, bool by_ref) {
 	return ret;
 }
 
-void VbExporter::translate(t_output &out, t_proceso &proc) {
+void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 	
-	memoria=new Memoria(NULL);
+	t_proceso_it it=proc.begin(); Funcion *f;
+	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -247,13 +249,10 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 	
 	// cabecera del proceso
 	bool is_sub=true;
-	t_proceso_it it=proc.begin();
 	string ret; // sentencia "Return ..." de la funcion
-	if (it->nombre=="PROCESO") {
+	if (!f) {
 		out.push_back("\tSub Main()");
 	} else {
-		int x;
-		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
 		string dec;
 		if (f->nombres[0]=="") {
 			dec="\tPublic Sub "; 
@@ -286,15 +285,18 @@ void VbExporter::translate(t_output &out, t_proceso &proc) {
 	
 }
 
-void VbExporter::translate(t_output & prog, t_programa & alg) {
+void VbExporter::translate(t_output &out, t_programa &prog) {
+	
+	TiposExporter(prog,false); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
+	
 	// cabecera
-	init_header(prog,"' ");
-	prog.push_back(string("Module ")+main_process_name);
-	if (!for_testing) prog.push_back("");
+	init_header(out,"' ");
+	out.push_back(string("Module ")+main_process_name);
+	if (!for_testing) out.push_back("");
 	// procesos y subprocesos
-	for (t_programa_it it=alg.begin();it!=alg.end();++it)
-		translate(prog,*it);	
-	prog.push_back("End Module");
+	for (t_programa_it it=prog.begin();it!=prog.end();++it)
+		translate_single(out,*it);	
+	out.push_back("End Module");
 }
 
 string VbExporter::get_constante(string name) {

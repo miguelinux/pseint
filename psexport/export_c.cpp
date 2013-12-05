@@ -289,22 +289,22 @@ void CExporter::footer(t_output &out) {
 }
 
 
-void CExporter::translate(t_output &out, t_proceso &proc) {
-	memoria=new Memoria(NULL);
+void CExporter::translate_single(t_output &out, t_proceso &proc) {
+
+	t_proceso_it it=proc.begin(); Funcion *f;
+	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
 	
 	//cuerpo del proceso
 	t_output out_proc;
 	bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	
 	// cabecera del proceso
-	t_proceso_it it=proc.begin();
 	string ret; // sentencia "return ..." de la funcion
-	if (it->nombre=="PROCESO") {
+	if (!f) {
 		out.push_back("int main() {");
 		ret="return 0";
 	} else {
-		int x;
-		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
 		string dec;
 		if (f->nombres[0]=="") {
 			dec="void "; 

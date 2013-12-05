@@ -29,7 +29,7 @@ protected:
 	virtual string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	virtual void header(t_output &out);
 	virtual void footer(t_output &out);
-	virtual void translate(t_output &out, t_proceso &proc);
+	virtual void translate_single(t_output &out, t_proceso &proc);
 	
 	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	virtual void esperar_tecla(t_output &prog, string param,string tabs);
@@ -50,7 +50,7 @@ public:
 	virtual string function(string name, string args);
 	virtual string get_constante(string name);
 	virtual string get_operator(string op, bool for_string=false);	
-	virtual void translate(t_output &prog, t_programa &alg);
+	virtual void translate(t_output &out, t_programa &prog);
 	CppExporter();
 	
 };

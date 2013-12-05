@@ -8,7 +8,7 @@ int main() {
 	SIN_TIPO c[40];
 	SIN_TIPO d[50][5];
 	SIN_TIPO e[ARREGLO_MAX];
-	SIN_TIPO n;
+	int n;
 	cin>>n;
 	cin>>a[0];
 	a[9]=a[0];

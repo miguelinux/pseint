@@ -8,6 +8,7 @@
 #include "exportexp.h"
 #include "new_funciones.h"
 #include "export_common.h"
+#include "export_tipos.h"
 using namespace std;
 
 CppExporter::CppExporter() {
@@ -107,7 +108,6 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
 	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
-	AplicarTipo((*i).par1,p1,p2,vt_numerica_entera);
 	insertar(prog,tabs+"switch ("+expresion((*i).par1)+") {");
 	q++;p++;
 	while (++p!=r) {
@@ -397,23 +397,22 @@ void CppExporter::footer(t_output &out) {
 }
 
 
-void CppExporter::translate(t_output &out, t_proceso &proc) {
+void CppExporter::translate_single(t_output &out, t_proceso &proc) {
 	
-	memoria=new Memoria(NULL);
+	t_proceso_it it=proc.begin(); Funcion *f;
+	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
 	
 	//cuerpo del proceso
 	t_output out_proc;
 	bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	
 	// cabecera del proceso
-	t_proceso_it it=proc.begin();
 	string ret; // sentencia "return ..." de la funcion
-	if (it->nombre=="PROCESO") {
+	if (!f) {
 		out.push_back("int main() {");
 		ret="return 0";
 	} else {
-		int x;
-		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
 		string dec;
 		if (f->nombres[0]=="") {
 			dec="void "; 
@@ -447,9 +446,12 @@ void CppExporter::translate(t_output &out, t_proceso &proc) {
 }
 
 void CppExporter::translate(t_output &out, t_programa &prog) {
+	
+	TiposExporter(prog,true); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
+	
 	t_output aux;
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate(aux,*it);	
+		translate_single(aux,*it);	
 	header(out);
 	if (prototipos.size()) {
 		if (!for_testing) {

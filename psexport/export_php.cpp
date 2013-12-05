@@ -8,6 +8,7 @@
 #include "exportexp.h"
 #include "new_funciones.h"
 #include "export_common.h"
+#include "export_tipos.h"
 using namespace std;
 
 PhpExporter::PhpExporter():CppExporter() {
@@ -158,17 +159,18 @@ void PhpExporter::header(t_output &out) {
 	}
 }
 
-void PhpExporter::translate(t_output &out, t_proceso &proc) {
-	memoria=new Memoria(NULL);
+void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
+	
+	t_proceso_it it=proc.begin(); Funcion *f;
+	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+	
 	t_output out_proc;
-	t_proceso_it it=proc.begin();
-	if (it->nombre=="PROCESO") {
+	if (!f) {
 		bloque(out,++proc.begin(),proc.end(),"\t");
 		return;
 	} else {
 		bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
-		int x;
-		Funcion *f=ParsearCabeceraDeSubProceso(it->par1,false,x);
 		string dec="\tfunction "; dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
@@ -191,9 +193,12 @@ void PhpExporter::translate(t_output &out, t_proceso &proc) {
 }
 
 void PhpExporter::translate(t_output &out, t_programa &prog) {
+	
+	TiposExporter(prog,false);
+	
 	t_output aux;
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate(aux,*it);	
+		translate_single(aux,*it);	
 	header(out);
 	insertar_out(out,aux);
 	insertar(out,"?>");

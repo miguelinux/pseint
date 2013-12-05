@@ -2,13 +2,20 @@
 #define EXPORT_COMMON_H
 #include <string>
 #include "defines.h"
+#include <map>
+class Memoria;
 using namespace std;
 
 extern bool for_testing; ///< si la salidad es para testing, se ignoran los comentarios y las lineas en blanco
 
 class ExporterBase {
 
+	static map<string,Memoria*> mapa_memorias;
+	
 protected:
+	
+	void set_memoria(string key);
+	
 	void replace_var(t_output &out, string src, string dst);
 	
 	// funciones de utilería para las demás
@@ -82,10 +89,10 @@ public:
 	/**
 	* @brief traduce el algoritmo
 	*
-	* @param prog    argumento de salida, donde colocar las instrucciones traducidas
-	* @param alg     argumento de entrada, con el algoritmo ya parseado
+	* @param out     argumento de salida, donde colocar las instrucciones traducidas
+	* @param prog    argumento de entrada, con el algoritmo ya parseado
 	**/
-	virtual void translate(t_output &prog, t_programa &alg)=0;
+	virtual void translate(t_output &out, t_programa &prog)=0;
 	
 };
 

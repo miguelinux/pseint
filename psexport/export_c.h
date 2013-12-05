@@ -17,7 +17,7 @@ class CExporter:public CppExporter {
 //	string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	void header(t_output &out);
 	void footer(t_output &out);
-	void translate(t_output &out, t_proceso &proc);
+	void translate_single(t_output &out, t_proceso &proc);
 	
 //	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	void esperar_tecla(t_output &prog, string param,string tabs);
@@ -37,7 +37,7 @@ public:
 	string function(string name, string args);
 //	string get_constante(string name);
 	string get_operator(string op, bool for_string=false);	
-//	void translate(t_output &prog, t_programa &alg);
+//	void translate(t_output &out, t_programa &prog);
 	CExporter();
 	
 };

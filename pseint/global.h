@@ -30,7 +30,6 @@ extern bool for_test; // no hacer nada con las instrucciones EsperarTecla y Limp
 extern bool raw_errors; // salida para test automatico, sin mensajes explicativos ni adornos
 extern bool noinput; // no pedir entradas al usuario, tomar de los argumentos
 extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acentos y ñs de las cadenas para que se vean bien en la consola de windows
-extern bool real_time_syntax; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
 extern bool enable_user_functions; // habilita la definicion de subprocesos
 extern bool for_pseint_terminal; // habilita algunas secuencias de escape adicionales para usar en la terminal propia
 

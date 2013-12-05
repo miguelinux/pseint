@@ -8,6 +8,8 @@ using namespace std;
 
 bool for_testing=false;
 
+map<string,Memoria*> ExporterBase::mapa_memorias;
+
 ExporterBase *exporter=NULL;
 
 string ExporterBase::make_dims(const int *tdims, string c1, string c2, string c3, bool numbers) {
@@ -46,13 +48,13 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 					}
 				}
 			}
-			exporter->escribir(prog,args,saltar,tabs);
+			escribir(prog,args,saltar,tabs);
 		}
-		else if (s=="INVOCAR") exporter->invocar(prog,(*r).par1,tabs);
-		else if (s=="BORRARPANTALLA") exporter->borrar_pantalla(prog,(*r).par1,tabs);
-		else if (s=="ESPERARTECLA") exporter->esperar_tecla(prog,(*r).par1,tabs);
+		else if (s=="INVOCAR") invocar(prog,(*r).par1,tabs);
+		else if (s=="BORRARPANTALLA") borrar_pantalla(prog,(*r).par1,tabs);
+		else if (s=="ESPERARTECLA") esperar_tecla(prog,(*r).par1,tabs);
 		else if (s=="ESPERAR") 
-			exporter->esperar_tiempo(prog,(*r).par1,(*r).par2.substr(0,4)=="MILI",tabs);
+			esperar_tiempo(prog,(*r).par1,(*r).par2.substr(0,4)=="MILI",tabs);
 		else if (s=="DIMENSION") {
 			t_arglist arglist;
 			
@@ -64,7 +66,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				arglist.push_back(params.substr(0,i));
 				params.erase(0,i+1);
 			}
-			exporter->dimension(prog,arglist,tabs);
+			dimension(prog,arglist,tabs);
 		}
 		else if (s=="DEFINIR") {
 			string param=(*r).par1;
@@ -83,7 +85,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 					lastcoma=i+1;
 				}
 			}
-			exporter->definir(prog,arglist,tipo,tabs);
+			definir(prog,arglist,tipo,tabs);
 		}
 		else if (s=="LEER") {
 			t_arglist args;
@@ -108,13 +110,13 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 					}
 				}
 			}
-			exporter->leer(prog,args,tabs);
+			leer(prog,args,tabs);
 		}
 		else if (s=="ASIGNACION") {
 			tipo_var t;
 			string param1=expresion((*r).par1);
 			string param2=expresion((*r).par2,t);
-			exporter->asignacion(prog,param1,param2,tabs);
+			asignacion(prog,param1,param2,tabs);
 			memoria->DefinirTipo(param1,t);
 		}
 		else if (s=="MIENTRAS") {
@@ -125,7 +127,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				else if ((*r).nombre=="FINMIENTRAS") deep--;
 				r++;
 			}
-			exporter->mientras(prog,r1,r,tabs);
+			mientras(prog,r1,r,tabs);
 		} else if (s=="REPETIR") {
 			t_proceso_it r1=r++;
 			deep=0;
@@ -135,7 +137,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				else if ((*r).nombre=="MIENTRASQUE") deep--;
 				r++;
 			}
-			exporter->repetir(prog,r1,r,tabs);
+			repetir(prog,r1,r,tabs);
 		} else if (s=="SEGUN") {
 			list<t_proceso_it> its;
 			its.insert(its.end(),r);
@@ -151,7 +153,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				r++;
 			}
 			its.insert(its.end(),r);
-			exporter->segun(prog,its,tabs);
+			segun(prog,its,tabs);
 		} else if (s=="PARA") {
 			t_proceso_it r1=r++;
 			deep=0;
@@ -161,7 +163,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				r++;
 			}
 			memoria->DefinirTipo(ToLower((*r1).par1),vt_numerica);
-			exporter->para(prog,r1,r,tabs);
+			para(prog,r1,r,tabs);
 		} else if (s=="PARACADA") {
 			t_proceso_it r1=r++;
 			deep=0;
@@ -170,7 +172,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				else if ((*r).nombre=="FINPARA") deep--;
 				r++;
 			}
-			exporter->paracada(prog,r1,r,tabs);
+			paracada(prog,r1,r,tabs);
 			memoria->DefinirTipo(ToLower((*r1).par2),memoria->LeerTipo(ToLower((*r1).par1)));
 			memoria->RemoveVar(ToLower((*r1).par1));
 		} else if (s=="SI") {
@@ -188,7 +190,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				else if ((*r).nombre=="FINSI") deep--;
 				r++;
 			}
-			exporter->si(prog,r1,r2,r,tabs);
+			si(prog,r1,r2,r,tabs);
 		}
 		r++;
 	}
@@ -307,4 +309,13 @@ void ExporterBase::replace_var(t_output &out, string src, string dst) {
 
 string ExporterBase::make_varname(string varname) {
 	return ToLower(varname);
+}
+
+void ExporterBase::set_memoria(string key) {
+	map<string,Memoria*>::iterator it=mapa_memorias.find(key);
+	if (it==mapa_memorias.end()) {
+		mapa_memorias[key]=memoria=new Memoria(NULL);
+	} else {
+		memoria=it->second;
+	}
 }
