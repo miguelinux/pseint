@@ -20,13 +20,6 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	
-	
-	for (int i=0;i<circle_steps;i++) {
-		cosx[i]=cos((i*2*M_PI)/circle_steps);
-		sinx[i]=sin((i*2*M_PI)/circle_steps);
-	}
-	cosx[circle_steps]=cosx[0];
-	sinx[circle_steps]=sinx[0];
 	int id=-1, port=-1;
 	string fname;
 	for(int i=1;i<argc;i++) { 

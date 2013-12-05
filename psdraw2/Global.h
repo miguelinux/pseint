@@ -79,8 +79,6 @@ extern float zoom; // zoom final
 // auxiliares varios
 extern Entity *entity_to_del; // para un delayed delete (cuando suelta uno que sale del shapebar y no queda en ningun lado)
 extern Entity *all_any;
-#define circle_steps 20 // cantidad de tramos en los que aproximo el circulo para dibujarlo como poligonal
-extern double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el DrawShape del Para
 
 // colores
 extern const float color_border[3]; // borde de la forma de una entidad

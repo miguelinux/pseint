@@ -4,12 +4,30 @@
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
+#include <cmath>
 using namespace std;
 
+#define circle_steps 20 // cantidad de tramos en los que aproximo el circulo para dibujarlo como poligonal
+static double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el DrawShape del Para
+void make_trig() {
+	static bool make_cos=false;
+	if (!make_cos) {
+		for (int i=0;i<circle_steps;i++) {
+			cosx[i]=cos((i*2*M_PI)/circle_steps);
+			sinx[i]=sin((i*2*M_PI)/circle_steps);
+		}
+		cosx[circle_steps]=cosx[0];
+		sinx[circle_steps]=sinx[0];
+		make_cos=true;
+	}
+}
+
 void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
+	return;
 	glColor3fv(color);
 	glBegin(GL_QUAD_STRIP);
 	if (type==ET_PARA) {
+		make_trig;
 		w=w/2; h=h/2; y-=h;
 		for(int i=1;i<circle_steps;i+=2) { 
 			glVertex2i(x,y);
@@ -45,10 +63,11 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 	glColor3fv(color);
 	glBegin(GL_LINE_LOOP);
 	if (type==ET_PARA) {
+		make_trig();
 		w=w/2; h=h/2; y-=h;
 		for(int i=0;i<circle_steps;i++) { 
 			glVertex2i(x+cosx[i]*w,y+sinx[i]*h);
-			glVertex2i(x+cosx[i+1]*w,y+sinx[i+1]*h);
+//			glVertex2i(x+cosx[i+1]*w,y+sinx[i+1]*h);
 		}
 	} else if (type==ET_PROCESO) {
 		glVertex2i(x-w/2+h,y); glVertex2i(x+w/2-h,y);

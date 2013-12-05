@@ -55,7 +55,6 @@ Entity *all_any=NULL;
 
 // constantes con tamaños predefinidos
 int win_h=400,win_w=600; // tamaño de la ventana
-double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el DrawShape del Para
 
 // colores
 const float color_border[3]={0,0,0}; // borde de la forma de una entidad
