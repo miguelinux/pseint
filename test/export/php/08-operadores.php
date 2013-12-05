@@ -1,0 +1,30 @@
+<?php
+	$a= 11;
+	$b = 2;
+	$c = true;
+	$d = false;
+	$e= 'Hola';
+	$f = 'Mundo';
+	echo $a+$b,"\n";
+	echo $a*$b,"\n";
+	echo $a/$b,"\n";
+	echo $a-$b,"\n";
+	echo pow($a,$b),"\n";
+	echo $a%$b,"\n";
+	echo $a==$b,"\n";
+	echo $a!=$b,"\n";
+	echo $a< $b,"\n";
+	echo $a> $b,"\n";
+	echo $a<=$b,"\n";
+	echo $a>=$b,"\n";
+	echo $c&&$d,"\n";
+	echo $c||$d,"\n";
+	echo !( $c && $d );
+	echo $e.' '.$f,"\n";
+	echo $e==$f,"\n";
+	echo $e!=$f,"\n";
+	echo $e< $f,"\n";
+	echo $e> $f,"\n";
+	echo $e<=$f,"\n";
+	echo $e>=$f,"\n";
+?>
