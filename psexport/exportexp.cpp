@@ -86,7 +86,8 @@ string buscarOperando(const string &exp, int comienzo, int direccion) {
 //	if (exp[i]==')'||exp[i]==']') { i--; parentesis++; }
 	while (i>=0 && i<exp.size() && (
 		parentesis ||  exp[i]=='.' ||  exp[i]=='\'' || exp[i]=='\"' 
-		|| (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') 
+		|| (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') || exp[i]=='_' 
+		|| exp[i]=='$' // por php, hasta que tenga una mejor forma de determinar el primer operando al reemplazar operadores por funciones (porque es el unico caso, creo, donde se invoca esta funcion con la expresion ya traducida)
 		|| (direccion>0 && (exp[i]=='[' || exp[i]=='('))
 		|| (direccion<0 && (exp[i]==')' || exp[i]==']'))
 		)){
@@ -103,6 +104,13 @@ string buscarOperando(const string &exp, int comienzo, int direccion) {
 }
 
 string colocarParentesis(const string &exp) {
+	if ( (exp[0]=='\''||exp[0]=='\"') && exp[exp.size()-1]=='\''||exp[exp.size()-1]=='\"') {
+		for(unsigned int i=1;i<exp.size()-1;i++) { 
+			if (exp[i]=='\''||exp[i]=='\"') 
+				return string("(")+exp+")";
+		}
+		return exp;
+	}
 	int i,parentesis=0,final=exp.size()-1;
 	for (i=0;i<=final;i++) {
 		if (exp[i]=='[' || exp[i]=='(') parentesis++;
@@ -211,7 +219,7 @@ string expresion(string exp, tipo_var &tipo) {
 				if (word=="VERDADERO"||word=="FALSO"||word=="PI") {
 					Replace(exp,id_start,i-1,exporter->get_constante(word),i);
 				} else if (exp[id_start]<'0'||exp[id_start]>'9') {
-					if (!EsFuncionDelUsuario(word,false))
+					if (!EsFuncion(word,false))
 						Replace(exp,id_start,i-1,exporter->make_varname(word),i);
 				}
 			}

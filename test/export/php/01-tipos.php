@@ -7,6 +7,6 @@
 	$d = false;
 	$e = 'Hola';
 	$f = 'Hola Mundo';
-	$p=rtrim(fgets($stdin),"\n");
-	echo $p,"\n";
+	$p=rtrim(fgets($stdin),PHP_EOL);
+	echo $p,PHP_EOL;
 ?>

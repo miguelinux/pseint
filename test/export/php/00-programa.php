@@ -1,3 +1,3 @@
 <?php
-	echo 'Hola Mundo',"\n";
+	echo 'Hola Mundo',PHP_EOL;
 ?>

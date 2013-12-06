@@ -19,9 +19,9 @@ PhpExporter::PhpExporter():CppExporter() {
 
 void PhpExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 	if (for_testing)
-		insertar(prog,tabs+"echo \"\\n\";");
+		insertar(prog,tabs+"echo PHP_EOL;");
 	else
-		insertar(prog,tabs+"echo \"\\n\"; // no hay forma directa de borrar la pantalla con php");
+		insertar(prog,tabs+"echo PHP_EOL; // no hay forma directa de borrar la pantalla con php");
 }
 
 void PhpExporter::esperar_tecla(t_output &prog, string param, string tabs){
@@ -47,7 +47,7 @@ void PhpExporter::escribir(t_output &prog, t_arglist args, bool saltar, string t
 		linea+=expresion(*it);
 		it++;
 	}
-	insertar(prog,tabs+"echo "+linea+(saltar?",\"\\n\";":";"));
+	insertar(prog,tabs+"echo "+linea+(saltar?",PHP_EOL;":";"));
 }
 
 void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
@@ -59,7 +59,7 @@ void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
 		if (t==vt_numerica && t.rounded) insertar(prog,tabs+"fscanf($stdin,\"%d\","+varname+");");
 		else if (t==vt_numerica) insertar(prog,tabs+"fscanf($stdin,\"%f\","+varname+");");
 		else if (t==vt_logica) insertar(prog,tabs+"fscanf($stdin,\"%d\","+varname+");");
-		else { read_strings=true; insertar(prog,tabs+varname+"=rtrim(fgets($stdin),\"\\n\");"); }
+		else { read_strings=true; insertar(prog,tabs+varname+"=rtrim(fgets($stdin),PHP_EOL);"); }
 		it++;
 	}
 }
@@ -99,9 +99,9 @@ string PhpExporter::function(string name, string args) {
 	} else if (name=="COS") {
 		return string("cos")+args;
 	} else if (name=="RAIZ") {
-		return string("sqrtf")+args;
+		return string("sqrt")+args;
 	} else if (name=="RC") {
-		return string("sqrtf")+args;
+		return string("sqrt")+args;
 	} else if (name=="ABS") {
 		return string("abs")+args;
 	} else if (name=="LN") {
@@ -109,45 +109,35 @@ string PhpExporter::function(string name, string args) {
 	} else if (name=="EXP") {
 		return string("exp")+args;
 	} else if (name=="AZAR") {
-		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
+		return string("rand(0,")+restarUno(get_arg(args,1))+")";
 	} else if (name=="ATAN") {
 		return string("atan")+args;
 	} else if (name=="TRUNC") {
 		return string("floor")+args;
 	} else if (name=="REDON") {
-		return string("floor(")+colocarParentesis(get_arg(args,1))+"+.5)";
+		return string("round")+args;
 	} else if (name=="CONCATENAR") {
-		return string("(")+get_arg(args,1)+"."+get_arg(args,2)+")";
+		return get_arg(args,1)+"."+get_arg(args,2);
 	} else if (name=="LONGITUD") {
-		return convertirAString(get_arg(args,1))+".size()";
+		return string("strlen")+args;
+	} else if (name=="MAYUSCULAS") {
+		return string("strtoupper")+args;
+	} else if (name=="MINUSCULAS") {
+		return string("strtolower")+args;
 	} else if (name=="SUBCADENA") {
-		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+		return string("substr(")+get_arg(args,1)+","+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
 	} else if (name=="CONVERTIRANUMERO") {
-		string s=get_arg(args,1);
-		if (es_cadena_constante(s)) return string("atof(")+s+")";
-		else return string("atof(")+colocarParentesis(s)+".c_str())";
-	} else {
-		if (name=="MINUSCULAS") use_func_minusculas=true;
-		if (name=="MAYUSCULAS") use_func_mayusculas=true;
-		if (name=="CONVERTIRATEXTO") use_func_convertiratexto=true;
-		return ToLower(name)+args; // no deberia pasar esto
-	}
+		return string("(")+colocarParentesis(get_arg(args,1))+"+0)";
+	} else if (name=="CONVERTIRATEXTO") {
+		return string("((string)")+colocarParentesis(get_arg(args,1))+")";
+	} else 
+		return ToLower(name)+args; // no debería pasar nunca esto
 }
 
 void PhpExporter::header(t_output &out) {
 	out.push_back("<?php");
 	init_header(out,"/* "," */");
 	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin','r');");
-	if (use_arreglo_max) {
-		if (!for_testing) {
-			out.push_back("// En C++ no se puede dimensionar un arreglo estático con una dimensión no constante.");
-			out.push_back("// PSeInt sobredimensionará el arreglo utilizando un valor simbólico ARREGLO_MAX.");
-			out.push_back("// Sería posible crear un arreglo dinámicamente con los operadores new y delete, pero");
-			out.push_back("// este mecanismo aún no está soportado en las traducciones automáticas de PSeInt.");
-		}
-		out.push_back("#define ARREGLO_MAX 100");
-		if (!for_testing) out.push_back("");
-	}
 	if (read_strings) {
 		if (!for_testing) {
 			out.push_back("// Para leer variables de texto se utiliza una $x=rtrim(fgets($stdin) porque el string");

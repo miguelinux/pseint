@@ -6,16 +6,16 @@
 	settype($d,'boolean');
 	fscanf($stdin,"%d",$a);
 	fscanf($stdin,"%f",$b);
-	$c=rtrim(fgets($stdin),"\n");
+	$c=rtrim(fgets($stdin),PHP_EOL);
 	fscanf($stdin,"%d",$d);
-	echo $a,"\n";
-	echo $b,"\n";
-	echo $c,"\n";
-	echo $d,"\n";
+	echo $a,PHP_EOL;
+	echo $b,PHP_EOL;
+	echo $c,PHP_EOL;
+	echo $d,PHP_EOL;
 	fscanf($stdin,"%d",$a);
 	fscanf($stdin,"%f",$b);
-	$c=rtrim(fgets($stdin),"\n");
+	$c=rtrim(fgets($stdin),PHP_EOL);
 	fscanf($stdin,"%d",$d);
-	echo $a,$b,$c,$d,"\n";
+	echo $a,$b,$c,$d,PHP_EOL;
 	echo 'Esta linea no lleva enter al final';
 ?>

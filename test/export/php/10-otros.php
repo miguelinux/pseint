@@ -1,8 +1,8 @@
 <?php
 	$stdin = fopen('php://stdin','r');
-	echo "\n";
+	echo PHP_EOL;
 	fgetc($stdin);
 	usleep(100*1000);
 	sleep(1);
-	echo M_PI,"\n";
+	echo M_PI,PHP_EOL;
 ?>
