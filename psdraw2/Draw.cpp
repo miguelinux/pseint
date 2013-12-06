@@ -338,7 +338,7 @@ if (use_textures) {
 //	DrawTextRaster(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
 	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
-	switch(menu_sel) {
+	if (menu) switch(menu_sel) {
 	case MO_ZOOM_EXTEND: SetStatus(color_selection,"Ajusta el zoom para visualizar todo el diagrama."); break;
 	case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
 	case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
