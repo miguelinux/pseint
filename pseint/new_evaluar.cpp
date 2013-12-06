@@ -38,9 +38,8 @@ bool PalabraReservada(const string &str) {
 int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 	bool comillas = false;
 	int parentesis = 0;
-	char c;
 	while (p1<=p2) {
-		c = expresion[p1];
+		char c = expresion[p1];
 		if (c=='\'' || c=='\"')
 			comillas = !comillas;
 		else if (!comillas) {
@@ -239,9 +238,9 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 	}
 	// parsear argumentos
 	info_de_llamada args(ca);
-	b=0; int b2;
+	b=0;
 	for (int i=0;i<ca;i++) {
-		b2=BuscarComa(argumentos,b+1,l,',');
+		int b2=BuscarComa(argumentos,b+1,l,',');
 		if (b2==-1) b2=l;
 		int p1=b+1, p2=b2-1; b=b2;
 		if (!AplicarTipo(argumentos,p1,p2,func->tipos[i+1])) {

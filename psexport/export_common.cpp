@@ -125,7 +125,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 			while ( ! ((*r).nombre=="FINMIENTRAS"  && deep==0) ) {
 				if ((*r).nombre=="MIENTRAS") deep++;
 				else if ((*r).nombre=="FINMIENTRAS") deep--;
-				r++;
+				++r;
 			}
 			mientras(prog,r1,r,tabs);
 		} else if (s=="REPETIR") {
@@ -135,14 +135,14 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 				if ((*r).nombre=="REPETIR") deep++;
 				else if ((*r).nombre=="HASTAQUE") deep--;
 				else if ((*r).nombre=="MIENTRASQUE") deep--;
-				r++;
+				++r;
 			}
 			repetir(prog,r1,r,tabs);
 		} else if (s=="SEGUN") {
 			list<t_proceso_it> its;
 			its.insert(its.end(),r);
 			deep=0;
-			r++;
+			++r;
 			while ( ! ((*r).nombre=="FINSEGUN" && deep==0) ) {
 				if (deep==0 && (*r).nombre=="OPCION") 
 					its.insert(its.end(),r);
@@ -150,7 +150,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 					deep++;
 				else if ((*r).nombre=="FINSEGUN")
 					deep--;
-				r++;
+				++r;
 			}
 			its.insert(its.end(),r);
 			segun(prog,its,tabs);
@@ -160,7 +160,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 			while ( ! ((*r).nombre=="FINPARA" && deep==0) ) {
 				if ((*r).nombre=="PARA"||(*r).nombre=="PARACADA") deep++;
 				else if ((*r).nombre=="FINPARA") deep--;
-				r++;
+				++r;
 			}
 			memoria->DefinirTipo(ToLower((*r1).par1),vt_numerica);
 			para(prog,r1,r,tabs);
@@ -170,29 +170,29 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 			while ( ! ((*r).nombre=="FINPARA" && deep==0) ) {
 				if ((*r).nombre=="PARA"||(*r).nombre=="PARACADA") deep++;
 				else if ((*r).nombre=="FINPARA") deep--;
-				r++;
+				++r;
 			}
 			paracada(prog,r1,r,tabs);
 			memoria->DefinirTipo(ToLower((*r1).par2),memoria->LeerTipo(ToLower((*r1).par1)));
 			memoria->RemoveVar(ToLower((*r1).par1));
 		} else if (s=="SI") {
 			t_proceso_it r1=r++,r2;
-			r++;
+			++r;
 			deep=0;
 			while ( ! ( ( (*r).nombre=="FINSI" || (*r).nombre=="SINO") && deep==0) ) {
 				if ((*r).nombre=="SI") deep++;
 				else if ((*r).nombre=="FINSI") deep--;
-				r++;
+				++r;
 			}
 			r2=r;
 			while ( ! ( (*r).nombre=="FINSI" && deep==0) ) {
 				if ((*r).nombre=="SI") deep++;
 				else if ((*r).nombre=="FINSI") deep--;
-				r++;
+				++r;
 			}
 			si(prog,r1,r2,r,tabs);
 		}
-		r++;
+		++r;
 	}
 }
 
@@ -240,7 +240,7 @@ void ExporterBase::dimension(t_output &prog, t_arglist &args, string tabs) {
 			p++;
 		}
 		memoria->AgregarArreglo(nom,dims);
-		it++;
+		++it;
 	}
 }
 
@@ -303,7 +303,7 @@ void ExporterBase::replace_var(t_output &out, string src, string dst) {
 			}
 		}
 		*it=s;
-		it++;
+		++it;
 	}
 }
 

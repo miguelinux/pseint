@@ -51,9 +51,9 @@ void TiposExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		t_arglist_it it2=dims.begin();
 		while (it2!=dims.end()) {
 			AplicarTipo(*it2,vt_numerica_entera);
-			it2++;
+			++it2;
 		}
-		it++;
+		++it;
 	}
 }
 
@@ -86,17 +86,17 @@ void TiposExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, str
 
 void TiposExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs) {
 	t_arglist opts;
-	list<t_proceso_it>::iterator p,q,r;
+	list<t_proceso_it>::iterator p,q;
 	q=p=its.begin(); t_proceso_it i=*q;
 	insertar(opts,(*i).par1);
-	q++;p++;
+	++q;++p;
 	while (++p!=its.end()) {
 		t_proceso_it i=*q;
 		if ((*i).par1!="DE OTRO MODO") {
 			sep_args((*i).par1,opts);
 		}
 		bloque(prog,++i,*p,tabs+"\t");
-		q++;
+		++q;
 	}
 	
 	tipo_var t;
@@ -108,14 +108,14 @@ void TiposExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs) {
 			tipo_var aux;
 			expresion(*it,aux);
 			if (!t.set(aux)) return;
-			it++;
+			++it;
 		}
 	}
 	
 	t_arglist_it it=opts.begin();
 	while (it!=opts.end()) {
 		AplicarTipo(*it,t);
-		it++;
+		++it;
 	}
 	
 }

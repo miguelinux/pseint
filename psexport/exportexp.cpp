@@ -81,7 +81,7 @@ string modificarConstante(string s,int diff) {
 }
 
 string buscarOperando(const string &exp, int comienzo, int direccion) {
-	unsigned int i=comienzo;
+	int i=comienzo;
 	int parentesis=0;
 //	if (exp[i]==')'||exp[i]==']') { i--; parentesis++; }
 	while (i>=0 && i<exp.size() && (
@@ -104,7 +104,7 @@ string buscarOperando(const string &exp, int comienzo, int direccion) {
 }
 
 string colocarParentesis(const string &exp) {
-	if ( (exp[0]=='\''||exp[0]=='\"') && exp[exp.size()-1]=='\''||exp[exp.size()-1]=='\"') {
+	if ( (exp[0]=='\''||exp[0]=='\"') && (exp[exp.size()-1]=='\''||exp[exp.size()-1]=='\"') ) {
 		for(unsigned int i=1;i<exp.size()-1;i++) { 
 			if (exp[i]=='\''||exp[i]=='\"') 
 				return string("(")+exp+")";

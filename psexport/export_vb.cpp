@@ -48,7 +48,7 @@ void VbExporter::escribir(t_output &prog, t_arglist args, bool saltar, string ta
 	while (it!=args.end()) {
 		if (linea.size()) linea+=",";
 		linea+=expresion(*it);
-		it++;
+		++it;
 	}
 	if (saltar) linea=string("Console.WriteLine(")+linea+")"; 
 	else linea=string("Console.Write(")+linea+")";
@@ -64,7 +64,7 @@ void VbExporter::leer(t_output &prog, t_arglist args, string tabs){
 		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
 		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean.Parse(Console.ReadLine())");
 		else  insertar(prog,tabs+varname+" = Console.ReadLine()");
-		it++;
+		++it;
 	}
 }
 
@@ -92,9 +92,8 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	list<t_proceso_it>::iterator p,q,r;
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
-	string opcion=expresion((*i).par1); int p1=0, p2=opcion.size()-1;
 	insertar(prog,tabs+"Select Case "+expresion((*i).par1));
-	q++;p++;
+	++q;++p;
 	while (++p!=r) {
 		i=*q;
 		if ((*i).par1=="DE OTRO MODO")
@@ -116,7 +115,7 @@ void VbExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 			insertar(prog,tabs+e);
 		}
 		bloque(prog,++i,*p,tabs+"\t");
-		q++;
+		++q;
 	}
 	insertar(prog,tabs+"End Select");
 }
@@ -217,11 +216,11 @@ string VbExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
 void VbExporter::declarar_variables(t_output &prog) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
-	string tab("\t\t"),stipo;
+	string tab("\t\t");
 	while (mit!=mit2) {
 		string dec=get_tipo(mit);
 		if (dec.size()) prog.push_back(tab+dec);
-		mit++;
+		++mit;
 	}
 }
 
@@ -259,7 +258,6 @@ void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 		} else {
 			is_sub=false;
 			dec="\tPublic Function ";
-			ret=get_tipo(f->nombres[0]); 
 			ret=string("\tReturn ")+ToLower(f->nombres[0]);
 		}
 		dec+=ToLower(f->id)+"(";
@@ -287,6 +285,7 @@ void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 
 void VbExporter::translate(t_output &out, t_programa &prog) {
 	
+	// cppcheck-suppress unusedScopedObject
 	TiposExporter(prog,false); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
 	
 	// cabecera
@@ -360,6 +359,6 @@ void VbExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
 		else if (t==vt_logica) stipo="Boolean";
 		insertar(prog,tabs+"Dim "+expresion(*it)+" As "+stipo);
-		it++;
+		++it;
 	}
 }

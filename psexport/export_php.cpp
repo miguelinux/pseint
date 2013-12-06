@@ -45,7 +45,7 @@ void PhpExporter::escribir(t_output &prog, t_arglist args, bool saltar, string t
 	while (it!=args.end()) {
 		if (linea.size()) linea+=",";
 		linea+=expresion(*it);
-		it++;
+		++it;
 	}
 	insertar(prog,tabs+"echo "+linea+(saltar?",PHP_EOL;":";"));
 }
@@ -60,7 +60,7 @@ void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
 		else if (t==vt_numerica) insertar(prog,tabs+"fscanf($stdin,\"%f\","+varname+");");
 		else if (t==vt_logica) insertar(prog,tabs+"fscanf($stdin,\"%d\","+varname+");");
 		else { read_strings=true; insertar(prog,tabs+varname+"=rtrim(fgets($stdin),PHP_EOL);"); }
-		it++;
+		++it;
 	}
 }
 
@@ -174,7 +174,7 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 	while (ito!=out_proc.end()) {
 		if ( (*ito).find("($stdin,")!=string::npos || (*ito).find("($stdin)")!=string::npos) {
 			insertar(out,"\t\tglobal $stdin;"); break;
-		} else ito++;
+		} else ++ito;
 	}
 	insertar_out(out,out_proc);
 	if (f && f->nombres[0]!="") 
@@ -187,6 +187,7 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 
 void PhpExporter::translate(t_output &out, t_programa &prog) {
 	
+	// cppcheck-suppress unusedScopedObject
 	TiposExporter(prog,false);
 	
 	t_output aux;
@@ -214,7 +215,7 @@ void PhpExporter::definir(t_output &prog, t_arglist &arglist, string tipo, strin
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
 		insertar(prog,tabs+"settype("+*it+",'"+tipo+"');");
-		it++;
+		++it;
 	}
 }
 
@@ -233,6 +234,6 @@ void PhpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		string name=*it;
 		name.erase(name.find("("));
 		insertar(prog,tabs+"$"+ToLower(name)+" = array();");
-		it++;
+		++it;
 	}
 }

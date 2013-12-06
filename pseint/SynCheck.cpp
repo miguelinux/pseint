@@ -102,7 +102,6 @@ static void SynCheckAux2(string &cadena) {
 	struct coloquial_aux {
 		string cond, pre, post, rep;
 		int csize;
-		// cppcheck-suppress uninitMemberVar
 		coloquial_aux(){}
 		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
 	};
@@ -445,7 +444,7 @@ int SynCheck(int linea_from, int linea_to) {
 	SynErrores=0;
 	deque <Instruccion> bucles; // Para controlar los bucles que se abren y cierran
 //	bucles.push_front(Instruccion("CHECK",1,1)); // para que estaba esto? (para evitar acceder a una posicion no valida?)
-	int errores=0, Lerrores; // Total de errores , y cant hasta la instruccion anterior
+	int errores=0; // Total de errores , y cant hasta la instruccion anterior
 	int flag_pyc=0, tmp;
 	bool in_process=false;
 	tipo_var tipo;
@@ -456,7 +455,7 @@ int SynCheck(int linea_from, int linea_to) {
 	for (int x=linea_from;x<programa.GetRefPoint();x++){
 		Inter.SetLineAndInstructionNumber(x);
 		cadena=programa[x];
-		Lerrores=errores;
+		int Lerrores=errores;
 		
 		// Ignorar lineas de comentarios
 		{
@@ -1182,7 +1181,7 @@ int SynCheck(int linea_from, int linea_to) {
 				}
 				cadena[cadena.size()-1]=',';
 				int i=0;
-				while ((p=PSeudoFind(cadena,',',p+1))!=-1) {
+				while ((p=PSeudoFind(cadena,',',i))!=-1) {
 					tipo=vt_caracter_o_numerica;
 					EvaluarSC(cadena.substr(i,p-i),tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
 					if (!tipo.cb_num&&!lazy_syntax&&tipo!=vt_error)

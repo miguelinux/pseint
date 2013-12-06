@@ -19,12 +19,12 @@ inline string IntToStr(int f) {
 	string s; 
 	char stmp[]="0";
 	int tmp;
-	int a=1,b,c;
+	int a=1;
 	if (f<0) {f=f*(-1);s="-";}
 	while (a<=f) a=a*10;
 	a=a/10;
 	while (a>0) {
-		b=a; c=1;
+		int b=a, c=1;
 		while (b<=f) {b+=a;c++;}
 		stmp[0]=(c-1)+48;
 		s+=stmp;

@@ -11,6 +11,8 @@
 using namespace std;
 
 CExporter::CExporter():CppExporter() {
+	use_get_aux_buffer=false;
+	read_strings=false;
 	use_bool=false;
 	declare_cstrings=false;
 }
@@ -48,7 +50,7 @@ void CExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tab
 				format+="%s"; arglist+=","; arglist+=varname;
 			}
 		}
-		it++;
+		++it;
 	}
 	if (saltar) format+="\\n";
 	insertar(prog,tabs+"printf(\""+format+"\""+arglist+");");
@@ -63,7 +65,7 @@ void CExporter::leer(t_output &prog, t_arglist args, string tabs) {
 		else if (t==vt_numerica) insertar(prog,tabs+"scanf(\"%f\",&"+varname+");");
 		else if (t==vt_logica) insertar(prog,tabs+"scanf(\"%i\",&"+varname+");");
 		else { read_strings=true; insertar(prog,tabs+"scanf(\"%s\","+varname+");"); }
-		it++;
+		++it;
 	}
 }
 
@@ -81,12 +83,11 @@ void CExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs
 
 void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
-	string first=var,last=var,inc=var;
+	string first=var,last=var;
 	const int *dims=memoria->LeerDims(var);
 	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
 	for (int i=1;i<=dims[0];i++) {
 		first+="[0]";
-		if (i!=dims[0]) inc+="[0]";
 		last+="[";
 		last+=IntToStr(dims[i]-1);
 		last+="]";

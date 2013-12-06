@@ -11,7 +11,6 @@ class PhpExporter:public CppExporter {
 protected:
 	
 	bool use_stdin;
-	bool read_strings;
 	
 	void header(t_output &out);
 //	void footer(t_output &out);
