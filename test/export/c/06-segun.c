@@ -15,7 +15,6 @@ int main() {
 		break;
 	default:
 		printf("ni 1, ni 3, ni 5, ni 7, ni 9\n");
-		break;
 	}
 	return 0;
 }

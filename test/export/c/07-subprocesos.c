@@ -20,6 +20,7 @@ int main() {
 	return 0;
 }
 float funciondoble(float b) {
+	float a;
 	a=2*b;
 	return a;
 }

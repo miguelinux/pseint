@@ -310,7 +310,7 @@ void CExporter::translate_single(t_output &out, t_proceso &proc) {
 		if (f->nombres[0]=="") {
 			dec="void "; 
 		} else {
-			ret=CppExporter::get_tipo(f->nombres[0]);
+			ret=CppExporter::get_tipo(f->nombres[0],false,false);
 			dec=ret.substr(0,ret.find(" ")+1);
 			ret=string("return")+ret.substr(ret.find(" "));
 		}

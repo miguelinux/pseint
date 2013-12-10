@@ -12,6 +12,7 @@ Module SIN_TITULO
 		recibematriz(b)
 	End Sub
 	Public Function funciondoble(ByVal b As Double)
+		Dim a As Double
 		a = 2*b
 		Return a
 	End Function

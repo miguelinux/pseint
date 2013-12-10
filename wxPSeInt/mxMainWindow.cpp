@@ -235,7 +235,7 @@ void mxMainWindow::CreateMenus() {
 	wxMenu *export_menu=new wxMenu;
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PAS, _T("Convertir a código Pascal (pas)..."),_T(""),_T("exp_pas.png"));
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY, _T("Convertir a código Python (py)..."),_T(""),_T("exp_py.png"));
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _T("Convertir a código Java (java)..."),_T(""),_T("exp_java.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _T("Convertir a código Java (java)..."),_T(""),_T("exp_java.png"));
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _T("Convertir a código JavaScript (js)..."),_T(""),_T("exp_js.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _T("Convertir a código C (c)..."),_T(""),_T("exp_c.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP, _T("Convertir a código C++ (cpp)..."),_T(""),_T("exp_cpp.png"));

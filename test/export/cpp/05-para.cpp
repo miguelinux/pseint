@@ -9,13 +9,13 @@ int main() {
 	for (i=1;i<=10;i++) {
 		a[i-1]=i*10;
 	}
-	for (typeof(&(a[0])) ptr_aux=&(a[0]);ptr_aux<=&(a[9]);ptr_aux++) {
-		typeof(a[0]) &elemento=*ptr_aux;
+	for (typeof(&(a[0])) aux_ptr_0=&(a[0]);aux_ptr_0<=&(a[9]);aux_ptr_0++) {
+		typeof(a[0]) &elemento=*aux_ptr_0;
 		cout<<elemento<<endl;
 	}
 	c=0;
-	for (typeof(&(b[0][0])) ptr_aux=&(b[0][0]);ptr_aux<=&(b[2][5]);ptr_aux++) {
-		typeof(b[0][0]) &x=*ptr_aux;
+	for (typeof(&(b[0][0])) aux_ptr_0=&(b[0][0]);aux_ptr_0<=&(b[2][5]);aux_ptr_0++) {
+		typeof(b[0][0]) &x=*aux_ptr_0;
 		c=c+1;
 		x=c;
 	}

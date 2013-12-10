@@ -13,6 +13,5 @@
 		break;
 	default:
 		echo 'ni 1, ni 3, ni 5, ni 7, ni 9',PHP_EOL;
-		break;
 	}
 ?>

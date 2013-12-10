@@ -15,7 +15,6 @@ int main() {
 		break;
 	default:
 		cout<<"ni 1, ni 3, ni 5, ni 7, ni 9"<<endl;
-		break;
 	}
 	return 0;
 }

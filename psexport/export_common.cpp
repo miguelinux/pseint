@@ -331,3 +331,31 @@ void ExporterBase::set_memoria(string key) {
 		memoria=it->second;
 	}
 }
+
+void ExporterBase::sep_args(const string &args, t_arglist &out) {
+	int parentesis=0; bool comillas=false; int i0=0;
+	for(int i=0,l=args.size();i<l;i++) {
+		if (args[i]=='\''||args[i]=='\"') comillas=!comillas;
+		else if (!comillas) {
+			if (args[i]=='('||args[i]=='[') parentesis++;
+			else if (args[i]==')'||args[i]==']') parentesis--;
+			else if (parentesis==0 && args[i]==',') {
+				insertar(out,args.substr(i0,i-i0));
+				i0=i+1;
+			}
+			
+		}
+	}
+	insertar(out,args.substr(i0));
+}
+
+string ExporterBase::get_aux_varname(string pref) {
+	stringstream ss; ss<<pref<<aux_varnames.size();
+	aux_varnames.push_back(ss.str());
+	return ss.str();
+}
+
+void ExporterBase::release_aux_varname(string vname) {
+	if (vname!=aux_varnames.back()) cerr<<"ERROR RELEASING AUX VARNAME\n";
+	aux_varnames.pop_back();
+}

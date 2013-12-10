@@ -25,8 +25,8 @@ protected:
 	virtual string convertirAString(const string &s);
 	
 	virtual string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
-	virtual void declarar_variables(t_output &prog);
-	virtual string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
+	virtual void declarar_variables(t_output &prog, string tab="\t");
+	virtual string get_tipo(string name, bool by_ref=false, bool do_erase=true); // solo se usa para cabeceras de funciones
 	virtual void header(t_output &out);
 	virtual void footer(t_output &out);
 	virtual void translate_single(t_output &out, t_proceso &proc);

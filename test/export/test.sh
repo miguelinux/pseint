@@ -4,8 +4,8 @@ if [ "$1" = "" ]; then
   echo "Use: $0 langcode"
 else
 
-  make -C ../../psexport -f Makefile.lnx || exit 1
-  make -C ../../pseint -f Makefile.lnx || exit 1
+  if ! make -C ../../psexport -f Makefile.lnx; then exit 1; fi
+  if ! make -C ../../pseint -f Makefile.lnx; then exit 1; fi
 
   if ! test -e $1; then
     mkdir $1
@@ -29,6 +29,7 @@ else
     else
       $ebin --for-testing --lang=$1 ../temp/$B ../temp/$C >/dev/null
       if ! diff --strip-trailing-cr ../temp/$C ../$1/$C; then read; fi
+#       diff --strip-trailing-cr ../temp/$C ../$1/$C
     fi
   done
 fi  

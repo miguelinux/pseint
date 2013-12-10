@@ -112,9 +112,10 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	++q;++p;
 	while (++p!=r) {
 		i=*q;
-		if ((*i).par1=="DE OTRO MODO")
+		bool dom=(*i).par1=="DE OTRO MODO";
+		if (dom) {
 			insertar(prog,tabs+"default:");
-		else {
+		} else {
 			string e="case "+expresion((*i).par1)+":";
 			bool comillas=false; int parentesis=0, j=0,l=e.size();
 			while(j<l) {
@@ -131,7 +132,7 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 			insertar(prog,tabs+e);
 		}
 		bloque(prog,++i,*p,tabs+"\t");
-		insertar(prog,tabs+"\tbreak;");
+		if (!dom) insertar(prog,tabs+"\tbreak;");
 		++q;
 	}
 	insertar(prog,tabs+"}");
@@ -174,10 +175,12 @@ void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 		last+=IntToStr(dims[i]-1);
 		last+="]";
 	}
-	insertar(prog,tabs+"for (typeof(&("+first+")) ptr_aux=&("+first+");ptr_aux<=&("+last+");ptr_aux++) {");
-	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*ptr_aux;");
+	string ptr=get_aux_varname("aux_ptr_");
+	insertar(prog,tabs+"for (typeof(&("+first+")) "+ptr+"=&("+first+");"+ptr+"<=&("+last+");"+ptr+"++) {");
+	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*"+ptr+";");
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
+	release_aux_varname(ptr);
 }
 
 
@@ -271,9 +274,8 @@ string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func,
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
-void CppExporter::declarar_variables(t_output &prog) {
+void CppExporter::declarar_variables(t_output &prog, string tab) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
-	string tab("\t");
 	while (mit!=mit2) {
 		prog.push_back(tab+get_tipo(mit)+";");
 		++mit;
@@ -283,12 +285,12 @@ void CppExporter::declarar_variables(t_output &prog) {
 // retorna el tipo y elimina de la memoria a esa variable
 // se usa para armar las cabeceras de las funciones, las elimina para que no se
 // vuelvan a declarar adentro
-string CppExporter::get_tipo(string name, bool by_ref) {
+string CppExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
 		return "SIN_TIPO _variable_desconocida_"; // no debería pasar
 	string ret = get_tipo(mit,true,by_ref);
-	memoria->GetVarInfo().erase(mit);
+	if (do_erase) memoria->GetVarInfo().erase(mit);
 	return ret;
 }
 
@@ -416,7 +418,7 @@ void CppExporter::translate_single(t_output &out, t_proceso &proc) {
 		if (f->nombres[0]=="") {
 			dec="void "; 
 		} else {
-			ret=get_tipo(f->nombres[0]);
+			ret=get_tipo(f->nombres[0],false,false);
 			dec=ret.substr(0,ret.find(" ")+1);
 			ret=string("return")+ret.substr(ret.find(" "));
 		}

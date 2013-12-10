@@ -3,6 +3,8 @@
 #include <string>
 #include "defines.h"
 #include <map>
+#include <stack>
+#include <vector>
 class Memoria;
 using namespace std;
 
@@ -17,13 +19,17 @@ protected:
 	void set_memoria(string key);
 	
 	void replace_var(t_output &out, string src, string dst);
-	
+
 	// funciones de utilería para las demás
+	vector<string> aux_varnames;
+	virtual string get_aux_varname(string pref);
+	virtual void release_aux_varname(string vname);
 	void init_header(t_output &out, string comment_pre, string comment_post="");
 	void bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs);
 	string get_arg(string args, int cual);
 	string make_dims(const int *tdims, string c1="[", string c2=",", string c3="]", bool numbers=true);
 	bool es_cadena_constante(string s);
+	void sep_args(const string &args, t_arglist &out);
 	
 	// funciones que traducen instrucciones y estructuras de control
 	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs)=0;
@@ -41,7 +47,7 @@ protected:
 	virtual void para(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs)=0;
 	virtual void dimension(t_output &prog, t_arglist &args, string tabs);
 	virtual void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
-
+	
 public:
 	
 	// funciones para traducir expresiones

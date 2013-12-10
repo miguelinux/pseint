@@ -64,20 +64,26 @@ void PhpExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	}
 }
 
-static string make_aux_var(int n) { stringstream ss; ss<<"aux_var_"<<n; return ss.str(); }
 
-void PhpExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PhpExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	const int *dims=memoria->LeerDims(var);
 	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
 	int n=dims[0];
+	
+	string *auxvars=new string[n+1];
+	auxvars[0]=var;
+	for(int i=1;i<n;i++) auxvars[i]=get_aux_varname("aux_var_");
+	auxvars[n]=aux;
+	
 	for(int i=0;i<n;i++) { 
-		string aux_2=aux, var_2=var;
-		if (i!=0) var_2=make_aux_var(i);
-		if (i+1!=n) aux_2=make_aux_var(i+1);
+		string aux_2=auxvars[i+1], var_2=auxvars[i];
 		insertar(prog,tabs+"foreach ($"+var_2+" as $"+aux_2+") {");
 		tabs+="\t";
 	}
+	for(int i=n-1;i>0;i--) release_aux_varname(auxvars[i]);
+	delete []auxvars;
+	
 	bloque(prog,++r,q,tabs);
 	for(int i=0;i<n;i++) { 
 		tabs.erase(tabs.size()-1);
