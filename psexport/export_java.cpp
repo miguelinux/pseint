@@ -367,7 +367,7 @@ void JavaExporter::translate(t_output &out, t_programa &prog) {
 		it=out.begin();
 		while (it!=out.end()) {
 			if (it->size()>13 && it->substr(0,13)=="public class ") {
-				it++;
+				++it;
 				string s=_buf_reader_line; s.erase(0,1);
 				out.insert(it,s);
 				break;

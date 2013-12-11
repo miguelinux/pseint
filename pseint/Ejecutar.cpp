@@ -73,7 +73,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tmp1=-1;tmp2=0;tmp3=0;
 				// Separar parametros
 				while (tmp3<(int)cadena.size()) {
-					while (!(tmp1<0 && tmp2==0 && cadena[tmp3]==',') && tmp3<(int)cadena.size()) {
+					while (tmp3<(int)cadena.size() && !(tmp1<0 && tmp2==0 && cadena[tmp3]==',')) {
 						if (cadena[tmp3]=='\'') tmp1=-tmp1;
 						if (tmp1<0) {
 							if (cadena[tmp3]=='(') tmp2++;
@@ -107,7 +107,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				cadena.erase(cadena.size()-1,1);
 				tmp1=0; tmp2=0;
 				while (tmp2<(int)cadena.size()) {
-					while (!(tmp1==0 && cadena[tmp2]==',') && tmp2<(int)cadena.size()) {
+					while (tmp2<(int)cadena.size() && !(tmp1==0 && cadena[tmp2]==',')) {
 						tmp2++;
 						if (cadena[tmp2]=='(') tmp1++;
 						if (cadena[tmp2]==')') tmp1--;
@@ -185,7 +185,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					tmp2=0; tmp1=0;
 					int *dim; tmp3=0; // arreglo para las dimensiones
 					while (tmp1<(int)aux2.size()) {
-						while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
+						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
 							tmp1++;
 							if (aux2[tmp1]=='(') tmp2++;
 							if (aux2[tmp1]==')') tmp2--;
@@ -206,7 +206,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					int last=0;tmp3=1; tmp1=0; tmp2=0;
 					if (allow_dinamyc_dimensions) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
 					while (tmp1<(int)aux2.size()) {
-						while (!(tmp2==0 && aux2[tmp1]==',') && tmp1<(int)aux2.size()) {
+						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
 							tmp1++;
 							if (aux2[tmp1]=='(') tmp2++;
 							if (aux2[tmp1]==')') tmp2--;
@@ -245,7 +245,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				else if (RightCompare(cadena," COMO ENTERO;")) { tipo=vt_numerica; aux1="0"; cadena.erase(cadena.size()-13,13); rounded=true; }
 				else if (RightCompare(cadena," COMO CARACTER;")) { tipo=vt_caracter; aux1=""; cadena.erase(cadena.size()-15,15); }
 				while (tmp2<(int)cadena.size()) {
-					while (!(tmp1==0 && cadena[tmp2]==',') && tmp2<(int)cadena.size()) {
+					while (tmp2<(int)cadena.size() && !(tmp1==0 && cadena[tmp2]==',')) {
 						tmp2++;
 						if (cadena[tmp2]=='(') tmp1++;
 						if (cadena[tmp2]==')') tmp1--;

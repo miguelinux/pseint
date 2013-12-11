@@ -341,10 +341,10 @@ void mxSource::OnEditUnComment(wxCommandEvent &evt) {
 	int ss = GetSelectionStart();
 	int min=LineFromPosition(ss);
 	int max=LineFromPosition(GetSelectionEnd());
-	int aux;
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	BeginUndoAction();
 	for (int i=min;i<=max;i++) {
+		int aux;
 		if (GetLine(i).Left(2)==_T("//")) {
 			SetTargetStart(PositionFromLine(i));
 			SetTargetEnd(PositionFromLine(i)+2);
@@ -721,12 +721,12 @@ void mxSource::MessageReadOnly() {
 void mxSource::SetExample() {
 	wxString total;
 	for (int i=2;i<GetLineCount();i++) {
-		wxString str=GetLine(i),aux;
-		int p0=str.Index('{'),p1,p2;
+		wxString str=GetLine(i);
+		int p0=str.Index('{');
 		while (p0!=wxNOT_FOUND) {
-			aux=str.Mid(p0);
-			p1=aux.Index('#');
-			p2=aux.Index('}');
+			wxString aux=str.Mid(p0);
+			int p1=aux.Index('#');
+			int p2=aux.Index('}');
 			if (p2==wxNOT_FOUND) {
 				_LOG("mxSource::SetExample ERROR 1 parsing example: "<<page_text);
 				wxMessageBox(_T("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocodigo no sea correcto."));
@@ -808,7 +808,7 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 }
 
 void mxSource::IndentLine(int l, bool goup) {
-	int btype,ignore_next=false;
+	int btype/*,ignore_next=false*/;
 	int cur=GetIndentLevel(l,goup,&btype);
 	wxString line=GetLine(l);
 	if (line.StartsWith("//")) return;
@@ -817,37 +817,37 @@ void mxSource::IndentLine(int l, bool goup) {
 	int ws=i;
 	if (i<n) {
 		while (i<n && EsLetra(line[i])) i++;
-		if (ignore_next)
-			ignore_next=false;
-			else {
-			wxString word=line.SubString(ws,i-1);
-			word.MakeUpper();
-			if (word==_T("SINO")) cur-=4;
-			else if (word==_T("DE") && i+10<n && line.SubString(ws,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
-			else if (word==_T("HASTA") && i+4<n && line.SubString(ws,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
-			else if (word==_T("MIENTRAS") && i+4<n && line.SubString(ws,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
-			else if (word==_T("FINSEGUN")) cur-=8;
-			else if (word==_T("FINMIENTRAS")) cur-=4;
-			else if (word==_T("FINPARA")) cur-=4;
-			else if (word==_T("FIN")) { cur-=4; ignore_next=true; }
-			else if (word==_T("FINSI")) cur-=4;
-			else if (word==_T("FINPROCESO")) cur-=4;
-			else if (word==_T("FINSUBPROCESO")||word==_T("FINFUNCIÓN")||word==_T("FINFUNCION")) cur-=4;
-			else {
-				bool comillas=false;
-				while (i<n) {
-					if (i+1<n && line[i]=='/' && line[i+1]=='/') break;
-					if (line[i]=='\''||line[i]=='\"')
-						comillas=!comillas;
-					else if (!comillas) {
-						if (line[i]==';') break;
-						else if (line[i]==':' && line[i+1]!=':') {cur-=4; break;}
-					}
-					i++;
+//		if (ignore_next)
+//			ignore_next=false;
+//		else {
+		wxString word=line.SubString(ws,i-1);
+		word.MakeUpper();
+		if (word==_T("SINO")) cur-=4;
+		else if (word==_T("DE") && i+10<n && line.SubString(ws,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
+		else if (word==_T("HASTA") && i+4<n && line.SubString(ws,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
+		else if (word==_T("MIENTRAS") && i+4<n && line.SubString(ws,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
+		else if (word==_T("FINSEGUN")) cur-=8;
+		else if (word==_T("FINMIENTRAS")) cur-=4;
+		else if (word==_T("FINPARA")) cur-=4;
+		else if (word==_T("FIN")) cur-=4;
+		else if (word==_T("FINSI")) cur-=4;
+		else if (word==_T("FINPROCESO")) cur-=4;
+		else if (word==_T("FINSUBPROCESO")||word==_T("FINFUNCIÓN")||word==_T("FINFUNCION")) cur-=4;
+		else {
+			bool comillas=false;
+			while (i<n) {
+				if (i+1<n && line[i]=='/' && line[i+1]=='/') break;
+				if (line[i]=='\''||line[i]=='\"')
+					comillas=!comillas;
+				else if (!comillas) {
+					if (line[i]==';') break;
+					else if (line[i]==':' && line[i+1]!=':') {cur-=4; break;}
 				}
+				i++;
 			}
-	//		else if (word=="FIN") cur-=4;
 		}
+	//		else if (word=="FIN") cur-=4;
+//		}
 	}
 	if (btype==BT_SEGUN && GetLineEndPosition(l)==GetLineIndentPosition(l)) cur-=4;
 	if (cur<0) cur=0;
@@ -878,9 +878,8 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 	bool first_word=true; // para saber si es la primer palabra de la instruccion
 	bool ignore_next=false; // para que despues de Fin se saltee lo que sigue
 	int wstart=0; // para guardar donde empezaba la palabra
-	char c;
 	for (int i=0;i<n;i++) {
-		c=line[i];
+		char c=line[i];
 		if (c=='\'' || c=='\"') {
 			comillas=!comillas;
 		} else if (!comillas) {
@@ -1165,9 +1164,8 @@ bool mxSource::HaveComments() {
 bool mxSource::LineHasSomething ( int l ) {
 	int i1=PositionFromLine(l);
 	int i2=GetLineEndPosition(l);
-	int s; char c;
 	for (int i=i1;i<=i2;i++) {
-		c=GetCharAt(i); s=GetStyleAt(i);
+		char c=GetCharAt(i); int s=GetStyleAt(i);
 		if (c!='\n' && c!=' ' && c!='\r' && c!='\t' && s!=wxSTC_C_COMMENT && s!=wxSTC_C_COMMENTDOC && s!=wxSTC_C_COMMENTLINE && s!=wxSTC_C_COMMENTLINEDOC && s!=wxSTC_C_COMMENTDOCKEYWORD && s!=wxSTC_C_COMMENTDOCKEYWORDERROR) return true;
 	}
 	return false;
@@ -1504,11 +1502,11 @@ static bool EstiloNada(int s) {
 }
 
 wxString mxSource::GetInstruction (int p) {
-	int i=PositionFromLine(LineFromPosition(p)),s; char c;
+	int i=PositionFromLine(LineFromPosition(p));
 	wxString instruccion; int i0=-1; bool first=true;
 	while (i<p) {
-		s=GetStyleAt(i);
-		c=GetCharAt(i);
+		int s=GetStyleAt(i);
+		char c=GetCharAt(i);
 		bool nada=EstiloNada(s);
 		if ( nada || (!EsLetra(c)&&(c<='0'||c>='9')) ) {
 			if (!nada && c==';') {

@@ -1091,7 +1091,6 @@ void mxMainWindow::OnEditReplace (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnHelpAbout(wxCommandEvent &evt) {
-	// cppcheck-suppress unusedScopedObject
 	mxAboutWindow(this,wxID_ANY);
 }
 

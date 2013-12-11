@@ -101,7 +101,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_evaluate->Disable();
 		dp_button_step->Enable();
 		dp_button_pause->Disable();
-		if (debug&&debug->source) if (!ds_state==DS_FINALIZED) debug->source->SetStatus(STATUS_DEBUG_STOPPED);
+		if (debug&&debug->source) if (ds_state!=DS_FINALIZED) debug->source->SetStatus(STATUS_DEBUG_STOPPED);
 //		debug_status->SetLabel(_T("No Iniciada"));
 		break;
 	case DS_FINALIZED:

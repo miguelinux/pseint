@@ -74,9 +74,9 @@ void RTSyntaxManager::ContinueProcessing() {
 	_LOG("RTSyntaxManager::ContinueProcessing in src="<<src);
 	wxTextInputStream input(*(GetInputStream()));	
 	while(true) {
-		wxString line; char c;
+		wxString line;
 		while (IsInputAvailable()) {
-			c=input.GetChar();
+			char c=input.GetChar();
 			if (c=='\n') break;
 			if (c!='\r') line<<c;
 		}

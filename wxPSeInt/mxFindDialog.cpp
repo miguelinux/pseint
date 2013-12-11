@@ -346,7 +346,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	
 	mxSource *source = (mxSource*)(main_window->notebook->GetPage(main_window->notebook->GetSelection()));
 	
-	int f,t,l;
+	int f,t;
 	f=0;
 	t=source->GetLength();
 	
@@ -358,7 +358,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	source->SetTargetEnd(t);
 	int ret = source->SearchInTarget(last_search);
 	while (ret!=wxSTC_INVALID_POSITION) {
-		l = source->GetTargetEnd()-source->GetTargetStart(); // para saber si cambio el largo de la seleccion despues de reemplazar
+		int l = source->GetTargetEnd()-source->GetTargetStart(); // para saber si cambio el largo de la seleccion despues de reemplazar
 		if (c==0)
 			source->BeginUndoAction();
 		if (last_flags&wxSTC_FIND_REGEXP) // el remplazo propiamente dicho

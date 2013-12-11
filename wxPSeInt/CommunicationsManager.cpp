@@ -180,6 +180,6 @@ int CommunicationsManager::GetServerPort ( ) {
 }
 
 CommunicationsManager::~CommunicationsManager() {
-	comm_manager=NULL;
+	comm_manager=NULL; server->Destroy();
 }
 
