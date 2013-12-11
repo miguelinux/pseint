@@ -1,5 +1,6 @@
 import java.io.*;
 public class sin_titulo {
+	BufferedReader bufEntrada=new BufferedReader(new InputStreamReader(System.in));
 	public static void main(String args[]) throws IOException {
 		String a[];
 		String b[][];
@@ -26,11 +27,9 @@ public class sin_titulo {
 		b=7;
 	}
 	public static void recibevector(String v[]) throws IOException {
-		BufferedReader bufEntrada=new BufferedReader(new InputStreamReader(System.in));
 		v[0]=bufEntrada.readLine();
 	}
 	public static void recibematriz(String m[][]) throws IOException {
-		BufferedReader bufEntrada=new BufferedReader(new InputStreamReader(System.in));
 		m[0][0]=bufEntrada.readLine();
 	}
 }

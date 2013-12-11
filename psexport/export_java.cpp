@@ -349,3 +349,30 @@ string JavaExporter::get_constante(string name) {
 	if (name=="FALSO") return "false";
 	return name;
 }
+
+void JavaExporter::translate(t_output &out, t_programa &prog) {
+	CppExporter::translate(out,prog);
+	int c=0;
+	t_output_it it=out.begin();
+	while (it!=out.end()) {
+		if (*it==_buf_reader_line) c++;
+		++it;
+	}
+	if (c>1) {
+		it=out.begin();
+		while (it!=out.end()) {
+			if (*it==_buf_reader_line) it=out.erase(it);
+			else ++it;
+		}
+		it=out.begin();
+		while (it!=out.end()) {
+			if (it->size()>13 && it->substr(0,13)=="public class ") {
+				it++;
+				string s=_buf_reader_line; s.erase(0,1);
+				out.insert(it,s);
+				break;
+			}
+			++it;
+		}	
+	}
+}

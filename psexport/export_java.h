@@ -36,7 +36,7 @@ public:
 	string function(string name, string args);
 	string get_constante(string name);
 	string get_operator(string op, bool for_string=false);	
-//	void translate(t_output &out, t_programa &prog);
+	void translate(t_output &out, t_programa &prog);
 	JavaExporter();
 	
 };
