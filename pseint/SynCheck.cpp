@@ -705,17 +705,19 @@ int SynCheck(int linea_from, int linea_to) {
 							}
 						}
 					}
-					if (instruccion!="<-") {
-						int p=0, l=cadena.length();
-						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
-						const Funcion *func=EsFuncion(cadena.substr(0,p));
-						if (func) instruccion=string("INVOCAR ");
-					}
+//					if (instruccion!="<-") {
+//						int p=0, l=cadena.length();
+//						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
+//						const Funcion *func=EsFuncion(cadena.substr(0,p));
+//						if (func) 
+//							instruccion=string("INVOCAR ");
+//					}
 					if (instruccion!="<-" && instruccion!="DEFINIR ") {
 						int p=0, l=cadena.length();
 						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
 						const Funcion *func=EsFuncion(cadena.substr(0,p));
-						if (func) instruccion=string("INVOCAR ");
+						if (func) 
+							instruccion=string("INVOCAR ");
 					}
 				}
 			}
@@ -730,7 +732,7 @@ int SynCheck(int linea_from, int linea_to) {
 			comillas=-1; len=cadena.size();
 			for (tmp=0;tmp<len;tmp++) {
 				if (cadena[tmp]=='\'') comillas=-comillas;
-				else if (comillas<0 && tmp+5<len && cadena.substr(tmp,5)=="HACER" && cadena.substr(tmp,6)!="HACER;") {
+				else if (comillas<0 && tmp+5<len && cadena.substr(tmp,6)=="HACER " /*&& cadena.substr(tmp,6)!="HACER;"*/) {
 					programa.Insert(x+1,cadena.substr(tmp+5));
 					cadena.erase(tmp+5); break;
 				}
