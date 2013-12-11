@@ -96,7 +96,7 @@ public:
 	int GetId();
 	
 	void SetRunSocket(wxSocketBase *s);
-	bool UpdateRunningTerminal(bool raise=false);
+	bool UpdateRunningTerminal(bool raise=false, bool ignore_rt=false);
 	void KillRunningTerminal();
 	void SetFlowSocket(wxSocketBase *s);
 	wxSocketBase *GetFlowSocket();

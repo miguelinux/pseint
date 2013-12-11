@@ -657,12 +657,14 @@ void mxMainWindow::RunCurrent(bool raise, bool from_psdraw) {
 			source->GetFlowSocket()->Write("send run\n",9);
 			return;
 		}
-		if (!source->UpdateRunningTerminal(raise)) {
+		if (!source->UpdateRunningTerminal(raise,true)) {
 			wxString fname=source->SaveTemp();
 			if (debug->debugging)
 				debug->Stop();
 			else
 				(new mxProcess(source))->Run(fname,true);
+		} else {
+			source->DoRealTimeSyntax();
 		}
 	}
 }

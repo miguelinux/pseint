@@ -709,9 +709,13 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 void mxSource::MessageReadOnly() {
-	if (flow_socket) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
-	else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
-	else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
+	static wxDateTime last_msg=wxDateTime((time_t)0);
+	if (wxDateTime::Now().Subtract(last_msg).GetSeconds()>0) {
+		if (flow_socket) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
+		else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
+		else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
+	}
+	last_msg=wxDateTime::Now();
 }
 
 void mxSource::SetExample() {
@@ -1477,9 +1481,12 @@ wxString mxSource::SaveTemp() {
 	return fname;
 }
 
-bool mxSource::UpdateRunningTerminal (bool raise) {
+/**
+* @param ignore_rt  Cuando el usuario incia la ejecución desde el diagrama de flujo los datos errores en tiempo real estan desactualizados (el código acaba de recibirse desde psdraw2).
+**/
+bool mxSource::UpdateRunningTerminal (bool raise, bool ignore_rt) {
 	if (!run_socket) return false;
-	if (rt_running && !rt_timer->IsRunning() && !rt_errors.empty()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
+	if (!ignore_rt && rt_running && !rt_timer->IsRunning() && !rt_errors.empty()) return false; // el rt_timer ya dijo que estaba mal, no vale la pena intentar ejecutar
 	reload_timer->Stop();
 	SaveTemp();
 	run_socket->Write("reload\n",7);

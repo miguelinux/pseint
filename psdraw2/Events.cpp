@@ -193,7 +193,7 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 }
 
 void ProcessMenu(int op) {
-	menu=false;
+	menu=false; edit=NULL;
 	if (op==MO_ZOOM_EXTEND) {
 		int h=0,wl=0,wr=0;
 		start->Calculate(wl,wr,h); // calcular tamaño total
