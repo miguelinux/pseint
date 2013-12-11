@@ -1592,11 +1592,13 @@ void mxSource::ClearErrorMarks ( ) {
 
 void mxSource::OnMarginClick (wxStyledTextEvent & event) {
 	event.Skip();
-	main_window->ShowQuickHelp(true);
 	int l = LineFromPosition(event.GetPosition());
 	int p = PositionFromLine(l), pl=GetLineEndPosition(l);
 	while ( p<pl && !(GetStyleAt(p)&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) ) p++;
-	if (p<pl) GotoPos(p);
+	if (p<pl) {
+		main_window->ShowQuickHelp(true);
+		GotoPos(p);
+	}
 }
 
 void mxSource::DebugMode (bool on) {
