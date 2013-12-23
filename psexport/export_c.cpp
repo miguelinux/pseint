@@ -151,7 +151,6 @@ void CExporter::header(t_output &out) {
 	if (use_bool) out.push_back("#include<stdbool.h>");
 	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<ctype.h>");
 	if (use_string) out.push_back("#include<string.h>");
-	out.push_back("using namespace std;");
 	if (!for_testing) out.push_back("");
 	if (use_func_esperar) {
 		if (!for_testing) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar */");
