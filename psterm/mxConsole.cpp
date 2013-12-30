@@ -5,9 +5,9 @@
 #include <wx/app.h>
 #include <wx/menu.h>
 #include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #include "mxFrame.h"
 #include "mxConsole.h"
-#include <wx/dataobj.h>
 using namespace std;
 
 enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS, CONSOLE_ID_PASTE, CONSOLE_ID_COPY };
@@ -33,8 +33,13 @@ END_EVENT_TABLE()
 #define _CARET_TIME 500
 #define _SIZE_TIME 100
 #define _PROCESS_TIME 10
+	
+// pseint maneja los colores (16 posibles), esta lista es el mapeo de esos 16 
+// en psterm (la primer columna), y sus versiones desvanecidas (las segunda 
+// columna) para cuando la terminal quedo desactualizada con respecto al editor, 
+// y en ese caso el mensaje se muestra con el ultimo color extra
 
-static wxColour colors[16][2] = {
+static wxColour colors_black[17][2] = {
 	{wxColour(0  ,0  ,0),	wxColour(127,127,127)},
 	{wxColour(127,0  ,0),	wxColour(0,0,0)},
 	{wxColour(0  ,127,0),	wxColour(0,0,0)},
@@ -50,12 +55,33 @@ static wxColour colors[16][2] = {
 	{wxColour(127,127,255),	wxColour(0,0,0)},
 	{wxColour(255,  0,255),	wxColour(0,0,0)},
 	{wxColour(0  ,255,255),	wxColour(0,0,0)},
-	{wxColour(255,255,255),	wxColour(0,0,0)}
+	{wxColour(255,255,255),	wxColour(0,0,0)},
+	{wxColour(20,20,20),	wxColour(75,75,75)} 
 };
 
+static wxColour colors_white[17][2] = {
+	{wxColour(255,255,255),	wxColour(127,127,127)},
+	{wxColour(255,0  ,0),	wxColour(0,0,0)},
+	{wxColour(0  ,255,0),	wxColour(0,0,0)},
+	{wxColour(255,255,0),	wxColour(0,0,0)},
+	{wxColour(0  ,0  ,255),	wxColour(0,0,0)},
+	{wxColour(255,0  ,255),	wxColour(0,0,0)},
+	{wxColour(0  ,255,255),	wxColour(0,0,0)},
+	{wxColour(255,255,255),	wxColour(0,0,0)},
+	{wxColour(255,255,255),	wxColour(0,0,0)},
+	{wxColour(127,  0,0),	wxColour(0,0,0)},
+	{wxColour(0  ,100 ,0),	wxColour(0,0,0)},
+	{wxColour(100,100,0),	wxColour(0,0,0)},
+	{wxColour(0  ,0  ,127),	wxColour(0,0,0)},
+	{wxColour(127,  0,127),	wxColour(0,0,0)},
+	{wxColour(0  ,127,127),	wxColour(0,0,0)},
+	{wxColour(127,127,127),	wxColour(0,0,0)},
+	{wxColour(110,110,110),	wxColour(225,225,225)}
+};
 
+static wxColour (*colors)[2]=colors_white;
 	
-mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
 	
 	selection_start=selection_end=-1; selecting=false;
 	wxAcceleratorEntry entries[2];
@@ -64,8 +90,10 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll):wxPanel(parent,wxID_A
 	wxAcceleratorTable accel(2, entries);
 	SetAcceleratorTable(accel);
 	
+	if (dark_theme) colors=colors_black;
+	
 	for(int i=0;i<16;i++) 
-		colors[i][1]=wxColour(colors[i][0].Red()/2,colors[i][0].Green()/2,colors[i][0].Blue()/2);
+		colors[i][1]=wxColour((colors[i][0].Red()+colors[0][0].Red())/2,(colors[i][0].Green()+colors[0][0].Green())/2,(colors[i][0].Blue()+colors[0][0].Blue())/2);
 	this->scroll=scroll;
 	if (scroll) scroll->SetScrollbar(0,1,1,1,false);
 	this->parent=parent;
@@ -134,12 +162,13 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	}
 	if (dimmed) {
 		wxString status="El algoritmo fue modificado.\nClick aquí para aplicar los cambios.";
-		static wxColour ct(15,15,15);
-		static wxColour cb(70,70,70);
+		wxColour &ct=colors[16][0];
+		wxColour &cb=colors[16][1];
 		int w=dc.GetSize().GetWidth();
 		int h=dc.GetSize().GetHeight();
 		int tw,th,margin=3;
 		dc.GetTextExtent(status,&tw,&th);
+		dc.SetPen(wxPen(cb));
 		dc.SetBrush(wxBrush(cb));
 		dc.SetTextForeground(ct);
 		dc.DrawRectangle(w-tw-2*margin,h-th-2*margin,tw+2*margin,th+2*margin);
@@ -263,7 +292,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
-				int j=i+4; while (j<input.Len() && input[j]!='\n') j++;
+				int j=i+4; while (j<int(input.Len()) && input[j]!='\n') j++;
 				wxString title=input.SubString(i+4,j-1); if (title.Last()=='\r') title.RemoveLast();
 				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+title);
 				i=j;
@@ -438,7 +467,7 @@ void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
 	} else {
 		int i=scroll->GetThumbPosition();
 		if (evt.m_wheelRotation<0) {
-			if (i<events.size()) {
+			if (i<int(events.size())) {
 				scroll->SetThumbPosition(++i);
 				SetTime(scroll->GetThumbPosition());
 				Refresh();
@@ -550,7 +579,7 @@ void mxConsole::OnPaste(wxCommandEvent &evt) {
 	str.Replace("\r","");
 	wxKeyEvent k(wxEVT_CHAR); 
 	if (want_input) {
-		for(int i=0;i<str.Len();i++) { 
+		for(unsigned int i=0;i<str.Len();i++) { 
 			k.m_keyCode=str[i];
 			OnChar(k);
 			if (str[i]=='\n') {

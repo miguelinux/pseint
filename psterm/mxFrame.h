@@ -14,7 +14,9 @@ struct win_props {
 	bool set_top; long top;
 	bool set_bottom; long bottom;
 	long width, height;
+	bool dark_theme;
 	win_props() {
+		dark_theme=false;
 		always_on_top=false;
 		set_left=set_right=set_top=set_bottom=false;
 		width=550; height=350;

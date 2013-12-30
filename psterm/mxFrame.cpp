@@ -27,7 +27,7 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		already_connected=false;
 		src_id=id;
 		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
-		console=new mxConsole(this,scroll);
+		console=new mxConsole(this,scroll,props.dark_theme);
 		play_from_here=new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		is_present=true; play_from_here->Hide();
 		

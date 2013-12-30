@@ -110,6 +110,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
+	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
 	EVT_MENU(mxID_CONFIG_HIGHLIGHT_BLOCKS, mxMainWindow::OnConfigHighlightBlocks)
 	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
 	EVT_MENU(mxID_CONFIG_AUTOCOMP, mxMainWindow::OnConfigAutoComp)
@@ -296,6 +297,8 @@ void mxMainWindow::CreateMenus() {
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
+	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _T("Utilizar fondo negro en la terminal"),_T(""),config->use_dark_psterm);
+	mi_use_dark_psterm->Enable(config->use_psterm);
 	cfg->AppendSubMenu(cfg_pres,"Presentación");
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
@@ -1216,10 +1219,22 @@ void mxMainWindow::OnConfigAnimateGui(wxCommandEvent &evt) {
 void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 	if (!mi_use_psterm->IsChecked()) {
 		mi_use_psterm->Check(false);
+		mi_use_dark_psterm->Enable(true);
 		config->use_psterm=true;
 	} else {
 		mi_use_psterm->Check(true);
+		mi_use_dark_psterm->Enable(false);
 		config->use_psterm=false;
+	}
+}
+
+void mxMainWindow::OnConfigUseDarkPSTerm(wxCommandEvent &evt) {
+	if (!mi_use_dark_psterm->IsChecked()) {
+		mi_use_dark_psterm->Check(false);
+		config->use_dark_psterm=false;
+	} else {
+		mi_use_dark_psterm->Check(true);
+		config->use_dark_psterm=true;
 	}
 }
 

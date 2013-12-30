@@ -64,6 +64,7 @@ void ConfigManager::LoadDefaults() {
 	stepstep_tspeed=50;
 	debug_port=55374;
 	comm_port=55375;
+	use_dark_psterm = false;
 	use_psterm = true;
 	check_for_updates = true;
 	fixed_port = false;
@@ -161,6 +162,7 @@ void ConfigManager::Save() {
 		fil.AddLine(wxString(_T("comm_port="))<<comm_port);	
 	}
 	fil.AddLine(wxString(_T("use_psterm="))<<(use_psterm?1:0));	
+	fil.AddLine(wxString(_T("use_dark_psterm="))<<(use_dark_psterm?1:0));	
 	fil.AddLine(wxString(_T("check_for_updates="))<<(check_for_updates?1:0));	
 	fil.AddLine(wxString(_T("fixed_port="))<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
@@ -194,6 +196,7 @@ void ConfigManager::Read() {
 			else if (key==_T("debug_port")) { value.ToLong(&l); debug_port=l; }
 			else if (key==_T("comm_port")) { value.ToLong(&l); comm_port=l; }
 			else if (key==_T("use_psterm")) use_psterm=utils->IsTrue(value);
+			else if (key==_T("use_dark_psterm")) use_dark_psterm=utils->IsTrue(value);
 			else if (key==_T("check_for_updates")) check_for_updates=utils->IsTrue(value);
 			else if (key==_T("fixed_port")) fixed_port=utils->IsTrue(value);
 			else if (key==_T("stepstep_tspeed")) { value.ToLong(&l); stepstep_tspeed=l; }
@@ -272,7 +275,7 @@ int ConfigManager::GetDebugPort ( ) {
 }
 
 wxString ConfigManager::GetTTYCommand ( ) {
-	if (use_psterm) return psterm_command;
+	if (use_psterm) return psterm_command+(config->use_dark_psterm?" --darktheme":"");
 	if (tty_command==_no_tty) { // tratar de detectar automaticamente un terminal adecuado
 		if (utils->GetOutput(_T("xterm -version")).Len()) {
 			tty_command = _T("xterm -T \"$name\" -e");

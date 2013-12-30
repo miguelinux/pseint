@@ -64,10 +64,11 @@ class ConfigManager {
 private:
 	wxString tty_command;
 public:
-	bool use_psterm;
-	wxString GetTTYCommand(); // terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
+	bool use_psterm; ///< utilizar psterm en lugar de la terminal del sistema (recomendado)
+	bool use_dark_psterm; ///< esquema de colores de psterm, true=fondo negro, false=fondo blanco
+	wxString GetTTYCommand(); ///< terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
 	
-	int version; // version del archivo de configuración que se leyó al inicializar
+	int version; ///< version del archivo de configuración que se leyó al inicializar
 	int comm_port;
 	int debug_port;
 	bool fixed_port;
@@ -84,9 +85,7 @@ public:
 	wxString psexport_command;
 	wxString last_dir;
 	wxString temp_dir;
-	wxString /*temp*/_file;
-//	wxString temp_out;
-//	wxString temp_draw;
+//	wxString /*temp*/_file;
 	wxString help_dir;
 	wxString examples_dir;
 	wxString profiles_dir;
@@ -95,8 +94,8 @@ public:
 	wxString profile;
 	LangSettings lang;
 	
-	bool reorganize_for_debug; // si reacomoda las ventanas al lanzar la ejecución paso a paso
-	bool animate_gui; // si reacomoda las ventanas al lanzar la ejecución paso a paso
+	bool reorganize_for_debug; ///< si reacomoda o no las ventanas al lanzar la ejecución paso a paso
+	bool animate_gui; ///< si al mostrar u ocultar los paneles laterales lo hace con una animación (true) o de forma instantanea (false)
 	bool use_colors;
 	bool colour_sintax;
 	bool show_toolbar;
@@ -115,7 +114,7 @@ public:
 	int tabw;
 	int size_x, size_y;
 	int pos_x, pos_y;
-	int stepstep_tspeed; // velocidad para la ejecucion paso a paso (posicion del scroll, no tiempo para el interprete)
+	int stepstep_tspeed; ///< velocidad para la ejecucion paso a paso (posicion del scroll, no tiempo para el interprete)
 	bool maximized;
 	
 	ConfigManager(wxString apath);

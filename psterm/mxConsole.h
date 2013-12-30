@@ -93,7 +93,7 @@ public:
 	
 	int dimmed; /// puede valer 0 o 1, 0 es lo normal, 1 muestra el texto "apagado", se usa para indicar que la salida ya está desactualizada
 		
-	mxConsole(mxFrame *parent, wxScrollBar *scroll=NULL);
+	mxConsole(mxFrame *parent, wxScrollBar *scroll=NULL, bool dark_theme=false);
 	
 	void Run(wxString command);
 	

@@ -60,6 +60,8 @@ bool mxApplication::OnInit() {
 					no_arg=true;
 				} else if (arg=="--debugmode") {
 					debug=true;
+				} else if (arg=="--darktheme") {
+					props.dark_theme=true;
 				} else if (arg=="--alwaysontop") {
 					props.always_on_top=true;
 				} else if (arg.StartsWith("--id=")) {
