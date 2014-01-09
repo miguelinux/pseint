@@ -26,7 +26,7 @@ extern bool colored_output;
 extern bool allow_dinamyc_dimensions; // permitir usar variables para dimensionar arreglos
 extern bool lazy_syntax; // no generar error si se omite las palabras hacer o entonces
 extern bool overload_equal; // permite asignar con un solo igual
-extern bool for_test; // no hacer nada con las instrucciones EsperarTecla y LimpiarPantalla para no arruinar la automatización de los tests
+extern bool for_test; // no hacer nada con las instrucciones EsperarTecla y LimpiarPantalla para no arruinar la automatización de los tests (tambien usado en psexport para no poner comentarios ni lineas en blanco)
 extern bool raw_errors; // salida para test automatico, sin mensajes explicativos ni adornos
 extern bool noinput; // no pedir entradas al usuario, tomar de los argumentos
 extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acentos y ñs de las cadenas para que se vean bien en la consola de windows

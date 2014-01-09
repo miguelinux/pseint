@@ -18,14 +18,14 @@ CExporter::CExporter():CppExporter() {
 }
 
 void CExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"printf(\"\\n\");");
 	else
 		insertar(prog,tabs+"printf(\"\\n\"); /* no hay forma directa de borrar la pantalla con C estandar */");
 }
 
 void CExporter::esperar_tecla(t_output &prog, string param, string tabs){
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"getchar();");
 	else
 		insertar(prog,tabs+"getchar(); /* a diferencia del pseudocódigo, espera un Enter, no cualquier tecla */");
@@ -81,7 +81,7 @@ void CExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs
 	insertar(prog,tabs+"}");
 }
 
-void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var;
 	const int *dims=memoria->LeerDims(var);
@@ -151,43 +151,43 @@ void CExporter::header(t_output &out) {
 	if (use_bool) out.push_back("#include<stdbool.h>");
 	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<ctype.h>");
 	if (use_string) out.push_back("#include<string.h>");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	if (use_func_esperar) {
-		if (!for_testing) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar */");
+		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar */");
 		out.push_back("void esperar(double t);");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_convertiratexto) {
-		if (!for_testing) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente. */");
 		out.push_back("char *convertiratexto(float f);");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_mayusculas) {
-		if (!for_testing) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"mayusculas\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"mayusculas\", pero puede programarse una equivalente. */");
 		out.push_back("char *mayusculas(const char *s);");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_minusculas) {
-		if (!for_testing) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"minusculas\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"minusculas\", pero puede programarse una equivalente. */");
 		out.push_back("char *minusculas(const char *s);");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_get_aux_buffer) {
-		if (!for_testing) out.push_back("/* Función auxiliar para el manejo de cstrings temporales, ver detalles más abajo. */");
+		if (!for_test) out.push_back("/* Función auxiliar para el manejo de cstrings temporales, ver detalles más abajo. */");
 		out.push_back("char *get_aux_buffer(double t);");
 	}
 	if (use_arreglo_max) {
-		if (!for_testing) {
+		if (!for_test) {
 			out.push_back("/* En C no se puede dimensionar un arreglo estático con una dimensión no constante.");
 			out.push_back("   PSeInt sobredimensionará el arreglo utilizando un valor simbólico ARREGLO_MAX.");
 			out.push_back("   Sería posible crear un arreglo dinámicamente con los operadores new y delete, pero");
 			out.push_back("   este mecanismo aún no está soportado en las traducciones automáticas de PSeInt. */");
 		}
 		out.push_back("#define ARREGLO_MAX 100");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (declare_cstrings) {
-		if (!for_testing) {
+		if (!for_test) {
 			out.push_back("/* En C no hay variables para guardar cadenas de texto, sino que debe construirse");
 			out.push_back("   un arreglo de caracteres (tipo char). El tamaño del arreglo determina la longitud");
 			out.push_back("   máxima que puede tener la cadena que guarda (tamaño-1, por el caracter de terminación).");
@@ -196,19 +196,19 @@ void CExporter::header(t_output &out) {
 			
 		}
 		out.push_back("#define MAX_STRLEN 256");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_sin_tipo) {
-		if (!for_testing) {
+		if (!for_test) {
 			out.push_back("/* Para las variables que no se pudo determinar el tipo se utiliza la constante");
 			out.push_back("   SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
 			out.push_back("   (usualmente int,float,bool, o char[]). */");
 		}
 		out.push_back("#define SIN_TIPO float");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (read_strings) {
-		if (!for_testing) {
+		if (!for_test) {
 			out.push_back("/* Para leer variables de texto se utiliza scanf, que lee solo una palabra. ");
 			out.push_back("   Para leer una linea completa (es decir, incluyendo los espacios en blanco)");
 			out.push_back("   se debe utilzar ges (ej, reemplazar scanf(\"%s\",x) por gets(x)) pero ");
@@ -221,7 +221,7 @@ void CExporter::header(t_output &out) {
 
 void CExporter::footer(t_output &out) {
 	if (use_get_aux_buffer) {
-		if (!for_testing) { 
+		if (!for_test) { 
 			out.push_back("");
 			out.push_back("/* Algunas operaciones de cadenas de texto requieren cadenas auxiliares temporales. ");
 			out.push_back("   Por ejemplo, la concatenación de cadenas. Como las cadenas son en realidad arreglos"); 
@@ -244,10 +244,10 @@ void CExporter::footer(t_output &out) {
 		out.push_back("\tif(count==MAX_BUFFERS) count=0;");
 		out.push_back("\treturn buffers[count];");
 		out.push_back("}");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_esperar) {
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 		out.push_back("void esperar(double t) {");
 		out.push_back("\tclock_t t0=clock();");
 		out.push_back("\tdouble e=0;");
@@ -255,36 +255,36 @@ void CExporter::footer(t_output &out) {
 		out.push_back("\t\te=1000*double(clock()-t0)/CLOCKS_PER_SEC;");
 		out.push_back("\t} while (e<t);");
 		out.push_back("}");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_convertiratexto) {
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 		out.push_back("char *convertiratexto(float f) {");
 		out.push_back("\tchar *buf=get_aux_buffer();");
 		out.push_back("\tsprintf(buf,\"%f\",f);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_mayusculas) {
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 		out.push_back("char *mayusculas(const char *s) {");
 		out.push_back("\tchar *buf=get_aux_buffer();");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
 		out.push_back("\t\tbuf[i]=toupper(s[i]);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 	if (use_func_minusculas) {
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 		out.push_back("char *minusculas(const char *s) {");
 		out.push_back("\tchar *buf=get_aux_buffer();");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
 		out.push_back("\t\tbuf[i]=tolower(s[i]);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 }
 
@@ -334,7 +334,7 @@ void CExporter::translate_single(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret+";");
 	out.push_back("}");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	
 	delete memoria;
 	

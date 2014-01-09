@@ -1,4 +1,4 @@
-#include "export_cpp.h"
+#include "export_pascal.h"
 #include <sstream>
 #include <cstdlib>
 #include "../pseint/new_evaluar.h"
@@ -11,7 +11,7 @@
 #include "export_tipos.h"
 using namespace std;
 
-CppExporter::CppExporter() {
+PascalExporter::PascalExporter() {
 	has_matrix_func=false;
 	include_cmath=false;
 	include_cstdlib=false;
@@ -26,21 +26,21 @@ CppExporter::CppExporter() {
 	read_strings=true;
 }
 
-void CppExporter::borrar_pantalla(t_output &prog, string param, string tabs){
+void PascalExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 	if (for_test)
 		insertar(prog,tabs+"cout<<endl;");
 	else
 		insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
 }
 
-void CppExporter::esperar_tecla(t_output &prog, string param, string tabs){
+void PascalExporter::esperar_tecla(t_output &prog, string param, string tabs){
 	if (for_test)
 		insertar(prog,tabs+"cin.get();");
 	else
 		insertar(prog,tabs+"cin.get(); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
 }
 
-void CppExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
+void PascalExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
 	use_func_esperar=true;
 	stringstream inst;
 	inst<<"esperar(";
@@ -52,7 +52,7 @@ void CppExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, strin
 	insertar(prog,tabs+inst.str());
 }
 
-void CppExporter::invocar(t_output &prog, string param, string tabs){
+void PascalExporter::invocar(t_output &prog, string param, string tabs){
 	string linea=expresion(param);
 	if (linea[linea.size()-1]!=')') 
 		linea+="()";
@@ -60,7 +60,7 @@ void CppExporter::invocar(t_output &prog, string param, string tabs){
 		insertar(prog,tabs+linea);
 }
 
-void CppExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
+void PascalExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
 	t_arglist_it it=args.begin();
 	string linea="cout";
 	while (it!=args.end()) {
@@ -71,7 +71,7 @@ void CppExporter::escribir(t_output &prog, t_arglist args, bool saltar, string t
 	insertar(prog,tabs+linea+(saltar?"<<endl;":";"));
 }
 
-void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
+void PascalExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	t_arglist_it it=args.begin();
 	string linea="cin";
 	while (it!=args.end()) {
@@ -84,11 +84,11 @@ void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	insertar(prog,tabs+linea+";");
 }
 
-void CppExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
+void PascalExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
 	insertar(prog,tabs+param1+"="+param2+";");
 }
 
-void CppExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
+void PascalExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
 	insertar(prog,tabs+"if ("+expresion((*r).par1)+") {");
 	bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
@@ -98,13 +98,13 @@ void CppExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_i
 	insertar(prog,tabs+"}");
 }
 
-void CppExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"while ("+expresion((*r).par1)+") {");
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 }
 
-void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
+void PascalExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	list<t_proceso_it>::iterator p,q,r;
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
@@ -138,7 +138,7 @@ void CppExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	insertar(prog,tabs+"}");
 }
 
-void CppExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	insertar(prog,tabs+"do {");
 	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
@@ -147,7 +147,7 @@ void CppExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string
 		insertar(prog,tabs+"} while ("+expresion((*q).par1)+");");
 }
 
-void CppExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if ((*r).par4[0]=='-') {
 		if (paso=="-1")
@@ -164,7 +164,7 @@ void CppExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string ta
 	insertar(prog,tabs+"}");
 }
 
-void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var;
 	const int *dims=memoria->LeerDims(var);
@@ -184,12 +184,12 @@ void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 }
 
 
-string CppExporter::convertirAString(const string &s) {
+string PascalExporter::convertirAString(const string &s) {
 	if (es_cadena_constante(s)) return string("string("+s+")");
 	else return s;
 }
 
-string CppExporter::function(string name, string args) {
+string PascalExporter::function(string name, string args) {
 	if (name=="SEN") {
 		include_cmath=true;
 		return string("sin")+args;
@@ -253,7 +253,7 @@ string CppExporter::function(string name, string args) {
 
 // funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
-string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
+string PascalExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
 	string stipo="SIN_TIPO ";
 	if (t==vt_caracter) { stipo="string "; use_string=true; }
@@ -274,7 +274,7 @@ string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func,
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
-void CppExporter::declarar_variables(t_output &prog, string tab) {
+void PascalExporter::declarar_variables(t_output &prog, string tab) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
 	while (mit!=mit2) {
 		prog.push_back(tab+get_tipo(mit)+";");
@@ -285,7 +285,7 @@ void CppExporter::declarar_variables(t_output &prog, string tab) {
 // retorna el tipo y elimina de la memoria a esa variable
 // se usa para armar las cabeceras de las funciones, las elimina para que no se
 // vuelvan a declarar adentro
-string CppExporter::get_tipo(string name, bool by_ref, bool do_erase) {
+string PascalExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
 		return "SIN_TIPO _variable_desconocida_"; // no debería pasar
@@ -294,7 +294,7 @@ string CppExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	return ret;
 }
 
-void CppExporter::header(t_output &out) {
+void PascalExporter::header(t_output &out) {
 	// cabecera
 	init_header(out,"// ");
 	out.push_back("#include<iostream>");
@@ -356,7 +356,7 @@ void CppExporter::header(t_output &out) {
 	}
 }
 
-void CppExporter::footer(t_output &out) {
+void PascalExporter::footer(t_output &out) {
 	if (use_func_esperar) {
 		if (!for_test) out.push_back("");
 		out.push_back("void esperar(double t) {");
@@ -398,7 +398,7 @@ void CppExporter::footer(t_output &out) {
 }
 
 
-void CppExporter::translate_single(t_output &out, t_proceso &proc) {
+void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 	
 	t_proceso_it it=proc.begin(); Funcion *f;
 	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
@@ -446,9 +446,9 @@ void CppExporter::translate_single(t_output &out, t_proceso &proc) {
 	
 }
 
-void CppExporter::translate(t_output &out, t_programa &prog) {
+void PascalExporter::translate(t_output &out, t_programa &prog) {
 	
-	// cppcheck-suppress unusedScopedObject
+	// Pascalcheck-suppress unusedScopedObject
 	TiposExporter(prog,true); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
 	
 	t_output aux;
@@ -473,14 +473,14 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 	footer(out);
 }
 
-string CppExporter::get_constante(string name) {
+string PascalExporter::get_constante(string name) {
 	if (name=="PI") { include_cmath=true; return "M_PI"; }
 	if (name=="VERDADERO") return "true";
 	if (name=="FALSO") return "false";
 	return name;
 }
 
-string CppExporter::get_operator(string op, bool for_string) {
+string PascalExporter::get_operator(string op, bool for_string) {
 	// para agrupar operaciones y alterar la jerarquia
 	if (op=="(") return "("; 
 	if (op==")") return ")";
@@ -510,7 +510,7 @@ string CppExporter::get_operator(string op, bool for_string) {
 	return op; // no deberia pasar nunca
 }
 
-string CppExporter::make_string (string cont) {
+string PascalExporter::make_string (string cont) {
 	for(unsigned int i=0;i<cont.size();i++)
 		if (cont[i]=='\\') cont.insert(i++,"\\");
 	return string("\"")+cont+"\"";

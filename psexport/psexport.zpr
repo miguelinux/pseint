@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
+current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=psexport.cpp
@@ -143,7 +144,8 @@ path=export_java.h
 cursor=6:16
 [other]
 path=../bin/help/cambios.html
-cursor=3:32
+cursor=4:34
+open=true
 [config]
 name=Linux_Debug
 toolchain=

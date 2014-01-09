@@ -6,8 +6,6 @@
 #include "version.h"
 using namespace std;
 
-bool for_testing=false;
-
 map<string,Memoria*> ExporterBase::mapa_memorias;
 
 ExporterBase *exporter=NULL;
@@ -275,13 +273,13 @@ bool ExporterBase::es_cadena_constante(string s) {
 void ExporterBase::init_header(t_output &out, string comment_pre, string comment_post) {
 	stringstream version; 
 	version<<VERSION<<"-"<<ARCHITECTURE;
-	if (!for_testing) {
+	if (!for_test) {
 		out.push_back(comment_pre+"Este codigo ha sido generado por el modulo psexport "+version.str()+" de PSeInt");
 		if (comment_post.size()) comment_pre="";
 		out.push_back(comment_pre+"dado que dicho modulo se encuentra aun en desarrollo y en etapa experimental");
 		out.push_back(comment_pre+"puede que el codigo generado no sea completamente correcto. Si encuentra");
 		out.push_back(comment_pre+"errores por favor reportelos en el foro (http://pseint.sourceforge.net)."+comment_post);
-		if (!for_testing) out.push_back("");
+		if (!for_test) out.push_back("");
 	}
 }
 

@@ -18,7 +18,7 @@ PhpExporter::PhpExporter():CppExporter() {
 }
 
 void PhpExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"echo PHP_EOL;");
 	else
 		insertar(prog,tabs+"echo PHP_EOL; // no hay forma directa de borrar la pantalla con php");
@@ -26,7 +26,7 @@ void PhpExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 
 void PhpExporter::esperar_tecla(t_output &prog, string param, string tabs){
 	use_stdin=true;
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"fgetc($stdin);");
 	else
 		insertar(prog,tabs+"fgetc($stdin); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
@@ -145,7 +145,7 @@ void PhpExporter::header(t_output &out) {
 	init_header(out,"/* "," */");
 	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin','r');");
 	if (read_strings) {
-		if (!for_testing) {
+		if (!for_test) {
 			out.push_back("// Para leer variables de texto se utiliza una $x=rtrim(fgets($stdin) porque el string");
 			out.push_back("// que lee fgets incluye el caracter de fin de linea (entonces se usa rtrim para");
 			out.push_back("// quitarlo); y la alternativa fscanf($stdin,\"%s\",$x) solo lee una palabra (lo cual");
@@ -186,7 +186,7 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (f && f->nombres[0]!="") 
 		insertar(out,string("\t\treturn ")+make_varname(f->nombres[0])+";");
 	insertar(out,"\t}");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	delete f;
 	delete memoria;
 }

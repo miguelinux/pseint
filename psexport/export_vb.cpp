@@ -277,7 +277,7 @@ void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret);
 	out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	
 	delete memoria;
 	
@@ -291,7 +291,7 @@ void VbExporter::translate(t_output &out, t_programa &prog) {
 	// cabecera
 	init_header(out,"' ");
 	out.push_back(string("Module ")+main_process_name);
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	// procesos y subprocesos
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
 		translate_single(out,*it);	

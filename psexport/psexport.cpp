@@ -10,10 +10,10 @@
 #include "export_c.h"
 #include "export_php.h"
 #include "export_java.h"
+#include "export_python3.h"
+#include "export_pascal.h"
 #include "exportexp.h"
 using namespace std;
-
-
 
 // otras funciones
 bool cargar(list<t_proceso> &algs, string archivo){
@@ -171,16 +171,18 @@ int main(int argc, char *argv[]){
 			s.erase(0,7); 
 			if (s=="c") exporter=new CExporter();
 			else if (s=="cpp") exporter=new CppExporter();
-			else if (s=="vb") exporter=new VbExporter();
-			else if (s=="php") exporter=new PhpExporter();
 			else if (s=="java") exporter=new JavaExporter();
+			else if (s=="pas") exporter=new PascalExporter();
+			else if (s=="php") exporter=new PhpExporter();
+			else if (s=="py") exporter=new Python3Exporter();
+			else if (s=="vb") exporter=new VbExporter();
 			else {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, php, vb"<<endl;
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, pas, php, py, vb"<<endl;
 			}
 		} else if (s=="--basezeroarrays") {
 			input_base_zero_arrays=true;
 		} else if (s=="--for-testing") {
-			for_testing=true;
+			for_test=true;
 		} else if (fname_in.size() && fname_out.size()) {
 			cerr<<"Argumentos incorrectos"<<endl;
 			return 1;
@@ -191,7 +193,11 @@ int main(int argc, char *argv[]){
 		}
 	}
 	if (!fname_out.size()) {
-		cerr<<"Argumentos incorrectos"<<endl;
+		cerr<<"Argumentos incorrectos: falta archivo de salida."<<endl;
+		return 1;
+	}
+	if (!exporter) {
+		cerr<<"Argumentos incorrectos: no se especificó lenguaje."<<endl;
 		return 1;
 	}
 

@@ -8,8 +8,6 @@
 class Memoria;
 using namespace std;
 
-extern bool for_testing; ///< si la salidad es para testing, se ignoran los comentarios y las lineas en blanco
-
 class ExporterBase {
 
 	static map<string,Memoria*> mapa_memorias;

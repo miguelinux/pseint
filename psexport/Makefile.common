@@ -1,6 +1,6 @@
-OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/export_cpp.o ${OBJS_DIR}/exportexp.o ${OBJS_DIR}/zcurlib_lnx.o ${OBJS_DIR}/zcurlib_win.o ${OBJS_DIR}/export_vb.o ${OBJS_DIR}/export_php.o ${OBJS_DIR}/export_common.o ${OBJS_DIR}/export_c.o ${OBJS_DIR}/export_tipos.o ${OBJS_DIR}/export_java.o 
+OBJS=${OBJS_DIR}/psexport.o ${OBJS_DIR}/utils.o ${OBJS_DIR}/global.o ${OBJS_DIR}/intercambio.o ${OBJS_DIR}/zcurlib.o ${OBJS_DIR}/new_evaluar.o ${OBJS_DIR}/new_funciones.o ${OBJS_DIR}/new_memoria.o ${OBJS_DIR}/new_programa.o ${OBJS_DIR}/export_cpp.o ${OBJS_DIR}/exportexp.o ${OBJS_DIR}/zcurlib_lnx.o ${OBJS_DIR}/zcurlib_win.o ${OBJS_DIR}/export_vb.o ${OBJS_DIR}/export_php.o ${OBJS_DIR}/export_common.o ${OBJS_DIR}/export_c.o ${OBJS_DIR}/export_tipos.o ${OBJS_DIR}/export_java.o ${OBJS_DIR}/export_python3.o ${OBJS_DIR}/export_pascal.o 
 
-${OBJS_DIR}/psexport.o: psexport.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/global.h defines.h version.h ../pseint/version_common.h export_common.h export_cpp.h export_vb.h export_c.h export_php.h export_java.h
+${OBJS_DIR}/psexport.o: psexport.cpp ../pseint/new_funciones.h ../pseint/new_memoria.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/global.h defines.h version.h ../pseint/version_common.h export_common.h export_cpp.h export_vb.h export_c.h export_php.h export_java.h export_python3.h export_pascal.h exportexp.h
 	${GPP} ${CXXFLAGS} -c psexport.cpp -o $@
 
 ${OBJS_DIR}/utils.o: ../pseint/utils.cpp ../pseint/global.h ../pseint/common.h ../pseint/new_evaluar.h ../pseint/new_memoria.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/zcurlib.h ../pseint/new_funciones.h
@@ -54,6 +54,12 @@ ${OBJS_DIR}/export_c.o: export_c.cpp export_c.h export_common.h defines.h ../pse
 ${OBJS_DIR}/export_tipos.o: export_tipos.cpp export_tipos.h export_common.h defines.h ../pseint/new_memoria.h ../pseint/new_evaluar.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h version.h ../pseint/version_common.h exportexp.h ../pseint/new_funciones.h
 	${GPP} ${CXXFLAGS} -c export_tipos.cpp -o $@
 
-${OBJS_DIR}/export_java.o: export_java.cpp export_java.h export_cpp.h export_common.h defines.h ../pseint/new_memoria.h exportexp.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h
+${OBJS_DIR}/export_java.o: export_java.cpp export_java.h export_cpp.h export_common.h defines.h ../pseint/new_memoria.h exportexp.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h ../pseint/new_funciones.h
 	${GPP} ${CXXFLAGS} -c export_java.cpp -o $@
+
+${OBJS_DIR}/export_python3.o: export_python3.cpp export_python3.h export_common.h defines.h ../pseint/new_memoria.h ../pseint/new_evaluar.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h version.h ../pseint/version_common.h exportexp.h ../pseint/new_funciones.h export_tipos.h
+	${GPP} ${CXXFLAGS} -c export_python3.cpp -o $@
+
+${OBJS_DIR}/export_pascal.o: export_pascal.cpp export_pascal.h export_common.h defines.h ../pseint/new_memoria.h ../pseint/new_evaluar.h ../pseint/utils.h ../pseint/new_programa.h ../pseint/intercambio.h ../pseint/zockets.h ../pseint/global.h version.h ../pseint/version_common.h exportexp.h ../pseint/new_funciones.h export_tipos.h
+	${GPP} ${CXXFLAGS} -c export_pascal.cpp -o $@
 

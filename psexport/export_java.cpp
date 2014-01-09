@@ -12,7 +12,7 @@ JavaExporter::JavaExporter():CppExporter() {
 }
 
 void JavaExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"System.out.println(\"\");");
 	else
 		insertar(prog,tabs+"System.out.println(\"\"); // no hay forma directa de borrar la consola en Java");
@@ -20,7 +20,7 @@ void JavaExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 
 void JavaExporter::esperar_tecla(t_output &prog, string param, string tabs) {
 	use_esperar_tecla=true;
-	if (for_testing)
+	if (for_test)
 		insertar(prog,tabs+"System.in.read();");
 	else
 		insertar(prog,tabs+"System.in.read(); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
@@ -194,12 +194,12 @@ string JavaExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func
 void JavaExporter::header(t_output &out) {
 	// cabecera
 	init_header(out,"/* "," */");
-	if (!for_testing) {
+	if (!for_test) {
 		out.push_back("// En java, el nombre de un archivo fuente debe coincidir con el nombre de la clase que contiene,");
 		out.push_back(string("// por lo que este archivo debería llamarse \"")+main_process_name+".java.\"");
 		out.push_back("");
 	}
-	if (have_subprocesos && !for_testing) {
+	if (have_subprocesos && !for_test) {
 		out.push_back("// Hay dos errores que se pueden generar al exportar un algoritmo con subprocesos desde PSeint a Java:");
 		out.push_back("// 1) En java no se puede elegir entre pasaje por copia o por referencia. Técnicamente solo existe el");
 		out.push_back("// pasaje por copia, pero los identificadores de objetos representan en realidad referencias a los");
@@ -217,15 +217,15 @@ void JavaExporter::header(t_output &out) {
 	}
 	out.push_back("import java.io.*;");
 	if (include_cmath) out.push_back("import java.math.*;");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	out.push_back(string("public class ")+ToLower(main_process_name)+" {");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 }
 
 void JavaExporter::footer(t_output &out) {
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	out.push_back("}");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 }
 
 
@@ -286,7 +286,7 @@ void JavaExporter::translate_single(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t\t")+ret+";");
 	out.push_back("\t}");
-	if (!for_testing) out.push_back("");
+	if (!for_test) out.push_back("");
 	
 	delete memoria;
 	
