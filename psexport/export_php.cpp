@@ -115,7 +115,7 @@ string PhpExporter::function(string name, string args) {
 	} else if (name=="EXP") {
 		return string("exp")+args;
 	} else if (name=="AZAR") {
-		return string("rand(0,")+restarUno(get_arg(args,1))+")";
+		return string("rand(0,")+sumarOrestarUno(get_arg(args,1),false)+")";
 	} else if (name=="ATAN") {
 		return string("atan")+args;
 	} else if (name=="TRUNC") {

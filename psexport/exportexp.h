@@ -5,6 +5,8 @@
 
 class ExpIntrucciones;
 
+extern bool input_base_zero_arrays;
+
 // conversion de expresiones
 string modificarConstante(string s,int diff);
 
@@ -12,7 +14,7 @@ string buscarOperando(const string &exp, int comienzo, int direccion);
 
 string colocarParentesis(const string &exp);
 
-string restarUno(string exp);
+string sumarOrestarUno(string exp, bool sumar);
 
 string expresion(string exp, tipo_var &tipo);
 

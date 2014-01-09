@@ -11,6 +11,9 @@
 #include "export_cpp.h"
 using namespace std;
 
+bool input_base_zero_arrays=false;
+#define output_base_zero_arrays base_zero_arrays 
+
 static void Replace(string &src, int from, int to, string rep, unsigned int &i) {
 	int l=to-from+1;
 	src.replace(from,l,rep);
@@ -121,7 +124,7 @@ string colocarParentesis(const string &exp) {
 	return string("(")+exp+")";
 }
 
-string restarUno(string exp) {
+string sumarOrestarUno(string exp, bool sumar) {
 	int i=exp.size()-1,fin=0,parentesis=0;
 	bool numero=false;
 	while (i>=0) {
@@ -132,13 +135,13 @@ string restarUno(string exp) {
 		} else if (!parentesis) {
 			if (numero && (exp[i]<'.' || exp[i]>'9')) {
 				if (exp[i]=='+') {
-					string res=modificarConstante(exp.substr(i+1,fin-i+1),-1);
+					string res=modificarConstante(exp.substr(i+1,fin-i+1),sumar?+1:-1);
 					if (res=="0")
 						return exp.replace(i,fin-i+2,"");
 					else
 						return exp.replace(i+1,fin-i+1,res);
 				} else  if (exp[i]=='-') {
-					string res=modificarConstante(exp.substr(i+1,fin-i+1),+1);
+					string res=modificarConstante(exp.substr(i+1,fin-i+1),sumar?-1:+1);
 					if (res=="0") 
 						return exp.replace(i,fin-i+2,"");
 					else
@@ -153,8 +156,14 @@ string restarUno(string exp) {
 		i--;
 	}
 	if (numero)
-		return exp.replace(0,fin+1,DblToStr(StrToDbl(exp.substr(0,fin+1))-1));
-	return exp+"-1";
+		return exp.replace(0,fin+1,DblToStr(StrToDbl(exp.substr(0,fin+1))+(sumar?+1:-1)));
+	return exp+(sumar?"+1":"-1");
+}
+
+bool fixArrayIndex(string &str) {
+	if (input_base_zero_arrays==output_base_zero_arrays) return false;
+	str=sumarOrestarUno(str,input_base_zero_arrays);
+	return true;
 }
 
 static void ReplaceOper(string &exp, unsigned int &i, string oper) {
@@ -266,10 +275,7 @@ string expresion(string exp, tipo_var &tipo) {
 		
 		else if (exp[i]==',' && esArreglo.top()) { // la coma puede separar argumentos de una llamada a función o instrucción, o indices de arreglo... en el segundo caso...
 			sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
-			if (base_zero_arrays) {
-				sub=restarUno(sub);
-				Replace(exp,posicion.top()+1,i-1,sub,i);
-			}
+			if (fixArrayIndex(sub)) Replace(exp,posicion.top()+1,i-1,sub,i);
 			Replace(exp,i,i,exporter->get_operator(","),i);
 			posicion.pop();	posicion.push(i);
 			id_start=i+1;
@@ -278,10 +284,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]==']' or exp[i]==')') { // se cierra un arreglo o un paréntesis por orden de operaciones (nunca deberia llegar con llamadas a funciones)
 			if (esArreglo.top()) {
 				sub=exp.substr(posicion.top()+1,i-posicion.top()-1);
-				if (base_zero_arrays) {
-					sub=restarUno(sub);
-					Replace(exp,posicion.top()+1,i-1,sub,i);
-				}
+				if (fixArrayIndex(sub)) Replace(exp,posicion.top()+1,i-1,sub,i);
 				Replace(exp,i,i,exporter->get_operator("]"),i);
 			} else {
 				Replace(exp,i,i,exporter->get_operator(")"),i);

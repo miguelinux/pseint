@@ -10,7 +10,10 @@
 #include "export_c.h"
 #include "export_php.h"
 #include "export_java.h"
+#include "exportexp.h"
 using namespace std;
+
+
 
 // otras funciones
 bool cargar(list<t_proceso> &algs, string archivo){
@@ -174,6 +177,8 @@ int main(int argc, char *argv[]){
 			else {
 				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, php, vb"<<endl;
 			}
+		} else if (s=="--basezeroarrays") {
+			input_base_zero_arrays=true;
 		} else if (s=="--for-testing") {
 			for_testing=true;
 		} else if (fname_in.size() && fname_out.size()) {
