@@ -9,7 +9,8 @@
 #include <stack>
 using namespace std;
 
-Python3Exporter::Python3Exporter() {
+Python3Exporter::Python3Exporter(int version) {
+	this->version=version;
 	import_pi=false;
 	import_sleep=false;
 	import_sqrt=false;
@@ -59,18 +60,20 @@ void Python3Exporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 	}
 }
 
-void Python3Exporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	if (for_test)
-		insertar(prog,tabs+"print(\"\")");
-	else
-		insertar(prog,tabs+"print(\"\") # no hay forma directa de borrar la pantalla con Python estandar");
+void Python3Exporter::borrar_pantalla(t_output &out, string param, string tabs){
+	string linea=tabs;
+	if (version==3) linea+="print(\"\")";
+	else linea+="print \"\"";
+	if (!for_test) linea+=" # no hay forma directa de borrar la pantalla con Python estandar";
+	insertar(out,linea);
 }
 
 void Python3Exporter::esperar_tecla(t_output &prog, string param, string tabs){
+	string input=version==3?"input":"raw_input";
 	if (for_test)
-		insertar(prog,tabs+"input()");
+		insertar(prog,tabs+input+"()");
 	else
-		insertar(prog,tabs+"input # a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
+		insertar(prog,tabs+input+"() # a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
 }
 
 void Python3Exporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
@@ -90,13 +93,16 @@ void Python3Exporter::invocar(t_output &prog, string param, string tabs){
 
 void Python3Exporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
 	t_arglist_it it=args.begin();
-	string linea="print",sep="(";
+	string linea="print",sep=version==3?"(":" ";
 	while (it!=args.end()) {
 		linea+=sep; sep=",";
 		linea+=expresion(*it);
 		++it;
 	}
-	insertar(prog,tabs+linea+(saltar?")":", end=\"\")"));
+	if (version==3) {
+		linea+=(saltar?")":", end=\"\")");
+	} else if (!saltar) linea+=",";
+	insertar(prog,tabs+linea);
 }
 
 void Python3Exporter::definir(t_output &prog, t_arglist &arglist, string tipo, string tabs) {
@@ -113,14 +119,15 @@ void Python3Exporter::definir(t_output &prog, t_arglist &arglist, string tipo, s
 
 
 void Python3Exporter::leer(t_output &prog, t_arglist args, string tabs) {
+	string input=version==3?"input":"raw_input";
 	t_arglist_it it=args.begin();
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = int(input())");
-		else if (t==vt_numerica) insertar(prog,tabs+varname+" = float(input())");
-		else if (t==vt_logica) insertar(prog,tabs+varname+" = bool(input())");
-		else  insertar(prog,tabs+varname+" = input()");
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = int("+input+"())");
+		else if (t==vt_numerica) insertar(prog,tabs+varname+" = float("+input+"())");
+		else if (t==vt_logica) insertar(prog,tabs+varname+" = bool("+input+"())");
+		else  insertar(prog,tabs+varname+" = "+input+"()");
 		++it;
 	}
 }
@@ -217,8 +224,10 @@ void Python3Exporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, st
 	for(int i=n-1;i>=0;i--) release_aux_varname(auxvars[i]);
 	delete []auxvars;
 	
-	bloque(out,++r,q,tabs);
-	replace_var(out,aux,vname);
+	t_output aux_out;
+	bloque(aux_out,++r,q,tabs);
+	replace_var(aux_out,aux,vname);
+	insertar_out(out,aux_out);
 }
 
 string Python3Exporter::function(string name, string args) {
@@ -286,6 +295,7 @@ string Python3Exporter::function(string name, string args) {
 
 void Python3Exporter::header(t_output &out) {
 	// cabecera
+	if (version==2) insertar(out,"# -*- coding: iso-8859-15 -*-");
 	init_header(out,"# ");
 	string math_stuff;
 	if (import_pi) math_stuff+=", pi";

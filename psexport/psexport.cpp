@@ -171,13 +171,17 @@ int main(int argc, char *argv[]){
 			s.erase(0,7); 
 			if (s=="c") exporter=new CExporter();
 			else if (s=="cpp") exporter=new CppExporter();
+			else if (s=="cpp98") exporter=new CppExporter();
+			else if (s=="cpp03") exporter=new CppExporter();
 			else if (s=="java") exporter=new JavaExporter();
 			else if (s=="pas") exporter=new PascalExporter();
 			else if (s=="php") exporter=new PhpExporter();
-			else if (s=="py") exporter=new Python3Exporter();
+			else if (s=="py") exporter=new Python3Exporter(3);
+			else if (s=="py2") exporter=new Python3Exporter(2);
+			else if (s=="py3") exporter=new Python3Exporter(3);
 			else if (s=="vb") exporter=new VbExporter();
 			else {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, pas, php, py, vb"<<endl;
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, pas, php, py2, py3, vb"<<endl;
 			}
 		} else if (s=="--basezeroarrays") {
 			input_base_zero_arrays=true;

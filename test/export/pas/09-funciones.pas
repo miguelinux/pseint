@@ -25,7 +25,7 @@ Begin
 	WriteLn(Length(s));
 	WriteLn(Lowercase(s));
 	WriteLn(Upcase(s));
-	WriteLn(Copy(s,2,2));
+	WriteLn(Copy(s,2,3-1));
 	WriteLn(s+' Mundo');
 	WriteLn('Mundo '+s);
 	WriteLn(StrToFloat('15.5'));

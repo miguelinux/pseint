@@ -82,23 +82,23 @@ void CExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs
 	insertar(prog,tabs+"}");
 }
 
-void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
+void CExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, string tabs) {
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	string first=var,last=var;
 	const int *dims=memoria->LeerDims(var);
-	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
+	if (!dims) { insertar(out,string("Error: ")+var+" no es un arreglo"); return; }
 	for (int i=1;i<=dims[0];i++) {
 		first+="[0]";
 		last+="[";
 		last+=IntToStr(dims[i]-1);
 		last+="]";
 	}
-	insertar(prog,tabs+"for (typeof(&("+first+")) "+aux+"=&("+first+");"+aux+"<=&("+last+");"+aux+"++) {");
-	t_output out;
-	bloque(out,++r,q,tabs+"\t");
-	replace_var(out,aux,string("(*"+aux+")"));
-	insertar_out(prog,out);
-	insertar(prog,tabs+"}");
+	insertar(out,tabs+"for (typeof(&("+first+")) "+aux+"=&("+first+");"+aux+"<=&("+last+");"+aux+"++) {");
+	t_output aux_out;
+	bloque(aux_out,++r,q,tabs+"\t");
+	replace_var(aux_out,aux,string("(*"+aux+")"));
+	insertar_out(out,aux_out);
+	insertar(out,tabs+"}");
 }
 
 

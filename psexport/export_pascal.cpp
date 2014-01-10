@@ -165,7 +165,7 @@ void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string
 	insertar(prog,tabs+"End;");
 }
 
-void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
+void PascalExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, string tabs) {
 	// el "for x in a" de python sirve para solo-lectura (modificar x no modifica a)
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	const int *dims=memoria->LeerDims(var);
@@ -178,7 +178,7 @@ void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, st
 	for(int i=0;i<n;i++) { 
 		string idx=auxvars[i];
 		memoria->DefinirTipo(idx,vt_numerica,true);
-		insertar(prog,tabs+"For "+idx+":=Low("+vname+") To High("+vname+") Do Begin");
+		insertar(out,tabs+"For "+idx+":=Low("+vname+") To High("+vname+") Do Begin");
 		if (vname==var) vname+="["; else vname[vname.size()-1]=',';
 		vname+=idx+"]";
 		tabs+="\t";
@@ -187,12 +187,14 @@ void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, st
 	for(int i=n-1;i>=0;i--) release_aux_varname(auxvars[i]);
 	delete []auxvars;
 	
-	bloque(prog,++r,q,tabs);
-	replace_var(prog,aux,vname);
+	t_output aux_out;
+	bloque(aux_out,++r,q,tabs);
+	replace_var(aux_out,aux,vname);
+	insertar_out(out,aux_out);
 	
 	for(int i=n-1;i>=0;i--) { 
 		tabs=tabs.substr(0,tabs.size()-1);
-		insertar(prog,tabs+"End;");
+		insertar(out,tabs+"End;");
 	}
 }
 

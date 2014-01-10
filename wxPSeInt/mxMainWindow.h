@@ -82,16 +82,10 @@ public:
 	void OnViewNotebookNext (wxCommandEvent &event);
 	void OnViewNotebookPrev (wxCommandEvent &event);
 	
-//	void OnConfigHighRes(wxCommandEvent &evt);
-//	void OnConfigShowToolbar(wxCommandEvent &evt);
 	void OnConfigCalltipHelps(wxCommandEvent &evt);
 	void OnConfigAutoComp(wxCommandEvent &evt);
 	void OnConfigHighlightBlocks(wxCommandEvent &evt);
 	void OnConfigAutoClose(wxCommandEvent &evt);
-//	void OnConfigShowCommands(wxCommandEvent &evt);
-//	void OnConfigShowVars(wxCommandEvent &evt);
-//	void OnToolbarShowDebugPanel(wxCommandEvent &evt);
-//	void OnConfigShowDebugPanel(wxCommandEvent &evt);
 	void OnConfigShowQuickHelp(wxCommandEvent &evt);
 	void OnConfigAnimateGui(wxCommandEvent &evt);
 	void OnConfigReorganizeForDebug(wxCommandEvent &evt);

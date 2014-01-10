@@ -7,6 +7,8 @@ using namespace std;
 
 class Python3Exporter:public ExporterBase {
 	
+	int version;
+	
 	bool import_pi;
 	bool import_sleep;
 	bool import_sqrt;
@@ -49,7 +51,7 @@ public:
 	string get_constante(string name);
 	string get_operator(string op, bool for_string=false);	
 	void translate(t_output &out, t_programa &prog);
-	Python3Exporter();
+	Python3Exporter(int version);
 	
 };
 

@@ -96,8 +96,10 @@ void JavaExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, strin
 		for(int i=n-1;i>=0;i--) release_aux_varname(auxvars[i]);
 		delete []auxvars;
 		
-		bloque(out,++r,q,tabs);
-		replace_var(out,aux,vname);
+		t_output aux_out;
+		bloque(aux_out,++r,q,tabs);
+		replace_var(aux_out,aux,vname);
+		insertar_out(out,aux_out);
 		for(int i=0;i<n;i++) { 
 			tabs.erase(tabs.size()-1);
 			insertar(out,tabs+"}");
@@ -273,8 +275,6 @@ void JavaExporter::translate_single(t_output &out, t_proceso &proc) {
 			if (i!=1) dec+=", ";
 			string var_dec=CppExporter::get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
 			dec+=var_dec;
-//			if (f->pasajes[i]==PP_REFERENCIA && var_dec.find("[")==string::npos) 
-//				replace_var(out_proc,ToLower(f->nombres[i]),ToLower(string("(*")+f->nombres[i]+(")")));
 		}
 		dec+=") "+exceptions+"{";
 		out.push_back(dec);
