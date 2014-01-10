@@ -1,7 +1,4 @@
 #include "export_python3.h"
-#include <sstream>
-#include <cstdlib>
-#include "../pseint/new_evaluar.h"
 #include "../pseint/utils.h"
 #include "version.h"
 #include "new_memoria.h"
@@ -74,7 +71,10 @@ void Python3Exporter::esperar_tecla(t_output &prog, string param, string tabs){
 
 void Python3Exporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
 	import_sleep=true;
-	insertar(prog,tabs+"sleep("+tiempo+(mili?"/1000.0)":")"));
+	if (mili) 
+		insertar(prog,tabs+"sleep("+colocarParentesis(tiempo)+"/1000.0)");
+	else
+		insertar(prog,tabs+"sleep("+tiempo+")");
 }
 
 void Python3Exporter::invocar(t_output &prog, string param, string tabs){

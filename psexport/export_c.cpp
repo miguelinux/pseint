@@ -15,6 +15,7 @@ CExporter::CExporter():CppExporter() {
 	read_strings=false;
 	use_bool=false;
 	declare_cstrings=false;
+	use_func_subcadena=false;
 }
 
 void CExporter::borrar_pantalla(t_output &prog, string param, string tabs){
@@ -104,16 +105,21 @@ void CExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string 
 
 string CExporter::function(string name, string args) {
 	if (name=="CONCATENAR") {
-		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
+		return string("strcat(strcpy(get_aux_buffer(),")+get_arg(args,1)+"),"+get_arg(args,2)+")";
 	} else if (name=="LONGITUD") {
 		return string("strlen("+get_arg(args,1))+")";
 	} else if (name=="SUBCADENA") {
-		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+		use_func_subcadena=true;
+		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
+		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
+		return string("subcadena(")+get_arg(args,1)+","+desde+","+cuantos+")";
 	} else if (name=="CONVERTIRANUMERO") {
 		include_cstdlib=true;
 		string s=get_arg(args,1);
 		return string("atof(")+s+")";
 	} else {
+		if (name=="MAYUSCULAS"||name=="MINUSCULAS"||name=="CONVERTIRATEXTO") use_get_aux_buffer=true;
 		return CppExporter::function(name,args); // las demás son iguales que en la conversión a C++
 	}
 }
@@ -142,6 +148,8 @@ string CExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, b
 
 
 void CExporter::header(t_output &out) {
+	if (use_func_mayusculas||use_func_minusculas||use_func_subcadena) use_get_aux_buffer=true;
+	if (use_func_subcadena) use_string=true;
 	// cabecera
 	init_header(out,"/* "," */");
 	out.push_back("#include<stdio.h>");
@@ -153,23 +161,28 @@ void CExporter::header(t_output &out) {
 	if (use_string) out.push_back("#include<string.h>");
 	if (!for_test) out.push_back("");
 	if (use_func_esperar) {
-		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar */");
+		if (!for_test) out.push_back("/* No hay en el C estandar una funcion equivalente a \"esperar\", pero puede programarse. */");
 		out.push_back("void esperar(double t);");
 		if (!for_test) out.push_back("");
 	}
 	if (use_func_convertiratexto) {
-		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C estandar una funcion equivalente a \"convertiratexto\", pero puede programarse. */");
 		out.push_back("char *convertiratexto(float f);");
 		if (!for_test) out.push_back("");
 	}
 	if (use_func_mayusculas) {
-		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"mayusculas\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C estandar una funcion equivalente a \"mayusculas\", pero puede programarse. */");
 		out.push_back("char *mayusculas(const char *s);");
 		if (!for_test) out.push_back("");
 	}
 	if (use_func_minusculas) {
-		if (!for_test) out.push_back("/* No hay en el C++ estandar una funcion equivalente a \"minusculas\", pero puede programarse una equivalente. */");
+		if (!for_test) out.push_back("/* No hay en el C estandar una funcion equivalente a \"minusculas\", pero puede programarse. */");
 		out.push_back("char *minusculas(const char *s);");
+		if (!for_test) out.push_back("");
+	}
+	if (use_func_subcadena) {
+		if (!for_test) out.push_back("/* No hay en el C estandar una funcion equivalente a \"subcadena\", pero puede programarse. */");
+		out.push_back("char *subcadena(const char *s, int desde, int cuantos);");
 		if (!for_test) out.push_back("");
 	}
 	if (use_get_aux_buffer) {
@@ -282,6 +295,16 @@ void CExporter::footer(t_output &out) {
 		out.push_back("\tchar *buf=get_aux_buffer();");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
 		out.push_back("\t\tbuf[i]=tolower(s[i]);");
+		out.push_back("\treturn buf;");
+		out.push_back("}");
+		if (!for_test) out.push_back("");
+	}
+	if (use_func_subcadena) {
+		if (!for_test) out.push_back("");
+		out.push_back("char *subcadena(const char *s, int desde, int cuantos) {");
+		out.push_back("\tchar *buf=get_aux_buffer();");
+		out.push_back("\tstrncpy(buf,s+desde,cuantos);");
+		out.push_back("\tbuf[cuantos]=\'\\0\';");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");

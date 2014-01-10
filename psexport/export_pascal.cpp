@@ -9,45 +9,39 @@
 #include "new_funciones.h"
 #include "export_common.h"
 #include "export_tipos.h"
+#include <algorithm>
 using namespace std;
 
+#define linea_special_para_reemplazar_por_uses_y_otros "<{[!ACA_VAN_USES_TYPE_CONST!]}>"
+#define linea_special_para_reemplazar_por_subprocesos "<{[!ACA_VAN_LOS_SUBPROCESOS!]}>"
+
 PascalExporter::PascalExporter() {
+	uses_randomize=false;
+	uses_sin_tipo=false;
+	uses_crt=false;
+	uses_math=false;
+	uses_sysutils=false;
+	base_zero_arrays=input_base_zero_arrays;
 	has_matrix_func=false;
-	include_cmath=false;
-	include_cstdlib=false;
-	use_sin_tipo=false;
-	use_string=false;
-	use_func_esperar=false;
-	use_func_minusculas=false;
-	use_func_mayusculas=false;
-	use_func_convertiratexto=false;
-	base_zero_arrays=true;
 	use_arreglo_max=false;
-	read_strings=true;
 }
 
 void PascalExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	if (for_test)
-		insertar(prog,tabs+"cout<<endl;");
-	else
-		insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
+	uses_crt=true;
+	insertar(prog,tabs+"ClrScr;");
 }
 
 void PascalExporter::esperar_tecla(t_output &prog, string param, string tabs){
-	if (for_test)
-		insertar(prog,tabs+"cin.get();");
-	else
-		insertar(prog,tabs+"cin.get(); // a diferencia del pseudocódigo, espera un Enter, no cualquier tecla");
+	uses_crt=true;
+	insertar(prog,tabs+"ReadKey;");
 }
 
 void PascalExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
-	use_func_esperar=true;
+	uses_crt=true;
 	stringstream inst;
-	inst<<"esperar(";
+	inst<<"Delay(";
 	if (mili) inst<<tiempo; 
-	else {
-		inst<<colocarParentesis(tiempo)<<"*1000";
-	}
+	else inst<<colocarParentesis(tiempo)<<"*1000";
 	inst<<");";
 	insertar(prog,tabs+inst.str());
 }
@@ -62,220 +56,240 @@ void PascalExporter::invocar(t_output &prog, string param, string tabs){
 
 void PascalExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
 	t_arglist_it it=args.begin();
-	string linea="cout";
+	string linea=saltar?"WriteLn":"Write", sep="(";
 	while (it!=args.end()) {
-		linea+="<<";
+		linea+=sep; sep=",";
 		linea+=expresion(*it);
 		++it;
 	}
-	insertar(prog,tabs+linea+(saltar?"<<endl;":";"));
+	linea+=");";
+	insertar(prog,tabs+linea);
 }
 
 void PascalExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	t_arglist_it it=args.begin();
-	string linea="cin";
+	string params, sep="(";
 	while (it!=args.end()) {
-		linea+=">>";
 		tipo_var t;
-		linea+=expresion(*it,t);
-		if (t==vt_caracter) read_strings=true;
+		string vname=expresion(*it,t);
+		if (t==vt_logica) {
+			memoria->DefinirTipo("aux_leer_logica",vt_caracter);
+			if (params.size()) insertar(prog,tabs+"ReadLn"+params+");");
+			if (for_test)
+				insertar(prog,tabs+"ReadLn(aux_leer_logica);");
+			else 
+				insertar(prog,tabs+"ReadLn(aux_leer_logica); // ReadLn no puede leer booleanos, por eso se lee este string auxiliar y en la siguiente linea se convierte");
+			insertar(prog,tabs+vname+" := (lowercase(aux_leer_logica)='verdadero');");
+			sep="("; params="";
+		} else {
+			params+=sep+vname;
+			sep=",";
+		}
 		++it;
 	}
-	insertar(prog,tabs+linea+";");
+	if (params.size()) insertar(prog,tabs+"ReadLn"+params+");");
 }
 
 void PascalExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	insertar(prog,tabs+param1+"="+param2+";");
+	insertar(prog,tabs+param1+" := "+param2+";");
 }
 
 void PascalExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
-	insertar(prog,tabs+"if ("+expresion((*r).par1)+") {");
+	insertar(prog,tabs+"If "+expresion((*r).par1)+" Then Begin");
 	bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
-		insertar(prog,tabs+"} else {");
+		insertar(prog,tabs+"End");
+		insertar(prog,tabs+"Else Begin");
 		bloque(prog,++q,s,tabs+"\t");
 	}
-	insertar(prog,tabs+"}");
+	insertar(prog,tabs+"End;");
 }
 
 void PascalExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"while ("+expresion((*r).par1)+") {");
+	insertar(prog,tabs+"While "+expresion((*r).par1)+" Do Begin");
 	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"}");
+	insertar(prog,tabs+"End;");
 }
 
 void PascalExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	list<t_proceso_it>::iterator p,q,r;
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
-	insertar(prog,tabs+"switch ("+expresion((*i).par1)+") {");
+	insertar(prog,tabs+"Case "+expresion((*i).par1)+" Of");
 	++q;++p;
 	while (++p!=r) {
 		i=*q;
 		bool dom=(*i).par1=="DE OTRO MODO";
 		if (dom) {
-			insertar(prog,tabs+"default:");
+			insertar(prog,tabs+"\tElse Begin");
 		} else {
-			string e="case "+expresion((*i).par1)+":";
-			bool comillas=false; int parentesis=0, j=0,l=e.size();
-			while(j<l) {
-				if (e[j]=='\''||e[j]=='\"') comillas=!comillas;
-				else if (!comillas) {
-					if (e[j]=='['||e[j]=='(') parentesis++;
-					else if (e[j]==']'||e[j]==')') parentesis--;
-					else if (parentesis==0 && e[j]==',') {
-						e.replace(j,1,": case "); l+=6;
-					}
-				}
-				j++;
-			}
-			insertar(prog,tabs+e);
+			insertar(prog,tabs+"\t"+expresion((*i).par1)+": Begin");
 		}
-		bloque(prog,++i,*p,tabs+"\t");
-		if (!dom) insertar(prog,tabs+"\tbreak;");
+		bloque(prog,++i,*p,tabs+"\t\t");
+		insertar(prog,tabs+"\tEnd;");
 		++q;
 	}
-	insertar(prog,tabs+"}");
+	insertar(prog,tabs+"End;");
 }
 
 void PascalExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"do {");
+	insertar(prog,tabs+"Repeat");
 	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
-		insertar(prog,tabs+"} while ("+invert_expresion(expresion((*q).par1))+");");
+		insertar(prog,tabs+"Until "+expresion((*q).par1)+";");
 	else
-		insertar(prog,tabs+"} while ("+expresion((*q).par1)+");");
+		insertar(prog,tabs+"Until "+invert_expresion(expresion((*q).par1))+";");
 }
 
-void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
-	if ((*r).par4[0]=='-') {
-		if (paso=="-1")
-			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+">="+fin+";"+var+"--) {");
-		else
-			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+">="+fin+";"+var+"-="+expresion(paso.substr(1,paso.size()-1))+") {");
+	if (paso=="1") {
+		insertar(prog,tabs+"For "+var+":="+ini+" To "+fin+" Do Begin");
+	} else if (paso=="-1") {
+		insertar(prog,tabs+"For "+var+":="+ini+" DownTo "+fin+" Do Begin");
 	} else {
-		if (paso=="1")
-			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+"<="+fin+";"+var+"++) {");
-		else
-			insertar(prog,tabs+"for ("+var+"="+ini+";"+var+"<="+fin+";"+var+"+="+expresion(paso)+") {");
+		// no hay paso en pascal, emular con una auxiliar: 
+		//      "para i desde 2 hasta 14 con paso 3 hacer ..." -> "para aux desde 0 hasta 4 hacer i=2+aux*3 ..."
+		if (paso[0]=='-') {
+			string aux=fin; fin=ini; ini=fin;
+			paso=paso.substr(1);
+		}
+		string auxvar=get_aux_varname("aux_para_");
+		memoria->DefinirTipo(auxvar,vt_numerica,true);
+		insertar(prog,tabs+"For "+auxvar+":=0 To (("+fin+"-"+ini+") Div "+paso+") Do Begin");
+		string aux_line=tabs+"\t"+var+" := "+ini+"+"+auxvar+"*"+colocarParentesis(paso)+";";
+		if (!for_test) aux_line+=" // en Pascal el paso del ciclo For solo puede ser 1 o -1, por eso se usa este auxiliar para emular un paso diferente";
+		insertar(prog,aux_line);
 	}
 	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"}");
+	insertar(prog,tabs+"End;");
 }
 
-void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void PascalExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
+	// el "for x in a" de python sirve para solo-lectura (modificar x no modifica a)
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
-	string first=var,last=var;
 	const int *dims=memoria->LeerDims(var);
-	if (!dims) { insertar(prog,string("Error: ")+var+" no es un arreglo"); return; }
-	for (int i=1;i<=dims[0];i++) {
-		first+="[0]";
-		last+="[";
-		last+=IntToStr(dims[i]-1);
-		last+="]";
+	int n=dims[0];
+	
+	string *auxvars=new string[n];
+	for(int i=0;i<n;i++) auxvars[i]=get_aux_varname("aux_para_");
+	
+	string vname=var, indexes="";
+	for(int i=0;i<n;i++) { 
+		string idx=auxvars[i];
+		memoria->DefinirTipo(idx,vt_numerica,true);
+		insertar(prog,tabs+"For "+idx+":=Low("+vname+") To High("+vname+") Do Begin");
+		if (vname==var) vname+="["; else vname[vname.size()-1]=',';
+		vname+=idx+"]";
+		tabs+="\t";
 	}
-	string ptr=get_aux_varname("aux_ptr_");
-	insertar(prog,tabs+"for (typeof(&("+first+")) "+ptr+"=&("+first+");"+ptr+"<=&("+last+");"+ptr+"++) {");
-	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*"+ptr+";");
-	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"}");
-	release_aux_varname(ptr);
+	
+	for(int i=n-1;i>=0;i--) release_aux_varname(auxvars[i]);
+	delete []auxvars;
+	
+	bloque(prog,++r,q,tabs);
+	replace_var(prog,aux,vname);
+	
+	for(int i=n-1;i>=0;i--) { 
+		tabs=tabs.substr(0,tabs.size()-1);
+		insertar(prog,tabs+"End;");
+	}
 }
 
 
-string PascalExporter::convertirAString(const string &s) {
-	if (es_cadena_constante(s)) return string("string("+s+")");
-	else return s;
-}
 
 string PascalExporter::function(string name, string args) {
 	if (name=="SEN") {
-		include_cmath=true;
-		return string("sin")+args;
+		return string("Sin")+args;
 	} else if (name=="TAN") {
-		include_cmath=true;
-		return string("tan")+args;
+		uses_math=true;
+		return string("Tan")+args;
 	} else if (name=="ASEN") {
-		include_cmath=true;
-		return string("asin")+args;
+		uses_math=true;
+		return string("Arcsin")+args;
 	} else if (name=="ACOS") {
-		include_cmath=true;
-		return string("acos")+args;
+		uses_math=true;
+		return string("Arccos")+args;
 	} else if (name=="COS") {
-		include_cmath=true;
-		return string("cos")+args;
+		return string("Cos")+args;
 	} else if (name=="RAIZ") {
-		include_cmath=true;
-		return string("sqrtf")+args;
+		return string("Sqrt")+args;
 	} else if (name=="RC") {
-		include_cmath=true;
-		return string("sqrtf")+args;
+		return string("Sqrt")+args;
 	} else if (name=="ABS") {
-		include_cmath=true;
-		return string("abs")+args;
+		return string("Abs")+args;
 	} else if (name=="LN") {
-		include_cmath=true;
-		return string("log")+args;
+		return string("Ln")+args;
 	} else if (name=="EXP") {
-		include_cmath=true;
-		return string("exp")+args;
+		return string("Exp")+args;
 	} else if (name=="AZAR") {
-		include_cstdlib=true;
-		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
+		uses_randomize=true;
+		return string("Random")+args;
 	} else if (name=="ATAN") {
-		include_cmath=true;
-		return string("atan")+args;
+		return string("Arctan")+args;
 	} else if (name=="TRUNC") {
-		include_cmath=true;
-		return string("floor")+args;
+		return string("Trunc")+args;
 	} else if (name=="REDON") {
-		include_cmath=true;
-		return string("floor(")+colocarParentesis(get_arg(args,1))+"+.5)";
+		return string("Round")+args;
 	} else if (name=="CONCATENAR") {
-		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
+		return get_arg(args,1)+"+"+get_arg(args,2);
 	} else if (name=="LONGITUD") {
-		return convertirAString(get_arg(args,1))+".size()";
-	} else if (name=="SUBCADENA") {
-		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+		return string("Length")+args;
+	} else if (name=="MAYUSCULAS") {
+		return string("Upcase")+args;
+	} else if (name=="MINUSCULAS") {
+		return string("Lowercase")+args;
 	} else if (name=="CONVERTIRANUMERO") {
-		include_cstdlib=true;
-		string s=get_arg(args,1);
-		if (es_cadena_constante(s)) return string("atof(")+s+")";
-		else return string("atof(")+colocarParentesis(s)+".c_str())";
+		uses_sysutils=true;
+		return string("StrToFloat")+args;
+	} else if (name=="CONVERTIRATEXTO") {
+		uses_sysutils=true;
+		return string("FloatToStr")+args;
+	} else if (name=="SUBCADENA") {
+		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
+		if (input_base_zero_arrays) desde=sumarOrestarUno(desde,true);
+		return string("Copy(")+get_arg(args,1)+","+desde+","+cuantos+")";
 	} else {
-		if (name=="MINUSCULAS") use_func_minusculas=true;
-		if (name=="MAYUSCULAS") use_func_mayusculas=true;
-		if (name=="CONVERTIRATEXTO") use_func_convertiratexto=true;
 		return ToLower(name)+args; // no deberia pasar esto
 	}
+}
+
+static bool replace_all(string &str, string from, string to) {
+	bool retval=false;
+	size_t pos=str.find(from,pos);
+	while (pos!=string::npos) {
+		retval=true;
+		str.replace(pos,from.size(),to);
+		pos=str.find(from,pos+to.size());
+	}
+	return retval;
 }
 
 // funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string PascalExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
-	string stipo="SIN_TIPO ";
-	if (t==vt_caracter) { stipo="string "; use_string=true; }
-	else if (t==vt_numerica) stipo=t.rounded?"int ":"float ";
-	else if (t==vt_logica) stipo="bool ";
-	else use_sin_tipo=true;
+	string stipo="SIN_TIPO",var=by_ref?"Var ":"",dims;
+	if (t==vt_caracter) stipo="String";
+	else if (t==vt_numerica) stipo=t.rounded?"Integer":"Real";
+	else if (t==vt_logica) stipo="Boolean";
+	else uses_sin_tipo=true;
 	if (t.dims) {
-		string ret=stipo+ToLower(mit->first)+make_dims(t.dims,"[","][","]",!for_func);
-		while (ret.find("[0]")!=string::npos) {
-			use_arreglo_max=true;
-			ret.replace(ret.find("[0]"),3,"[ARREGLO_MAX]");
-		}
-		return ret;
-	} else {
-		if (by_ref) stipo+="&";
-		return stipo+ToLower(mit->first);
+		dims=make_dims(t.dims,"[","][","]",!for_func);
+		if (replace_all(dims,"[0]","[ARREGLO_MAX]")) use_arreglo_max=true;
+		replace_all(dims,"[",input_base_zero_arrays?"[0..":"[1..");
+		replace_all(dims,"][",",");
+		dims=string("Array ")+dims+" Of ";
 	}
+	return var+ToLower(mit->first)+": "+dims+stipo;
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
-void PascalExporter::declarar_variables(t_output &prog, string tab) {
+void PascalExporter::declarar_variables(t_output &prog) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
+	if (mit!=mit2) prog.push_back("Var");
+	string tab("\t");
 	while (mit!=mit2) {
 		prog.push_back(tab+get_tipo(mit)+";");
 		++mit;
@@ -288,115 +302,39 @@ void PascalExporter::declarar_variables(t_output &prog, string tab) {
 string PascalExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return "SIN_TIPO _variable_desconocida_"; // no debería pasar
+		return "_variable_desconocida_: SIN_TIPO"; // no debería pasar
 	string ret = get_tipo(mit,true,by_ref);
 	if (do_erase) memoria->GetVarInfo().erase(mit);
 	return ret;
 }
 
 void PascalExporter::header(t_output &out) {
-	// cabecera
-	init_header(out,"// ");
-	out.push_back("#include<iostream>");
-	if (include_cmath) out.push_back("#include<cmath>");
-	if (include_cstdlib) out.push_back("#include<cstdlib>");
-	if (use_func_esperar) out.push_back("#include<ctime>");
-	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<cctype>");
-	if (use_func_convertiratexto) out.push_back("#include<stringstream>");
-	out.push_back("using namespace std;");
-	if (!for_test) out.push_back("");
-	if (use_func_esperar) {
-		if (!for_test) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"esperar\", pero puede programarse una similar");
-		out.push_back("void esperar(double t);");
-		if (!for_test) out.push_back("");
+	if (uses_math||uses_crt||uses_sysutils) {
+		insertar(out,"Uses");
+		if (uses_crt) insertar(out,"\tCrt,");
+		if (uses_math) insertar(out,"\tMath,");
+		if (uses_sysutils) insertar(out,"\tSysutils,");
+		string &last=out.back();
+		last[last.size()-1]=';';
 	}
-	if (use_func_convertiratexto) {
-		if (!for_test) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"convertiratexto\", pero puede programarse una equivalente.");
-		out.push_back("string convertiratexto(float f);");
-		if (!for_test) out.push_back("");
-	}
-	if (use_func_mayusculas) {
-		if (!for_test) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"mayusculas\", pero puede programarse una equivalente.");
-		out.push_back("string mayusculas(string s);");
-		if (!for_test) out.push_back("");
-	}
-	if (use_func_minusculas) {
-		if (!for_test) out.push_back("// No hay en el C++ estandar una funcion equivalente a \"minusculas\", pero puede programarse una equivalente.");
-		out.push_back("string minusculas(string s);");
-		if (!for_test) out.push_back("");
+	if (uses_sin_tipo) {
+		insertar(out,"Type");
+		if (!for_test) {
+			insertar(out,"\t// Para las variables que no se pudo determinar el tipo se utiliza la constante");
+			insertar(out,"\t// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado.");
+		}
+		insertar(out,"\tSIN_TIPO = Real;");
 	}
 	if (use_arreglo_max) {
+		insertar(out,"Const");
 		if (!for_test) {
-			out.push_back("// En C++ no se puede dimensionar un arreglo estático con una dimensión no constante.");
-			out.push_back("// PSeInt sobredimensionará el arreglo utilizando un valor simbólico ARREGLO_MAX.");
-			out.push_back("// Sería posible crear un arreglo dinámicamente con los operadores new y delete, pero");
-			out.push_back("// este mecanismo aún no está soportado en las traducciones automáticas de PSeInt.");
+			insertar(out,"\t// En Pascal no se puede dimensionar un arreglo estático con una dimensión no constante.");
+			insertar(out,"\t// Por esto se sobredimensionarán los arreglos que debieran ser dinámicos utilizando un");
+			insertar(out,"\t// valor constante ARREGLO_MAX.");
 		}
-		out.push_back("#define ARREGLO_MAX 100");
-		if (!for_test) out.push_back("");
-	}
-	if (use_sin_tipo) {
-		if (!for_test) {
-			out.push_back("// Para las variables que no se pudo determinar el tipo se utiliza la constante");
-			out.push_back("// SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado");
-			out.push_back("// (usualmente int,float,string o bool).");
-		}
-		out.push_back("#define SIN_TIPO string");
-		if (!for_test) out.push_back("");
-	}
-	if (read_strings) {
-		if (!for_test) {
-			out.push_back("// Para leer variables de texto se utiliza el operador << del objeto cin, que");
-			out.push_back("// lee solo una palabra. Para leer una linea completa (es decir, incluyendo los");
-			out.push_back("// espacios en blanco) se debe utilzar getline (ej, reemplazar cin>>x por");
-			out.push_back("// getline(cin,x)), pero obliga a agregar un cin.ignore() si antes del getline");
-			out.push_back("// se leyó otra variable con >>.");
-			out.push_back("");
-		}
+		insertar(out,"\tARREGLO_MAX = 100;");
 	}
 }
-
-void PascalExporter::footer(t_output &out) {
-	if (use_func_esperar) {
-		if (!for_test) out.push_back("");
-		out.push_back("void esperar(double t) {");
-		out.push_back("\tclock_t t0=clock();");
-		out.push_back("\tdouble e=0;");
-		out.push_back("\tdo {");
-		out.push_back("\t\te=1000*double(clock()-t0)/CLOCKS_PER_SEC;");
-		out.push_back("\t} while (e<t);");
-		out.push_back("}");
-		if (!for_test) out.push_back("");
-	}
-	if (use_func_convertiratexto) {
-		if (!for_test) out.push_back("");
-		out.push_back("string convertiratexto(float f) {");
-		out.push_back("\tstringstream ss;");
-		out.push_back("\tss<<f;");
-		out.push_back("\treturn ss.str();");
-		out.push_back("}");
-		if (!for_test) out.push_back("");
-	}
-	if (use_func_mayusculas) {
-		if (!for_test) out.push_back("");
-		out.push_back("string mayusculas(string s) {");
-		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\ts[i]=toupper(s[i]);");
-		out.push_back("\treturn s;");
-		out.push_back("}");
-		if (!for_test) out.push_back("");
-	}
-	if (use_func_minusculas) {
-		if (!for_test) out.push_back("");
-		out.push_back("string minusculas(string s) {");
-		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\ts[i]=tolower(s[i]);");
-		out.push_back("\treturn s;");
-		out.push_back("}");
-		if (!for_test) out.push_back("");
-	}
-}
-
 
 void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 	
@@ -409,38 +347,41 @@ void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 	bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	
 	// cabecera del proceso
-	string ret; // sentencia "return ..." de la funcion
 	if (!f) {
-		out.push_back("int main() {");
-		ret="return 0";
+		insertar(out,string("Program ")+ToLower(main_process_name)+";");
+		insertar(out,linea_special_para_reemplazar_por_uses_y_otros);
 	} else {
-		string dec;
+		string dec,ret;
 		if (f->nombres[0]=="") {
-			dec="void "; 
+			dec="Procedure "; 
 		} else {
-			ret=get_tipo(f->nombres[0],false,false);
-			dec=ret.substr(0,ret.find(" ")+1);
-			ret=string("return")+ret.substr(ret.find(" "));
+			dec="Function ";
+			ret=get_tipo(f->nombres[0],false,true);
+			ret=ret.substr(ret.find(":"));
+			replace_var(out_proc,ToLower(f->nombres[0]),ToLower(f->id));
 		}
-		dec+=ToLower(f->id)+"(";
-		for(int i=1;i<=f->cant_arg;i++) {
-			if (i!=1) dec+=", ";
-			dec+=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
+		dec+=ToLower(f->id);
+		if (f->cant_arg) {
+			dec+="(";
+			for(int i=1;i<=f->cant_arg;i++) {
+				if (i!=1) dec+="; ";
+				dec+=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA||memoria->LeerDims(f->nombres[i]),true);
+			}
+			dec+=")";
 		}
-		dec+=")";
-		prototipos.push_back(dec+";");
-		out.push_back(dec+" {");
+		insertar(out,dec+ret+";");
 		delete f;
 	}
 	
 	declarar_variables(out);
+	if (!f) insertar(out,linea_special_para_reemplazar_por_subprocesos);
+	insertar(out,"Begin");
+	if (uses_randomize) insertar(out,"\tRandomize;");
 	
 	insertar_out(out,out_proc);
+	insertar(out,f?"End;":"End.");
 	
-	// cola del proceso
-	if (ret.size()) out.push_back(string("\t")+ret+";");
-	out.push_back("}");
-	if (!for_test) out.push_back("");
+	if (!for_test) insertar(out,"");
 	
 	delete memoria;
 	
@@ -448,35 +389,43 @@ void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 
 void PascalExporter::translate(t_output &out, t_programa &prog) {
 	
-	// Pascalcheck-suppress unusedScopedObject
+	// cppcheck-suppress unusedScopedObject
 	TiposExporter(prog,true); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
 	
-	t_output aux;
+	init_header(out,"// ");
+	
+	t_output procedures;
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(aux,*it);	
-	header(out);
-	if (!prototipos.empty()) {
-		if (!for_test) {
-			out.push_back("// Declaraciones adelantadas de las funciones");
-			if (has_matrix_func) {
-				out.push_back("// Las funciones que reciben arreglos en c/C++ deben especificar en sus");
-				out.push_back("// prototipos las dimensiones de los mismos para todas las dimensiones,");
-				out.push_back("// excepto la primera (que puede quedar vacía). Las funciones traducidas");
-				out.push_back("// del pseudocódigo tienen todas sus dimensiones vacías, ya que PSeInt");
-				out.push_back("// aún no determina automáticamente las mismas. Deberá completar las");
-				out.push_back("// requeridas para poder compilar el programa.");
-			}
+		translate_single(it->begin()->nombre=="PROCESO"?out:procedures,*it);	
+	
+	t_output_it it1=find(out.begin(),out.end(),string(linea_special_para_reemplazar_por_subprocesos));
+	it1=out.erase(it1); 
+	if (procedures.size()) {
+		if (!for_test) it1=++out.insert(it1,"");
+		if (!for_test && has_matrix_func) {
+			it1=++out.insert(it1,"// Para poder pasar un arreglo como parametro a un procedimiento o a una funcion");
+			it1=++out.insert(it1,"// en Pascal hay que declarar un tipo para el mismo en la sección Type del");
+			it1=++out.insert(it1,"// programa, y utilizar ese tipo para la declaración del procedimiento o la");
+			it1=++out.insert(it1,"// función. La traducción automática de PSeInt no hace esto, por lo que el");
+			it1=++out.insert(it1,"// código generado no es completamente correcto.");
+			it1=++out.insert(it1,"");
 		}
-		insertar_out(out,prototipos);
+		for(t_output_it it2=procedures.begin();it2!=procedures.end();it2++) it1=++out.insert(it1,*it2);
 	}
-	insertar_out(out,aux);
-	footer(out);
+	
+	t_output uses_const_type;
+	header(uses_const_type);
+	
+	/*t_output_it */it1=find(out.begin(),out.end(),string(linea_special_para_reemplazar_por_uses_y_otros));
+	it1=out.erase(it1); if (!for_test) it1=++out.insert(it1,"");
+	for(t_output_it it2=uses_const_type.begin();it2!=uses_const_type.end();it2++) it1=++out.insert(it1,*it2);	
+	
 }
 
 string PascalExporter::get_constante(string name) {
-	if (name=="PI") { include_cmath=true; return "M_PI"; }
-	if (name=="VERDADERO") return "true";
-	if (name=="FALSO") return "false";
+	if (name=="PI") return "PI";
+	if (name=="VERDADERO") return "True";
+	if (name=="FALSO") return "False";
 	return name;
 }
 
@@ -489,30 +438,29 @@ string PascalExporter::get_operator(string op, bool for_string) {
 	if (op=="}") return ")";
 	// para indices de arreglos
 	if (op=="[") return "[";
-	if (op==",") return "][";
+	if (op==",") return ",";
 	if (op=="]") return "]";
 	// algebraicos, logicos, relaciones
 	if (op=="+") return "+"; 
 	if (op=="-") return "-"; 
 	if (op=="/") return "/"; 
 	if (op=="*") return "*";
-	if (op=="^") return "func pow(arg1,arg2)";
-	if (op=="%") return "%";
-	if (op=="=") return "=="; 
-	if (op=="<>") return "!="; 
+	if (op=="^") return "func Power(arg1,arg2)";
+	if (op=="%") return " Mod ";
+	if (op=="=") return "="; 
+	if (op=="<>") return "<>"; 
 	if (op=="<") return "<"; 
 	if (op==">") return ">"; 
 	if (op=="<=") return "<="; 
 	if (op==">=") return ">="; 
-	if (op=="&") return "&&"; 
-	if (op=="|") return "||"; 
-	if (op=="~") return "!"; 
+	if (op=="&") return " And "; 
+	if (op=="|") return " Or "; 
+	if (op=="~") return "Not "; 
 	return op; // no deberia pasar nunca
 }
 
 string PascalExporter::make_string (string cont) {
 	for(unsigned int i=0;i<cont.size();i++)
 		if (cont[i]=='\\') cont.insert(i++,"\\");
-	return string("\"")+cont+"\"";
+	return string("\'")+cont+"\'";
 }
-

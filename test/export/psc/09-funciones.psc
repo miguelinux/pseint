@@ -38,7 +38,7 @@ Proceso sin_titulo
 	Escribir Longitud(s); // cantidad de letras
 	Escribir Minusculas(s); // retorna una copia toda en mayusculas
 	Escribir Mayusculas(s); // retorna una copia toda en minusculas
-	Escribir SubCadena(s,1,2); // retorna la cadena que desde la posicion 1 (segunda en base 0) a la 2 (tercera en base 0): "ol"
+	Escribir SubCadena(s,2,3); // retorna la cadena que desde la posicion 2 a la 3 (posiciones en base 1): "ol"
 	Escribir concatenar(s," Mundo");
 	Escribir concatenar("Mundo ",s);
 	Escribir ConvertirANumero("15.5"); // retorna un real (15.5)

@@ -149,7 +149,7 @@ bool cargar(list<t_proceso> &algs, string archivo){
 int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
-	base_zero_arrays=false;
+	input_base_zero_arrays=false;
 
 	if (argc==2 && string(argv[1])=="--version") {
 		_print_version_info("psExport");

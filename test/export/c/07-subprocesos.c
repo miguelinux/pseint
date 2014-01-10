@@ -1,5 +1,4 @@
 #include<stdio.h>
-using namespace std;
 #define SIN_TIPO float
 float funciondoble(float b);
 void noretornanada(SIN_TIPO a, SIN_TIPO b);

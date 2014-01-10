@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<stdbool.h>
-using namespace std;
 #define MAX_STRLEN 256
 #define SIN_TIPO float
 int main() {

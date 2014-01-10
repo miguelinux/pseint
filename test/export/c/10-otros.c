@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
-using namespace std;
 void esperar(double t);
 int main() {
 	printf("\n");

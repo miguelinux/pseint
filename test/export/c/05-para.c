@@ -1,5 +1,4 @@
 #include<stdio.h>
-using namespace std;
 int main() {
 	float a[10];
 	float b[3][6];

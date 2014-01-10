@@ -180,6 +180,10 @@ string VbExporter::function(string name, string args) {
 	} else if (name=="LONGITUD") {
 		return get_arg(args,1)+".Length()";
 	} else if (name=="SUBCADENA") {
+		if (!input_base_zero_arrays) args=
+			string("(")+get_arg(args,1)+","
+			+sumarOrestarUno(get_arg(args,2),false)
+			+","+sumarOrestarUno(get_arg(args,3),false)+")";
 		return string("Mid")+args;
 	} else if (name=="CONVERTIRANUMERO") {
 		return string("CDbl")+args;

@@ -131,7 +131,10 @@ string PhpExporter::function(string name, string args) {
 	} else if (name=="MINUSCULAS") {
 		return string("strtolower")+args;
 	} else if (name=="SUBCADENA") {
-		return string("substr(")+get_arg(args,1)+","+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
+		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
+		return string("substr(")+get_arg(args,1)+","+desde+","+cuantos+")";
 	} else if (name=="CONVERTIRANUMERO") {
 		return string("(")+colocarParentesis(get_arg(args,1))+"+0)";
 	} else if (name=="CONVERTIRATEXTO") {

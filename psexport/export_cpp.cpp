@@ -237,7 +237,10 @@ string CppExporter::function(string name, string args) {
 	} else if (name=="LONGITUD") {
 		return convertirAString(get_arg(args,1))+".size()";
 	} else if (name=="SUBCADENA") {
-		return convertirAString(get_arg(args,1))+".substr("+get_arg(args,2)+","+get_arg(args,3)+"-"+get_arg(args,2)+"+1)";
+		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
+		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
+		return convertirAString(get_arg(args,1))+".substr("+desde+","+cuantos+")";
 	} else if (name=="CONVERTIRANUMERO") {
 		include_cstdlib=true;
 		string s=get_arg(args,1);
@@ -459,7 +462,7 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 		if (!for_test) {
 			out.push_back("// Declaraciones adelantadas de las funciones");
 			if (has_matrix_func) {
-				out.push_back("// Las funciones que reciben arreglos en c/C++ deben especificar en sus");
+				out.push_back("// Las funciones que reciben arreglos en C/C++ deben especificar en sus");
 				out.push_back("// prototipos las dimensiones de los mismos para todas las dimensiones,");
 				out.push_back("// excepto la primera (que puede quedar vacía). Las funciones traducidas");
 				out.push_back("// del pseudocódigo tienen todas sus dimensiones vacías, ya que PSeInt");

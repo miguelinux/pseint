@@ -9,26 +9,18 @@ class PascalExporter:public ExporterBase {
 	
 protected:
 	
-	bool include_cmath;
-	bool include_cstdlib;
-	bool use_sin_tipo;
-	bool use_string;
-	bool use_func_esperar;
-	bool use_func_minusculas;
-	bool use_func_mayusculas;
-	bool use_func_convertiratexto;
-	bool use_arreglo_max;
+	bool uses_crt;
+	bool uses_sin_tipo;
+	bool uses_math;
+	bool uses_sysutils;
+	bool uses_randomize;
 	bool has_matrix_func;
-	bool read_strings;
-	t_output prototipos; // forward declarations de las funciones
-	
-	virtual string convertirAString(const string &s);
+	bool use_arreglo_max;
 	
 	virtual string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
-	virtual void declarar_variables(t_output &prog, string tab="\t");
+	virtual void declarar_variables(t_output &prog);
 	virtual string get_tipo(string name, bool by_ref=false, bool do_erase=true); // solo se usa para cabeceras de funciones
 	virtual void header(t_output &out);
-	virtual void footer(t_output &out);
 	virtual void translate_single(t_output &out, t_proceso &proc);
 	
 	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);

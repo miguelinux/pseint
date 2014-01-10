@@ -1,5 +1,4 @@
 #include<stdio.h>
-using namespace std;
 int main() {
 	int c;
 	scanf("%i",&c);

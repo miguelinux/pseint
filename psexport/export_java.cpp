@@ -159,7 +159,10 @@ string JavaExporter::function(string name, string args) {
 	} else if (name=="LONGITUD") {
 		return get_arg(args,1)+".length()";
 	} else if (name=="SUBCADENA") {
-		return get_arg(args,1)+".substring("+get_arg(args,2)+","+get_arg(args,3)+"+1)";
+		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
+		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
+		return get_arg(args,1)+".substring("+desde+","+cuantos+")";
 	} else if (name=="CONVERTIRATEXTO") {
 		return string("Double.toString")+args;
 	} else if (name=="CONVERTIRANUMERO") {

@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include<string.h>
-using namespace std;
 char *get_aux_buffer(double t);
 #define MAX_STRLEN 256
 int main() {

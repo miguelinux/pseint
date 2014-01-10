@@ -1,5 +1,4 @@
 #include<stdio.h>
-using namespace std;
 #define ARREGLO_MAX 100
 #define SIN_TIPO float
 int main() {
