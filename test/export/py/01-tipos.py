@@ -6,5 +6,5 @@ if __name__ == '__main__':
 	d = False
 	e = "Hola"
 	f = "Hola Mundo"
-	p = raw_input()
+	p = input()
 	print(p)

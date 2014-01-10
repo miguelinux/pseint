@@ -22,7 +22,7 @@ public class sin_titulo {
 		System.out.println(s.length());
 		System.out.println(s.toLowerCase());
 		System.out.println(s.toUpperCase());
-		System.out.println(s.substring(1,2+1));
+		System.out.println(s.substring(1,3));
 		System.out.println(s.concat(" Mundo"));
 		System.out.println("Mundo ".concat(s));
 		System.out.println(String.valueOf("15.5"));

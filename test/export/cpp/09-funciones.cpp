@@ -28,7 +28,7 @@ int main() {
 	cout<<s.size()<<endl;
 	cout<<minusculas(s)<<endl;
 	cout<<mayusculas(s)<<endl;
-	cout<<s.substr(1,2-1+1)<<endl;
+	cout<<s.substr(1,3-1)<<endl;
 	cout<<(s+" Mundo")<<endl;
 	cout<<(string("Mundo ")+s)<<endl;
 	cout<<atof("15.5")<<endl;

@@ -6,16 +6,16 @@ def noretornanada(a, b):
 def porreferencia(b):
 	b = 7
 def recibevector(v):
-	v[0] = raw_input()
+	v[0] = input()
 def recibematriz(m):
-	m[0][0] = raw_input()
+	m[0][0] = input()
 if __name__ == '__main__':
 	print(funciondoble(5))
 	noretornanada(3,9)
 	c = 0
 	porreferencia(c)
 	print(c)
-	a = [str()]*10
-	b = [[str()]*4]*3
+	a = [str() for ind0 in range(10)]
+	b = [[str() for ind0 in range(4)] for ind1 in range(3)]
 	recibevector(a)
 	recibematriz(b)

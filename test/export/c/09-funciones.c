@@ -30,7 +30,7 @@ int main() {
 	printf("%f\n",strlen(s));
 	printf("%s\n",minusculas(s));
 	printf("%s\n",mayusculas(s));
-	printf("%s\n",subcadena(s,1,2));
+	printf("%s\n",subcadena(s,1,3-1));
 	printf("%s\n",strcat(strcpy(get_aux_buffer(),s)," Mundo"));
 	printf("%s\n",strcat(strcpy(get_aux_buffer(),"Mundo "),s));
 	printf("%f\n",atof("15.5"));

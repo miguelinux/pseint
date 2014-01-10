@@ -160,9 +160,10 @@ string JavaExporter::function(string name, string args) {
 		return get_arg(args,1)+".length()";
 	} else if (name=="SUBCADENA") {
 		string desde=get_arg(args,2);
-		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
 		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
-		return get_arg(args,1)+".substring("+desde+","+cuantos+")";
+		string hasta=get_arg(args,3);
+		if (input_base_zero_arrays) hasta=sumarOrestarUno(hasta,true);
+		return get_arg(args,1)+".substring("+desde+","+hasta+")";
 	} else if (name=="CONVERTIRATEXTO") {
 		return string("Double.toString")+args;
 	} else if (name=="CONVERTIRANUMERO") {

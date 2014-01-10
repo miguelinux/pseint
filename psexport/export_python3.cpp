@@ -6,6 +6,7 @@
 #include "new_funciones.h"
 #include "export_common.h"
 #include "export_tipos.h"
+#include <stack>
 using namespace std;
 
 Python3Exporter::Python3Exporter() {
@@ -45,10 +46,13 @@ void Python3Exporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		dims=stipo;
 		dimlist.reverse();
 		t_arglist_it it2=dimlist.begin();
+		stack<string> auxvars;
 		while (it2!=dimlist.end()) {
-			dims=string("[")+dims+"]*"+expresion(*it2);
+			auxvars.push(get_aux_varname("ind"));
+			dims=string("[")+dims+" for "+auxvars.top()+" in range("+expresion(*it2)+")]";
 			++it2;
 		}
+		while(!auxvars.empty()) { release_aux_varname(auxvars.top()); auxvars.pop(); }
 		// asignar
 		insertar(prog,tabs+ToLower(name)+" = "+dims);
 		++it;
@@ -113,10 +117,10 @@ void Python3Exporter::leer(t_output &prog, t_arglist args, string tabs) {
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = int(raw_input())");
-		else if (t==vt_numerica) insertar(prog,tabs+varname+" = float(raw_input())");
-		else if (t==vt_logica) insertar(prog,tabs+varname+" = bool(raw_input())");
-		else  insertar(prog,tabs+varname+" = raw_input()");
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = int(input())");
+		else if (t==vt_numerica) insertar(prog,tabs+varname+" = float(input())");
+		else if (t==vt_logica) insertar(prog,tabs+varname+" = bool(input())");
+		else  insertar(prog,tabs+varname+" = input()");
 		++it;
 	}
 }
@@ -262,7 +266,11 @@ string Python3Exporter::function(string name, string args) {
 	} else if (name=="LONGITUD") {
 		return string("len")+args;
 	} else if (name=="SUBCADENA") {
-		return get_arg(args,1)+"["+get_arg(args,2)+":"+sumarOrestarUno(get_arg(args,3),true)+"]";
+		string desde=get_arg(args,2);
+		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
+		string hasta=get_arg(args,3);
+		if (input_base_zero_arrays) hasta=sumarOrestarUno(hasta,true);
+		return get_arg(args,1)+"["+desde+":"+hasta+"]";
 	} else if (name=="CONVERTIRANUMERO") {
 		return string("float")+args;
 	} else if (name=="MAYUSCULAS") {

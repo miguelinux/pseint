@@ -17,7 +17,7 @@
 	echo strlen($s),PHP_EOL;
 	echo strtolower($s),PHP_EOL;
 	echo strtoupper($s),PHP_EOL;
-	echo substr($s,1,2-1+1),PHP_EOL;
+	echo substr($s,1,3-1),PHP_EOL;
 	echo $s.' Mundo',PHP_EOL;
 	echo 'Mundo '.$s,PHP_EOL;
 	echo ('15.5'+0),PHP_EOL;
