@@ -379,7 +379,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					tipo=vt_error;
 					ev_return("");
 				}
-				if (!allow_undef_vars && !memoria->EstaInicializada(nombre)) {
+				if ((!allow_undef_vars || Inter.EvaluatingForDebug()) && !memoria->EstaInicializada(nombre)) {
 					WriteError(215,string("Variable no inicializada (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
