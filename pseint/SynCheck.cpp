@@ -590,6 +590,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (overload_equal) {
 					int i=0, l=cadena.size();
 					while (i<l && EsLetra(cadena[i])) i++;
+					while (i<l && (cadena[i]==' '||cadena[i]=='\t')) i++;
 					if (i<l&& cadena[i]=='=') cadena.replace(i,1,"<-");
 				}
 				// evitar problema de operador incorrecto al poner el signo al numero

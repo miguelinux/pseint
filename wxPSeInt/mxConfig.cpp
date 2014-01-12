@@ -7,6 +7,7 @@
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
 
 BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_BUTTON(wxID_OK,mxConfig::OnOkButton)
@@ -117,6 +118,8 @@ void mxConfig::OnClose(wxCloseEvent &evt) {
 }
 
 void mxConfig::OnOkButton(wxCommandEvent &evt) {
+	if (!chk_word_operators->GetValue()&&chk_coloquial_conditions->GetValue())
+		wxMessageBox("No se puede desactivar la opción \"Permitir las palabras Y, O, NO y MOD para los operadores &&, |, ~ y %\" sin desactivar también \"Permitir condiciones en lenguaje coloquial\", por lo que la primera permanecerá activa.");
 	CopyToStruct(config->lang);
 	Close();
 }

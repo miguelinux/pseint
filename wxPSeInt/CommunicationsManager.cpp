@@ -60,6 +60,7 @@ void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
 				buffer=_T("");
 				aux=buf+i+1;
 			}
+		buffer<<aux;
 		socket->Read(buf,255);
 		n = socket->LastCount();
 	}
