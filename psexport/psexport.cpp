@@ -13,6 +13,8 @@
 #include "export_python3.h"
 #include "export_pascal.h"
 #include "exportexp.h"
+#include "export_javascript.h"
+#include "export_html.h"
 using namespace std;
 
 // otras funciones
@@ -173,7 +175,10 @@ int main(int argc, char *argv[]){
 			else if (s=="cpp") exporter=new CppExporter();
 			else if (s=="cpp98") exporter=new CppExporter();
 			else if (s=="cpp03") exporter=new CppExporter();
+			else if (s=="htm") exporter=new HTMLExporter();
+			else if (s=="html") exporter=new HTMLExporter();
 			else if (s=="java") exporter=new JavaExporter();
+			else if (s=="js") exporter=new JavaScriptExporter();
 			else if (s=="pas") exporter=new PascalExporter();
 			else if (s=="php") exporter=new PhpExporter();
 			else if (s=="py") exporter=new Python3Exporter(3);
@@ -181,7 +186,7 @@ int main(int argc, char *argv[]){
 			else if (s=="py3") exporter=new Python3Exporter(3);
 			else if (s=="vb") exporter=new VbExporter();
 			else {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, java, pas, php, py2, py3, vb"<<endl;
+				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
 			}
 		} else if (s=="--basezeroarrays") {
 			input_base_zero_arrays=true;

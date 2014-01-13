@@ -725,7 +725,7 @@ bool CheckDims(string &str) {
 				if (par==0) {
 					string nombre=exp.substr(l,i-l);
 					if (memoria->Existe(nombre)) 
-						memoria->DefinirTipo(nombre,vt_numerica,true);
+						memoria->DefinirTipo(nombre,vt_numerica_entera);
 				}
 				l=i+1;
 				if (exp[i]=='['||exp[i]=='(') par++;
