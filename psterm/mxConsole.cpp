@@ -458,7 +458,7 @@ void mxConsole::RecordInput (wxString input) {
 void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
 	if (evt.ControlDown()) {
 		int fsize=font.GetPointSize();
-		if (evt.m_wheelRotation<0) {
+		if (evt.m_wheelRotation>0) {
 			fsize++;
 		} else if (fsize>4) fsize--;
 		SetFontSize(fsize);

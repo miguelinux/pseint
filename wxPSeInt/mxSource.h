@@ -181,6 +181,8 @@ public:
 	void OnSetFocus(wxFocusEvent &evt);
 	void UpdateFromFlow();
 	
+	void OnMouseWheel(wxMouseEvent &event);
+	
 	DECLARE_EVENT_TABLE();
 };
 

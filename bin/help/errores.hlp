@@ -297,7 +297,7 @@
 
 65
   La instrucción LEER lleva por parámetros la lista de identificadores de variables en donde se colocarán los datos leídos. Alguno de los parámetros no es un identificador de variable válido. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
-  * Compruebe que todos los parámetros sean identificadores y no expresiones.
+  * Compruebe que todos los parámetros sean identificadores y no expresiones o constantes.
   * Verifique que los identificadores sean válidos (es decir que no contengan caracteres no permitidos, espacios u operadores, y que comiencen con una letra).
 
 66

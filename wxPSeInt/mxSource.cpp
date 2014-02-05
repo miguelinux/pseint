@@ -87,6 +87,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
 	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
+	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
 END_EVENT_TABLE()
 
 	
@@ -530,7 +531,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				ShowCalltip(GetCurrentPos(),_T("{acciones por falso}"));
 			else if (text==_T("segun"))
 				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
-			else if (text==_T("opcion")||text==_T("sies")||text==_T("caso"))
+			else if (config->lang.lazy_syntax && (text==_T("opcion")||text==_T("sies")||text==_T("caso")))
 				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
 			else
 				HideCalltip();
@@ -1630,3 +1631,13 @@ void mxSource::DoRTSyntaxChecking ( ) {
 	if (rt_running) rt_timer->Start(RT_DELAY,true);
 }
 
+void mxSource::OnMouseWheel (wxMouseEvent & event) {
+	if (event.ControlDown()) {
+		if (event.m_wheelRotation>0) {
+			ZoomIn();
+		} else {
+			ZoomOut();
+		}
+	} else
+		event.Skip();
+}
