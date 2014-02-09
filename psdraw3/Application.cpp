@@ -1,19 +1,17 @@
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include "GLstuff.h"
-#include "Entity.h"
-#include "Global.h"
+#include <GL/glut.h>
+#include "Application.h"
+#include "MainWindow.h"
 #include "Version.h"
-#include "Events.h"
-#include "Load.h"
+#include "Global.h"
+#include "Entity.h"
 #include "Comm.h"
+#include "Load.h"
 using namespace std;
 
-int main(int argc, char **argv) {
+bool mxApplication::OnInit() {
 	
 	if (argc==2 && string(argv[1])=="--version") {
-		_print_version_info("psDraw2");
+		_print_version_info("psDraw3");
 		return 0;
 	} else if (argc==3 && string(argv[1])=="--version") {
 		_write_version_info("psDraw2",argv[2]);
@@ -35,12 +33,14 @@ int main(int argc, char **argv) {
 		} else fname=a;
 	}
 	if (port!=-1 && id!=-1) {
-		if (!Connect(port,id)) edit_on=false;
+		if (!::Connect(port,id)) edit_on=false;
 	}
 	if (fname.length()) Load(fname.c_str());
 	else Load();
 	glutInit (&argc, argv);
-	initialize();
-	glutMainLoop();
-	return 0;
+	new MainWindow(wxString("PSDraw v2 - ")<<start->label.c_str());
+	return true;
+	
 }
+
+IMPLEMENT_APP(mxApplication)

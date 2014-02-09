@@ -13,10 +13,7 @@ extern bool debugging; // indica si el programa se esta ejecutando paso a paso (
 extern string fname; // archivo que recibe como argumento
 //extern string pname; // nombre original del proceso
 
-// cuadro de confirmacion al salir sin guardar
 extern bool modified; // para saber si hay que preguntar antes de salir sin guardar
-extern bool confirm; // indica si esta preguntando para salir sin guardar
-extern int confirm_sel; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
 
 // lista de procesos/subprocesos
 extern int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar

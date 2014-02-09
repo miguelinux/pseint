@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "Events.h"
 #include "Load.h"
+#include "MainWindow.h"
 using namespace std;
 
 ZOCKET zocket=ZOCKET_ERROR; // para comunicarse con wxPSeInt
@@ -113,12 +114,12 @@ void ReadComm( ) {
 				sr.erase(0,4); int p=sr.find(' ',0);
 				int x=atoi(sr.substr(0,p).c_str());
 				int y=atoi(sr.substr(p+1).c_str());
-				glutPositionWindow(x,y);
+				main_window->Move(x,y);
 			} else if (sr.substr(0,5)=="size ") {
 				sr.erase(0,5); int p=sr.find(' ',0);
 				int w=atoi(sr.substr(0,p).c_str());
 				int h=atoi(sr.substr(p+1).c_str());
-				glutReshapeWindow(w,h);
+				main_window->SetSize(w,h);
 			}
 			else if (sr=="debug stop") {
 				debugging=false;

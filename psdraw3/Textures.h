@@ -7,7 +7,7 @@ extern bool use_textures;
 bool LoadTextures();
 struct Texture {
 	GLuint id; 
-	int w,h; float r;
+	int w,h; float r, max_s, max_t;
 	bool smooth;
 	bool Load(const char *fname);
 	void Select();

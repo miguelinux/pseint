@@ -6,6 +6,7 @@
 #include "Global.h"
 #include "Draw.h"
 #include "Events.h"
+#include <wx/wx.h>
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -141,17 +142,17 @@ void Entity::SetNolink(Entity *m,bool n) {
 	
 }
 
-void Entity::EditSpecialLabel(unsigned char key) {
-	if (key==GLUT_KEY_LEFT) {
+void Entity::EditSpecialLabel(int key) {
+	if (key==WXK_LEFT) {
 		if (edit_pos>0) edit_pos--;
 	}
-	else if (key==GLUT_KEY_RIGHT) {
+	else if (key==WXK_RIGHT) {
 		if (edit_pos<int(label.size())) edit_pos++;
 	}
-	else if (key==GLUT_KEY_HOME) {
+	else if (key==WXK_HOME) {
 		edit_pos=0;
 	}
-	else if (key==GLUT_KEY_END) {
+	else if (key==WXK_END) {
 		edit_pos=label.size();
 	}
 }
@@ -390,6 +391,7 @@ void Entity::MoveX(int dx) { // mueve al item y todos sus hijos en x
 		if (child[i]) child[i]->MoveX(dx);
 	if (next) next->MoveX(dx);
 }
+
 void Entity:: ResizeW(int aw, bool up) {
 	int old=bwl+bwr;
 	bwl+=(aw-old)/2;

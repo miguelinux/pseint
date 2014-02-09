@@ -6,10 +6,7 @@ bool debugging=false; // indica si el programa se esta ejecutando paso a paso (e
 string fname; // archivo que recibe como argumento
 string pname; // nombre original del proceso
 
-// cuadro de confirmacion al salir sin guardar
 bool modified=false; // para saber si hay que preguntar antes de salir sin guardar
-bool confirm=false; // indica si esta preguntando para salir sin guardar
-int confirm_sel=0; // que hay seleccionado el cuadro de confirm, 1=si, 2=no, 0=nada
 
 // lista de procesos/subprocesos
 int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar

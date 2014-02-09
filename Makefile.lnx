@@ -5,7 +5,7 @@ all:
 	make -C updatem -f Makefile.lnx
 	make -C psterm -f Makefile.lnx
 	make -C psdrawE -f Makefile.lnx
-	make -C psdraw2 -f Makefile.lnx
+	make -C psdraw3 -f Makefile.lnx
 
 clean: 
 	make -C pseint -f Makefile.lnx clean
@@ -14,4 +14,4 @@ clean:
 	make -C updatem -f Makefile.lnx clean
 	make -C psterm -f Makefile.lnx clean
 	make -C psdrawE -f Makefile.lnx clean
-	make -C psdraw2 -f Makefile.lnx clean
+	make -C psdraw3 -f Makefile.lnx clean

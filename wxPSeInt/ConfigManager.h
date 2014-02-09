@@ -81,7 +81,7 @@ public:
 	wxString pseint_command;
 	wxString psterm_command;
 	wxString psdrawe_command;
-	wxString psdraw2_command;
+	wxString psdraw3_command;
 	wxString psexport_command;
 	wxString last_dir;
 	wxString temp_dir;

@@ -62,7 +62,7 @@ struct Entity {
 	void SetMouse();
 	void UnSetMouse();
 	void SetNolink(Entity *m,bool n);
-	void EditSpecialLabel(unsigned char key);
+	void EditSpecialLabel(int key);
 	void EditLabel(unsigned char key);
 	void GetTextSize(const string &label, int &w, int &h);
 	void SetLabel(string _label, bool recalc=false);

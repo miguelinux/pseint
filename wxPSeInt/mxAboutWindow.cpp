@@ -95,7 +95,7 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	
 	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->pseint_command)<<_T("<BR>");
 	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psterm_command)<<_T("<BR>");
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psdraw2_command)<<_T("<BR>");
+	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psdraw3_command)<<_T("<BR>");
 	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psdrawe_command)<<_T("<BR>");
 	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psexport_command)<<_T("<BR>");
 	

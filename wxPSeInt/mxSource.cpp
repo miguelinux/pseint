@@ -1481,7 +1481,7 @@ wxString mxSource::SaveTemp() {
 }
 
 /**
-* @param ignore_rt  Cuando el usuario incia la ejecución desde el diagrama de flujo los datos errores en tiempo real estan desactualizados (el código acaba de recibirse desde psdraw2).
+* @param ignore_rt  Cuando el usuario incia la ejecución desde el diagrama de flujo los datos errores en tiempo real estan desactualizados (el código acaba de recibirse desde psdraw3).
 **/
 bool mxSource::UpdateRunningTerminal (bool raise, bool ignore_rt) {
 	if (!run_socket) return false;

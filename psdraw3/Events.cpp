@@ -8,16 +8,9 @@
 #include "Draw.h"
 #include "Load.h"
 #include "Textures.h"
+#include "MainWindow.h"
+#include "Canvas.h"
 using namespace std;
-
-extern const int margin; // para los botones de confirm
-
-#ifdef __WIN32__
-#include <windows.h>
-#define usleep(x) Sleep((x)/1000)
-#else
-#include <unistd.h>
-#endif
 
 #define mouse_setted_delta 1000
 static int mouse_setted_x,mouse_setted_y; // posicion del click que va a setear el mouse en una entidad cuando se mueva, con correccion de y y zoom aplicados
@@ -39,14 +32,14 @@ static Entity *DuplicateEntity(Entity *orig) {
 
 void Salir(bool force) {
 	if (!force && modified) {
-		confirm=true; confirm_sel=0;
+		main_window->AskForExit();
 		return;
 	}
 	CloseComm();
-	exit(0);
+	wxExit();
 }
 
-static void reshape_cb (int w, int h) {
+void reshape_cb (int w, int h) {
 	if (w==0||h==0) return;
 	if (win_w!=0&&win_h!=0) {
 		float zw=float(w)/win_w;
@@ -65,16 +58,17 @@ static void reshape_cb (int w, int h) {
 }
 
 void Raise() {
-	glutHideWindow();
-	glutShowWindow();
+	main_window->Hide();
+	wxYield();
+	main_window->Show();
 }
 
-static void idle_func() {
+void idle_func() {
 	ReadComm();
 	static int last=glutGet( GLUT_ELAPSED_TIME );
 	int now=glutGet( GLUT_ELAPSED_TIME );
 	if (now-last<25000) {
-		usleep(25000-(now-last));
+		wxMicroSleep(25000-(now-last));
 		last=now;
 	}
 	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
@@ -99,24 +93,15 @@ static void idle_func() {
 		interpolate(trash_size,0); trash=false;
 	}
 	
-	glutPostRedisplay();
+	canvas->Refresh();
 }
 
-static void passive_motion_cb(int x, int y) {
+void passive_motion_cb(int x, int y) {
 	if (choose_process_state) {
 		if (choose_process_state<3 && choose_process_d_delta) {
 			choose_process_sel=(y-choose_process_d_base)/choose_process_d_delta;
 			if (choose_process_sel<0||choose_process_sel>int(procesos.size()-(edit_on?0:1))) choose_process_sel=-1;
 		}
-		return;
-	} else if (confirm) {
-		y=win_h-y;
-		int w,h;
-		GetTextSize("a",w,h);
-		if (y<win_h/2-2*h-2*margin || y>win_h/2-h+margin) confirm_sel=0;
-		else if (x>win_w/2-100 && x<win_w/2-40) confirm_sel=1;
-		else if (x>win_w/2+40 && x<win_w/2+100) confirm_sel=2;
-		else confirm_sel=0;
 		return;
 	}
 	if (!win_h || !edit_on) return;
@@ -144,10 +129,9 @@ static void passive_motion_cb(int x, int y) {
 			if (y==9) y=0;
 		}
 	}
-	cur_x=x; cur_y=win_h-y; glutPostRedisplay();
+	cur_x=x; cur_y=win_h-y; canvas->Refresh();
 }
-static void motion_cb(int x, int y) {
-	if (confirm) return;
+void motion_cb(int x, int y) {
 	y=win_h-y; 
 	trash=x<trash_size && y<trash_size;
 	y/=zoom; x/=zoom;
@@ -213,7 +197,7 @@ void ProcessMenu(int op) {
 	}
 }
 
-static void mouse_cb(int button, int state, int x, int y) {
+void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
 		if (choose_process_state==1) { choose_process_state=2; return; }
@@ -221,7 +205,7 @@ static void mouse_cb(int button, int state, int x, int y) {
 			CreateEmptyProc("SubProceso");
 		}
 		if (choose_process_sel!=-1) {
-			if (state==GLUT_DOWN) {
+			if (state==MB_DOWN) {
 				choose_process_state=3;
 				cur_x=m_x0=x; cur_y=m_y0=win_h-y;
 			} else if (trash) {
@@ -231,29 +215,26 @@ static void mouse_cb(int button, int state, int x, int y) {
 			} else {
 				SetProc(procesos[choose_process_sel]);
 				choose_process_state=0;
-				if (button==GLUT_RIGHT_BUTTON) start->SetEdit();
+				if (button==MB_RIGHT) start->SetEdit();
 			}
 		}
-	} else if (confirm) {
-		if (confirm_sel==1) { Salir(true); }
-		else if (confirm_sel==2) { Save(); SendUpdate(MO_SAVE); Salir(true); }
 	}
 	y=win_h-y; y/=zoom; x/=zoom;
-	if (button==4||button==3) {
-		double f=button==4?1.0/1.05:1.05;
+	if (button==MB_WHEEL_DOWN||button==MB_WHEEL_UP) {
+		double f=button==MB_WHEEL_UP?1.0/1.05:1.05;
 		zoom*=f;
 		float dx=x/f-x, dy=y/f-y;
 		d_dx+=dx; d_dy+=dy;
-	} else if (state==GLUT_DOWN) {
-		if (button==GLUT_MIDDLE_BUTTON) { // click en el menu
+	} else if (state==MB_DOWN) {
+		if (button==MB_MIDDLE) { // click en el menu
 			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
 			return;
 		}
-		if (menu && button==GLUT_LEFT_BUTTON) { // click en el menu
+		if (menu && button==MB_LEFT) { // click en el menu
 			if (menu_sel) ProcessMenu(menu_sel);
 			return;
 		}
-		if (shapebar && button==GLUT_LEFT_BUTTON) { // click en la barra de entidades
+		if (shapebar && button==MB_LEFT) { // click en la barra de entidades
 			if (!shapebar_sel) return;
 			shapebar=false;
 			Entity*aux=NULL;
@@ -281,10 +262,10 @@ static void mouse_cb(int button, int state, int x, int y) {
 		do {
 			if (aux->CheckMouse(x,y)) { 
 				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
-				if (button==GLUT_RIGHT_BUTTON) {
+				if (button==MB_RIGHT) {
 					aux->SetEdit(); return;
 				} else {
-					if (glutGetModifiers()==GLUT_ACTIVE_SHIFT) {
+					if (canvas->GetModifiers()==MODIFIER_SHIFT) {
 						aux=DuplicateEntity(aux);
 						aux->SetEdit();
 					} 
@@ -305,11 +286,9 @@ static void mouse_cb(int button, int state, int x, int y) {
 			}
 			aux=aux->all_next;
 		} while (aux!=start);
-//		if (button==GLUT_RIGHT_BUTTON) { // click en el aire, derecho=pan
 		m_x0=x; m_y0=y; panning=true;
-//		}
 	} else {
-		if (button==GLUT_MIDDLE_BUTTON) {
+		if (button==MB_MIDDLE) {
 			ZoomExtend(m_x0-d_dx,m_y0-d_dy,x-d_dx,y-d_dy);
 			selecting_zoom=false;
 			return;
@@ -327,39 +306,13 @@ static void mouse_cb(int button, int state, int x, int y) {
 	}
 }
 
-static void keyboard_cb(unsigned char key, int x, int y) {
-	if (confirm) {
-		if (key=='s'||key==13) { confirm_sel=2; mouse_cb(GLUT_LEFT_BUTTON,GLUT_DOWN,0,0); }
-		else if (key=='n') { confirm_sel=1; mouse_cb(GLUT_LEFT_BUTTON,GLUT_DOWN,0,0); }
-		else if (key==27) { confirm=false; }
-	} else if (!edit) {
+void keyboard_cb(unsigned char key/*, int x, int y*/) {
+	if (!edit) {
 		if (key==27) Salir();
 		return;
 	} else {
-		if (glutGetModifiers()&GLUT_ACTIVE_CTRL) return;
-		if (glutGetModifiers()&GLUT_ACTIVE_ALT) {
-			if (key=='a'||key=='A'||key=='e'||key=='E'||key=='i'||key=='I'||key=='o'||key=='O'||key=='u'||key=='U')
-				edit->EditLabel(180);
-			if (key=='n') { edit->EditLabel('ñ'); return; }
-			if (key=='N') { edit->EditLabel('Ñ'); return; }
-		}
+		if (canvas->GetModifiers()&MODIFIER_CTRL) return;
 		edit->EditLabel(key);
-	}
-}
-
-void ToggleFullScreen() {
-	static bool fullscreen=false;
-	static int w_win_h,w_win_w, win_x,win_y; // estado antes de pasar a pantalla completa
-	if ((fullscreen=!fullscreen)) {
-		win_x = glutGet((GLenum)GLUT_WINDOW_X);
-		win_y = glutGet((GLenum)GLUT_WINDOW_Y); 
-		w_win_h=win_h; w_win_w=win_w;
-		glutFullScreen();
-	} else {
-		glutReshapeWindow(w_win_w,w_win_h);
-		glutPositionWindow(win_x,win_y);
-		glutReshapeWindow(w_win_w,w_win_h);
-		glutPositionWindow(win_x,win_y);
 	}
 }
 
@@ -374,38 +327,16 @@ void ToggleEditable() {
 	start->Calculate();
 }
 
-static void keyboard_esp_cb(int key, int x, int y) {
-	if (confirm) return;
-	if (key==GLUT_KEY_F2) ProcessMenu(MO_SAVE);
-	else if (key==GLUT_KEY_F3) ProcessMenu(MO_FUNCTIONS);
-	else if (key==GLUT_KEY_F5) ProcessMenu(MO_DEBUG);
-	else if (key==GLUT_KEY_F9) ProcessMenu(MO_RUN);
-	else if (key==GLUT_KEY_F1) ProcessMenu(MO_HELP);
-	else if (key==GLUT_KEY_F7) { if (!debugging) ToggleEditable(); }
-	else if (key==GLUT_KEY_F11) ToggleFullScreen();
-	else if (key==GLUT_KEY_F12) ProcessMenu(MO_ZOOM_EXTEND);
+void keyboard_esp_cb(int key/*, int x, int y*/) {
+	if (key==WXK_F2) ProcessMenu(MO_SAVE);
+	else if (key==WXK_F3) ProcessMenu(MO_FUNCTIONS);
+	else if (key==WXK_F5) ProcessMenu(MO_DEBUG);
+	else if (key==WXK_F9) ProcessMenu(MO_RUN);
+	else if (key==WXK_F1) ProcessMenu(MO_HELP);
+	else if (key==WXK_F7) { if (!debugging) ToggleEditable(); }
+	else if (key==WXK_F11) main_window->ToggleFullScreen();
+	else if (key==WXK_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);
-}
-
-void initialize() {
-	glutInitDisplayMode (GLUT_RGBA|GLUT_DOUBLE);
-	glutInitWindowSize (win_w,win_h);
-	glutInitWindowPosition (100,100);
-	glutCreateWindow ((string("PSDraw v2 - ")+start->label).c_str());
-	glutIdleFunc (idle_func);
-	glutDisplayFunc (display_cb);
-	glutReshapeFunc (reshape_cb);
-	glutMouseFunc(mouse_cb);
-	glutMotionFunc(motion_cb);
-	glutKeyboardFunc(keyboard_cb);
-	glutSpecialFunc(keyboard_esp_cb);
-	glutPassiveMotionFunc(passive_motion_cb);
-	glClearColor(color_back[0],color_back[1],color_back[2],1.f);
-#if _USE_TEXTURES
-	LoadTextures();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
-#endif
 }
 
 void FocusEntity(LineInfo *li) {

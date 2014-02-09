@@ -75,14 +75,14 @@ void ConfigManager::LoadDefaults() {
 	pseint_command = _T("pseint.exe");
 	psterm_command = _T("psterm.exe");
 	psdrawe_command = _T("psdrawE.exe");
-	psdraw2_command = _T("psdraw2.exe");
+	psdraw3_command = _T("psdraw3.exe");
 	psexport_command = _T("psexport.exe");
 	tty_command = _T("");
 #else
 	pseint_command = _T("./pseint");
 	psterm_command = _T("./psterm");
 	psdrawe_command = _T("./psdrawE");
-	psdraw2_command = _T("./psdraw2");
+	psdraw3_command = _T("./psdraw3");
 	psexport_command = _T("./psexport");
 	tty_command = _no_tty;
 #endif
@@ -110,7 +110,7 @@ void ConfigManager::Save() {
 //	fil.AddLine(wxString(_T("psterm_command="))<<psterm_command);
 //	fil.AddLine(wxString(_T("psexport_command="))<<psexport_command);
 //	fil.AddLine(wxString(_T("psdrawe_command="))<<psdrawe_command);
-//	fil.AddLine(wxString(_T("psdraw2_command="))<<psdraw2_command);
+//	fil.AddLine(wxString(_T("psdraw3_command="))<<psdraw3_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString(_T("terminal="))<<tty_command);
 	fil.AddLine(wxString(_T("temp_dir="))<<temp_dir);
 	fil.AddLine(wxString(_T("last_dir="))<<last_dir);
@@ -242,7 +242,7 @@ void ConfigManager::Read() {
 //			else if (key==_T("psterm_command")) psterm_command=value;
 //			else if (key==_T("psexport_command")) psexport_command=value;
 //			else if (key==_T("psdrawe_command")) psdrawe_command=value;
-//			else if (key==_T("psdraw2_command")) psdraw2_command=value;
+//			else if (key==_T("psdraw3_command")) psdraw3_command=value;
 			else if (key==_T("terminal")) { tty_command=value; }
 			else if (key==_T("history")) last_files.Add(value);
 		}
