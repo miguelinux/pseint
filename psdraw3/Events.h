@@ -22,7 +22,7 @@ void FocusEntity(LineInfo *li);
 void SetModified();
 
 
-enum MOUSE_BUTTONS { MB_MIDDLE, MB_LEFT, MB_RIGHT, MB_WHEEL_UP, MB_WHEEL_DOWN, MB_DOWN, MB_UP };
+enum MOUSE_BUTTONS { ZMB_MIDDLE, ZMB_LEFT, ZMB_RIGHT, ZMB_WHEEL_UP, ZMB_WHEEL_DOWN, ZMB_DOWN, ZMB_UP };
 
 // old glut callbacks
 void reshape_cb (int w, int h);

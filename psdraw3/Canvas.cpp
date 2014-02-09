@@ -97,38 +97,38 @@ void Canvas::OnMouseMove(wxMouseEvent& event) {
 
 void Canvas::OnMouseMiddleDown(wxMouseEvent& event) {
 	mouse_buttons|=MOUSE_MIDDLE;
-	mouse_cb(MB_MIDDLE,MB_DOWN,event.GetX(),event.GetY());
+	mouse_cb(ZMB_MIDDLE,ZMB_DOWN,event.GetX(),event.GetY());
 }
 
 void Canvas::OnMouseMiddleUp(wxMouseEvent& event) {
-	mouse_cb(MB_MIDDLE,MB_UP,event.GetX(),event.GetY());
+	mouse_cb(ZMB_MIDDLE,ZMB_UP,event.GetX(),event.GetY());
 	mouse_buttons&=~MOUSE_MIDDLE;
 }
 
 void Canvas::OnMouseWheel(wxMouseEvent& event) {
 	if (event.GetWheelRotation()<0)
-		mouse_cb(MB_UP,MB_DOWN,event.GetX(),event.GetY());
+		mouse_cb(ZMB_UP,ZMB_DOWN,event.GetX(),event.GetY());
 	else
-		mouse_cb(MB_DOWN,MB_DOWN,event.GetX(),event.GetY());
+		mouse_cb(ZMB_DOWN,ZMB_DOWN,event.GetX(),event.GetY());
 }
 
 void Canvas::OnMouseRightDown (wxMouseEvent & event) {
 	mouse_buttons|=MOUSE_RIGHT;
-	mouse_cb(MB_RIGHT,MB_DOWN,event.GetX(),event.GetY());
+	mouse_cb(ZMB_RIGHT,ZMB_DOWN,event.GetX(),event.GetY());
 }
 
 void Canvas::OnMouseRightUp (wxMouseEvent & event) {
-	mouse_cb(MB_RIGHT,MB_UP,event.GetX(),event.GetY());
+	mouse_cb(ZMB_RIGHT,ZMB_UP,event.GetX(),event.GetY());
 	mouse_buttons&=~MOUSE_RIGHT;
 }
 
 void Canvas::OnMouseLeftDown (wxMouseEvent & event) {
 	mouse_buttons|=MOUSE_LEFT;
-	mouse_cb(MB_LEFT,MB_DOWN,event.GetX(),event.GetY());
+	mouse_cb(ZMB_LEFT,ZMB_DOWN,event.GetX(),event.GetY());
 }
 
 void Canvas::OnMouseLeftUp (wxMouseEvent & event) {
-	mouse_cb(MB_LEFT,MB_UP,event.GetX(),event.GetY());
+	mouse_cb(ZMB_LEFT,ZMB_UP,event.GetX(),event.GetY());
 	mouse_buttons&=~MOUSE_LEFT;
 }
 

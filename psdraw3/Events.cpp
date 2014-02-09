@@ -205,7 +205,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			CreateEmptyProc("SubProceso");
 		}
 		if (choose_process_sel!=-1) {
-			if (state==MB_DOWN) {
+			if (state==ZMB_DOWN) {
 				choose_process_state=3;
 				cur_x=m_x0=x; cur_y=m_y0=win_h-y;
 			} else if (trash) {
@@ -215,26 +215,26 @@ void mouse_cb(int button, int state, int x, int y) {
 			} else {
 				SetProc(procesos[choose_process_sel]);
 				choose_process_state=0;
-				if (button==MB_RIGHT) start->SetEdit();
+				if (button==ZMB_RIGHT) start->SetEdit();
 			}
 		}
 	}
 	y=win_h-y; y/=zoom; x/=zoom;
-	if (button==MB_WHEEL_DOWN||button==MB_WHEEL_UP) {
-		double f=button==MB_WHEEL_UP?1.0/1.05:1.05;
+	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
+		double f=button==ZMB_WHEEL_UP?1.0/1.05:1.05;
 		zoom*=f;
 		float dx=x/f-x, dy=y/f-y;
 		d_dx+=dx; d_dy+=dy;
-	} else if (state==MB_DOWN) {
-		if (button==MB_MIDDLE) { // click en el menu
+	} else if (state==ZMB_DOWN) {
+		if (button==ZMB_MIDDLE) { // click en el menu
 			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
 			return;
 		}
-		if (menu && button==MB_LEFT) { // click en el menu
+		if (menu && button==ZMB_LEFT) { // click en el menu
 			if (menu_sel) ProcessMenu(menu_sel);
 			return;
 		}
-		if (shapebar && button==MB_LEFT) { // click en la barra de entidades
+		if (shapebar && button==ZMB_LEFT) { // click en la barra de entidades
 			if (!shapebar_sel) return;
 			shapebar=false;
 			Entity*aux=NULL;
@@ -262,7 +262,7 @@ void mouse_cb(int button, int state, int x, int y) {
 		do {
 			if (aux->CheckMouse(x,y)) { 
 				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
-				if (button==MB_RIGHT) {
+				if (button==ZMB_RIGHT) {
 					aux->SetEdit(); return;
 				} else {
 					if (canvas->GetModifiers()==MODIFIER_SHIFT) {
@@ -288,7 +288,7 @@ void mouse_cb(int button, int state, int x, int y) {
 		} while (aux!=start);
 		m_x0=x; m_y0=y; panning=true;
 	} else {
-		if (button==MB_MIDDLE) {
+		if (button==ZMB_MIDDLE) {
 			ZoomExtend(m_x0-d_dx,m_y0-d_dy,x-d_dx,y-d_dy);
 			selecting_zoom=false;
 			return;

@@ -1,14 +1,14 @@
 include ..\mingw.conf
 OBJS_DIR=..\temp\drw3_w32_rls
 CXXFLAGS=-O2 -I${WX_DIR}\include -DFREEGLUT_STATIC -I ${OPENGL_DIR}\include -D_USE_TEXTURES
-LIBS=-s -mwindows -L ${OPENGL_DIR}\lib -s -lfreeglut_static -lopengl32 -lglu32 -L${WX_DIR}\lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
+LIBS=-s -mwindows -L ${OPENGL_DIR}\lib -s -lfreeglut_static -lopengl32 -lglu32 -L${WX_DIR}\lib -lwxmsw28_gl -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
 
-all: ${OBJS_DIR} ..\bin\psdraw3
+all: ${OBJS_DIR} ..\bin\psdraw3.exe
 
 include Makefile.common
 
 clean:
-	del ${OBJS} ..\bin\psdraw3
+	del ${OBJS} ..\bin\psdraw3.exe
 
 ..\bin\psdraw3.exe: ${OBJS}
 	${GPP} ${OBJS} ${LIBS} -o $@

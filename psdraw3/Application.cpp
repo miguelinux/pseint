@@ -1,4 +1,4 @@
-#include <GL/glut.h>
+#include "GLstuff.h"
 #include "Application.h"
 #include "MainWindow.h"
 #include "Version.h"

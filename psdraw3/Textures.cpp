@@ -1,10 +1,9 @@
 #ifdef _USE_TEXTURES
-#include <png.h>
 #include <cstdlib>
-#include "Textures.h"
+#include <cmath>
 #include <wx/string.h>
 #include <wx/image.h>
-#include <cmath>
+#include "Textures.h"
 using namespace std;
 
 // función basada en código tomade de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL

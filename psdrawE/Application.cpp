@@ -8,9 +8,9 @@
 #include <wx/numdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
-#include "../psdraw2/Load.h"
-#include "../psdraw2/Global.h"
-#include "../psdraw2/Entity.h"
+#include "../psdraw3/Load.h"
+#include "../psdraw3/Global.h"
+#include "../psdraw3/Entity.h"
 #include "GLtoWX.h"
 #include "Version.h"
 #include <wx/choicdlg.h>
