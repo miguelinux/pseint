@@ -404,7 +404,7 @@ void InformUnclosedLoops(deque<Instruccion> &bucles, int &errores) {
 		if (bucles.back()=="PARA") {SynError (114,"Falta cerrar PARA.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="REPETIR") {SynError (115,"Falta cerrar REPETIR.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="MIENTRAS") {SynError (116,"Falta cerrar MIENTRAS.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
-		else if (bucles.back()=="SI") {SynError (117,"Falta cerrar SI.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
+		else if (bucles.back()=="SI"||bucles.back()=="SINO") {SynError (117,"Falta cerrar SI.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="SEGUN") {SynError (118,"Falta cerrar SEGUN.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="PROCESO") {SynError (119,"Falta cerrar PROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()=="SUBPROCESO") {SynError (119,"Falta cerrar SUBPROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
@@ -484,7 +484,7 @@ int SynCheck(int linea_from, int linea_to) {
 			//       sino, se mira si puede ser la nueva definicion (x es entero), mirando si la anteultima palabra es ES o SON
 			// si se identifica la instrucción, se quita del string cadena y se guarda en el string instruccion
 			if (LeftCompare(cadena,"ENTONCES ")) {
-				if (bucles.back()!="SI" && programa[x-1]!="SI")
+				if (/*bucles.back()!="SI" || */!LeftCompare(programa[x-1],"SI "))
 					{SynError (1,"ENTONCES mal colocado."); errores++;}
 				str=cadena;
 				instruccion="ENTONCES "; cadena="";
@@ -496,6 +496,7 @@ int SynCheck(int linea_from, int linea_to) {
 			} else if (LeftCompare(cadena,"SINO ")) {
 				if (bucles.back()!="SI")
 					{SynError (2,"SINO mal colocado."); errores++;}
+				else { bucles.pop_back(); bucles.push_back(programa.GetLoc(x,"SINO")); }
 				str=cadena;
 				instruccion="SINO "; cadena="";
 				if (str.size()>0) {
@@ -746,7 +747,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && cadena!="") {
 					if (lazy_syntax) {
-						programa.Insert(x,"ENTONCES "); 
+						programa.Insert(x,"ENTONCES"); 
 						programa[x].num_instruccion--;
 						x++;
 					} else 
@@ -1406,7 +1407,7 @@ int SynCheck(int linea_from, int linea_to) {
 					SynError (109,"FINMIENTRAS mal colocado."); errores++;}
 			}
 			if (cadena=="FINSI") {
-				if (!bucles.empty() && (bucles.back()=="SI")) {
+				if (!bucles.empty() && (bucles.back()=="SI"||bucles.back()=="SINO")) {
 					bucles.pop_back();
 				} else {
 					SynError (110,"FINSI mal colocado."); errores++;}
