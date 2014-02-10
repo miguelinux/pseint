@@ -107,9 +107,9 @@ void Canvas::OnMouseMiddleUp(wxMouseEvent& event) {
 
 void Canvas::OnMouseWheel(wxMouseEvent& event) {
 	if (event.GetWheelRotation()<0)
-		mouse_cb(ZMB_UP,ZMB_DOWN,event.GetX(),event.GetY());
+		mouse_cb(ZMB_WHEEL_UP,ZMB_DOWN,event.GetX(),event.GetY());
 	else
-		mouse_cb(ZMB_DOWN,ZMB_DOWN,event.GetX(),event.GetY());
+		mouse_cb(ZMB_WHEEL_DOWN,ZMB_DOWN,event.GetX(),event.GetY());
 }
 
 void Canvas::OnMouseRightDown (wxMouseEvent & event) {

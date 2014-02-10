@@ -85,6 +85,10 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 	chk_use_nassi_schneiderman->SetToolTip(utils->FixTooltip(
 		"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Schneiderman\n"
 		"en lugar del formato clásico de diagrama de flujo."));
+	chk_use_alternative_io= utils->AddCheckBox(opts_sizer,this,_T("Usar formas alternativas para Leer y Escribir en el diagrama"),true);
+	chk_use_alternative_io->SetToolTip(utils->FixTooltip(
+		"Con esta opción activada, si se utiliza el diagrama de flujo clásico (no Nassi-Schneiderman), los bloques para las instrucciones"
+		"Leer y Escribir serán diferentes entre sí, siguiendo una convención alternativa"));
 	
 	wxButton *load_button = new wxBitmapButton (this, wxID_OPEN, wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_abrir.png")),wxBITMAP_TYPE_PNG));
 	wxButton *save_button = new wxBitmapButton (this, wxID_SAVE, wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_guardar.png")),wxBITMAP_TYPE_PNG));

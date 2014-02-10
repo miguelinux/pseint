@@ -22,6 +22,17 @@ void make_trig() {
 	}
 }
 
+static int *calc_semicirculo(int x, int y, int r, int h) {
+	static int v[6*2];
+	v[ 0]=x;			v[ 1]=y+h/2;
+	v[ 2]=x+(r)/2;		v[ 3]=y+3*(h)/8;
+	v[ 4]=x+6*(r)/8;	v[ 5]=y+1*(h)/8;
+	v[ 6]=x+6*(r)/8;	v[ 7]=y-1*(h)/8;
+	v[ 8]=x+(r)/2;		v[ 9]=y-3*(h)/8;
+	v[10]=x;			v[11]=y-h/2;
+	return v;
+}
+
 void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 	glColor3fv(color);
 	glBegin(GL_QUAD_STRIP);
@@ -35,20 +46,33 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 			glVertex2i(x+cosx[i]*w,y+sinx[i]*h);
 		}
 	} else if (type==ET_PROCESO) {
-		glVertex2i(x-w/2+3*h/8,y-5*h/8); glVertex2i(x-w/2+3*h/8,y-3*h/8);
-		glVertex2i(x-w/2+h/2,y-1*h/8); glVertex2i(x-w/2+h/2,y-7*h/8);
-		glVertex2i(x-w/2+h,y); glVertex2i(x-w/2+h,y-h);
-		glVertex2i(x+w/2-h,y); glVertex2i(x+w/2-h,y-h); 
-		glVertex2i(x+w/2-h/2,y-1*h/8);
-		glVertex2i(x+w/2-h/2,y-7*h/8);
-		glVertex2i(x+w/2-3*h/8,y-3*h/8);
-		glVertex2i(x+w/2-3*h/8,y-5*h/8);
+		static int or1[]={2,3,4,1,5,0};
+		static int or2[]={0,5,1,4,2,3};
+		int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*or1[i]);
+		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*or2[i]);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x-w/2,y-h/2); glVertex2i(x,y-h);
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		glVertex2i(x+w/2+margin,y); glVertex2i(x-w/2+margin,y); 
-		glVertex2i(x+w/2-margin,y-h); glVertex2i(x-w/2-margin,y-h);
+		if (alternative_io) {
+			if (type==ET_LEER) {
+				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
+				glVertex2i(x-w/2,y-h); glVertex2i(x+w/2,y-h);
+			} else {
+				int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+				glVertex2i(x-w/2-margin,ay+h/2);
+				glVertex2i(x-w/2-r,ay);
+				glVertex2i(x-w/2-r,ay);
+				glVertex2i(x-w/2-margin,ay-h/2);
+				glVertex2i(x-w/2-margin,ay+h/2);
+				static int or2[]={5,0,5,1,4,2,3};
+				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<7;i++) glVertex2iv(v+2*or2[i]);
+			}
+		} else {
+			glVertex2i(x+w/2+margin,y); glVertex2i(x-w/2+margin,y); 
+			glVertex2i(x+w/2-margin,y-h); glVertex2i(x-w/2-margin,y-h);
+		}
 	} else if (type==ET_SEGUN) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h); glVertex2i(x,y-h);
 	} else {
@@ -58,6 +82,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 	glEnd();
 }
 
+
 void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 	glColor3fv(color);
 	glBegin(GL_LINE_LOOP);
@@ -66,25 +91,30 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		w=w/2; h=h/2; y-=h;
 		for(int i=0;i<circle_steps;i++) { 
 			glVertex2i(x+cosx[i]*w,y+sinx[i]*h);
-//			glVertex2i(x+cosx[i+1]*w,y+sinx[i+1]*h);
 		}
 	} else if (type==ET_PROCESO) {
-		glVertex2i(x-w/2+h,y); glVertex2i(x+w/2-h,y);
-		glVertex2i(x+w/2-h/2,y-1*h/8);
-		glVertex2i(x+w/2-3*h/8,y-3*h/8);
-		glVertex2i(x+w/2-3*h/8,y-5*h/8);
-		glVertex2i(x+w/2-h/2,y-7*h/8);
-		glVertex2i(x+w/2-h,y-h); glVertex2i(x-w/2+h,y-h);
-		glVertex2i(x-w/2+h/2,y-7*h/8);
-		glVertex2i(x-w/2+3*h/8,y-5*h/8);
-		glVertex2i(x-w/2+3*h/8,y-3*h/8);
-		glVertex2i(x-w/2+h/2,y-1*h/8);
+		int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
+		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x,y-h); glVertex2i(x-w/2,y-h/2);
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		glVertex2i(x-w/2+margin,y); glVertex2i(x+w/2+margin,y);
-		glVertex2i(x+w/2-margin,y-h); glVertex2i(x-w/2-margin,y-h);
+		if (alternative_io) {
+			if (type==ET_LEER) {
+				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
+				glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
+			} else {
+				int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
+				glVertex2i(ax1-margin,ay-h/2); 
+				glVertex2i(ax1-r,ay); 
+				glVertex2i(ax1-margin,ay+h/2); 
+			}
+		} else {
+			glVertex2i(x-w/2+margin,y); glVertex2i(x+w/2+margin,y);
+			glVertex2i(x+w/2-margin,y-h); glVertex2i(x-w/2-margin,y-h);
+		}
 	} else if (type==ET_SEGUN) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
 	} else {
@@ -288,16 +318,16 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		w*=2; h*=2;
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		w+=2*margin;
+		if (alternative_io) { if (type==ET_ESCRIBIR) { w-=2*margin; }
+		} else { w+=2*margin; }
 	} else if (type==ET_PARA) {
 		h=2*h+3*margin; w=1.3*w+2*margin;
 	} else if (type==ET_SEGUN) {
 		h*=2;
-	} else if (type==ET_PROCESO) {
-		w+=2*h;
 	}
 	
 	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
+	if (alternative_io && type==ET_LEER) { /*fy-=margin; */h+=margin; t_dy-=margin/2; }
 	
 	// si son estructuras de control, es un viaje
 	if (!nolink && n_child) {

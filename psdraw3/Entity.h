@@ -27,7 +27,8 @@ Tipos de entidades:
 enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_ASIGNAR, ET_AUX_PARA, ET_COUNT };
 
 struct Entity {
-	static bool nassi_schneiderman;
+	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
+	static bool nassi_schneiderman; ///< usar diagramas de Nassi-Schneiderman en lugar de "clásico"
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;

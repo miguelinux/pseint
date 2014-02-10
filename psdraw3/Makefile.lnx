@@ -1,0 +1,18 @@
+OBJS_DIR=../temp/drw3_lnx_rls
+GPP=g++
+CXXFLAGS= -O2 `wx-config --cppflags --unicode=no` -D_USE_TEXTURES
+LIBS= -s -lwx_gtk2_gl-2.8 -lGL -lGLU -lglut -lGL `wx-config --libs --unicode=no`
+
+all: ${OBJS_DIR} ../bin/psdraw3
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psdraw3
+
+../bin/psdraw3: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+

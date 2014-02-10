@@ -11,7 +11,8 @@ using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
 
-bool Entity::nassi_schneiderman=false; // alterna el formato entre diagrama de flujo estandar y diagrama de Nassi-Schneiderman
+bool Entity::nassi_schneiderman=false;
+bool Entity::alternative_io=false; 
 
 // tamaño de las letras
 #define char_w 12

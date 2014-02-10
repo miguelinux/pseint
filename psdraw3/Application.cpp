@@ -24,6 +24,7 @@ bool mxApplication::OnInit() {
 		string a(argv[i]);
 		if (a=="--forcesemicolons") force_semicolons=true;
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
+		else if (a=="--alternativeio") Entity::alternative_io=true;
 		else if (a=="--noedit") edit_on=false;
 		else if (a=="--nowordoperators") word_operators=false;
 		else if (a.size()>=5 && a.substr(0,5)=="--id=") {

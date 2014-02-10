@@ -15,6 +15,7 @@ struct LangSettings {
 	bool base_zero_arrays;
 	bool allow_concatenation;
 	bool use_nassi_schneiderman;
+	bool use_alternative_io_shapes;
 	bool allow_dinamyc_dimensions;
 	bool overload_equal;
 	bool coloquial_conditions;
@@ -29,6 +30,7 @@ struct LangSettings {
 			force_semicolon!=o.force_semicolon ||
 			base_zero_arrays!=o.base_zero_arrays ||
 			allow_concatenation!=o.allow_concatenation ||
+			use_alternative_io_shapes!=o.use_alternative_io_shapes||
 			use_nassi_schneiderman!=o.use_nassi_schneiderman ||
 			allow_dinamyc_dimensions!=o.allow_dinamyc_dimensions ||
 			overload_equal!=o.overload_equal ||
@@ -46,6 +48,7 @@ struct LangSettings {
 		base_zero_arrays=false;
 		allow_concatenation=true;
 		use_nassi_schneiderman=false;
+		use_alternative_io_shapes=false;
 		allow_dinamyc_dimensions=true;
 		overload_equal=true;
 		coloquial_conditions=true;

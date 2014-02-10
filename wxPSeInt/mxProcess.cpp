@@ -222,7 +222,7 @@ bool mxProcess::Draw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
 	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString command;
-	command<<config->psdraw3_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
+	command<<config->psdraw3_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<(config->lang.use_alternative_io_shapes?"--alternativeio ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
 	_LOG("mxProcess::Draw this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -236,6 +236,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
+	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
 	if (config->lang.force_semicolon) command<<" --forcesemicolons";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
@@ -251,6 +252,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
+	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
 	_LOG("mxProcess::SaveDraw this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
