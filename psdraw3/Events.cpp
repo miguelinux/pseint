@@ -221,7 +221,7 @@ void mouse_cb(int button, int state, int x, int y) {
 	}
 	y=win_h-y; y/=zoom; x/=zoom;
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
-		double f=button==ZMB_WHEEL_UP?1.0/1.05:1.05;
+		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
 		zoom*=f;
 		float dx=x/f-x, dy=y/f-y;
 		d_dx+=dx; d_dy+=dy;
