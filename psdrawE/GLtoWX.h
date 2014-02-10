@@ -11,6 +11,7 @@ void glColor3fv(const float *v);
 void glBegin(int what);
 void glEnd();
 void glVertex2i(int x, int y);
+void glVertex2iv(int *v);
 void glVertex2d(double x, double y);
 void glPushMatrix();
 void glPopMatrix();

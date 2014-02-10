@@ -99,6 +99,10 @@ void glVertex2i(int x, int y) {
 	np++; post_vertex();
 }
 
+void glVertex2iv(int *v) {
+	glVertex2i(v[0],v[1]);
+}
+
 void glVertex2d(double x, double y) {
 	p[np][0]=m.x(x);
 	p[np][1]=m.y(y);

@@ -81,11 +81,11 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del L
 		"Esta opcion permite expresar las condiciones en un lenguaje más coloquial con construcciones como \"X ES PAR\", "
 		"\"X NO ES MULTIPLO DE 5\", \"X ES IGUAL A Y\", \"X ES ENTERO\", etc. Esta opción activa además el uso de palabras "
 		"clave para reemplazar operadores." ));
-	chk_use_nassi_schneiderman= utils->AddCheckBox(opts_sizer,this,_T("Usar diagramas de Nassi-Schneiderman"),true);
+	chk_use_nassi_schneiderman= utils->AddCheckBox(opts_sizer,this,_T("Usar diagramas de Nassi-Schneiderman"),false);
 	chk_use_nassi_schneiderman->SetToolTip(utils->FixTooltip(
 		"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Schneiderman\n"
 		"en lugar del formato clásico de diagrama de flujo."));
-	chk_use_alternative_io= utils->AddCheckBox(opts_sizer,this,_T("Usar formas alternativas para Leer y Escribir en el diagrama"),true);
+	chk_use_alternative_io= utils->AddCheckBox(opts_sizer,this,_T("Usar formas alternativas para Leer y Escribir en el diagrama"),false);
 	chk_use_alternative_io->SetToolTip(utils->FixTooltip(
 		"Con esta opción activada, si se utiliza el diagrama de flujo clásico (no Nassi-Schneiderman), los bloques para las instrucciones"
 		"Leer y Escribir serán diferentes entre sí, siguiendo una convención alternativa"));
@@ -165,6 +165,7 @@ void mxConfig::ReadFromStruct (LangSettings l) {
 	chk_lazy_syntax->SetValue(l.lazy_syntax);
 	chk_word_operators->SetValue(l.word_operators);
 	chk_allow_dinamyc_dimensions->SetValue(l.allow_dinamyc_dimensions);
+	chk_use_alternative_io->SetValue(l.use_alternative_io_shapes);
 	chk_use_nassi_schneiderman->SetValue(l.use_nassi_schneiderman);
 	chk_enable_string_functions->SetValue(l.enable_string_functions);
 	chk_enable_user_functions->SetValue(l.enable_user_functions);	
@@ -181,6 +182,7 @@ void mxConfig::CopyToStruct (LangSettings & l) {
 	l.lazy_syntax=chk_lazy_syntax->GetValue();
 	l.word_operators=chk_word_operators->GetValue()||chk_coloquial_conditions->GetValue();
 	l.allow_dinamyc_dimensions=chk_allow_dinamyc_dimensions->GetValue();
+	l.use_alternative_io_shapes=chk_use_alternative_io->GetValue();
 	l.use_nassi_schneiderman=chk_use_nassi_schneiderman->GetValue();
 	l.enable_string_functions=chk_enable_string_functions->GetValue();
 	l.enable_user_functions=chk_enable_user_functions->GetValue();	

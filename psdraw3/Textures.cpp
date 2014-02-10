@@ -4,6 +4,7 @@
 #include <wx/string.h>
 #include <wx/image.h>
 #include "Textures.h"
+#include "Entity.h"
 using namespace std;
 
 // función basada en código tomade de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
@@ -180,7 +181,10 @@ Texture texture_trash;
 
 bool LoadTextures() {
 	wxImage::AddHandler(new wxPNGHandler);
-	if (!texture_shapes.Load("imgs/flow/shapes.png")) return use_textures=false;
+	const char *shapes="imgs/flow/shapes.png";
+	if (Entity::nassi_schneiderman) shapes="imgs/flow/shapes_ns.png";
+	else if (Entity::alternative_io) shapes="imgs/flow/shapes_alt.png";
+	if (!texture_shapes.Load(shapes)) return use_textures=false;
 	texture_shapes.r/=8;
 	if (!texture_commands.Load("imgs/flow/commands.png")) return use_textures=false;
 	if (!texture_menu.Load("imgs/flow/menu.png")) return use_textures=false;

@@ -75,8 +75,11 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		LinkChild(3,new Entity(ET_AUX_PARA,""));
 		if (nassi_schneiderman) {
 			child[1]->lpre=" DESDE ";
+			child[1]->SetLabel("");
 			child[2]->lpre=" CON PASO ";
+			child[2]->SetLabel("");
 			child[3]->lpre=" HASTA ";
+			child[3]->SetLabel("");
 		}
 	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
 		n_child=1;
