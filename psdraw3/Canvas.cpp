@@ -163,7 +163,6 @@ int Canvas::GetModifiers ( ) {
 }
 
 void Canvas::OnChar (wxKeyEvent & event) {
-	cerr<<event.GetKeyCode()<<endl;
 	keyboard_cb(event.GetKeyCode());
 }
 

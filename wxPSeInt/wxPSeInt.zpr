@@ -13,7 +13,7 @@ explorer_path=
 path_char=/
 [source]
 path=Application.cpp
-cursor=87:24
+cursor=59:17
 [source]
 path=mxMainWindow.cpp
 cursor=184:18

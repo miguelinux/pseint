@@ -280,15 +280,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.10955246"
-     inkscape:cx="2245.8859"
-     inkscape:cy="180.12954"
+     inkscape:zoom="0.15493057"
+     inkscape:cx="-4033.209"
+     inkscape:cy="210.37443"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1354"
+     inkscape:window-width="1350"
      inkscape:window-height="707"
-     inkscape:window-x="0"
+     inkscape:window-x="4"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
      showguides="true"
@@ -2376,5 +2376,1690 @@
            inkscape:connector-curvature="0" />
       </g>
     </g>
+    <g
+       style="stroke-width:1.66666663;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(3,0,0,3,-2793.714,-943.23396)"
+       id="g304"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path306"
+         d="m 422.91332,207.47915 0,11.52246"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <g
+         style="stroke-width:2.71145606;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(0.6146759,0,0,0.6146759,162.41097,101.77741)"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="g308">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.71145606;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect310"
+           width="173.21428"
+           height="48.214294"
+           x="337.19727"
+           y="124.84544"
+           ry="0"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="350.35715"
+           y="164.1479"
+           id="text312"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439"><tspan
+             sodipodi:role="line"
+             id="tspan314"
+             x="350.35715"
+             y="164.1479">A    B+i</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:2.71145606;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+           d="m 388.57355,149.02405 32.21611,0"
+           id="path316"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:2.19166851;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 402.86639,141.68422 -4.56959,7.46236 4.36546,6.35184 -20.51834,-6.58526 20.72247,-7.22894 z"
+           id="path318"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 422.91332,162.72915 0,11.52246"
+         id="path320"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.46221983;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 418.38754,169.017 4.67396,1.55134 3.9784,-1.48204 -4.1246,6.96582 -4.52776,-7.03512 z"
+         id="path322"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       transform="matrix(3,0,0,3,-2772.0703,-882.36672)"
+       id="g324"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path326"
+         d="m 415.69873,272.47411 0,13.70438"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-ydpi="43.830002" />
+      <g
+         style="stroke-width:2.71145606;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(0.6146759,0,0,0.6146759,162.41097,101.77741)"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/escribir.png"
+         id="g328">
+        <path
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.71147656;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-dashoffset:0"
+           d="m 325.88683,233.26499 162.21391,0 c 20.91171,0.43282 28.8203,12.15143 28.52511,24.10715 -0.29518,11.95573 -5.66103,24.28185 -28.79099,24.10715 l -162.21391,0 -18.1204,-24.10715 z"
+           id="rect330"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cczcccc"
+           inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+           inkscape:export-xdpi="43.830002"
+           inkscape:export-ydpi="43.830002" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="341.22037"
+           y="272.56744"
+           id="text332"
+           inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+           inkscape:export-xdpi="43.830002"
+           inkscape:export-ydpi="43.830002"><tspan
+             sodipodi:role="line"
+             id="tspan334"
+             x="341.22037"
+             y="272.56744">'Hola !'</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:2.71145606;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+           d="m 508.49796,216.973 -25.81069,25.81069"
+           id="path336"
+           inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+           inkscape:export-xdpi="43.830002"
+           inkscape:export-ydpi="43.830002" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:1.76679754;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 502.98441,230.90602 -1.64898,-6.85856 -6.10917,-1.1323 15.44984,-7.94226 -7.69169,15.93312 z"
+           id="path338"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+           inkscape:export-xdpi="43.830002"
+           inkscape:export-ydpi="43.830002" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 415.69873,226.97411 0,13.70438"
+         id="path340"
+         sodipodi:nodetypes="cc"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-ydpi="43.830002" />
+      <path
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.46221983;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 411.13685,235.87883 4.67396,1.55134 3.9784,-1.48204 -4.1246,6.96582 -4.52776,-7.03512 z"
+         id="path342"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-ydpi="43.830002"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="stroke-width:1.66666663;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(3,0,0,3,-2807.5263,-849.36672)"
+       id="g344"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png">
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 427.51739,347.47411 0,13.70438"
+         id="path346"
+         sodipodi:nodetypes="cc" />
+      <g
+         style="stroke-width:2.71145606;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(0.6146759,0,0,0.6146759,162.41097,101.77741)"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/leer.png"
+         id="g348">
+        <path
+           transform="matrix(1,0,5.6061117e-4,0.99999984,0,0)"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-dashoffset:0"
+           d="m 344.47138,361.39702 173.22833,-25.05968 -0.0106,67.0864 -173.21428,0 z"
+           id="rect350"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccc" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="371.54019"
+           y="394.51184"
+           id="text352"><tspan
+             sodipodi:role="line"
+             id="tspan354"
+             x="371.54019"
+             y="394.51184">Dato1</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:2.71145606;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+           d="m 503.10124,363.9685 25.81069,-25.81069"
+           id="path356" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:1.82104385;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 508.61377,349.79088 1.6996,7.06915 6.29675,1.16706 -15.9242,8.18611 7.92785,-16.42232 z"
+           id="path358"
+           sodipodi:nodetypes="ccccc" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path360"
+         d="m 423.19121,307.83433 4.67396,1.55134 3.9784,-1.48204 -4.1246,6.96582 -4.52776,-7.03512 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.46221995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path362"
+         d="m 427.51739,298.55109 0,13.70438"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:1.66666663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       transform="matrix(1.6155338,0,0,1.6155338,-2088.583,-602.29791)"
+       id="g364"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path366"
+         d="m 461.03739,649.00506 0,29.83354"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 236.88908,648.76336 0,29.83354"
+         id="path368"
+         sodipodi:nodetypes="cc" />
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="640.80884"
+         x="168.86285"
+         height="13.497262"
+         width="135.1721"
+         id="rect370"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path372"
+         d="m 349.41467,678.50289 0,15.2956"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 338.00327,554.60831 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+         id="path374"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 462.49092,607.11162 -227.09399,0"
+         id="path376"
+         sodipodi:nodetypes="cc" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.71075749;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect378"
+         width="93.449867"
+         height="93.449867"
+         x="1008.8188"
+         y="636.50824"
+         transform="matrix(0.9372389,0.348688,-0.9372389,0.348688,0,0)" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text380"
+         y="619.56366"
+         x="305.44083"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="619.56366"
+           x="305.44083"
+           id="tspan382"
+           sodipodi:role="line">A&gt;B</tspan></text>
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect384"
+         width="135.1721"
+         height="13.497262"
+         x="393.70209"
+         y="641.05878"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path386"
+         d="m 236.88908,605.94306 0,25.92416"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 460.84799,607.3508 0,24.99539"
+         id="path388"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path390"
+         d="m 226.201,624.04367 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 450.1599,624.93653 11.5473,3.92072 9.82887,-3.74558 -10.19007,17.60482 -11.1861,-17.77996 z"
+         id="path392"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path394"
+         d="m 462.49092,679.53956 -227.09399,0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 349.41467,551.18952 0,14.94205"
+         id="path396"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       transform="matrix(1.324759,0,0,1.324759,1038.7725,1343.3917)"
+       id="g398">
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path400"
+         d="m -1935.9622,-493.76451 0,32.26052"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -2065.3627,-493.76451 0,32.26052"
+         id="path402"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path404"
+         d="m -1805.1474,-493.76451 0,32.26052"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.81952572;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect406"
+         width="148.95096"
+         height="148.95096"
+         x="-1917.6941"
+         y="132.14705"
+         transform="matrix(0.9452596,0.3263192,-0.9452596,0.3263192,0,0)" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text408"
+         y="-539.87146"
+         x="-1973.8324"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="-539.87146"
+           x="-1973.8324"
+           id="tspan410"
+           sodipodi:role="line">dat</tspan></text>
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.00000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect412"
+         width="287.20117"
+         height="48.214294"
+         x="-2080.9634"
+         y="-532.78369"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path414"
+         d="m -1937.429,-605.87133 0,15.51233"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path416"
+         d="m -1948.8404,-602.20887 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text418"
+         y="-494.72461"
+         x="-2040.5504"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="-494.72461"
+           x="-2040.5504"
+           id="tspan420"
+           sodipodi:role="line">1     2     3 </tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path422"
+         d="m -1983.788,-531.2286 0,45.30512"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1893.9855,-531.2286 0,45.30512"
+         id="path424"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path426"
+         d="m -1935.7301,-452.21363 0,28.41914"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -2065.1306,-453.009 0,18.5099"
+         id="path428"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path430"
+         d="m -1804.9153,-453.009 0,18.5099"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <g
+         id="g432"
+         transform="translate(-602.20974,-101.37171)">
+        <g
+           id="g434">
+          <rect
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             id="rect436"
+             width="118.88441"
+             height="10.231394"
+             x="-1393.1978"
+             y="-356.04813"
+             ry="0"
+             inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+             inkscape:export-xdpi="35.146439"
+             inkscape:export-ydpi="35.146439" />
+          <rect
+             inkscape:export-ydpi="35.146439"
+             inkscape:export-xdpi="35.146439"
+             inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+             ry="0"
+             y="-356.04813"
+             x="-1523.1503"
+             height="10.231394"
+             width="118.88441"
+             id="rect438"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             id="rect440"
+             width="118.88441"
+             height="10.231394"
+             x="-1261.825"
+             y="-356.04813"
+             ry="0"
+             inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+             inkscape:export-xdpi="35.146439"
+             inkscape:export-ydpi="35.146439" />
+        </g>
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path442"
+         d="m -1947.3289,-476.10422 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -2076.7294,-476.10422 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         id="path444"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path446"
+         d="m -1816.5141,-476.10422 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -2066.6581,-435.22397 263.1294,0"
+         id="path448"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       transform="matrix(1.3880466,0,0,1.3880466,329.70661,1468.8023)"
+       id="g450">
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path452"
+         d="m -1331.8416,-392.8155 0,14.00803"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path454"
+         d="m -1330.9399,-343.14256 -136.6002,0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1447.9172,-424.25023 -19.7317,0"
+         id="path456"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path458"
+         d="m -1206.7313,-424.25023 -32.8606,0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.82966614;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect460"
+         width="111.46879"
+         height="111.46879"
+         x="-1414.1686"
+         y="-6.2332525"
+         transform="matrix(0.9459329,0.3243624,-0.9459329,0.3243624,0,0)" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text462"
+         y="-411.29553"
+         x="-1387.4583"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="-411.29553"
+           x="-1387.4583"
+           id="tspan464"
+           sodipodi:role="line">N&lt;10</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path466"
+         d="m -1331.6094,-363.84328 0,22.29262"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.00000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect468"
+         width="190.50427"
+         height="13.212508"
+         x="-1425.8226"
+         y="-366.1376"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1331.6094,-330.52626 0,20.81563"
+         id="path470"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000143;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1466.1436,-425.21931 0,82.90028"
+         id="path472"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path474"
+         d="m -1343.2083,-385.27597 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:transform-center-y="-20.5"
+         inkscape:transform-center-x="55"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path476"
+         d="m -1458.7495,-413.31378 3.9207,-11.5473 -3.7456,-9.82887 17.6048,10.19008 -17.7799,11.18609 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path478"
+         d="m -1206.2819,-425.50922 0,97.35262"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000143;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1204.7119,-328.99567 -127.6918,0"
+         id="path480"
+         sodipodi:nodetypes="cc" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -1343.0208,-324.69223 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         id="path482"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc"
+         id="path484"
+         d="m -1331.6094,-483.26161 0,15.11458"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         sodipodi:nodetypes="ccccc"
+         id="path486"
+         d="m -1343.0208,-479.9969 11.5473,3.92072 9.8288,-3.74558 -10.1901,17.60482 -11.186,-17.77996 z"
+         style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       transform="matrix(1.3848368,0,0,1.3848368,-328.97299,1576.9617)"
+       id="g488">
+      <g
+         id="g490">
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc"
+           id="path492"
+           d="m -848.48203,-371.36339 0,27.66433"
+           style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -859.66129,-308.76186 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+           id="path494"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc"
+           id="path496"
+           d="m -848.24989,-224.35132 0,18.60767"
+           style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc"
+           id="path498"
+           d="m -847.58038,-253.28802 -136.60014,0"
+           style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.82966614;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect500"
+           width="111.46879"
+           height="111.46879"
+           x="-894.7124"
+           y="2.2357342"
+           transform="matrix(0.9459329,0.3243624,-0.9459329,0.3243624,0,0)" />
+        <text
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           id="text502"
+           y="-240.0565"
+           x="-904.09875"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             y="-240.0565"
+             x="-904.09875"
+             id="tspan504"
+             sodipodi:role="line">N=10</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -848.24989,-314.16225 0,16.92365"
+           id="path506"
+           sodipodi:nodetypes="cc" />
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.00000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect508"
+           width="190.50427"
+           height="13.714294"
+           x="-942.46313"
+           y="-329.2485"
+           ry="0"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-rule:evenodd;stroke:#800000;stroke-width:3.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -982.78403,-357.09793 0,104.92628"
+           id="path510"
+           sodipodi:nodetypes="cc" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -859.38922,-356.9144 -124.8809,0"
+           id="path512"
+           sodipodi:nodetypes="cc" />
+        <path
+           inkscape:connector-curvature="0"
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           sodipodi:nodetypes="ccccc"
+           id="path514"
+           d="m -859.84879,-348.39979 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           inkscape:transform-center-y="-20.5"
+           inkscape:transform-center-x="55"
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           sodipodi:nodetypes="ccccc"
+           id="path516"
+           d="m -867.63997,-345.69858 3.92072,-11.5473 -3.74558,-9.82887 17.60482,10.19008 -17.77996,11.18609 z"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       id="g518"
+       transform="matrix(1.4463811,0,0,1.4463811,-1532.3352,960.64528)">
+      <g
+         id="g520">
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc"
+           id="path522"
+           d="m 85.461751,351.67467 0,58.99839"
+           style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <rect
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           ry="0"
+           y="343.75504"
+           x="-1.6071427"
+           height="15.214294"
+           width="173.21428"
+           id="rect524"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.00000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path526"
+           d="m -93.526029,309.79075 0,-50.07179 172.543886,0"
+           style="fill:none;stroke:#800000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccc"
+           id="path528"
+           d="m 84.240315,404.54294 -178.526029,0 0,-17.00669"
+           style="fill:none;stroke:#800000;stroke-width:3.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           transform="matrix(1.7001292,0,0,1.3751292,65.011996,-86.7639)"
+           d="m -52.85714,300.21933 c 0,22.09139 -17.90861,40 -40,40 -22.09139,0 -40,-17.90861 -40,-40 0,-22.09139 17.90861,-40 40,-40 22.09139,0 40,17.90861 40,40 z"
+           sodipodi:ry="40"
+           sodipodi:rx="40"
+           sodipodi:cy="300.21933"
+           sodipodi:cx="-92.85714"
+           id="path530"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.96204305;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           sodipodi:type="arc" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path532"
+           d="m -161.42857,322.29075 134.999999,0"
+           style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path534"
+           d="m -94.285714,323.00504 0,57.71428"
+           style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <text
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           id="text536"
+           y="308.27179"
+           x="-97.732979"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             y="308.27179"
+             x="-97.732979"
+             id="tspan538"
+             sodipodi:role="line">j</tspan></text>
+        <text
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           id="text540"
+           y="366.12891"
+           x="-131.99498"
+           style="font-size:40px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             y="366.12891"
+             x="-131.99498"
+             id="tspan542"
+             sodipodi:role="line">1  N</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           sodipodi:nodetypes="ccccc"
+           id="path544"
+           d="m 74.521124,324.79108 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#800000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 85.461751,314.39825 0,23.68965"
+           id="path546"
+           sodipodi:nodetypes="cc" />
+        <g
+           transform="translate(-354.79391,-46.571426)"
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/leer.png"
+           id="g548">
+          <rect
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.2051754;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+             id="rect550"
+             width="102.63544"
+             height="17.866232"
+             x="582.85297"
+             y="393.2276"
+             ry="0"
+             transform="matrix(1,0,-0.4821829,0.8760706,0,0)" />
+          <path
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0"
+             style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:3.00000048;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+             d="m 465.95838,353.25421 16.81069,-17.31069"
+             id="path552" />
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 471.47085,339.06169 1.70269,7.08197 6.30817,1.16919 -15.9531,8.20096 7.94224,-16.45212 z"
+             id="path554"
+             sodipodi:nodetypes="ccccc" />
+        </g>
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc"
+           id="path556"
+           d="m 85.461753,245.7472 0,37.23405"
+           style="fill:none;stroke:#800000;stroke-width:3.00000048;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 74.521124,278.82679 11.5473,3.92072 9.82887,-3.74558 -10.19008,17.60482 -11.18609,-17.77996 z"
+           id="path558"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 66.288596,271.20204 3.92072,-11.5473 -3.74558,-9.82887 17.60482,10.19008 -17.77996,11.18609 z"
+           id="path560"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -82.897349,400.48814 -11.547298,-3.92072 -9.828873,3.74558 10.190083,-17.60482 11.186088,17.77996 z"
+           id="path562"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+      </g>
+    </g>
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       y="-498.63782"
+       x="-1832.9741"
+       height="256"
+       width="616"
+       id="rect564"
+       style="fill:none;stroke:none" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       style="fill:none;stroke:none"
+       id="rect566"
+       width="616"
+       height="256"
+       x="-1832.9741"
+       y="-240.63782" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       y="17.362183"
+       x="-1832.9741"
+       height="256"
+       width="616"
+       id="rect568"
+       style="fill:none;stroke:none" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       style="fill:none;stroke:none"
+       id="rect570"
+       width="616"
+       height="256"
+       x="-1832.9741"
+       y="275.36218" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       y="533.36218"
+       x="-1832.9741"
+       height="256"
+       width="616"
+       id="rect572"
+       style="fill:none;stroke:none" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       style="fill:none;stroke:none"
+       id="rect574"
+       width="616"
+       height="256"
+       x="-1832.9741"
+       y="791.36218" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       y="1049.3622"
+       x="-1832.9741"
+       height="256"
+       width="616"
+       id="rect576"
+       style="fill:none;stroke:none" />
+    <rect
+       inkscape:export-ydpi="43.830002"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+       style="fill:none;stroke:none"
+       id="rect578"
+       width="616"
+       height="256"
+       x="-1832.9741"
+       y="1307.3622" />
+    <g
+       id="g1580"
+       transform="translate(-1177.1625,-268.59809)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <g
+         id="g1559">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect1557"
+           width="412.97433"
+           height="88.908493"
+           x="-3393.1216"
+           y="-146.49397"
+           ry="0"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <text
+           xml:space="preserve"
+           style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="-3322.0732"
+           y="-74.01915"
+           id="text312-6"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439"><tspan
+             sodipodi:role="line"
+             id="tspan314-1"
+             x="-3322.0732"
+             y="-74.01915">A    B+i</tspan></text>
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+           d="m -3251.6011,-101.90795 59.4074,0"
+           id="path316-0"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:4.04149723;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -3225.2447,-115.4428 -8.4265,13.76079 8.0501,11.712974 -37.8364,-12.143404 38.2128,-13.33036 z"
+           id="path318-0"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439" />
+      </g>
+    </g>
+    <g
+       id="g2008"
+       transform="translate(1.373291e-4,110.36493)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect656"
+         width="412.97433"
+         height="88.908493"
+         x="-4570.2842"
+         y="-251.83075"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <text
+         xml:space="preserve"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-4547.5332"
+         y="-179.35593"
+         id="text658"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan660"
+           x="-4547.5332"
+           y="-179.35593">Escribir ...</tspan></text>
+      <path
+         inkscape:export-ydpi="43.830002"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         id="path336-8"
+         d="m -4177.462,-280.26599 -47.5956,47.59563"
+         style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:export-ydpi="43.830002"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         sodipodi:nodetypes="ccccc"
+         id="path338-4"
+         d="m -4187.6291,-254.57312 -3.0408,-12.64737 -11.2654,-2.08799 28.4899,-14.64575 -14.1837,29.38111 z"
+         style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:3.2580235;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g2015"
+       transform="translate(1.373291e-4,148.46343)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="-31.100882"
+         x="-4570.2842"
+         height="88.908493"
+         width="412.97433"
+         id="rect1566"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text697"
+         y="39.717205"
+         x="-4490.8438"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="39.717205"
+           x="-4490.8438"
+           id="tspan699"
+           sodipodi:role="line">Leer ...</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
+         d="m -4221.912,-16.41448 47.5956,-47.59563"
+         id="path701"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-ydpi="43.830002" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:3.2580235;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -4211.7449,-42.10735 3.0408,12.64737 11.2654,2.08799 -28.4899,14.64575 14.1837,-29.38111 z"
+         id="path703"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_alt.png"
+         inkscape:export-xdpi="43.830002"
+         inkscape:export-ydpi="43.830002" />
+    </g>
+    <g
+       id="g1716"
+       transform="translate(-1232.7197,718.6694)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="632.81305"
+         x="-3346.3403"
+         height="167.75946"
+         width="430.52612"
+         id="rect723"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect715"
+         width="349.07825"
+         height="79.780464"
+         x="-3264.8923"
+         y="720.79205"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <text
+         xml:space="preserve"
+         style="font-size:62.69694138px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3332.5959"
+         y="694.48724"
+         id="text717"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan719"
+           x="-3332.5959"
+           y="694.48724">Para ...</tspan></text>
+    </g>
+    <g
+       id="g1710"
+       transform="translate(-1232.7197,-57.479954)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect725"
+         width="430.52612"
+         height="167.75946"
+         x="-3346.3403"
+         y="892.9624"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="980.94141"
+         x="-3264.8923"
+         height="79.780464"
+         width="349.07825"
+         id="rect727"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text729"
+         y="954.46643"
+         x="-3320.7971"
+         style="font-size:62.69694138px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="954.46643"
+           x="-3320.7971"
+           id="tspan731"
+           sodipodi:role="line">Mientras ...</tspan></text>
+    </g>
+    <g
+       id="g1704"
+       transform="translate(-1232.7197,-66.475311)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="1159.9578"
+         x="-3346.3403"
+         height="167.75946"
+         width="430.52612"
+         id="rect733"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect735"
+         width="349.07825"
+         height="79.780464"
+         x="-3264.8923"
+         y="1159.9578"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <text
+         xml:space="preserve"
+         style="font-size:62.69694138px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3318.3228"
+         y="1298.0107"
+         id="text737"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan739"
+           x="-3318.3228"
+           y="1298.0107">Hasta que...</tspan></text>
+    </g>
+    <g
+       id="g1687"
+       transform="translate(-1232.7197,-1158.2455)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect749"
+         width="430.52612"
+         height="187.15642"
+         x="-3346.3403"
+         y="1468.0294"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="1575.4054"
+         x="-3264.8923"
+         height="79.780464"
+         width="349.07825"
+         id="rect751"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect757"
+         width="228.1315"
+         height="79.780518"
+         x="-3346.3403"
+         y="1575.4054"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <g
+         id="g1674">
+        <text
+           xml:space="preserve"
+           style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="-3148.6404"
+           y="1533.0875"
+           id="text753"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439"><tspan
+             sodipodi:role="line"
+             id="tspan755"
+             x="-3148.6404"
+             y="1533.0875">x</tspan></text>
+        <path
+           style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -3345.9997,1469.3998 227.3454,105.5431 202.2433,-105.5431"
+           id="path759"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccc" />
+        <text
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           id="text1529"
+           y="1559.0732"
+           x="-3334.3076"
+           style="font-size:51.64646912px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             y="1559.0732"
+             x="-3334.3076"
+             id="tspan1531"
+             sodipodi:role="line">Si</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:51.64646912px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="-2994.2878"
+           y="1559.0732"
+           id="text1533"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439"><tspan
+             sodipodi:role="line"
+             id="tspan1535"
+             x="-2994.2878"
+             y="1559.0732">No</tspan></text>
+        <text
+           inkscape:export-ydpi="35.146439"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           id="text1549"
+           y="1640.9126"
+           x="-3267.4443"
+           style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           xml:space="preserve"><tspan
+             y="1640.9126"
+             x="-3267.4443"
+             id="tspan1551"
+             sodipodi:role="line">...</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="-3049.5122"
+           y="1640.9126"
+           id="text1553"
+           inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+           inkscape:export-xdpi="35.146439"
+           inkscape:export-ydpi="35.146439"><tspan
+             sodipodi:role="line"
+             id="tspan1555"
+             x="-3049.5122"
+             y="1640.9126">...</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g1647"
+       transform="translate(-1231.9334,-1202.7268)"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002">
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="1772.1382"
+         x="-3346.3403"
+         height="184.27342"
+         width="430.52612"
+         id="rect1588"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="1876.631"
+         x="-3346.3403"
+         height="79.780518"
+         width="344.51419"
+         id="rect1596"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect1617"
+         width="184.77338"
+         height="181.32996"
+         x="-3346.3403"
+         y="1775.0814"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <rect
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         ry="0"
+         y="1772.229"
+         x="-3346.3403"
+         height="184.18237"
+         width="89.499657"
+         id="rect1619"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         sodipodi:nodetypes="ccc"
+         style="fill:#ffffff;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m -3347.9129,1771.9048 345.3559,104.2637 86.146,-104.4021"
+         id="path1598"
+         inkscape:connector-curvature="0" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect1590"
+         width="430.5278"
+         height="79.780518"
+         x="-3346.3418"
+         y="1876.631"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text1600"
+         y="1868.7025"
+         x="-3321.0442"
+         style="font-size:42.59503174px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="1868.7025"
+           x="-3321.0442"
+           id="tspan1602"
+           sodipodi:role="line">1</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:51.64646912px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-2975.4612"
+         y="1867.7153"
+         id="text1604"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan1606"
+           x="-2975.4612"
+           y="1867.7153">...</tspan></text>
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text1608"
+         y="1942.1382"
+         x="-2991.3208"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="1942.1382"
+           x="-2991.3208"
+           id="tspan1610"
+           sodipodi:role="line">...</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3338.7571"
+         y="1942.1382"
+         id="text1612"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan1614"
+           x="-3338.7571"
+           y="1942.1382">...</tspan></text>
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text1626"
+         y="1942.1382"
+         x="-3238.3486"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="1942.1382"
+           x="-3238.3486"
+           id="tspan1628"
+           sodipodi:role="line">...</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3129.3826"
+         y="1942.1382"
+         id="text1630"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan1632"
+           x="-3129.3826"
+           y="1942.1382">...</tspan></text>
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect1637"
+         width="430.52612"
+         height="184.27342"
+         x="-3346.3403"
+         y="1772.1382"
+         ry="0"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439" />
+      <text
+         xml:space="preserve"
+         style="font-size:73.7611084px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3091.6909"
+         y="1826.0325"
+         id="text1592"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan1594"
+           x="-3091.6909"
+           y="1826.0325">x</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:42.59503174px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="-3225.1182"
+         y="1868.7025"
+         id="text1639"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-ydpi="35.146439"><tspan
+           sodipodi:role="line"
+           id="tspan1641"
+           x="-3225.1182"
+           y="1868.7025">2</tspan></text>
+      <text
+         inkscape:export-ydpi="35.146439"
+         inkscape:export-xdpi="35.146439"
+         inkscape:export-filename="/mnt/ex/PSeInt/pseint/wxPSeInt/imgs/asignar.png"
+         id="text1643"
+         y="1868.7025"
+         x="-3155.9146"
+         style="font-size:42.59503174px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="1868.7025"
+           x="-3155.9146"
+           id="tspan1645"
+           sodipodi:role="line">3</tspan></text>
+    </g>
+    <rect
+       style="fill:none;stroke:none"
+       id="rect1982"
+       width="616"
+       height="256"
+       x="-4671.7969"
+       y="-498.63782"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       y="-240.63782"
+       x="-4671.7969"
+       height="256"
+       width="616"
+       id="rect1984"
+       style="fill:none;stroke:none"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       style="fill:none;stroke:none"
+       id="rect1986"
+       width="616"
+       height="256"
+       x="-4671.7969"
+       y="17.362183"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       y="275.36218"
+       x="-4671.7969"
+       height="256"
+       width="616"
+       id="rect1988"
+       style="fill:none;stroke:none"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       style="fill:none;stroke:none"
+       id="rect1990"
+       width="616"
+       height="256"
+       x="-4671.7969"
+       y="533.36218"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       y="791.36218"
+       x="-4671.7969"
+       height="256"
+       width="616"
+       id="rect1992"
+       style="fill:none;stroke:none"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       style="fill:none;stroke:none"
+       id="rect1994"
+       width="616"
+       height="256"
+       x="-4671.7969"
+       y="1049.3622"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
+    <rect
+       y="1307.3622"
+       x="-4671.7969"
+       height="256"
+       width="616"
+       id="rect1996"
+       style="fill:none;stroke:none"
+       inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
+       inkscape:export-xdpi="43.830002"
+       inkscape:export-ydpi="43.830002" />
   </g>
 </svg>

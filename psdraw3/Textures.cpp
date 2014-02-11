@@ -7,7 +7,7 @@
 #include "Entity.h"
 using namespace std;
 
-// función basada en código tomade de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
+// función basada en código tomado de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
 static bool loadImage(GLuint &ID, wxString path, int* imageWidth, int* imageHeight, int* textureWidth, int* textureHeight) {
 	
 	// check the file exists
@@ -147,8 +147,8 @@ static bool loadImage(GLuint &ID, wxString path, int* imageWidth, int* imageHeig
 		}
 	
 	// set texture parameters as you wish
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // GL_LINEAR
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // GL_LINEAR
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 //	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 //	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);

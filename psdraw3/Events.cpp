@@ -67,10 +67,20 @@ void idle_func() {
 	ReadComm();
 	static int last=glutGet( GLUT_ELAPSED_TIME );
 	int now=glutGet( GLUT_ELAPSED_TIME );
-	if (now-last<25000) {
-		wxMicroSleep(25000-(now-last));
+	static int frames=0;
+	static double times=0;
+//	static bool skipped=false;
+#define _delta_t 25000
+	times+=now-last; frames++;
+	cerr<<"DT: "<<times/frames<<"     \r";
+	if (now-last<_delta_t) {
+		wxMicroSleep(_delta_t-(now-last));
 		last=now;
 	}
+//		skipped=false;
+//	} else if (now-last>2*_delta_t && !skipped) {
+//		skipped=true;
+//	} else skipped=false;
 	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
 	Entity *aux=start;
 	do {
@@ -92,8 +102,7 @@ void idle_func() {
 		else { interpolate(menu_size_h,menu_h_min); interpolate(menu_size_w,menu_w_min); }
 		interpolate(trash_size,0); trash=false;
 	}
-	
-	canvas->Refresh();
+	/*if (!skipped) */canvas->Refresh();
 }
 
 void passive_motion_cb(int x, int y) {

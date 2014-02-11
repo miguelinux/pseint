@@ -46,7 +46,6 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 }
 
 void Entity::DrawNassiSchne(bool force) {
-//	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 	if (this==start) DrawBackground();
 	if (mouse==this) DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
@@ -196,9 +195,9 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 				c2r=c2l=c2h=20;
 			}
 			// ajustar tamaño propio
-			if (c1r+c1l+c2r+c2l>w)
+			if (c1r+c1l+c2r+c2l>w) {
 				bwl=bwr=(c1r+c1l+c2r+c2l)/2;
-			else  {
+			} else  {
 				cerr<<(w-(c1r+c1l+c2r+c2l))<<endl;
 				
 				int dw=(w-(c1r+c1l+c2r+c2l))/2;
