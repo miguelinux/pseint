@@ -508,7 +508,7 @@ void mxMainWindow::OnFileExportLang(wxCommandEvent &evt) {
 void mxMainWindow::OnFileExportHtml(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		wxFileDialog dlg (this, "Exportar",source->GetPathForExport(),source->GetNameForExport()+_T(".html"), _T("Documento HTML | *.html"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, "Exportar",source->GetPathForExport(),source->GetNameForExport()+_T(".html"), _T("Documentos HTML|*.html;*.htm;*.HTML;*.HTM"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() == wxID_OK) {
 			config->last_dir=config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 			HtmlExporter ce;

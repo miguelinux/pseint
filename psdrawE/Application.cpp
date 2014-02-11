@@ -71,6 +71,8 @@ bool mxApplication::OnInit() {
 	for(int i=1;i<argc;i++) { 
 		if (wxString(argv[i])=="--nassischneiderman")
 			Entity::nassi_schneiderman=true;
+		else if (wxString(argv[i])=="--alternativeio")
+			Entity::alternative_io=true;
 		else if (wxString(argv[i]).Len()) {
 			if (fin.Len()) fout=argv[i];
 			else fin=argv[i]; 

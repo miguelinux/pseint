@@ -60,12 +60,12 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
 				glVertex2i(x-w/2,y-h); glVertex2i(x+w/2,y-h);
 			} else {
-				int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
-				glVertex2i(x-w/2-margin,ay+h/2);
-				glVertex2i(x-w/2-r,ay);
-				glVertex2i(x-w/2-r,ay);
-				glVertex2i(x-w/2-margin,ay-h/2);
-				glVertex2i(x-w/2-margin,ay+h/2);
+				int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
+				glVertex2i(ax1-margin,ay+h/2);
+				glVertex2i(ax1-r,ay);
+				glVertex2i(ax1-r,ay);
+				glVertex2i(ax1-margin,ay-h/2);
+				glVertex2i(ax1-margin,ay+h/2);
 				static int or2[]={5,0,5,1,4,2,3};
 				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<7;i++) glVertex2iv(v+2*or2[i]);
 			}
@@ -105,7 +105,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
 				glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
 			} else {
-				int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+				int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
 				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
 				glVertex2i(ax1-margin,ay-h/2); 
 				glVertex2i(ax1-r,ay); 
@@ -270,13 +270,15 @@ void Entity::DrawClasico(bool force) {
 		if (!nolink && (type==ET_ESCRIBIR||type==ET_LEER) ) { // flecha en la esquina
 			glBegin(GL_LINES);
 			glColor3fv(color_label);
-			glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2+margin,d_y+margin);
+			int axl = d_x+d_w/2-margin, axe = d_x+d_w/2+margin;
+			if (Entity::alternative_io&&type==ET_ESCRIBIR) { axl-=h; axe-=h; }
+			glVertex2d(axl,d_y-margin); glVertex2d(axe,d_y+margin);
 			if (type==ET_LEER) {
-				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin+margin,d_y-margin);
-				glVertex2d(d_x+d_w/2-margin,d_y-margin); glVertex2d(d_x+d_w/2-margin,d_y-margin+margin);
+				glVertex2d(axl,d_y-margin); glVertex2d(axl+margin,d_y-margin);
+				glVertex2d(axl,d_y-margin); glVertex2d(axl,d_y-margin+margin);
 			} else {
-				glVertex2d(d_x+d_w/2+margin,d_y+margin); glVertex2d(d_x+d_w/2+margin-margin,d_y+margin);
-				glVertex2d(d_x+d_w/2+margin,d_y+margin); glVertex2d(d_x+d_w/2+margin,d_y+margin-margin);
+				glVertex2d(axe,d_y+margin); glVertex2d(axe-margin,d_y+margin);
+				glVertex2d(axe,d_y+margin); glVertex2d(axe,d_y+margin-margin);
 			}
 			
 			glEnd();
@@ -318,7 +320,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		w*=2; h*=2;
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		if (alternative_io) { if (type==ET_ESCRIBIR) { w-=2*margin; }
+		if (alternative_io) { if (type==ET_ESCRIBIR) { w+=2*(h-margin); }
 		} else { w+=2*margin; }
 	} else if (type==ET_PARA) {
 		h=2*h+3*margin; w=1.3*w+2*margin;
@@ -327,7 +329,9 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	}
 	
 	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
-	if (alternative_io && type==ET_LEER) { /*fy-=margin; */h+=margin; t_dy-=margin/2; }
+	if (alternative_io) {
+		if (type==ET_LEER) { bh+=margin; h+=margin; t_dy-=margin/2; }
+	}
 	
 	// si son estructuras de control, es un viaje
 	if (!nolink && n_child) {
