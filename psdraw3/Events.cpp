@@ -67,12 +67,12 @@ void idle_func() {
 	ReadComm();
 	static int last=glutGet( GLUT_ELAPSED_TIME );
 	int now=glutGet( GLUT_ELAPSED_TIME );
-	static int frames=0;
-	static double times=0;
+//	static int frames=0;
+//	static double times=0;
 //	static bool skipped=false;
 #define _delta_t 25000
-	times+=now-last; frames++;
-	cerr<<"DT: "<<times/frames<<"     \r";
+//	times+=now-last; frames++;
+//	cerr<<"DT: "<<times/frames<<"     \r";
 	if (now-last<_delta_t) {
 		wxMicroSleep(_delta_t-(now-last));
 		last=now;

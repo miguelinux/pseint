@@ -48,7 +48,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 	} else if (type==ET_PROCESO) {
 		static int or1[]={2,3,4,1,5,0};
 		static int or2[]={0,5,1,4,2,3};
-		int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+		int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
 		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*or1[i]);
 		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*or2[i]);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
@@ -93,7 +93,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 			glVertex2i(x+cosx[i]*w,y+sinx[i]*h);
 		}
 	} else if (type==ET_PROCESO) {
-		int r=3*h/4,ax0=x+w/2,ax1=x-w/2,ay=y-h/2, *v;
+		int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
 		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
 		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
@@ -316,7 +316,7 @@ void Entity::DrawClasico(bool force) {
 void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
 	
 	// calcular tamaños de la forma segun el texto
-	if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; } h=t_h+2*margin; 
+	if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; else w+=2*(h-margin); } h=t_h+2*margin; 
 	if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		w*=2; h*=2;
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {

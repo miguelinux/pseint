@@ -66,13 +66,15 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxBMPHandler);
 	
 	// cargar el diagrama
-	int c=0;
+	int c=0; bool force=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		if (wxString(argv[i])=="--nassischneiderman")
 			Entity::nassi_schneiderman=true;
 		else if (wxString(argv[i])=="--alternativeio")
 			Entity::alternative_io=true;
+		else if (wxString(argv[i])=="--force")
+			force=true;
 		else if (wxString(argv[i]).Len()) {
 			if (fin.Len()) fout=argv[i];
 			else fin=argv[i]; 
@@ -104,9 +106,13 @@ bool mxApplication::OnInit() {
 	cerr<<x0<<","<<y0<<","<<y0<<","<<y1<<endl;
 	start->Calculate();
 	
-	long ret=wxGetNumberFromUser(wxString("Ingrese la escala para la imagen (100% = ")<<(x1-x0)+2*margin<<"x"<<(y0-y1)+2*margin<<"px)","Zoom (%)","Generar imagen",100,1,1000);
-	if (ret<=0) return false;
-	zoom=d_zoom=float(ret)/100;
+	if (force) {
+		zoom=d_zoom=1;
+	} else {
+		long ret=wxGetNumberFromUser(wxString("Ingrese la escala para la imagen (100% = ")<<(x1-x0)+2*margin<<"x"<<(y0-y1)+2*margin<<"px)","Zoom (%)","Generar imagen",100,1,1000);
+		if (ret<=0) return false;
+		zoom=d_zoom=float(ret)/100;
+	}
 	
 	// hacer que las entidades tomen sus tamaños ideales
 	Entity *e=Entity::all_any;
@@ -137,18 +143,20 @@ bool mxApplication::OnInit() {
 	} while (aux!=start);
 	
 	// guardar
-	wxFileName fn(fout);
-	wxFileDialog fd(NULL,"Guardar imagen",fn.GetPath(),fn.GetName()+".png",
-		_IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP",
-		wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-	if (fd.ShowModal()!=wxID_OK) { return false;  }
-	wxString fname=fd.GetPath();
+	if (!force) {
+		wxFileName fn(fout);
+		wxFileDialog fd(NULL,"Guardar imagen",fn.GetPath(),fn.GetName()+".png",
+			_IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP",
+			wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		if (fd.ShowModal()!=wxID_OK) { return false;  }
+		wxString fout=fd.GetPath();
+	}
 	
 	wxBitmapType type;
-	if (fname.Lower().EndsWith(".bmp")) type=wxBITMAP_TYPE_BMP;
-	_IF_PNG(if (fname.Lower().EndsWith(".png")) type=wxBITMAP_TYPE_PNG;)
-	_IF_JPG(else if (fname.Lower().EndsWith(".jpg")||fname.Lower().EndsWith(".jpeg")) type=wxBITMAP_TYPE_JPEG;)
-	bmp.SaveFile(fname,type);
+	if (fout.Lower().EndsWith(".bmp")) type=wxBITMAP_TYPE_BMP;
+	_IF_PNG(if (fout.Lower().EndsWith(".png")) type=wxBITMAP_TYPE_PNG;)
+	_IF_JPG(else if (fout.Lower().EndsWith(".jpg")||fout.Lower().EndsWith(".jpeg")) type=wxBITMAP_TYPE_JPEG;)
+	bmp.SaveFile(fout,type);
 	
 	cerr<<"saved"<<endl;
 	
