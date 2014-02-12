@@ -115,6 +115,8 @@ static bool EsLetra(const char &c) {
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
+	_LOG("mxSource::mxSource "<<this);
+	
 	id=++last_id;
 	temp_filename_prefix=DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);	
 	
@@ -191,11 +193,14 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 }
 
 mxSource::~mxSource() {
+	_LOG("mxSource::~mxSource "<<this);
 	wxRemoveFile(GetTempFilenameOUT());
 	wxRemoveFile(GetTempFilenamePSC());
 	wxRemoveFile(GetTempFilenamePSD());
+	flow_timer->Stop();
 	reload_timer->Stop();
 	rt_timer->Stop();
+	RTSyntaxManager::OnSourceClose(this);
 	if (debug) debug->Close(this);
 	if (flow_socket) {
 		flow_socket->Write("quit\n",5);
@@ -1285,14 +1290,19 @@ void mxSource::StopRTSyntaxChecking ( ) {
 }
 
 void mxSource::OnTimer (wxTimerEvent & te) {
+//	_LOG("mxSource::OnTimer in");
 	if (te.GetEventObject()==flow_timer) {
 		UpdateFromFlow();
 	} else if (te.GetEventObject()==rt_timer) {
-		if (main_window->GetCurrentSource()!=this) return; // solo si tiene el foco
+		if (main_window->GetCurrentSource()!=this) {
+//			_LOG("mxSource::OnTimer out");
+			return; // solo si tiene el foco
+		}
 		DoRealTimeSyntax(); HighLightBlock();
 	} else if (te.GetEventObject()==reload_timer) {
 		if (run_socket && rt_errors.empty()) UpdateRunningTerminal();
 	}
+//	_LOG("mxSource::OnTimer out");
 }
 
 void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {

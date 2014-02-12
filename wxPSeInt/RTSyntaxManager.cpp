@@ -70,9 +70,13 @@ bool RTSyntaxManager::Process (mxSource * src) {
 }
 
 void RTSyntaxManager::ContinueProcessing() {
-	if (!src) return;
 	_LOG("RTSyntaxManager::ContinueProcessing in src="<<src);
 	wxTextInputStream input(*(GetInputStream()));	
+	if (!src) {
+		_LOG("RTSyntaxManager::ContinueProcessing out src="<<src);
+		while (IsInputAvailable()) { char c=input.GetChar(); }
+		return;
+	}
 	while(true) {
 		wxString line;
 		while (IsInputAvailable()) {
@@ -132,3 +136,10 @@ RTSyntaxManager::~RTSyntaxManager ( ) {
 	the_one=NULL;
 }
 
+void RTSyntaxManager::OnSourceClose(mxSource *_src) {
+	if (!the_one) return;
+	if (the_one->src==_src) {
+		the_one->src=NULL;
+		the_one->ContinueProcessing();
+	}
+}

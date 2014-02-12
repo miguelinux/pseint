@@ -1696,7 +1696,9 @@ void mxMainWindow::ReorganizeForDebugging ( ) {
 }
 
 void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
+//	_LOG("mxMainWindow::OnRTSyntaxAuxTimer in");
 	RTSyntaxManager::Process(NULL);
+//	_LOG("mxMainWindow::OnRTSyntaxAuxTimer out");
 }
 
 #define _time_ms 200

@@ -41,6 +41,7 @@ public:
 	static void Stop();
 	static bool IsLoaded();
 	static bool Process(mxSource *src);
+	static void OnSourceClose(mxSource *src);
 };
 
 #endif
