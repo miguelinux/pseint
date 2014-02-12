@@ -633,7 +633,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy sobre un error del rt_syntax muestra el calltip con el mensaje
 		unsigned int l=GetCurrentLine();
 		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
-	} else { 
+	} else if (!AutoCompActive()) { // para que un error por no haber terminado de escribir detectado por rt_syntax no oculte el autocompletado
 		if (p) p--; s = GetStyleAt(p);
 		if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy justo despues de un error del rt_syntax tambien muestra el calltip con el mensaje
 			unsigned int l=GetCurrentLine();

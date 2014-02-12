@@ -142,7 +142,7 @@ bool CheckVariable(string str, int errcode) {
 			ret=false;
 	}
 	// Comprobar que no sea palabra reservada
-	if (EsFuncion(str)) 
+	if (EsFuncion(str,true)) 
 		ret=false;
 	else if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
 		ret=false;

@@ -353,7 +353,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 //				pm=pc;
 			if (pm==string::npos) { // si es una variable comun
 				string nombre = expresion.substr(p1,p2-p1+1);
-				if (PalabraReservada(nombre)) {
+				if (PalabraReservada(nombre) || nombre==main_process_name) {
 					WriteError(285,string("Identificador no valido (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");

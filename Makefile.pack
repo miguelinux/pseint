@@ -17,7 +17,7 @@ w32:
 	rm -rf dist/pseint 
 	mkdir dist/pseint 
 	cp -r bin/* dist/pseint/
-	cp dist/*.dll dist/pseint/
+# 	cp dist/*.dll dist/pseint/
 	find bin -type f | sed 's/bin/delete $$INSTDIR/' | sed 's/\//\\/g' > dist/uninstall.nsh
 	find bin -type d | sed 's/bin/rmdir $$INSTDIR/'  | sed 's/\//\\/g' | sort -r >>dist/uninstall.nsh
 	cd dist && nsis /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
