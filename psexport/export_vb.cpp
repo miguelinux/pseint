@@ -234,7 +234,7 @@ void VbExporter::declarar_variables(t_output &prog) {
 string VbExporter::get_tipo(string name, bool by_ref) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return "Dim _variable_desconocida_ As String"; // no debería pasar
+		return srting("Dim ")+ToLower(name)+" As String"; // puede pasar si hay variables que no se usan dentro de la funcion
 	string ret = get_tipo(mit,true,by_ref);
 	memoria->GetVarInfo().erase(mit);
 	return ret;

@@ -304,7 +304,7 @@ void PascalExporter::declarar_variables(t_output &prog) {
 string PascalExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return "_variable_desconocida_: SIN_TIPO"; // no debería pasar
+		return ToLower(name)+": SIN_TIPO"; // puede pasar si hay variables que no se usan dentro de la funcion
 	string ret = get_tipo(mit,true,by_ref);
 	if (do_erase) memoria->GetVarInfo().erase(mit);
 	return ret;

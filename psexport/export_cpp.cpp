@@ -291,7 +291,7 @@ void CppExporter::declarar_variables(t_output &prog, string tab) {
 string CppExporter::get_tipo(string name, bool by_ref, bool do_erase) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return "SIN_TIPO _variable_desconocida_"; // no debería pasar
+		return "SIN_TIPO "+ToLower(name); // puede pasar si hay variables que no han sido usadas dentro de la funcion
 	string ret = get_tipo(mit,true,by_ref);
 	if (do_erase) memoria->GetVarInfo().erase(mit);
 	return ret;
