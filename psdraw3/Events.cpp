@@ -254,8 +254,14 @@ void mouse_cb(int button, int state, int x, int y) {
 			case 4: aux = new Entity(ET_SI,""); break;
 			case 5: aux = new Entity(ET_SEGUN,""); break;
 			case 6: aux = new Entity(ET_MIENTRAS,""); break;
-			case 7: aux = new Entity(ET_REPETIR,""); break;
-			case 8: aux = new Entity(ET_PARA,""); break;
+			case 7: 
+				aux = new Entity(ET_REPETIR,""); 
+				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
+				break;
+			case 8: 
+				aux = new Entity(ET_PARA,""); 
+				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
+				break;
 			}
 			if (!aux) return;
 			aux->m_x=0; aux->m_y=0;

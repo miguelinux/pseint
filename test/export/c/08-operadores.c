@@ -28,9 +28,9 @@ int main() {
 	printf("%i\n",a>b);
 	printf("%i\n",a<=b);
 	printf("%i\n",a>=b);
-	printf("%i\n",c&&d);
-	printf("%i\n",c||d);
-	printf("%i\n",!(c&&d));
+	printf("%i\n",c && d);
+	printf("%i\n",c || d);
+	printf("%i\n",!(c && d));
 	printf("%s\n",strcat(strcpy(get_aux_buffer(),strcat(strcpy(get_aux_buffer(),e)," ")),f));
 	printf("%i\n",strcmp(e,f)==0);
 	printf("%i\n",strcmp(e,f)!=0);

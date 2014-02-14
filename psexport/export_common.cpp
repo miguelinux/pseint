@@ -348,7 +348,7 @@ void ExporterBase::sep_args(const string &args, t_arglist &out) {
 }
 
 string ExporterBase::get_aux_varname(string pref) {
-	stringstream ss; ss<<pref<<aux_varnames.size();
+	stringstream ss; ss<<pref<<(aux_varnames.size()+(base_zero_arrays?0:1));
 	aux_varnames.push_back(ss.str());
 	return ss.str();
 }

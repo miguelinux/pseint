@@ -15,6 +15,7 @@
 #include "exportexp.h"
 #include "export_javascript.h"
 #include "export_html.h"
+#include "export_matlab.h"
 using namespace std;
 
 // otras funciones
@@ -171,22 +172,25 @@ int main(int argc, char *argv[]){
 			return 1;
 		} else if (s.substr(0,7)=="--lang=") {
 			s.erase(0,7); 
-			if (s=="c") exporter=new CExporter();
-			else if (s=="cpp") exporter=new CppExporter();
-			else if (s=="cpp98") exporter=new CppExporter();
-			else if (s=="cpp03") exporter=new CppExporter();
-			else if (s=="htm") exporter=new HTMLExporter();
-			else if (s=="html") exporter=new HTMLExporter();
+			if (s=="c" || s=="c99") exporter=new CExporter();
+			else if (s=="c++" || s=="cpp" || s=="c++98" || s=="cpp98" || s=="c++03" || s=="cpp03") exporter=new CppExporter();
+			else if (s=="htm" || s=="html") exporter=new HTMLExporter();
 			else if (s=="java") exporter=new JavaExporter();
-			else if (s=="js") exporter=new JavaScriptExporter();
-			else if (s=="pas") exporter=new PascalExporter();
+			else if (s=="js" || s=="javascript") exporter=new JavaScriptExporter();
+			else if (s=="m" || s=="matlab") exporter=new MatLabExporter();
+			else if (s=="pas" || s=="pascal") exporter=new PascalExporter();
 			else if (s=="php") exporter=new PhpExporter();
-			else if (s=="py") exporter=new Python3Exporter(3);
-			else if (s=="py2") exporter=new Python3Exporter(2);
-			else if (s=="py3") exporter=new Python3Exporter(3);
-			else if (s=="vb") exporter=new VbExporter();
+			else if (s=="py" || s=="pyton" || s=="py3" || s=="python3") exporter=new Python3Exporter(3);
+			else if (s=="py2" || s=="python2") exporter=new Python3Exporter(2);
+			else if (s=="vb" || s=="visualbasic") exporter=new VbExporter();
 			else {
-				cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
+				if (s=="ook") { 
+					char s[]="Uû!op!fsft!vo!psbohvuâo-!qfsp!upnb!vob!cbobob;"; int i=0; while(s[i]!='\0') s[i++]--; cout<<s<<endl;
+					cout<<"\t    _\n\t   | |\n\t  /  /\n\t /  /|\n\t | | |\n\t | | |\n\t | | |\n\t \\ | |\n\t  \\\\ |\n\t   \\__\\"<<endl;
+					return 0;
+				} else {
+					cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
+				}
 			}
 		} else if (s=="--basezeroarrays") {
 			input_base_zero_arrays=true;

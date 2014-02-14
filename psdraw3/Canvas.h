@@ -37,7 +37,7 @@ public:
 	void OnKeyDown(wxKeyEvent &event);
 	void OnKeyUp(wxKeyEvent &event);
 	void OnChar(wxKeyEvent &event);
-	int GetModifiers();
+	int GetModifiers() { return modifiers; }
 	DECLARE_EVENT_TABLE();
 };
 

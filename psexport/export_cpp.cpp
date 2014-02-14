@@ -142,7 +142,7 @@ void CppExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string
 	insertar(prog,tabs+"do {");
 	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
-		insertar(prog,tabs+"} while ("+invert_expresion(expresion((*q).par1))+");");
+		insertar(prog,tabs+"} while ("+expresion(invert_expresion((*q).par1))+");");
 	else
 		insertar(prog,tabs+"} while ("+expresion((*q).par1)+");");
 }
@@ -507,8 +507,8 @@ string CppExporter::get_operator(string op, bool for_string) {
 	if (op==">") return ">"; 
 	if (op=="<=") return "<="; 
 	if (op==">=") return ">="; 
-	if (op=="&") return "&&"; 
-	if (op=="|") return "||"; 
+	if (op=="&") return " && "; 
+	if (op=="|") return " || "; 
 	if (op=="~") return "!"; 
 	return op; // no deberia pasar nunca
 }

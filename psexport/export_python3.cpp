@@ -190,7 +190,7 @@ void Python3Exporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, st
 	if ((*q).nombre=="HASTAQUE")
 		insertar(prog,tabs+"\tif "+expresion((*q).par1)+": break");
 	else
-		insertar(prog,tabs+"\tif "+invert_expresion(expresion((*q).par1))+": break");
+		insertar(prog,tabs+"\tif "+expresion(invert_expresion((*q).par1))+": break");
 }
 
 void Python3Exporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){

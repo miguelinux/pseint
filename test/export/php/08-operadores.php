@@ -17,9 +17,9 @@
 	echo $a>$b,PHP_EOL;
 	echo $a<=$b,PHP_EOL;
 	echo $a>=$b,PHP_EOL;
-	echo $c&&$d,PHP_EOL;
-	echo $c||$d,PHP_EOL;
-	echo !($c&&$d),PHP_EOL;
+	echo $c && $d,PHP_EOL;
+	echo $c || $d,PHP_EOL;
+	echo !($c && $d),PHP_EOL;
 	echo $e.' '.$f,PHP_EOL;
 	echo $e==$f,PHP_EOL;
 	echo $e!=$f,PHP_EOL;

@@ -7,6 +7,7 @@
 #include "Textures.h"
 #include <wx/cursor.h>
 #include "MainWindow.h"
+#include "Canvas.h"
 using namespace std;
 
 CURSORES mouse_cursor;
@@ -391,8 +392,18 @@ if (use_textures) {
 		case 4: SetStatus(color_selection,"Si-Entonces (estructura condicional simple)"); break;
 		case 5: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
 		case 6: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
-		case 7: SetStatus(color_selection,"Repetir-Hasta que (estructura repetitiva)"); break;
-		case 8: SetStatus(color_selection,"Para (estructura repetitiva)"); break;
+		case 7: 
+			if (canvas->GetModifiers()&MODIFIER_SHIFT)
+				SetStatus(color_selection,"Repetir-Mientras que (estructura repetitiva)"); 
+			else
+				SetStatus(color_selection,"Repetir-Hasta que (estructura repetitiva)");
+			break;
+		case 8: 
+			if (canvas->GetModifiers()&MODIFIER_SHIFT)
+				SetStatus(color_selection,"Para Cada (estructura repetitiva)"); 
+			else
+				SetStatus(color_selection,"Para (estructura repetitiva)"); 
+			break;
 		default:;
 		}
 	} else if (trash) DrawTextRaster(color_selection,10+trash_size_max,10,"Eliminar");
@@ -657,11 +668,17 @@ void display_cb() {
 		case ET_SI: SetStatus(color_selection,"Expresion logica."); break;
 		case ET_SEGUN: SetStatus(color_selection,"Expresion de control para la estructura."); break;
 		case ET_OPCION: SetStatus(color_selection,"Posible valor para la expresion de control."); break;
-		case ET_PARA: SetStatus(color_selection,"Identificador de la variable de control (contador)."); break;
+		case ET_PARA: 
+			if (edit->variante)	SetStatus(color_selection,"Identificador temporal para el elemento del vector/matriz.");
+			else SetStatus(color_selection,"Identificador de la variable de control (contador)."); 
+			break;
 		case ET_MIENTRAS: SetStatus(color_selection,"Expresion de control (logica)."); break;
 		case ET_REPETIR: SetStatus(color_selection,"Expresion de control (logica)."); break;
 		case ET_ASIGNAR: SetStatus(color_selection,"Asignacion o instruccion secuencial."); break;
-		case ET_AUX_PARA: SetStatus(color_selection,edit->parent->child[1]==edit?"Valor inicial para el contador.":(edit->parent->child[2]==edit?"Paso, incremento del contador por cada iteracion.":"Valor final para el contador.")); break;
+		case ET_AUX_PARA: 
+			if (edit->parent->variante)	SetStatus(color_selection,"Identificador del vector/matriz a recorrer.");
+			else SetStatus(color_selection,edit->parent->child[1]==edit?"Valor inicial para el contador.":(edit->parent->child[2]==edit?"Paso, incremento del contador por cada iteracion.":"Valor final para el contador.")); 
+			break;
 		default:;
 		}
 	}

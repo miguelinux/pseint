@@ -83,7 +83,7 @@ void VbExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it
 }
 
 void VbExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"While "+expresion((*r).par1)+"");
+	insertar(prog,tabs+"While "+expresion((*r).par1));
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"End While");
 }
@@ -234,7 +234,7 @@ void VbExporter::declarar_variables(t_output &prog) {
 string VbExporter::get_tipo(string name, bool by_ref) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return srting("Dim ")+ToLower(name)+" As String"; // puede pasar si hay variables que no se usan dentro de la funcion
+		return string("Dim ")+ToLower(name)+" As String"; // puede pasar si hay variables que no se usan dentro de la funcion
 	string ret = get_tipo(mit,true,by_ref);
 	memoria->GetVarInfo().erase(mit);
 	return ret;

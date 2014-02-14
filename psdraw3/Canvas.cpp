@@ -158,10 +158,6 @@ void Canvas::OnKeyUp (wxKeyEvent & event) {
 	}
 }
 
-int Canvas::GetModifiers ( ) {
-	return modifiers;
-}
-
 void Canvas::OnChar (wxKeyEvent & event) {
 	keyboard_cb(event.GetKeyCode());
 }

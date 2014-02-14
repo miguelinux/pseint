@@ -235,11 +235,12 @@ void mxMainWindow::CreateMenus() {
 	
 	wxMenu *export_menu=new wxMenu;
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _T("Convertir a código C (c)..."),_T(""),_T("exp_c.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _T("Convertir a código C++03 (cpp)..."),_T(""),_T("exp_cpp.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _T("Convertir a código C++98/03 (cpp)..."),_T(""),_T("exp_cpp.png"));
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP11, _T("Convertir a código C++11 (cpp)..."),_T(""),_T("exp_cpp.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_HTML, _T("Convertir a página HTML (JavaScript embebido) (html)..."),_T(""),_T("exp_html.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _T("Convertir a código Java (java)..."),_T(""),_T("exp_java.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _T("Convertir a código JavaScript (js)..."),_T(""),_T("exp_js.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_M, _T("Convertir a código MatLab (m)..."),_T(""),_T("exp_m.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PAS, _T("Convertir a código Pascal (pas)..."),_T(""),_T("exp_pas.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _T("Convertir a código PHP (php)..."),_T(""),_T("exp_php.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY2, _T("Convertir a código Python 2 (py)..."),_T(""),_T("exp_py.png"));
@@ -496,6 +497,7 @@ void mxMainWindow::OnFileExportLang(wxCommandEvent &evt) {
 				case mxID_FILE_EXPORT_LANG_HTML: 	lang="html"; 	break;
 				case mxID_FILE_EXPORT_LANG_JAVA: 	lang="java"; 	break;
 				case mxID_FILE_EXPORT_LANG_JS: 		lang="js"; 		break;
+				case mxID_FILE_EXPORT_LANG_M: 		lang="m"; 		break;
 				case mxID_FILE_EXPORT_LANG_PRG:		lang="prg"; 	break;
 				case mxID_FILE_EXPORT_LANG_PAS: 	lang="pas"; 	break;
 				default: lang="???"; // no deberia pasar nunca

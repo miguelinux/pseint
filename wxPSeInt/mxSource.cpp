@@ -361,6 +361,7 @@ void mxSource::OnEditUnComment(wxCommandEvent &evt) {
 			ReplaceTarget(_T(""));
 		}
 	}
+	Indent(min,max);
 	EndUndoAction();
 }
 
@@ -817,11 +818,11 @@ void mxSource::IndentLine(int l, bool goup) {
 	int btype/*,ignore_next=false*/;
 	int cur=GetIndentLevel(l,goup,&btype);
 	wxString line=GetLine(l);
-	if (line.StartsWith("//")) return;
+//	if (line.StartsWith("//")) return;
 	line<<_T(" "); int i=0,n=line.Len();
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
-	if (i<n) {
+	if (i<n && !(line[i]=='/'&&line[i+1]=='/')) {
 		while (i<n && EsLetra(line[i])) i++;
 //		if (ignore_next)
 //			ignore_next=false;
@@ -893,14 +894,18 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 			if (c==':' && line[i+1]!='=') { cur+=4; btype=BT_CASO; }
 			else if (!EsLetra(c)) {
 				if (wstart+1<i) {
-					if (ignore_next)
+					if (ignore_next) {
 						ignore_next=false;
-					else {
-//						int old_btype=btype;
-//						if (btype) *btype=BT_NONE;
+					} else {
 						wxString word=line.SubString(wstart,i-1);
 						word.MakeUpper();
-						if (word==_T("SI")) { cur+=4; btype=BT_SI; }
+						if (word==_T("SI")) { 
+							if (config->lang.lazy_syntax) {
+								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
+								if (toupper(line[y])!='E' || toupper(line[y+1])!='S' || (line[y+2]!=' '&&line[y+2]!='\t'))
+									{ cur+=4; btype=BT_SI; }
+							} else 	{ cur+=4; btype=BT_SI; }
+						}
 						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
 						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
 						else if (word==_T("FUNCION")||word==_T("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }

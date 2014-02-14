@@ -8,8 +8,8 @@
 	}
 	$b = array();
 	$c = 0;
-	foreach ($b as $aux_var_0) {
-		foreach ($aux_var_0 as $x) {
+	foreach ($b as $aux_var_1) {
+		foreach ($aux_var_1 as $x) {
 			$c = $c+1;
 			$x = $c;
 		}

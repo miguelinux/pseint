@@ -26,9 +26,9 @@ public class sin_titulo {
 		System.out.println(a>b);
 		System.out.println(a<=b);
 		System.out.println(a>=b);
-		System.out.println(c&&d);
-		System.out.println(c||d);
-		System.out.println(!(c&&d));
+		System.out.println(c && d);
+		System.out.println(c || d);
+		System.out.println(!(c && d));
 		System.out.println(e+" "+f);
 		System.out.println(e.equals(f));
 		System.out.println(!e.equals(f));

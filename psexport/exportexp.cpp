@@ -46,14 +46,14 @@ string invert_expresion(string expr) {
 	}
 	if (nop==1) {
 		i=iop;
-		if (expr[i]=='='&&expr[i+1]=='=') { expr.replace(i,2,"!="); return expr; }
-		if (expr[i]=='!'&&expr[i+1]=='=') { expr.replace(i,2,"=="); return expr; }
+		if (expr[i]=='=') { expr.replace(i,1,"<>"); return expr; }
+		if (expr[i]=='<'&&expr[i+1]=='>') { expr.replace(i,2,"="); return expr; }
 		if (expr[i]=='<'&&expr[i+1]=='=') { expr.replace(i,2,">"); return expr; }
 		if (expr[i]=='>'&&expr[i+1]=='=') { expr.replace(i,2,"<"); return expr; }
 		if (expr[i]=='<') { expr.replace(i,1,">=");  return expr; }
 		if (expr[i]=='>') { expr.replace(i,1,"<=");  return expr; }
 	}
-	return string("!(")+expr+")";
+	return string("~(")+expr+")";
 }
 
 // conversion de expresiones

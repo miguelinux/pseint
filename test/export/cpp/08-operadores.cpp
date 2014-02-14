@@ -25,9 +25,9 @@ int main() {
 	cout<<a>b<<endl;
 	cout<<a<=b<<endl;
 	cout<<a>=b<<endl;
-	cout<<c&&d<<endl;
-	cout<<c||d<<endl;
-	cout<<!(c&&d)<<endl;
+	cout<<c && d<<endl;
+	cout<<c || d<<endl;
+	cout<<!(c && d)<<endl;
 	cout<<e+" "+f<<endl;
 	cout<<e==f<<endl;
 	cout<<e!=f<<endl;

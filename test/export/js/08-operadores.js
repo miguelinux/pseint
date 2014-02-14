@@ -18,9 +18,9 @@ function sin_titulo() {
 	document.write(a>b,'<BR/>');
 	document.write(a<=b,'<BR/>');
 	document.write(a>=b,'<BR/>');
-	document.write(c&&d,'<BR/>');
-	document.write(c||d,'<BR/>');
-	document.write(!(c&&d),'<BR/>');
+	document.write(c && d,'<BR/>');
+	document.write(c || d,'<BR/>');
+	document.write(!(c && d),'<BR/>');
 	document.write(e+" "+f,'<BR/>');
 	document.write(e==f,'<BR/>');
 	document.write(e!=f,'<BR/>');

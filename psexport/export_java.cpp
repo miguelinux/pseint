@@ -9,6 +9,10 @@
 JavaExporter::JavaExporter():CppExporter() {
 	include_cmath=false;
 	have_subprocesos=false;
+#ifdef DEBUG
+	// solo para evitar warnings con cpp-check
+	use_esperar_tiempo=false; use_esperar_tecla=false; use_reader=false;
+#endif
 }
 
 void JavaExporter::borrar_pantalla(t_output &prog, string param, string tabs){

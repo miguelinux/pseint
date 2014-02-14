@@ -138,7 +138,7 @@ void PascalExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, str
 	if ((*q).nombre=="HASTAQUE")
 		insertar(prog,tabs+"Until "+expresion((*q).par1)+";");
 	else
-		insertar(prog,tabs+"Until "+invert_expresion(expresion((*q).par1))+";");
+		insertar(prog,tabs+"Until "+expresion(invert_expresion((*q).par1))+";");
 }
 
 void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs) {
@@ -151,7 +151,7 @@ void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string
 		// no hay paso en pascal, emular con una auxiliar: 
 		//      "para i desde 2 hasta 14 con paso 3 hacer ..." -> "para aux desde 0 hasta 4 hacer i=2+aux*3 ..."
 		if (paso[0]=='-') {
-			string aux=fin; fin=ini; ini=fin;
+			string aux=fin; fin=ini; ini=aux;
 			paso=paso.substr(1);
 		}
 		string auxvar=get_aux_varname("aux_para_");
@@ -174,7 +174,7 @@ void PascalExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, str
 	string *auxvars=new string[n];
 	for(int i=0;i<n;i++) auxvars[i]=get_aux_varname("aux_para_");
 	
-	string vname=var, indexes="";
+	string vname=var;
 	for(int i=0;i<n;i++) { 
 		string idx=auxvars[i];
 		memoria->DefinirTipo(idx,vt_numerica,true);
@@ -402,7 +402,7 @@ void PascalExporter::translate(t_output &out, t_programa &prog) {
 	
 	t_output_it it1=find(out.begin(),out.end(),string(linea_special_para_reemplazar_por_subprocesos));
 	it1=out.erase(it1); 
-	if (procedures.size()) {
+	if (!procedures.empty()) {
 		if (!for_test) it1=++out.insert(it1,"");
 		if (!for_test && has_matrix_func) {
 			it1=++out.insert(it1,"// Para poder pasar un arreglo como parametro a un procedimiento o a una funcion");
@@ -412,7 +412,7 @@ void PascalExporter::translate(t_output &out, t_programa &prog) {
 			it1=++out.insert(it1,"// código generado no es completamente correcto.");
 			it1=++out.insert(it1,"");
 		}
-		for(t_output_it it2=procedures.begin();it2!=procedures.end();it2++) it1=++out.insert(it1,*it2);
+		for(t_output_it it2=procedures.begin();it2!=procedures.end();++it2) it1=++out.insert(it1,*it2);
 	}
 	
 	t_output uses_const_type;
@@ -420,7 +420,7 @@ void PascalExporter::translate(t_output &out, t_programa &prog) {
 	
 	/*t_output_it */it1=find(out.begin(),out.end(),string(linea_special_para_reemplazar_por_uses_y_otros));
 	it1=out.erase(it1); if (!for_test) it1=++out.insert(it1,"");
-	for(t_output_it it2=uses_const_type.begin();it2!=uses_const_type.end();it2++) it1=++out.insert(it1,*it2);	
+	for(t_output_it it2=uses_const_type.begin();it2!=uses_const_type.end();++it2) it1=++out.insert(it1,*it2);	
 	
 }
 
