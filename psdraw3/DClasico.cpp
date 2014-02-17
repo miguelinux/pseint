@@ -37,7 +37,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 	glColor3fv(color);
 	glBegin(GL_QUAD_STRIP);
 	if (type==ET_PARA) {
-		make_trig;
+		make_trig();
 		w=w/2; h=h/2; y-=h;
 		for(int i=1;i<circle_steps;i+=2) { 
 			glVertex2i(x,y);
@@ -49,8 +49,8 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 		static int or1[]={2,3,4,1,5,0};
 		static int or2[]={0,5,1,4,2,3};
 		int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
-		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*or1[i]);
-		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*or2[i]);
+		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2i(v[2*or1[i]],v[2*or1[i]+1]);
+		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2i(v[2*or2[i]],v[2*or2[i]+1]);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x-w/2,y-h/2); glVertex2i(x,y-h);
@@ -67,7 +67,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 				glVertex2i(ax1-margin,ay-h/2);
 				glVertex2i(ax1-margin,ay+h/2);
 				static int or2[]={5,0,5,1,4,2,3};
-				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<7;i++) glVertex2iv(v+2*or2[i]);
+				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<7;i++) glVertex2i(v[2*or2[i]],v[2*or2[i]+1]);
 			}
 		} else {
 			glVertex2i(x+w/2+margin,y); glVertex2i(x-w/2+margin,y); 
@@ -94,8 +94,8 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		}
 	} else if (type==ET_PROCESO) {
 		int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
-		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
-		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
+		v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2i(v[2*i],v[2*i+1]);
+		v=calc_semicirculo(ax1,ay,-r,-h); for(int i=0;i<6;i++) glVertex2i(v[2*i],v[2*i+1]);
 	} else if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x,y-h); glVertex2i(x-w/2,y-h/2);
@@ -106,7 +106,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 				glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
 			} else {
 				int r=3*h/4,ax0=x+w/2-h,ax1=x-w/2+h,ay=y-h/2, *v;
-				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2iv(v+2*i);
+				v=calc_semicirculo(ax0,ay,r,h); for(int i=0;i<6;i++) glVertex2i(v[2*i],v[2*i+1]);
 				glVertex2i(ax1-margin,ay-h/2); 
 				glVertex2i(ax1-r,ay); 
 				glVertex2i(ax1-margin,ay+h/2); 
@@ -426,7 +426,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			child[3]->Calculate(vl,vr,vh); 
 			int v3=vl+vr;
 			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
-			else if (!edit_on && !child[2]->label.size()) { v2=0; child[2]->w==0; }
+			else if (!edit_on && !child[2]->label.size()) { v2=0; child[2]->w=0; }
 			
 			// calcular el acnho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;

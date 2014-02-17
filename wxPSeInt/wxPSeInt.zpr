@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
+current_source=mxConfig.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -79,11 +80,13 @@ path=mxUpdatesChecker.cpp
 cursor=-1:4416
 [source]
 path=mxConfig.cpp
-cursor=176:51
+cursor=86:0
+open=true
 [source]
 path=mxProfile.cpp
-cursor=117:23
+cursor=11:28
 marker=129
+open=true
 [source]
 path=mxArt.cpp
 cursor=-1:777
