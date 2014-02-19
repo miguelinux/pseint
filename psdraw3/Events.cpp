@@ -326,7 +326,7 @@ void keyboard_cb(unsigned char key/*, int x, int y*/) {
 		if (key==27) Salir();
 		return;
 	} else {
-		if (canvas->GetModifiers()&MODIFIER_CTRL) return;
+//		if (canvas->GetModifiers()&MODIFIER_CTRL) return;
 		edit->EditLabel(key);
 	}
 }
