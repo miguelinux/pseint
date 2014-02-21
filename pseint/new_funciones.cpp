@@ -100,7 +100,7 @@ string func_redon(string *arg) {
 	a=(StrToDbl(*arg));
 	b=(StrToDbl(str));
 	if (a<0) {a=-a;b=-b;}
-	if ((a-b)>.5) b=b+1;
+	if ((a-b)>=.5) b=b+1;
 	if ((*arg)[0]=='-') b=-b;
 	str=DblToStr(b);
 	return str;
