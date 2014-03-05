@@ -105,7 +105,7 @@ void RTSyntaxManager::ContinueProcessing() {
 					vars_window->Add(line.AfterFirst(' '),what=="PROCESO");
 				else
 					vars_window->Add(what,line.Last());
-			} else if (config->highlight_blocks) {
+			} else if (fase_num==2 && config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 
 					src->AddBlock(l1-1,l2-1);

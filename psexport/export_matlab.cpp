@@ -383,6 +383,7 @@ void MatLabExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		dims.erase(0,dims.find("(")+1);
 		dims.erase(dims.size()-1,1);
 		dims=expresion(dims);
+		if (dims.find(",")==string::npos) dims=string("1,")+dims;
 		// armar la linea que hace el new
 		if (memoria->LeerTipo(name)==vt_caracter) {
 			insertar(prog,tabs+ToLower(name)+"=cell("+dims+");");
