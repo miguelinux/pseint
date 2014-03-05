@@ -1,4 +1,5 @@
 function sin_titulo()
+	a=0;
 	a=1;
 	b=2.5;
 	c=true;

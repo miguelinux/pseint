@@ -4,7 +4,7 @@ function sin_titulo()
 	c=0;
 	porreferencia(c);
 	disp(c);
-	a=zeros(10);
+	a=zeros(1,10);
 	b=zeros(3,4);
 	recibevector(a);
 	recibematriz(b);

@@ -1,5 +1,5 @@
 function sin_titulo()
-	a=zeros(10);
+	a=zeros(1,10);
 	for i=1:10
 		a(i)=i*10;
 	end

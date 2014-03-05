@@ -394,3 +394,15 @@ void MatLabExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		++it;
 	}
 }
+
+void MatLabExporter::definir(t_output &prog, t_arglist &arglist, string tipo, string tabs) {
+	if (tipo=="ENTERO") tipo="0";
+	else if (tipo=="REAL") tipo="0";
+	else if (tipo=="LOGICO") tipo="false";
+	else tipo="\'\'";
+	t_arglist_it it=arglist.begin();
+	while (it!=arglist.end()) {
+		insertar(prog,tabs+*it+"="+tipo+";");
+		++it;
+	}
+}

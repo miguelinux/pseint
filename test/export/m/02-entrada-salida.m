@@ -1,4 +1,8 @@
 function sin_titulo()
+	a=0;
+	b=0;
+	c='';
+	d=false;
 	a=input('');
 	b=input('');
 	c=input('','s');
