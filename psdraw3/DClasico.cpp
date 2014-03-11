@@ -128,14 +128,34 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 }
 
 inline void DrawTrue(int x, int y) {
-	glVertex2d(x,y); glVertex2d(x-margin/2,y+2*vf_size);
-	glVertex2d(x,y); glVertex2d(x+margin/2,y+2*vf_size);
+//	// V
+//	glVertex2d(x,y); glVertex2d(x-margin/2,y+2*vf_size);
+//	glVertex2d(x,y); glVertex2d(x+margin/2,y+2*vf_size);
+	//S
+	glVertex2d(x,y+2*vf_size-margin/4); glVertex2d(x-vf_size,y+2*vf_size-margin/4);
+	glVertex2d(x-vf_size,y+2*vf_size-margin/4); glVertex2d(x-vf_size,y+vf_size);
+	glVertex2d(x-vf_size,y+vf_size); glVertex2d(x,y+vf_size);
+	glVertex2d(x,y+vf_size); glVertex2d(x,y+margin/4);
+	glVertex2d(x,y+margin/4); glVertex2d(x-vf_size,y+margin/4);
+	//I
+	glVertex2d(x+vf_size/2+margin/3,y);
+	glVertex2d(x+vf_size/2+margin/3,y+2*vf_size);
 }
 
 inline void DrawFalse(int x, int y) {
-	glVertex2d(x-vf_size/2,y); glVertex2d(x-vf_size/2,y+2*vf_size);
-	glVertex2d(x-vf_size/2,y+2*vf_size); glVertex2d(x+vf_size/2,y+2*vf_size);
-	glVertex2d(x-vf_size/2,y+vf_size); glVertex2d(x+vf_size/2,y+vf_size);
+//	// F
+//	glVertex2d(x-vf_size/2,y); glVertex2d(x-vf_size/2,y+2*vf_size);
+//	glVertex2d(x-vf_size/2,y+2*vf_size); glVertex2d(x+vf_size/2,y+2*vf_size);
+//	glVertex2d(x-vf_size/2,y+vf_size); glVertex2d(x+vf_size/2,y+vf_size);
+	//N
+	glVertex2d(x-vf_size-margin/3,y); glVertex2d(x-vf_size-margin/3,y+2*vf_size);
+	glVertex2d(x-vf_size-margin/3,y+2*vf_size);glVertex2d(x-margin/3,y);
+	glVertex2d(x-margin/3,y);glVertex2d(x-margin/3,y+2*vf_size);
+	//O
+	glVertex2d(x+margin/3,y+margin/4);glVertex2d(x+margin/3,y+2*vf_size-margin/4);
+	glVertex2d(x+margin/3,y+2*vf_size-margin/4);glVertex2d(x+vf_size+margin/3,y+2*vf_size-margin/4);
+	glVertex2d(x+vf_size+margin/3,y+2*vf_size-margin/4);glVertex2d(x+vf_size+margin/3,y+margin/4);
+	glVertex2d(x+vf_size+margin/3,y+margin/4);glVertex2d(x+margin/3,y+margin/4);
 }
 
 inline void DrawFlechaDown(int x, int y1, int y2) {
