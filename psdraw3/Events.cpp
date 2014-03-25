@@ -280,7 +280,7 @@ void mouse_cb(int button, int state, int x, int y) {
 				if (button==ZMB_RIGHT) {
 					aux->SetEdit(); return;
 				} else {
-					if (canvas->GetModifiers()==MODIFIER_SHIFT) {
+					if (aux->type!=ET_PROCESO && canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
 						aux=DuplicateEntity(aux);
 						aux->SetEdit();
 					} 
