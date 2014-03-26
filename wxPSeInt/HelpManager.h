@@ -14,8 +14,8 @@ public:
 	HelpManager();
 	void LoadErrors();
 	void LoadCommands();
-	wxString GetErrorText(wxString text, int num);
-	wxString GetCommandText(wxString command);
+	wxString GetErrorText(const wxString &text, int num);
+	wxString GetCommandText(const wxString &command);
 	wxString GetQuickHelp(wxString key);
 	~HelpManager();
 };

@@ -14,6 +14,8 @@ class wxStaticText;
 class wxScrollBar;
 class mxDesktopTestPanel;
 
+enum QH_CODE { QH_LASTERR=10000, QH_QUICKHELP, QH_HELP_LOAD, QH_HELP_SET, QH_SYNCHECK, QH_RT_NOERROR, QH_RT_SELECTERROR, QH_NULL };
+
 class mxMainWindow : public wxFrame {
 private:
 	friend class DebugManager;
@@ -110,6 +112,7 @@ public:
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];
 	
+	void SetQuickHelpText(int code, const wxString &argument=wxEmptyString, bool force_error=false); ///< carga un texto en el panel de ayuda rapida (evita recargar nuevamente el mismo si se llama varias veces con el mismo contenido)
 	void OnClose(wxCloseEvent &evt);
 	void OnSelectError(wxTreeEvent &evt);
 	void SelectError(wxString text);
@@ -195,6 +198,8 @@ public:
 	void RTreeReset();
 	void RTreeAdd(wxString text, int type, mxSource *source=NULL);
 	void RTreeDone(bool show, bool error);
+	
+	void OnKillFocus(wxFocusEvent &event);
 	
 	DECLARE_EVENT_TABLE();
 };

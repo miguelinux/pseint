@@ -1321,7 +1321,8 @@ void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
 	if (il<0||il>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[il];
 	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
-	main_window->quick_html->SetPage(help->GetErrorText(msg,e.n));
+	main_window->SetQuickHelpText(e.n,msg);
+//	main_window->quick_html->SetPage(help->GetErrorText(msg,e.n));
 }
 
 void mxSource::ShowRealTimeError (int pos, const wxString & l) {
@@ -1329,8 +1330,11 @@ void mxSource::ShowRealTimeError (int pos, const wxString & l) {
 }
 
 void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
-	if (current_calltip.is_error && if_is_error) CallTipCancel();
-	else if (!current_calltip.is_error && if_is_not_error) CallTipCancel();
+	if (current_calltip.is_error && if_is_error) {
+		CallTipCancel();
+		main_window->SetQuickHelpText(rt_errors.empty()?QH_RT_NOERROR:QH_RT_SELECTERROR);
+		
+	} else if (!current_calltip.is_error && if_is_not_error) CallTipCancel();
 }
 
 int mxSource::GetIndent(int line) {
@@ -1575,7 +1579,8 @@ void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
 	if (l<0||l>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[l];
 	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
-	main_window->ShowQuickHelp(true,help->GetErrorText(msg,e.n));
+	main_window->ShowQuickHelp(true);
+	main_window->SetQuickHelpText(e.n,msg,true);
 }
 
 void mxSource::ProfileChanged ( ) {
@@ -1618,7 +1623,8 @@ void mxSource::OnMarginClick (wxStyledTextEvent & event) {
 	while ( p<pl && !(GetStyleAt(p)&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) ) p++;
 	if (p<pl) {
 		main_window->ShowQuickHelp(true);
-		GotoPos(p);
+		main_window->SetQuickHelpText(QH_NULL); // para que muestre la ayuda rapida..
+		GotoPos(p); 
 	}
 }
 
