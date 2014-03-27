@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 				s+=" | grep \"not found\" | cut -d . -f 1";
 				system(s.c_str());
 				cerr<<endl;
-				cerr<<"Por ejemplo, si la biblioteca faltante es \"libpng12.so.0\", podría instalarla con:"<<endl
+				cerr<<"Por ejemplo, si la biblioteca faltante es \"libpng12.so.0\", podría instalarla con:"<<endl;
 				cerr<<"    En Debian/Ubuntu y derivados, el comando: \"sudo apt-get install libpng12-0\""<<endl;
 				cerr<<"    En Arch Linux, el comando: \"sudo pacman -S libpng12\""<<endl;
 				cerr<<"    En Fedora, el comando: \"yum install libpng12"<<endl;

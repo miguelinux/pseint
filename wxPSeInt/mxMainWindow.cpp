@@ -1867,7 +1867,9 @@ void mxMainWindow::RTreeDone (bool show, bool error) {
 	else if (result_tree_text_level==1) results_tree_text<<"</LI></UL>";
 	result_tree_done=true;
 	if (_avoid_results_tree) {
-		if (results_tree_text.Len()) ShowQuickHelp(true,results_tree_text);
+		if (results_tree_text.Len()) {
+			ShowQuickHelp(true); SetQuickHelpText(QH_SYNCHECK);
+		}
 	} else {
 		ShowResults(show,!error);
 		SelectFirstError();
@@ -1901,8 +1903,8 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 			quick_html->SetPage(argument);
 			break;
 		case QH_SYNCHECK:
-			_set_quick_help_check_both;
-			
+			_set_quick_help_check_code;
+			quick_html->SetPage(results_tree_text);
 			break;
 		case QH_RT_NOERROR:
 			if (last_code>=QH_LASTERR && last_code!=QH_RT_SELECTERROR) return; // no reemplazar si no era un mensaje de error
@@ -1915,7 +1917,7 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 			quick_html->SetPage("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles.");
 			break;
 		default:
-			last_code=code; // solo debería pasar para NULL
+			last_code=code; // solo debería pasar para QH_NULL
 		}
 	}
 }
