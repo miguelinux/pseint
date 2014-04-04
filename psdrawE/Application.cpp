@@ -149,7 +149,7 @@ bool mxApplication::OnInit() {
 			_IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP",
 			wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (fd.ShowModal()!=wxID_OK) { return false;  }
-		wxString fout=fd.GetPath();
+		fout=fd.GetPath();
 	}
 	
 	wxBitmapType type;
