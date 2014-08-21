@@ -1,8 +1,8 @@
 OBJS_DIR=../temp/trm_lnx_rls
 GPP=g++
 GCC=gcc
-CXXFLAGS= -O2 `wx-config --cppflags --unicode=no`
-LIBS= -s  `wx-config --libs --unicode=no` -lwx_gtk2_stc-2.8 
+CXXFLAGS= -O2 `wx-config --cppflags --unicode=no --version=2.8`
+LIBS= -s  `wx-config --libs --unicode=no --version=2.8`
 
 all: ${OBJS_DIR} ../bin/psterm
 

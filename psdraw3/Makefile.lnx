@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/drw3_lnx_rls
 GPP=g++
-CXXFLAGS= -O2 `wx-config --cppflags --unicode=no` -D_USE_TEXTURES
-LIBS= -s -lwx_gtk2_gl-2.8 -lGL -lGLU -lglut -lGL `wx-config --libs --unicode=no`
+CXXFLAGS= -O2 `wx-config --cppflags --unicode=no --version=2.8` -D_USE_TEXTURES
+LIBS= -s -lwx_gtk2_gl-2.8 -lGL -lGLU -lglut -lGL `wx-config --libs --unicode=no --version=2.8`
 
 all: ${OBJS_DIR} ../bin/psdraw3
 

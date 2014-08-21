@@ -1,8 +1,8 @@
 OBJS_DIR=../temp/drwE_lnx_rls
 GPP=g++
 GCC=gcc
-CXXFLAGS= -O2 `wx-config --cppflags --unicode=no` -D_FOR_EXPORT -I.
-LIBS= -s  `wx-config --libs --unicode=no` -lwx_gtk2_stc-2.8 
+CXXFLAGS= -O2 `wx-config --cppflags --unicode=no --version=2.8` -D_FOR_EXPORT -I.
+LIBS= -s  `wx-config --libs --unicode=no --version=2.8` -lwx_gtk2_stc-2.8 
 
 all: ${OBJS_DIR} ../bin/psdrawE
 
