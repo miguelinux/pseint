@@ -49,6 +49,7 @@ public:
 	// eventos que recibe desde console
 	void OnProcessTerminated();
 	void SetIsPresent(bool is);
+	void SendLocation(int line, int inst); ///< envia un mensaje al editor para indicar que debe marcar una instruccion
 	DECLARE_EVENT_TABLE();
 };
 

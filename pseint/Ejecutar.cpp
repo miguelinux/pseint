@@ -87,6 +87,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					cadena.erase(0,aux1.size()+1);
 					
 					if (colored_output) setForeColor(COLOR_OUTPUT);
+					if (with_io_references) Inter.SendPositionToTerminal();
 					tipo_var x;
 					_sub(line,string("Se evalúa la expresion: ")+aux1);
 					aux1=Evaluar(aux1,x);
@@ -134,6 +135,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub(line,string("El resultado es ")+aux2);
 					}
 					
+					if (with_io_references) Inter.SendPositionToTerminal();
 					if (colored_output) setForeColor(COLOR_INFO);
 					cout<<"> "<<flush;
 					if (colored_output) setForeColor(COLOR_INPUT);

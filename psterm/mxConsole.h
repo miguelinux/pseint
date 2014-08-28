@@ -12,7 +12,6 @@ class mxFrame;
 class mxConsole : public wxPanel {
 	
 public:
-	
 	mxFrame *parent; ///< para avisarle de algunos eventos
 	wxScrollBar *scroll; ///< barra para moverse en el tiempo (es de la ventana padre, pero la ajusta la consola)
 	
@@ -51,9 +50,16 @@ public:
 	int char_w; ///< width in pixels for a char with current fontsize
 	int char_h; ///< height in pixels for a char with current fontsize
 	int bg; ///< index for current console background color (the same for the whole console)
+	struct code_location { ///< linea and instruction number in source pseudocode
+		int line, inst;
+		code_location():line(-1),inst(-1){}
+		bool IsValid() const { return line!=-1&&inst!=-1; }
+		bool operator==(const code_location &o) { return o.line==line&&o.inst==inst; }
+	};
 	struct console_char { ///< data for each visible char in the console
 		wxChar the_char; ///< the char to show
 		int fg; ///< index for forground color
+		code_location loc; ///< instruccion en el pseudocódigo de la instruccion que genero esta entrada/salida
 		console_char():the_char(' '),fg(0){}
 	};
 	console_char *buffer; ///< current content for the visible part of the console (size buffer_w*buffer_h), ordered by rows
@@ -64,6 +70,7 @@ public:
 	int cur_fg; ///< index for current text foreground color, will be used for printing int Print
 	int cur_x; ///< current x caret position
 	int cur_y; ///< current y caret position
+	code_location cur_loc; ///< current instruccion in source pseudo-code (that is generating that input/output)
 	
 	wxFont font; ///< current font
 	void OnMouseWheel(wxMouseEvent &evt); ///< scroll y zoom
@@ -107,6 +114,8 @@ public:
 	void GotoXY(int x, int y, bool record);
 	void Reset(bool hard=false);
 	void Dimm(); ///< pinta el texto "apagado" para indicar que esta salida está desactualizada respecto del algortimo
+
+	void GetSourceLocationFromOutput(int pos); ///< envia una posicion al editor para que muestre que linea genero una entrada/salida
 	
 	DECLARE_EVENT_TABLE();
 	

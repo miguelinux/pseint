@@ -120,9 +120,7 @@ void Intercambio::SendSubtitle(string _str) {
 #endif
 }
 
-void Intercambio::SetLineAndInstructionNumber(int _i) {
-	lineNumber=programa[_i].num_linea; 
-	instNumber=programa[_i].num_instruccion;
+void Intercambio::SendPositionToGUI () {
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR && (!debugLevel || backtraceLevel<=debugLevel)) { // si estamos depurando, informar la linea y esperar
 		string str;
@@ -130,7 +128,11 @@ void Intercambio::SetLineAndInstructionNumber(int _i) {
 		else str=string("linea ")+IntToStr(lineNumber)+"\n";
 		zocket_escribir(zocket,str.c_str(),str.size());
 	}
-#endif
+#endif	
+}
+
+void Intercambio::SendPositionToTerminal () {
+	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<<';';
 }
 		
 void Intercambio::ChatWithGUI () {
@@ -241,7 +243,6 @@ void Intercambio::InitDebug(int _delay) {
 int Intercambio::Archivo_Size(){return (int)Archivo.size();}
 void Intercambio::AddLine(string s){Archivo.push_back(s);}
 void Intercambio::AddLine(char *s){Archivo.push_back(s);}
-//string Intercambio::GetLine(int x){return Archivo[x];}
 
 // *****************************************************************
 
@@ -286,5 +287,10 @@ int Intercambio::GetBacktraceLevel ( ) {
 
 FrameInfo Intercambio::GetFrame(int level) {
 	return backtrace[level];
+}
+
+void Intercambio::SetLineAndInstructionNumber (int _i) {
+	lineNumber=programa[_i].num_linea; 
+	instNumber=programa[_i].num_instruccion; 
 }
 

@@ -92,7 +92,13 @@ void mxSocketClient::ProcessCommand ( ) {
 }
 
 void mxSocketClient::ProcessCommandRun() {
-	if (buffer=="terminated") {
+	if (buffer.StartsWith("location ")) {
+		mxSource *src=main_window->FindSourceById(src_id);
+		buffer=buffer.AfterFirst(' ');
+		long line,inst; 
+		if (src && buffer.BeforeFirst(':').ToLong(&line) && buffer.AfterFirst(':').ToLong(&inst))
+			src->SelectInstruccion(line-1,inst-1);
+	} else if (buffer=="activated") {
 		mxSource *src=main_window->FindSourceById(src_id);
 		if (src) main_window->ParseResults(src);
 	} else if (buffer=="activated") {

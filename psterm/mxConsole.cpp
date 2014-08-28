@@ -37,9 +37,10 @@ END_EVENT_TABLE()
 // pseint maneja los colores (16 posibles), esta lista es el mapeo de esos 16 
 // en psterm (la primer columna), y sus versiones desvanecidas (las segunda 
 // columna) para cuando la terminal quedo desactualizada con respecto al editor, 
-// y en ese caso el mensaje se muestra con el ultimo color extra
+// y en ese caso el mensaje se muestra con el color extra 16; y finalmente el 
+// 17 es para el color (seleccion,normal)
 
-static wxColour colors_black[17][2] = {
+static wxColour colors_black[18][2] = {
 	{wxColour(0  ,0  ,0),	wxColour(127,127,127)},
 	{wxColour(127,0  ,0),	wxColour(0,0,0)},
 	{wxColour(0  ,127,0),	wxColour(0,0,0)},
@@ -56,10 +57,11 @@ static wxColour colors_black[17][2] = {
 	{wxColour(255,  0,255),	wxColour(0,0,0)},
 	{wxColour(0  ,255,255),	wxColour(0,0,0)},
 	{wxColour(255,255,255),	wxColour(0,0,0)},
-	{wxColour(20,20,20),	wxColour(75,75,75)} 
+	{wxColour(20,20,20),	wxColour(75,75,75)},
+	{wxColour(50,50,50),	wxColour(0,0,0)}  // seleccion,fondo normal
 };
 
-static wxColour colors_white[17][2] = {
+static wxColour colors_white[18][2] = {
 	{wxColour(255,255,255),	wxColour(127,127,127)},
 	{wxColour(255,0  ,0),	wxColour(0,0,0)},
 	{wxColour(0  ,255,0),	wxColour(0,0,0)},
@@ -76,7 +78,8 @@ static wxColour colors_white[17][2] = {
 	{wxColour(127,  0,127),	wxColour(0,0,0)},
 	{wxColour(0  ,127,127),	wxColour(0,0,0)},
 	{wxColour(127,127,127),	wxColour(0,0,0)},
-	{wxColour(110,110,110),	wxColour(225,225,225)}
+	{wxColour(110,110,110),	wxColour(225,225,225)},
+	{wxColour(200,200,200),	wxColour(255,255,255)}  // seleccion,null
 };
 
 static wxColour (*colors)[2]=colors_white;
@@ -129,13 +132,12 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) CalcResize();
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(colors[bg][0]);
-	dc.SetTextBackground(colors[bg][0]);
+	dc.SetBackground(colors[17][1]);
+	dc.SetTextBackground(colors[17][1]);
 	dc.Clear();
 	if (selection_end!=-1) {
-		wxColour sel_color(50,50,50);
-		dc.SetPen(wxPen(sel_color));
-		dc.SetBrush(wxBrush(sel_color));
+		dc.SetPen(wxPen(colors[17][0]));
+		dc.SetBrush(wxBrush(colors[17][0]));
 		if (selection_start<selection_end)
 			for(int i=selection_start;i<=selection_end;i++)
 				dc.DrawRectangle(margin+(i%buffer_w)*char_w,margin+(i/buffer_w)*char_h,char_w,char_h);
@@ -246,6 +248,7 @@ void mxConsole::Print (wxString text, bool record/*, bool do_print*/) {
 			}
 			_buffer(cur_y,cur_x).the_char=' ';
 		} else {
+			_buffer(cur_y,cur_x).loc=cur_loc;
 			_buffer(cur_y,cur_x).the_char=text[i];
 			_buffer(cur_y,cur_x).fg=cur_fg;
 			cur_x++;
@@ -289,7 +292,21 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
-			if (input[i+2]=='z' && input[i+3]=='r') { // raise window
+			if (input[i+2]=='z' && input[i+3]=='p') { // raise window
+				int j=i+4, i0=i; 
+				int &cur_line=cur_loc.line, &cur_inst=cur_loc.inst;
+				cur_line=cur_inst=0;
+				while (input[j]>='0'&&input[j]<='9') {
+					cur_line=cur_line*10+(input[j]-'0');
+					j++;
+				}
+				i=j+1;
+				while (input[i]>='0'&&input[i]<='9') {
+					cur_inst=cur_inst*10+(input[i]-'0');
+					i++;
+				}
+				if (record) history<<input.Mid(i0,i-i0+1);
+			} else if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
 				int j=i+4; while (j<int(input.Len()) && input[j]!='\n') j++;
@@ -403,8 +420,9 @@ void mxConsole::GetProcessOutput (bool refresh) {
 	if (!the_process) return;
 	wxTextInputStream input(*(the_process->GetInputStream()));
 	wxString line;
-	while (the_process->IsInputAvailable())
+	while (the_process->IsInputAvailable()) {
 		line<<input.GetChar();
+	}
 	if (line.Len()) { 
 		if (cur_event!=-1) SetTime(int(events.size()));
 		Process(line,true/*,cur_event==-1*/); 
@@ -508,7 +526,7 @@ void mxConsole::SetTime (int t) {
 
 void mxConsole::RebuildBuffer ( ) {
 	selection_end=-1;
-	ClearBuffer(); cur_x=cur_y=0;
+	ClearBuffer(); cur_x=cur_y=0; cur_loc.line=cur_loc.inst=-1;
 	Process(history, false);
 	Refresh();
 }
@@ -542,6 +560,8 @@ void mxConsole::OnMouseLeftDown (wxMouseEvent & evt) {
 
 void mxConsole::OnMouseLeftUp (wxMouseEvent & evt) {
 	selecting=false;
+	if (selection_end==-1) 
+		GetSourceLocationFromOutput(selection_start);
 	evt.Skip();
 }
 
@@ -612,5 +632,14 @@ void mxConsole::OnCopy (wxCommandEvent & evt) {
 	wxTheClipboard->Open();
 	wxTheClipboard->SetData(new wxTextDataObject(res));
 	wxTheClipboard->Close();
+}
+
+void mxConsole::GetSourceLocationFromOutput (int pos) {
+	selection_start=pos; selection_end=pos;
+	if (!buffer[pos].loc.IsValid()) return;
+	while (selection_start>0 && buffer[selection_start-1].loc==buffer[pos].loc) selection_start--;
+	while (selection_end+1<buffer_w*buffer_h && buffer[selection_end+1].loc==buffer[pos].loc) selection_end++;
+	Refresh();
+	parent->SendLocation(buffer[pos].loc.line,buffer[pos].loc.inst);
 }
 

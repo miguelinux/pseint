@@ -73,7 +73,9 @@ public:
 	void InitDebug(int _delay); // si _delay!=0 inicializa la ejecución paso a paso enviando el hello y esperando la primer instruccion
 	void SetPort(int p);
 #endif
-	void SetLineAndInstructionNumber(int _i); // avisa a la gui en que linea va
+	void SetLineAndInstructionNumber(int _i); // define cual es la instruccion que se va a ejecutar a continuacion
+	void SendPositionToGUI(); // avisa a la gui en que instruccion va
+	void SendPositionToTerminal(); // avisa a la terminal en que instruccion va
 	void ChatWithGUI(); // espera respuesta de la gui para avanzar
 	void SendSubtitle(string _str); // envia el texto para el subtitulo a la gui
 	
@@ -87,7 +89,6 @@ public:
 	int Archivo_Size();
 	void AddLine(string s);
 	void AddLine(char *s);
-	string GetLine(int x);
 	
 	// Manejo de errores
 	int Errores_Size();
@@ -105,10 +106,10 @@ public:
 	
 };
 
-#define _sub_msg(i,s) { if (Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); } }
+#define _sub_msg(i,s) { Inter.SetLineAndInstructionNumber(i); if (Inter.subtitles_on) { Inter.SendPositionToGUI(); Inter.SendSubtitle(s); } }
 #define _sub_wait() { if (Inter.subtitles_on) Inter.ChatWithGUI(); }
-#define _sub(i,s) { if (Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
-#define _pos(i) { if (!Inter.subtitles_on) { Inter.SetLineAndInstructionNumber(i); Inter.ChatWithGUI(); } }
+#define _sub(i,s) { Inter.SetLineAndInstructionNumber(i); if (Inter.subtitles_on) { Inter.SendPositionToGUI(); Inter.SendSubtitle(s); Inter.ChatWithGUI(); } }
+#define _pos(i) { Inter.SetLineAndInstructionNumber(i); if (!Inter.subtitles_on) { Inter.SendPositionToGUI(); Inter.ChatWithGUI(); } }
 #define _sub_raise() { if (Inter.subtitles_on && for_pseint_terminal) { cout<<"\033[zr"; } }
 
 extern Intercambio Inter;        // clase para enviar informacion de depuración al editor

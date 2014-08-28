@@ -167,7 +167,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	temp = source->GetTempFilenameOUT();
 	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
-	if (config->use_psterm) command<<_T(" --forpseintterminal");
+	if (config->use_psterm) command<<_T(" --forpseintterminal --withioreferences");
 #ifdef __WIN32__
 	if (!config->use_psterm) command<<" --fixwincharset";
 #endif

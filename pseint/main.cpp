@@ -152,6 +152,8 @@ int main(int argc, char* argv[]) {
 				for_pseint_terminal=true;
 			} else if (str=="--writepositions") {
 				write_positions=true;
+			} else if (str=="--withioreferences") {
+				with_io_references=true;
 			} else 
 				error=true;
 		} else {

@@ -170,3 +170,10 @@ void mxFrame::OnFocus (wxActivateEvent & evt) {
 	evt.Skip();
 }
 
+void mxFrame::SendLocation (int line, int inst) {
+	if (socket && already_connected) {
+		wxString msg("location "); msg<<line<<":"<<inst<<"\n";
+		socket->Write(msg.c_str(),msg.Len());
+	}
+}
+
