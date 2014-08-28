@@ -420,7 +420,8 @@ void mxConsole::GetProcessOutput (bool refresh) {
 	if (!the_process) return;
 	wxTextInputStream input(*(the_process->GetInputStream()));
 	wxString line;
-	while (the_process->IsInputAvailable()) {
+	int watchdog=0;
+	while (the_process->IsInputAvailable() && ++watchdog<100000) {
 		line<<input.GetChar();
 	}
 	if (line.Len()) { 
