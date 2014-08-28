@@ -357,3 +357,20 @@ void ExporterBase::release_aux_varname(string vname) {
 	if (vname!=aux_varnames.back()) cerr<<"ERROR RELEASING AUX VARNAME\n";
 	aux_varnames.pop_back();
 }
+
+void ExporterBase::crop_name_and_dims(string decl, string &name, string &dims, string c1, string c2, string c3) {
+	name=decl; dims=decl;
+	name.erase(name.find("("));
+	dims.erase(0,dims.find("(")+1);
+	dims.erase(dims.size()-1,1);
+	t_arglist dimlist;
+	sep_args(dims,dimlist);
+	dims=c1; int n=0;
+	t_arglist_it it2=dimlist.begin();
+	while (it2!=dimlist.end()) {
+		if ((n++)) dims+=c2;
+		dims+=expresion(*it2);
+		++it2;
+	}
+	dims+=c3;
+}

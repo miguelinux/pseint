@@ -323,20 +323,7 @@ void JavaExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 	t_arglist_it it=args.begin();
 	while (it!=args.end()) {
 		// obtener nombre y dimensiones
-		string name=*it, dims=*it;
-		name.erase(name.find("("));
-		dims.erase(0,dims.find("(")+1);
-		dims.erase(dims.size()-1,1);
-		t_arglist dimlist;
-		sep_args(dims,dimlist);
-		dims="";
-		t_arglist_it it2=dimlist.begin();
-		while (it2!=dimlist.end()) {
-			dims+="[";
-			dims+=expresion(*it2);
-			dims+="]";
-			++it2;
-		}
+		string name,dims; crop_name_and_dims(*it,name,dims,"[","][","]");
 		// armar la linea que hace el new
 		string stipo=translate_tipo(memoria->LeerTipo(name));
 		insertar(prog,tabs+ToLower(name)+"=new "+stipo+dims+";");

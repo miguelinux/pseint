@@ -16,6 +16,7 @@
 #include "export_javascript.h"
 #include "export_html.h"
 #include "export_matlab.h"
+#include "export_cs.h"
 using namespace std;
 
 // otras funciones
@@ -174,6 +175,7 @@ int main(int argc, char *argv[]){
 			s.erase(0,7); 
 			if (s=="c" || s=="c99") exporter=new CExporter();
 			else if (s=="c++" || s=="cpp" || s=="c++98" || s=="cpp98" || s=="c++03" || s=="cpp03") exporter=new CppExporter();
+			else if (s=="c#" || s=="cs" || s=="csharp") exporter=new CSharpExporter();
 			else if (s=="htm" || s=="html") exporter=new HTMLExporter();
 			else if (s=="java") exporter=new JavaExporter();
 			else if (s=="js" || s=="javascript") exporter=new JavaScriptExporter();
