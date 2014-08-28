@@ -67,6 +67,7 @@ void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
 }
 
 void mxSocketClient::ProcessCommand ( ) {
+	cerr<<"COMMAND: "<<buffer<<endl;
 	if (type==MXS_TYPE_DEBUG) debug->ProcSocketData(buffer);
 	else if (type==MXS_TYPE_FLOW) ProcessCommandFlow();
 	else if (type==MXS_TYPE_RUN) ProcessCommandRun();
@@ -98,7 +99,7 @@ void mxSocketClient::ProcessCommandRun() {
 		long line,inst; 
 		if (src && buffer.BeforeFirst(':').ToLong(&line) && buffer.AfterFirst(':').ToLong(&inst))
 			src->SelectInstruccion(line-1,inst-1);
-	} else if (buffer=="activated") {
+	} else if (buffer=="terminated") {
 		mxSource *src=main_window->FindSourceById(src_id);
 		if (src) main_window->ParseResults(src);
 	} else if (buffer=="activated") {
