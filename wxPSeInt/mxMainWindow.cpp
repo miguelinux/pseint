@@ -239,6 +239,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _T("Convertir a código C (c)..."),_T(""),_T("exp_c.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _T("Convertir a código C++98/03 (cpp)..."),_T(""),_T("exp_cpp.png"));
 //	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP11, _T("Convertir a código C++11 (cpp)..."),_T(""),_T("exp_cpp.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CSHARP, _T("Convertir Código C# (cs)..."),_T(""),_T("exp_cs.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_HTML, _T("Convertir a página HTML (JavaScript embebido) (html)..."),_T(""),_T("exp_html.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _T("Convertir a código Java (java)..."),_T(""),_T("exp_java.png"));
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _T("Convertir a código JavaScript (js)..."),_T(""),_T("exp_js.png"));
@@ -491,6 +492,7 @@ void mxMainWindow::OnFileExportLang(wxCommandEvent &evt) {
 			switch(evt.GetId()) {
 				case mxID_FILE_EXPORT_LANG_VB: 		lang="vb"; 		break;
 				case mxID_FILE_EXPORT_LANG_C: 		lang="c"; 		break;
+				case mxID_FILE_EXPORT_LANG_CSHARP: 	lang="cs";	 	break;
 				case mxID_FILE_EXPORT_LANG_CPP03: 	lang="cpp03"; 	break;
 				case mxID_FILE_EXPORT_LANG_CPP11: 	lang="cpp11"; 	break;
 				case mxID_FILE_EXPORT_LANG_PHP: 	lang="php"; 	break;

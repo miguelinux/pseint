@@ -10,12 +10,12 @@ int main() {
 	char e[MAX_STRLEN];
 	char f[MAX_STRLEN];
 	SIN_TIPO p;
-	a=1;
-	b=2.5;
-	c=true;
-	d=false;
-	e="Hola";
-	f="Hola Mundo";
+	a = 1;
+	b = 2.5;
+	c = true;
+	d = false;
+	e = "Hola";
+	f = "Hola Mundo";
 	scanf("%s",p);
 	printf("%s\n",p);
 	return 0;

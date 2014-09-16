@@ -10,7 +10,7 @@ int main() {
 	int n;
 	scanf("%i",&n);
 	scanf("%s",a[0]);
-	a[9]=a[0];
+	a[9] = a[0];
 	printf("%s\n",b[9][9]);
 	return 0;
 }

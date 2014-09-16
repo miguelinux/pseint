@@ -12,7 +12,7 @@ char *get_aux_buffer(double t);
 int main() {
 	char s[MAX_STRLEN];
 	float x;
-	x=1.5;
+	x = 1.5;
 	printf("%f\n",sqrtf(x));
 	printf("%f\n",abs(x));
 	printf("%f\n",log(x));
@@ -26,7 +26,7 @@ int main() {
 	printf("%f\n",floor((x)+.5));
 	printf("%f\n",floor(x));
 	printf("%f\n",(rand()%15));
-	s="Hola";
+	s = "Hola";
 	printf("%f\n",strlen(s));
 	printf("%s\n",minusculas(s));
 	printf("%s\n",mayusculas(s));
@@ -40,31 +40,31 @@ int main() {
 #define MAX_BUFFERS 10
 char *get_aux_buffer(double t) {
 	static char buffers[MAX_BUFFERS][MAX_STRLEN];
-	static int count=-1;
-	count=count+1;
-	if(count==MAX_BUFFERS) count=0;
+	static int count = -1;
+	count = count+1;
+	if(count==MAX_BUFFERS) count = 0;
 	return buffers[count];
 }
 char *convertiratexto(float f) {
-	char *buf=get_aux_buffer();
+	char *buf = get_aux_buffer();
 	sprintf(buf,"%f",f);
 	return buf;
 }
 char *mayusculas(const char *s) {
-	char *buf=get_aux_buffer();
+	char *buf = get_aux_buffer();
 	for(unsigned int i=0;i<s.size();i++)
-		buf[i]=toupper(s[i]);
+		buf[i] = toupper(s[i]);
 	return buf;
 }
 char *minusculas(const char *s) {
-	char *buf=get_aux_buffer();
+	char *buf = get_aux_buffer();
 	for(unsigned int i=0;i<s.size();i++)
-		buf[i]=tolower(s[i]);
+		buf[i] = tolower(s[i]);
 	return buf;
 }
 char *subcadena(const char *s, int desde, int cuantos) {
-	char *buf=get_aux_buffer();
+	char *buf = get_aux_buffer();
 	strncpy(buf,s+desde,cuantos);
-	buf[cuantos]='\0';
+	buf[cuantos] = '\0';
 	return buf;
 }

@@ -1,6 +1,6 @@
 function sin_titulo() {
 	var s, x;
-	x=1.5;
+	x = 1.5;
 	document.write(Math.sqrt(x),'<BR/>');
 	document.write(Math.abs(x),'<BR/>');
 	document.write(Math.log(x),'<BR/>');
@@ -14,7 +14,7 @@ function sin_titulo() {
 	document.write(Math.round(x),'<BR/>');
 	document.write(Math.trunc(x),'<BR/>');
 	document.write(Math.floor(Math.random()*15),'<BR/>');
-	s="Hola";
+	s = "Hola";
 	document.write(s.length,'<BR/>');
 	document.write(String.toLowerCase(s),'<BR/>');
 	document.write(String.toUpperCase(s),'<BR/>');

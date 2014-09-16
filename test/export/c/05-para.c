@@ -6,15 +6,15 @@ int main() {
 	int i;
 	int j;
 	for (i=1;i<=10;i+=1) {
-		a[i-1]=i*10;
+		a[i-1] = i*10;
 	}
 	for (typeof(&(a[0])) elemento=&(a[0]);elemento<=&(a[9]);elemento++) {
 		printf("%s\n",(*elemento));
 	}
-	c=0;
+	c = 0;
 	for (typeof(&(b[0][0])) x=&(b[0][0]);x<=&(b[2][5]);x++) {
-		c=c+1;
-		(*x)=c;
+		c = c+1;
+		(*x) = c;
 	}
 	for (i=3;i>=1;i-=1) {
 		for (j=1;j<=5;j+=2) {

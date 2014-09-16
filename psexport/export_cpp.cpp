@@ -28,9 +28,9 @@ CppExporter::CppExporter() {
 
 void CppExporter::borrar_pantalla(t_output &prog, string param, string tabs){
 	if (for_test)
-		insertar(prog,tabs+"cout<<endl;");
+		insertar(prog,tabs+"cout << endl;");
 	else
-		insertar(prog,tabs+"cout<<endl; // no hay forma directa de borrar la pantalla con C++ estandar");
+		insertar(prog,tabs+"cout << endl; // no hay forma directa de borrar la pantalla con C++ estandar");
 }
 
 void CppExporter::esperar_tecla(t_output &prog, string param, string tabs){
@@ -64,18 +64,18 @@ void CppExporter::escribir(t_output &prog, t_arglist args, bool saltar, string t
 	t_arglist_it it=args.begin();
 	string linea="cout";
 	while (it!=args.end()) {
-		linea+="<<";
+		linea+=" << ";
 		linea+=expresion(*it);
 		++it;
 	}
-	insertar(prog,tabs+linea+(saltar?"<<endl;":";"));
+	insertar(prog,tabs+linea+(saltar?" << endl;":";"));
 }
 
 void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	t_arglist_it it=args.begin();
 	string linea="cin";
 	while (it!=args.end()) {
-		linea+=">>";
+		linea+=" >> ";
 		tipo_var t;
 		linea+=expresion(*it,t);
 		if (t==vt_caracter) read_strings=true;
@@ -85,7 +85,7 @@ void CppExporter::leer(t_output &prog, t_arglist args, string tabs) {
 }
 
 void CppExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	insertar(prog,tabs+param1+"="+param2+";");
+	insertar(prog,tabs+param1+" = "+param2+";");
 }
 
 void CppExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
@@ -177,7 +177,7 @@ void CppExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, strin
 	}
 	string ptr=get_aux_varname("aux_ptr_");
 	insertar(prog,tabs+"for (typeof(&("+first+")) "+ptr+"=&("+first+");"+ptr+"<=&("+last+");"+ptr+"++) {");
-	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+"=*"+ptr+";");
+	insertar(prog,tabs+"\ttypeof("+first+") &"+aux+" = *"+ptr+";");
 	bloque(prog,++r,q,tabs+"\t");
 	insertar(prog,tabs+"}");
 	release_aux_varname(ptr);
@@ -277,10 +277,11 @@ string CppExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func,
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
-void CppExporter::declarar_variables(t_output &prog, string tab) {
+void CppExporter::declarar_variables(t_output &prog, string tab, bool ignore_arrays) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
 	while (mit!=mit2) {
-		prog.push_back(tab+get_tipo(mit)+";");
+		if (!ignore_arrays||!mit->second.dims)
+			prog.push_back(tab+get_tipo(mit)+";");
 		++mit;
 	}
 }
@@ -363,10 +364,10 @@ void CppExporter::footer(t_output &out) {
 	if (use_func_esperar) {
 		if (!for_test) out.push_back("");
 		out.push_back("void esperar(double t) {");
-		out.push_back("\tclock_t t0=clock();");
-		out.push_back("\tdouble e=0;");
+		out.push_back("\tclock_t t0 = clock();");
+		out.push_back("\tdouble e = 0;");
 		out.push_back("\tdo {");
-		out.push_back("\t\te=1000*double(clock()-t0)/CLOCKS_PER_SEC;");
+		out.push_back("\t\te = 1000*double(clock()-t0)/CLOCKS_PER_SEC;");
 		out.push_back("\t} while (e<t);");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -375,7 +376,7 @@ void CppExporter::footer(t_output &out) {
 		if (!for_test) out.push_back("");
 		out.push_back("string convertiratexto(float f) {");
 		out.push_back("\tstringstream ss;");
-		out.push_back("\tss<<f;");
+		out.push_back("\tss << f;");
 		out.push_back("\treturn ss.str();");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -384,7 +385,7 @@ void CppExporter::footer(t_output &out) {
 		if (!for_test) out.push_back("");
 		out.push_back("string mayusculas(string s) {");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\ts[i]=toupper(s[i]);");
+		out.push_back("\t\ts[i] = toupper(s[i]);");
 		out.push_back("\treturn s;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -393,7 +394,7 @@ void CppExporter::footer(t_output &out) {
 		if (!for_test) out.push_back("");
 		out.push_back("string minusculas(string s) {");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\ts[i]=tolower(s[i]);");
+		out.push_back("\t\ts[i] = tolower(s[i]);");
 		out.push_back("\treturn s;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");

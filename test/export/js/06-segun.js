@@ -1,6 +1,6 @@
 function sin_titulo() {
 	var c;
-	c=Number(prompt());
+	c = Number(prompt());
 	switch (c) {
 	case 1:
 		document.write("1",'<BR/>');

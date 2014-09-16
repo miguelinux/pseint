@@ -636,8 +636,8 @@ void mxConsole::OnCopy (wxCommandEvent & evt) {
 }
 
 void mxConsole::GetSourceLocationFromOutput (int pos) {
-	selection_start=pos; selection_end=pos;
 	if (!buffer[pos].loc.IsValid()) return;
+	selection_start=pos; selection_end=pos;
 	while (selection_start>0 && buffer[selection_start-1].loc==buffer[pos].loc) selection_start--;
 	while (selection_end+1<buffer_w*buffer_h && buffer[selection_end+1].loc==buffer[pos].loc) selection_end++;
 	Refresh();

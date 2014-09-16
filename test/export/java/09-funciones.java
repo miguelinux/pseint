@@ -4,7 +4,7 @@ public class sin_titulo {
 	public static void main(String args[]) {
 		String s;
 		double x;
-		x=1.5;
+		x = 1.5;
 		System.out.println(Math.sqrt(x));
 		System.out.println(Math.abs(x));
 		System.out.println(Math.log(x));
@@ -18,7 +18,7 @@ public class sin_titulo {
 		System.out.println(Math.round(x));
 		System.out.println(Math.floor(x));
 		System.out.println(Math.floor(Math.random()*15));
-		s="Hola";
+		s = "Hola";
 		System.out.println(s.length());
 		System.out.println(s.toLowerCase());
 		System.out.println(s.toUpperCase());

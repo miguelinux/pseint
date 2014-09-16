@@ -1,9 +1,9 @@
 import java.io.*;
 public class sin_titulo {
 	public static void main(String args[]) throws IOException {
-		BufferedReader bufEntrada=new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader bufEntrada = new BufferedReader(new InputStreamReader(System.in));
 		int c;
-		c=Integer.parseInt(bufEntrada.readLine());
+		c = Integer.parseInt(bufEntrada.readLine());
 		switch (c) {
 		case 1:
 			System.out.println("1");

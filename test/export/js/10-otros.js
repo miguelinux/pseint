@@ -1,5 +1,5 @@
 function otros() {
-	document.body.innerHTML='';
+	document.body.innerHTML = '';
 	prompt();
 	prompt();
 	prompt();

@@ -1,11 +1,11 @@
 function sin_titulo() {
 	var a, b, c, d, e, f;
-	a=11;
-	b=2;
-	c=true;
-	d=false;
-	e="Hola";
-	f="Mundo";
+	a = 11;
+	b = 2;
+	c = true;
+	d = false;
+	e = "Hola";
+	f = "Mundo";
 	document.write(a+b,'<BR/>');
 	document.write(a*b,'<BR/>');
 	document.write(a/b,'<BR/>');

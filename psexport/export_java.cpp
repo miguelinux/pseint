@@ -3,7 +3,7 @@
 #include "../pseint/utils.h"
 #include "../pseint/new_funciones.h"
 
-#define _buf_reader_line "\t\tBufferedReader bufEntrada=new BufferedReader(new InputStreamReader(System.in));"
+#define _buf_reader_line "\t\tBufferedReader bufEntrada = new BufferedReader(new InputStreamReader(System.in));"
 
 
 JavaExporter::JavaExporter():CppExporter() {
@@ -64,10 +64,10 @@ void JavaExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+"=Integer.parseInt(bufEntrada.readLine());");
-		else if (t==vt_numerica) insertar(prog,tabs+varname+"=Double.parseDouble(bufEntrada.readLine());");
-		else if (t==vt_logica) insertar(prog,tabs+varname+"=Boolean.parseBoolean(bufEntrada.readLine());");
-		else { read_strings=true; insertar(prog,tabs+varname+"=bufEntrada.readLine();"); }
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = Integer.parseInt(bufEntrada.readLine());");
+		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.parseDouble(bufEntrada.readLine());");
+		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean.parseBoolean(bufEntrada.readLine());");
+		else { read_strings=true; insertar(prog,tabs+varname+" = bufEntrada.readLine();"); }
 		++it;
 	}
 }
@@ -326,7 +326,7 @@ void JavaExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		string name,dims; crop_name_and_dims(*it,name,dims,"[","][","]");
 		// armar la linea que hace el new
 		string stipo=translate_tipo(memoria->LeerTipo(name));
-		insertar(prog,tabs+ToLower(name)+"=new "+stipo+dims+";");
+		insertar(prog,tabs+ToLower(name)+" = new "+stipo+dims+";");
 		++it;
 	}
 }

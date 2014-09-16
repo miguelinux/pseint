@@ -252,9 +252,9 @@ void CExporter::footer(t_output &out) {
 		out.push_back("#define MAX_BUFFERS 10");
 		out.push_back("char *get_aux_buffer(double t) {");
 		out.push_back("\tstatic char buffers[MAX_BUFFERS][MAX_STRLEN];");
-		out.push_back("\tstatic int count=-1;");
-		out.push_back("\tcount=count+1;");
-		out.push_back("\tif(count==MAX_BUFFERS) count=0;");
+		out.push_back("\tstatic int count = -1;");
+		out.push_back("\tcount = count+1;");
+		out.push_back("\tif(count==MAX_BUFFERS) count = 0;");
 		out.push_back("\treturn buffers[count];");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -262,10 +262,10 @@ void CExporter::footer(t_output &out) {
 	if (use_func_esperar) {
 		if (!for_test) out.push_back("");
 		out.push_back("void esperar(double t) {");
-		out.push_back("\tclock_t t0=clock();");
-		out.push_back("\tdouble e=0;");
+		out.push_back("\tclock_t t0 = clock();");
+		out.push_back("\tdouble e = 0;");
 		out.push_back("\tdo {");
-		out.push_back("\t\te=1000*double(clock()-t0)/CLOCKS_PER_SEC;");
+		out.push_back("\t\te = 1000*double(clock()-t0)/CLOCKS_PER_SEC;");
 		out.push_back("\t} while (e<t);");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -273,7 +273,7 @@ void CExporter::footer(t_output &out) {
 	if (use_func_convertiratexto) {
 		if (!for_test) out.push_back("");
 		out.push_back("char *convertiratexto(float f) {");
-		out.push_back("\tchar *buf=get_aux_buffer();");
+		out.push_back("\tchar *buf = get_aux_buffer();");
 		out.push_back("\tsprintf(buf,\"%f\",f);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
@@ -282,9 +282,9 @@ void CExporter::footer(t_output &out) {
 	if (use_func_mayusculas) {
 		if (!for_test) out.push_back("");
 		out.push_back("char *mayusculas(const char *s) {");
-		out.push_back("\tchar *buf=get_aux_buffer();");
+		out.push_back("\tchar *buf = get_aux_buffer();");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\tbuf[i]=toupper(s[i]);");
+		out.push_back("\t\tbuf[i] = toupper(s[i]);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -292,9 +292,9 @@ void CExporter::footer(t_output &out) {
 	if (use_func_minusculas) {
 		if (!for_test) out.push_back("");
 		out.push_back("char *minusculas(const char *s) {");
-		out.push_back("\tchar *buf=get_aux_buffer();");
+		out.push_back("\tchar *buf = get_aux_buffer();");
 		out.push_back("\tfor(unsigned int i=0;i<s.size();i++)");
-		out.push_back("\t\tbuf[i]=tolower(s[i]);");
+		out.push_back("\t\tbuf[i] = tolower(s[i]);");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");
@@ -302,9 +302,9 @@ void CExporter::footer(t_output &out) {
 	if (use_func_subcadena) {
 		if (!for_test) out.push_back("");
 		out.push_back("char *subcadena(const char *s, int desde, int cuantos) {");
-		out.push_back("\tchar *buf=get_aux_buffer();");
+		out.push_back("\tchar *buf = get_aux_buffer();");
 		out.push_back("\tstrncpy(buf,s+desde,cuantos);");
-		out.push_back("\tbuf[cuantos]=\'\\0\';");
+		out.push_back("\tbuf[cuantos] = \'\\0\';");
 		out.push_back("\treturn buf;");
 		out.push_back("}");
 		if (!for_test) out.push_back("");

@@ -10,29 +10,29 @@ int main() {
 	SIN_TIPO a[10];
 	SIN_TIPO b[3][4];
 	float c;
-	cout<<funciondoble(5)<<endl;
+	cout << funciondoble(5) << endl;
 	noretornanada(3,9);
-	c=0;
+	c = 0;
 	porreferencia(c);
-	cout<<c<<endl;
+	cout << c << endl;
 	recibevector(a);
 	recibematriz(b);
 	return 0;
 }
 float funciondoble(float b) {
 	float a;
-	a=2*b;
+	a = 2*b;
 	return a;
 }
 void noretornanada(SIN_TIPO a, SIN_TIPO b) {
-	cout<<a+b<<endl;
+	cout << a+b << endl;
 }
 void porreferencia(float &b) {
-	b=7;
+	b = 7;
 }
 void recibevector(SIN_TIPO v[]) {
-	cin>>v[0];
+	cin >> v[0];
 }
 void recibematriz(SIN_TIPO m[][]) {
-	cin>>m[0][0];
+	cin >> m[0][0];
 }

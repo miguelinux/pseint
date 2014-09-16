@@ -22,6 +22,7 @@ void CSharpExporter::esperar_tecla(t_output &prog, string param, string tabs) {
 }
 
 void CSharpExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
+	use_threading=true;
 	stringstream inst;
 	inst<<"Thread.Sleep(";
 	if (mili) {
@@ -211,7 +212,7 @@ void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
 		delete f;
 	}
 	
-	declarar_variables(out,"\t\t\t");
+	declarar_variables(out,"\t\t\t",true);
 	if (use_random) insertar(out,"\t\t\tRandom azar = new Random();");
 	insertar_out(out,out_proc);
 	
@@ -250,7 +251,7 @@ void CSharpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		string name,dims; crop_name_and_dims(*it,name,dims,"[",",","]");
 		// armar la linea que hace el new
 		string stipo=translate_tipo(memoria->LeerTipo(name));
-		insertar(prog,tabs+ToLower(name)+" = new "+stipo+dims+";");
+		insertar(prog,tabs+stipo+make_dims(memoria->LeerDims(name),"[",",","]",false)+" "+ToLower(name)+" = new "+stipo+dims+";");
 		++it;
 	}
 }

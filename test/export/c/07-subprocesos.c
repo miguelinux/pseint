@@ -11,7 +11,7 @@ int main() {
 	float c;
 	printf("%s\n",funciondoble(5));
 	noretornanada(3,9);
-	c=0;
+	c = 0;
 	porreferencia(c);
 	printf("%f\n",c);
 	recibevector(a);
@@ -20,14 +20,14 @@ int main() {
 }
 float funciondoble(float b) {
 	float a;
-	a=2*b;
+	a = 2*b;
 	return a;
 }
 void noretornanada(SIN_TIPO a, SIN_TIPO b) {
 	printf("%s\n",a+b);
 }
 void porreferencia(float *b) {
-	(*b)=7;
+	(*b) = 7;
 }
 void recibevector(SIN_TIPO v[]) {
 	scanf("%s",v[0]);

@@ -11,9 +11,9 @@ int main() {
 	return 0;
 }
 void esperar(double t) {
-	clock_t t0=clock();
-	double e=0;
+	clock_t t0 = clock();
+	double e = 0;
 	do {
-		e=1000*double(clock()-t0)/CLOCKS_PER_SEC;
+		e = 1000*double(clock()-t0)/CLOCKS_PER_SEC;
 	} while (e<t);
 }

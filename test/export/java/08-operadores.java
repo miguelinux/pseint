@@ -8,12 +8,12 @@ public class sin_titulo {
 		boolean d;
 		String e;
 		String f;
-		a=11;
-		b=2;
-		c=true;
-		d=false;
-		e="Hola";
-		f="Mundo";
+		a = 11;
+		b = 2;
+		c = true;
+		d = false;
+		e = "Hola";
+		f = "Mundo";
 		System.out.println(a+b);
 		System.out.println(a*b);
 		System.out.println(a/b);

@@ -8,7 +8,7 @@ JavaScriptExporter::JavaScriptExporter(bool for_html):CppExporter() {
 }
 
 void JavaScriptExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	insertar(prog,tabs+"document.body.innerHTML=\'\';");
+	insertar(prog,tabs+"document.body.innerHTML = \'\';");
 }
 
 void JavaScriptExporter::esperar_tecla(t_output &prog, string param, string tabs) {
@@ -43,10 +43,10 @@ void JavaScriptExporter::leer(t_output &prog, t_arglist args, string tabs) {
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+"=Number(prompt());");
-		else if (t==vt_numerica) insertar(prog,tabs+varname+"=Number(prompt());");
-		else if (t==vt_logica) insertar(prog,tabs+varname+"=Boolean(prompt());");
-		else { read_strings=true; insertar(prog,tabs+varname+"=prompt();"); }
+		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = Number(prompt());");
+		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Number(prompt());");
+		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean(prompt());");
+		else { read_strings=true; insertar(prog,tabs+varname+" = prompt();"); }
 		++it;
 	}
 	
@@ -206,14 +206,14 @@ void JavaScriptExporter::dimension(t_output &prog, t_arglist &args, string tabs)
 		t_arglist_it it2=dimlist.begin();
 		
 		stack<string> auxs; string var=ToLower(name), last_size;
-		string line=string("var ")+ToLower(name)+"=new Array("+(last_size=expresion(*it2))+");"; ++it2;
+		string line=string("var ")+ToLower(name)+" = new Array("+(last_size=expresion(*it2))+");"; ++it2;
 		while (it2!=dimlist.end()) {
 			string aux=get_aux_varname("aux_index_"); auxs.push(aux);
 			line+=" for (var "+aux+"=0;"+aux+"<"+last_size+";"+aux+"++) { "; 
 			var+="[";
 			var+=aux;
 			var+="]";
-			line+=var+"=new Array("+(last_size=expresion(*it2))+");";
+			line+=var+" = new Array("+(last_size=expresion(*it2))+");";
 			++it2;
 		}
 		while(!auxs.empty()) { release_aux_varname(auxs.top()); auxs.pop(); line+=" }"; }
@@ -255,7 +255,7 @@ void JavaScriptExporter::definir(t_output &prog, t_arglist &arglist, string tipo
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
 		memoria->DefinirTipo(*it,vt,vt==vt_numerica_entera);
-		insertar(prog,tabs+"var "+*it+"=new "+tipo+";");
+		insertar(prog,tabs+"var "+*it+" = new "+tipo+";");
 		++it;
 	}
 }

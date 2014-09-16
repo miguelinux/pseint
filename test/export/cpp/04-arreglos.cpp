@@ -9,9 +9,9 @@ int main() {
 	SIN_TIPO d[50][5];
 	SIN_TIPO e[ARREGLO_MAX];
 	int n;
-	cin>>n;
-	cin>>a[0];
-	a[9]=a[0];
-	cout<<b[9][9]<<endl;
+	cin >> n;
+	cin >> a[0];
+	a[9] = a[0];
+	cout << b[9][9] << endl;
 	return 0;
 }
