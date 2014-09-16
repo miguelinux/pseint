@@ -6,8 +6,8 @@ namespace PSeInt {
 			int i;
 			int j;
 			double[] a = new double[10];
-			for (i=0;i<10;i++) {
-				a[i] = i*10;
+			for (i=1;i<=10;i++) {
+				a[i-1] = i*10;
 			}
 			foreach (int elemento in a) {
 				Console.WriteLine(elemento);
@@ -19,9 +19,9 @@ namespace PSeInt {
 				// No se puede asignar el valor de c en x ya que x es la variable de iteracion 
 				//x = c;
 			}
-			for (i=2;i>1;i--) {
-				for (j=1;j<5;j=j+2) {
-					Console.WriteLine(b[i,j]);
+			for (i=3;i>=1;i--) {
+				for (j=1;j<=5;j+=2) {
+					Console.WriteLine(b[i-1,j-1]);
 				}
 			}
 		}

@@ -374,3 +374,14 @@ void ExporterBase::crop_name_and_dims(string decl, string &name, string &dims, s
 	}
 	dims+=c3;
 }
+
+bool ExporterBase::replace_all(string &str, string from, string to) {
+	bool retval=false;
+	size_t pos=str.find(from,pos);
+	while (pos!=string::npos) {
+		retval=true;
+		str.replace(pos,from.size(),to);
+		pos=str.find(from,pos+to.size());
+	}
+	return retval;
+}

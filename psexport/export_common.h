@@ -29,6 +29,7 @@ protected:
 	void crop_name_and_dims(string decl, string &name, string &dims, string c1="[", string c2=",", string c3="]");
 	bool es_cadena_constante(string s);
 	void sep_args(const string &args, t_arglist &out);
+	bool replace_all(string &str, string from, string to);
 	
 	// funciones que traducen instrucciones y estructuras de control
 	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs)=0;

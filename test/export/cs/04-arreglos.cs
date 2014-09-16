@@ -11,7 +11,7 @@ namespace PSeInt {
 			string[] e = new string[n];
 			a[0] = Console.ReadLine();
 			a[9] = a[0];
-			Console.WriteLine(b[9][9]);
+			Console.WriteLine(b[9,9]);
 		}
 	}
 }

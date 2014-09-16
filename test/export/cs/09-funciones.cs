@@ -4,7 +4,7 @@ namespace PSeInt {
 		static void Main(string[] args) {
 			string s;
 			double x;
-			int x1;
+			Random azar = new Random();
 			x = 1.5;
 			Console.WriteLine(Math.Sqrt(x));
 			Console.WriteLine(Math.Abs(x));
@@ -18,14 +18,14 @@ namespace PSeInt {
 			Console.WriteLine(Math.Atan(x));
 			Console.WriteLine(Math.Round(x));
 			Console.WriteLine(Math.Truncate(x));
-			x1 = 5;
-			Console.WriteLine(new Random().Next(x1));
+			Console.WriteLine(azar.Next(0,15));
 			s = "Hola";
 			Console.WriteLine(s.Length);
 			Console.WriteLine(s.ToLower());
 			Console.WriteLine(s.ToUpper());
-			Console.WriteLine(s.Substring(0,1));
+			Console.WriteLine(s.Substring(1,3-1));
 			Console.WriteLine(s+" Mundo");
+			Console.WriteLine("Mundo "+s);
 			Console.WriteLine(Convert.ToDouble("15.5"));
 			Console.WriteLine(Convert.ToString(15.5));
 		}

@@ -79,6 +79,8 @@ void CSharpExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, str
 		tabs+="\t";
 	}
 	
+	replace_all(vname,"][",",");
+	
 	for(int i=n-1;i>=0;i--) release_aux_varname(auxvars[i]);
 	delete []auxvars;
 	
@@ -129,32 +131,51 @@ string CSharpExporter::function(string name, string args) {
 	} else if (name=="MINUSCULAS") {
 		return get_arg(args,1)+".ToLower()";
 	} else if (name=="LONGITUD") {
-		return get_arg(args,1)+".Length()";
+		return get_arg(args,1)+".Length";
 	} else if (name=="SUBCADENA") {
 		string desde=get_arg(args,2);
+		string cuantos=sumarOrestarUno(get_arg(args,3)+"-"+get_arg(args,2),true);
 		if (!input_base_zero_arrays) desde=sumarOrestarUno(desde,false);
-		string hasta=get_arg(args,3);
-		if (input_base_zero_arrays) hasta=sumarOrestarUno(hasta,true);
-		return get_arg(args,1)+".Substring("+desde+","+hasta+")";
+		return get_arg(args,1)+".Substring("+desde+","+cuantos+")";
 	} else if (name=="CONVERTIRATEXTO") {
-		return string("Convert.ToDouble")+args;
-	} else if (name=="CONVERTIRANUMERO") {
 		return string("Convert.ToString")+args;
+	} else if (name=="CONVERTIRANUMERO") {
+		return string("Convert.ToDouble")+args;
 	} else {
 		return ToLower(name)+args; // no deberia pasar esto
 	}
 }
 
-// funcion usada por declarar_variables para las internas de una funcion
-// y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string CSharpExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	string stipo=translate_tipo(mit->second)+" ";
 	if (mit->second.dims) {
 		return stipo+ToLower(mit->first)+make_dims(mit->second.dims,"[",",","]",false);
 	} else {
-//		if (by_ref) stipo+="*";
 		return stipo+ToLower(mit->first);
 	}
+}
+
+string CSharpExporter::get_tipo(string name, bool by_ref, bool do_erase) {
+	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
+	if (mit==memoria->GetVarInfo().end()) 
+		return "string "+ToLower(name); // puede pasar si hay variables que no han sido usadas dentro de la funcion
+	
+	tipo_var &t=mit->second;
+	string stipo="string";
+	if (t==vt_caracter) { stipo="string"; use_string=true; }
+	else if (t==vt_numerica) stipo=t.rounded?"int":"double";
+	else if (t==vt_logica) stipo="bool";
+	else use_sin_tipo=true;
+	if (by_ref) 
+		stipo.insert(0,"ref ");
+	if (t.dims) {
+		stipo+=make_dims(t.dims,"[",",","]",false)+" "+ToLower(mit->first);
+	} else {
+		stipo+=" "; stipo+=ToLower(mit->first);
+	}
+	
+	if (do_erase) memoria->GetVarInfo().erase(mit);
+	return stipo;
 }
 
 void CSharpExporter::header(t_output &out) {
@@ -197,14 +218,14 @@ void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
 		if (f->nombres[0]=="") {
 			dec+="void "; 
 		} else {
-			ret=CppExporter::get_tipo(f->nombres[0],false,false);
+			ret=get_tipo(f->nombres[0],false,false);
 			dec+=ret.substr(0,ret.find(" ")+1);
 			ret=string("return")+ret.substr(ret.find(" "));
 		}
 		dec+=ToLower(f->id)+"(";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
-			string var_dec=CppExporter::get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
+			string var_dec=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA,true);
 			dec+=var_dec;
 		}
 		dec+=") {";
@@ -238,6 +259,7 @@ string CSharpExporter::get_operator(string op, bool for_string) {
 		}
 	} else {
 		if (op=="^") { return "func Math.Pow(arg1,arg2)"; }
+		if (op==",") { return ","; }
 	}
 	return CppExporter::get_operator(op,false);
 }

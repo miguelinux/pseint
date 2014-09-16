@@ -257,17 +257,6 @@ string PascalExporter::function(string name, string args) {
 	}
 }
 
-static bool replace_all(string &str, string from, string to) {
-	bool retval=false;
-	size_t pos=str.find(from,pos);
-	while (pos!=string::npos) {
-		retval=true;
-		str.replace(pos,from.size(),to);
-		pos=str.find(from,pos+to.size());
-	}
-	return retval;
-}
-
 // funcion usada por declarar_variables para las internas de una funcion
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string PascalExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
