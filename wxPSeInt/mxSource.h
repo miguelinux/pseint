@@ -2,9 +2,11 @@
 #define MXSOURCE_H
 #include <wx/stc/stc.h>
 #include <vector>
+#include <wx/timer.h>
 using namespace std;
 class mxInputDialog;
 class mxProcess;
+class wxTimer;
 class wxSocketBase;
 
 #define mxSOURCE_BOLD 1
@@ -58,7 +60,7 @@ public:
 	void SetStyling(bool colour=true);
 	void SetWords();
 	static void SetAutocompletion();
-	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle);
+	void SetStyle(int idx, const char *fontName, int fontSize, const char *foreground, const char *background, int fontStyle);
 	void SetFieldIndicator(int p1, int p2, bool select=true); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();

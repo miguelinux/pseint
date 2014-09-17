@@ -12,6 +12,7 @@
 #include <wx/textfile.h>
 #include "ConfigManager.h"
 #include "mxArt.h"
+#include <wx/msgdlg.h>
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxFindDialog, wxDialog)

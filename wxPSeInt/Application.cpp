@@ -4,6 +4,7 @@
 #include <wx/msgdlg.h>
 #include <iostream>
 #include "Logger.h"
+#include "string_conversions.h"
 using namespace std;
 #include "Application.h"
 #include "mxMainWindow.h"
@@ -72,7 +73,7 @@ bool mxApplication::OnInit() {
 	}
 	
 	if (!flag && !wxFileName::FileExists(_T("pseint.dir")) && !wxFileName::FileExists(_T("PSeInt.dir")))
-		wxMessageBox(_T("PSeInt no pudo determinar el directorio donde fue instalado. Compruebe que el directorio de trabajo actual sea el correcto."),_T("Error"));
+		wxMessageBox(_Z("PSeInt no pudo determinar el directorio donde fue instalado. Compruebe que el directorio de trabajo actual sea el correcto."),_T("Error"));
 	
 	srand(time(0));
 	
@@ -113,13 +114,13 @@ bool mxApplication::OnInit() {
 //#endif
 	
 	if (config->profile==NO_PROFILE) {
-		wxMessageBox(_T(
+		wxMessageBox(_Z(
 			"Bienvenido a PSeInt. Antes de comenzar debes seleccionar un perfil "
 			"para ajustar el pseudolenguaje  tus necesidades. Si tu universidad "
 			"o institucion no aparece en la lista, notifica a tu profesor para "
 			"que envie sus datos a traves del sitio web. "
-			),_T("Bienvenido a PSeInt"),wxID_OK,main_window);
-		config->profile=_T("Flexible");
+			),_Z("Bienvenido a PSeInt"),wxID_OK,main_window);
+		config->profile=_Z("Flexible");
 		new mxProfile(main_window);
 	} else {
 		if (config->check_for_updates) 

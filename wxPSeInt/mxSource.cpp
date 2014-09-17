@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "HelpManager.h"
 #include "Logger.h"
+#include <wx/msgdlg.h>
+#include "string_conversions.h"
 using namespace std;
 #include "mxUtils.h"
 #include "mxSource.h"
@@ -23,38 +25,38 @@ using namespace std;
 
 int mxSource::last_id=0;
 
-const wxChar *mxSourceWords1 =
-	_T("leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso ")
-	_T("repetir mientras de otro modo escribir finpara ")
-	_T("fin finproceso finsi finmientras finsegun ")
-	_T("verdadero falso ")
-	_T("numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos ")
-	_T("entero entera enteros enteras real reales ")
-	_T("caracter carácter caracteres texto cadena cadenas ")
-	_T("logico lógico logica lógica logicos lógicos logicas lógicas ")
-	_T("borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar ")
-	_T("según finsegún "); // scintilla no funciona con los acentos
+const char *mxSourceWords1 =
+	"leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso "
+	"repetir mientras de otro modo escribir finpara "
+	"fin finproceso finsi finmientras finsegun "
+	"verdadero falso "
+	"numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos "
+	"entero entera enteros enteras real reales "
+	"caracter carácter caracteres texto cadena cadenas "
+	"logico lógico logica lógica logicos lógicos logicas lógicas "
+	"borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar "
+	"según finsegún "; // scintilla no funciona con los acentos
 
-const wxChar *mxSourceWords1_op =
-	_T("y no o mod ");
+const char *mxSourceWords1_op =
+	"y no o mod ";
 
-const wxChar *mxSourceWords1_extra =
-	_T("es sies opcion caso desde imprimir cada mostrar opción son ");
+const char *mxSourceWords1_extra =
+	"es sies opcion caso desde imprimir cada mostrar opción son ";
 
-const wxChar *mxSourceWords1_conds =
-	_T("es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ");
+const char *mxSourceWords1_conds =
+	"es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ";
 
-const wxChar *mxSourceWords1_funcs =
-	_T("subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ");
+const char *mxSourceWords1_funcs =
+	"subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ";
 
-const wxChar* mxSourceWords2_math =
-	_T("cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon pi ");
+const char* mxSourceWords2_math =
+	"cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon pi ";
 
-const wxChar* mxSourceWords2_string =
-	_T("concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ");
+const char* mxSourceWords2_string =
+	"concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ";
 
 //const wxChar* mxSourceWords3 = 
-//	_T("hacer entonces para ");
+//	"hacer entonces para ";
 
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
@@ -158,9 +160,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	if (comp_count<0) SetAutocompletion();
 	
 	SetMarginType (0, wxSTC_MARGIN_NUMBER);
-	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
+	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
 	SetMarginSensitive (1, true);
-	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour (_T("DARK GRAY")));
+	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
@@ -171,10 +173,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	IndicatorSetForeground (1, 0x005555);
 	IndicatorSetForeground (2, 0x004499);
 	
-	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, _T("WHITE"), _T("RED"));
-	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
+	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, "WHITE", "RED");
+	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
 	MarkerDefine(MARKER_DEBUG_RUNNING_BACK,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
-	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
+	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "YELLOW");
 	MarkerDefine(MARKER_DEBUG_PAUSE_BACK,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
 	MarkerDefine(MARKER_BLOCK_HIGHLIGHT,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
 	debug_line=-1;
@@ -192,11 +194,15 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	
 }
 
+static void mxRemoveFile(const wxString &file) {
+	if (wxFileName::FileExists(file)) wxRemoveFile(file);
+}
+
 mxSource::~mxSource() {
 	_LOG("mxSource::~mxSource "<<this);
-	wxRemoveFile(GetTempFilenameOUT());
-	wxRemoveFile(GetTempFilenamePSC());
-	wxRemoveFile(GetTempFilenamePSD());
+	mxRemoveFile(GetTempFilenameOUT());
+	mxRemoveFile(GetTempFilenamePSC());
+	mxRemoveFile(GetTempFilenamePSD());
 	flow_timer->Stop();
 	reload_timer->Stop();
 	rt_timer->Stop();
@@ -214,7 +220,7 @@ mxSource::~mxSource() {
 	}
 }
 
-void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle){
+void mxSource::SetStyle(int idx, const char *fontName, int fontSize, const char *foreground, const char *background, int fontStyle){
 	wxFont font (fontSize, wxMODERN, wxNORMAL, wxNORMAL, false, fontName);
 	StyleSetFont (idx, font);
 	if (foreground) StyleSetForeground (idx, wxColour (foreground));
@@ -228,28 +234,28 @@ void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxC
 
 void mxSource::SetStyling(bool colour) {
 	SetWords();
-	SetStyle(wxSTC_C_DEFAULT,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),0); // default
-	SetStyle(wxSTC_C_COMMENT,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),0); // comment
-	SetStyle(wxSTC_C_COMMENTLINE,_T(""),config->font_size,_T("Z DARK GRAY"),_T("WHITE"),mxSOURCE_ITALIC); // comment line
-	SetStyle(wxSTC_C_COMMENTDOC,_T(""),config->font_size,_T("BLUE"),_T("WHITE"),mxSOURCE_ITALIC); // comment doc
-	SetStyle(wxSTC_C_NUMBER,_T(""),config->font_size,_T("SIENNA"),_T("WHITE"),0); // number
-	SetStyle(wxSTC_C_WORD,_T(""),config->font_size,_T("DARK BLUE"),_T("WHITE"),mxSOURCE_BOLD); // keywords
-	SetStyle(wxSTC_C_STRING,_T(""),config->font_size,_T("RED"),_T("WHITE"),0); // string
-	SetStyle(wxSTC_C_CHARACTER,_T(""),config->font_size,_T("RED"),_T("WHITE"),0); // character
-	SetStyle(wxSTC_C_UUID,_T(""),config->font_size,_T("ORCHID"),_T("WHITE"),0); // uuid
-	SetStyle(wxSTC_C_PREPROCESSOR,_T(""),config->font_size,_T("FOREST GREEN"),_T("WHITE"),0); // preprocessor
-	SetStyle(wxSTC_C_OPERATOR,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),mxSOURCE_BOLD); // operator 
-	SetStyle(wxSTC_C_IDENTIFIER,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),0); // identifier 
-	SetStyle(wxSTC_C_STRINGEOL,_T(""),config->font_size,_T("RED"),_T("Z LIGHT GRAY"),0); // string eol
-	SetStyle(wxSTC_C_VERBATIM,_T(""),config->font_size,_T("BLACK"),_T("WHITE"),0); // default verbatim
-	SetStyle(wxSTC_C_REGEX,_T(""),config->font_size,_T("ORCHID"),_T("WHITE"),0); // regexp  
-	SetStyle(wxSTC_C_COMMENTLINEDOC,_T(""),config->font_size,_T("FOREST GREEN"),_T("WHITE"),0); // special comment 
-	SetStyle(wxSTC_C_WORD2,_T(""),config->font_size,_T("DARK BLUE"),_T("WHITE"),0); // extra words
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,_T(""),config->font_size,_T("CORNFLOWER BLUE"),_T("WHITE"),0); // doxy keywords
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,_T(""),config->font_size,_T("RED"),_T("WHITE"),0); // keywords errors
-	SetStyle(wxSTC_C_GLOBALCLASS,_T(""),config->font_size,_T("BLACK"),_T("LIGHT BLUE"),0); // keywords errors
-	SetStyle(wxSTC_STYLE_BRACELIGHT,_T(""),config->font_size,_T("RED"),_T("Z LIGHT BLUE"),mxSOURCE_BOLD); 
-	SetStyle(wxSTC_STYLE_BRACEBAD,_T(""),config->font_size,_T("DARK RED"),_T("WHITE"),mxSOURCE_BOLD); 
+	SetStyle(wxSTC_C_DEFAULT,"",config->font_size,"BLACK","WHITE",0); // default
+	SetStyle(wxSTC_C_COMMENT,"",config->font_size,"BLACK","WHITE",0); // comment
+	SetStyle(wxSTC_C_COMMENTLINE,"",config->font_size,"Z DARK GRAY","WHITE",mxSOURCE_ITALIC); // comment line
+	SetStyle(wxSTC_C_COMMENTDOC,"",config->font_size,"BLUE","WHITE",mxSOURCE_ITALIC); // comment doc
+	SetStyle(wxSTC_C_NUMBER,"",config->font_size,"SIENNA","WHITE",0); // number
+	SetStyle(wxSTC_C_WORD,"",config->font_size,"DARK BLUE","WHITE",mxSOURCE_BOLD); // keywords
+	SetStyle(wxSTC_C_STRING,"",config->font_size,"RED","WHITE",0); // string
+	SetStyle(wxSTC_C_CHARACTER,"",config->font_size,"RED","WHITE",0); // character
+	SetStyle(wxSTC_C_UUID,"",config->font_size,"ORCHID","WHITE",0); // uuid
+	SetStyle(wxSTC_C_PREPROCESSOR,"",config->font_size,"FOREST GREEN","WHITE",0); // preprocessor
+	SetStyle(wxSTC_C_OPERATOR,"",config->font_size,"BLACK","WHITE",mxSOURCE_BOLD); // operator 
+	SetStyle(wxSTC_C_IDENTIFIER,"",config->font_size,"BLACK","WHITE",0); // identifier 
+	SetStyle(wxSTC_C_STRINGEOL,"",config->font_size,"RED","Z LIGHT GRAY",0); // string eol
+	SetStyle(wxSTC_C_VERBATIM,"",config->font_size,"BLACK","WHITE",0); // default verbatim
+	SetStyle(wxSTC_C_REGEX,"",config->font_size,"ORCHID","WHITE",0); // regexp  
+	SetStyle(wxSTC_C_COMMENTLINEDOC,"",config->font_size,"FOREST GREEN","WHITE",0); // special comment 
+	SetStyle(wxSTC_C_WORD2,"",config->font_size,"DARK BLUE","WHITE",0); // extra words
+	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,"",config->font_size,"CORNFLOWER BLUE","WHITE",0); // doxy keywords
+	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,"",config->font_size,"RED","WHITE",0); // keywords errors
+	SetStyle(wxSTC_C_GLOBALCLASS,"",config->font_size,"BLACK","LIGHT BLUE",0); // keywords errors
+	SetStyle(wxSTC_STYLE_BRACELIGHT,"",config->font_size,"RED","Z LIGHT BLUE",mxSOURCE_BOLD); 
+	SetStyle(wxSTC_STYLE_BRACEBAD,"",config->font_size,"DARK RED","WHITE",mxSOURCE_BOLD); 
 	SetLexer(wxSTC_LEX_CPPNOCASE);
 }
 
@@ -337,7 +343,7 @@ void mxSource::OnEditComment(wxCommandEvent &evt) {
 		//if (GetLine(i).Left(2)!="//") {
 		SetTargetStart(PositionFromLine(i));
 		SetTargetEnd(PositionFromLine(i));
-		ReplaceTarget(_T("//"));
+		ReplaceTarget("//");
 	}	
 	EndUndoAction();
 }
@@ -351,14 +357,14 @@ void mxSource::OnEditUnComment(wxCommandEvent &evt) {
 	BeginUndoAction();
 	for (int i=min;i<=max;i++) {
 		int aux;
-		if (GetLine(i).Left(2)==_T("//")) {
+		if (GetLine(i).Left(2)=="//") {
 			SetTargetStart(PositionFromLine(i));
 			SetTargetEnd(PositionFromLine(i)+2);
-			ReplaceTarget(_T(""));
-		} else if (GetLine(i).Left((aux=GetLineIndentPosition(i))-PositionFromLine(i)+2).Right(2)==_T("//")) {
+			ReplaceTarget("");
+		} else if (GetLine(i).Left((aux=GetLineIndentPosition(i))-PositionFromLine(i)+2).Right(2)=="//") {
 			SetTargetStart(aux);
 			SetTargetEnd(aux+2);
-			ReplaceTarget(_T(""));
+			ReplaceTarget("");
 		}
 	}
 	Indent(min,max);
@@ -448,7 +454,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		for (int i=0;i<comp_count;i++) {
 			if (comp_list[i].label.StartsWith(st)) {
 				if (res.Len())
-					res<<_T("|")<<comp_list[i];
+					res<<"|"<<comp_list[i];
 				else
 					res=comp_list[i];
 			}
@@ -477,14 +483,14 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (comp_list[i].instruction!=instruccion) continue;
 				}
 				for (j=0;j<l;j++)
-					if (str[j]!=(comp_list[i].label[j]|32))
+					if (str[j]!=wxTolower(comp_list[i].label[j]))
 						break;
 				if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
 					if (!show) {
 						show=true;
 						res=comp_list[i];
 					} else
-						res<<_T("|")<<comp_list[i];
+						res<<"|"<<comp_list[i];
 				}
 			}
 			if (show) {
@@ -504,41 +510,41 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			while (p>=0 && !(GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
 				p--;
 			wxString text = GetTextRange(p+1,p2).MakeLower();
-			if (GetTextRange(p-3,p+1).Upper()==_T("FIN ")) return;
-			if (text==_T("función")||text==_T("funcion")||text==_T("subproceso"))
-				ShowCalltip(GetCurrentPos(),_T("{variable de retorno} <- {nombre} ( {lista de argumentos, separados por coma} )\n{nombre} ( {lista de argumentos, separados por coma} )"));
-			else if (text==_T("leer")||text==_T("definir"))
-				ShowCalltip(GetCurrentPos(),_T("{una o mas variables, separadas por comas}"));
-			else if (text==_T("esperar"))
-				ShowCalltip(GetCurrentPos(),_T("{\"Tecla\" o intervalo de tiempo}"));
-			else if (text==_T("escribir")||(config->lang.lazy_syntax&&(text==_T("mostrar")||text==_T("imprimir"))))
-				ShowCalltip(GetCurrentPos(),_T("{una o mas expresiones, separadas por comas}"));
-			else if (text==_T("mientras"))
-				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
-			else if (text==_T("que"))
-				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
-			else if (text==_T("para"))
-				ShowCalltip(GetCurrentPos(),_T("{asignacion inicial: variable<-valor}"));
-			else if (text==_T("desde"))
-				ShowCalltip(GetCurrentPos(),_T("{valor inicial}"));
-			else if (text==_T("hasta")) {
+			if (GetTextRange(p-3,p+1).Upper()=="FIN ") return;
+			if (text=="función"||text=="funcion"||text=="subproceso")
+				ShowCalltip(GetCurrentPos(),"{variable de retorno} <- {nombre} ( {lista de argumentos, separados por coma} )\n{nombre} ( {lista de argumentos, separados por coma} )");
+			else if (text=="leer"||text=="definir")
+				ShowCalltip(GetCurrentPos(),"{una o mas variables, separadas por comas}");
+			else if (text=="esperar")
+				ShowCalltip(GetCurrentPos(),"{\"Tecla\" o intervalo de tiempo}");
+			else if (text=="escribir"||(config->lang.lazy_syntax&&(text=="mostrar"||text=="imprimir")))
+				ShowCalltip(GetCurrentPos(),"{una o mas expresiones, separadas por comas}");
+			else if (text=="mientras")
+				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+			else if (text=="que")
+				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+			else if (text=="para")
+				ShowCalltip(GetCurrentPos(),"{asignacion inicial: variable<-valor}");
+			else if (text=="desde")
+				ShowCalltip(GetCurrentPos(),"{valor inicial}");
+			else if (text=="hasta") {
 				int l=LineFromPosition(p+1);
 				while (p>0 && (GetCharAt(p)==' ' || GetCharAt(p)=='\t' || GetCharAt(p)=='\r' || GetCharAt(p)=='\n'))
 					p--;
 				if (LineFromPosition(p+1)==l)
-					ShowCalltip(GetCurrentPos(),_T("{valor final}"));
-			} else if (text==_T("paso"))
-				ShowCalltip(GetCurrentPos(),_T("{valor del paso}"));
-			else if (text==_T("si"))
-				ShowCalltip(GetCurrentPos(),_T("{condicion, expresion logica}"));
-			else if (text==_T("entonces"))
-				ShowCalltip(GetCurrentPos(),_T("{acciones por verdadero}"));
-			else if (text==_T("sino"))
-				ShowCalltip(GetCurrentPos(),_T("{acciones por falso}"));
-			else if (text==_T("segun"))
-				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
-			else if (config->lang.lazy_syntax && (text==_T("opcion")||text==_T("sies")||text==_T("caso")))
-				ShowCalltip(GetCurrentPos(),_T("{variable o expresion numerica}"));
+					ShowCalltip(GetCurrentPos(),"{valor final}");
+			} else if (text=="paso")
+				ShowCalltip(GetCurrentPos(),"{valor del paso}");
+			else if (text=="si")
+				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+			else if (text=="entonces")
+				ShowCalltip(GetCurrentPos(),"{acciones por verdadero}");
+			else if (text=="sino")
+				ShowCalltip(GetCurrentPos(),"{acciones por falso}");
+			else if (text=="segun")
+				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
+			else if (config->lang.lazy_syntax && (text=="opcion"||text=="sies"||text=="caso"))
+				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
 			else
 				HideCalltip();
 		}
@@ -555,10 +561,10 @@ void mxSource::SetModify (bool modif) {
 		BeginUndoAction();
 		SetTargetStart(p); 
 		SetTargetEnd(p);
-		ReplaceTarget(_T(" "));
+		ReplaceTarget(" ");
 		SetTargetStart(p); 
 		SetTargetEnd(p+1);
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		EndUndoAction();
 		if (ro) SetReadOnly(true);
 	} else 
@@ -574,12 +580,12 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		while (comp_list[i]!=what) i++;
 		wxString text(comp_list[i].text);
 		if (!config->lang.force_semicolon && text.Last()==';') text.RemoveLast();
-		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()==_T("FIN "))
+		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
 			text.Last()='\n';
 		ReplaceTarget(text);
 		SetSelection(comp_from+text.Len(),comp_from+text.Len());
 		int lfp=LineFromPosition(comp_from);
-		if (text.Mid(0,3)==_T("Fin") || text==_T("Hasta Que ") || text==_T("Mientras Que ") || text.Mid(0,4)==_T("Sino")||text.Last()=='\n')
+		if (text.Mid(0,3)=="Fin" || text=="Hasta Que " || text=="Mientras Que " || text.Mid(0,4)=="Sino"||text.Last()=='\n')
 			IndentLine(lfp);
 		if (text.Last()=='\n') {
 			IndentLine(lfp+1);
@@ -677,13 +683,13 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		BeginUndoAction();
 		wxString line = GetLine(min-1);
 		if (max==GetLineCount()-1)
-			AppendText(_T("\n"));
+			AppendText("\n");
 		SetTargetStart(PositionFromLine(max+1));
 		SetTargetEnd(PositionFromLine(max+1));
 		ReplaceTarget(line);
 		SetTargetStart(PositionFromLine(min-1));
 		SetTargetEnd(PositionFromLine(min));
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		EndUndoAction();
 	}
 }
@@ -701,7 +707,7 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 		wxString line = GetLine(max+1);
 		SetTargetStart(GetLineEndPosition(max));
 		SetTargetEnd(GetLineEndPosition(max+1));
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		SetTargetStart(PositionFromLine(min));
 		SetTargetEnd(PositionFromLine(min));
 		ReplaceTarget(line);
@@ -718,9 +724,9 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 void mxSource::MessageReadOnly() {
 	static wxDateTime last_msg=wxDateTime((time_t)0);
 	if (wxDateTime::Now().Subtract(last_msg).GetSeconds()>0) {
-		if (flow_socket) wxMessageBox(_T("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
-		else if (!is_example) wxMessageBox(_T("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso."));
-		else wxMessageBox(_T("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
+		if (flow_socket) wxMessageBox("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo.");
+		else if (!is_example) wxMessageBox("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso.");
+		else wxMessageBox("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo.");
 	}
 	last_msg=wxDateTime::Now();
 }
@@ -736,7 +742,7 @@ void mxSource::SetExample() {
 			int p2=aux.Index('}');
 			if (p2==wxNOT_FOUND) {
 				_LOG("mxSource::SetExample ERROR 1 parsing example: "<<page_text);
-				wxMessageBox(_T("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocodigo no sea correcto."));
+				wxMessageBox("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocodigo no sea correcto.");
 				break;
 			}
 			if (p1==wxNOT_FOUND||p1>p2) {
@@ -819,7 +825,7 @@ void mxSource::IndentLine(int l, bool goup) {
 	int cur=GetIndentLevel(l,goup,&btype);
 	wxString line=GetLine(l);
 //	if (line.StartsWith("//")) return;
-	line<<_T(" "); int i=0,n=line.Len();
+	line<<" "; int i=0,n=line.Len();
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
 	if (i<n && !(line[i]=='/'&&line[i+1]=='/')) {
@@ -829,17 +835,17 @@ void mxSource::IndentLine(int l, bool goup) {
 //		else {
 		wxString word=line.SubString(ws,i-1);
 		word.MakeUpper();
-		if (word==_T("SINO")) cur-=4;
-		else if (word==_T("DE") && i+10<n && line.SubString(ws,i+10).Upper()==_T("DE OTRO MODO:")) cur-=4;
-		else if (word==_T("HASTA") && i+4<n && line.SubString(ws,i+4).Upper()==_T("HASTA QUE ")) cur-=4;
-		else if (word==_T("MIENTRAS") && i+4<n && line.SubString(ws,i+4).Upper()==_T("MIENTRAS QUE ")) cur-=4;
-		else if (word==_T("FINSEGUN")) cur-=8;
-		else if (word==_T("FINMIENTRAS")) cur-=4;
-		else if (word==_T("FINPARA")) cur-=4;
-		else if (word==_T("FIN")) cur-=4;
-		else if (word==_T("FINSI")) cur-=4;
-		else if (word==_T("FINPROCESO")) cur-=4;
-		else if (word==_T("FINSUBPROCESO")||word==_T("FINFUNCIÓN")||word==_T("FINFUNCION")) cur-=4;
+		if (word=="SINO") cur-=4;
+		else if (word=="DE" && i+10<n && line.SubString(ws,i+10).Upper()=="DE OTRO MODO:") cur-=4;
+		else if (word=="HASTA" && i+4<n && line.SubString(ws,i+4).Upper()=="HASTA QUE ") cur-=4;
+		else if (word=="MIENTRAS" && i+4<n && line.SubString(ws,i+4).Upper()=="MIENTRAS QUE ") cur-=4;
+		else if (word=="FINSEGUN") cur-=8;
+		else if (word=="FINMIENTRAS") cur-=4;
+		else if (word=="FINPARA") cur-=4;
+		else if (word=="FIN") cur-=4;
+		else if (word=="FINSI") cur-=4;
+		else if (word=="FINPROCESO") cur-=4;
+		else if (word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION") cur-=4;
 		else {
 			bool comillas=false;
 			while (i<n) {
@@ -878,7 +884,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
 	if (l<1) return 0;
 	wxString line=GetLine(l-1);
-	line<<_T(" ");
+	line<<" ";
 	int cur=GetLineIndentation(l-1);
 	int n=line.Len();
 	bool comillas=false;
@@ -899,22 +905,22 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 					} else {
 						wxString word=line.SubString(wstart,i-1);
 						word.MakeUpper();
-						if (word==_T("SI")) { 
+						if (word=="SI") { 
 							if (config->lang.lazy_syntax) {
 								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
 								if (toupper(line[y])!='E' || toupper(line[y+1])!='S' || (line[y+2]!=' '&&line[y+2]!='\t'))
 									{ cur+=4; btype=BT_SI; }
 							} else 	{ cur+=4; btype=BT_SI; }
 						}
-						else if (word==_T("SINO")) { cur+=4; btype=BT_SINO; }
-						else if (word==_T("PROCESO")) { cur+=4; btype=BT_PROCESO; }
-						else if (word==_T("FUNCION")||word==_T("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
-						else if (word==_T("SUBPROCESO")) { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
-						else if (word==_T("MIENTRAS") && !(i+4<n && line.SubString(wstart,i+4).Upper()==_T("MIENTRAS QUE "))) { cur+=4; btype=BT_MIENTRAS; }
-						else if (word==_T("SEGUN")||word==_T("SEGÚN")) { cur+=8; btype=BT_SEGUN; }
-						else if (word==_T("PARA")) { cur+=4; btype=BT_PARA;	}
-						else if (word==_T("REPETIR")||(first_word && word==_T("HACER"))) { cur+=4; btype=BT_REPETIR; }
-						else if (word==_T("FIN")) { ignore_next=true; btype=BT_NONE; }
+						else if (word=="SINO") { cur+=4; btype=BT_SINO; }
+						else if (word=="PROCESO") { cur+=4; btype=BT_PROCESO; }
+						else if (word=="FUNCION"||word=="FUNCIÓN") { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
+						else if (word=="SUBPROCESO") { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
+						else if (word=="MIENTRAS" && !(i+4<n && line.SubString(wstart,i+4).Upper()=="MIENTRAS QUE ")) { cur+=4; btype=BT_MIENTRAS; }
+						else if (word=="SEGUN"||word=="SEGÚN") { cur+=8; btype=BT_SEGUN; }
+						else if (word=="PARA") { cur+=4; btype=BT_PARA;	}
+						else if (word=="REPETIR"||(first_word && word=="HACER")) { cur+=4; btype=BT_REPETIR; }
+						else if (word=="FIN") { ignore_next=true; btype=BT_NONE; }
 						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION")) {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
@@ -948,15 +954,15 @@ void mxSource::UnExample() {
 
 void mxSource::SetWords() {
 	// setear palabras claves para el coloreado
-	wxString s1=mxSourceWords1;
-	if (config->lang.enable_user_functions) s1<<mxSourceWords1_funcs;
-	if (config->lang.word_operators) s1<<mxSourceWords1_op;
-	if (config->lang.lazy_syntax) s1<<mxSourceWords1_extra;
-	if (config->lang.coloquial_conditions) s1<<mxSourceWords1_conds;
-	SetKeyWords (0, s1.c_str());
-	wxString s2=mxSourceWords2_math;
-	if (config->lang.enable_string_functions) s2<<mxSourceWords2_string;
-	SetKeyWords (1, s2.c_str());
+	wxString s1=_Z(mxSourceWords1);
+	if (config->lang.enable_user_functions) s1<<_Z(mxSourceWords1_funcs);
+	if (config->lang.word_operators) s1<<_Z(mxSourceWords1_op);
+	if (config->lang.lazy_syntax) s1<<_Z(mxSourceWords1_extra);
+	if (config->lang.coloquial_conditions) s1<<_Z(mxSourceWords1_conds);
+	SetKeyWords (0, s1);
+	wxString s2=_Z(mxSourceWords2_math);
+	if (config->lang.enable_string_functions) s2<<_Z(mxSourceWords2_string);
+	SetKeyWords (1, s2);
 	SetKeyWords (3, ""); // para resaltar las variables
 }
 
@@ -964,110 +970,110 @@ void mxSource::SetAutocompletion() {
 	// setear reglas para el autocompletado
 	comp_count=0;
 	
-	comp_list[comp_count++]=comp_list_item(_T("Proceso"),_T("Proceso "),_T(""));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Funcion"),_T("Funcion "),_T(""));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("SubProceso"),_T("SubProceso "),_T(""));
-	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"),_T("SubProceso"));
-	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item(_T("Por Valor"),_T("Por Valor"),_T("Funcion"));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"),_T("SubProceso"));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Por Referencia"),_T("Por Referencia"),_T("Funcion"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Proceso"),_T("Fin Proceso\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("FinProceso"),_T("FinProceso\n"),_T(""));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("Fin SubProceso"),_T("Fin SubProceso\n"),_T(""));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinSubProceso"),_T("FinSubProceso\n"),_T(""));
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item(_T("FinFuncion"),_T("FinFuncion\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Proceso","Proceso ","");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Funcion","Funcion ","");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("SubProceso","SubProceso ","");
+	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","SubProceso");
+	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","Funcion");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","SubProceso");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","Funcion");
+	comp_list[comp_count++]=comp_list_item("Fin Proceso","Fin Proceso\n","");
+	comp_list[comp_count++]=comp_list_item("FinProceso","FinProceso\n","");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Fin SubProceso","Fin SubProceso\n","");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("FinSubProceso","FinSubProceso\n","");
+	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("FinFuncion","FinFuncion\n","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Escribir"),_T("Escribir "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Imprimir"),_T("Imprimir "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mostrar"),_T("Mostrar "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Escribir"));
-	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Mostrar"));
-	comp_list[comp_count++]=comp_list_item(_T("Sin Saltar"),_T("Sin Saltar"),_T("Imprimir"));
-	comp_list[comp_count++]=comp_list_item(_T("Leer"),_T("Leer "),_T(""));
+	comp_list[comp_count++]=comp_list_item("Escribir","Escribir ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Imprimir","Imprimir ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Mostrar","Mostrar ","");
+	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Escribir");
+	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Mostrar");
+	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Imprimir");
+	comp_list[comp_count++]=comp_list_item("Leer","Leer ","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Esperar"),_T("Esperar "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Segundos"),_T("Segundos;"),_T("Esperar"));
-	comp_list[comp_count++]=comp_list_item(_T("Milisegundos"),_T("Milisegundos;"),_T("Esperar"));
-	comp_list[comp_count++]=comp_list_item(_T("Tecla"),_T("Tecla;"),_T("Esperar"));
-	comp_list[comp_count++]=comp_list_item(_T("Esperar Tecla"),_T("Esperar Tecla;"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Borrar Pantalla"),_T("Borrar Pantalla;"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Limpiar Pantalla"),_T("Limpiar Pantalla;"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Esperar","Esperar ","");
+	comp_list[comp_count++]=comp_list_item("Segundos","Segundos;","Esperar");
+	comp_list[comp_count++]=comp_list_item("Milisegundos","Milisegundos;","Esperar");
+	comp_list[comp_count++]=comp_list_item("Tecla","Tecla;","Esperar");
+	comp_list[comp_count++]=comp_list_item("Esperar Tecla","Esperar Tecla;","");
+	comp_list[comp_count++]=comp_list_item("Borrar Pantalla","Borrar Pantalla;","");
+	comp_list[comp_count++]=comp_list_item("Limpiar Pantalla","Limpiar Pantalla;","");
 
 	
-	comp_list[comp_count++]=comp_list_item(_T("Dimension"),_T("Dimension "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Definir"),_T("Definir "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Como Real"),_T("Como Real;"),_T("Definir"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Caracter"),_T("Como Caracter;"),_T("Definir"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Entero"),_T("Como Entero;"),_T("Definir"));
-	comp_list[comp_count++]=comp_list_item(_T("Como Logico"),_T("Como Logico;"),_T("Definir"));
+	comp_list[comp_count++]=comp_list_item("Dimension","Dimension ","");
+	comp_list[comp_count++]=comp_list_item("Definir","Definir ","");
+	comp_list[comp_count++]=comp_list_item("Como Real","Como Real;","Definir");
+	comp_list[comp_count++]=comp_list_item("Como Caracter","Como Caracter;","Definir");
+	comp_list[comp_count++]=comp_list_item("Como Entero","Como Entero;","Definir");
+	comp_list[comp_count++]=comp_list_item("Como Logico","Como Logico;","Definir");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Entonces"),_T("Entonces\n"),_T("Si"));
-	comp_list[comp_count++]=comp_list_item(_T("Sino"),_T("Sino\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Si"),_T("Fin Si\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("FinSi"),_T("FinSi\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Entonces","Entonces\n","");
+	comp_list[comp_count++]=comp_list_item("Entonces","Entonces\n","Si");
+	comp_list[comp_count++]=comp_list_item("Sino","Sino\n","");
+	comp_list[comp_count++]=comp_list_item("Fin Si","Fin Si\n","");
+	comp_list[comp_count++]=comp_list_item("FinSi","FinSi\n","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Mientras"),_T("Mientras "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T("Mientras"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Mientras"),_T("Fin Mientras\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("FinMientras"),_T("FinMientras\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Mientras","Mientras ","");
+	comp_list[comp_count++]=comp_list_item("Hacer","Hacer\n","Mientras");
+	comp_list[comp_count++]=comp_list_item("Fin Mientras","Fin Mientras\n","");
+	comp_list[comp_count++]=comp_list_item("FinMientras","FinMientras\n","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Para"),_T("Para "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Para Cada"),_T("Para Cada "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Desde"),_T("Desde "),_T("Para"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Hasta"),_T("Hasta "),_T("Para"));
-	comp_list[comp_count++]=comp_list_item(_T("Con Paso"),_T("Con Paso "),_T("Para"));
-	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T("Para"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Cada "),_T("Cada "),_T("Para"));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Para"),_T("Fin Para\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("FinPara"),_T("FinPara\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Para","Para ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Para Cada","Para Cada ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Desde","Desde ","Para");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Hasta","Hasta ","Para");
+	comp_list[comp_count++]=comp_list_item("Con Paso","Con Paso ","Para");
+	comp_list[comp_count++]=comp_list_item("Hacer","Hacer\n","Para");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Cada ","Cada ","Para");
+	comp_list[comp_count++]=comp_list_item("Fin Para","Fin Para\n","");
+	comp_list[comp_count++]=comp_list_item("FinPara","FinPara\n","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Repetir"),_T("Repetir\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Hacer"),_T("Hacer\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Hasta Que"),_T("Hasta Que "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Mientras Que"),_T("Mientras Que "),_T(""));
+	comp_list[comp_count++]=comp_list_item("Repetir","Repetir\n","");
+	comp_list[comp_count++]=comp_list_item("Hacer","Hacer\n","");
+	comp_list[comp_count++]=comp_list_item("Hasta Que","Hasta Que ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Mientras Que","Mientras Que ","");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Segun"),_T("Segun "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Opcion"),_T("Opcion "),_T(""));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Caso"),_T("Caso "),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("De Otro Modo:"),_T("De Otro Modo:\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("FinSegun"),_T("FinSegun\n"),_T(""));
-	comp_list[comp_count++]=comp_list_item(_T("Fin Segun"),_T("Fin Segun\n"),_T(""));
+	comp_list[comp_count++]=comp_list_item("Segun","Segun ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Opcion","Opcion ","");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Caso","Caso ","");
+	comp_list[comp_count++]=comp_list_item("De Otro Modo:","De Otro Modo:\n","");
+	comp_list[comp_count++]=comp_list_item("FinSegun","FinSegun\n","");
+	comp_list[comp_count++]=comp_list_item("Fin Segun","Fin Segun\n","");
 	
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(",_T("*"));
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(",_T("*"));
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(","*");
+	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(","*");
 	
-	comp_list[comp_count++]=comp_list_item(_T("Verdadero"),_T("Verdadero"),_T("*"));
-	comp_list[comp_count++]=comp_list_item(_T("Falso"),_T("Falso"),_T("*"));
+	comp_list[comp_count++]=comp_list_item("Verdadero","Verdadero","*");
+	comp_list[comp_count++]=comp_list_item("Falso","Falso","*");
 	
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Cero"),_T("Es Cero"),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Distinto De"),_T("Es Distinto De "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Divisible Por"),_T("Es Divisible Por "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero"),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Igual A"),_T("Es Igual A "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Impar"),_T("Es Impar"),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor O Igual A"),_T("Es Mayor O Igual A "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Mayor Que"),_T("Es Mayor Que "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor O Igual A"),_T("Es Menor O Igual A "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Menor Que"),_T("Es Menor Que "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Multiplo De"),_T("Es Multiplo De "),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Negativo"),_T("Es Negativo"),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Par"),_T("Es Par"),_T("*"));
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Positivo"),_T("Es Positivo"),_T("*"));
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Cero","Es Cero","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Distinto De","Es Distinto De ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Divisible Por","Es Divisible Por ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Igual A","Es Igual A ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Impar","Es Impar","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Mayor O Igual A","Es Mayor O Igual A ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Mayor Que","Es Mayor Que ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Menor O Igual A","Es Menor O Igual A ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Menor Que","Es Menor Que ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Multiplo De","Es Multiplo De ","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Negativo","Es Negativo","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Par","Es Par","*");
+	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Positivo","Es Positivo","*");
 	
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Real"),_T("Es Real;"),_T("Es"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Caracter"),_T("Es Caracter;"),_T("Es"));
-	if (config->lang.lazy_syntax && !config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item(_T("Es Entero"),_T("Es Entero;"),_T("Es"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Es Logico"),_T("Es Logico;"),_T("Es"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Reales"),_T("Son Reales;"),_T("Son"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Caracteres"),_T("Son Caracteres;"),_T("Son"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Enteros"),_T("Son Enteros;"),_T("Son"));
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item(_T("Son Logicos"),_T("Son Logicos;"),_T("Son"));
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Real","Es Real;","Es");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Caracter","Es Caracter;","Es");
+	if (config->lang.lazy_syntax && !config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero;","Es");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Logico","Es Logico;","Es");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Reales","Son Reales;","Son");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Caracteres","Son Caracteres;","Son");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Enteros","Son Enteros;","Son");
+	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Logicos","Son Logicos;","Son");
 	
 	sort(comp_list,comp_list+comp_count);
 }
@@ -1195,7 +1201,7 @@ void mxSource::OnSavePointReached (wxStyledTextEvent & evt) {
 }
 
 void mxSource::OnSavePointLeft (wxStyledTextEvent & evt) {
-	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),page_text+_T("*"));	
+	main_window->notebook->SetPageText(main_window->notebook->GetPageIndex(this),page_text+"*");	
 }
 
 vector<int> &mxSource::FillAuxInstr(int _l) {
@@ -1210,11 +1216,11 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
 				else if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
-				else if ((s[i]|32)=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8])) {
+				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8])) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
 				}
-				else if ((s[i]|32)=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5])) {
+				else if (wxTolower(s[i])=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5])) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+5); 
 					i+=4; starting=true;
 				}
@@ -1569,7 +1575,7 @@ wxString mxSource::GetPathForExport() {
 }
 
 wxString mxSource::GetNameForExport() {
-	if (sin_titulo) return _T("sin_titulo");
+	if (sin_titulo) return "sin_titulo";
 	else return wxFileName(filename).GetName();
 }
 

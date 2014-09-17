@@ -32,16 +32,16 @@ END_EVENT_TABLE()
 	"\t\t\t9: Escribir \" H A .         @@           ##########\";\n\t\t\t10: Escribir \" A C C     @@@@@@@@@@     ##  ######  ##\";\n\t\t\t3: Escribir \" U   O                          ##\";\n" \
 	"\t\t\t12: Escribir \"   N M     @@@@@@@@@@     ##    ##    ##\";\n\t\t\t7: Escribir \" A   O       @@@@@@         ##########\";\n\t\tFinSegun\n\tFinPara\n\tEscribir \"\";\nFinProceso"
 	
-mxAboutWindow::mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, _T("Acerca de..."), pos, size, style) {
+mxAboutWindow::mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, "Acerca de...", pos, size, style) {
 		
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 
-	wxButton *ok_button = new wxButton (this, wxID_OK, _T("Cerrar"));
+	wxButton *ok_button = new wxButton (this, wxID_OK, "Cerrar");
 	ok_button->SetDefault(); 
 	SetEscapeId(wxID_OK);
 	
 	mySizer->Add(
-		//new wxStaticBitmap(this,wxID_ANY, wxBitmap(DIR_PLUS_FILE(config->Files.skin_dir,_T("about.png")), wxBITMAP_TYPE_PNG))
+		//new wxStaticBitmap(this,wxID_ANY, wxBitmap(DIR_PLUS_FILE(config->Files.skin_dir,"about.png"), wxBITMAP_TYPE_PNG))
 		html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500,210))
 		,wxSizerFlags().Proportion(1).Expand());
 	mySizer->Add(ok_button,wxSizerFlags().Expand());
@@ -61,22 +61,22 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 }
 
 wxString mxAboutWindow::MakePageText(bool full) {
-	wxString text(_T("<HTML><HEAD><TITLE>PSeInt</TITLE></HEAD><BODY>"));
-//	text<<_T("<CENTER><IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("about1.png"))<<_T("\"/>");
-//	text<<_T("<IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("about2.png"))<<_T("\"/></CENTER><HR><BR>");
-	text<<_T("<CENTER><TABLE><TR><TD>");
-	text<<_T("<A href=\"lala\"><IMG src=\"")<<DIR_PLUS_FILE(config->images_path,_T("logo.png"))<<_T("\"/></A>");
-	text<<_T("</TD><TD>");
+	wxString text("<HTML><HEAD><TITLE>PSeInt</TITLE></HEAD><BODY>");
+//	text<<"<CENTER><IMG src=\""<<DIR_PLUS_FILE(config->images_path,"about1.png")<<"\"/>";
+//	text<<"<IMG src=\""<<DIR_PLUS_FILE(config->images_path,"about2.png")<<"\"/></CENTER><HR><BR>";
+	text<<"<CENTER><TABLE><TR><TD>";
+	text<<"<A href=\"lala\"><IMG src=\""<<DIR_PLUS_FILE(config->images_path,"logo.png")<<"\"/></A>";
+	text<<"</TD><TD>";
 	
-	text<<_T("<CENTER><B>Copyleft 2003-2014<BR>por Pablo Novara<BR>");
-	text<<_T("zaskar_84@yahoo.com.ar<BR><BR>");
-	text<<_T("Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)");
-	text<<_T("<BR><BR><B><A href=\"pseint\">http://pseint.sourceforge.net</A></B><BR></CENTER>");
+	text<<"<CENTER><B>Copyleft 2003-2014<BR>por Pablo Novara<BR>";
+	text<<"zaskar_84@yahoo.com.ar<BR><BR>";
+	text<<"Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)";
+	text<<"<BR><BR><B><A href=\"pseint\">http://pseint.sourceforge.net</A></B><BR></CENTER>";
 	
-	text<<_T("</TD></TR></TABLE></CENTER><HR><BR>");
+	text<<"</TD></TR></TABLE></CENTER><HR><BR>";
 	
-	version_info=_T("Versión general de la instalación: ");
-	wxTextFile fil(_T("version")); 
+	version_info="Versión general de la instalación: ";
+	wxTextFile fil("version"); 
 	if (fil.Exists()) {
 		fil.Open();
 		version_info<<fil.GetFirstLine();;
@@ -91,16 +91,16 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	
 	text<<"<BR><BR> Versiones individuales:<BR>";
 	
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt ")<<VERSION<<_T("-"ARCHITECTURE"<BR>");
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt "<<VERSION<<"-"ARCHITECTURE"<BR>";
 	
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->pseint_command)<<_T("<BR>");
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psterm_command)<<_T("<BR>");
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psdraw3_command)<<_T("<BR>");
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psdrawe_command)<<_T("<BR>");
-	text<<_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")<<GetVersion(config->psexport_command)<<_T("<BR>");
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->pseint_command)<<"<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psterm_command)<<"<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psdraw3_command)<<"<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psdrawe_command)<<"<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psexport_command)<<"<BR>";
 	
-	text<<_T("<BR><A href=\"copy\">click aquí para copiar esta información al portapapeles</A>");
-	text<<_T("<BR><BR>");
+	text<<"<BR><A href=\"copy\">click aquí para copiar esta información al portapapeles</A>";
+	text<<"<BR><BR>";
 	return text;
 }
 

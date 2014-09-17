@@ -2,6 +2,8 @@
 #include "mxSource.h"
 #include <wx/printdlg.h>
 #include "mxMainWindow.h"
+#include <wx/msgdlg.h>
+#include "string_conversions.h"
 
 wxPrintDialogData *printDialogData = NULL;
 //wxPageSetupDialogData *pageSetupData = NULL;
@@ -91,7 +93,7 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 		m_printed = source->FormatRange (0, m_printed, source->GetLength(), dc, dc, m_printRect, m_pageRect);
 		*maxPage += 1;
 		if (last==m_printed) {
-			wxMessageBox(_T("Debe configurar la pagina antes de imprimir"),_T("Error"));
+			wxMessageBox(_Z("Debe configurar la pagina antes de imprimir"),_Z("Error"));
 			break;
 		}
 	}

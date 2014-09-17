@@ -42,6 +42,12 @@
 #include "mxOpersWindow.h"
 #include "mxPanelHelper.h"
 #include "Logger.h"
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
+#include <wx/app.h>
+#include <wx/textdlg.h>
+#include <wx/settings.h>
+#include "string_conversions.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -158,15 +164,15 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_KILL_FOCUS(mxMainWindow::OnKillFocus)
 END_EVENT_TABLE()
 
-mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _T("PSeInt"), pos, size, wxDEFAULT_FRAME_STYLE) {
+mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "PSeInt", pos, size, wxDEFAULT_FRAME_STYLE) {
 
-	wxTheColourDatabase->AddColour(_T("Z LIGHT GRAY"),wxColour(240,240,240));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT BLUE"),wxColour(240,240,255));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT RED"),wxColour(255,220,220));
-	wxTheColourDatabase->AddColour(_T("DARK BLUE"),wxColour(0,0,128));
-	wxTheColourDatabase->AddColour(_T("DARK RED"),wxColour(128,0,0));
-	wxTheColourDatabase->AddColour(_T("DARK GRAY"),wxColour(128,128,128));
-	wxTheColourDatabase->AddColour(_T("Z DARK GRAY"),wxColour(150,150,150));
+	wxTheColourDatabase->AddColour("Z LIGHT GRAY",wxColour(240,240,240));
+	wxTheColourDatabase->AddColour("Z LIGHT BLUE",wxColour(240,240,255));
+	wxTheColourDatabase->AddColour("Z LIGHT RED",wxColour(255,220,220));
+	wxTheColourDatabase->AddColour("DARK BLUE",wxColour(0,0,128));
+	wxTheColourDatabase->AddColour("DARK RED",wxColour(128,0,0));
+	wxTheColourDatabase->AddColour("DARK GRAY",wxColour(128,128,128));
+	wxTheColourDatabase->AddColour("Z DARK GRAY",wxColour(150,150,150));
 	
 	aui_manager.SetManagedWindow(this);
 	
@@ -174,15 +180,15 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, _
 		file_history[i]=NULL;
 	
 	wxIconBundle bundle;
-	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap(_T("imgs/icon16.png"),wxBITMAP_TYPE_PNG));
+	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap("imgs/icon16.png",wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon16));
-	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap(_T("imgs/icon32.png"),wxBITMAP_TYPE_PNG));
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/icon32.png",wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon32));
-	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap(_T("imgs/icon48.png"),wxBITMAP_TYPE_PNG));
+	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap("imgs/icon48.png",wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon48));
-	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap(_T("imgs/icon64.png"),wxBITMAP_TYPE_PNG));
+	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap("imgs/icon64.png",wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon64));
-	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap(_T("imgs/icon128.png"),wxBITMAP_TYPE_PNG));
+	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap("imgs/icon128.png",wxBITMAP_TYPE_PNG));
 	bundle.AddIcon(wxIcon(icon128));
 	SetIcons(bundle);
 	
@@ -226,114 +232,114 @@ void mxMainWindow::CreateMenus() {
 	wxMenuBar *menu = new wxMenuBar;
 	
 	wxMenu *file = new wxMenu;
-	utils->AddItemToMenu(file,mxID_FILE_NEW, _T("&Nuevo\tCtrl+N"),_T(""),_T("nuevo.png"));
-	utils->AddItemToMenu(file,mxID_FILE_OPEN, _T("&Abrir...\tCtrl+O"),_T(""),_T("abrir.png"));
-	utils->AddItemToMenu(file,mxID_FILE_SAVE, _T("&Guardar\tCtrl+S"),_T(""),_T("guardar.png"));
-	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _T("Guardar &Como...\tCtrl+Shift+S"),_T(""),_T("guardar_como.png"));
+	utils->AddItemToMenu(file,mxID_FILE_NEW, _Z("&Nuevo\tCtrl+N"),"","nuevo.png");
+	utils->AddItemToMenu(file,mxID_FILE_OPEN, _Z("&Abrir...\tCtrl+O"),"","abrir.png");
+	utils->AddItemToMenu(file,mxID_FILE_SAVE, _Z("&Guardar\tCtrl+S"),"","guardar.png");
+	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _Z("Guardar &Como...\tCtrl+Shift+S"),"","guardar_como.png");
 //#ifndef __APPLE__
-	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _T("Editar Diagrama de Flujo...\tF7"),_T(""),_T("edit_flow.png"));
+	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _Z("Editar Diagrama de Flujo...\tF7"),"","edit_flow.png");
 //#endif
-	utils->AddItemToMenu(file,mxID_FILE_PRINT, _T("Imprimir..."),_T(""),_T("imprimir.png"));
+	utils->AddItemToMenu(file,mxID_FILE_PRINT, _Z("Imprimir..."),"","imprimir.png");
 	
 	wxMenu *export_menu=new wxMenu;
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _T("Convertir a código C (c)..."),_T(""),_T("exp_c.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _T("Convertir a código C++98/03 (cpp)..."),_T(""),_T("exp_cpp.png"));
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP11, _T("Convertir a código C++11 (cpp)..."),_T(""),_T("exp_cpp.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CSHARP, _T("Convertir Código C# (cs)..."),_T(""),_T("exp_cs.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_HTML, _T("Convertir a página HTML (JavaScript embebido) (html)..."),_T(""),_T("exp_html.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _T("Convertir a código Java (java)..."),_T(""),_T("exp_java.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _T("Convertir a código JavaScript (js)..."),_T(""),_T("exp_js.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_M, _T("Convertir a código MatLab (m)..."),_T(""),_T("exp_m.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PAS, _T("Convertir a código Pascal (pas)..."),_T(""),_T("exp_pas.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _T("Convertir a código PHP (php)..."),_T(""),_T("exp_php.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY2, _T("Convertir a código Python 2 (py)..."),_T(""),_T("exp_py.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY3, _T("Convertir a código Python 3 (py)..."),_T(""),_T("exp_py.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_VB, _T("Convertir a código Visual Basic .NET (vb)..."),_T(""),_T("exp_vb.png"));
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PRG, _T("Convertir a código Visual Fox Pro (prg)..."),_T(""),_T("exp_prg.png"));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _Z("Convertir a código C (c)..."),"","exp_c.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _Z("Convertir a código C++98/03 (cpp)..."),"","exp_cpp.png");
+//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP11, _Z("Convertir a código C++11 (cpp)..."),"","exp_cpp.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CSHARP, _Z("Convertir Código C# (cs)..."),"","exp_cs.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_HTML, _Z("Convertir a página HTML (JavaScript embebido) (html)..."),"","exp_html.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _Z("Convertir a código Java (java)..."),"","exp_java.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _Z("Convertir a código JavaScript (js)..."),"","exp_js.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_M, _Z("Convertir a código MatLab (m)..."),"","exp_m.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PAS, _Z("Convertir a código Pascal (pas)..."),"","exp_pas.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _Z("Convertir a código PHP (php)..."),"","exp_php.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY2, _Z("Convertir a código Python 2 (py)..."),"","exp_py.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY3, _Z("Convertir a código Python 3 (py)..."),"","exp_py.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_VB, _Z("Convertir a código Visual Basic .NET (vb)..."),"","exp_vb.png");
+//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PRG, _Z("Convertir a código Visual Fox Pro (prg)..."),"","exp_prg.png");
 	export_menu->AppendSeparator();
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _T("Pseudocódigo coloreado (html)..."),_T(""),_T("html.png"));
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PNG, _T("Diagrama de flujo (png, bmp o jpg)..."),_T(""),_T("edit_flow.png"));
-	file->AppendSubMenu(export_menu,_T("Exportar"),_T(""));
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _Z("Pseudocódigo coloreado (html)..."),"","html.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PNG, _Z("Diagrama de flujo (png, bmp o jpg)..."),"","edit_flow.png");
+	file->AppendSubMenu(export_menu,_Z("Exportar"),"");
 	
-	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _T("&Cerrar...\tCtrl+W"),_T(""),_T("cerrar.png"));
+	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _Z("&Cerrar...\tCtrl+W"),"","cerrar.png");
 	file->AppendSeparator();
-	utils->AddItemToMenu(file,mxID_FILE_EXIT, _T("&Salir\tAlt+F4"),_T(""),_T("salir.png"));
-	menu->Append(file, _T("&Archivo"));
+	utils->AddItemToMenu(file,mxID_FILE_EXIT, _Z("&Salir\tAlt+F4"),"","salir.png");
+	menu->Append(file, _Z("&Archivo"));
 	file_menu=file;
-	RegenFileMenu(_T(""));
+	RegenFileMenu("");
 	
 	wxMenu *edit = new wxMenu;
-	utils->AddItemToMenu(edit,mxID_EDIT_UNDO, _T("&Deshacer\tCtrl+Z"),_T(""),_T("deshacer.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_REDO, _T("&Rehacer\tCtrl+Shift+Z"),_T(""),_T("rehacer.png"));
+	utils->AddItemToMenu(edit,mxID_EDIT_UNDO, _Z("&Deshacer\tCtrl+Z"),"","deshacer.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_REDO, _Z("&Rehacer\tCtrl+Shift+Z"),"","rehacer.png");
 	edit->AppendSeparator();
-	utils->AddItemToMenu(edit,mxID_EDIT_CUT, _T("C&ortar\tCtrl+X"),_T(""),_T("cortar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_COPY, _T("&Copiar\tCtrl+C"),_T(""),_T("copiar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_PASTE, _T("&Pegar\tCtrl+V"),_T(""),_T("pegar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_UP, _T("Mover Hacia Arriba\tCtrl+T"),_T("Mueve la o las lineas seleccionadas hacia arriba"),_T("toggleLinesUp.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_DOWN, _T("Mover Hacia Abajo\tCtrl+Shift+T"),_T("Mueve la o las lineas seleccionadas hacia abajo"),_T("toggleLinesDown.png"));
+	utils->AddItemToMenu(edit,mxID_EDIT_CUT, _Z("C&ortar\tCtrl+X"),"","cortar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_COPY, _Z("&Copiar\tCtrl+C"),"","copiar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_PASTE, _Z("&Pegar\tCtrl+V"),"","pegar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_UP, _Z("Mover Hacia Arriba\tCtrl+T"),_Z("Mueve la o las lineas seleccionadas hacia arriba"),"toggleLinesUp.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_DOWN, _Z("Mover Hacia Abajo\tCtrl+Shift+T"),_Z("Mueve la o las lineas seleccionadas hacia abajo"),"toggleLinesDown.png");
 	edit->AppendSeparator();
-	utils->AddItemToMenu(edit,mxID_EDIT_FIND, _T("Buscar...\tCtrl+F"),_T(""),_T("buscar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_FIND_PREV, _T("Buscar Anterior\tShift+F3"),_T(""),_T("anterior.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_FIND_NEXT, _T("Buscar Siguiente\tF3"),_T(""),_T("siguiente.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_REPLACE, _T("&Reemplazar...\tCtrl+R"),_T(""),_T("reemplazar.png"));
+	utils->AddItemToMenu(edit,mxID_EDIT_FIND, _Z("Buscar...\tCtrl+F"),"","buscar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_FIND_PREV, _Z("Buscar Anterior\tShift+F3"),"","anterior.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_FIND_NEXT, _Z("Buscar Siguiente\tF3"),"","siguiente.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_REPLACE, _Z("&Reemplazar...\tCtrl+R"),"","reemplazar.png");
 	edit->AppendSeparator();
-	utils->AddItemToMenu(edit,mxID_EDIT_SELECT_ALL, _T("Seleccionar Todo\tCtrl+A"),_T(""),_T("seleccionar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_DUPLICATE, _T("Duplicar Lineas\tCtrl+L"),_T(""),_T("duplicar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_DELETE, _T("Eliminar Lineas\tCtrl+Shift+L"),_T(""),_T("eliminar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_COMMENT, _T("Comentar Lineas\tCtrl+D"),_T(""),_T("comentar.png"));
-	utils->AddItemToMenu(edit,mxID_EDIT_UNCOMMENT, _T("Descomentar Lineas\tCtrl+Shift+D"),_T(""),_T("descomentar.png"));
+	utils->AddItemToMenu(edit,mxID_EDIT_SELECT_ALL, _Z("Seleccionar Todo\tCtrl+A"),"","seleccionar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_DUPLICATE, _Z("Duplicar Lineas\tCtrl+L"),"","duplicar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_DELETE, _Z("Eliminar Lineas\tCtrl+Shift+L"),"","eliminar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_COMMENT, _Z("Comentar Lineas\tCtrl+D"),"","comentar.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_UNCOMMENT, _Z("Descomentar Lineas\tCtrl+Shift+D"),"","descomentar.png");
 	edit->AppendSeparator();
-	utils->AddItemToMenu(edit,mxID_EDIT_INDENT_SELECTION,_T("Corregir Indentado\tCtrl+I"),_T(""),_T("indentar.png"));
-//	utils->AddItemToMenu(edit,mxID_EDIT_BEAUTIFY_CODE,_T("Emprolijar Algoritmo\tCtrl+Shift+I"),_T(""),_T("acomodar.png"));
-	menu->Append(edit, _T("&Editar"));
+	utils->AddItemToMenu(edit,mxID_EDIT_INDENT_SELECTION,_Z("Corregir Indentado\tCtrl+I"),"","indentar.png");
+//	utils->AddItemToMenu(edit,mxID_EDIT_BEAUTIFY_CODE,_Z("Emprolijar Algoritmo\tCtrl+Shift+I"),"","acomodar.png");
+	menu->Append(edit, _Z("&Editar"));
 	
 	wxMenu *cfg = new wxMenu;
 	
 	wxMenu *cfg_help = new wxMenu;
-	mi_autocomp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCOMP, _T("Utilizar Autocompletado"),_T(""),config->autocomp);
-	mi_autoclose = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCLOSE, _T("Cerrar Repetitivas/Condicionales"),_T(""),config->autoclose);
-	mi_highlight_blocks = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_HIGHLIGHT_BLOCKS, _T("Resaltar bloques lógicos"),_T(""),config->highlight_blocks);
-	mi_calltip_helps = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_CALLTIP_HELPS, _T("Utilizar Ayudas Emergentes"),_T(""),config->calltip_helps);
-	mi_smart_indent = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SMART_INDENT, _T("Utilizar Indentado Inteligente"),_T(""),config->smart_indent);
-	mi_rt_syntax = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_RT_SYNTAX, _T("Comprobar Sintaxis Mientras Escribe"),_T(""),config->rt_syntax);
-	mi_quickhelp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SHOW_QUICKHELP, _T("Mostrar Ayuda Rapida"),_T(""),config->auto_quickhelp);
-	cfg->AppendSubMenu(cfg_help,"Asistencias");
+	mi_autocomp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCOMP, _Z("Utilizar Autocompletado"),"",config->autocomp);
+	mi_autoclose = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_AUTOCLOSE, _Z("Cerrar Repetitivas/Condicionales"),"",config->autoclose);
+	mi_highlight_blocks = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_HIGHLIGHT_BLOCKS, _Z("Resaltar bloques lógicos"),"",config->highlight_blocks);
+	mi_calltip_helps = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_CALLTIP_HELPS, _Z("Utilizar Ayudas Emergentes"),"",config->calltip_helps);
+	mi_smart_indent = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SMART_INDENT, _Z("Utilizar Indentado Inteligente"),"",config->smart_indent);
+	mi_rt_syntax = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_RT_SYNTAX, _Z("Comprobar Sintaxis Mientras Escribe"),"",config->rt_syntax);
+	mi_quickhelp = utils->AddCheckToMenu(cfg_help,mxID_CONFIG_SHOW_QUICKHELP, _Z("Mostrar Ayuda Rapida"),"",config->auto_quickhelp);
+	cfg->AppendSubMenu(cfg_help,_Z("Asistencias"));
 	
 	wxMenu *cfg_pres = new wxMenu;
-	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _T("Animar paneles"),_T(""),config->animate_gui);
-	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _T("Organizar Ventanas al Iniciar Paso a Paso"),_T(""),config->reorganize_for_debug);
-	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _T("Utilizar colores al interpretar"),_T(""),config->use_colors);
-	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _T("Ejecutar en una terminal del sistema"),_T(""),!config->use_psterm);
-	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _T("Utilizar fondo negro en la terminal"),_T(""),config->use_dark_psterm);
+	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _Z("Animar paneles"),"",config->animate_gui);
+	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
+	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores al interpretar"),"",config->use_colors);
+	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
+	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
-	cfg->AppendSubMenu(cfg_pres,"Presentación");
+	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
-	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _T("Opciones del Lenguaje (perfiles)..."),_T(""),_T("lenguaje.png"));
-	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _T("Utilizar diagramas Nassi-Schneiderman"),_T(""),config->lang.use_nassi_schneiderman);
-	menu->Append(cfg, _T("&Configurar"));
+	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
+	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang.use_nassi_schneiderman);
+	menu->Append(cfg, "&Configurar");
 	
 	wxMenu *run = new wxMenu;
-	utils->AddItemToMenu(run,mxID_RUN_RUN, _T("Ejecutar\tF9"),_T(""),_T("ejecutar.png"));
-	utils->AddItemToMenu(run,mxID_RUN_STEP_STEP, _T("Ejecutar Paso a Paso\tF5"),_T(""),_T("pasos.png"));
-	utils->AddItemToMenu(run,mxID_RUN_SUBTITLES, _T("Ejecución Explicada"),_T(""),_T("subtitles.png"));
-	utils->AddItemToMenu(run,mxID_RUN_CHECK, _T("Verificar Sintaxis\tShift+F9"),_T(""),_T("verificar.png"));
-//	utils->AddItemToMenu(run,mxID_RUN_DRAW_FLOW, _T("Dibujar Diagrama de Flujo"),_T(""),_T("flujo.png"));
-	utils->AddItemToMenu(run,mxID_RUN_SET_INPUT, _T("Predefinir Entrada...\tCtrl+F9"),_T(""),_T("input.png"));
-	menu->Append(run, _T("E&jecutar"));
+	utils->AddItemToMenu(run,mxID_RUN_RUN, _Z("Ejecutar\tF9"),"","ejecutar.png");
+	utils->AddItemToMenu(run,mxID_RUN_STEP_STEP, _Z("Ejecutar Paso a Paso\tF5"),"","pasos.png");
+	utils->AddItemToMenu(run,mxID_RUN_SUBTITLES, _Z("Ejecución Explicada"),"","subtitles.png");
+	utils->AddItemToMenu(run,mxID_RUN_CHECK, _Z("Verificar Sintaxis\tShift+F9"),"","verificar.png");
+//	utils->AddItemToMenu(run,mxID_RUN_DRAW_FLOW, _Z("Dibujar Diagrama de Flujo"),"","flujo.png");
+	utils->AddItemToMenu(run,mxID_RUN_SET_INPUT, _Z("Predefinir Entrada...\tCtrl+F9"),"","input.png");
+	menu->Append(run, _Z("E&jecutar"));
 	
 //	wxMenu *config = new wxMenu;
-//	utils->AddItemToMenu(config,mxID_CONFIG_, _T(""),_T(""),_T(".png"));
-//	menu->Append(config, _T("&Configuar"));
+//	utils->AddItemToMenu(config,mxID_CONFIG_, "","",".png");
+//	menu->Append(config, "&Configuar");
 //	
 	wxMenu *help = new wxMenu;
-	utils->AddItemToMenu(help,mxID_HELP_INDEX, _T("Indice...\tF1"),_T(""),_T("ayuda.png"));
-//	utils->AddItemToMenu(help,mxID_HELP_REFERENCE, _T("Referencia..."),_T(""),_T("referencia.png"));
-	utils->AddItemToMenu(help,mxID_HELP_QUICKHELP, _T("Ayuda Rapida\tShift+F1"),_T(""),_T("referencia.png"));
-	utils->AddItemToMenu(help,mxID_HELP_EXAMPLES, _T("&Ejemplos..."),_T(""),_T("abrir.png"));
+	utils->AddItemToMenu(help,mxID_HELP_INDEX, _Z("Indice...\tF1"),"","ayuda.png");
+//	utils->AddItemToMenu(help,mxID_HELP_REFERENCE, _Z("Referencia...","","referencia.png");
+	utils->AddItemToMenu(help,mxID_HELP_QUICKHELP, _Z("Ayuda Rapida\tShift+F1"),"","referencia.png");
+	utils->AddItemToMenu(help,mxID_HELP_EXAMPLES, _Z("&Ejemplos..."),"","abrir.png");
 	help->AppendSeparator();
-	utils->AddItemToMenu(help,mxID_HELP_UPDATES, _T("&Buscar actualizaciones...\t"),_T("Comprueba a traves de Internet si hay versiones mas recientes de PSeInt disponibles..."),_T("updates.png"));
-	utils->AddItemToMenu(help,mxID_HELP_ABOUT, _T("Acerca de..."),_T(""),_T("acerca_de.png"));
-	menu->Append(help, _T("A&yuda"));
+	utils->AddItemToMenu(help,mxID_HELP_UPDATES, _Z("&Buscar actualizaciones...\t"),_Z("Comprueba a traves de Internet si hay versiones mas recientes de PSeInt disponibles..."),"updates.png");
+	utils->AddItemToMenu(help,mxID_HELP_ABOUT, _Z("Acerca de..."),"","acerca_de.png");
+	menu->Append(help, _Z("A&yuda"));
 	
 	SetMenuBar(menu);
 	
@@ -343,35 +349,35 @@ void mxMainWindow::CreateToolbars() {
 	
 	toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 	toolbar->SetToolBitmapSize(wxSize(24,24));
-	utils->AddTool(toolbar,mxID_FILE_NEW,_T("Nuevo"),_T("nuevo.png"),_T(""));
-	utils->AddTool(toolbar,mxID_FILE_OPEN,_T("Abrir..."),_T("abrir.png"),_T(""));
-	utils->AddTool(toolbar,mxID_FILE_SAVE,_T("Guardar"),_T("guardar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_FILE_SAVE_AS,_T("Guardar Como..."),_T("guardar_como.png"),_T(""));
+	utils->AddTool(toolbar,mxID_FILE_NEW,_Z("Nuevo"),"nuevo.png","");
+	utils->AddTool(toolbar,mxID_FILE_OPEN,_Z("Abrir..."),"abrir.png","");
+	utils->AddTool(toolbar,mxID_FILE_SAVE,_Z("Guardar"),"guardar.png","");
+	utils->AddTool(toolbar,mxID_FILE_SAVE_AS,_Z("Guardar Como..."),"guardar_como.png","");
 	toolbar->AddSeparator();
-	utils->AddTool(toolbar,mxID_EDIT_UNDO,_T("Deshacer"),_T("deshacer.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_REDO,_T("Rehacer"),_T("rehacer.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_CUT,_T("Cortar"),_T("cortar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_COPY,_T("Copiar"),_T("copiar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_PASTE,_T("Pegar"),_T("pegar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_INDENT_SELECTION,_T("Corregir Indentado"),_T("indentar.png"),_T(""));
+	utils->AddTool(toolbar,mxID_EDIT_UNDO,_Z("Deshacer"),"deshacer.png","");
+	utils->AddTool(toolbar,mxID_EDIT_REDO,_Z("Rehacer"),"rehacer.png","");
+	utils->AddTool(toolbar,mxID_EDIT_CUT,_Z("Cortar"),"cortar.png","");
+	utils->AddTool(toolbar,mxID_EDIT_COPY,_Z("Copiar"),"copiar.png","");
+	utils->AddTool(toolbar,mxID_EDIT_PASTE,_Z("Pegar"),"pegar.png","");
+	utils->AddTool(toolbar,mxID_EDIT_INDENT_SELECTION,_Z("Corregir Indentado"),"indentar.png","");
 	toolbar->AddSeparator();
-	utils->AddTool(toolbar,mxID_EDIT_FIND,_T("Buscar"),_T("buscar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_FIND_PREV,_T("Buscar Anterior"),_T("anterior.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_FIND_NEXT,_T("Buscar Siguiente"),_T("siguiente.png"),_T(""));
-	utils->AddTool(toolbar,mxID_EDIT_REPLACE,_T("Reemplazar"),_T("reemplazar.png"),_T(""));
+	utils->AddTool(toolbar,mxID_EDIT_FIND,_Z("Buscar"),"buscar.png","");
+	utils->AddTool(toolbar,mxID_EDIT_FIND_PREV,_Z("Buscar Anterior"),"anterior.png","");
+	utils->AddTool(toolbar,mxID_EDIT_FIND_NEXT,_Z("Buscar Siguiente"),"siguiente.png","");
+	utils->AddTool(toolbar,mxID_EDIT_REPLACE,_Z("Reemplazar"),"reemplazar.png","");
 	toolbar->AddSeparator();
-	utils->AddTool(toolbar,mxID_RUN_RUN,_T("Ejecutar..."),_T("ejecutar.png"),_T(""));
-	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_T("Ejecutar paso a paso..."),_T("pasos.png"),_T(""));
+	utils->AddTool(toolbar,mxID_RUN_RUN,_Z("Ejecutar..."),"ejecutar.png","");
+	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_Z("Ejecutar paso a paso..."),"pasos.png","");
 //#ifdef __APPLE__
-//	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
+//	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_Z("Dibujar Diagrama de Flujo..."),"flujo.png","");
 //#else
-	utils->AddTool(toolbar,mxID_FILE_EDIT_FLOW,_T("Dibujar Diagrama de Flujo..."),_T("flujo.png"),_T(""));
+	utils->AddTool(toolbar,mxID_FILE_EDIT_FLOW,_Z("Dibujar Diagrama de Flujo..."),"flujo.png","");
 //#endif
 	toolbar->AddSeparator();
-	utils->AddTool(toolbar,mxID_HELP_INDEX,_T("Ayuda..."),_T("ayuda.png"),_T(""));
-//	utils->AddTool(toolbar,mxID_FILE_EXIT,_T("Salir"),_T("salir.png"),_T(""));
+	utils->AddTool(toolbar,mxID_HELP_INDEX,_Z("Ayuda..."),"ayuda.png","");
+//	utils->AddTool(toolbar,mxID_FILE_EXIT,"Salir","salir.png","");
 	toolbar->Realize();
-	wxAuiPaneInfo info; info.Name(_T("toolbar")).Caption(_T("Toolbar")).ToolbarPane().Top().Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]).LeftDockable(false).RightDockable(false).Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]);
+	wxAuiPaneInfo info; info.Name("toolbar").Caption("Toolbar").ToolbarPane().Top().Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]).LeftDockable(false).RightDockable(false).Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]);
 	if (config->show_toolbar) info.Show(); else info.Hide();
 	aui_manager.AddPane(toolbar, info);
 	
@@ -381,67 +387,67 @@ void mxMainWindow::CreateCommandsPanel() {
 	wxPanel *panel = commands = new wxPanel(this);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	wxString tt=utils->FixTooltip("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma.");
+	wxString tt=utils->FixTooltip(_Z("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma."));
 	
-	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,_T("escribir.png"),_T("Escribir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,_T("leer.png"),_T("Leer"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,_T("asignar.png"),_T("Asignar"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SI,_T("si.png"),_T("Si-Entonces"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,_T("segun.png"),_T("Según"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,_T("mientras.png"),_T("Mientras"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,_T("repetir.png"),_T("Repetir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,_T("para.png"),_T("Para"))->SetToolTip(tt);
-	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,_T("subproceso.png"),_T("SubProceso")))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,"escribir.png",_Z("Escribir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,"leer.png",_Z("Leer"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,"asignar.png",_Z("Asignar"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SI,"si.png",_Z("Si-Entonces"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,"segun.png",_Z("Según"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,"mientras.png",_Z("Mientras"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,"repetir.png",_Z("Repetir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,"para.png",_Z("Para"))->SetToolTip(tt);
+	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",_Z("SubProceso")))->SetToolTip(tt);
 	if (!config->lang.enable_user_functions) button_subproc->Hide();
 	panel->SetSizerAndFit(sizer);
 	
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("commands")).Caption(_T("Comandos")).Right().Layer(pcmd[0]).Row(pcmd[1]).Position(pcmd[2]);
-	info_helper.Name(_T("helper_commands")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hcmd[0]).Row(hcmd[1]).Position(hcmd[2]);
+	info_win.Name("commands").Caption(_Z("Comandos")).Right().Layer(pcmd[0]).Row(pcmd[1]).Position(pcmd[2]);
+	info_helper.Name("helper_commands").CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hcmd[0]).Row(hcmd[1]).Position(hcmd[2]);
 	if (config->show_commands) {
 		info_win.Show(); info_helper.Hide();
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(commands, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile(_T("imgs"),_T("tb_commands.png"))), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile("imgs","tb_commands.png")), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
 	vars_window=new mxVarWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("vars_panel")).Caption(_T("Variables")).Left().Layer(pvar[0]).Row(pvar[1]).Position(pvar[2]);
-	info_helper.Name(_T("helper_vars")).CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hvar[0]).Row(hvar[1]).Position(hvar[2]);
+	info_win.Name("vars_panel").Caption(_Z("Variables")).Left().Layer(pvar[0]).Row(pvar[1]).Position(pvar[2]);
+	info_helper.Name("helper_vars").CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hvar[0]).Row(hvar[1]).Position(hvar[2]);
 	if (config->show_vars) {
 		info_win.Show(); info_helper.Hide();
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile(_T("imgs"),_T("tb_vars.png"))), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile("imgs","tb_vars.png")), info_helper);
 	aui_manager.AddPane(vars_window, info_win);
 }
 
 void mxMainWindow::CreateOpersPanel() {
 	opers_window=new mxOpersWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("opers_panel")).Caption(_T("Operadores y Funciones")).Left().Layer(popr[0]).Row(popr[1]).Position(popr[2]);
-	info_helper.Name(_T("helper_opers")).CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hopr[0]).Row(hopr[1]).Position(hopr[2]);
+	info_win.Name("opers_panel").Caption(_Z("Operadores y Funciones")).Left().Layer(popr[0]).Row(popr[1]).Position(popr[2]);
+	info_helper.Name("helper_opers").CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hopr[0]).Row(hopr[1]).Position(hopr[2]);
 	if (config->show_opers) {
 		info_win.Show(); info_helper.Hide();
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile(_T("imgs"),_T("tb_opers.png"))), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png")), info_helper);
 	aui_manager.AddPane(opers_window, info_win);
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
 	subtitles=new mxSubtitles(this); // hay que crearlo antes que el debug
-	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name(_T("subtitles")).Bottom().CaptionVisible(false).Hide().Layer(psub[0]).Row(psub[1]).Position(psub[2]));	
+	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name("subtitles").Bottom().CaptionVisible(false).Hide().Layer(psub[0]).Row(psub[1]).Position(psub[2]));	
 	debug_panel = new mxDebugWindow(this);
 	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name(_T("debug_panel")).Caption(_T("Paso a paso")).Right().Layer(pdbg[0]).Row(pdbg[1]).Position(pdbg[2]);
-	info_helper.Name(_T("helper_debug")).CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hdbg[0]).Row(hdbg[1]).Position(hdbg[2]);
+	info_win.Name("debug_panel").Caption(_Z("Paso a paso")).Right().Layer(pdbg[0]).Row(pdbg[1]).Position(pdbg[2]);
+	info_helper.Name("helper_debug").CaptionVisible(false).PaneBorder(false).Resizable(false).Right().Layer(hdbg[0]).Row(hdbg[1]).Position(hdbg[2]);
 	
 	if (config->show_debug_panel) {
 		info_win.Show(); info_helper.Hide();
@@ -449,14 +455,14 @@ void mxMainWindow::CreateDebugControlsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile(_T("imgs"),_T("tb_debug.png"))), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png")), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
 	wxSize client_size = GetClientSize();
 	notebook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxSize(430,200), wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxNO_BORDER | wxAUI_NB_WINDOWLIST_BUTTON);
 //	wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
-	aui_manager.AddPane(notebook, wxAuiPaneInfo().Name(_T("notebook_sources")).CenterPane().PaneBorder(false));
+	aui_manager.AddPane(notebook, wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
 }
 
 void mxMainWindow::CreateStatusBar() {
@@ -465,9 +471,9 @@ void mxMainWindow::CreateStatusBar() {
 }
 
 mxSource *mxMainWindow::NewProgram() {
-	mxSource *source = new mxSource(notebook,_T("<sin_titulo>"));
-	notebook->AddPage(source,_T("<sin_titulo>"),true);
-	source->SetText(_T("Proceso sin_titulo\n\t\nFinProceso\n"));
+	mxSource *source = new mxSource(notebook,"<sin_titulo>");
+	notebook->AddPage(source,"<sin_titulo>",true);
+	source->SetText("Proceso sin_titulo\n\t\nFinProceso\n");
 	source->SetFieldIndicator(8,18);
 	source->SetSelection(20,20);
 	source->SetModify(false);
@@ -514,7 +520,7 @@ void mxMainWindow::OnFileExportLang(wxCommandEvent &evt) {
 void mxMainWindow::OnFileExportHtml(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		wxFileDialog dlg (this, "Exportar",source->GetPathForExport(),source->GetNameForExport()+_T(".html"), _T("Documentos HTML|*.html;*.htm;*.HTML;*.HTM"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, _Z("Exportar"),source->GetPathForExport(),source->GetNameForExport()+_Z(".html"), _Z("Documentos HTML|*.html;*.htm;*.HTML;*.HTM"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() == wxID_OK) {
 			config->last_dir=config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 			HtmlExporter ce;
@@ -523,7 +529,7 @@ void mxMainWindow::OnFileExportHtml(wxCommandEvent &evt) {
 			if (ce.Export(source,title,dlg.GetPath()))
 				wxLaunchDefaultBrowser(dlg.GetPath());
 			else
-				wxMessageBox("No se pudo guardar el archivo","Error",wxID_OK|wxICON_ERROR,this);
+				wxMessageBox(_Z("No se pudo guardar el archivo"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 		}
 	}
 }
@@ -532,7 +538,7 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		if (source->GetModify()) {
-			int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL,this);
+			int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL,this);
 			if (res==wxCANCEL)
 				return;
 			else if (res==wxYES) {
@@ -550,8 +556,8 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 
 
 void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
-	wxFileDialog dlg (this, _T("Abrir Archivo"), config->last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-	dlg.SetWildcard(_T("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
+	wxFileDialog dlg (this, _Z("Abrir Archivo"), config->last_dir, _Z(" "), "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -564,7 +570,7 @@ void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 
 void mxMainWindow::OnHelpExamples(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
-	helpw->ShowHelp(_T("ejemplos.html"));
+	helpw->ShowHelp("ejemplos.html");
 }
 
 void mxMainWindow::RegenFileMenu(wxString path) {
@@ -579,7 +585,7 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 					for (int i=4;i>0;i--)
 						config->last_files[i]=config->last_files[i-1];
 				} else {
-					config->last_files.Add(_T(""));
+					config->last_files.Add("");
 					for (int i=c;i>0;i--)
 						config->last_files[i]=config->last_files[i-1];
 					c++;
@@ -602,14 +608,14 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 		if (file_history[i])
 			file_menu->Remove(file_history[i]);
 		if (config->last_files[i][0])
-			file_history[i] = utils->AddItemToMenu(file_menu, mxID_FILE_SOURCE_HISTORY_0+i,config->last_files[i],config->last_files[i],wxString(_T("recent"))<<i+1<<_T(".png"));
+			file_history[i] = utils->AddItemToMenu(file_menu, mxID_FILE_SOURCE_HISTORY_0+i,config->last_files[i],config->last_files[i],wxString("recent")<<i+1<<".png");
 	}
 }
 
 mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	
 	if (!wxFileName::FileExists(path)) {
-		wxMessageBox(wxString(_T("No se pudo abrir el archivo "))<<path,_T("Error"));
+		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
 		return NULL;
 	}
 	
@@ -637,11 +643,11 @@ void mxMainWindow::OnFileSave(wxCommandEvent &evt) {
 void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
-		wxFileDialog dlg (this, _T("Guardar"),source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->filename).GetFullName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		dlg.SetWildcard(_T("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
+		wxFileDialog dlg (this, _Z("Guardar"),source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->filename).GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 		if (dlg.ShowModal() == wxID_OK) {
 			wxFileName file(dlg.GetPath());
-			if (file.GetExt().Len()==0) file.SetExt(_T("psc"));
+			if (file.GetExt().Len()==0) file.SetExt("psc");
 			source->UnExample();
 			config->last_dir=file.GetPath();
 			source->SaveFile(file.GetFullPath());
@@ -658,7 +664,7 @@ void mxMainWindow::OnFileExit(wxCommandEvent &evt) {
 
 void mxMainWindow::OnEdit(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE 
-		CURRENT_SOURCE->ProcessEvent(evt);
+		CURRENT_SOURCE->GetEventHandler()->ProcessEvent(evt);
 }
 
 void mxMainWindow::OnRunRun(wxCommandEvent &evt) {
@@ -735,7 +741,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 			mxSource *source = (mxSource*)(notebook->GetPage(i));
 			if (source->GetModify()) {
 				notebook->SetSelection(i);
-				int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL,this);
+				int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL,this);
 				if (res&wxYES) {
 					if (!source->sin_titulo)
 						source->SaveFile(source->filename);
@@ -792,11 +798,11 @@ void mxMainWindow::CreateResultsTree() {
 
 	results_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxPoint(0,0), wxSize(160,250), wxTR_DEFAULT_STYLE | wxNO_BORDER );
 	wxImageList* imglist = new wxImageList(16, 16, true, 2);
-	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,_T("tree.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,_T("error.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,"tree.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,"error.png"),wxBITMAP_TYPE_PNG));
 	results_tree_ctrl->AssignImageList(imglist);
-	results_root = results_tree_ctrl->AddRoot(wxString(_T("PSeInt "))<<VERSION, 0);
-	aui_manager.AddPane(results_tree_ctrl, wxAuiPaneInfo().Name(_T("results_tree")).Caption(_T("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
+	results_root = results_tree_ctrl->AddRoot(wxString(_Z("PSeInt "))<<VERSION, 0);
+	aui_manager.AddPane(results_tree_ctrl, wxAuiPaneInfo().Name("results_tree").Caption(_Z("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
 	
 }
 
@@ -815,7 +821,7 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 		}
 	}
 	// si no hay clave, preguntar
-	if (ask) key = wxGetTextFromUser(_T("Palabra a buscar:"), _T("Ayuda Rapida") , _(""), this);
+	if (ask) key = wxGetTextFromUser(_Z("Palabra a buscar:"), _Z("Ayuda Rápida"), _T(""), this);
 	// mostrar panel y cargar ayuda
 	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),true);
 }
@@ -830,8 +836,8 @@ void mxMainWindow::HideQuickHelp() {
 
 void mxMainWindow::CreateQuickHelp() {
 	quick_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
-	quick_html->SetPage(wxString(_T("PSeInt "))<<VERSION);
-	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name(_T("quick_html")).Caption(_T("Ayuda Rapida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
+	quick_html->SetPage(wxString(_Z("PSeInt "))<<VERSION);
+	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name("quick_html").Caption(_Z("Ayuda Rápida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }
 
 void mxMainWindow::SelectError(wxString text) {
@@ -842,7 +848,7 @@ void mxMainWindow::SelectError(wxString text) {
 	// seleccionar esa esa linea e instruccion
 	long l,i=-1;
 	wxString where=text.AfterFirst(' ').BeforeFirst(':');
-	if (where.Contains(_T("inst "))) {
+	if (where.Contains("inst ")) {
 		where.BeforeFirst(' ').ToLong(&l); l--;
 		where.AfterLast(' ').BeforeFirst(')').ToLong(&i); i--;
 		last_source->SelectInstruccion(l,i);
@@ -852,7 +858,7 @@ void mxMainWindow::SelectError(wxString text) {
 	}
 	last_source->SetFocus();
 	text = text.AfterFirst(':');
-	if (text.StartsWith(_T(" ERROR "))) {
+	if (text.StartsWith(" ERROR ")) {
 		long e=0;
 		text.Mid(7).ToLong(&e);
 		if (config->auto_quickhelp) 
@@ -863,80 +869,80 @@ void mxMainWindow::SelectError(wxString text) {
 void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
 	if (!result_tree_done) return;
 	wxString text = results_tree_ctrl->GetItemText(evt.GetItem());
-	if (text.StartsWith(_T("Lin "))) SelectError(text);
+	if (text.StartsWith("Lin ")) SelectError(text);
 }
 
 void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("ASIGNAR")));
+		ShowQuickHelp(true,help->GetCommandText("ASIGNAR"));
 	wxArrayString toins;
 	if (config->lang.force_semicolon)
-		toins.Add(_T("{variable}<-{expresion};"));
+		toins.Add("{variable}<-{expresion};");
 	else
-		toins.Add(_T("{variable}<-{expresion}"));
+		toins.Add("{variable}<-{expresion}");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("LEER")));
+		ShowQuickHelp(true,help->GetCommandText("LEER"));
 	wxArrayString toins;
 	if (config->lang.force_semicolon)
-		toins.Add(_T("Leer {lista_de_variables};"));
+		toins.Add("Leer {lista_de_variables};");
 	else
-		toins.Add(_T("Leer {lista_de_variables}"));
+		toins.Add("Leer {lista_de_variables}");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("ESCRIBIR")));
+		ShowQuickHelp(true,help->GetCommandText("ESCRIBIR"));
 	wxArrayString toins;
 	if (config->lang.force_semicolon)
-		toins.Add(_T("Escribir {lista_de_expresiones};"));
+		toins.Add("Escribir {lista_de_expresiones};");
 	else
-		toins.Add(_T("Escribir {lista_de_expresiones}"));
+		toins.Add("Escribir {lista_de_expresiones}");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("MIENTRAS")));
+		ShowQuickHelp(true,help->GetCommandText("MIENTRAS"));
 	wxArrayString toins;
-	toins.Add(_T("Mientras {expresion_logica} Hacer"));
-	toins.Add(_T("\t{secuencia_de_acciones}"));
-	toins.Add(_T("FinMientras"));
+	toins.Add("Mientras {expresion_logica} Hacer");
+	toins.Add("\t{secuencia_de_acciones}");
+	toins.Add("FinMientras");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("REPETIR")));
+		ShowQuickHelp(true,help->GetCommandText("REPETIR"));
 	wxArrayString toins;
-	toins.Add(_T("Repetir"));
-	toins.Add(_T("\t{secuencia_de_acciones}"));
-	toins.Add(_T("Hasta Que {expresion_logica}"));
+	toins.Add("Repetir");
+	toins.Add("\t{secuencia_de_acciones}");
+	toins.Add("Hasta Que {expresion_logica}");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("PARA")));
+		ShowQuickHelp(true,help->GetCommandText("PARA"));
 	wxArrayString toins;
-	toins.Add(_T("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer"));
-	toins.Add(_T("\t{secuencia_de_acciones}"));
-	toins.Add(_T("FinPara"));
+	toins.Add("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer");
+	toins.Add("\t{secuencia_de_acciones}");
+	toins.Add("FinPara");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("SUBPROCESO")));
+		ShowQuickHelp(true,help->GetCommandText("SUBPROCESO"));
 	wxArrayString toins;
-	toins.Add(_T("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )"));
-	toins.Add(_T("\t"));
-	toins.Add(_T("FinSubProceso"));
-	toins.Add(_T(""));
+	toins.Add("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
+	toins.Add("\t");
+	toins.Add("FinSubProceso");
+	toins.Add("");
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		source->SetSelection(0,0);
@@ -947,30 +953,30 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("SI")));
+		ShowQuickHelp(true,help->GetCommandText("SI"));
 	wxArrayString toins;
-	toins.Add(_T("Si {expresion_logica} Entonces"));
-	toins.Add(_T("\t{acciones_por_verdadero}"));
-	toins.Add(_T("Sino"));
-	toins.Add(_T("\t{acciones_por_falso}"));
-	toins.Add(_T("FinSi"));
+	toins.Add("Si {expresion_logica} Entonces");
+	toins.Add("\t{acciones_por_verdadero}");
+	toins.Add("Sino");
+	toins.Add("\t{acciones_por_falso}");
+	toins.Add("FinSi");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdSegun(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText(_T("SEGUN")));
+		ShowQuickHelp(true,help->GetCommandText("SEGUN"));
 	wxArrayString toins;
-	toins.Add(_T("Segun {variable_numerica} Hacer"));
-	toins.Add(_T("\t{opcion_1}:"));
-	toins.Add(_T("\t\t{secuencia_de_acciones_1}"));
-	toins.Add(_T("\t{opcion_2}:"));
-	toins.Add(_T("\t\t{secuencia_de_acciones_2}"));
-	toins.Add(_T("\t{opcion_3}:"));
-	toins.Add(_T("\t\t{secuencia_de_acciones_3}"));
-	toins.Add(_T("\tDe Otro Modo:"));
-	toins.Add(_T("\t\t{secuencia_de_acciones_dom}"));
-	toins.Add(_T("FinSegun"));
+	toins.Add("Segun {variable_numerica} Hacer");
+	toins.Add("\t{opcion_1}:");
+	toins.Add("\t\t{secuencia_de_acciones_1}");
+	toins.Add("\t{opcion_2}:");
+	toins.Add("\t\t{secuencia_de_acciones_2}");
+	toins.Add("\t{opcion_3}:");
+	toins.Add("\t\t{secuencia_de_acciones_3}");
+	toins.Add("\tDe Otro Modo:");
+	toins.Add("\t\t{secuencia_de_acciones_dom}");
+	toins.Add("FinSegun");
 	InsertCode(toins);
 }	
 
@@ -983,7 +989,7 @@ void mxMainWindow::InsertCode(wxString toins) {
 		if (ss!=se) {
 			source->SetTargetStart(ss);
 			source->SetTargetEnd(se);
-			source->ReplaceTarget(_T(""));
+			source->ReplaceTarget("");
 		}
 		int pos = ss;
 		wxString toindic = toins;
@@ -1022,13 +1028,13 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		if (ss!=se) {
 			source->SetTargetStart(ss);
 			source->SetTargetEnd(se);
-			source->ReplaceTarget(_T(""));
+			source->ReplaceTarget("");
 		}
 		int line = source->LineFromPosition(ss);
 		// ver si había algo en la misma linea despues de la seleccion para saber si va un enter más o no
 		int oline_end = source->GetLineEndPosition(line);
 		se=ss; while (se<oline_end && (source->GetCharAt(se)==' '||source->GetCharAt(se)=='\t')) se++;
-		if (se<oline_end) { source->InsertText(ss,_T("\n")); source->Indent(line+1,line+1); }
+		if (se<oline_end) { source->InsertText(ss,"\n"); source->Indent(line+1,line+1); }
 		// ver si había algo en la misma linea antes de la seleccion para saber si va un enter más o no
 		int oline_beg = source->PositionFromLine(line);
 		se=ss-1; while (se>=oline_beg && (source->GetCharAt(se)==' '||source->GetCharAt(se)=='\t')) se--;
@@ -1039,7 +1045,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		for (unsigned int i=0;i<toins.GetCount();i++) {
 			if (config->lang.lazy_syntax && toins[i].StartsWith("Fin"))
 				toins[i].Replace("Fin","Fin ",false);
-			if (i) source->InsertText(source->PositionFromLine(line),_T("\n"));
+			if (i) source->InsertText(source->PositionFromLine(line),"\n");
 			int pos = source->GetLineIndentPosition(line);
 			wxString toindic = toins[i];
 			// quitar las llaves del texto e insertarlo
@@ -1082,7 +1088,7 @@ void mxMainWindow::OnEditFind (wxCommandEvent &event) {
 void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindNext())
-			wxMessageBox(wxString(_T("La cadena \""))<<find_replace_dialog->last_search<<_T("\" no se encontro."), _T("Buscar"));
+			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"));
 	} else {
 		OnEditFind(event);
 	}
@@ -1091,7 +1097,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindPrev())
-			wxMessageBox(wxString(_T("La cadena \""))<<find_replace_dialog->last_search<<_T("\" no se encontro."), _T("Buscar"));
+			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"));
 	} else {
 		OnEditFind(event);
 	}
@@ -1251,19 +1257,19 @@ void mxMainWindow::OnConfigUseDarkPSTerm(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
-	if (event.pane->name == _T("commands"))
+	if (event.pane->name == "commands")
 		ShowCommandsPanel(false,true);
-	else if (event.pane->name == _T("debug_panel"))
+	else if (event.pane->name == "debug_panel")
 		ShowDebugPanel(false,true);
-	else if (event.pane->name == _T("vars_panel"))
+	else if (event.pane->name == "vars_panel")
 		ShowVarsPanel(false,true);
-	else if (event.pane->name == _T("opers_panel"))
+	else if (event.pane->name == "opers_panel")
 		ShowOpersPanel(false,true);
-	else if (event.pane->name == _T("quick_html"))
+	else if (event.pane->name == "quick_html")
 		ShowQuickHelp(false);
-	else if (event.pane->name == _T("results_tree"))
+	else if (event.pane->name == "results_tree")
 		ShowResults(false,false);
-	else if (event.pane->name == _T("desktop_test_panel")) {
+	else if (event.pane->name == "desktop_test_panel") {
 		ShowDesktopTestPanel(false,true);
 		debug_panel->OnDesktopTestPanelHide();
 	}
@@ -1272,7 +1278,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 	mxSource *source = (mxSource*)notebook->GetPage(event.GetSelection());
 	if (source->GetModify()) {
-		int res=wxMessageBox(_T("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
+		int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
 		if (res==wxCANCEL) {
 			event.Veto();
 			return;
@@ -1306,7 +1312,7 @@ void mxMainWindow::OnScrollDegugSpeed(wxScrollEvent &evt) {
 
 void mxMainWindow::CreateDesktopTestPanel() {
 	desktop_test_panel = new mxDesktopTestPanel(this);
-	aui_manager.AddPane(desktop_test_panel, wxAuiPaneInfo().Name(_T("desktop_test_panel")).Caption(_T("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide().Layer(pdkt[0]).Row(pdkt[1]).Position(pdkt[2]));
+	aui_manager.AddPane(desktop_test_panel, wxAuiPaneInfo().Name("desktop_test_panel").Caption(_Z("Prueba de Escritorio")).CloseButton(true).MaximizeButton(true).Bottom().Hide().Layer(pdkt[0]).Row(pdkt[1]).Position(pdkt[2]));
 }
 
 //const wxArrayString &mxMainWindow::GetDesktopVars() {
@@ -1388,7 +1394,7 @@ void mxMainWindow::OnDoThat (wxCommandEvent &event) {
 	LangSettings old=config->lang;
 	new mxConfig(this);
 	if (config->lang!=old) {
-		config->profile=_T("<personalizado>");
+		config->profile="<personalizado>";
 		ProfileChanged();
 	}
 }
@@ -1403,7 +1409,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
 		if (!printer.Print(this, &printout, true)) {
 			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-				wxMessageBox(_T("Ha ocurrido un error al intentar imprimir"),_T("Error"));
+				wxMessageBox(_Z("Ha ocurrido un error al intentar imprimir"),_Z("Error"));
 		}
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
 	}
@@ -1440,7 +1446,7 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 			source->GetFlowSocket()->Write("raise\n",6); 
 			return;
 		} else if (!source->GetReadOnly() && source->HaveComments()) {
-			wxMessageBox(_T("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_T("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
+			wxMessageBox(_Z("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_Z("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
 		wxString fname=source->SaveTemp();
 		if (debug->debugging)
@@ -1625,9 +1631,9 @@ void mxMainWindow::ParseResults(mxSource *source) {
 		fil.Open();
 		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 			if (str[0]=='*') {
-				if (str.Contains("Finalizada")) {
+				if (str.Contains(_Z("Finalizada"))) {
 					happy_ending=true;
-					if (!_avoid_results_tree) RTreeAdd(source->GetPageText()+": Ejecución Finalizada",0);
+					if (!_avoid_results_tree) RTreeAdd(source->GetPageText()+_Z(": Ejecución Finalizada"),0);
 					source->SetStatus(STATUS_RUNNED_OK);
 				}
 			} else if (str.Len()) {
@@ -1638,7 +1644,7 @@ void mxMainWindow::ParseResults(mxSource *source) {
 //		wxRemoveFile(temp_filename);
 		if (!happy_ending) {
 			source->SetStatus(STATUS_RUNNED_INT);
-			RTreeAdd(source->GetPageText()+": Ejecucion Interrumpida",0);
+			RTreeAdd(source->GetPageText()+_Z(": Ejecución Interrumpida"),0);
 //			Raise(); // comentado porque con la nueva terminal, al presionar f9 se pasa el foco a la terminal, yu si hay error vuelve al editor sin dejar ver que paso
 		} else {
 			source->SetFocus();
@@ -1708,6 +1714,7 @@ void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
 #define _min_size 1
 
 void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->Freeze();
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (pi.IsShown()) return;
 	int final_w=panel->GetSizer()->Fit(panel).GetWidth();
@@ -1732,10 +1739,12 @@ void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
 	}
 	pi.Resizable(); 
 	if (helper.Len()) aui_manager.GetPane(helper).Hide();	
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->Thaw();
 	aui_manager.Update(); 
 }
 
 void mxMainWindow::HidePanel(wxString helper, wxWindow * panel, bool anim) {
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->Freeze();
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (!pi.IsShown()) return;
 	if (anim && config->animate_gui) {
@@ -1756,6 +1765,7 @@ void mxMainWindow::HidePanel(wxString helper, wxWindow * panel, bool anim) {
 	}
 	pi.Hide(); 
 	if (helper.Len()) aui_manager.GetPane(helper).Show();	
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->Thaw();
 	aui_manager.Update(); 
 }
 
@@ -1911,12 +1921,12 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 		case QH_RT_NOERROR:
 			if (last_code>=QH_LASTERR && last_code!=QH_RT_SELECTERROR) return; // no reemplazar si no era un mensaje de error
 			_set_quick_help_check_code;
-			quick_html->SetPage("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo.");
+			quick_html->SetPage(_Z("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo."));
 			break;
 		case QH_RT_SELECTERROR:
 			if (last_code>=QH_LASTERR && last_code!=QH_RT_NOERROR) return; // no reemplazar si no era un mensaje de error
 			_set_quick_help_check_code;
-			quick_html->SetPage("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles.");
+			quick_html->SetPage(_Z("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles."));
 			break;
 		default:
 			last_code=code; // solo debería pasar para QH_NULL

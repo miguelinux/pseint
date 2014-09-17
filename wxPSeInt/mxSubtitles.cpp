@@ -6,6 +6,7 @@
 #include "DebugManager.h"
 #include "mxDebugWindow.h"
 #include <iostream>
+#include "string_conversions.h"
 using namespace std;
 
 mxSubtitles *subtitles=NULL;
@@ -19,19 +20,19 @@ mxSubtitles::mxSubtitles(wxWindow *parent):wxPanel(parent) {
 	wxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *sizer_bt=new wxBoxSizer(wxVERTICAL);
 	text=new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_CENTRE|wxTE_READONLY|wxTE_MULTILINE);
-	button_next=new wxButton(this,wxID_OK,"*Continuar*");
+	button_next=new wxButton(this,wxID_OK,_Z("*Continuar*"));
 	sizer->Add(text,wxSizerFlags().Expand().Proportion(1));
 	sizer_bt->Add(button_next,wxSizerFlags().Border(wxALL,10).Proportion(0).Expand());
 	sizer->Add(sizer_bt,wxSizerFlags().Center());
 	text->SetBackgroundColour(wxColour(255,255,150));
 	text->SetForegroundColour(wxColour(0,0,100));
-	text->SetFont(wxFont(11,wxMODERN,0,wxBOLD));
+	text->SetFont(wxFont(11,wxMODERN,wxFONTSTYLE_NORMAL,wxBOLD));
 	SetSizer(sizer);
 	SetSize(100,button_next->GetSize().GetHeight()*3);
 }
 
 void mxSubtitles::AddMessage (int linea, int inst, wxString msg) {
-	wxString s; s<<"Linea "<<linea<<", instrucción "<<inst<<"\n"<<msg;
+	wxString s; s<<_Z("Linea ")<<linea<<_Z(", instrucción ")<<inst<<_Z("\n")<<msg;
 	messages.Add(s); text->SetValue(s); button_next->SetFocus();
 }
 

@@ -17,31 +17,31 @@ BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)
 	EVT_CLOSE(mxIconInstaller::OnClose)
 END_EVENT_TABLE()
 
-mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,_T("Iconos lanzadores")) {
+mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,"Iconos lanzadores") {
 	
 	xdg_not_found=icon_installed=false;
 	
 	wxString res = utils->GetOutput("xdg-desktop-menu --version");
 	if (!res.Len()||res.Find("bash")!=wxNOT_FOUND) { 
 		if (!first_run)
-			wxMessageBox(_T("Debe instalar xdg-utils para tener acceso todas las funcionalidades"),_T("Iconos lanzadores"));
+			wxMessageBox("Debe instalar xdg-utils para tener acceso todas las funcionalidades","Iconos lanzadores");
 		xdg_not_found=true;
 //		return;
 	}
 	
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
-	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,_T("¿Desea crear un icono para acceder a PSeInt desde el menu del sistema o el escritorio?")),wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
+	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,"¿Desea crear un icono para acceder a PSeInt desde el menu del sistema o el escritorio?"),wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-	desktop = utils->AddCheckBox(sizer,this,_T("Crear un icono en el escritorio"),true);
-	menu = utils->AddCheckBox(sizer,this,_T("Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
+	desktop = utils->AddCheckBox(sizer,this,"Crear un icono en el escritorio",true);
+	menu = utils->AddCheckBox(sizer,this,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)",!xdg_not_found);
 	if (xdg_not_found) menu->Enable(false);
 //	psc = utils->AddCheckBox(sizer,this,"Asociar los archivos pseudocodigo (.psc)",true);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	mxBitmapButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("&Cancelar")); 
-	mxBitmapButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("&Aceptar"));
+	mxBitmapButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, "&Cancelar"); 
+	mxBitmapButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "&Aceptar");
 	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
 	ok_button->SetDefault(); 
 	bottomSizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5));
@@ -89,21 +89,21 @@ void mxIconInstaller::InstallIcons ( ) {
 void mxIconInstaller::InstallDesktop ( bool menu ) {
 	if (xdg_not_found) { MakeDesktopIcon(); return; }
 	InstallIcons();
-	wxString desk_file=DIR_PLUS_FILE(config->temp_dir,_T("pseint.desktop"));
+	wxString desk_file=DIR_PLUS_FILE(config->temp_dir,"pseint.desktop");
 	wxTextFile fil(desk_file);
 	if (fil.Exists())
 		fil.Open();
 	else
 		fil.Create();
 	fil.Clear();
-	fil.AddLine(_T("[Desktop Entry]"));
-	fil.AddLine(_T("Comment=PSeInt - Editor e intérprete de pseudocódigo"));
-	fil.AddLine(_T("Encoding=UTF-8"));
-	fil.AddLine(_T("Name=pseint"));
-	fil.AddLine(_T("Type=Application"));
-	fil.AddLine(_T("Categories=Development"));
-	fil.AddLine(_T("Icon=pseint"));
-	fil.AddLine(wxString(_T("Exec="))<<DIR_PLUS_FILE(config->pseint_dir,_T("wxPSeInt")));
+	fil.AddLine("[Desktop Entry]");
+	fil.AddLine("Comment=PSeInt - Editor e intérprete de pseudocódigo");
+	fil.AddLine("Encoding=UTF-8");
+	fil.AddLine("Name=pseint");
+	fil.AddLine("Type=Application");
+	fil.AddLine("Categories=Development");
+	fil.AddLine("Icon=pseint");
+	fil.AddLine(wxString("Exec=")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt"));
 	fil.Write();
 	fil.Close();
 	if (menu)
@@ -125,7 +125,7 @@ void mxIconInstaller::InstallMime() { // todavia no se usa
 
 void mxIconInstaller::InstallMime ( wxString mime_type, wxString mime_desc, wxString icon, wxArrayString exts ) {
 	
-	wxString xml_file=DIR_PLUS_FILE(config->temp_dir,_T("pseint-psc.xml"));
+	wxString xml_file=DIR_PLUS_FILE(config->temp_dir,"pseint-psc.xml");
 	wxTextFile fil(xml_file);
 	if (fil.Exists())
 		fil.Open();
@@ -155,23 +155,23 @@ void mxIconInstaller::InstallMime ( wxString mime_type, wxString mime_desc, wxSt
 
 void mxIconInstaller::MakeDesktopIcon() { // si no hay xdg, crear el .desktop a pata
 		
-	wxString desk_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop"));
-	if (!wxFileName::DirExists(desk_dir) && wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio"))))
-		desk_dir=DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio"));
+	wxString desk_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop");
+	if (!wxFileName::DirExists(desk_dir) && wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio")))
+		desk_dir=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio");
 	
-	wxTextFile fil(DIR_PLUS_FILE(desk_dir,_T("PSeInt.desktop")));
+	wxTextFile fil(DIR_PLUS_FILE(desk_dir,"PSeInt.desktop"));
 	if (fil.Exists())
 		fil.Open();
 	else
 		fil.Create();
 	fil.Clear();
-	fil.AddLine(_T("[Desktop Entry]"));
-	fil.AddLine(_T("Comment=Editor e intérprete de pseudocódigo"));
-	fil.AddLine(_T("Encoding=UTF-8"));
-	fil.AddLine(wxString(_T("Icon="))<<DIR_PLUS_FILE(config->pseint_dir,_T("imgs/icon64.png")));
-	fil.AddLine(_T("Name=PSeInt"));
-	fil.AddLine(_T("Type=Link"));
-	fil.AddLine(wxString(_T("URL="))<<DIR_PLUS_FILE(config->pseint_dir,_T("wxPSeInt")));
+	fil.AddLine("[Desktop Entry]");
+	fil.AddLine("Comment=Editor e intérprete de pseudocódigo");
+	fil.AddLine("Encoding=UTF-8");
+	fil.AddLine(wxString("Icon=")<<DIR_PLUS_FILE(config->pseint_dir,"imgs/icon64.png"));
+	fil.AddLine("Name=PSeInt");
+	fil.AddLine("Type=Link");
+	fil.AddLine(wxString("URL=")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt"));
 	fil.Write();
 	fil.Close();
 	

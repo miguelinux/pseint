@@ -14,6 +14,8 @@
 #include "CommunicationsManager.h"
 #include <iostream>
 #include "Logger.h"
+#include <wx/msgdlg.h>
+#include <wx/filedlg.h>
 using namespace std;
 
 mxProcess *proc_list;

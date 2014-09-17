@@ -1,6 +1,7 @@
 #include "HelpManager.h"
 #include <wx/textfile.h>
 #include "ConfigManager.h"
+#include "string_conversions.h"
 
 HelpManager *help;
 
@@ -10,13 +11,13 @@ HelpManager::HelpManager() {
 }
 
 void HelpManager::LoadCommands() {
-	wxTextFile fil(DIR_PLUS_FILE(config->help_dir,_T("comandos.hlp")));
+	wxTextFile fil(DIR_PLUS_FILE(config->help_dir,"comandos.hlp"));
 	if (!fil.Exists()) return;
 	fil.Open();
 	wxString command, help_text;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str[0]==' ') {
-			help_text<<str;//<<_T("<br>");
+			help_text<<str;//<<"<br>";
 		} else {
 			commands[command] = help_text;
 			help_text.Clear();
@@ -28,13 +29,13 @@ void HelpManager::LoadCommands() {
 }
 
 void HelpManager::LoadErrors() {
-	wxTextFile fil(DIR_PLUS_FILE(config->help_dir,_T("errores.hlp")));
+	wxTextFile fil(DIR_PLUS_FILE(config->help_dir,"errores.hlp"));
 	if (!fil.Exists()) return;
 	fil.Open();
-	wxString command(_T("0")), help_text;
+	wxString command("0"), help_text;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str[0]==' ') {
-			help_text<<str<<_T("<br>");
+			help_text<<str<<"<br>";
 		} else {
 			long e=0;
 			command.ToLong(&e);
@@ -50,17 +51,17 @@ void HelpManager::LoadErrors() {
 }
 
 wxString HelpManager::GetErrorText(const wxString &text, int num) {
-	wxString ret(_T("<HTML><HEAD><TITLE>PSeInt QuickHelp</TITLE></HEAD><BODY><B>"));
+	wxString ret(_Z("<HTML><HEAD><TITLE>PSeInt QuickHelp</TITLE></HEAD><BODY><B>"));
 	if (num>=MAX_ERRORS_TXT || errors[num].Len()==0) 
-		ret<<utils->ToHtml(text)<<_T("</B><BR><BR> No se encontro descripcion para este error <BR><BR></BODY></HTML>");
+		ret<<utils->ToHtml(text)<<_Z("</B><BR><BR> No se encontro descripcion para este error <BR><BR></BODY></HTML>");
 	else
-		ret<<utils->ToHtml(text)<<_T("</B><BR><BR>")<<errors[num]<<_T("<BR><BR></BODY></HTML>");
+		ret<<utils->ToHtml(text)<<_Z("</B><BR><BR>")<<errors[num]<<_Z("<BR><BR></BODY></HTML>");
 	return ret;
 }
 
 wxString HelpManager::GetCommandText(const wxString &com) {
-	wxString ret(_T("<HTML><HEAD><TITLE>PSeInt QuickHelp</TITLE></HEAD><BODY><B>"));
-	ret<<com<<_T("</B><BR><BR>")<<commands[com]<<_T("<BR><BR></BODY></HTML>");
+	wxString ret(_Z("<HTML><HEAD><TITLE>PSeInt QuickHelp</TITLE></HEAD><BODY><B>"));
+	ret<<com<<_Z("</B><BR><BR>")<<commands[com]<<_Z("<BR><BR></BODY></HTML>");
 	return ret;
 }
 
@@ -69,130 +70,130 @@ HelpManager::~HelpManager() {
 }
 
 wxString HelpManager::GetQuickHelp(wxString key) {
-	wxString str=_T("nohelp.html");
+	wxString str="nohelp.html";
 	key.MakeLower();
-	if (key==_("leer")) str=_T("lectura.html");
-	else if (key==_("lectura")) str=_T("lectura.html");
-	else if (key==_("mayusculas")) str=_T("funciones.html");
-	else if (key==_("mayúsculas")) str=_T("funciones.html");
-	else if (key==_("minusculas")) str=_T("funciones.html");
-	else if (key==_("minúsculas")) str=_T("funciones.html");
-	else if (key==_("longitud")) str=_T("funciones.html");
-	else if (key==_("subcadena")) str=_T("funciones.html");
-	else if (key==_("concatenar")) str=_T("funciones.html");
-	else if (key==_("convertiranumero")) str=_T("funciones.html");
-	else if (key==_("convertiranúmero")) str=_T("funciones.html");
-	else if (key==_("convertiratexto")) str=_T("funciones.html");
-	else if (key==_("subproceso")) str=_T("subprocesos.html");
-	else if (key==_("subprocesos")) str=_T("subprocesos.html");
-	else if (key==_("función")) str=_T("subprocesos.html");
-	else if (key==_("funcion")) str=_T("subprocesos.html");
-	else if (key==_("sin")) str=_T("escritura.html");
-	else if (key==_("saltar")) str=_T("escritura.html");
-	else if (key==_("bajar")) str=_T("escritura.html");
-	else if (key==_("sinbajar")) str=_T("escritura.html");
-	else if (key==_("sinsaltar")) str=_T("escritura.html");
-	else if (key==_("mostrar")) str=_T("escritura.html");
-	else if (key==_("imprimir")) str=_T("escritura.html");
-	else if (key==_("escribir")) str=_T("escritura.html");
-	else if (key==_("escritura")) str=_T("escritura.html");
-	else if (key==_("dimension")) str=_T("arreglos.html");
-	else if (key==_("dimensión")) str=_T("arreglos.html");
-	else if (key==_("matriz")) str=_T("arreglos.html");
-	else if (key==_("matrices")) str=_T("arreglos.html");
-	else if (key==_("arreglos")) str=_T("arreglos.html");
-	else if (key==_("arreglo")) str=_T("arreglos.html");
-	else if (key==_("vector")) str=_T("arreglos.html");
-	else if (key==_("vectores")) str=_T("arreglos.html");
-	else if (key==_("son")) str=_T("definir.html");
-	else if (key==_("definir")) str=_T("definir.html");
-	else if (key==_("definición")) str=_T("definir.html");
-	else if (key==_("definicion")) str=_T("definir.html");
-	else if (key==_("como")) str=_T("definir.html");
-	else if (key==_("numérico")) str=_T("tipos.html");
-	else if (key==_("numérica")) str=_T("tipos.html");
-	else if (key==_("numero")) str=_T("tipos.html");
-	else if (key==_("número")) str=_T("tipos.html");
-	else if (key==_("logica")) str=_T("tipos.html");
-	else if (key==_("logico")) str=_T("tipos.html");
-	else if (key==_("cadena")) str=_T("tipos.html");
-	else if (key==_("texto")) str=_T("tipos.html");
-	else if (key==_("caracter")) str=_T("tipos.html");
-	else if (key==_("si")) str=_T("si.html");
-	else if (key==_("finsi")) str=_T("si.html");
-	else if (key==_("entonces")) str=_T("si.html");
-	else if (key==_("sino")) str=_T("si.html");
-	else if (key==_("asignar")) str=_T("asignacion.html");
-	else if (key==_("asignacion")) str=_T("asignacion.html");
-	else if (key==_("repetir")) str=_T("repetir.html");
-	else if (key==_("paso")) str=_T("para.html");
-	else if (key==_("finpara")) str=_T("para.html");
-	else if (key==_("para")) str=_T("para.html");
-	else if (key==_("cada")) str=_T("para.html");
-	else if (key==_("en")) str=_T("para.html");
-	else if (key==_("de")) str=_T("para.html");
-	else if (key==_("desde")) str=_T("para.html");
-	else if (key==_("paso")) str=_T("para.html");
-	else if (key==_("hasta")) str=_T("para.html");
-	else if (key==_("opcion")) str=_T("segun.html");
-	else if (key==_("caso")) str=_T("segun.html");
-	else if (key==_("segun")) str=_T("segun.html");
-	else if (key==_("finsegun")) str=_T("segun.html");
-	else if (key==_("según")) str=_T("segun.html");
-	else if (key==_("finsegún")) str=_T("segun.html");
-	else if (key==_("finmientras")) str=_T("mientras.html");
-	else if (key==_("mientras")) str=_T("mientras.html");
-	else if (key==_("proceso")) str=_T("forma.html");
-	else if (key==_("finproceso")) str=_T("forma.html");
-	else if (key==_("vectores")) str=_T("arreglos.html");
-	else if (key==_("operador")) str=_T("operadores.html");
-	else if (key==_("operadores")) str=_T("operadores.html");
-	else if (key==_("funciones")) str=_T("funciones.html");
-	else if (key==_("pi")) str=_T("funciones.html");
-	else if (key==_("sen")) str=_T("funciones.html");
-	else if (key==_("asen")) str=_T("funciones.html");
-	else if (key==_("cos")) str=_T("funciones.html");
-	else if (key==_("acos")) str=_T("funciones.html");
-	else if (key==_("tan")) str=_T("funciones.html");
-	else if (key==_("atan")) str=_T("funciones.html");
-	else if (key==_("azar")) str=_T("funciones.html");
-	else if (key==_("trunc")) str=_T("funciones.html");
-	else if (key==_("rc")) str=_T("funciones.html");
-	else if (key==_("ln")) str=_T("funciones.html");
-	else if (key==_("redon")) str=_T("funciones.html");
-	else if (key==_("abs")) str=_T("funciones.html");
-	else if (key==_("hacer")) str=_T("hacer.html");
-	else if (key==_("tipos")) str=_T("tipos.html");
-	else if (key==_("tipo")) str=_T("tipos.html");
-	else if (key==_("otro")) str=_T("segun.html");
-	else if (key==_("modo")) str=_T("segun.html");
-	else if (key==_("sies")) str=_T("segun.html");
-	else if (key==_("case")) str=_T("segun.html");
-	else if (key==_("opcion")) str=_T("segun.html");
-	else if (key==_("mod")) str=_T("operadores.html");
-	else if (key==_("divisible")) str=_T("colcond.html");
-	else if (key==_("multiplo")) str=_T("colcond.html");
-	else if (key==_("positivo")) str=_T("colcond.html");
-	else if (key==_("negativo")) str=_T("colcond.html");
-	else if (key==_("impar")) str=_T("colcond.html");
-	else if (key==_("par")) str=_T("colcond.html");
-	else if (key==_("cero")) str=_T("colcond.html");
-	else if (key==_("distinto")) str=_T("colcond.html");
-	else if (key==_("igual")) str=_T("colcond.html");
-	else if (key==_("es")) str=_T("colcond.html");
-	else if (key==_("menor")) str=_T("colcond.html");
-	else if (key==_("mayor")) str=_T("colcond.html");
-	else if (key==_("esperartecla")) str=_T("secotras.html");
-	else if (key==_("tecla")) str=_T("secotras.html");
-	else if (key==_("esperar")) str=_T("secotras.html");
-	else if (key==_("limpiar")) str=_T("secotras.html");
-	else if (key==_("limpiarpantalla")) str=_T("secotras.html");
-	else if (key==_("borrar")) str=_T("secotras.html");
-	else if (key==_("borrarpantalla")) str=_T("secotras.html");
-	else if (key==_("pantalla")) str=_T("secotras.html");
-	else if (key==_("variable")) str=_T("variables.html");
-	else if (key==_("variables")) str=_T("variables.html");
-	else if (key==_("ejemplo")) str=_T("ejemplos.html");
-	else if (key==_("ejemplos")) str=_T("ejemplos.html");
+	if (key==_Z("leer")) str="lectura.html";
+	else if (key==_Z("lectura")) str="lectura.html";
+	else if (key==_Z("mayusculas")) str="funciones.html";
+	else if (key==_Z("mayúsculas")) str="funciones.html";
+	else if (key==_Z("minusculas")) str="funciones.html";
+	else if (key==_Z("minúsculas")) str="funciones.html";
+	else if (key==_Z("longitud")) str="funciones.html";
+	else if (key==_Z("subcadena")) str="funciones.html";
+	else if (key==_Z("concatenar")) str="funciones.html";
+	else if (key==_Z("convertiranumero")) str="funciones.html";
+	else if (key==_Z("convertiranúmero")) str="funciones.html";
+	else if (key==_Z("convertiratexto")) str="funciones.html";
+	else if (key==_Z("subproceso")) str="subprocesos.html";
+	else if (key==_Z("subprocesos")) str="subprocesos.html";
+	else if (key==_Z("función")) str="subprocesos.html";
+	else if (key==_Z("funcion")) str="subprocesos.html";
+	else if (key==_Z("sin")) str="escritura.html";
+	else if (key==_Z("saltar")) str="escritura.html";
+	else if (key==_Z("bajar")) str="escritura.html";
+	else if (key==_Z("sinbajar")) str="escritura.html";
+	else if (key==_Z("sinsaltar")) str="escritura.html";
+	else if (key==_Z("mostrar")) str="escritura.html";
+	else if (key==_Z("imprimir")) str="escritura.html";
+	else if (key==_Z("escribir")) str="escritura.html";
+	else if (key==_Z("escritura")) str="escritura.html";
+	else if (key==_Z("dimension")) str="arreglos.html";
+	else if (key==_Z("dimensión")) str="arreglos.html";
+	else if (key==_Z("matriz")) str="arreglos.html";
+	else if (key==_Z("matrices")) str="arreglos.html";
+	else if (key==_Z("arreglos")) str="arreglos.html";
+	else if (key==_Z("arreglo")) str="arreglos.html";
+	else if (key==_Z("vector")) str="arreglos.html";
+	else if (key==_Z("vectores")) str="arreglos.html";
+	else if (key==_Z("son")) str="definir.html";
+	else if (key==_Z("definir")) str="definir.html";
+	else if (key==_Z("definición")) str="definir.html";
+	else if (key==_Z("definicion")) str="definir.html";
+	else if (key==_Z("como")) str="definir.html";
+	else if (key==_Z("numérico")) str="tipos.html";
+	else if (key==_Z("numérica")) str="tipos.html";
+	else if (key==_Z("numero")) str="tipos.html";
+	else if (key==_Z("número")) str="tipos.html";
+	else if (key==_Z("logica")) str="tipos.html";
+	else if (key==_Z("logico")) str="tipos.html";
+	else if (key==_Z("cadena")) str="tipos.html";
+	else if (key==_Z("texto")) str="tipos.html";
+	else if (key==_Z("caracter")) str="tipos.html";
+	else if (key==_Z("si")) str="si.html";
+	else if (key==_Z("finsi")) str="si.html";
+	else if (key==_Z("entonces")) str="si.html";
+	else if (key==_Z("sino")) str="si.html";
+	else if (key==_Z("asignar")) str="asignacion.html";
+	else if (key==_Z("asignacion")) str="asignacion.html";
+	else if (key==_Z("repetir")) str="repetir.html";
+	else if (key==_Z("paso")) str="para.html";
+	else if (key==_Z("finpara")) str="para.html";
+	else if (key==_Z("para")) str="para.html";
+	else if (key==_Z("cada")) str="para.html";
+	else if (key==_Z("en")) str="para.html";
+	else if (key==_Z("de")) str="para.html";
+	else if (key==_Z("desde")) str="para.html";
+	else if (key==_Z("paso")) str="para.html";
+	else if (key==_Z("hasta")) str="para.html";
+	else if (key==_Z("opcion")) str="segun.html";
+	else if (key==_Z("caso")) str="segun.html";
+	else if (key==_Z("segun")) str="segun.html";
+	else if (key==_Z("finsegun")) str="segun.html";
+	else if (key==_Z("según")) str="segun.html";
+	else if (key==_Z("finsegún")) str="segun.html";
+	else if (key==_Z("finmientras")) str="mientras.html";
+	else if (key==_Z("mientras")) str="mientras.html";
+	else if (key==_Z("proceso")) str="forma.html";
+	else if (key==_Z("finproceso")) str="forma.html";
+	else if (key==_Z("vectores")) str="arreglos.html";
+	else if (key==_Z("operador")) str="operadores.html";
+	else if (key==_Z("operadores")) str="operadores.html";
+	else if (key==_Z("funciones")) str="funciones.html";
+	else if (key==_Z("pi")) str="funciones.html";
+	else if (key==_Z("sen")) str="funciones.html";
+	else if (key==_Z("asen")) str="funciones.html";
+	else if (key==_Z("cos")) str="funciones.html";
+	else if (key==_Z("acos")) str="funciones.html";
+	else if (key==_Z("tan")) str="funciones.html";
+	else if (key==_Z("atan")) str="funciones.html";
+	else if (key==_Z("azar")) str="funciones.html";
+	else if (key==_Z("trunc")) str="funciones.html";
+	else if (key==_Z("rc")) str="funciones.html";
+	else if (key==_Z("ln")) str="funciones.html";
+	else if (key==_Z("redon")) str="funciones.html";
+	else if (key==_Z("abs")) str="funciones.html";
+	else if (key==_Z("hacer")) str="hacer.html";
+	else if (key==_Z("tipos")) str="tipos.html";
+	else if (key==_Z("tipo")) str="tipos.html";
+	else if (key==_Z("otro")) str="segun.html";
+	else if (key==_Z("modo")) str="segun.html";
+	else if (key==_Z("sies")) str="segun.html";
+	else if (key==_Z("case")) str="segun.html";
+	else if (key==_Z("opcion")) str="segun.html";
+	else if (key==_Z("mod")) str="operadores.html";
+	else if (key==_Z("divisible")) str="colcond.html";
+	else if (key==_Z("multiplo")) str="colcond.html";
+	else if (key==_Z("positivo")) str="colcond.html";
+	else if (key==_Z("negativo")) str="colcond.html";
+	else if (key==_Z("impar")) str="colcond.html";
+	else if (key==_Z("par")) str="colcond.html";
+	else if (key==_Z("cero")) str="colcond.html";
+	else if (key==_Z("distinto")) str="colcond.html";
+	else if (key==_Z("igual")) str="colcond.html";
+	else if (key==_Z("es")) str="colcond.html";
+	else if (key==_Z("menor")) str="colcond.html";
+	else if (key==_Z("mayor")) str="colcond.html";
+	else if (key==_Z("esperartecla")) str="secotras.html";
+	else if (key==_Z("tecla")) str="secotras.html";
+	else if (key==_Z("esperar")) str="secotras.html";
+	else if (key==_Z("limpiar")) str="secotras.html";
+	else if (key==_Z("limpiarpantalla")) str="secotras.html";
+	else if (key==_Z("borrar")) str="secotras.html";
+	else if (key==_Z("borrarpantalla")) str="secotras.html";
+	else if (key==_Z("pantalla")) str="secotras.html";
+	else if (key==_Z("variable")) str="variables.html";
+	else if (key==_Z("variables")) str="variables.html";
+	else if (key==_Z("ejemplo")) str="ejemplos.html";
+	else if (key==_Z("ejemplos")) str="ejemplos.html";
 	return DIR_PLUS_FILE(config->help_dir,str);	
 }

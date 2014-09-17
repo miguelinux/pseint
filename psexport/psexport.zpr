@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=export_cs.cpp
 path_char=/
 [source]
 path=psexport.cpp
@@ -44,7 +43,7 @@ path=../pseint/new_programa.cpp
 cursor=-1:0
 [source]
 path=export_cpp.cpp
-cursor=23:23
+cursor=258:0
 [source]
 path=exportexp.cpp
 cursor=125:0
@@ -92,8 +91,7 @@ path=export_matlab.cpp
 cursor=405:7
 [source]
 path=export_cs.cpp
-cursor=41:2
-open=true
+cursor=227:74
 [header]
 path=exportexp.h
 cursor=7:0
@@ -124,7 +122,7 @@ path=../pseint/new_memoria.h
 cursor=25:43
 [header]
 path=export_cpp.h
-cursor=27:71
+cursor=24:50
 [header]
 path=defines.h
 cursor=24:57
@@ -171,11 +169,10 @@ path=export_matlab.h
 cursor=0:0
 [header]
 path=export_cs.h
-cursor=41:5
+cursor=10:56
 [other]
 path=../bin/help/cambios.html
-cursor=54:139
-open=true
+cursor=6:28
 [config]
 name=Linux_Debug
 toolchain=

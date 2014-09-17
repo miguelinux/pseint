@@ -13,6 +13,7 @@
 #include <wx/imaglist.h>
 
 #define _PERSONALIZADO "<personalizado>"
+#include "string_conversions.h"
 
 BEGIN_EVENT_TABLE(mxProfile,wxDialog)
 	EVT_TEXT(wxID_FIND,mxProfile::OnSearchText)
@@ -28,7 +29,7 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 	return first.CmpNoCase(second);
 }
 
-mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
+mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
 	
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
@@ -39,7 +40,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	
 	wxBoxSizer *search_sizer = new wxBoxSizer(wxHORIZONTAL);
 	search=new wxTextCtrl(this,wxID_FIND,"");
-	search_sizer->Add(new wxStaticText(this,wxID_ANY,"Buscar: "),wxSizerFlags().Center());
+	search_sizer->Add(new wxStaticText(this,wxID_ANY,_Z("Buscar: ")),wxSizerFlags().Center());
 	search_sizer->Add(search,wxSizerFlags().Proportion(1).Expand());
 	
 	sizer->Add(search_sizer,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
@@ -63,7 +64,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	}
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
-	list->InsertColumn(0,"Perfil");
+	list->InsertColumn(0,_Z("Perfil"));
 	wxImageList *iml = new wxImageList(24,24,true);
 	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE(config->profiles_dir,"icons"),"null.png"),wxBITMAP_TYPE_PNG);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
@@ -81,20 +82,20 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_T("Opciones del
 	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	LoadProfile();
 	
-	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.next, _T("Personalizar..."));
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Aceptar"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
+	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.next, _Z("Personalizar..."));
+	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _Z("Aceptar"));
+	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _Z("Cancelar"));
 	button_sizer->Add(options_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->AddStretchSpacer(1);
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Seleccione un perfil para configurar las reglas de su pseudocodigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas de su pseudocodigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
 	sizer->Add(list,wxSizerFlags().Expand().Proportion(2).FixedMinSize());
-	sizer->Add(new wxStaticText(this,wxID_ANY,_T("")),wxSizerFlags().Expand().Proportion(0));
-	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Descripcion del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z("")),wxSizerFlags().Expand().Proportion(0));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Descripcion del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(text,wxSizerFlags().Expand().Proportion(1).FixedMinSize());
-	sizer->Add(new wxStaticText(this,wxID_ANY,_T("")),wxSizerFlags().Expand().Proportion(0));
+	sizer->Add(new wxStaticText(this,wxID_ANY,""),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(button_sizer,wxSizerFlags().Expand().Proportion(0));
 	
 	ok_button->SetDefault();
@@ -154,7 +155,7 @@ void mxProfile::LoadProfile() {
 	if (!text) return;
 	wxString pname=GetListSelection();
 	if (pname==_PERSONALIZADO) { 
-		text->SetValue("Puede utilizar el botón \"Personalizar\" para definir su propia configuración."); 
+		text->SetValue(_Z("Puede utilizar el botón \"Personalizar\" para definir su propia configuración.")); 
 		return;
 	}
 	int p=perfiles.Index(pname);
@@ -196,6 +197,6 @@ void mxProfile::Search ( ) {
 		cont++;
 	}
 	if (sel!=-1) SetListSelection(sel); 
-	else text->SetValue(wxString()<<"El perfil seleccionado actualmente ("<<config->profile<<") no aparece en esta búsqueda.");
+	else text->SetValue(wxString()<<_Z("El perfil seleccionado actualmente (")<<config->profile<<_Z(") no aparece en esta búsqueda."));
 }
 

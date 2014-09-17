@@ -9,7 +9,7 @@ private:
 	ofstream file;
 protected:
 public:
-	Logger(string where);
+	Logger(const char *where);
 	void Write(const wxString &s);
 	void DumpVersions();
 	~Logger();

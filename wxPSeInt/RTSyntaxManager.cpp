@@ -28,7 +28,7 @@ void RTSyntaxManager::Start ( ) {
 	the_one=new RTSyntaxManager;
 	the_one->restart=false;
 	wxString command;
-	command<<config->pseint_command<<_T(" --forrealtimesyntax")<<mxProcess::GetProfileArgs();
+	command<<config->pseint_command<<" --forrealtimesyntax"<<mxProcess::GetProfileArgs();
 	the_one->pid=wxExecute(command,wxEXEC_ASYNC,the_one);
 }
 
@@ -74,7 +74,7 @@ void RTSyntaxManager::ContinueProcessing() {
 	wxTextInputStream input(*(GetInputStream()));	
 	if (!src) {
 		_LOG("RTSyntaxManager::ContinueProcessing out src="<<src);
-		while (IsInputAvailable()) { char c=input.GetChar(); }
+		while (IsInputAvailable()) { /*char c=*/input.GetChar(); }
 		return;
 	}
 	while(true) {
@@ -102,9 +102,9 @@ void RTSyntaxManager::ContinueProcessing() {
 			} else if (fase_num==1 && config->show_vars) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
-					vars_window->Add(line.AfterFirst(' '),what=="PROCESO");
+					vars_window->AddProc(line.AfterFirst(' '),what=="PROCESO");
 				else
-					vars_window->Add(what,line.Last());
+					vars_window->AddVar(what,line.Last());
 			} else if (fase_num==2 && config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 

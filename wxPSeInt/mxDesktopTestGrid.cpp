@@ -2,6 +2,8 @@
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "DebugManager.h"
+#include <wx/textdlg.h>
+#include <wx/msgdlg.h>
 using namespace std;
 
 mxDesktopTestGrid *desktop_test=NULL;

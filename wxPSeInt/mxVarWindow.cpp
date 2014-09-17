@@ -7,6 +7,9 @@
 #include "mxUtils.h"
 #include "DebugManager.h"
 #include "mxDebugWindow.h"
+#include <wx/choicdlg.h>
+#include <wx/menu.h>
+#include "string_conversions.h"
 
 mxVarWindow *vars_window=NULL;
 
@@ -24,19 +27,19 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	tree = new wxTreeCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(150,50),wxTR_FULL_ROW_HIGHLIGHT|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_NO_BUTTONS/*|wxTR_ROW_LINES*/);
 	wxImageList* imglist = new wxImageList(16, 16,true,7);
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_desc.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_num.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log_num.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_log_car.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_car_num.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_desc.png")),wxBITMAP_TYPE_PNG)); // solo para completar las posibles combinaciones de bits en los tipos de variables, esta no se debería usar nunca
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_proc.png")),wxBITMAP_TYPE_PNG)); 
-	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,_T("vt_sub.png")),wxBITMAP_TYPE_PNG)); 
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_desc.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_log.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_num.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_log_num.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_car.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_log_car.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_car_num.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_desc.png"),wxBITMAP_TYPE_PNG)); // solo para completar las posibles combinaciones de bits en los tipos de variables, esta no se debería usar nunca
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_proc.png"),wxBITMAP_TYPE_PNG)); 
+	imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,"vt_sub.png"),wxBITMAP_TYPE_PNG)); 
 	tree->AssignImageList(imglist);
 	tree_root=tree_current=tree->AddRoot("");
-	tree->SetToolTip(tooltip=utils->FixTooltip("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo."));
+	tree->SetToolTip(tooltip=utils->FixTooltip(_Z("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo.")));
 	sizer->Add(tree,wxSizerFlags().Proportion(1).Expand());
 	SetSizer(sizer);
 }
@@ -50,12 +53,13 @@ void mxVarWindow::BeginInput ( ) {
 	if (s.IsOk()) {
 		last_sel=tree->GetItemText(s).BeforeFirst('['); 
 		wxTreeItemId p=tree->GetItemParent(s);
-		last_parent=tree->GetItemText(p).BeforeFirst('('); 
+		if (p.IsOk()) last_parent=tree->GetItemText(p).BeforeFirst('('); 
+		else last_parent="";
 	} else last_sel="";
 	tree->DeleteChildren(tree_root);
 }
 
-void mxVarWindow::Add (wxString vname, bool main_process) {
+void mxVarWindow::AddProc(wxString vname, bool main_process) {
 	range *r=NULL;
 	if (vname.Contains(":")) {
 		r=new range;
@@ -67,7 +71,7 @@ void mxVarWindow::Add (wxString vname, bool main_process) {
 	if (vname==last_sel && !last_parent.Len()) tree->SelectItem(tree_current);
 }
 
-void mxVarWindow::Add (wxString vname, char type) {
+void mxVarWindow::AddVar(wxString vname, wxChar type) {
 	wxString stype; int icon=0;
 	switch (type) {
 	case '1': /*stype=" (log)"; */icon=1; break;
@@ -91,12 +95,12 @@ void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
 	evt.StopPropagation(); // para que no le llegue a main_window y crea que es el arbol de errores
 	evt.Skip(); // para que se seleccione en el arbol
 	wxTreeItemId it=GetSelection();
-	if (it==-1) return;
+	if (!it.IsOk()) return;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
 	int from=-1, to=-1;
 	wxTreeItemId parent=tree->GetItemParent(it);
-	if (parent!=tree->GetRootItem()) {
+	if (parent.IsOk() && parent!=tree->GetRootItem()) {
 		range *r=(range*)tree->GetItemData(parent);
 		if (r) { from=r->from; to=r->to; }
 	}
@@ -114,7 +118,7 @@ void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 	} else { // cuando no se depura muestra un menu contextual
 		if (tree->GetItemParent(evt.GetItem())==tree_root) return;
 		wxMenu menu;
-		menu.Append(mxID_VARS_DEFINIR,"Definir variable..."); // para mostrar en el dialogo
+		menu.Append(mxID_VARS_DEFINIR,_Z("Definir variable...")); // para mostrar en el dialogo
 		PopupMenu(&menu);
 	}
 }

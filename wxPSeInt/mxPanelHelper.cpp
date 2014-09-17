@@ -1,5 +1,7 @@
 #include "mxPanelHelper.h"
 #include "mxMainWindow.h"
+#include <wx/settings.h>
+#include <wx/dcclient.h>
 
 BEGIN_EVENT_TABLE(mxPanelHelper,wxPanel)
 	EVT_ENTER_WINDOW(mxPanelHelper::OnEnter)

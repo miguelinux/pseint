@@ -6,12 +6,13 @@
 #include <wx/sizer.h>
 #include "mxBitmapButton.h"
 #include <wx/textfile.h>
+#include "string_conversions.h"
 
 mxUtils *utils;
 
 wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename) {
 	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);
-	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,_T("menu")),filename);
+	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,"menu"),filename);
 	if (wxFileName::FileExists(filename))
 		item->SetBitmap(wxBitmap(filename,wxBITMAP_TYPE_PNG));
 	menu->Append (item);
@@ -28,7 +29,7 @@ wxString mxUtils::JoinDirAndFile(wxString dir, wxString fil) {
 }
 
 void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text) {
-	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,_T("tools")),filename);
+	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,"tools"),filename);
 	if (wxFileName::FileExists(filename)) {
 		toolbar->AddTool(id, caption, wxBitmap(filename,wxBITMAP_TYPE_PNG),caption);
 		toolbar->SetToolLongHelp(id,status_text);
@@ -47,7 +48,7 @@ wxButton *mxUtils::AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id,
 
 wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value) {
 	wxCheckBox *checkbox;
-	sizer->Add(checkbox = new wxCheckBox(panel, wxID_ANY, text+_T("   ")),wxSizerFlags().Border(wxALL, 5).Expand());
+	sizer->Add(checkbox = new wxCheckBox(panel, wxID_ANY, text+"   "),wxSizerFlags().Border(wxALL, 5).Expand());
 	checkbox->SetValue(value);
 	return checkbox;	
 }
@@ -70,7 +71,7 @@ wxString mxUtils::GetOutput(wxString command) {
 		if (ret.Len()==0)
 			ret<<output[i];
 		else
-			ret<<_T("\n")<<output[i];
+			ret<<"\n"<<output[i];
 	return ret;
 }
 
@@ -81,16 +82,15 @@ wxString mxUtils::GetOutput(wxString command) {
 * @retval La cadena en formato HTML
 **/
 wxString mxUtils::ToHtml(wxString text) {
-	wxString tabs=_T("&nbsp;&nbsp;&nbsp;");
-	text.Replace(_T("&"),_T("&amp;"));
-	text.Replace(_T("\t"),tabs);
-	text.Replace(_T("<"),_T("&lt;"));
-	text.Replace(_T(">"),_T("&gt;"));
-	text.Replace(_T("\n"),_T("<BR>"));
-	wxChar doce[]=_T(" ");
-	doce[0]=12;
-	text.Replace(doce,_T("<BR>"));
-	text.Replace(_T(" "),_T("&nbsp;"));
+	wxString tabs="&nbsp;&nbsp;&nbsp;";
+	text.Replace("&","&amp;");
+	text.Replace("\t",tabs);
+	text.Replace("<","&lt;");
+	text.Replace(">","&gt;");
+	text.Replace("\n","<BR>");
+	wxString doce=" "; doce[0]=12;
+	text.Replace(doce,"<BR>");
+	text.Replace(" ","&nbsp;");
 	return text;
 }
 
@@ -109,24 +109,24 @@ wxString mxUtils::FixTooltip (wxString tooltip) {
 
 wxString mxUtils::GetVersion(wxString exe) {
 	wxArrayString out; // para que no muestre la consola (ver ayuda de wxExecute)
-	wxString filename=DIR_PLUS_FILE(config->temp_dir,"version.tmp"), retval=exe+": error desconocido";
+	wxString filename=DIR_PLUS_FILE(config->temp_dir,"version.tmp"), retval=exe+_Z(": error desconocido");
 	if (wxFileName::FileExists(filename)) 
 		wxRemoveFile(filename);
 	if (wxFileName::FileExists(filename)) {
-		retval=exe+": error 1: No se pudo determinar la version.";
+		retval=exe+_Z(": error 1: No se pudo determinar la versión.");
 	} else {
 		wxExecute(exe+" --version \""+filename+"\"",out,wxEXEC_SYNC|wxEXEC_NODISABLE);
 		wxTextFile fil(filename);
 		if (!fil.Exists()) {
-			retval=exe+": error 2: No se pudo determinar la version.";
+			retval=exe+_Z(": error 2: No se pudo determinar la versión.");
 		} else {
 			fil.Open();
 			if (!fil.GetLineCount()) {
-				retval=exe+": error 3: No se pudo determinar la version.";
+				retval=exe+_Z(": error 3: No se pudo determinar la versión.");
 			} else {
 				retval=fil.GetFirstLine();
 				fil.Close();
-				if (!retval.Len()) retval=exe+": error 4: No se pudo determinar la version";
+				if (!retval.Len()) retval=exe+_Z(": error 4: No se pudo determinar la versión");
 			}
 		}
 	}
