@@ -55,6 +55,7 @@ public:
 		code_location():line(-1),inst(-1){}
 		bool IsValid() const { return line!=-1&&inst!=-1; }
 		bool operator==(const code_location &o) { return o.line==line&&o.inst==inst; }
+		void Clear() { line=inst=-1; }
 	};
 	struct console_char { ///< data for each visible char in the console
 		wxChar the_char; ///< the char to show

@@ -256,6 +256,8 @@ void mxConsole::Print (wxString text, bool record/*, bool do_print*/) {
 		if (cur_x>=buffer_w) {
 			cur_x=0; cur_y++;
 			if (cur_y>=buffer_h) { // si hay que hacer scroll
+				if (selection_start!=-1) if ( (selection_start-=buffer_w)<0 ) selection_start=0;
+				if (selection_end!=-1) if ( (selection_end-=buffer_w)<0 ) selection_end=0;
 				cur_y=buffer_h-1;
 				for(int i=1;i<buffer_h;i++) { 
 					for(int j=0;j<buffer_w;j++) { 
@@ -275,6 +277,7 @@ void mxConsole::ClearBuffer() {
 	for(int i=0;i<buffer_h;i++) { 
 		for(int j=0;j<buffer_w;j++) { 
 			_buffer(i,j).the_char=' ';
+			_buffer(i,j).loc.Clear();
 		}
 	}
 }
