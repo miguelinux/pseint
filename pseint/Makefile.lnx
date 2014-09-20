@@ -1,7 +1,9 @@
 OBJS_DIR=../temp/int_lnx_rls
 GPP=g++
-CXXFLAGS= -O3 -DUSE_ZOCKETS -ffloat-store
-LIBS= -s  
+CXXFLAGS_OPT=-O3
+CXXFLAGS=${CXXFLAGS_OPT} -DUSE_ZOCKETS -ffloat-store
+LDFLAGS_OPT=-s
+LDFLAGS=${LDFLAGS_OPT}  
 
 all: ${OBJS_DIR} ../bin/pseint
 
@@ -11,7 +13,7 @@ clean:
 	rm -rf ${OBJS} ../bin/pseint
 
 ../bin/pseint: ${OBJS}
-	${GPP} ${OBJS} ${LIBS} -o $@
+	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:
 	mkdir -p ${OBJS_DIR}

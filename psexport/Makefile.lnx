@@ -1,7 +1,9 @@
 OBJS_DIR=../temp/exp_lnx_rls
 GPP=g++
-CXXFLAGS= -O2 -I../pseint -D_FOR_PSEXPORT
-LIBS= -s
+CXXFLAGS_OPT=-O2
+CXXFLAGS=${CXXFLAGS_OPT} -I../pseint -D_FOR_PSEXPORT
+LDFLAGS_OPT=-s
+LDFLAGS=${LDFLAGS_OPT}
 
 all: ${OBJS_DIR} ../bin/psexport
 
@@ -11,7 +13,7 @@ clean:
 	rm -rf ${OBJS} ../bin/psexport
 
 ../bin/psexport: ${OBJS}
-	${GPP} ${OBJS} ${LIBS} -o $@
+	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
