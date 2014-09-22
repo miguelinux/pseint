@@ -10,6 +10,7 @@
 #include <wx/choicdlg.h>
 #include <wx/menu.h>
 #include "string_conversions.h"
+#include "mxDesktopTestGrid.h"
 
 mxVarWindow *vars_window=NULL;
 
@@ -19,6 +20,7 @@ BEGIN_EVENT_TABLE(mxVarWindow,wxPanel)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
 	EVT_MENU(mxID_VARS_DEFINIR,mxVarWindow::OnDefinir)
+	EVT_MENU(mxID_VARS_ADD_TO_DESKTOP_TEST,mxVarWindow::OnAgregarAPruebaDeEscritorio)
 END_EVENT_TABLE()
 	
 static wxString tooltip;
@@ -115,6 +117,7 @@ void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 		if (tree->GetItemParent(evt.GetItem())==tree_root) return;
 		wxMenu menu;
 		menu.Append(mxID_VARS_DEFINIR,_Z("Definir variable...")); // para mostrar en el dialogo
+		menu.Append(mxID_VARS_ADD_TO_DESKTOP_TEST,_Z("Agregar la variable a la Prueba de Escritorio...")); // para mostrar en el dialogo
 		PopupMenu(&menu);
 	}
 }
@@ -175,5 +178,13 @@ int mxVarWindow::GetVarType (int &line, wxString var_name) {
 
 int mxVarWindow::GetVarType (const wxTreeItemId & it) {
 	return tree->GetItemImage(it);
+}
+
+void mxVarWindow::OnAgregarAPruebaDeEscritorio (wxCommandEvent & evt) {
+	wxTreeItemId it=GetSelection();
+	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
+	wxTreeItemId parent=tree->GetItemParent(it);
+	if (parent==tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
+	desktop_test->AddDesktopVar(tree->GetItemText(it));
 }
 

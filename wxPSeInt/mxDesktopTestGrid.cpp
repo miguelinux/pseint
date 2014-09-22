@@ -174,13 +174,10 @@ void mxDesktopTestGrid::SetEditable (bool can_edit) {
 	editable=can_edit;
 }
 
-void mxDesktopTestGrid::OnAddDesktopVar ( ) {
-	wxString val=wxGetTextFromUser("Variable o expresión a evaluar:","Prueba de Escritorio","");
+void mxDesktopTestGrid::AddDesktopVar (const wxString &val) {
 	if (val.size()) {
 		variables.Add(val);
 		SetCols();
-//		AppendCols(1,false);
-//		SetColLabelValue(GetNumberCols()-1,val);
 	}
 }
 

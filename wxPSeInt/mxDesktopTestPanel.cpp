@@ -6,6 +6,7 @@
 #include "mxMainWindow.h"
 #include "mxDesktopTestGrid.h"
 #include "mxHelpWindow.h"
+#include "string_conversions.h"
 
 mxDesktopTestPanel *desktop_test_panel=NULL;
 
@@ -24,9 +25,9 @@ mxDesktopTestPanel::mxDesktopTestPanel(wxWindow *parent) : wxPanel(parent, wxID_
 	main_sizer->Add(grid,wxSizerFlags().Proportion(1).Expand());
 	
 	buttons=new wxPanel(this,wxID_ANY);
-	wxButton *button_add = new wxButton(buttons,mxID_DESKTOP_LIST_ADD,_T("Agregar..."));
-	wxButton *button_clear = new wxButton(buttons,mxID_DESKTOP_LIST_CLEAR,_T("Limpiar"));
-	wxButton *button_help = new wxButton(buttons,mxID_DESKTOP_LIST_HELP,_T("Ayuda..."));
+	wxButton *button_add = new wxButton(buttons,mxID_DESKTOP_LIST_ADD,_Z("Agregar..."));
+	wxButton *button_clear = new wxButton(buttons,mxID_DESKTOP_LIST_CLEAR,_Z("Limpiar"));
+	wxButton *button_help = new wxButton(buttons,mxID_DESKTOP_LIST_HELP,_Z("Ayuda..."));
 	right_sizer->Add(button_add,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	right_sizer->Add(button_clear,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	right_sizer->Add(button_help,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
@@ -42,12 +43,12 @@ void mxDesktopTestPanel::OnClear(wxCommandEvent &evt) {
 }
 
 void mxDesktopTestPanel::OnAdd(wxCommandEvent &evt) {
-	grid->OnAddDesktopVar();
+	grid->AddDesktopVar( wxGetTextFromUser(_Z("Variable o expresión a evaluar:"),_Z("Prueba de Escritorio"),"") );
 }
 
 void mxDesktopTestPanel::OnHelp(wxCommandEvent &evt) {
 	if (!helpw) helpw = new mxHelpWindow();
-	helpw->ShowHelp(_T("prueba.html"));
+	helpw->ShowHelp("prueba.html");
 }
 
 void mxDesktopTestPanel::SetEditable (bool can_edit) {
