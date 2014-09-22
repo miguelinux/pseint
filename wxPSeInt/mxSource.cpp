@@ -8,6 +8,9 @@
 #include "Logger.h"
 #include <wx/msgdlg.h>
 #include "string_conversions.h"
+#include <wx/menu.h>
+#include "mxVarWindow.h"
+#include <wx/choicdlg.h>
 using namespace std;
 #include "mxUtils.h"
 #include "mxSource.h"
@@ -82,6 +85,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
 //	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
+	EVT_MENU (mxID_VARS_DEFINIR, mxSource::OnDefineVar)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
 	EVT_STC_MARGINCLICK (wxID_ANY, mxSource::OnMarginClick)
@@ -90,6 +94,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
 	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
+	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
 END_EVENT_TABLE()
 
 	
@@ -114,6 +119,9 @@ static bool EsLetra(const char &c) {
 		c=='ó'||c=='Ó'||c=='í'||c=='Í'||
 		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ';
 }
+
+#define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
+#define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
@@ -1242,8 +1250,8 @@ void mxSource::SelectInstruccion (int _l, int _i) {
 	else SetSelection(_l+v[2*_i+1],_l+v[2*_i]);
 }
 
-void mxSource::DoRealTimeSyntax ( ) {
-	RTSyntaxManager::Process(this);
+void mxSource::DoRealTimeSyntax (RTSyntaxManager::Info *args) {
+	RTSyntaxManager::Process(this,args);
 //	SetStatus(); // si lo hago aca setea el estado antes de terminar de analizar todo, mejor que lo haga el rt_syntax
 }
 
@@ -1668,3 +1676,141 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 	} else
 		event.Skip();
 }
+
+void mxSource::OnPopupMenu(wxMouseEvent &evt) {
+	
+	// mover el cursor a la posición del click (a menos que haya una selección y se clickeó dentro)
+	int p1=GetSelectionStart();
+	int p2=GetSelectionEnd();
+	int mp = PositionFromPointClose(evt.GetX(),evt.GetY());
+	if (mp!=wxSTC_INVALID_POSITION && (p1==p2 || (mp<p1 && mp<p2) || (mp>p1 && mp>p2)) )
+		GotoPos(mp);
+	
+	wxMenu menu("");
+	int p=GetCurrentPos(); int s=GetStyleAt(p);
+	wxString key=GetCurrentKeyword(p);
+	
+	if (key.Len()!=0 && s==wxSTC_C_IDENTIFIER) {
+		if (!IsProcOrSub(GetCurrentLine())) menu.Append(mxID_VARS_DEFINIR,_ZZ("Definir variable \"")+key+_Z("\""));
+//		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
+//		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
+//		if (s==wxSTC_C_IDENTIFIER) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+//		if (s==wxSTC_C_IDENTIFIER) menu.Append(mxID_EDIT_HIGHLIGHT_WORD, LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
+	}
+	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT,_Z("Descomentar"));
+	else menu.Append(mxID_EDIT_COMMENT,_Z("Comentar"));
+	menu.Append(mxID_EDIT_INDENT_SELECTION,_Z("Indentar"));
+	menu.Append(mxID_EDIT_SELECT_ALL,_Z("Seleccionar todo"));
+	
+	menu.AppendSeparator();
+	menu.Append(mxID_EDIT_UNDO,_Z("Deshacer"));
+	menu.Append(mxID_EDIT_REDO,_Z("Rehacer"));
+	menu.AppendSeparator();
+	menu.Append(mxID_EDIT_CUT,_Z("Cortar"));
+	menu.Append(mxID_EDIT_COPY,_Z("Copiar"));
+	menu.Append(mxID_EDIT_PASTE,_Z("Pegar"));
+
+	
+	main_window->PopupMenu(&menu);
+	
+}
+
+wxString mxSource::GetCurrentKeyword (int pos) {
+	if (pos==-1) pos=GetCurrentPos();
+	int s=WordStartPosition(pos,true);
+	if (GetCharAt(s-1)=='#') s--;
+	int e=WordEndPosition(pos,true);
+	return GetTextRange(s,e);
+}
+
+bool mxSource::IsEmptyLine(int line/*, bool comments*/) {
+	wxString s = GetLine(line);
+	int l=s.Len(), i=0;
+	while (i<l && (s[i]==' '||s[i]=='\t'||s[i]=='\n'||s[i]=='\r')) {
+//		if (comments && s[i]=='/' && i+1<l && s[i+1]=='/') return true;
+		i++;
+	}
+	return i==l;
+}
+
+
+bool mxSource::IsDimOrDef(int line) {
+	wxString s=GetLine(line);
+	int l=s.Len(), i=0;
+	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
+	if (i+8<l && s.Mid(i,8).Upper()=="DEFINIR ") return true;
+	if (i+10<l && s.Mid(i,10).Upper()=="DIMENSION ") return true;
+	return false;
+}
+
+bool mxSource::IsProcOrSub(int line) {
+	wxString s=GetLine(line);
+	int l=s.Len(), i=0;
+	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
+	if (i+8<l && s.Mid(i,8).Upper()=="PROCESO ") return true;
+	if (config->lang.enable_user_functions) {
+		if (i+11<l && s.Mid(i,11).Upper()=="SUBPROCESO ") return true;
+		if (i+8<l && s.Mid(i,8).Upper()=="FUNCION ") return true;
+		while (i<l) {
+			if (i+12<l && s.Mid(i,12).Upper()==" SUBPROCESO ") return true;
+			if (i+9<l && s.Mid(i,9).Upper()==" FUNCION ") return true;
+			i++;
+		}
+	}
+	return false;
+}
+
+/**
+* @brief Agrega una instrucción a un proceso para definir explícitamente una variable
+*
+* @param where    linea donde comienza el proceso (la de Proceso...., después de esta agregará la definición)
+* @param var_name nombre de la variable a definir
+* @param type     tipo de la variable, si es -1 lo consulta en el panel de variables
+**/
+
+void mxSource::DefineVar(int where, wxString var_name, int type) {
+	int n=GetLineCount(), empty_lines=0;
+	
+	// ver si hay lineas en blanco al principio del proceso
+	while (where+1<n && IsEmptyLine(where+1)) { where++; empty_lines++; } 
+	
+	bool add_line = empty_lines && where+1<n && !IsDimOrDef(where+1);
+	
+	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('['); // cortar las dimensiones si fuera un arreglo
+	
+	if (type==-1) type = vars_window->GetVarType(where, var_name);
+	if (type==-1) type = 0; else if (type&LV_DEFINIDA) return;
+	wxString var_type;
+	
+	if (type==LV_LOGICA) var_type="Logica";
+	else if (type==LV_NUMERICA) var_type="Numerica";
+	else if (type==LV_CARACTER) var_type="Caracter";
+	else { // si el tipo es ambiguo o desconocido, preguntar
+		wxArrayString types;
+		if (type==0 || (type&LV_LOGICA)) types.Add("Logica");
+		if (type==0 || (type&LV_NUMERICA)) types.Add("Numerica");
+		if (type==0 || (type&LV_CARACTER)) types.Add("Caracter");
+		var_type=wxGetSingleChoice("Tipo de variable:",var_name,types);
+		if (!var_type.Len()) return;
+	}
+	// agregar la definicion
+	int x=GetLineEndPosition(where);
+	SetTargetStart(x); SetTargetEnd(x);
+	ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(config->lang.force_semicolon?";":"")<<(add_line?"\n\t":""));
+}
+
+void mxSource::OnDefineVar (wxCommandEvent & evt) {
+	if (config->show_vars) {
+		OnDefineVar(GetCurrentLine(),GetCurrentKeyword());
+	} else {
+		RTSyntaxManager::Info info;
+		info.SetForVarDef(GetCurrentLine(),GetCurrentKeyword());
+		DoRealTimeSyntax(&info);
+	}
+}
+
+void mxSource::OnDefineVar (int line, const wxString &vname) {
+	int type = vars_window->GetVarType(line,vname);
+	DefineVar(line-1,vname,type);
+}
+

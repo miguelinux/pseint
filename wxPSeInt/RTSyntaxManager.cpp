@@ -10,6 +10,7 @@
 using namespace std;
 
 RTSyntaxManager *RTSyntaxManager::the_one=NULL;
+RTSyntaxManager::Info RTSyntaxManager::extra_args;
 int RTSyntaxManager::lid=0;
 
 RTSyntaxManager::RTSyntaxManager():wxProcess(wxPROCESS_REDIRECT) {
@@ -43,7 +44,7 @@ void RTSyntaxManager::Restart ( ) {
 	else { the_one->restart=true; Stop(); }
 }
 
-bool RTSyntaxManager::Process (mxSource * src) {
+bool RTSyntaxManager::Process (mxSource * src, Info *args) {
 	if (!src) { 
 		if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
 		_LOG("RTSyntaxManager::Process ERROR: the_one->Process(NULL) && (!the_one || !the_one->processing): the_one="<<the_one);
@@ -51,6 +52,7 @@ bool RTSyntaxManager::Process (mxSource * src) {
 	}
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
 	_LOG("RTSyntaxManager::Process in src="<<src);
+	if (args) extra_args=*args; else extra_args.action=RTA_NULL;
 //	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
 	wxTextOutputStream output(*(the_one->GetOutputStream()));
@@ -96,10 +98,11 @@ void RTSyntaxManager::ContinueProcessing() {
 				processing=false;
 				_LOG("RTSyntaxManager::ContinueProcessing out end src="<<src);
 				src->RTOuputEnds();
+				if (extra_args.action==RTA_DEFINE_VAR) src->OnDefineVar(extra_args.iarg,extra_args.sarg);
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				src->MarkError(line);
-			} else if (fase_num==1 && config->show_vars) {
+			} else if (fase_num==1 && (config->show_vars || extra_args.action==RTA_DEFINE_VAR)) {
 				wxString what=line.BeforeFirst(' ');
 				if (what=="PROCESO"||what=="SUBPROCESO")
 					vars_window->AddProc(line.AfterFirst(' '),what=="PROCESO");

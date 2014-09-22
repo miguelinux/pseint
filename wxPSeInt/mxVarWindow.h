@@ -2,6 +2,7 @@
 #define MXVARWINDOW_H
 #include <wx/panel.h>
 #include <wx/treectrl.h>
+#include "../pseint/new_memoria_inter.h"
 
 class mxVarWindow : public wxPanel {
 private:
@@ -22,6 +23,10 @@ public:
 	wxTreeItemId GetSelection();
 	mxVarWindow(wxWindow *parent);
 	~mxVarWindow();
+	
+	int GetVarType(int &line, wxString var_name);
+	int GetVarType(const wxTreeItemId &it);
+	
 	DECLARE_EVENT_TABLE();
 };
 

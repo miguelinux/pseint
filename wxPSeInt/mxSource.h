@@ -3,6 +3,7 @@
 #include <wx/stc/stc.h>
 #include <vector>
 #include <wx/timer.h>
+#include "RTSyntaxManager.h"
 using namespace std;
 class mxInputDialog;
 class mxProcess;
@@ -126,7 +127,7 @@ public:
 	vector<int> &FillAuxInstr(int _l);
 	void SelectInstruccion(int _l, int _i);
 	
-	void DoRealTimeSyntax();
+	void DoRealTimeSyntax(RTSyntaxManager::Info *args=NULL);
 	void ClearErrorData();
 	void ClearErrorMarks();
 	void MarkError(wxString line);
@@ -138,6 +139,18 @@ public:
 	
 	void OnTimer(wxTimerEvent &te); // event dispatcher para los timers, mira que timer es e invoca al metodo que le corresponda
 	void OnChange(wxStyledTextEvent &event);
+	
+	wxString GetCurrentKeyword (int pos=-1); // auxiliar para OnPopupMenu y otros
+	void OnPopupMenu(wxMouseEvent &evt);
+	
+	void OnDefineVar(wxCommandEvent &evt);
+	void OnDefineVar(int line, const wxString &vname);
+	
+	bool IsEmptyLine(int line); // auxiliar para DefineVar
+	bool IsDimOrDef(int line); // auxiliar para DefineVar
+	bool IsProcOrSub(int line); // auxiliar para OnPopupMenu
+		
+	void DefineVar(int where, wxString var_name, int type=-1);
 	
 	void OnMarginClick(wxStyledTextEvent &event);
 	

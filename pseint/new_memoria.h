@@ -7,6 +7,7 @@
 #include <list>
 #include <sstream>
 #include <set>
+#include "new_memoria_inter.h"
 using namespace std;
 
 class Memoria;
@@ -269,7 +270,12 @@ public:
 					cout<<it->second.dims[i]<<",";
 				cout<<it->second.dims[it->second.dims[0]]<<"]";
 			}
-			cout<<" "<<(it->second.cb_log?1:0)+(it->second.cb_num?2:0)+(it->second.cb_car?4:0)<<endl;;
+			cout<<" "<<char(LV_BASE_CHAR+(
+				(it->second.cb_log?LV_LOGICA:0)+
+				(it->second.cb_num?LV_NUMERICA:0)+
+				(it->second.cb_car?LV_CARACTER:0)+
+				(it->second.defined?LV_DEFINIDA:0)
+				))<<endl;;
 			++it;
 		}
 		

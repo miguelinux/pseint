@@ -24,6 +24,8 @@ class wxTimer;
 * cosa en medio (como el mismísimo algoritmo en la terminal).
 **/
 
+enum RTArgs { RTA_NULL, RTA_DEFINE_VAR };
+
 class RTSyntaxManager:public wxProcess {
 	wxTimer *timer;
 	static RTSyntaxManager *the_one;
@@ -36,11 +38,22 @@ class RTSyntaxManager:public wxProcess {
 	void ContinueProcessing();
 	void OnTerminate(int pid, int status);
 public:
+	struct Info {
+		RTArgs action;
+		wxString sarg;
+		int iarg;
+		Info() : action(RTA_NULL) {}
+		void SetForVarDef(int line, const wxString &vname) {
+			action=RTA_DEFINE_VAR; sarg=vname; iarg=line;
+		}
+	};
+	static Info extra_args;
+	
 	static void Start();
 	static void Restart();
 	static void Stop();
 	static bool IsLoaded();
-	static bool Process(mxSource *src);
+	static bool Process(mxSource *src, Info *args=NULL);
 	static void OnSourceClose(mxSource *src);
 };
 
