@@ -173,8 +173,8 @@ inline char ToUpper(const char c) {
 }
 
 // determina si un caracter (que debe venir en mayúsculas es letra (incluye acentos y ñs)
-inline bool EsLetra(const char &_c) {
-	return ( (_c>='A' && _c<='Z') || (lazy_syntax && (_c=='Á'||_c=='É'||_c=='Í'||_c=='Ó'||_c=='Ú'||_c=='Ñ'||_c=='Ü') ) || _c=='_' );
+inline bool EsLetra(const char &_c, bool incluir_numeros=false) {
+	return (_c>='A' && _c<='Z') || (lazy_syntax && (_c=='Á'||_c=='É'||_c=='Í'||_c=='Ó'||_c=='Ú'||_c=='Ñ'||_c=='Ü') ) || _c=='_'  || (incluir_numeros && _c>='0' && _c<='9');
 }
 
 // "extrae" una palabra, una constante, o un operador, desde la pos p, no modifica la cadena, sino que avanza el indice p
