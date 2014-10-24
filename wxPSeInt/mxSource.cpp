@@ -113,13 +113,14 @@ struct comp_list_item {
 static comp_list_item comp_list[MAX_COMP_SIZE];
 static int comp_count=-1;
 
-static bool EsLetra(const char &c) {
+static bool EsLetra(const char &c, bool incluir_nros) {
 	return 
 		c=='_'||
 		((c|32)>='a'&&(c|32)<='z')||
 		c=='á'||c=='Á'||c=='é'||c=='É'||
 		c=='ó'||c=='Ó'||c=='í'||c=='Í'||
-		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ';
+		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ'||
+		(incluir_nros&&c>='0'&&c<='9');
 }
 
 #define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
@@ -839,7 +840,8 @@ void mxSource::IndentLine(int l, bool goup) {
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
 	if (i<n && !(line[i]=='/'&&line[i+1]=='/')) {
-		while (i<n && EsLetra(line[i])) i++;
+		bool incluir_nrs=false;
+		while (i<n && EsLetra(line[i],incluir_nrs)) { i++; incluir_nrs=true; }
 //		if (ignore_next)
 //			ignore_next=false;
 //		else {
@@ -908,7 +910,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 		} else if (!comillas) {
 			if (c=='/' && i+1<n && line[i+1]=='/')  return cur;
 			if (c==':' && line[i+1]!='=') { cur+=4; btype=BT_CASO; }
-			else if (!EsLetra(c)) {
+			else if (!EsLetra(c,true)) {
 				if (wstart+1<i) {
 					if (ignore_next) {
 						ignore_next=false;
@@ -1226,11 +1228,11 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
 				else if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
-				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8])) {
+				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8],true)) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
 				}
-				else if (wxTolower(s[i])=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5])) {
+				else if (wxTolower(s[i])=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5],true)) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+5); 
 					i+=4; starting=true;
 				}
@@ -1538,13 +1540,15 @@ static bool EstiloNada(int s) {
 }
 
 wxString mxSource::GetInstruction (int p) {
-	int i=PositionFromLine(LineFromPosition(p));
+	int i = PositionFromLine(LineFromPosition(p));
 	wxString instruccion; int i0=-1; bool first=true;
+	bool flag_nros=false; // para que en la primera no permita nros
 	while (i<p) {
 		int s=GetStyleAt(i);
 		char c=GetCharAt(i);
 		bool nada=EstiloNada(s);
-		if ( nada || (!EsLetra(c)&&(c<='0'||c>='9')) ) {
+		if ( nada || (!EsLetra(c,flag_nros)) ) {
+			flag_nros=true;
 			if (!nada && c==';') {
 				i0=-1; first=true; instruccion.Clear();
 			} else if (i0!=-1) {
