@@ -185,9 +185,10 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		dc.SetPen(wxPen(cb));
 		dc.SetBrush(wxBrush(cb));
 		dc.SetTextForeground(ct);
-		dc.DrawRectangle(w-tw-2*margin,h-th-2*margin,tw+2*margin,th+2*margin);
+		int x0 = w-tw-2*margin, y0 = cur_y<=2*buffer_h/3?h-th-2*margin:0;
+		dc.DrawRectangle(x0,y0,tw+2*margin,th+2*margin);
 		dc.SetTextForeground(ct);
-		dc.DrawText(status,w-tw-margin,h-th-margin);
+		dc.DrawText(status,x0+margin,y0+margin);
 	}
 }
 
@@ -466,7 +467,7 @@ void mxConsole::GotoXY (int x, int y, bool record) {
 	cur_y=y-1; if (cur_y>=buffer_h) cur_y=buffer_h;
 }
 
-void mxConsole::Reload (int to) {
+void mxConsole::Reload () {
 	KillProcess();
 	Reset(false);
 	Run(command);

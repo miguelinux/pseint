@@ -117,7 +117,7 @@ public:
 	
 	void Run(wxString command);
 	
-	void Reload(int to=-1); ///< recarga el proceso, reejecutandolo completo y volviendo a darle las mismas entradas
+	void Reload(); ///< recarga el proceso, reejecutandolo completo y volviendo a darle las mismas entradas
 	void PlayFromCurrentEvent(); ///< recarga el proceso, reejecutandolo hasta el evento actual, y siguiendo desde ahi en vivo (si historial)
 	
 	void SetFontSize(int size);

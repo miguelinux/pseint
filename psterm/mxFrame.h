@@ -26,10 +26,12 @@ struct win_props {
 class mxFrame : public wxFrame {
 private:
 	wxButton *play_from_here;
+	wxButton *run_again;
 	wxScrollBar *scroll;
 	mxConsole *console;
 	wxSocketClient *socket;
 	bool already_connected; ///< false si esta esperando establecer la conexion, para no enviar nada antes del hello
+	bool terminated; ///< indica si la ejecución ya finalizo
 	wxString tosend_after_hello; ///< si quiere enviar algo por el socket antes del hello, en lugar de enviarlo lo guarda aca
 	int src_id;
 	wxString buffer;
@@ -39,8 +41,8 @@ protected:
 public:
 	mxFrame(wxString command, int port, int id, bool debug, win_props props);
 	void OnFocus(wxActivateEvent &evt);
-	void OnButtonReload(wxCommandEvent &evt);
 	void OnButtonPlay(wxCommandEvent &evt);
+	void OnButtonRunAgain(wxCommandEvent &evt);
 	void InitSocket(int port);
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScroll(wxScrollEvent &event);
@@ -50,6 +52,7 @@ public:
 	void OnProcessTerminated();
 	void SetIsPresent(bool is);
 	void SendLocation(int line, int inst); ///< envia un mensaje al editor para indicar que debe marcar una instruccion
+	void SetButton(bool visible, bool button_again);
 	DECLARE_EVENT_TABLE();
 };
 

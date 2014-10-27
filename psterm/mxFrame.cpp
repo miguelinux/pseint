@@ -7,11 +7,11 @@
 #include <iostream>
 using namespace std;
 
-enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RELOAD };
+enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RUN_AGAIN };
 
 BEGIN_EVENT_TABLE(mxFrame,wxFrame)
-	EVT_BUTTON(FRAME_ID_RELOAD,mxFrame::OnButtonReload)
 	EVT_BUTTON(FRAME_ID_PLAY,mxFrame::OnButtonPlay)
+	EVT_BUTTON(FRAME_ID_RUN_AGAIN,mxFrame::OnButtonRunAgain)
 	EVT_SOCKET(wxID_ANY,mxFrame::OnSocketEvent)
 	EVT_SCROLL(mxFrame::OnScroll)
 	EVT_CLOSE(mxFrame::OnClose)
@@ -24,20 +24,19 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 	wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) {
 	
 		debug_mode=debug;
-		already_connected=false;
+		terminated=already_connected=false;
 		src_id=id;
 		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 		console=new mxConsole(this,scroll,props.dark_theme);
-		play_from_here=new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-		is_present=true; play_from_here->Hide();
+		play_from_here = new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+		run_again = new wxButton(this,FRAME_ID_RUN_AGAIN," Reiniciar ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+		is_present=true; play_from_here->Hide(); run_again->Hide();
 		
 		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 		wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
 		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
 		sizer_in->Add(play_from_here,wxSizerFlags().Right());
-#ifdef DEBUG
-//		sizer_in->Add(new wxButton(this,FRAME_ID_RELOAD,"Reload"),wxSizerFlags().Right());
-#endif
+		sizer_in->Add(run_again,wxSizerFlags().Right());
 		sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
 		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
 		SetSizer(sizer);
@@ -74,8 +73,14 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 }
 
 void mxFrame::OnButtonPlay (wxCommandEvent & evt) {
+	terminated=false; SetButton(false,false);
 	console->PlayFromCurrentEvent();
 	console->SetFocus();
+}
+
+void mxFrame::OnButtonRunAgain(wxCommandEvent & evt) {
+	console->SetTime(0);
+	OnButtonPlay(evt);
 }
 
 void mxFrame::InitSocket (int port) {
@@ -128,17 +133,19 @@ void mxFrame::ProcessCommand ( ) {
 	if (buffer=="reload") console->Reload();
 	else if (buffer=="raise") Raise();
 	else if (buffer=="quit") Close();
-	else if (buffer=="dimm") console->Dimm();
+	else if (buffer=="dimm") { SetButton(false,false); console->Dimm(); }
 }
 
 void mxFrame::OnProcessTerminated ( ) {
 //	if (debug_mode) Close();
+	terminated=true; if (!debug_mode) SetButton(true,true);
 	if (!socket) return;
 	wxString msg("terminated\n");
 	if (already_connected)
 		socket->Write(msg.c_str(),msg.Len());
 	else 
 		tosend_after_hello<<msg;
+	
 }
 
 void mxFrame::OnClose (wxCloseEvent & event) {
@@ -154,12 +161,8 @@ void mxFrame::OnScroll (wxScrollEvent & event) {
 void mxFrame::SetIsPresent (bool is) {
 	if (is==is_present || debug_mode) return;
 	is_present=is;
-	play_from_here->Show(!is);
-	Layout();
-}
-
-void mxFrame::OnButtonReload (wxCommandEvent & evt) {
-	console->Reload();
+	if (is_present) SetButton(terminated,true);
+	else SetButton(true,false);
 }
 
 void mxFrame::OnFocus (wxActivateEvent & evt) {
@@ -175,5 +178,18 @@ void mxFrame::SendLocation (int line, int inst) {
 		wxString msg("location "); msg<<line<<":"<<inst<<"\n";
 		socket->Write(msg.c_str(),msg.Len());
 	}
+}
+
+void mxFrame::SetButton (bool visible, bool button_again) {
+	wxButton *to_show = button_again?run_again:play_from_here;
+	wxButton *to_hide = button_again?play_from_here:run_again;
+	if (visible) {
+		if (to_show->IsShown()) return;
+		to_hide->Hide(); to_show->Show();
+	} else {
+		if (!to_show->IsShown() && !to_hide->IsShown()) return;
+		to_hide->Hide(); to_show->Hide();
+	}
+	Layout();
 }
 
