@@ -24,6 +24,7 @@ BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_RIGHT_DOWN(mxConsole::OnMouseRightDown)
 	EVT_LEFT_DOWN(mxConsole::OnMouseLeftDown)
 	EVT_LEFT_UP(mxConsole::OnMouseLeftUp)
+	EVT_LEFT_DCLICK(mxConsole::OnMouseDClick)
 	EVT_MOTION(mxConsole::OnMouseMotion)
 	EVT_MENU(CONSOLE_ID_PASTE,mxConsole::OnPaste)
 	EVT_MENU(CONSOLE_ID_COPY,mxConsole::OnCopy)
@@ -86,7 +87,7 @@ static wxColour (*colors)[2]=colors_white;
 	
 mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
 	
-	selection_start=selection_end=-1; selecting=false;
+	selection_start=selection_end=-1; selecting=false; selection_is_input=false;
 	wxAcceleratorEntry entries[2];
 	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_PASTE);
 	entries[1].Set(wxACCEL_CTRL, 'c', CONSOLE_ID_COPY);
@@ -128,6 +129,14 @@ void mxConsole::Reset (bool hard) {
 	ClearBuffer();
 }
 
+static string int2str(int x) {
+	int cf=0, x2=x;
+	while(x2) { x2=x2/10; cf++; }
+	string r(cf,'0');
+	while(x) { r[--cf]+=(x%10); x=x/10; }
+	return r;
+}
+
 void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) CalcResize();
 	wxPaintDC dc(this);
@@ -162,8 +171,11 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		dc.SetTextForeground(colors[cur_fg][dimmed]);
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
 	}
-	if (dimmed) {
-		wxString status="El algoritmo fue modificado.\nClick aquí para aplicar los cambios.";
+	wxString status;
+	if (want_input || wait_one_key) status+="linea "+int2str(cur_loc.line)+" instruccion "+int2str(cur_loc.inst);
+	else if (dimmed) status="El algoritmo fue modificado.\nClick aquí para aplicar los cambios.";
+	else if (selection_is_input) status="Utilice doble click para\nmodificar solo esa lectura.";
+	if (status.Len()) {
 		wxColour &ct=colors[16][0];
 		wxColour &cb=colors[16][1];
 		int w=dc.GetSize().GetWidth();
@@ -297,8 +309,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 			if (input[i+2]=='z' && input[i+3]=='p') { // raise window
 				int j=i+4, i0=i; 
-				int &cur_line=cur_loc.line, &cur_inst=cur_loc.inst;
-				cur_line=cur_inst=0;
+				int cur_line=0, cur_inst=0;
 				while (input[j]>='0'&&input[j]<='9') {
 					cur_line=cur_line*10+(input[j]-'0');
 					j++;
@@ -308,6 +319,8 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 					cur_inst=cur_inst*10+(input[i]-'0');
 					i++;
 				}
+				if (cur_line==cur_loc.line && cur_inst==cur_loc.inst) cur_loc.sub++;
+				else { cur_loc.sub=0; cur_loc.line=cur_line; cur_loc.inst=cur_inst; }
 				if (record) history<<input.Mid(i0,i-i0+1);
 			} else if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
@@ -320,19 +333,19 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 				if (input_history_position>=int(input_history.size())) { 
 					want_input=true; wait_one_key=true;
 				} else {
-					wxString aux=input_history[input_history_position++];
+					wxString aux=input_history[input_history_position++].text;
 					wxOutputStream *output=the_process->GetOutputStream();
 					output->Write(aux.c_str(),aux.Len());
 				}
 				i+=3;
 			} else if (input[i+2]=='z' && input[i+3]=='l') { // getLine
-				if (input_history_position>=int(input_history.size())) { 
+				if (input_history_position>=int(input_history.size()) || input_history[input_history_position].force_user_input) { 
 					want_input=true; wait_one_key=false;
 //					wxOutputStream *output=the_process->GetOutputStream();
 //					output->Write(current_input.c_str(),current_input.Len());
 					Print(current_input,true/*,true*/); // true,true, porque estas cosas solo llegan en vivo, no se guardan en el historial
 				} else {
-					wxString aux=input_history[input_history_position++];
+					wxString aux=input_history[input_history_position++].text;
 					wxOutputStream *output=the_process->GetOutputStream();
 					output->Write(aux.c_str(),aux.Len());
 					Print(aux,true/*,true*/);  // true,true, porque estas cosas solo llegan en vivo, no se guardan en el historial
@@ -430,7 +443,7 @@ void mxConsole::GetProcessOutput (bool refresh) {
 	if (line.Len()) { 
 		if (cur_event!=-1) SetTime(int(events.size()));
 		Process(line,true/*,cur_event==-1*/); 
-		if (refresh) Refresh(); wxYield(); 
+		if (refresh) Refresh(); Yield(); 
 		// el wxYield es neceasario para procesos tipo "mientras verdero hacer escribir "Hola"; finmientras" porque sino no tiene oportunidad de redibujar por el intenso procesamiento
 	}
 }
@@ -469,9 +482,12 @@ void mxConsole::KillProcess ( ) {
 }
 
 void mxConsole::RecordInput (wxString input) {
-	if (input_history_position==int(input_history.size())) 
-		input_history_position++;
-	input_history.push_back(input);
+	if (input_history_position==int(input_history.size())) {
+		input_history.push_back(input_history_entry(input,cur_loc));
+	} else {
+		input_history[input_history_position]=input_history_entry(input,cur_loc);
+	}
+	input_history_position++;
 	current_input.Clear();
 	want_input=false;
 }
@@ -614,7 +630,7 @@ void mxConsole::OnPaste(wxCommandEvent &evt) {
 	}
 	str<<"\n";
 	while (str.Len()) {
-		input_history.push_back((str.BeforeFirst('\n')+"\n").c_str());
+		input_history.push_back(input_history_entry(str.BeforeFirst('\n')+"\n",cur_loc));
 		str=str.AfterFirst('\n');
 	}
 }
@@ -643,7 +659,32 @@ void mxConsole::GetSourceLocationFromOutput (int pos) {
 	selection_start=pos; selection_end=pos;
 	while (selection_start>0 && buffer[selection_start-1].loc==buffer[pos].loc) selection_start--;
 	while (selection_end+1<buffer_w*buffer_h && buffer[selection_end+1].loc==buffer[pos].loc) selection_end++;
+	// buscar en los eventos de entrada, si justo seleccionamos uno para ofrecer modificarla
+	selection_is_input = buffer[pos].loc!=cur_loc && GetInputPositionFromBufferPosition(buffer[pos].loc)!=-1;
+	// mostrar seleccion y marcar en el pseudocódigo la instrucción correspondiente
 	Refresh();
 	parent->SendLocation(buffer[pos].loc.line,buffer[pos].loc.inst);
+}
+
+void mxConsole::OnMouseDClick (wxMouseEvent & evt) {
+	if (selection_start==-1) { evt.Skip(); return; }
+	int input_pos = GetInputPositionFromBufferPosition(buffer[selection_start].loc);
+	if (input_pos==-1) { evt.Skip(); return; }
+	input_history[input_pos].force_user_input = true;
+	selection_start=selection_end=-1; selecting=false; selection_is_input=false;
+	Reload();
+}
+
+int mxConsole::GetInputPositionFromBufferPosition (code_location loc) {
+	for(int i=input_history.size()-1;i>=0;i--)
+		if (input_history[i].loc==loc)
+			return i;
+	return -1;
+}
+
+void mxConsole::Yield ( ) {
+	static bool yielding = false;
+	if (yielding) return;
+	yielding=true; wxYield(); yielding=false;
 }
 

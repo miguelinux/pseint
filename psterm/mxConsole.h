@@ -38,23 +38,16 @@ public:
 	void OnTimerProcess( wxTimerEvent &event ); ///< llama a GetProcessOutput regularmente, para actualizar la salida
 	void GetProcessOutput(bool refresh=true); ///< extract unprocessed text from output stream for current process
 	
-	wxString current_input; ///< the text entered for next/current input (since last time Enter key was presses, or since start), for storing in input_history on next Enter
-	vector<wxString> input_history; ///< array with all inputs since process started, for reapeting input when reloading process
-	int input_history_position; ///< auxiliar para saber en un Reload cuales ya se usaron y cuales no de las entradas en input_history
-	bool want_input; ///< indica que se espera una entrada (ver wait_input para saber si tecla o linea)
-	bool wait_one_key; ///< indica que se espera una tecla cualquiera (que no se debe mostrar en pantalla)
-	void OnChar( wxKeyEvent &event ); ///< process console input, and sends it to child process
-	void RecordInput(wxString input); ///< guarda une lectura en el historial de entradas (input_history)
-	
 	int margin; ///< margin in pixels for text inside the console
 	int char_w; ///< width in pixels for a char with current fontsize
 	int char_h; ///< height in pixels for a char with current fontsize
 	int bg; ///< index for current console background color (the same for the whole console)
 	struct code_location { ///< linea and instruction number in source pseudocode
-		int line, inst;
-		code_location():line(-1),inst(-1){}
+		int line, inst, sub;
+		code_location():line(-1),inst(-1),sub(0){}
 		bool IsValid() const { return line!=-1&&inst!=-1; }
-		bool operator==(const code_location &o) { return o.line==line&&o.inst==inst; }
+		bool operator==(const code_location &o) const { return o.line==line&&o.inst==inst&&o.sub==sub; }
+		bool operator!=(const code_location &o) const { return !((*this)==o); }
 		void Clear() { line=inst=-1; }
 	};
 	struct console_char { ///< data for each visible char in the console
@@ -73,6 +66,23 @@ public:
 	int cur_y; ///< current y caret position
 	code_location cur_loc; ///< current instruccion in source pseudo-code (that is generating that input/output)
 	
+	wxString current_input; ///< the text entered for next/current input (since last time Enter key was presses, or since start), for storing in input_history on next Enter
+	struct input_history_entry {
+		wxString text; ///< el texto que ingreso el usuario para esta entrada en particular
+		code_location loc; ///< posición en el código donde comienza esa entrada
+		bool force_user_input; ///< flag que indica que no se debe utilizar el valor del historial, sino que se debe pedir de forma interactiva
+		input_history_entry() {}
+		input_history_entry(const wxString _text, code_location _loc) : text(_text), loc(_loc), force_user_input(false) {}
+	};
+	vector<input_history_entry> input_history; ///< array with all inputs since process started, for reapeting input when reloading process
+	int input_history_position; ///< auxiliar para saber en un Reload cuales ya se usaron y cuales no de las entradas en input_history
+	bool want_input; ///< indica que se espera una entrada (ver wait_input para saber si tecla o linea)
+	bool wait_one_key; ///< indica que se espera una tecla cualquiera (que no se debe mostrar en pantalla)
+	void OnChar( wxKeyEvent &event ); ///< process console input, and sends it to child process
+	void RecordInput(wxString input); ///< guarda une lectura en el historial de entradas (input_history)
+	int GetInputPositionFromBufferPosition(code_location loc);
+	
+	
 	wxFont font; ///< current font
 	void OnMouseWheel(wxMouseEvent &evt); ///< scroll y zoom
 	
@@ -83,6 +93,7 @@ public:
 	void OnMouseLeftUp(wxMouseEvent &evt); ///< para seleccionar y copiar
 	void OnMouseMotion(wxMouseEvent &evt); ///< para seleccionar y copiar
 	
+	void OnMouseDClick(wxMouseEvent &evt); ///< popup menu for copy/paste
 	void OnMouseRightDown(wxMouseEvent &evt); ///< popup menu for copy/paste
 	void OnPaste(wxCommandEvent &evt);
 	void OnCopy(wxCommandEvent &evt);
@@ -99,8 +110,9 @@ public:
 	wxTimer *timer_caret; ///< timer to blink caret if caret_visible
 	void OnTimerCaret( wxTimerEvent &event ); ///< anima el parpadeo del cursor
 	
-	int dimmed; /// puede valer 0 o 1, 0 es lo normal, 1 muestra el texto "apagado", se usa para indicar que la salida ya está desactualizada
-		
+	int dimmed; /// puede valer 0 o 1, 0 es lo normal, 1 muestra el texto "apagado", se usa para indicar que la salida ya está desactualizada (es int y no bool para poder usarlo de indice para elegir el color)
+	bool selection_is_input; /// si es true, la selección actual es una entrada, que eventualmente el usuario podría querer editar (se muestra un mensaje indicando esta situación)
+	
 	mxConsole(mxFrame *parent, wxScrollBar *scroll=NULL, bool dark_theme=false);
 	
 	void Run(wxString command);
@@ -117,6 +129,8 @@ public:
 	void Dimm(); ///< pinta el texto "apagado" para indicar que esta salida está desactualizada respecto del algortimo
 
 	void GetSourceLocationFromOutput(int pos); ///< envia una posicion al editor para que muestre que linea genero una entrada/salida
+	
+	void Yield();
 	
 	DECLARE_EVENT_TABLE();
 	
