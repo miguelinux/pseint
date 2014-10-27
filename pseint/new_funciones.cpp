@@ -33,8 +33,7 @@ const Funcion* EsFuncion(const string &nombre, bool include_main_process) {
 
 string func_rc(string *arg) {
 	if (StrToDbl(*arg)<0) {
-		if (Inter.Running())
-			ExeError(147,"Raiz de negativo.");
+		ExeError(147,"Raiz de negativo.",false);
 		return "0";
 	} else
 		return DblToStr((double)(sqrt(double(StrToDbl(*arg)))));
@@ -47,8 +46,7 @@ string func_abs(string *arg) {
 
 string func_ln(string *arg) {
 	if (StrToDbl(*arg)<=0) {
-		if (Inter.Running())
-			ExeError(148,"Logaritmo de 0 o negativo.");
+		ExeError(148,"Logaritmo de 0 o negativo.",false);
 		return "";
 	} else
 		return DblToStr((double)(log((double)(StrToDbl(*arg)))));
@@ -76,8 +74,7 @@ string func_atan(string *arg) {
 }
 string func_azar(string *arg) {
 	if (int(StrToDbl(*arg))<=0) {
-		if (Inter.Running())
-			ExeError(306,"Azar de 0 o negativo.");
+		ExeError(306,"Azar de 0 o negativo.",false);
 		return "";
 	} else
 		return IntToStr(rand() % (int)StrToDbl(*arg));
@@ -161,8 +158,10 @@ string func_atof(string *arg) {
 	for(unsigned int i=j;i<s.size();i++) {
 		if (!punto && s[i]=='.')
 			punto=true;
-		else if (s[i]<'0'||s[i]>'9')
-			ExeError(311,string("La cadena (\"")+s+"\") no representa un número.");
+		else if (s[i]<'0'||s[i]>'9') {
+			ExeError(311,string("La cadena (\"")+s+"\") no representa un número.",true);
+			return "0";
+		}
 	}
 	// convertir
 	return DblToStr(StrToDbl(arg[0]));

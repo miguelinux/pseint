@@ -24,6 +24,11 @@ void show_user_info(string msg1, int num, string msg2) {
 
 // ***************** Control de Errores y Depuración **********************
 
+void ExeError(int num,string s, bool use_syn_if_not_running) { 
+	if (Inter.Running()) ExeError(num,s);
+	else if (use_syn_if_not_running) SynError(num,s);
+	
+}
 // ------------------------------------------------------------
 //    Informa un error en tiempo de ejecucion
 // ------------------------------------------------------------
@@ -99,33 +104,6 @@ void SynError(int num,string s, int line, int inst) {
 	}
 }
 
-// ------------------------------------------------------------
-//    Analiza el tipo de error devuelo por Evaluar(expresion)
-//  e informa segun corresponda.
-// ------------------------------------------------------------
-//void ExpError(char tipo, int level, int line) { 
-//	string str;                            // a una expresion (level=0(CheckSintax) o 1(Ejecutar)
-//	if (tipo&2) {
-//		if (level==0)
-//			SynError(130,"No coinciden los tipos.",line);
-//		else
-//			ExeError(131,"No coinciden los tipos.",line);
-//	}
-//	if (tipo=='0') {
-//		if (level==0)
-//			SynError(132,"Division por cero.",line);
-//		else
-//			ExeError(133,"Division por cero.",line);
-//	}
-//	if (tipo&4) {
-//		if (level==1)
-//			ExeError(134,"Numero de parametros o subindices incorrecto.",line);
-//	}
-//	if (tipo&1) {
-//		if (level==1)
-//			ExeError(135,"Subindices fuera de rango.",line);
-//	}
-// }
 
 // ------------------------------------------------------------
 //    Comprueba que sea un identificador correcto y unico

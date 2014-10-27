@@ -93,6 +93,7 @@ inline string DblToStr(double f,bool low_precision) {
 //    Informa un error en tiempo de ejecucion
 // ------------------------------------------------------------
 void ExeError(int num,string s) ;
+void ExeError(int num,string s, bool use_syn_if_not_running);
 
 // ------------------------------------------------------------
 //    Informa un error de syntaxis antes de la ejecucion

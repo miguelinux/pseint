@@ -1340,7 +1340,6 @@ void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
 	rt_err &e=rt_errors[il];
 	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
 	main_window->SetQuickHelpText(e.n,msg);
-//	main_window->quick_html->SetPage(help->GetErrorText(msg,e.n));
 }
 
 void mxSource::ShowRealTimeError (int pos, const wxString & l) {
@@ -1699,11 +1698,9 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	if (key.Len()!=0 && s==wxSTC_C_IDENTIFIER && !IsProcOrSub(GetCurrentLine())) {
 		menu.Append(mxID_VARS_DEFINIR,_ZZ("Definir variable \"")+key+_Z("\""));
 		menu.Append(mxID_VARS_ADD_TO_DESKTOP_TEST,_ZZ("Agregar variable \"")+key+_Z("\" a la prueba de escritorio"));
-//		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
-//		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
-//		if (s==wxSTC_C_IDENTIFIER) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
-//		if (s==wxSTC_C_IDENTIFIER) menu.Append(mxID_EDIT_HIGHLIGHT_WORD, LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 	}
+	if (key.Len()!=0 && help->GetQuickHelp(key,"").Len())
+		menu.Append(mxID_HELP_QUICKHELP,_ZZ("Ayuda sobre \"")+key+"\"");
 	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT,_Z("Descomentar"));
 	else menu.Append(mxID_EDIT_COMMENT,_Z("Comentar"));
 	menu.Append(mxID_EDIT_INDENT_SELECTION,_Z("Indentar"));

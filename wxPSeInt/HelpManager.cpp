@@ -69,8 +69,8 @@ HelpManager::~HelpManager() {
 	
 }
 
-wxString HelpManager::GetQuickHelp(wxString key) {
-	wxString str="nohelp.html";
+wxString HelpManager::GetQuickHelp(wxString key, wxString def_val) {
+	wxString &str=def_val;
 	key.MakeLower();
 	if (key==_Z("leer")) str="lectura.html";
 	else if (key==_Z("lectura")) str="lectura.html";
@@ -195,5 +195,6 @@ wxString HelpManager::GetQuickHelp(wxString key) {
 	else if (key==_Z("variables")) str="variables.html";
 	else if (key==_Z("ejemplo")) str="ejemplos.html";
 	else if (key==_Z("ejemplos")) str="ejemplos.html";
-	return DIR_PLUS_FILE(config->help_dir,str);	
+	if (def_val.Len()) str = DIR_PLUS_FILE(config->help_dir,str);
+	return str;	
 }
