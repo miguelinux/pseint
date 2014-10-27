@@ -154,6 +154,17 @@ string func_concatenar(string *arg) {
 }
 
 string func_atof(string *arg) {
+	// verificar formato
+	string &s=arg[0];
+	bool punto=false; int j=0;
+	if (s.size() && (s[0]=='+'||s[0]=='-')) j++;
+	for(unsigned int i=j;i<s.size();i++) {
+		if (!punto && s[i]=='.')
+			punto=true;
+		else if (s[i]<'0'||s[i]>'9')
+			ExeError(311,string("La cadena (\"")+s+"\") no representa un número.");
+	}
+	// convertir
 	return DblToStr(StrToDbl(arg[0]));
 }
 
