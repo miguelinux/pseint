@@ -332,7 +332,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 				if (w!=w_operhand) { w=w_operhand; wext=w_number_dec; }
 				else if (wext!=w_number_int) {
 					SynError (231,"Constante numérica no válida."); errores++;
-				}
+				} else wext=w_number_dec;
 			
 			} else if (EsLetra(act)) {
 				if (w==w_operhand && wext!=w_id) {
