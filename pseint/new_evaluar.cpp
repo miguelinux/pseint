@@ -332,7 +332,6 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			ev_return(expresion.substr(p1+1,p2-p1-1));
 		} else if ( (c>='0'&&c<='9') || c=='.' || c=='-' || c=='+') { // si empieza con un numero o un punto, es nro
 			tipo = vt_numerica;
-			for(int i=p1,cp=0; i<p2; i++) if (expresion[i]=='.') if (cp==0) cp=1; else
 			ev_return(expresion.substr(p1,p2-p1+1));
 		} else if (expresion.substr(p1,p2-p1+1)==VERDADERO || expresion.substr(p1,p2-p1+1)==FALSO) { // veradero o falso, logica
 			tipo = vt_logica;

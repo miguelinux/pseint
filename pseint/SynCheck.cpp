@@ -1231,7 +1231,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="SI "){  // ------------ SI -----------//
 				if (cadena=="SI")
-				{ SynError (90,"Falta la condicion en la estructura Si-Entonces."); errores++; }
+					{ SynError (90,"Falta la condicion en la estructura Si-Entonces."); errores++; }
 				else
 					str=cadena; // Comprobar la condicion
 				str.erase(0,3);
