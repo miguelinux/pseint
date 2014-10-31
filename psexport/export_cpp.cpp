@@ -472,6 +472,7 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 			}
 		}
 		insertar_out(out,prototipos);
+		if (!for_test) out.push_back("");
 	}
 	insertar_out(out,aux);
 	footer(out);

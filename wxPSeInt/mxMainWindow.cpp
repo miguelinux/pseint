@@ -1920,7 +1920,23 @@ void mxMainWindow::OnKillFocus (wxFocusEvent &event) {
 }
 
 void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
-	/*if (!export_preview) */new mxExportPreview();
-//	else export_preview->Raise();
+	mxExportPreview *prev = new mxExportPreview();
+	
+	int screen_w=wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+	int win_w,win_h;
+#ifdef __WIN32__
+	GetClientSize(&win_w,&win_h);
+#else
+	GetSize(&win_w,&win_h);
+#endif
+	int x0,y0; GetPosition(&x0,&y0);
+	mxSource *src=CURRENT_SOURCE;
+	Maximize(false);
+	_yield;
+	SetSize(screen_w/2,win_h);
+	Move(0,y0);
+	prev->SetSize(screen_w/2,win_h);
+	prev->Move(screen_w/2,y0);
+	
 }
 
