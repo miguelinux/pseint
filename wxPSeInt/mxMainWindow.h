@@ -60,6 +60,7 @@ public:
 	void OnFileEditFlow(wxCommandEvent &evt);
 	void OnFileExportHtml(wxCommandEvent &evt);
 	void OnFileExportLang(wxCommandEvent &evt);
+	void OnFileExportPreview(wxCommandEvent &evt);
 	void OnFileClose(wxCommandEvent &evt);
 	void OnFileExit(wxCommandEvent &evt);
 	void OnFileSourceHistory (wxCommandEvent &event);
@@ -72,7 +73,7 @@ public:
 	void OnRunStepStep(wxCommandEvent &evt);
 	void OnRunSubtitles(wxCommandEvent &evt);
 	void OnRunCheck(wxCommandEvent &evt);
-	void OnRunDrawFlow(wxCommandEvent &evt);
+//	void OnRunDrawFlow(wxCommandEvent &evt);
 	void OnRunSaveFlow(wxCommandEvent &evt);
 	void OnRunSetInput(wxCommandEvent &evt);
 	void OnHelpAbout(wxCommandEvent &evt);

@@ -20,7 +20,14 @@ using namespace std;
 
 mxProcess *proc_list;
 
-enum { mxPW_NULL=0, mxPW_RUN, mxPW_DEBUG, mxPW_CHECK, mxPW_CHECK_AND_RUN, mxPW_CHECK_AND_DEBUG, mxPW_DRAW, mxPW_CHECK_AND_DRAW, mxPW_DRAWEDIT, mxPW_CHECK_AND_DRAWEDIT, mxPW_EXPORT, mxPW_CHECK_AND_EXPORT, mxPW_CHECK_AND_SAVEDRAW, mxPW_SAVEDRAW };
+enum { mxPW_NULL=0, 
+	mxPW_RUN, mxPW_DEBUG, 
+	mxPW_CHECK, mxPW_CHECK_AND_RUN, mxPW_CHECK_AND_DEBUG, 
+//	mxPW_DRAW, mxPW_CHECK_AND_DRAW, 
+	mxPW_DRAWEDIT, mxPW_CHECK_AND_DRAWEDIT, 
+	mxPW_EXPORT, mxPW_CHECK_AND_EXPORT, 
+	mxPW_CHECK_AND_SAVEDRAW, mxPW_SAVEDRAW 
+	};
 	
 mxProcess *proc_for_killing=NULL;
 
@@ -83,7 +90,7 @@ mxProcess::~mxProcess() {
 
 void mxProcess::OnTerminate(int pid, int status) {
 	_LOG("mxProcess::OnTerminate this="<<this<<" status="<<status);
-	if ((what==mxPW_DRAW||mxPW_DRAWEDIT) && status==127) { // si psdraw3 sale con errores, ver si le faltaban dependencias
+	if ((what==/*mxPW_DRAW||*/mxPW_DRAWEDIT) && status==127) { // si psdraw3 sale con errores, ver si le faltaban dependencias
 		CheckDeps(config->psdraw3_command);
 	}
 	if (this==debug->process) {
@@ -138,8 +145,8 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 			return Run(file,false);
 		else if (what==mxPW_CHECK_AND_DEBUG)
 			return Debug(file,false);
-		else if (what==mxPW_CHECK_AND_DRAW)
-			return Draw(file,false);
+//		else if (what==mxPW_CHECK_AND_DRAW)
+//			return Draw(file,false);
 		else if (what==mxPW_CHECK_AND_DRAWEDIT)
 			return DrawAndEdit(file,false);
 		else if (what==mxPW_CHECK_AND_SAVEDRAW)
@@ -220,15 +227,15 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	return pid!=0;
 }
 
-bool mxProcess::Draw(wxString file, bool check_first) {
-	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
-	wxString command;
-	command<<config->psdraw3_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<(config->lang.use_alternative_io_shapes?"--alternativeio ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
-	_LOG("mxProcess::Draw this="<<this);
-	_LOG("    "<<command);
-	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
-}
+//bool mxProcess::Draw(wxString file, bool check_first) {
+//	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
+//	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
+//	wxString command;
+//	command<<config->psdraw3_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<(config->lang.use_alternative_io_shapes?"--alternativeio ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
+//	_LOG("mxProcess::Draw this="<<this);
+//	_LOG("    "<<command);
+//	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
+//}
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;

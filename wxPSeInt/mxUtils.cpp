@@ -7,6 +7,7 @@
 #include "mxBitmapButton.h"
 #include <wx/textfile.h>
 #include "string_conversions.h"
+#include "ids.h"
 
 mxUtils *utils;
 
@@ -132,3 +133,44 @@ wxString mxUtils::GetVersion(wxString exe) {
 	}
 	return retval;
 }
+
+wxString mxUtils::GetExportLangName(int id) {
+	switch(id) {
+	case mxID_FILE_EXPORT_LANG_VB: 		return "código Visual Basic .NET (vb)";
+	case mxID_FILE_EXPORT_LANG_C: 		return "código C (c)";
+	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "código C# (cs)";
+	case mxID_FILE_EXPORT_LANG_CPP03: 	return "código C++98/03 (cpp)";
+//	case mxID_FILE_EXPORT_LANG_CPP11: 	return "código C++11 (cpp)";
+	case mxID_FILE_EXPORT_LANG_PHP: 	return "código PHP (php)";
+	case mxID_FILE_EXPORT_LANG_PY2: 	return "código Python 2 (py)";
+	case mxID_FILE_EXPORT_LANG_PY3: 	return "código Python 3 (py)";
+	case mxID_FILE_EXPORT_LANG_HTML: 	return "página HTML (JavaScript embebido) (html)";
+	case mxID_FILE_EXPORT_LANG_JAVA: 	return "código Java (java)";
+	case mxID_FILE_EXPORT_LANG_JS: 		return "código JavaScript (js)";
+	case mxID_FILE_EXPORT_LANG_M: 		return "código MatLab (m)";
+//	case mxID_FILE_EXPORT_LANG_PRG:		return "Visual Fox Pro (prg)";
+	case mxID_FILE_EXPORT_LANG_PAS: 	return "código Pascal (pas)";
+	default: return "???";
+	}
+}
+
+wxString mxUtils::GetExportLangCode(int id) {
+	switch(id) {
+	case mxID_FILE_EXPORT_LANG_VB: 		return "vb";
+	case mxID_FILE_EXPORT_LANG_C: 		return "c";
+	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "cs";
+	case mxID_FILE_EXPORT_LANG_CPP03: 	return "cpp03";
+//	case mxID_FILE_EXPORT_LANG_CPP11: 	return "cpp11";
+	case mxID_FILE_EXPORT_LANG_PHP: 	return "php";
+	case mxID_FILE_EXPORT_LANG_PY2: 	return "py2";
+	case mxID_FILE_EXPORT_LANG_PY3: 	return "py3";
+	case mxID_FILE_EXPORT_LANG_HTML: 	return "html";
+	case mxID_FILE_EXPORT_LANG_JAVA: 	return "java";
+	case mxID_FILE_EXPORT_LANG_JS: 		return "js";
+	case mxID_FILE_EXPORT_LANG_M: 		return "m";
+//	case mxID_FILE_EXPORT_LANG_PRG:		return "prg";
+	case mxID_FILE_EXPORT_LANG_PAS: 	return "pas";
+	default: return "???";
+	}
+}
+

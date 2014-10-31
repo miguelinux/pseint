@@ -30,6 +30,8 @@ public:
 	wxString ToHtml(wxString text);
 	wxString FixTooltip(wxString tooltip);
 	wxString GetVersion(wxString exe);
+	wxString GetExportLangName(int id);
+	wxString GetExportLangCode(int id);
 };
 
 extern mxUtils *utils;

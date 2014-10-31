@@ -48,6 +48,7 @@
 #include <wx/textdlg.h>
 #include <wx/settings.h>
 #include "string_conversions.h"
+#include "mxExportPreview.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -80,6 +81,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FILE_EXPORT_HTML, mxMainWindow::OnFileExportHtml)
 	EVT_MENU_RANGE(mxID_FILE_EXPORT_LANG_FIRST, mxID_FILE_EXPORT_LANG_LAST,mxMainWindow::OnFileExportLang)
 	EVT_MENU(mxID_FILE_EXPORT_PNG, mxMainWindow::OnRunSaveFlow)
+	EVT_MENU(mxID_FILE_EXPORT_PREVIEW, mxMainWindow::OnFileExportPreview)
 	EVT_MENU(mxID_FILE_CLOSE, mxMainWindow::OnFileClose)
 	EVT_MENU(mxID_FILE_SAVE_AS, mxMainWindow::OnFileSaveAs)
 	EVT_MENU(mxID_FILE_PRINT, mxMainWindow::OnFilePrint)
@@ -104,7 +106,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_STEP_STEP, mxMainWindow::OnRunStepStep)
 	EVT_MENU(mxID_RUN_SUBTITLES, mxMainWindow::OnRunSubtitles)
 	EVT_MENU(mxID_RUN_CHECK, mxMainWindow::OnRunCheck)
-	EVT_MENU(mxID_RUN_DRAW_FLOW, mxMainWindow::OnRunDrawFlow)
+//	EVT_MENU(mxID_RUN_DRAW_FLOW, mxMainWindow::OnRunDrawFlow)
 	EVT_MENU(mxID_RUN_SET_INPUT, mxMainWindow::OnRunSetInput)
 	EVT_MENU(mxID_EDIT_TOGGLE_LINES_UP, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_TOGGLE_LINES_DOWN, mxMainWindow::OnEdit)
@@ -244,20 +246,12 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _Z("Imprimir..."),"","imprimir.png");
 	
 	wxMenu *export_menu=new wxMenu;
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_C, _Z("Convertir a código C (c)..."),"","exp_c.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP03, _Z("Convertir a código C++98/03 (cpp)..."),"","exp_cpp.png");
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CPP11, _Z("Convertir a código C++11 (cpp)..."),"","exp_cpp.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_CSHARP, _Z("Convertir Código C# (cs)..."),"","exp_cs.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_HTML, _Z("Convertir a página HTML (JavaScript embebido) (html)..."),"","exp_html.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JAVA, _Z("Convertir a código Java (java)..."),"","exp_java.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_JS, _Z("Convertir a código JavaScript (js)..."),"","exp_js.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_M, _Z("Convertir a código MatLab (m)..."),"","exp_m.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PAS, _Z("Convertir a código Pascal (pas)..."),"","exp_pas.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PHP, _Z("Convertir a código PHP (php)..."),"","exp_php.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY2, _Z("Convertir a código Python 2 (py)..."),"","exp_py.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PY3, _Z("Convertir a código Python 3 (py)..."),"","exp_py.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_VB, _Z("Convertir a código Visual Basic .NET (vb)..."),"","exp_vb.png");
-//	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_LANG_PRG, _Z("Convertir a código Visual Fox Pro (prg)..."),"","exp_prg.png");
+	
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PREVIEW, _Z("Vista previa..."),"","export_preview.png");
+	export_menu->AppendSeparator();
+	for (int id = mxID_FILE_EXPORT_LANG_FIRST+1; id < int(mxID_FILE_EXPORT_LANG_LAST); id++)
+		utils->AddItemToMenu( export_menu,id, _ZZ("Convertir a ")+utils->GetExportLangName(id)+"...","",wxString("exp_")+utils->GetExportLangCode(id)+".png");
+	
 	export_menu->AppendSeparator();
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _Z("Pseudocódigo coloreado (html)..."),"","html.png");
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PNG, _Z("Diagrama de flujo (png, bmp o jpg)..."),"","edit_flow.png");
@@ -496,25 +490,7 @@ void mxMainWindow::OnFileExportLang(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->Stop();
 		else {
-			wxString lang;
-			switch(evt.GetId()) {
-				case mxID_FILE_EXPORT_LANG_VB: 		lang="vb"; 		break;
-				case mxID_FILE_EXPORT_LANG_C: 		lang="c"; 		break;
-				case mxID_FILE_EXPORT_LANG_CSHARP: 	lang="cs";	 	break;
-				case mxID_FILE_EXPORT_LANG_CPP03: 	lang="cpp03"; 	break;
-				case mxID_FILE_EXPORT_LANG_CPP11: 	lang="cpp11"; 	break;
-				case mxID_FILE_EXPORT_LANG_PHP: 	lang="php"; 	break;
-				case mxID_FILE_EXPORT_LANG_PY2: 	lang="py2"; 	break;
-				case mxID_FILE_EXPORT_LANG_PY3: 	lang="py3"; 	break;
-				case mxID_FILE_EXPORT_LANG_HTML: 	lang="html"; 	break;
-				case mxID_FILE_EXPORT_LANG_JAVA: 	lang="java"; 	break;
-				case mxID_FILE_EXPORT_LANG_JS: 		lang="js"; 		break;
-				case mxID_FILE_EXPORT_LANG_M: 		lang="m"; 		break;
-				case mxID_FILE_EXPORT_LANG_PRG:		lang="prg"; 	break;
-				case mxID_FILE_EXPORT_LANG_PAS: 	lang="pas"; 	break;
-				default: lang="???"; // no deberia pasar nunca
-			}
-			(new mxProcess(source))->ExportLang(fname,lang,true);
+			(new mxProcess(source))->ExportLang(fname,utils->GetExportLangCode(evt.GetId()),true);
 		}
 	}	
 }
@@ -712,16 +688,16 @@ void mxMainWindow::OnRunCheck(wxCommandEvent &evt) {
 	}
 }
 
-void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
-	IF_THERE_IS_SOURCE {
-		mxSource *source = CURRENT_SOURCE;
-		wxString fname=source->SaveTemp();
-		if (debug->debugging)
-			debug->Stop();
-		else
-			(new mxProcess(source))->Draw(fname,true);
-	}
-}
+//void mxMainWindow::OnRunDrawFlow(wxCommandEvent &evt) {
+//	IF_THERE_IS_SOURCE {
+//		mxSource *source = CURRENT_SOURCE;
+//		wxString fname=source->SaveTemp();
+//		if (debug->debugging)
+//			debug->Stop();
+//		else
+//			(new mxProcess(source))->Draw(fname,true);
+//	}
+//}
 
 void mxMainWindow::OnRunSaveFlow(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
@@ -1941,5 +1917,10 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 
 void mxMainWindow::OnKillFocus (wxFocusEvent &event) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
+}
+
+void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
+	/*if (!export_preview) */new mxExportPreview();
+//	else export_preview->Raise();
 }
 
