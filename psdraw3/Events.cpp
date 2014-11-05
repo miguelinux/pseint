@@ -58,9 +58,8 @@ void reshape_cb (int w, int h) {
 }
 
 void Raise() {
-	main_window->Hide();
-	wxYield();
-	main_window->Show();
+	if (main_window->IsIconized()) main_window->Iconize(false);
+	else { main_window->Hide(); wxYield(); main_window->Show(); }
 }
 
 void idle_func() {
