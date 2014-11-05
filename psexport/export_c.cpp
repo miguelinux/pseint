@@ -16,6 +16,7 @@ CExporter::CExporter():CppExporter() {
 	use_bool=false;
 	declare_cstrings=false;
 	use_func_subcadena=false;
+	use_reference=false;
 }
 
 void CExporter::borrar_pantalla(t_output &prog, string param, string tabs){
@@ -230,6 +231,17 @@ void CExporter::header(t_output &out) {
 			out.push_back("");
 		}
 	}
+	if (use_reference) {
+		if (!for_test) {
+			out.push_back("/* El algoritmo contiene funciones que reciben argumentos por referencia.");
+			out.push_back("   Cuando estos argumentos no se corresponden con arreglos, al llamar a la");
+			out.push_back("   función el argumento actual debe ser un puntero, lo cual se logra ");
+			out.push_back("   anteponiendo el operador & (a la variable que se pasa como argumento");
+			out.push_back("   actual). En estos casos, la traducción automática falla, por lo que");
+			out.push_back("   debe agregarlo manualmente donde sea necesario. */");
+			out.push_back("");
+		}
+	}
 }
 
 void CExporter::footer(t_output &out) {
@@ -341,8 +353,10 @@ void CExporter::translate_single(t_output &out, t_proceso &proc) {
 			if (i!=1) dec+=", ";
 			string var_dec=CppExporter::get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
 			dec+=var_dec;
-			if (f->pasajes[i]==PP_REFERENCIA && var_dec.find("[")==string::npos) 
+			if (f->pasajes[i]==PP_REFERENCIA && var_dec.find("[")==string::npos) {
+				use_reference = true;
 				replace_var(out_proc,ToLower(f->nombres[i]),ToLower(string("(*")+f->nombres[i]+(")")));
+			}
 		}
 		dec+=")";
 		prototipos.push_back(dec+";");

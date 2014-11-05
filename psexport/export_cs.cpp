@@ -7,6 +7,7 @@
 CSharpExporter::CSharpExporter():CppExporter() {
 	use_threading=false;
 	have_subprocesos=false;
+	use_reference=true;
 #ifdef DEBUG
 	// solo para evitar warnings con cpp-check
 	use_random=false;
@@ -226,6 +227,7 @@ void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
 			string var_dec=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA,true);
+			if (f->pasajes[i]==PP_REFERENCIA) use_reference=true;
 			dec+=var_dec;
 		}
 		dec+=") {";

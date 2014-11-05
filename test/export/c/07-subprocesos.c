@@ -12,7 +12,7 @@ int main() {
 	printf("%s\n",funciondoble(5));
 	noretornanada(3,9);
 	c = 0;
-	porreferencia(c);
+	porreferencia(&c);
 	printf("%f\n",c);
 	recibevector(a);
 	recibematriz(b);

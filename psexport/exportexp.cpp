@@ -87,7 +87,7 @@ string buscarOperando(const string &exp, int comienzo, int direccion) {
 	int i=comienzo;
 	int parentesis=0;
 //	if (exp[i]==')'||exp[i]==']') { i--; parentesis++; }
-	while (i>=0 && i<exp.size() && (
+	while (i>=0 && i<int(exp.size()) && (
 		parentesis ||  exp[i]=='.' ||  exp[i]=='\'' || exp[i]=='\"' 
 		|| (exp[i]>='0' && exp[i]<='9') || (exp[i]>='A' && exp[i]<='Z') || (exp[i]>='a' && exp[i]<='z') || exp[i]=='_' 
 		|| exp[i]=='$' // por php, hasta que tenga una mejor forma de determinar el primer operando al reemplazar operadores por funciones (porque es el unico caso, creo, donde se invoca esta funcion con la expresion ya traducida)
