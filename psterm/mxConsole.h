@@ -14,7 +14,8 @@ class mxConsole : public wxPanel {
 public:
 	mxFrame *parent; ///< para avisarle de algunos eventos
 	wxScrollBar *scroll; ///< barra para moverse en el tiempo (es de la ventana padre, pero la ajusta la consola)
-	
+
+	int fixed_rand_seed; ///< seed argument to add to command in order to obtain same results in every run
 	wxString command; ///< the last command runned in this console
 	
 	wxString history; ///< todo el texto procesado desde el inicio del proceso
@@ -129,6 +130,8 @@ public:
 	void Dimm(); ///< pinta el texto "apagado" para indicar que esta salida está desactualizada respecto del algortimo
 
 	void GetSourceLocationFromOutput(int pos); ///< envia una posicion al editor para que muestre que linea genero una entrada/salida
+
+	void SetRandSeed();
 	
 	void Yield();
 	

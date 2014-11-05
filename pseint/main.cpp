@@ -86,18 +86,21 @@ int main(int argc, char* argv[]) {
 		var_definition=false, 
 		write_positions=false,
 		real_time_syntax=false; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
-	
+	int 
+		forced_seed=-1; // semilla a utilizar para inicializar la generación de números aleatorios (si es -1 se usa el reloj)
 	
 	int fil_count=0,delay=0; char *fil_args[5];
 	for (int i=1;i<argc;i++) {
 		if (argv[i][0]=='-') {
 			string str(argv[i]);
+			if (str.substr(0,7)=="--seed=")
+				forced_seed=atoi(str.substr(7).c_str());
 			if (str.substr(0,8)=="--delay=")
-				delay=atoi(str.substr(8,str.size()-8).c_str());
+				delay=atoi(str.substr(8).c_str());
 			else if (str.substr(0,8)=="--input=")
-				predef_input.push(str.substr(8,str.size()-8));
+				predef_input.push(str.substr(8));
 			else if (str.substr(0,7)=="--port=")
-				Inter.SetPort(atoi(str.substr(7,str.size()-7).c_str()));
+				Inter.SetPort(atoi(str.substr(7).c_str()));
 			else if (str=="--rawerrors")
 				raw_errors=true;
 			else if (str=="--fortest")
@@ -199,6 +202,7 @@ int main(int argc, char* argv[]) {
 		cout<<"                             en la consola de Windows"<<endl;
 		cout<<"       --writepositions      al generar el archivo parseado para el editor de diagrams de flujo incluye los"<<endl;
 		cout<<"                             numeros de linea e instrucción necesarios para marcar la ejecución paso a paso"<<endl;
+		cout<<"       --seed=<num>          semilla para el generador de numeros aleatorios"<<endl;
 		exit(1);
 	}
 	
@@ -217,7 +221,7 @@ int main(int argc, char* argv[]) {
 	// inicializaciones varias
 	int errores;
 	LoadFunciones();
-	srand(time(NULL));
+	if (forced_seed==-1) srand(time(NULL)); else srand(forced_seed);
 	
 	if (real_time_syntax) {
 		while (true) {

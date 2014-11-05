@@ -87,6 +87,8 @@ static wxColour (*colors)[2]=colors_white;
 	
 mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
 	
+	SetRandSeed();
+	
 	selection_start=selection_end=-1; selecting=false; selection_is_input=false;
 	wxAcceleratorEntry entries[2];
 	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_PASTE);
@@ -416,6 +418,7 @@ void mxConsole::CalcResize() {
 
 void mxConsole::Run (wxString command) {
 	this->command=command;
+	command << " --seed=" << fixed_rand_seed;
 	KillProcess();
 	the_process=new wxProcess(this->GetEventHandler(),wxID_ANY);
 	the_process->Redirect();
@@ -699,5 +702,9 @@ void mxConsole::Yield ( ) {
 	static bool yielding = false;
 	if (yielding) return;
 	yielding=true; wxYield(); yielding=false;
+}
+
+void mxConsole::SetRandSeed ( ) {
+	fixed_rand_seed = rand();
 }
 

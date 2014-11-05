@@ -80,6 +80,7 @@ void mxFrame::OnButtonPlay (wxCommandEvent & evt) {
 
 void mxFrame::OnButtonRunAgain(wxCommandEvent & evt) {
 	console->SetTime(0);
+	console->SetRandSeed();
 	OnButtonPlay(evt);
 }
 
