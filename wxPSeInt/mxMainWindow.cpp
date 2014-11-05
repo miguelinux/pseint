@@ -49,6 +49,7 @@
 #include <wx/settings.h>
 #include "string_conversions.h"
 #include "mxExportPreview.h"
+#include "mxIconInstaller.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -129,6 +130,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
 	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
+	EVT_MENU(mxID_CONFIG_ICON_INSTALLER, mxMainWindow::OnInconInstaller)
 
 	EVT_BUTTON(mxID_CMD_SUBPROCESO, mxMainWindow::OnCmdSubProceso)
 	EVT_BUTTON(mxID_CMD_ASIGNAR, mxMainWindow::OnCmdAsignar)
@@ -312,6 +314,10 @@ void mxMainWindow::CreateMenus() {
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang.use_nassi_schneiderman);
+#if !defined(__WIN32__) && !defined(__APPLE__)
+	cfg->AppendSeparator();
+	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos"),"","");
+#endif	
 	menu->Append(cfg, "&Configurar");
 	
 	wxMenu *run = new wxMenu;
@@ -1930,7 +1936,7 @@ void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
 	GetSize(&win_w,&win_h);
 #endif
 	int x0,y0; GetPosition(&x0,&y0);
-	mxSource *src=CURRENT_SOURCE;
+//	mxSource *src=CURRENT_SOURCE;
 	Maximize(false);
 	_yield;
 	SetSize(screen_w/2,win_h);
@@ -1938,5 +1944,9 @@ void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
 	prev->SetSize(screen_w/2,win_h);
 	prev->Move(screen_w/2,y0);
 	
+}
+
+void mxMainWindow::OnInconInstaller (wxCommandEvent & evt) {
+	new mxIconInstaller(false);
 }
 

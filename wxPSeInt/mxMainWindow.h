@@ -99,6 +99,7 @@ public:
 	void OnConfigLanguage(wxCommandEvent &evt);
 	void OnConfigRealTimeSyntax(wxCommandEvent &evt);
 	void OnConfigSmartIndent(wxCommandEvent &evt);
+	void OnInconInstaller(wxCommandEvent &evt);
 	
 	void OnDoThat(wxCommandEvent &evt);
 	void OnDebugShortcut(wxCommandEvent &evt);
