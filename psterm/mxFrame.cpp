@@ -5,6 +5,7 @@
 #include <wx/msgdlg.h>
 #include <wx/app.h>
 #include <iostream>
+#include <wx/checkbox.h>
 using namespace std;
 
 enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RUN_AGAIN };
@@ -28,15 +29,21 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		src_id=id;
 		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 		console=new mxConsole(this,scroll,props.dark_theme);
+		do_not_close = new wxCheckBox(this,wxID_ANY,"No cerrrar esta ventana"); 
+		do_not_close->SetValue(false); do_not_close->Hide();
 		play_from_here = new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		run_again = new wxButton(this,FRAME_ID_RUN_AGAIN," Reiniciar ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		is_present=true; play_from_here->Hide(); run_again->Hide();
 		
 		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 		wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
+		wxBoxSizer *sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
 		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
-		sizer_in->Add(play_from_here,wxSizerFlags().Right());
-		sizer_in->Add(run_again,wxSizerFlags().Right());
+		sizer_buttons->Add(do_not_close,wxSizerFlags().Center());
+		sizer_buttons->AddStretchSpacer();
+		sizer_buttons->Add(play_from_here);
+		sizer_buttons->Add(run_again);
+		sizer_in->Add(sizer_buttons,wxSizerFlags().Proportion(0).Expand());
 		sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
 		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
 		SetSizer(sizer);
@@ -184,6 +191,7 @@ void mxFrame::SendLocation (int line, int inst) {
 void mxFrame::SetButton (bool visible, bool button_again) {
 	wxButton *to_show = button_again?run_again:play_from_here;
 	wxButton *to_hide = button_again?play_from_here:run_again;
+	do_not_close->Show(visible&&terminated);
 	if (visible) {
 		if (to_show->IsShown()) return;
 		to_hide->Hide(); to_show->Show();
@@ -192,5 +200,9 @@ void mxFrame::SetButton (bool visible, bool button_again) {
 		to_hide->Hide(); to_show->Hide();
 	}
 	Layout();
+}
+
+void mxFrame::ShouldClose ( ) {
+	if (!do_not_close->GetValue()) Close();
 }
 

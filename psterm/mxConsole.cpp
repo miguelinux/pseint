@@ -199,7 +199,7 @@ void mxConsole::OnSize (wxSizeEvent & event) {
 }
 
 void mxConsole::OnChar (wxKeyEvent & event) {
-	if (event.GetKeyCode()==3) { parent->Close(); return; }
+	if (event.GetKeyCode()==3) { parent->ShouldClose(); return; } // que era ese 3????
 	if (the_process) {
 		if (!want_input || cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
@@ -229,7 +229,7 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 			Print(wxString()<<c,true/*,true*/);
 			Refresh();
 		}
-	} else parent->Close();
+	} else parent->ShouldClose();
 }
 
 void mxConsole::SetFontSize (int size) {

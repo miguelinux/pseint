@@ -6,6 +6,7 @@
 #include <wx/button.h>
 
 class mxConsole;
+class wxCheckBox;
 
 struct win_props {
 	bool always_on_top;
@@ -25,6 +26,7 @@ struct win_props {
 
 class mxFrame : public wxFrame {
 private:
+	wxCheckBox *do_not_close;
 	wxButton *play_from_here;
 	wxButton *run_again;
 	wxScrollBar *scroll;
@@ -53,6 +55,7 @@ public:
 	void SetIsPresent(bool is);
 	void SendLocation(int line, int inst); ///< envia un mensaje al editor para indicar que debe marcar una instruccion
 	void SetButton(bool visible, bool button_again);
+	void ShouldClose();
 	DECLARE_EVENT_TABLE();
 };
 
