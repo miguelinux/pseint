@@ -79,7 +79,7 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 					else if (tipo=="REAL") memoria->DefinirTipo(varname,vt_numerica,false);
 					else if (tipo=="CARACTER") memoria->DefinirTipo(varname,vt_caracter,false);
 					else if (tipo=="LOGICO") memoria->DefinirTipo(varname,vt_logica,false);
-					arglist.push_back(expresion(varname));
+					arglist.push_back(/*expresion(*/varname/*)*/);
 					lastcoma=i+1;
 				}
 			}
@@ -112,10 +112,10 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 		}
 		else if (s=="ASIGNACION") {
 			tipo_var t;
-			string param1=expresion((*r).par1);
-			string param2=expresion((*r).par2,t);
+			string param1=/*expresion(*/(*r).par1/*)*/;
+			string param2=/*expresion(*/(*r).par2/*,t)*/;
 			asignacion(prog,param1,param2,tabs);
-			memoria->DefinirTipo(param1,t);
+//			memoria->DefinirTipo(param1,t);
 		}
 		else if (s=="MIENTRAS") {
 			t_proceso_it r1=r++;
@@ -290,7 +290,7 @@ void ExporterBase::replace_var(t_output &out, string src, string dst) {
 		for(unsigned int i=0, l=0;i<=s.size();i++) { 
 			if (i<s.size() &&(s[i]=='\''||s[i]=='\"')) comillas=!comillas;
 			if (!comillas) {
-				if (i==s.size()||s[i]!='_'&&s[i]!='.'&&(s[i]<'0'||s[i]>'9')&&(s[i]<'a'||s[i]>'z')&&(s[i]<'A'||s[i]>'Z')) {
+				if (i==s.size()||(s[i]!='_'&&s[i]!='.'&&(s[i]<'0'||s[i]>'9')&&(s[i]<'a'||s[i]>'z')&&(s[i]<'A'||s[i]>'Z'))) {
 					if (i!=l && s.substr(l,i-l)==src) {
 						s.replace(l,i-l,dst);
 						i+=dst.size()-src.size();
@@ -376,7 +376,7 @@ void ExporterBase::crop_name_and_dims(string decl, string &name, string &dims, s
 
 bool ExporterBase::replace_all(string &str, string from, string to) {
 	bool retval=false;
-	size_t pos=str.find(from,pos);
+	size_t pos = str.find(from,0);
 	while (pos!=string::npos) {
 		retval=true;
 		str.replace(pos,from.size(),to);

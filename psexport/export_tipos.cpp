@@ -145,3 +145,16 @@ string TiposExporter::get_constante(string name) { return name; }
 string TiposExporter::get_operator(string op, bool for_string) { return op; }
 
 string TiposExporter::make_string(string cont) { return string("\'")+cont+"\'"; }
+
+void TiposExporter::definir(t_output &prog, t_arglist &arglist, string tipo, string tabs) {
+	tipo_var vt=vt_desconocido;
+	if (tipo=="ENTERO") vt=vt_numerica_entera;
+	else if (tipo=="REAL") vt=vt_numerica;
+	else if (tipo=="LOGICO") vt=vt_logica;
+	else vt=vt_caracter;
+	t_arglist_it it=arglist.begin();
+	while (it!=arglist.end()) {
+		memoria->DefinirTipo(expresion(*it),vt,vt.rounded);
+		++it;
+	}
+}

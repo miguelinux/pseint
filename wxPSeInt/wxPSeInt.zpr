@@ -161,7 +161,7 @@ path=mxProcess.h
 cursor=0:0
 [header]
 path=version.h
-cursor=0:24
+cursor=2:0
 open=true
 [header]
 path=ids.h

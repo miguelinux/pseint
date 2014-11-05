@@ -254,8 +254,8 @@ void JavaScriptExporter::definir(t_output &prog, t_arglist &arglist, string tipo
 	else { tipo="String()"; vt=vt_caracter; }
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
-		memoria->DefinirTipo(*it,vt,vt==vt_numerica_entera);
-		insertar(prog,tabs+"var "+*it+" = new "+tipo+";");
+		string vname = expresion(*it);
+		insertar(prog,tabs+"var "+vname+" = new "+tipo+";");
 		++it;
 	}
 }

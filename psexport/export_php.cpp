@@ -223,7 +223,7 @@ void PhpExporter::definir(t_output &prog, t_arglist &arglist, string tipo, strin
 	else tipo="string";
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
-		insertar(prog,tabs+"settype("+*it+",'"+tipo+"');");
+		insertar(prog,tabs+"settype("+expresion(*it)+",'"+tipo+"');");
 		++it;
 	}
 }
@@ -233,7 +233,7 @@ string PhpExporter::make_varname(string varname) {
 }
 
 void PhpExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	insertar(prog,tabs+param1+" = "+param2+";");
+	insertar(prog,tabs+expresion(param1)+" = "+expresion(param2)+";");
 }
 
 void PhpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {

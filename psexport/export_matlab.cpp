@@ -77,7 +77,7 @@ void MatLabExporter::leer(t_output &prog, t_arglist args, string tabs){
 }
 
 void MatLabExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	insertar(prog,tabs+param1+"="+param2+";");
+	insertar(prog,tabs+expresion(param1)+"="+expresion(param2)+";");
 }
 
 void MatLabExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
@@ -402,7 +402,7 @@ void MatLabExporter::definir(t_output &prog, t_arglist &arglist, string tipo, st
 	else tipo="\'\'";
 	t_arglist_it it=arglist.begin();
 	while (it!=arglist.end()) {
-		insertar(prog,tabs+*it+"="+tipo+";");
+		insertar(prog,tabs+expresion(*it)+"="+tipo+";");
 		++it;
 	}
 }

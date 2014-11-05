@@ -69,7 +69,7 @@ void VbExporter::leer(t_output &prog, t_arglist args, string tabs){
 }
 
 void VbExporter::asignacion(t_output &prog, string param1, string param2, string tabs){
-	insertar(prog,tabs+param1+" = "+param2);
+	insertar(prog,tabs+expresion(param1)+" = "+expresion(param2));
 }
 
 void VbExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){

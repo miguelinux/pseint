@@ -23,6 +23,7 @@ protected:
 	void repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
+	void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
 	
 public:
 	string make_string(string cont);
