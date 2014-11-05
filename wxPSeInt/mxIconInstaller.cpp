@@ -103,7 +103,7 @@ void mxIconInstaller::InstallDesktop ( bool menu ) {
 	fil.AddLine("Type=Application");
 	fil.AddLine("Categories=Development");
 	fil.AddLine("Icon=pseint");
-	fil.AddLine(wxString("Exec=")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt"));
+	fil.AddLine(wxString("Exec=\"")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt\""));
 	fil.Write();
 	fil.Close();
 	if (menu)
@@ -168,10 +168,10 @@ void mxIconInstaller::MakeDesktopIcon() { // si no hay xdg, crear el .desktop a 
 	fil.AddLine("[Desktop Entry]");
 	fil.AddLine("Comment=Editor e intérprete de pseudocódigo");
 	fil.AddLine("Encoding=UTF-8");
-	fil.AddLine(wxString("Icon=")<<DIR_PLUS_FILE(config->pseint_dir,"imgs/icon64.png"));
+	fil.AddLine(wxString("Icon=\"")<<DIR_PLUS_FILE(config->pseint_dir,"imgs/icon64.png")<<"\"");
 	fil.AddLine("Name=PSeInt");
 	fil.AddLine("Type=Link");
-	fil.AddLine(wxString("URL=")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt"));
+	fil.AddLine(wxString("URL=\"")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt")<<"\"");
 	fil.Write();
 	fil.Close();
 	
