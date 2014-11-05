@@ -541,7 +541,7 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 
 void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 	wxFileDialog dlg (this, _Z("Abrir Archivo"), config->last_dir, _Z(" "), "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
+	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -628,7 +628,7 @@ void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		wxFileDialog dlg (this, _Z("Guardar"),source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->filename).GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocodigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
+		dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 		if (dlg.ShowModal() == wxID_OK) {
 			wxFileName file(dlg.GetPath());
 			if (file.GetExt().Len()==0) file.SetExt("psc");

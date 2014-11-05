@@ -797,7 +797,7 @@ int SynCheck(int linea_from, int linea_to) {
 				current_func->userline_start=Inter.GetLineNumber();
 				memoria=current_func->memoria=new Memoria(current_func);
 			}
-			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instruccion fuera de proceso/subproceso.":"Instruccion fuera de proceso."); errores++;}
+			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;}
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
 				bool sub=cadena!="FINPROCESO";
 				if (!bucles.empty() && ( (!sub&&bucles.back()=="PROCESO")||(sub&&bucles.back()=="SUBPROCESO") ) ) {
@@ -1349,9 +1349,9 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="Error?" && cadena!="" && cadena!=";") {
 				if (LeftCompare(cadena,"FIN "))
-				{SynError (99,"Instruccion no valida."); errores++;}
+				{SynError (99,"Instrucción no válida."); errores++;}
 				else
-					{SynError (106,"Instruccion no valida."); errores++;}
+					{SynError (106,"Instrucción no valida."); errores++;}
 			}
 			// llama directa a un subproceso
 			if (instruccion=="INVOCAR ") {

@@ -116,9 +116,9 @@ bool mxApplication::OnInit() {
 	if (config->profile==NO_PROFILE) {
 		wxMessageBox(_Z(
 			"Bienvenido a PSeInt. Antes de comenzar debes seleccionar un perfil "
-			"para ajustar el pseudolenguaje  tus necesidades. Si tu universidad "
-			"o institucion no aparece en la lista, notifica a tu profesor para "
-			"que envie sus datos a traves del sitio web. "
+			"para ajustar el pseudolenguaje a tus necesidades. Si tu universidad "
+			"o institución no aparece en la lista, notifica a tu profesor para "
+			"que envíe sus datos a través del sitio web. "
 			),_Z("Bienvenido a PSeInt"),wxID_OK,main_window);
 		config->profile=_Z("Flexible");
 		new mxProfile(main_window);

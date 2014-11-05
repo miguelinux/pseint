@@ -136,20 +136,20 @@ wxString mxUtils::GetVersion(wxString exe) {
 
 wxString mxUtils::GetExportLangName(int id) {
 	switch(id) {
-	case mxID_FILE_EXPORT_LANG_VB: 		return "código Visual Basic .NET (vb)";
-	case mxID_FILE_EXPORT_LANG_C: 		return "código C (c)";
-	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "código C# (cs)";
-	case mxID_FILE_EXPORT_LANG_CPP03: 	return "código C++98/03 (cpp)";
-//	case mxID_FILE_EXPORT_LANG_CPP11: 	return "código C++11 (cpp)";
-	case mxID_FILE_EXPORT_LANG_PHP: 	return "código PHP (php)";
-	case mxID_FILE_EXPORT_LANG_PY2: 	return "código Python 2 (py)";
-	case mxID_FILE_EXPORT_LANG_PY3: 	return "código Python 3 (py)";
-	case mxID_FILE_EXPORT_LANG_HTML: 	return "página HTML (JavaScript embebido) (html)";
-	case mxID_FILE_EXPORT_LANG_JAVA: 	return "código Java (java)";
-	case mxID_FILE_EXPORT_LANG_JS: 		return "código JavaScript (js)";
-	case mxID_FILE_EXPORT_LANG_M: 		return "código MatLab (m)";
-//	case mxID_FILE_EXPORT_LANG_PRG:		return "Visual Fox Pro (prg)";
-	case mxID_FILE_EXPORT_LANG_PAS: 	return "código Pascal (pas)";
+	case mxID_FILE_EXPORT_LANG_VB: 		return "Código Visual Basic .NET (vb)";
+	case mxID_FILE_EXPORT_LANG_C: 		return "Código C (c)";
+	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "Código C# (cs)";
+	case mxID_FILE_EXPORT_LANG_CPP03: 	return "Código C++98/03 (cpp)";
+//	case mxID_FILE_EXPORT_LANG_CPP11: 	return "Código C++11 (cpp)";
+	case mxID_FILE_EXPORT_LANG_PHP: 	return "Código PHP (php)";
+	case mxID_FILE_EXPORT_LANG_PY2: 	return "Código Python 2 (py)";
+	case mxID_FILE_EXPORT_LANG_PY3: 	return "Código Python 3 (py)";
+	case mxID_FILE_EXPORT_LANG_HTML: 	return "Página HTML (JavaScript embebido) (html)";
+	case mxID_FILE_EXPORT_LANG_JAVA: 	return "Código Java (java)";
+	case mxID_FILE_EXPORT_LANG_JS: 		return "Código JavaScript (js)";
+	case mxID_FILE_EXPORT_LANG_M: 		return "Código MatLab (m)";
+//	case mxID_FILE_EXPORT_LANG_PRG:		return "Cisual Fox Pro (prg)";
+	case mxID_FILE_EXPORT_LANG_PAS: 	return "Código Pascal (pas)";
 	default: return "???";
 	}
 }

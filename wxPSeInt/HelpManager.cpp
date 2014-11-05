@@ -53,7 +53,7 @@ void HelpManager::LoadErrors() {
 wxString HelpManager::GetErrorText(const wxString &text, int num) {
 	wxString ret(_Z("<HTML><HEAD><TITLE>PSeInt QuickHelp</TITLE></HEAD><BODY><B>"));
 	if (num>=MAX_ERRORS_TXT || errors[num].Len()==0) 
-		ret<<utils->ToHtml(text)<<_Z("</B><BR><BR> No se encontro descripcion para este error <BR><BR></BODY></HTML>");
+		ret<<utils->ToHtml(text)<<_Z("</B><BR><BR> No se encontro descripción para este error <BR><BR></BODY></HTML>");
 	else
 		ret<<utils->ToHtml(text)<<_Z("</B><BR><BR>")<<errors[num]<<_Z("<BR><BR></BODY></HTML>");
 	return ret;

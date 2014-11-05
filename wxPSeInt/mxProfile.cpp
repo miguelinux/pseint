@@ -90,10 +90,10 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas de su pseudocodigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas de su pseudocódigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
 	sizer->Add(list,wxSizerFlags().Expand().Proportion(2).FixedMinSize());
 	sizer->Add(new wxStaticText(this,wxID_ANY,_Z("")),wxSizerFlags().Expand().Proportion(0));
-	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Descripcion del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Descripción del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(text,wxSizerFlags().Expand().Proportion(1).FixedMinSize());
 	sizer->Add(new wxStaticText(this,wxID_ANY,""),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(button_sizer,wxSizerFlags().Expand().Proportion(0));

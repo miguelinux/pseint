@@ -736,7 +736,7 @@ void mxSource::MessageReadOnly() {
 	static wxDateTime last_msg=wxDateTime((time_t)0);
 	if (wxDateTime::Now().Subtract(last_msg).GetSeconds()>0) {
 		if (flow_socket) wxMessageBox("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo.");
-		else if (!is_example) wxMessageBox("No se puede modificar el pseudocodigo mientras esta ejecutandose paso a paso.");
+		else if (!is_example) wxMessageBox("No se puede modificar el pseudocódigo mientras está siendo ejecutado paso a paso.");
 		else wxMessageBox("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo.");
 	}
 	last_msg=wxDateTime::Now();
@@ -753,7 +753,7 @@ void mxSource::SetExample() {
 			int p2=aux.Index('}');
 			if (p2==wxNOT_FOUND) {
 				_LOG("mxSource::SetExample ERROR 1 parsing example: "<<page_text);
-				wxMessageBox("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocodigo no sea correcto.");
+				wxMessageBox("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocódigo no sea correcto.");
 				break;
 			}
 			if (p1==wxNOT_FOUND||p1>p2) {
