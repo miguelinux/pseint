@@ -316,7 +316,7 @@ void mxMainWindow::CreateMenus() {
 	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang.use_nassi_schneiderman);
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	cfg->AppendSeparator();
-	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos"),"","");
+	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos..."),"","");
 #endif	
 	menu->Append(cfg, "&Configurar");
 	

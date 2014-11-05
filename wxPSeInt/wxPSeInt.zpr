@@ -16,7 +16,7 @@ path=Application.cpp
 cursor=108:18
 [source]
 path=mxMainWindow.cpp
-cursor=1948:17
+cursor=333:38
 marker=490
 marker=1629
 marker=1690
@@ -32,7 +32,7 @@ marker=64
 marker=82
 [source]
 path=mxSource.cpp
-cursor=279:1
+cursor=0:0
 marker=965
 marker=1643
 marker=1703
