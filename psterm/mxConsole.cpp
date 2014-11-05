@@ -320,8 +320,8 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 					cur_inst=cur_inst*10+(input[i]-'0');
 					i++;
 				}
-				if (cur_line==cur_loc.line && cur_inst==cur_loc.inst) cur_loc.sub++;
-				else { cur_loc.sub=0; cur_loc.line=cur_line; cur_loc.inst=cur_inst; }
+//				if (cur_line==cur_loc.line && cur_inst==cur_loc.inst) cur_loc.sub++;
+				/*else*/ { /*cur_loc.sub=0; */cur_loc.line=cur_line; cur_loc.inst=cur_inst; }
 				if (record) history<<input.Mid(i0,i-i0+1);
 			} else if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
@@ -661,7 +661,7 @@ void mxConsole::GetSourceLocationFromOutput (int pos) {
 	while (selection_start>0 && buffer[selection_start-1].loc==buffer[pos].loc) selection_start--;
 	while (selection_end+1<buffer_w*buffer_h && buffer[selection_end+1].loc==buffer[pos].loc) selection_end++;
 	// buscar en los eventos de entrada, si justo seleccionamos uno para ofrecer modificarla
-	selection_is_input = buffer[pos].loc!=cur_loc && GetInputPositionFromBufferPosition(buffer[pos].loc)!=-1;
+	selection_is_input = buffer[pos].loc!=cur_loc && GetInputPositionFromBufferPosition(pos)!=-1;
 	// mostrar seleccion y marcar en el pseudocódigo la instrucción correspondiente
 	Refresh();
 	parent->SendLocation(buffer[pos].loc.line,buffer[pos].loc.inst);
@@ -669,17 +669,29 @@ void mxConsole::GetSourceLocationFromOutput (int pos) {
 
 void mxConsole::OnMouseDClick (wxMouseEvent & evt) {
 	if (selection_start==-1) { evt.Skip(); return; }
-	int input_pos = GetInputPositionFromBufferPosition(buffer[selection_start].loc);
+	int input_pos = GetInputPositionFromBufferPosition(selection_start);
 	if (input_pos==-1) { evt.Skip(); return; }
 	input_history[input_pos].force_user_input = true;
 	selection_start=selection_end=-1; selecting=false; selection_is_input=false;
 	Reload();
 }
 
-int mxConsole::GetInputPositionFromBufferPosition (code_location loc) {
+int mxConsole::GetInputPositionFromBufferPosition (int pos) {
+	code_location &loc = buffer[pos].loc; // linea de codigo que genero el caracter de esa pos, para ver si es una entrada
+	// puede haber varias entradas generadas por la misma linea de codigo, ver cuantas saltear (buscando de atras para adelante)
+	int cant_skip = 0; int cpos = cur_y*buffer_w+cur_x-1;
+	code_location cloc = loc;
+	while(cpos>=pos) {
+		if (cloc!=buffer[cpos].loc) {
+			if (cloc==loc) cant_skip++;
+			cloc=buffer[cpos].loc;
+		}
+		cpos--;
+	}
+	// buscar la entrada que corresponde
 	for(int i=input_history.size()-1;i>=0;i--)
 		if (input_history[i].loc==loc)
-			return i;
+			if (--cant_skip==0) return i;
 	return -1;
 }
 

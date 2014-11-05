@@ -43,10 +43,10 @@ public:
 	int char_h; ///< height in pixels for a char with current fontsize
 	int bg; ///< index for current console background color (the same for the whole console)
 	struct code_location { ///< linea and instruction number in source pseudocode
-		int line, inst, sub;
-		code_location():line(-1),inst(-1),sub(0){}
+		int line, inst/*, sub*/;
+		code_location():line(-1),inst(-1)/*,sub(0)*/{}
 		bool IsValid() const { return line!=-1&&inst!=-1; }
-		bool operator==(const code_location &o) const { return o.line==line&&o.inst==inst&&o.sub==sub; }
+		bool operator==(const code_location &o) const { return o.line==line&&o.inst==inst/*&&o.sub==sub*/; }
 		bool operator!=(const code_location &o) const { return !((*this)==o); }
 		void Clear() { line=inst=-1; }
 	};
@@ -54,7 +54,7 @@ public:
 		wxChar the_char; ///< the char to show
 		int fg; ///< index for forground color
 		code_location loc; ///< instruccion en el pseudocódigo de la instruccion que genero esta entrada/salida
-		console_char():the_char(' '),fg(0){}
+		console_char():the_char(' '),fg(0) {}
 	};
 	console_char *buffer; ///< current content for the visible part of the console (size buffer_w*buffer_h), ordered by rows
 	int buffer_w; ///< number of columns for current console size
@@ -80,7 +80,7 @@ public:
 	bool wait_one_key; ///< indica que se espera una tecla cualquiera (que no se debe mostrar en pantalla)
 	void OnChar( wxKeyEvent &event ); ///< process console input, and sends it to child process
 	void RecordInput(wxString input); ///< guarda une lectura en el historial de entradas (input_history)
-	int GetInputPositionFromBufferPosition(code_location loc);
+	int GetInputPositionFromBufferPosition(int pos);
 	
 	
 	wxFont font; ///< current font
