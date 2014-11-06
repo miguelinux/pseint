@@ -245,6 +245,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
+	if (config->shape_colors) command<<" --shapecolors";
 	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
 	if (config->lang.force_semicolon) command<<" --forcesemicolons";
 	if (!config->lang.word_operators) command<<" --nowordoperators";
@@ -262,6 +263,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
 	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
 	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
+	if (config->shape_colors) command<<" --shapecolors";
 	_LOG("mxProcess::SaveDraw this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;

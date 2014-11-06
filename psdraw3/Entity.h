@@ -29,6 +29,7 @@ enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PA
 struct Entity {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
 	static bool nassi_schneiderman; ///< usar diagramas de Nassi-Schneiderman en lugar de "clásico"
+	static bool shape_colors; ///< mostrar los bloques de diferentes colores
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;

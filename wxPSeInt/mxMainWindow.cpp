@@ -122,6 +122,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
+	EVT_MENU(mxID_CONFIG_SHAPE_COLORS, mxMainWindow::OnConfigShowShapeColors)
 	EVT_MENU(mxID_CONFIG_HIGHLIGHT_BLOCKS, mxMainWindow::OnConfigHighlightBlocks)
 	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
 	EVT_MENU(mxID_CONFIG_AUTOCOMP, mxMainWindow::OnConfigAutoComp)
@@ -306,7 +307,9 @@ void mxMainWindow::CreateMenus() {
 	wxMenu *cfg_pres = new wxMenu;
 	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _Z("Animar paneles"),"",config->animate_gui);
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
-	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores al interpretar"),"",config->use_colors);
+	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
+	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _T("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
+	mi_shape_colors->Enable(!config->lang.use_nassi_schneiderman);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
@@ -1240,6 +1243,17 @@ void mxMainWindow::OnConfigUseDarkPSTerm(wxCommandEvent &evt) {
 	}
 }
 
+void mxMainWindow::OnConfigShowShapeColors (wxCommandEvent & evt) {
+	if (!mi_shape_colors->IsChecked()) {
+		mi_shape_colors->Check(false);
+		config->shape_colors=false;
+	} else {
+		mi_shape_colors->Check(true);
+		config->shape_colors=true;
+	}
+}
+
+
 void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	if (event.pane->name == "commands")
 		ShowCommandsPanel(false,true);
@@ -1478,9 +1492,11 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	if (!mi_nassi_schne->IsChecked()) {
 		mi_nassi_schne->Check(false);
 		config->lang.use_nassi_schneiderman=false;
+		mi_shape_colors->Enable(true);
 	} else {
 		mi_nassi_schne->Check(true);
 		config->lang.use_nassi_schneiderman=true;
+		mi_shape_colors->Enable(false);
 	}
 }
 
@@ -1494,6 +1510,7 @@ void mxMainWindow::ProfileChanged ( ) {
 	}
 	debug_panel->ProfileChanged();
 	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
+	mi_shape_colors->Enable(!config->lang.use_nassi_schneiderman);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	button_subproc->Show(config->lang.enable_user_functions);
 	commands->Layout();

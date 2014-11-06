@@ -10,6 +10,7 @@
 #include "mxProcess.h"
 #include "Logger.h"
 #include <wx/bmpbuttn.h>
+#include <wx/settings.h>
 
 //mxExportPreview *export_preview=NULL;
 
@@ -53,7 +54,7 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	main_sizer->Add(code_ctrl,wxSizerFlags().Proportion(1).Expand());
 	
 	SetSizer(main_sizer);
-	SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	Show();
 	UpdatePrev();
 }

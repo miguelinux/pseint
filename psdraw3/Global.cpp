@@ -59,9 +59,10 @@ const float color_label[3]={0,0,.8}; // texto de la etiqueta de una entidad
 const float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entidad
 float color_arrow[3]={.8,0,0}; // flechas que guian el flujo y unen entidades
 const float color_selection[3]={0,.4,0}; // texto o borde de forma seleccionada
-float color_shape[3]={1,1,.9}; // fondo de la forma
+float color_shape[ET_COUNT+1][3]; // fondo de la forma
 const float color_shadow[3]={.7,.7,.7}; // sombras de las formas
 const float color_back[3]={.97,1,.97}; // fondo de la pantalla
+const float color_back_alt[3]={.95,.95,.95}; // fondo de pantalla alternativo para usar con los bloques de colores
 const float color_ghost[3]={.7,.7,.7}; // borde fantasma cuando se arrastra una forma
 const float color_menu[3]={.5,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.92,.97,.97}; // fondo de los menues
@@ -77,3 +78,33 @@ map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama
 Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en el paso a paso
 
 bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
+
+void GlobalInit( ) {
+	for(int i=0;i<=ET_COUNT;i++) { 
+		color_shape[i][0] = 1;
+		color_shape[i][1] = 1;
+		color_shape[i][2] = .9;
+	}
+	color_shape[ET_LEER][0] = 1;
+	color_shape[ET_LEER][1] = .9;
+	color_shape[ET_LEER][2] = .95;
+	color_shape[ET_ESCRIBIR][0] = .8;
+	color_shape[ET_ESCRIBIR][1] = .9;
+	color_shape[ET_ESCRIBIR][2] = 1;
+	color_shape[ET_ASIGNAR][0] = 1;
+	color_shape[ET_ASIGNAR][1] = .95;
+	color_shape[ET_ASIGNAR][2] = .8;
+	color_shape[ET_SI][0] = color_shape[ET_SEGUN][0] = color_shape[ET_OPCION][0] = .9;
+	color_shape[ET_SI][1] = color_shape[ET_SEGUN][1] = color_shape[ET_OPCION][1] = 1;
+	color_shape[ET_SI][2] = color_shape[ET_SEGUN][2] = color_shape[ET_OPCION][2] = .9;
+	color_shape[ET_PARA][0] = color_shape[ET_MIENTRAS][0] = .9;
+	color_shape[ET_PARA][1] = color_shape[ET_MIENTRAS][1] = .8;
+	color_shape[ET_PARA][2] = color_shape[ET_MIENTRAS][2] = 1;
+	color_shape[ET_REPETIR][0] = .8;
+	color_shape[ET_REPETIR][1] = .7;
+	color_shape[ET_REPETIR][2] = 1;
+//	color_shape[ET_OPCION][0] = .95;
+//	color_shape[ET_OPCION][1] = .95;
+//	color_shape[ET_OPCION][2] = .95;
+}
+

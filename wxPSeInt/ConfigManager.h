@@ -101,6 +101,7 @@ public:
 	bool animate_gui; ///< si al mostrar u ocultar los paneles laterales lo hace con una animación (true) o de forma instantanea (false)
 	bool use_colors;
 	bool colour_sintax;
+	bool shape_colors;
 	bool show_toolbar;
 	bool show_vars;
 	bool show_opers;

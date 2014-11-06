@@ -10,6 +10,16 @@
 #include "Canvas.h"
 using namespace std;
 
+
+class RaiiColorChanger {
+	float *p[5], v[5]; int n;
+public:
+	RaiiColorChanger() : n(0) {}
+	void Change(float &c, float x) { p[n]=&c; v[n]=c; c=x; n++; }
+	~RaiiColorChanger() { for(int i=0;i<n;i++) *(p[i])=v[i]; }
+};
+
+
 CURSORES mouse_cursor;
 
 #define mouse_link_delta 250
@@ -425,7 +435,7 @@ static void DrawChooseProcess() {
 	for(int i=0;i<=int(procesos.size()-(edit_on?0:1));i++) {
 		
 		if (choose_process_sel==i) {
-			glColor3fv(color_shape);
+			glColor3fv(color_shape[ET_PROCESO]);
 			glBegin(GL_QUADS);
 			glVertex2i(0,base);
 			glVertex2i(win_w,base);
@@ -440,7 +450,7 @@ static void DrawChooseProcess() {
 		} else {
 			
 			string &s=procesos[i]->label;
-			int l=s.size(),p=0; int f=s.find('<');
+			int l=s.size(),p=0; size_t f=s.find('<');
 			if (f==string::npos) f=s.find('='); else f++;
 			if (f==string::npos) f=0; else f++;
 			int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
@@ -613,22 +623,19 @@ void display_cb() {
 			}
 		}
 		if (!Entity::nassi_schneiderman && edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
-//			float color_arrow[3]={.9,0,0}; // flechas que guian el flujo y unen entidades
-			color_shape[2]=.75; color_arrow[1]=.5; color_arrow[2]=.5; //color_arrow[0]=1;
-//			glLineWidth(3*d_zoom<1.5?1.5:int(d_zoom*3));
+			RaiiColorChanger rcc;
+			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
+			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
 			aux->Draw();
-			color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
-//			glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
 			if (aux->error.size()) SetStatus(color_error,aux->error);
 		} else if (debugging && debug_current==aux) {
+			RaiiColorChanger rcc;
 			glLineWidth(line_width+1);
 			if (!Entity::nassi_schneiderman) {
-				color_shape[2]=.65; color_arrow[1]=.4; color_arrow[2]=.4; //color_arrow[0]=1;
+				rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.65); rcc.Change(color_arrow[1],.4);
+				rcc.Change(color_arrow[2],.4); // rcc.Change(color_arrow[0],1);
 			}
 			aux->Draw();
-			if (!Entity::nassi_schneiderman) {
-				color_shape[2]=.9; color_arrow[1]=0; color_arrow[2]=0; //color_arrow[0]=.9;
-			}
 			glLineWidth(line_width);
 			draw_debug_arrow(debug_current,5);
 		} else {

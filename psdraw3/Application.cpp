@@ -18,6 +18,8 @@ bool mxApplication::OnInit() {
 		return 0;
 	}
 	
+	GlobalInit();
+	
 	int id=-1, port=-1;
 	string fname;
 	for(int i=1;i<argc;i++) { 
@@ -25,6 +27,7 @@ bool mxApplication::OnInit() {
 		if (a=="--forcesemicolons") force_semicolons=true;
 		else if (a=="--nassischneiderman") Entity::nassi_schneiderman=true;
 		else if (a=="--alternativeio") Entity::alternative_io=true;
+		else if (a=="--shapecolors") Entity::shape_colors=true;
 		else if (a=="--noedit") edit_on=false;
 		else if (a=="--nowordoperators") word_operators=false;
 		else if (a.size()>=5 && a.substr(0,5)=="--id=") {

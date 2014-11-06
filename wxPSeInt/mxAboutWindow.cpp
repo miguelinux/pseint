@@ -69,7 +69,8 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	text<<"</TD><TD>";
 	
 	text<<"<CENTER><B>Copyleft 2003-2014<BR>por Pablo Novara<BR>";
-	text<<"zaskar_84@yahoo.com.ar<BR><BR>";
+	text<<"zaskar_84@yahoo.com.ar<BR>";
+	text<<"<A href=\"about\">(ver más...)</A><BR><BR>";
 	text<<"Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)";
 	text<<"<BR><BR><B><A href=\"pseint\">http://pseint.sourceforge.net</A></B><BR></CENTER>";
 	
@@ -107,6 +108,10 @@ wxString mxAboutWindow::MakePageText(bool full) {
 void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
 	if (event.GetLinkInfo().GetHref()=="pseint") {
 		wxLaunchDefaultBrowser("http://pseint.sourceforge.net");
+	} else if (event.GetLinkInfo().GetHref()=="about") {
+		if (!helpw) helpw = new mxHelpWindow();
+		helpw->ShowHelp("about.html");
+		Close();
 	} else if (event.GetLinkInfo().GetHref()=="gpl") {
 		if (!helpw) helpw = new mxHelpWindow();
 		helpw->ShowHelp("gpl.html");

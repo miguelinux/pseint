@@ -48,6 +48,7 @@ void ConfigManager::LoadDefaults() {
 	use_colors=true;
 	show_debug_panel = false;
 	maximized = false;
+	shape_colors = false;
 	colour_sintax = true;
 	show_vars = false;
 	show_opers = false;
@@ -122,6 +123,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("examples_dir=")<<examples_dir);
 	fil.AddLine(wxString("rt_syntax=")<<(rt_syntax?1:0));
 	fil.AddLine(wxString("smart_indent=")<<(smart_indent?1:0));
+	fil.AddLine(wxString("shape_colors=")<<(shape_colors?1:0));
 	fil.AddLine(wxString("colour_sintax=")<<(colour_sintax?1:0));
 	fil.AddLine(wxString("show_vars=")<<(show_vars?1:0));
 	fil.AddLine(wxString("show_opers=")<<(show_opers?1:0));
@@ -214,6 +216,7 @@ void ConfigManager::Read() {
 			else if (key=="autocomp") autocomp=utils->IsTrue(value);
 			else if (key=="highlight_blocks") highlight_blocks=utils->IsTrue(value);
 			else if (key=="autoclose") autoclose=utils->IsTrue(value);
+			else if (key=="shape_colors") shape_colors=utils->IsTrue(value);
 			else if (key=="colour_sintax") colour_sintax=utils->IsTrue(value);
 			else if (key=="use_colors") use_colors=utils->IsTrue(value);
 			else if (key=="animate_gui") animate_gui=utils->IsTrue(value);

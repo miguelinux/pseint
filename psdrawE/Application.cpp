@@ -75,6 +75,8 @@ bool mxApplication::OnInit() {
 			Entity::alternative_io=true;
 		else if (wxString(argv[i])=="--force")
 			force=true;
+		else if (wxString(argv[i])=="--shapecolors")
+			Entity::shape_colors=true;
 		else if (wxString(argv[i]).Len()) {
 			if (fin.Len()) fout=argv[i];
 			else fin=argv[i]; 

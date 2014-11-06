@@ -274,7 +274,7 @@ void Entity::DrawClasico(bool force) {
 	}
 	glEnd();
 	// relleno de la forma
-	DrawShapeSolid(color_shape,d_fx,d_fy,d_w,d_h);
+	DrawShapeSolid(color_shape[Entity::shape_colors?type:ET_COUNT],d_fx,d_fy,d_w,d_h);
 	// borde de la forma
 	DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
 	

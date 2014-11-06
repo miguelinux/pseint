@@ -30,7 +30,7 @@ static void DrawSolidRectangle(const float *color, int x, int y, int wl, int wr,
 
 static void DrawBackground() {
 	int bk_xm=(bk_x0+bk_x1)/2, bk_w=(bk_x1-bk_x0)/2;
-	DrawSolidRectangle(color_shape,bk_xm,bk_y1,bk_w,bk_w,bk_y1-bk_y0);
+	DrawSolidRectangle(color_shape[ET_COUNT],bk_xm,bk_y1,bk_w,bk_w,bk_y1-bk_y0);
 	bk_x0=bk_x1=start->d_x;
 	bk_y0=bk_y1=start->d_y;
 }
@@ -47,7 +47,7 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 
 void Entity::DrawNassiSchne(bool force) {
 	if (this==start) DrawBackground();
-	if (mouse==this) DrawSolidRectangle(color_shape,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+	if (mouse==this) DrawSolidRectangle(color_shape[ET_COUNT],d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
 		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
 			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
