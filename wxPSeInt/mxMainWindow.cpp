@@ -1947,6 +1947,8 @@ void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::OnInconInstaller (wxCommandEvent & evt) {
+#if !defined(__WIN32__) && !defined(__APPLE__)
 	new mxIconInstaller(false);
+#endif
 }
 

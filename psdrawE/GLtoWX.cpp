@@ -131,7 +131,7 @@ void glLineWidth(float w) {
 }
 
 void dibujar_caracter(char _c) {
-	dc->SetFont(wxFont(m.sx*150,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL));
+	dc->SetFont(wxFont(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL));
 	dc->SetTextForeground(c);
 	wxString s(" "); s[0]=_c;
 	int w=100*m.sx,tw,th;

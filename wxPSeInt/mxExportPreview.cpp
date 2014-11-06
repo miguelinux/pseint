@@ -53,6 +53,7 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	main_sizer->Add(code_ctrl,wxSizerFlags().Proportion(1).Expand());
 	
 	SetSizer(main_sizer);
+	SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	Show();
 	UpdatePrev();
 }
