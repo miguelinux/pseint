@@ -745,7 +745,7 @@ int SynCheck(int linea_from, int linea_to) {
 			while (cadena[0]==';' && cadena.size()>1) cadena.erase(0,1); // para que caso esta esto?
 			// Controlar que el si siempre tenga un entonces
 			if (x&&LeftCompare(programa[x-1],"SI "))
-				if (instruccion!="ENTONCES " && cadena!="") {
+				if (instruccion!="ENTONCES " && instruccion!="" && instruccion!="Error?") {
 					if (lazy_syntax) {
 						programa.Insert(x,"ENTONCES"); 
 						programa[x].num_instruccion--;

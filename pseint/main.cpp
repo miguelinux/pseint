@@ -299,8 +299,7 @@ int main(int argc, char* argv[]) {
 		show_user_info("Leyendo archivo y comprobando sintaxis...");
 	}
 	string buffer;
-	while (!archivo.eof()) {
-		getline(archivo,buffer);
+	while (getline(archivo,buffer)) {
 		programa.PushBack(buffer);
 		Inter.AddLine(buffer);
 	}
@@ -321,6 +320,9 @@ int main(int argc, char* argv[]) {
 			for (int i=0;i<programa.GetSize();i++) {
 				if (case_map) CaseMapApply(programa[i].instruccion);
 				if (write_positions) dibujo<<"#pos "<<programa[i].num_linea<<":"<<programa[i].num_instruccion<<endl;
+#ifdef _DEBUG
+				cerr<<programa[i].instruccion<<endl;
+#endif
 				dibujo<<programa[i].instruccion<<endl;
 			}
 			dibujo.close();
