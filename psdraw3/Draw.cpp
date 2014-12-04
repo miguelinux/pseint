@@ -626,7 +626,9 @@ void display_cb() {
 			RaiiColorChanger rcc;
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
+			glLineWidth(line_width+1);
 			aux->Draw();
+			glLineWidth(line_width);
 			if (aux->error.size()) SetStatus(color_error,aux->error);
 		} else if (debugging && debug_current==aux) {
 			RaiiColorChanger rcc;

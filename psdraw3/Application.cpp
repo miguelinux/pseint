@@ -14,7 +14,7 @@ bool mxApplication::OnInit() {
 		_print_version_info("psDraw3");
 		return 0;
 	} else if (argc==3 && string(argv[1])=="--version") {
-		_write_version_info("psDraw2",argv[2]);
+		_write_version_info("psDraw3",argv[2]);
 		return 0;
 	}
 	
