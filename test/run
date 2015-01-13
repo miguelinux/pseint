@@ -1,7 +1,14 @@
 #!/bin/bash
 if [ "$1" = "" ]; then
-  echo use: $1 testname
+  echo use: $1 [-bin <path_to_pseint_bin>] testname
 else
+  if [ "$1" = "-bin" ]; then
+    PSEINT=$2
+    shift; shift; 
+  else
+    PSEINT=../bin/pseint
+  fi
+  
   if ! test -e $1.psc; then
     echo File $1.psc not found
     exit 1
@@ -12,16 +19,16 @@ else
     ARGS=
   fi
   if test -e $1.out; then
-    if ! ../bin/pseint --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out &>/dev/null; then
+    if ! $PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out &>/dev/null; then
 	echo ""
-	../bin/pseint --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
+	$PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
 	echo ""
     fi
   else
       make -f Makefile.lnx -C ../pseint -j 2 || exit 1
       cat $1.psc
       echo === running, args=$ARGS
-      ../bin/pseint --fortest --rawerrors --nouser --noinput $ARGS $1.psc > $1.out
+      $PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc > $1.out
       cat $1.out
   fi
 fi

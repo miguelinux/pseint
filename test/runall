@@ -1,9 +1,15 @@
 #!/bin/bash
-make -f Makefile.lnx -C ../pseint -j 2 || exit 1
+if  [ "$1" = "" ]; then
+  make -f Makefile.lnx -C ../pseint -j 2 || exit 1
+  BIN=
+else
+  BIN="-bin $1"
+fi
+
 echo ""
 for A in *.psc; do 
     echo -n $A"              "; 
-    bash run $(echo $A | sed 's/.psc//');
+    bash run $BIN $(echo $A | sed 's/.psc//');
     echo -n -e \\r
 done
 echo "done                           "
