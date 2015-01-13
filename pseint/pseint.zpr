@@ -15,7 +15,6 @@ path_char=/
 [source]
 path=main.cpp
 cursor=122:25
-marker=122
 open=true
 [source]
 path=intercambio.cpp
@@ -49,7 +48,7 @@ path=zockets.cpp
 cursor=-1:865
 [source]
 path=utils.cpp
-cursor=39:4
+cursor=39:7
 breakpoint=390
 breakpoint_annotation=
 [source]
@@ -308,7 +307,7 @@ command_0=sh runall ${PROJECT_BIN}
 workdir_0=${PROJECT_PATH}/../test
 pre_action_0=4
 post_action_0=0
-output_mode_0=2
+output_mode_0=3
 async_exec_0=1
 on_toolbar_0=1
 [end]

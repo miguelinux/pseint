@@ -20,9 +20,9 @@ else
   fi
   if test -e $1.out; then
     if ! $PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out &>/dev/null; then
-	echo ""
-	$PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out
-	echo ""
+	echo $1 1>&2
+	$PSEINT --fortest --rawerrors --nouser --noinput $ARGS $1.psc | diff - $1.out 1>&2
+	echo "" 1>&2
     fi
   else
       make -f Makefile.lnx -C ../pseint -j 2 || exit 1
