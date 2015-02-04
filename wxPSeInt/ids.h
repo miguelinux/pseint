@@ -130,6 +130,7 @@ enum {
 		mxID_EXPPREV_LANG,
 		mxID_EXPPREV_COPY,
 		mxID_EXPPREV_SAVE,
+		mxID_TESTPACK_RUN,
 		mxID_LAST,
 };
 

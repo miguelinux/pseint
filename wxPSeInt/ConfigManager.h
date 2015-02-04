@@ -86,6 +86,7 @@ public:
 	wxString psdrawe_command;
 	wxString psdraw3_command;
 	wxString psexport_command;
+	wxString pseval_command;
 	wxString last_dir;
 	wxString temp_dir;
 //	wxString /*temp*/_file;

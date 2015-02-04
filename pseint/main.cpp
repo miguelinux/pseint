@@ -157,6 +157,8 @@ int main(int argc, char* argv[]) {
 				write_positions=true;
 			} else if (str=="--withioreferences") {
 				with_io_references=true;
+			} else if (str=="--foreval") {
+				for_eval=true;
 			} else 
 				error=true;
 		} else {
@@ -205,6 +207,8 @@ int main(int argc, char* argv[]) {
 		cout<<"       --seed=<num>          semilla para el generador de numeros aleatorios"<<endl;
 		exit(1);
 	}
+	
+	if (for_eval) { colored_output=false; user=false; }
 	
 	if (colored_output) { 
 #ifndef __APPLE__

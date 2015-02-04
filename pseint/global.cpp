@@ -27,3 +27,4 @@ bool enable_user_functions=true;
 bool remembar_case=false;
 bool for_pseint_terminal=false;
 bool with_io_references=false;
+bool for_eval=false;

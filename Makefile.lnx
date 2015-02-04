@@ -2,6 +2,7 @@ all:
 	make -C pseint -f Makefile.lnx
 	make -C psexport -f Makefile.lnx
 	make -C wxPSeInt -f Makefile.lnx
+	make -C pseval -f Makefile.lnx
 	make -C updatem -f Makefile.lnx
 	make -C psterm -f Makefile.lnx
 	make -C psdrawE -f Makefile.lnx
@@ -11,6 +12,7 @@ clean:
 	make -C pseint -f Makefile.lnx clean
 	make -C psexport -f Makefile.lnx clean
 	make -C wxPSeInt -f Makefile.lnx clean
+	make -C pseval -f Makefile.lnx clean
 	make -C updatem -f Makefile.lnx clean
 	make -C psterm -f Makefile.lnx clean
 	make -C psdrawE -f Makefile.lnx clean

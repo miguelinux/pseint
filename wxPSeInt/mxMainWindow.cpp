@@ -50,6 +50,7 @@
 #include "string_conversions.h"
 #include "mxExportPreview.h"
 #include "mxIconInstaller.h"
+#include "mxTestPanel.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -201,7 +202,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "
 	
 	find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	
-	last_source = NULL;
+	last_source = NULL; test_panel = NULL;
 	
 	CreateMenus();
 	CreateToolbars();
@@ -475,9 +476,9 @@ void mxMainWindow::CreateStatusBar() {
 	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(23,23).PaneBorder(false)	);
 }
 
-mxSource *mxMainWindow::NewProgram() {
-	mxSource *source = new mxSource(notebook,"<sin_titulo>");
-	notebook->AddPage(source,"<sin_titulo>",true);
+mxSource *mxMainWindow::NewProgram(const wxString &title) {
+	mxSource *source = new mxSource(notebook,title);
+	notebook->AddPage(source,title,true);
 	source->SetText("Proceso sin_titulo\n\t\nFinProceso\n");
 	source->SetFieldIndicator(8,18);
 	source->SetSelection(20,20);
@@ -487,6 +488,30 @@ mxSource *mxMainWindow::NewProgram() {
 	return source;
 }
 
+mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
+	mxSource *src = NewProgram();
+	notebook->SetPageText(notebook->GetPageIndex(src),_Z("<Ejercicio>"));
+	if (test_panel) { 
+		CloseTestPackage();
+	}
+	test_panel = new mxTestPanel(this);
+	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show()/*.Layer(prtr[0]).Row(prtr[1]).Position(prtr[2])*/);	
+	aui_manager.GetPane(test_panel).Show();
+	aui_manager.Update(); wxYield();
+	if (!test_panel->Load(path,"laclave",src)) {
+		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
+		CloseTestPackage();
+		aui_manager.Update(); 
+	}
+	return src;
+}
+
+void mxMainWindow::CloseTestPackage() {
+	aui_manager.GetPane(test_panel).Hide();
+	aui_manager.DetachPane(test_panel);
+	test_panel->Destroy();
+	test_panel = NULL;
+}
 
 void mxMainWindow::OnFileNew(wxCommandEvent &evt) {
 	NewProgram();
@@ -544,7 +569,7 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 
 void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 	wxFileDialog dlg (this, _Z("Abrir Archivo"), config->last_dir, _Z(" "), "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
+	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC;*.psz;*.PSZ|Archivos de texto|*.txt;*.TXT"));
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -599,12 +624,14 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 	}
 }
 
-mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
+mxSource *mxMainWindow::OpenProgram(const wxString &path, bool is_example) {
 	
 	if (!wxFileName::FileExists(path)) {
 		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
 		return NULL;
 	}
+	
+	if (path.Lower().EndsWith(".psz")) return OpenTestPackage(path);
 	
 	if (!is_example) RegenFileMenu(path);
 	
@@ -1270,6 +1297,8 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	else if (event.pane->name == "desktop_test_panel") {
 		ShowDesktopTestPanel(false,true);
 		debug_panel->OnDesktopTestPanelHide();
+//	else if (event.pane->name == "ejercicio") {
+//		CloseTestPackage();
 	}
 }
 

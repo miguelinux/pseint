@@ -79,6 +79,7 @@ void ConfigManager::LoadDefaults() {
 	psdrawe_command = "psdrawE.exe";
 	psdraw3_command = "psdraw3.exe";
 	psexport_command = "psexport.exe";
+	pseval_command = "pseval.exe";
 	tty_command = "";
 #else
 	pseint_command = "./pseint";
@@ -86,6 +87,7 @@ void ConfigManager::LoadDefaults() {
 	psdrawe_command = "./psdrawE";
 	psdraw3_command = "./psdraw3";
 	psexport_command = "./psexport";
+	pseval_command = "./pseval";
 	tty_command = _no_tty;
 #endif
 	help_dir = "help";

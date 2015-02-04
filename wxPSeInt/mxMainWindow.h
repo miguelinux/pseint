@@ -13,6 +13,7 @@ class mxFindDialog;
 class wxStaticText;
 class wxScrollBar;
 class mxDesktopTestPanel;
+class mxTestPanel;
 
 enum QH_CODE { QH_LASTERR=10000, QH_QUICKHELP, QH_HELP_LOAD, QH_HELP_SET, QH_SYNCHECK, QH_RT_NOERROR, QH_RT_SELECTERROR, QH_NULL };
 
@@ -41,10 +42,15 @@ private:
 	void CreateStatusBar();
 	wxAuiNotebook *notebook; 
 	wxButton *button_subproc;
+	
+	mxTestPanel *test_panel;
+	
 public:
 	
-	mxSource *NewProgram();
-	mxSource *OpenProgram(wxString file, bool is_example=false);
+	mxSource *NewProgram(const wxString &title="<sin_titulo>");
+	mxSource *OpenProgram(const wxString &path, bool is_example=false);
+	mxSource *OpenTestPackage(const wxString &path);
+	void CloseTestPackage();
 	
 	mxMainWindow(wxPoint pos, wxSize size);
 	mxSource *last_source;

@@ -33,6 +33,7 @@ extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acen
 extern bool enable_user_functions; // habilita la definicion de subprocesos
 extern bool for_pseint_terminal; // habilita algunas secuencias de escape adicionales para usar en la terminal propia
 extern bool with_io_references; // habilita algunas secuencias de escape adicionales para que la terminal propia sepa qué instrucción en el código generó cada entrada/salida
+extern bool for_eval; // formateado para psEval
 
 #define COLOR_INFO COLOR_LBLUE
 #define COLOR_ERROR COLOR_LRED

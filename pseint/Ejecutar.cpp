@@ -149,6 +149,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub_wait();
 					} else {
 						aux1=getLine();  
+						if (for_eval) cout<<aux1<<endl; // la entrada en psEval es un stream separado de la salida, entonces la reproducimos alli para que la salida contenga todo el "dialogo"
 					}
 					
 					fixwincharset(aux1,true); // "descorrige" para que al corregir no traiga problemas
