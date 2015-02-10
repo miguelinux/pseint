@@ -490,11 +490,8 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 }
 
 mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
-	mxSource *src = NewProgram();
-	notebook->SetPageText(notebook->GetPageIndex(src),_Z("<Ejercicio>"));
-	if (test_panel) { 
-		CloseTestPackage();
-	}
+	mxSource *src = NewProgram("<Ejercicio>");
+	if (test_panel) CloseTestPackage();
 	test_panel = new mxTestPanel(this);
 	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
 	aui_manager.GetPane(test_panel).Show();
