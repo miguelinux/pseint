@@ -10,8 +10,7 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	wxString args; for(int i=3;i<argc;i++) { args+=argv[i]; args+=" "; } args+="--foreval";
-	(new mxMainWindow())->Start(argv[1],argv[2],args);
-	return true;
+	return (new mxMainWindow())->Start(argv[1],argv[2],args);
 }
 
 

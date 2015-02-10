@@ -8,9 +8,11 @@
 #include "ConfigManager.h"
 #include "mxProcess.h"
 #include "Logger.h"
+#include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 	EVT_BUTTON(mxID_TESTPACK_RUN,mxTestPanel::OnRun)
+	EVT_BUTTON(wxID_HELP,mxTestPanel::OnHelp)
 END_EVENT_TABLE()
 
 mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
@@ -19,6 +21,9 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 	label = new wxStaticText(this,wxID_ANY,_Z("Cargando ejercicio..."),wxDefaultPosition,wxDefaultSize);
 	sizer->Add(eval_button,wxSizerFlags().Border(wxALL,5));
 	sizer->Add(label,wxSizerFlags().Center().Centre().Border(wxALL,5));
+	sizer->AddStretchSpacer();
+	help_button = new wxButton(this,wxID_HELP,_Z(" ? "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	sizer->Add(help_button,wxSizerFlags().Border(wxALL,5));
 	SetSizerAndFit(sizer);
 }
 
@@ -38,4 +43,9 @@ void mxTestPanel::OnRun (wxCommandEvent & event) {
 	_LOG("    "<<cmd);
 	wxExecute(cmd,wxEXEC_ASYNC);
 }
+
+void mxTestPanel::OnHelp (wxCommandEvent & event) {
+	main_window->ShowQuickHelp(true,GetHelp(),false);
+}
+
 

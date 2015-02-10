@@ -8,7 +8,7 @@ class mxSingleCaseWindow : public wxFrame {
 private:
 protected:
 public:
-	mxSingleCaseWindow(wxWindow *parent, const wxString &test_name, const TestCase &t);
+	mxSingleCaseWindow(wxWindow *parent, const wxString &test_name, const TestCase &t, bool show_solution);
 };
 
 #endif

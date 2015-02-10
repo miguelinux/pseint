@@ -12,15 +12,18 @@ class mxTestPanel : public wxPanel {
 private:
 	Package pack;
 	wxSizer *sizer;
-	wxButton *eval_button;
+	wxButton *eval_button, *help_button;
 	wxStaticText *label;
 	wxString path,key;
 	mxSource *src;
 public:
 	mxTestPanel(wxWindow *parent);
 	bool Load(const wxString &path, const wxString &key, mxSource *src);
+	mxSource *GetSrc() { return src; }
+	const wxString &GetHelp() { return pack.GetHelp(); }
 private:
 	void OnRun(wxCommandEvent &event);
+	void OnHelp(wxCommandEvent &event);
 	DECLARE_EVENT_TABLE();
 };
 

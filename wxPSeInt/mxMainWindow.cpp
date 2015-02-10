@@ -64,15 +64,16 @@ static const int hvar[]={2,0,0};
 static const int hopr[]={2,0,1};
 static const int hcmd[]={2,0,0};
 static const int hdbg[]={2,0,1};
-static const int pvar[]={0,1,0};
-static const int popr[]={0,2,0};
-static const int pdbg[]={0,1,0};
-static const int pcmd[]={0,2,0};
-static const int prtr[]={1,0,0};
-static const int phlp[]={1,0,1};
-static const int pdkt[]={1,0,2};
-static const int psub[]={1,1,0};
-static const int ptlb[]={3,0,0};
+static const int pvar[]={0,1,0}; // LEFT	vars_window
+static const int popr[]={0,2,0}; // LEFT	opers_window
+static const int pdbg[]={0,1,0}; // RIGHT	debug_panel
+static const int pcmd[]={0,2,0}; // RIGHT	commands
+static const int prtr[]={1,1,0}; // BOTTOM	results_tree_ctrl
+static const int phlp[]={1,1,1}; // BOTTOM	help
+static const int pdkt[]={1,1,2}; // BOTTOM	desktop_test_panel
+static const int psub[]={1,2,0}; // BOTTOM	subtitles
+static const int ptlb[]={3,0,0}; // TOP		toolbars
+static const int pevl[]={1,0,0}; // BOTTOM	test_panel
 
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_CLOSE(mxMainWindow::OnClose)
@@ -495,7 +496,7 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		CloseTestPackage();
 	}
 	test_panel = new mxTestPanel(this);
-	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show()/*.Layer(prtr[0]).Row(prtr[1]).Position(prtr[2])*/);	
+	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
 	aui_manager.GetPane(test_panel).Show();
 	aui_manager.Update(); wxYield();
 	if (!test_panel->Load(path,"laclave",src)) {
@@ -503,6 +504,7 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		CloseTestPackage();
 		aui_manager.Update(); 
 	}
+	if (!test_panel->GetHelp().IsEmpty()) ShowQuickHelp(true,test_panel->GetHelp(),false);
 	return src;
 }
 
@@ -631,9 +633,9 @@ mxSource *mxMainWindow::OpenProgram(const wxString &path, bool is_example) {
 		return NULL;
 	}
 	
-	if (path.Lower().EndsWith(".psz")) return OpenTestPackage(path);
 	
 	if (!is_example) RegenFileMenu(path);
+	if (path.Lower().EndsWith(".psz")) return OpenTestPackage(path);
 	
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
@@ -1321,6 +1323,9 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 			} else
 				source->SaveFile(source->filename);
 		}
+		if (test_panel && test_panel->GetSrc()==source) {
+			CloseTestPackage(); aui_manager.Update();
+		}
 	}
 }
 
@@ -1616,7 +1621,7 @@ void mxMainWindow::ShowResults(bool show, bool no_error) {
 // show=true muestra el panel
 // show=true, text!="" muestra el panel con ese texto(str)
 // show=true, text!="", load=true muestra el panel y carga ese archivo(str)
-void mxMainWindow::ShowQuickHelp(bool show, wxString str, bool load) {
+void mxMainWindow::ShowQuickHelp(bool show, const wxString &str, bool load) {
 	if (show) {
 		if (str.Len()) SetQuickHelpText(load?QH_HELP_LOAD:QH_HELP_SET,str);
 		ShowPanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());

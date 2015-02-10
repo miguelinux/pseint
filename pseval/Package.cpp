@@ -47,11 +47,12 @@ void Package::ProcessFile (wxString name, wxString &content) {
 	} else if (name=="help.html") {
 		help_text = content;
 	} else if (name=="config.txt") {
-		content+=" ";
-		while (content.Contains(' ')) {
-			wxString key=content.BeforeFirst(' ');
+		content.Replace("\r","",true);
+		content.MakeLower(); content+="\n";
+		while (content.Contains('\n')) {
+			wxString key=content.BeforeFirst('\n');
 			if (!key.IsEmpty()) config.insert(key);
-			content=content.AfterFirst(' ');
+			content=content.AfterFirst('\n');
 		}
 	} else if (name.StartsWith("input") && name.EndsWith(".txt")) {
 		wxString test_name = name.Mid(5,name.Len()-9);

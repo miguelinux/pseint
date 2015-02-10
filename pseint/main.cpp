@@ -208,7 +208,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	
-	if (for_eval) { colored_output=false; user=false; }
+	if (for_eval) { colored_output=false; user=wait_key=false; }
 	
 	if (colored_output) { 
 #ifndef __APPLE__

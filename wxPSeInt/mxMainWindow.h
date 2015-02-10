@@ -177,7 +177,7 @@ public:
 	void ShowDebugPanel(bool show, bool anim=false);
 	void ShowCommandsPanel(bool show, bool anim=false);
 	void ShowResults(bool show, bool no_error);
-	void ShowQuickHelp(bool show, wxString text="", bool load=false);
+	void ShowQuickHelp(bool show, const wxString &text="", bool load=false);
 	void ShowSubtitles(bool show, bool anim=false);
 	void ShowDesktopTestPanel(bool show, bool anim=false);
 	

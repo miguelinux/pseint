@@ -3,8 +3,12 @@
 #include <wx/sizer.h>
 #include <wx/stc/stc.h>
 #include <wx/stattext.h>
+#include <wx/settings.h>
 
-mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, const wxString &test_name, const TestCase & t) : wxFrame(parent,wxID_ANY,test_name,wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
+mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, const wxString &test_name, const TestCase & t, bool show_solution) : wxFrame(parent,wxID_ANY,test_name,wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
+	
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
+	
 	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
@@ -14,12 +18,14 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, const wxString &test_n
 	sizer->Add(input_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
 	input->SetText(t.input);
 	
-	wxSizer *solution_sizer = new wxBoxSizer(wxVERTICAL);
-	wxStyledTextCtrl *solution = new wxStyledTextCtrl(this);
-	solution_sizer->Add(new wxStaticText(this,wxID_ANY,"Solución correcta:"),wxSizerFlags().Border(wxALL,5));
-	solution_sizer->Add(solution,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
-	sizer->Add(solution_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
-	solution->SetText(t.solution);
+	if (show_solution) {
+		wxSizer *solution_sizer = new wxBoxSizer(wxVERTICAL);
+		wxStyledTextCtrl *solution = new wxStyledTextCtrl(this);
+		solution_sizer->Add(new wxStaticText(this,wxID_ANY,"Solución correcta:"),wxSizerFlags().Border(wxALL,5));
+		solution_sizer->Add(solution,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
+		sizer->Add(solution_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
+		solution->SetText(t.solution);
+	}
 	
 	wxSizer *output_sizer = new wxBoxSizer(wxVERTICAL);
 	wxStyledTextCtrl *output = new wxStyledTextCtrl(this);
@@ -29,5 +35,6 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, const wxString &test_n
 	output->SetText(t.output);
 	
 	SetSizerAndFit(sizer);
+	CentreOnParent();
 }
 
