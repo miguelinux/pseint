@@ -14,11 +14,11 @@
 #include <iostream>
 #include <wx/settings.h>
 #include <wx/button.h>
+#include "Application.h"
 
 BEGIN_EVENT_TABLE(mxMainWindow,wxFrame)
 	EVT_BUTTON(wxID_OK,mxMainWindow::OnButton)
 	EVT_END_PROCESS(wxID_ANY,mxMainWindow::OnProcessTerminate)
-	EVT_LISTBOX_DCLICK(wxID_ANY,mxMainWindow::OnList)
 END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow ( ) 
@@ -35,21 +35,11 @@ mxMainWindow::mxMainWindow ( )
 	
 	results_title = new wxStaticText(this,wxID_ANY,"Cargando ejercicio...");
 	sizer->Add(results_title,szf);
-	results_text = new wxStaticText(this,wxID_ANY,"    0 correctos / 0 incorrectos    ");
-	sizer->Add(results_text,szfc);
-	results_bar = new wxGauge(this,wxID_ANY,10);
+	results_bar = new wxGauge(this,wxID_ANY,10,wxDefaultPosition,wxSize(300,15));
 	sizer->Add(results_bar,szf);
 	
 	sizer->Add(new wxStaticLine(this,wxID_ANY),szf);
 	
-	errors_title = new wxStaticText(this,wxID_ANY,"Casos fallidos:");
-	sizer->Add(errors_title,szf);
-	error_list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxSize(150,150));
-	sizer->Add(error_list,szfe);
-	help = new wxStaticText(this,wxID_ANY,"Haga doble click sobre un caso de la\nlista para obtener más detalles.");
-	sizer->Add(help,szfc);
-	
-	sizer->Add(new wxStaticLine(this,wxID_ANY),szf);
 	the_button = new wxButton(this,wxID_OK,"Cancelar");
 	sizer->Add(the_button,szfc);
 
@@ -61,18 +51,11 @@ static wxProcess *the_process=NULL;
 static bool abort_test=false;
 
 bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const wxString &cmdline) {
-	Show();
-	if (!pack.Load(fname)) {
+	if (!pack.Load(fname,passkey=="--nokey"?"":passkey)) {
 		wxMessageBox("Error al cargar el ejercicio","PSeInt",wxOK|wxICON_ERROR,this);
 		return false;
 	} else {
-		
-		if (pack.IsInConfig("ocultar casos fallidos")) {
-			errors_title->Hide();
-			error_list->Hide();
-			help->Hide();
-			SetSizerAndFit(sizer);
-		}
+		Show(); wxYield();
 		
 		wxArrayString tests;
 		int number = pack.GetNames(tests);
@@ -80,6 +63,9 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 			wxMessageBox("No se encontraron casos de prueba","PSeInt",wxOK|wxICON_ERROR,this);
 			return false;
 		}
+		
+		mxSingleCaseWindow *results_win = new mxSingleCaseWindow(this);
+		
 		results_bar->SetRange(number);
 		int results_ok=0, results_wrong=0;
 		for(int i=0;i<number&&!abort_test;i++) { 
@@ -88,17 +74,26 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 			Refresh(); wxYield();
 			bool ok = RunTest(cmdline,pack.GetTest(tests[i]));
 			if (ok) results_ok++; else results_wrong++;
-			results_text->SetLabel( wxString()
-				<<results_ok<<" correcto"<<(results_ok>1?"s":"") <<" / "
-				<<results_wrong<<" incorrecto"<<(results_wrong>1?"s":"") );
-			if (!ok) error_list->Append(tests[i]);
-			sizer->Layout();
+			if (!ok) results_win->AddCaso(tests[i]);
 		}
-		results_bar->SetValue(results_ok);
-		results_title->SetLabel(wxString()<<"Resultado: "<<(results_ok*100/number)<<"%");
-		the_button->SetLabel("Cerrar");
+		if (!abort_test) {
+			Hide();
+			if (results_wrong) {
+				if (pack.GetConfig("mostrar_soluciones")=="si") {
+					if (wxYES == wxMessageBox(pack.GetConfig("mensaje_error")+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) {
+						results_win->Show();
+						return true;
+					}
+				} else {
+					wxMessageBox(pack.GetConfig("mensaje_error"),"Resultado",wxOK|wxICON_ERROR,this);
+				}
+			} else {
+				wxMessageBox(pack.GetConfig("mensaje_exito"),"Resultado",wxOK|wxICON_EXCLAMATION,this);
+			}
+		}
+		results_win->Destroy();
 	}
-	return !abort_test;
+	return false;
 }
 
 
@@ -133,11 +128,6 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test) {
 
 void mxMainWindow::OnProcessTerminate (wxProcessEvent & event) {
 	process_finished=true;
-}
-
-void mxMainWindow::OnList (wxCommandEvent & event) {
-	wxString test_name = error_list->GetStringSelection();
-	(new mxSingleCaseWindow(this,test_name,pack.GetTest(test_name),!pack.IsInConfig("ocultar solucion")))->Show();
 }
 
 void mxMainWindow::OnButton (wxCommandEvent & event) {

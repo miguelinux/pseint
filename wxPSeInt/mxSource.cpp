@@ -1805,7 +1805,7 @@ void mxSource::DefineVar(int where, wxString var_name, int type) {
 
 void mxSource::OnDefineVar (wxCommandEvent & evt) {
 	if (config->show_vars) {
-		OnDefineVar(GetCurrentLine(),GetCurrentKeyword());
+		OnAddVarDefinition(GetCurrentLine(),GetCurrentKeyword());
 	} else {
 		RTSyntaxManager::Info info;
 		info.SetForVarDef(GetCurrentLine(),GetCurrentKeyword());
@@ -1813,7 +1813,7 @@ void mxSource::OnDefineVar (wxCommandEvent & evt) {
 	}
 }
 
-void mxSource::OnDefineVar (int line, const wxString &vname) {
+void mxSource::OnAddVarDefinition (int line, const wxString &vname) {
 	int type = vars_window->GetVarType(line,vname);
 	DefineVar(line-1,vname,type);
 }

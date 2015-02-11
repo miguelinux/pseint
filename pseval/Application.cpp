@@ -3,6 +3,8 @@
 #include <iostream>
 
 IMPLEMENT_APP(mxApplication)
+	
+Package pack;
 
 bool mxApplication::OnInit() {
 	if (argc<4) {

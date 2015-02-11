@@ -15,15 +15,9 @@ class wxButton;
 
 class mxMainWindow : public wxFrame {
 	wxStaticText *results_title;
-	wxGauge *progress_bar;
-	wxStaticText *results_text;
 	wxGauge *results_bar;
-	wxListBox *error_list;
 	wxSizer *sizer;
-	wxStaticText *errors_title;
-	wxStaticText *help;
 	wxButton *the_button;
-	Package pack;
 	
 public:
 	mxMainWindow();
@@ -32,7 +26,6 @@ public:
 	
 private:
 	void OnProcessTerminate(wxProcessEvent &event);
-	void OnList(wxCommandEvent &event);
 	void OnButton(wxCommandEvent &event);
 	DECLARE_EVENT_TABLE();
 };

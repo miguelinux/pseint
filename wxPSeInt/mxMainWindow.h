@@ -48,7 +48,7 @@ private:
 public:
 	
 	mxSource *NewProgram(const wxString &title="<sin_titulo>");
-	mxSource *OpenProgram(const wxString &path, bool is_example=false);
+	mxSource *OpenProgram(wxString path, bool is_example=false);
 	mxSource *OpenTestPackage(const wxString &path);
 	void CloseTestPackage();
 	

@@ -98,7 +98,7 @@ void RTSyntaxManager::ContinueProcessing() {
 				processing=false;
 				_LOG("RTSyntaxManager::ContinueProcessing out end src="<<src);
 				src->RTOuputEnds();
-				if (extra_args.action==RTA_DEFINE_VAR) src->OnDefineVar(extra_args.iarg,extra_args.sarg);
+				if (extra_args.action==RTA_DEFINE_VAR) src->OnAddVarDefinition(extra_args.iarg,extra_args.sarg);
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				src->MarkError(line);

@@ -29,7 +29,7 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 
 bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *src) {
 	this->path=path; this->key=key; this->src=src;
-	if (!pack.Load(path)) return false;
+	if (!pack.Load(path,key)) return false;
 	label->SetLabel(_Z(" <- click aquí para evaluar su respuesta"));
 	sizer->Layout();
 	src->SetText(pack.GetBaseSrc());
@@ -38,7 +38,7 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 
 void mxTestPanel::OnRun (wxCommandEvent & event) {
 	src->SaveTemp();
-	wxString cmd = config->pseval_command +" \""+path+"\" "+key+" "+ config->pseint_command+mxProcess::GetProfileArgs() + " \""+src->GetTempFilenamePSC()+"\"";
+	wxString cmd = config->pseval_command +" \""+path+"\" \""+(key.Len()?key:"--nokey")+"\" "+ config->pseint_command+mxProcess::GetProfileArgs() + " \""+src->GetTempFilenamePSC()+"\"";
 	_LOG("mxTestPanel::OnRun");
 	_LOG("    "<<cmd);
 	wxExecute(cmd,wxEXEC_ASYNC);

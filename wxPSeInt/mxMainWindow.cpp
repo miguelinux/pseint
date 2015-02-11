@@ -496,12 +496,14 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
 	aui_manager.GetPane(test_panel).Show();
 	aui_manager.Update(); wxYield();
-	if (!test_panel->Load(path,"laclave",src)) {
+	wxString key = path.Lower().EndsWith(".psx")?wxGetTextFromUser(_Z("Ingrese la clave:"),_Z("PSeInt"),"",this):"";
+	if (!test_panel->Load(path,key,src)) {
 		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 		CloseTestPackage();
 		aui_manager.Update(); 
+	} else {
+		if (!test_panel->GetHelp().IsEmpty()) ShowQuickHelp(true,test_panel->GetHelp(),false);
 	}
-	if (!test_panel->GetHelp().IsEmpty()) ShowQuickHelp(true,test_panel->GetHelp(),false);
 	return src;
 }
 
@@ -568,7 +570,7 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 
 void mxMainWindow::OnFileOpen(wxCommandEvent &evt) {
 	wxFileDialog dlg (this, _Z("Abrir Archivo"), config->last_dir, _Z(" "), "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC;*.psz;*.PSZ|Archivos de texto|*.txt;*.TXT"));
+	dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Ejercicios empaquetados|*.psz;*.PSZ;*.psx;*.PSX|Archivos de texto|*.txt;*.TXT"));
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -623,7 +625,7 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 	}
 }
 
-mxSource *mxMainWindow::OpenProgram(const wxString &path, bool is_example) {
+mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	
 	if (!wxFileName::FileExists(path)) {
 		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
@@ -631,8 +633,8 @@ mxSource *mxMainWindow::OpenProgram(const wxString &path, bool is_example) {
 	}
 	
 	
-	if (!is_example) RegenFileMenu(path);
-	if (path.Lower().EndsWith(".psz")) return OpenTestPackage(path);
+	if (!is_example) RegenFileMenu(path); // por esta linea no recibo path como const wxString &, porque si es del historial me lo modifica
+	if (path.Lower().EndsWith(".psz")||path.Lower().EndsWith(".psx")) return OpenTestPackage(path);
 	
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);

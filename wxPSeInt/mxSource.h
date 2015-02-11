@@ -145,7 +145,7 @@ public:
 	
 	void AddToDesktopTest(wxCommandEvent &evt);
 	void OnDefineVar(wxCommandEvent &evt);
-	void OnDefineVar(int line, const wxString &vname);
+	void OnAddVarDefinition(int line, const wxString &vname);
 	
 	bool IsEmptyLine(int line); // auxiliar para DefineVar
 	bool IsDimOrDef(int line); // auxiliar para DefineVar
