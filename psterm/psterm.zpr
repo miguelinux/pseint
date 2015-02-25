@@ -18,29 +18,27 @@ path=Application.cpp
 cursor=89:1
 [source]
 path=mxFrame.cpp
-cursor=31:53
-marker=50
+cursor=197:35
+marker=92
 open=true
 [source]
 path=mxConsole.cpp
-cursor=462:24
-breakpoint=636
-breakpoint_annotation=
-marker=148
-marker=438
+cursor=618:52
+marker=153
+marker=443
 open=true
 [header]
 path=Application.h
 cursor=-1:0
 [header]
 path=mxFrame.h
-cursor=57:20
-marker=40
+cursor=47:17
+marker=41
 open=true
 [header]
 path=mxConsole.h
-cursor=35:22
-marker=111
+cursor=135:0
+marker=116
 open=true
 [header]
 path=version.h
@@ -51,7 +49,7 @@ path=manifest.xml
 cursor=-1:0
 [other]
 path=../bin/help/cambios.html
-cursor=5:46
+cursor=11:138
 [config]
 name=Linux_Debug
 toolchain=
@@ -71,7 +69,7 @@ temp_folder=../temp/trm_lnx_dbg
 output_file=../temp/trm_lnx_dbg/psterm
 icon_file=
 manifest_file=
-compiling_extra=`wx-config --cppflags`
+compiling_extra=`wx-config --cppflags --version=2.8 --unicode=no` -Wno-unused-local-typedefs
 macros=DEBUG
 warnings_level=1
 pedantic_errors=0
@@ -80,7 +78,7 @@ std_cpp=
 debug_level=2
 optimization_level=0
 headers_dirs=
-linking_extra=`wx-config --libs`
+linking_extra=`wx-config --libs  --version=2.8 --unicode=no`
 libraries_dirs=
 libraries=
 strip_executable=0
