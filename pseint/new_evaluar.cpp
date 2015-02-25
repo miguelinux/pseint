@@ -427,7 +427,13 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 		int p1a=p1, p2b=p2;
 		t1=DeterminarTipo(expresion,p1a,p1b);
 		t2=DeterminarTipo(expresion,p2a,p2b);
-		if ((op!='~'&&!t1.is_ok()) || !t2.is_ok()) { tipo=vt_error; ev_return(""); }
+		if ((op!='~'&&!t1.is_ok()) || !t2.is_ok()) { 
+			// DeterminarTipo no informa el error (ni al usuario ni impide la ejecucion)
+			// los evaluar que siguen están para que ese error se manifieste
+			tipo_var t1; if (op!='~') Evaluar(expresion,p1a,p1b,t1);
+			tipo_var t2; Evaluar(expresion,p2a,p2b,t2);
+			tipo=vt_error; ev_return("");
+		}
 		// analizar segun operador
 		switch (op) {
 			
