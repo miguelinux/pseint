@@ -137,7 +137,7 @@ string func_minusculas(string *arg) {
 		if (s[i]>='A'&&s[i]<='Z') s[i]+='a'-'A';
 		else if (s[i]=='Ñ') s[i]='ñ';
 		else if (s[i]=='Á') s[i]='á';
-		else if (s[i]=='É') s[i]='e';
+		else if (s[i]=='É') s[i]='é';
 		else if (s[i]=='Í') s[i]='í';
 		else if (s[i]=='Ó') s[i]='ó';
 		else if (s[i]=='Ú') s[i]='ú';
