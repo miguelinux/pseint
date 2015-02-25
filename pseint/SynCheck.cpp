@@ -799,7 +799,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;}
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
-				bool sub=cadena!="FINPROCESO";
+				bool sub=cadena!="FINPROCESO"; in_process=false;
 				if (!bucles.empty() && ( (!sub&&bucles.back()=="PROCESO")||(sub&&bucles.back()=="SUBPROCESO") ) ) {
 					if (current_func) { current_func->userline_end=Inter.GetLineNumber(); current_func=NULL; }
 					bucles.pop_back();
