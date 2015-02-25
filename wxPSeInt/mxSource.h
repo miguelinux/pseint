@@ -198,6 +198,7 @@ public:
 	void UpdateFromFlow();
 	
 	void OnMouseWheel(wxMouseEvent &event);
+	void OnClick(wxMouseEvent &evt);
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -220,7 +220,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
 	aui_manager.Update();
 
-	SetDropTarget(new mxDropTarget());
+	SetDropTarget(new mxDropTarget(NULL));
 	SetAccelerators();
 	
 	debug = new DebugManager();

@@ -742,3 +742,7 @@
 311
   La cadena que se paso como argumento a la función ConvertirANúmero no contiene un número. La cadena debe tener solo dígitos y eventualmente un punto para separar decimales, y un signa más o menos al comienzo para indicar si es un número positivo o negativo, pero no debe contener espacios, ni letras ni otros signos u operadores. 
   * Verifique el valor de dicha cadena (el cual se muestra entre paréntesis en el mensaje de error) sea un número válido.
+
+312
+  Las funciones ASEN (arco-seno) y ACOS (arco-coseno) calculan un ángulo a partir de una valor de seno o coseno (su argumento). Los valores válidos para seno y coseno son los mayores o iguales a -1, y menores o iguales a +1. Está invocando a una de estas dos funciones utilizando un argumento que no se encuentra en ese rango.
+  * Verifique el valor de la variable o de la expresión que utiliza como argumento para la función ASEN/ACOS.

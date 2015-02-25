@@ -65,6 +65,7 @@ const char* mxSourceWords2_string =
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
+	EVT_LEFT_DOWN(mxSource::OnClick)
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
@@ -192,7 +193,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	MarkerDefine(MARKER_BLOCK_HIGHLIGHT,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
 	debug_line=-1;
 	
-	SetDropTarget(new mxDropTarget());
+	SetDropTarget(new mxDropTarget(this));
 	
 	rt_timer = new wxTimer(GetEventHandler());
 	flow_timer = new wxTimer(GetEventHandler());
@@ -1820,5 +1821,37 @@ void mxSource::OnAddVarDefinition (int line, const wxString &vname) {
 
 void mxSource::AddToDesktopTest (wxCommandEvent & evt) {
 	desktop_test->AddDesktopVar(GetCurrentKeyword());
+}
+
+void mxSource::OnClick(wxMouseEvent &evt) {
+//	if (evt.ControlDown()) {
+//		int p=PositionFromPointClose(evt.GetX(),evt.GetY());
+//		SetSelectionStart(p); SetSelectionEnd(p);
+//		JumpToCurrentSymbolDefinition();
+//	} else {
+		wxPoint point=evt.GetPosition();
+		int ss=GetSelectionStart(), se=GetSelectionEnd(), p=PositionFromPointClose(point.x,point.y);
+		if ( p!=wxSTC_INVALID_POSITION && ss!=se && ( (p>=ss && p<se) || (p>=se && p<ss) ) ) {
+//			MarkerDelete(current_line,mxSTC_MARK_CURRENT);
+			wxTextDataObject my_data(GetSelectedText());
+			wxDropSource dragSource(this);
+			dragSource.SetData(my_data);
+			mxDropTarget::current_drag_source=this;
+			mxDropTarget::last_drag_cancel=false;
+			wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
+			if (mxDropTarget::current_drag_source!=NULL && result==wxDragMove) {
+				mxDropTarget::current_drag_source=NULL;
+				SetTargetStart(ss); SetTargetEnd(se); ReplaceTarget("");
+			} 
+			else if (result==wxDragCancel && ss==GetSelectionStart()) {
+				DoDropText(evt.GetX(),evt.GetY(),""); // para evitar que se congele el cursor
+				SetSelection(p,p);
+//				evt.Skip();
+			} else {
+				DoDropText(evt.GetX(),evt.GetY(),"");
+			}
+		} else
+			evt.Skip();
+//	}
 }
 
