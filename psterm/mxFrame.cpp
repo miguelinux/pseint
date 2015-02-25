@@ -29,7 +29,7 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		src_id=id;
 		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 		console=new mxConsole(this,scroll,props.dark_theme);
-		do_not_close = new wxCheckBox(this,wxID_ANY,"No cerrrar esta ventana"); 
+		do_not_close = new wxCheckBox(this,wxID_ANY,"No cerrar esta ventana"); 
 		do_not_close->SetValue(false); do_not_close->Hide();
 		play_from_here = new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		run_again = new wxButton(this,FRAME_ID_RUN_AGAIN," Reiniciar ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
