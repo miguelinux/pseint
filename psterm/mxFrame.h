@@ -27,6 +27,7 @@ struct win_props {
 class mxFrame : public wxFrame {
 private:
 	wxCheckBox *do_not_close;
+	wxCheckBox *stay_on_top;
 	wxButton *play_from_here;
 	wxButton *run_again;
 	wxScrollBar *scroll;
@@ -45,6 +46,7 @@ public:
 	void OnFocus(wxActivateEvent &evt);
 	void OnButtonPlay(wxCommandEvent &evt);
 	void OnButtonRunAgain(wxCommandEvent &evt);
+	void OnCheckOnTop(wxCommandEvent &evt);
 	void InitSocket(int port);
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnScroll(wxScrollEvent &event);
@@ -56,6 +58,11 @@ public:
 	void SendLocation(int line, int inst); ///< envia un mensaje al editor para indicar que debe marcar una instruccion
 	void SetButton(bool visible, bool button_again);
 	void ShouldClose();
+	
+	bool GetDoNotClose();
+	bool GetStayOnTop();
+	void ToggleDoNotClose();
+	void ToggleStayOnTop();
 	DECLARE_EVENT_TABLE();
 };
 

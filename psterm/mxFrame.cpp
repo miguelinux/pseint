@@ -16,6 +16,7 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 	EVT_SOCKET(wxID_ANY,mxFrame::OnSocketEvent)
 	EVT_SCROLL(mxFrame::OnScroll)
 	EVT_CLOSE(mxFrame::OnClose)
+	EVT_CHECKBOX(wxID_REPLACE,mxFrame::OnCheckOnTop)
 	EVT_ACTIVATE(mxFrame::OnFocus)
 END_EVENT_TABLE()
 
@@ -29,8 +30,10 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		src_id=id;
 		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 		console=new mxConsole(this,scroll,props.dark_theme);
-		do_not_close = new wxCheckBox(this,wxID_ANY,"No cerrar esta ventana"); 
+		do_not_close = new wxCheckBox(this,wxID_ANY,"No cerrar esta ventana  "); 
 		do_not_close->SetValue(false); do_not_close->Hide();
+		stay_on_top = new wxCheckBox(this,wxID_REPLACE,"Siempre visible   "); 
+		stay_on_top->SetValue(props.always_on_top); stay_on_top->Hide();
 		play_from_here = new wxButton(this,FRAME_ID_PLAY," Ejecutar desde este punto ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		run_again = new wxButton(this,FRAME_ID_RUN_AGAIN," Reiniciar ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 		is_present=true; play_from_here->Hide(); run_again->Hide();
@@ -40,6 +43,7 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 		wxBoxSizer *sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
 		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
 		sizer_buttons->Add(do_not_close,wxSizerFlags().Center());
+		sizer_buttons->Add(stay_on_top,wxSizerFlags().Center());
 		sizer_buttons->AddStretchSpacer();
 		sizer_buttons->Add(play_from_here);
 		sizer_buttons->Add(run_again);
@@ -192,6 +196,7 @@ void mxFrame::SetButton (bool visible, bool button_again) {
 	wxButton *to_show = button_again?run_again:play_from_here;
 	wxButton *to_hide = button_again?play_from_here:run_again;
 	do_not_close->Show(visible&&terminated);
+	stay_on_top->Show(visible&&terminated);
 	if (visible) {
 		if (to_show->IsShown()) return;
 		to_hide->Hide(); to_show->Show();
@@ -204,5 +209,30 @@ void mxFrame::SetButton (bool visible, bool button_again) {
 
 void mxFrame::ShouldClose ( ) {
 	if (!do_not_close->GetValue()) Close();
+}
+
+void mxFrame::OnCheckOnTop (wxCommandEvent & evt) {
+	evt.Skip();
+	if (stay_on_top->GetValue())
+		SetWindowStyleFlag(GetWindowStyleFlag()|wxSTAY_ON_TOP);
+	else
+		SetWindowStyleFlag(GetWindowStyleFlag()&(~wxSTAY_ON_TOP));
+}
+
+bool mxFrame::GetDoNotClose ( ) {
+	return do_not_close->GetValue();
+}
+
+bool mxFrame::GetStayOnTop ( ) {
+	return stay_on_top->GetValue();
+}
+
+void mxFrame::ToggleDoNotClose ( ) {
+	do_not_close->SetValue(!do_not_close->GetValue());
+}
+
+void mxFrame::ToggleStayOnTop ( ) {
+	stay_on_top->SetValue(!stay_on_top->GetValue());
+	wxCommandEvent cmd; OnCheckOnTop(cmd);
 }
 

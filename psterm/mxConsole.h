@@ -96,8 +96,13 @@ public:
 	
 	void OnMouseDClick(wxMouseEvent &evt); ///< popup menu for copy/paste
 	void OnMouseRightDown(wxMouseEvent &evt); ///< popup menu for copy/paste
-	void OnPaste(wxCommandEvent &evt);
-	void OnCopy(wxCommandEvent &evt);
+	void OnPopupPaste(wxCommandEvent &evt);
+	void OnPopupCopy(wxCommandEvent &evt);
+	void OnPopupCloseAfterRun(wxCommandEvent &evt);
+	void OnPopupStayOnTop(wxCommandEvent &evt);
+	void OnPopupReset(wxCommandEvent &evt);
+	void OnPopupChangeInput(wxCommandEvent &evt);
+	void OnPopupFromHere(wxCommandEvent &evt);
 	
 	wxTimer *timer_size; ///< timer to reprocess last text after a resize event (regenerates buffer content)
 	int last_clear; ///< position in history where last cls even occured (to rewrite the text when resizing the console)

@@ -10,7 +10,7 @@
 #include "mxConsole.h"
 using namespace std;
 
-enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS, CONSOLE_ID_PASTE, CONSOLE_ID_COPY };
+enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS, CONSOLE_ID_POPUP_PASTE, CONSOLE_ID_POPUP_COPY, CONSOLE_ID_POPUP_STAY_ON_TOP, CONSOLE_ID_POPUP_CLOSE_AFTER_RUN, CONSOLE_ID_POPUP_RESET, CONSOLE_ID_POPUP_CHANGE_INPUT, CONSOLE_ID_POPUP_FROM_HERE };
 
 BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_PAINT(mxConsole::OnPaint)
@@ -26,8 +26,13 @@ BEGIN_EVENT_TABLE(mxConsole,wxPanel)
 	EVT_LEFT_UP(mxConsole::OnMouseLeftUp)
 	EVT_LEFT_DCLICK(mxConsole::OnMouseDClick)
 	EVT_MOTION(mxConsole::OnMouseMotion)
-	EVT_MENU(CONSOLE_ID_PASTE,mxConsole::OnPaste)
-	EVT_MENU(CONSOLE_ID_COPY,mxConsole::OnCopy)
+	EVT_MENU(CONSOLE_ID_POPUP_PASTE,mxConsole::OnPopupPaste)
+	EVT_MENU(CONSOLE_ID_POPUP_COPY,mxConsole::OnPopupCopy)
+	EVT_MENU(CONSOLE_ID_POPUP_STAY_ON_TOP,mxConsole::OnPopupStayOnTop)
+	EVT_MENU(CONSOLE_ID_POPUP_CLOSE_AFTER_RUN,mxConsole::OnPopupCloseAfterRun)
+	EVT_MENU(CONSOLE_ID_POPUP_FROM_HERE,mxConsole::OnPopupFromHere)
+	EVT_MENU(CONSOLE_ID_POPUP_RESET,mxConsole::OnPopupReset)
+	EVT_MENU(CONSOLE_ID_POPUP_CHANGE_INPUT,mxConsole::OnPopupChangeInput)
 END_EVENT_TABLE()
 	
 #define _buffer(i,j) buffer[(i)*buffer_w+(j)]
@@ -91,8 +96,8 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPa
 	
 	selection_start=selection_end=-1; selecting=false; selection_is_input=false;
 	wxAcceleratorEntry entries[2];
-	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_PASTE);
-	entries[1].Set(wxACCEL_CTRL, 'c', CONSOLE_ID_COPY);
+	entries[0].Set(wxACCEL_CTRL, 'v', CONSOLE_ID_POPUP_PASTE);
+	entries[1].Set(wxACCEL_CTRL, 'c', CONSOLE_ID_POPUP_COPY);
 	wxAcceleratorTable accel(2, entries);
 	SetAcceleratorTable(accel);
 	
@@ -608,17 +613,29 @@ inline wxString GetClipboardText() {
 	return data.GetText();
 }
 
+static int popup_src_pos=-1;
+
 void mxConsole::OnMouseRightDown (wxMouseEvent & evt) {
+	popup_src_pos = auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
 	wxMenu menu;
-	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_COPY,"&Copiar");
+	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_POPUP_COPY,"&Copiar");
 	if (selection_end==-1) mcopy->Enable(false);
-	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_PASTE,"&Pegar");
+	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_POPUP_PASTE,"&Pegar");
 	if (!GetClipboardText().Len()) mpaste->Enable(false);
+	menu.AppendSeparator();
+//	menu.Append(CONSOLE_ID_POPUP_RESET,"Reiniciar ejecución");
+//	menu.Append(CONSOLE_ID_POPUP_FROM_HERE,"Continuar desde aquí");
+	if (popup_src_pos!=-1 && GetInputPositionFromBufferPosition(popup_src_pos)!=-1) {
+		menu.Append(CONSOLE_ID_POPUP_CHANGE_INPUT,"Cambiar valor ingresado");
+		menu.AppendSeparator();
+	}
+	menu.AppendCheckItem(CONSOLE_ID_POPUP_STAY_ON_TOP,"Ventana siempre visible")->Check(parent->GetStayOnTop());
+	menu.AppendCheckItem(CONSOLE_ID_POPUP_CLOSE_AFTER_RUN,"Cerrar al finalizar la ejecución")->Check(!parent->GetDoNotClose());
 	PopupMenu(&menu);
 }
 
 
-void mxConsole::OnPaste(wxCommandEvent &evt) {
+void mxConsole::OnPopupPaste(wxCommandEvent &evt) {
 	wxString str=GetClipboardText();
 	str.Replace("\r","");
 	wxKeyEvent k(wxEVT_CHAR); 
@@ -639,7 +656,7 @@ void mxConsole::OnPaste(wxCommandEvent &evt) {
 	}
 }
 
-void mxConsole::OnCopy (wxCommandEvent & evt) {
+void mxConsole::OnPopupCopy (wxCommandEvent & evt) {
 	if (selection_end<selection_start) { int aux=selection_end; selection_end=selection_start; selection_start=aux; }
 	int i0=selection_start%buffer_w, i1=selection_end%buffer_w;
 	int j0=selection_start/buffer_w, j1=selection_end/buffer_w;
@@ -706,5 +723,26 @@ void mxConsole::Yield ( ) {
 
 void mxConsole::SetRandSeed ( ) {
 	fixed_rand_seed = rand();
+}
+
+void mxConsole::OnPopupCloseAfterRun (wxCommandEvent & evt) {
+	parent->ToggleDoNotClose();
+}
+
+void mxConsole::OnPopupStayOnTop (wxCommandEvent & evt) {
+	parent->ToggleStayOnTop();
+}
+
+void mxConsole::OnPopupReset (wxCommandEvent & evt) {
+	parent->OnButtonRunAgain(evt);
+}
+
+void mxConsole::OnPopupChangeInput (wxCommandEvent & evt) {
+	selection_start=selection_end=popup_src_pos;
+	wxMouseEvent mevt; OnMouseDClick(mevt);
+}
+
+void mxConsole::OnPopupFromHere (wxCommandEvent & evt) {
+	parent->OnButtonPlay(evt);
 }
 
