@@ -34,7 +34,6 @@ wxDragResult mxDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
 	GetData();
 	if (!src || data->GetReceivedFormat()==wxDF_FILENAME) {
 		wxArrayString files=file_data->GetFilenames(); 
-		int ans=0;
 		for (unsigned int i=0;i<files.GetCount();i++)
 			main_window->OpenProgram(files[i]);
 	} else if (data->GetReceivedFormat()==wxDF_TEXT && src) {

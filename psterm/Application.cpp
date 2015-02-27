@@ -45,6 +45,8 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	
+	srand(time(0));
+	
 	bool no_arg=false, debug=false;
 	long port=-1, src_id=-1;
 	win_props props;
