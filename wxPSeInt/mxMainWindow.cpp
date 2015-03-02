@@ -508,6 +508,7 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 }
 
 void mxMainWindow::CloseTestPackage() {
+	HideQuickHelp();
 	aui_manager.GetPane(test_panel).Hide();
 	aui_manager.DetachPane(test_panel);
 	test_panel->Destroy();

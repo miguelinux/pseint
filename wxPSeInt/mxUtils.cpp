@@ -136,6 +136,7 @@ wxString mxUtils::GetVersion(wxString exe) {
 
 wxString mxUtils::GetExportLangName(int id) {
 	switch(id) {
+//	case mxID_FILE_EXPORT_LANG_QBASIC: 	return "Código QBasic (.bas)";
 	case mxID_FILE_EXPORT_LANG_VB: 		return "Código Visual Basic .NET (vb)";
 	case mxID_FILE_EXPORT_LANG_C: 		return "Código C (c)";
 	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "Código C# (cs)";
@@ -156,6 +157,7 @@ wxString mxUtils::GetExportLangName(int id) {
 
 wxString mxUtils::GetExportLangCode(int id) {
 	switch(id) {
+//	case mxID_FILE_EXPORT_LANG_QBASIC: 	return "bas";
 	case mxID_FILE_EXPORT_LANG_VB: 		return "vb";
 	case mxID_FILE_EXPORT_LANG_C: 		return "c";
 	case mxID_FILE_EXPORT_LANG_CSHARP: 	return "cs";

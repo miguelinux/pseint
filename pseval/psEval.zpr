@@ -19,7 +19,7 @@ path=Package.cpp
 cursor=100:1
 [source]
 path=mxSingleCaseWindow.cpp
-cursor=62:22
+cursor=65:69
 [source]
 path=mxMainWindow.cpp
 cursor=60:35

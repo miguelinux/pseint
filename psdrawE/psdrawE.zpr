@@ -14,7 +14,7 @@ current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=54:25
+cursor=54:22
 open=true
 [source]
 path=GLtoWX.cpp

@@ -57,7 +57,7 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	but_sizer->AddStretchSpacer();
 	but_sizer->Add(but_close,wxSizerFlags().Left());
 	
-	if (pack.GetConfigStr("mostrar casos fallidos")) 
+	if (pack.GetConfigStr("mostrar casos fallidos")!="primero") 
 		main_sizer->Add(new wxStaticText(this,wxID_ANY,"Seleccione un caso de prueba:"),wxSizerFlags().Border(wxALL,5));
 	main_sizer->Add(list,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
 	if (pack.GetConfigStr("mostrar casos fallidos")=="primero") list->Hide(); 

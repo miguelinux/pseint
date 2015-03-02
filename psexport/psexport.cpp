@@ -17,6 +17,7 @@
 #include "export_html.h"
 #include "export_matlab.h"
 #include "export_cs.h"
+#include "export_qbasic.h"
 using namespace std;
 
 // otras funciones
@@ -179,13 +180,16 @@ int main(int argc, char *argv[]){
 			else if (s=="py" || s=="pyton" || s=="py3" || s=="python3") exporter=new Python3Exporter(3);
 			else if (s=="py2" || s=="python2") exporter=new Python3Exporter(2);
 			else if (s=="vb" || s=="visualbasic") exporter=new VbExporter();
+#ifdef DEBUG
+			else if (s=="bas" || s=="qb" || s=="qbasic" || s=="quickbasic") exporter=new QBasicExporter();
+#endif
 			else {
 				if (s=="ook") { 
 					char s[]="Uû!op!fsft!vo!psbohvuâo-!qfsp!upnb!vob!cbobob;"; int i=0; while(s[i]!='\0') s[i++]--; cout<<s<<endl;
 					cout<<"\t    _\n\t   | |\n\t  /  /\n\t /  /|\n\t | | |\n\t | | |\n\t | | |\n\t \\ | |\n\t  \\\\ |\n\t   \\__\\"<<endl;
 					return 0;
 				} else {
-					cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
+					cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: bas, c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
 				}
 			}
 		} else if (s=="--basezeroarrays") {

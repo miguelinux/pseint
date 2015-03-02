@@ -52,7 +52,7 @@ bool mxApplication::OnInit() {
 #endif
 	
 	
-	_handle_version_query_wx("psDraw3");
+	_handle_version_query("psDraw3");
 	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--nassischneiderman] <input_file> <output_file>"<<endl;
