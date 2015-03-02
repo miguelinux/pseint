@@ -21,13 +21,12 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(new wxStaticText(this,wxID_ANY,"Seleccione un caso de prueba:"),wxSizerFlags().Border(wxALL,5));
 	
 	input=output=solution=NULL;
 	
 	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	if (pack.GetConfig("mostrar_soluciones")=="si") {
+	if (pack.GetConfigBool("mostrar soluciones")) {
 		wxSizer *solution_sizer = new wxBoxSizer(wxVERTICAL);
 		solution = new wxStyledTextCtrl(this);
 		solution_sizer->Add(new wxStaticText(this,wxID_ANY,"Solución correcta:"),wxSizerFlags().Border(wxALL,5));
@@ -51,7 +50,6 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxLC_LIST|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,"Casos");
 	
-	
 	wxSizer *but_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *but_copy = new wxButton(this,wxID_OK,"Copiar Entrada");
 	wxButton *but_close  = new wxButton(this,wxID_CANCEL,"Cerrar");
@@ -59,13 +57,13 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	but_sizer->AddStretchSpacer();
 	but_sizer->Add(but_close,wxSizerFlags().Left());
 	
-	
+	if (pack.GetConfigStr("mostrar casos fallidos")) 
+		main_sizer->Add(new wxStaticText(this,wxID_ANY,"Seleccione un caso de prueba:"),wxSizerFlags().Border(wxALL,5));
 	main_sizer->Add(list,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
-	main_sizer->Add(new wxStaticLine(this,wxID_ANY),wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
+	if (pack.GetConfigStr("mostrar casos fallidos")=="primero") list->Hide(); 
+	else main_sizer->Add(new wxStaticLine(this,wxID_ANY),wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
 	main_sizer->Add(sizer,wxSizerFlags().Proportion(1).Expand());
 	main_sizer->Add(but_sizer,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
-	
-	
 	
 	SetSizerAndFit(main_sizer);
 	CentreOnParent();
@@ -96,6 +94,10 @@ void mxSingleCaseWindow::OnCancel (wxCommandEvent & event) {
 
 void mxSingleCaseWindow::Show ( ) {
 	wxFrame::Show();
+	if (list->GetItemCount()==1) { 
+		list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+		wxListEvent event; OnList(event);
+	}
 }
 
 void mxSingleCaseWindow::OnCopy (wxCommandEvent & event) {

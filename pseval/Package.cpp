@@ -73,7 +73,7 @@ void Package::ProcessFile (wxString name, wxString &content) {
 			wxString key=content.BeforeFirst('\n');
 			content=content.AfterFirst('\n');
 			if (!key.IsEmpty() && !key.StartsWith("#") && key.Contains("=")) 
-				config[key.BeforeFirst('=')]=key.AfterFirst('=');
+				config[key.BeforeFirst('=').Trim(true).Trim(false).Lower()]=key.AfterFirst('=').Trim(true).Trim(false);
 		}
 	} else if (name.StartsWith("input") && name.EndsWith(".txt")) {
 		wxString test_name = name.Mid(5,name.Len()-9);
@@ -89,15 +89,29 @@ void Package::ProcessFile (wxString name, wxString &content) {
 }
 
 bool Package::IsInConfig (const wxString & key) {
-	return config.find(key)!=config.end();
+	return config.find(key.Lower())!=config.end();
 }
 
-wxString &Package::GetConfig (const wxString & key) {
-	return config[key];
+wxString &Package::GetConfigStr(const wxString &key) {
+	return config[key.Lower()];
+}
+
+long Package::GetConfigInt(const wxString & key) {
+	long retval; 
+	if (!GetConfigStr(key).ToLong(&retval)) return 0;
+	return retval;
+}
+
+bool Package::GetConfigBool(const wxString & key) {
+	wxString val = GetConfigStr(key).Lower();
+	return val=="si"||val=="1"||val=="verdadero"||val=="yes"||val=="true"||val=="sí";
 }
 
 Package::Package ( ) {
-	config["mensaje_exito"]="El algoritmo es correcto";
-	config["mensaje_error"]="El algoritmo no es correcto";
+	config["mensaje_exito"] = "El algoritmo es correcto";
+	config["mensaje_error"] = "El algoritmo no es correcto";
+	config["mostrar_soluciones"] = "si";
+	config["mostrar_casos_fallidos"] = "primero";
+	config["mezclar_casos"] = "si";
 }
 

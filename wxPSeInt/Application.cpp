@@ -31,13 +31,7 @@ wxSplashScreen *splash;
 
 bool mxApplication::OnInit() {
 	
-	if (argc==2 && wxString(argv[1])=="--version") {
-		_print_version_info("wxPSeInt");
-		return false;
-	} else if (argc==3 && wxString(argv[1])=="--version") {
-		_write_version_info("wxPSeInt",argv[2]);
-		return false;
-	}
+	_handle_version_query("wxPSeInt");
 	
 #ifdef __WXMAC__
 	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle

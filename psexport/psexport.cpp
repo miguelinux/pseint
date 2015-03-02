@@ -155,13 +155,7 @@ int main(int argc, char *argv[]){
 	string fname_in,fname_out;
 	input_base_zero_arrays=false;
 
-	if (argc==2 && string(argv[1])=="--version") {
-		_print_version_info("psExport");
-		return 0;
-	} else if (argc==3 && string(argv[1])=="--version") {
-		_write_version_info("psExport",argv[2]);
-		return 0;
-	}
+	_handle_version_query("psExport");
 	
 	for (int i=1;i<argc;i++) {
 		string s=argv[i];

@@ -51,14 +51,11 @@ bool mxApplication::OnInit() {
 	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 #endif
 	
+	
+	_handle_version_query_wx("psDraw3");
+	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--nassischneiderman] <input_file> <output_file>"<<endl;
-	} else if (argc==2 && wxString(argv[1])=="--version") {
-		_print_version_info("psDrawE");
-		return false;
-	} else if (argc==3 && wxString(argv[1])=="--version") {
-		_write_version_info("psDrawE",argv[2]);
-		return false;
 	}
 	
 	_IF_PNG(wxImage::AddHandler(new wxPNGHandler));

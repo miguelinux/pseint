@@ -66,14 +66,7 @@ int main(int argc, char* argv[]) {
 	signal(9,on_signal);
 	signal(15,on_signal);
 
-	if (argc==2 && string(argv[1])=="--install-test") {cout<<"OK";return 0;}
-	if (argc==2 && string(argv[1])==string("--version")) {
-		_print_version_info("PSeInt");
-		exit(0);
-	} else if (argc==3 && string(argv[1])==string("--version")) {
-		_write_version_info("PSeInt",argv[2]);
-		exit(0);
-	}
+	_handle_version_query("PSeInt");
 
 	bool 
 		check=true, // checkear syntaxis?

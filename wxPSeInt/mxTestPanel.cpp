@@ -9,6 +9,7 @@
 #include "mxProcess.h"
 #include "Logger.h"
 #include "mxMainWindow.h"
+#include "version.h"
 
 BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 	EVT_BUTTON(mxID_TESTPACK_RUN,mxTestPanel::OnRun)
@@ -30,6 +31,10 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *src) {
 	this->path=path; this->key=key; this->src=src;
 	if (!pack.Load(path,key)) return false;
+	if (pack.GetConfigInt("version requerida")>VERSION) {
+		wxMessageBox(_Z("Debe actualizar PSeInt para poder abrir este ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
+		return false;
+	}
 	label->SetLabel(_Z(" <- click aquí para evaluar su respuesta"));
 	sizer->Layout();
 	src->SetText(pack.GetBaseSrc());

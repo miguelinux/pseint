@@ -99,6 +99,7 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psdraw3_command)<<"<BR>";
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psdrawe_command)<<"<BR>";
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psexport_command)<<"<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->pseval_command)<<"<BR>";
 	
 	text<<"<BR><A href=\"copy\">click aquí para copiar esta información al portapapeles</A>";
 	text<<"<BR><BR>";

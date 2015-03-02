@@ -37,13 +37,7 @@ bool mxApplication::OnInit() {
 	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 #endif
 	
-	if (argc==2 && wxString(argv[1])=="--version") {
-		_print_version_info("psTerm");
-		return false;
-	} else if (argc==3 && wxString(argv[1])=="--version") {
-		_write_version_info("psTerm",argv[2]);
-		return false;
-	}
+	_handle_version_query("psTerm");
 	
 	srand(time(0));
 	

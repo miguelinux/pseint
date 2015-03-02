@@ -15,7 +15,7 @@ current_source=version.h
 path_char=/
 [source]
 path=Application.cpp
-cursor=47:16
+cursor=39:33
 open=true
 [source]
 path=mxFrame.cpp

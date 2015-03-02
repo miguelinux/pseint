@@ -15,6 +15,8 @@
 #include <wx/settings.h>
 #include <wx/button.h>
 #include "Application.h"
+#include <algorithm>
+#include "version.h"
 
 BEGIN_EVENT_TABLE(mxMainWindow,wxFrame)
 	EVT_BUTTON(wxID_OK,mxMainWindow::OnButton)
@@ -55,6 +57,12 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 		wxMessageBox("Error al cargar el ejercicio","PSeInt",wxOK|wxICON_ERROR,this);
 		return false;
 	} else {
+		
+		if (pack.GetConfigInt("version requerida")>VERSION) {
+			wxMessageBox("Debe actualizar PSeInt para poder abrir este ejercicio","Error",wxID_OK|wxICON_ERROR,this);
+			return false;
+		}
+		
 		Show(); wxYield();
 		
 		wxArrayString tests;
@@ -64,31 +72,50 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 			return false;
 		}
 		
+		if (pack.GetConfigBool("mezclar casos")) {
+			std::random_shuffle(tests.begin(),tests.end());
+		}
+		
 		mxSingleCaseWindow *results_win = new mxSingleCaseWindow(this);
 		
 		results_bar->SetRange(number);
 		int results_ok=0, results_wrong=0;
-		for(int i=0;i<number&&!abort_test;i++) { 
+		for(int i=0;i<number&&!abort_test;i++) {
 			results_title->SetLabel(wxString("Probando ")+tests[i]);
 			results_bar->SetValue(i+1);
 			Refresh(); wxYield();
 			bool ok = RunTest(cmdline,pack.GetTest(tests[i]));
 			if (ok) results_ok++; else results_wrong++;
-			if (!ok) results_win->AddCaso(tests[i]);
+			if (!ok) {
+				results_win->AddCaso(tests[i]);
+				if (pack.GetConfigStr("mostrar casos fallidos")=="primero") {
+					if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje_error")
+						+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
+					{
+						results_win->Show();
+						return true;
+					} else {
+						results_win->Destroy();
+						return false;
+					}
+				}
+			}
 		}
 		if (!abort_test) {
 			Hide();
 			if (results_wrong) {
-				if (pack.GetConfig("mostrar_soluciones")=="si") {
-					if (wxYES == wxMessageBox(pack.GetConfig("mensaje_error")+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) {
+				if (pack.GetConfigStr("mostrar casos fallidos")=="todos") {
+					if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
+						+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
+					{
 						results_win->Show();
 						return true;
 					}
 				} else {
-					wxMessageBox(pack.GetConfig("mensaje_error"),"Resultado",wxOK|wxICON_ERROR,this);
+					wxMessageBox(pack.GetConfigStr("mensaje error"),"Resultado",wxOK|wxICON_ERROR,this);
 				}
 			} else {
-				wxMessageBox(pack.GetConfig("mensaje_exito"),"Resultado",wxOK|wxICON_EXCLAMATION,this);
+				wxMessageBox(pack.GetConfigStr("mensaje exito"),"Resultado",wxOK|wxICON_EXCLAMATION,this);
 			}
 		}
 		results_win->Destroy();

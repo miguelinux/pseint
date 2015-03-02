@@ -27,9 +27,16 @@
 		"  by Pablo Novara (zaskar_84@yahoo.com.ar)"<<std::endl
 
 #define _write_version_info(what,where) \
-	ofstream fout(where); \
+	std::ofstream fout(where); \
 	if (fout.is_open()) \
 		fout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<std::endl; \
 	fout.close()
+
+#define _handle_version_query(what) \
+	if (argc==2 && std::string(argv[1])=="--version") { \
+		_print_version_info(what); return false; \
+	} else if (argc==3 && std::string(argv[1])=="--version") { \
+		_write_version_info(what,argv[2]); return false; \
+	}
 
 #endif

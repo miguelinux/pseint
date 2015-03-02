@@ -24,7 +24,9 @@ public:
 	TestCase &GetTest(const wxString &name); ///< obtiene los datos de un caso a partir de su nombre (se asume que el nombre existe)
 	int GetNames(wxArrayString &names); ///< colocar en el arreglo los nombres de todos los casos de prueba, y retorna la cantidad
 	bool IsInConfig(const wxString &key); 
-	wxString &GetConfig(const wxString &key); 
+	wxString &GetConfigStr(const wxString &key); 
+	bool GetConfigBool(const wxString &key); 
+	long GetConfigInt(const wxString &key); 
 	const wxString &GetBaseSrc() const { return base_psc; }
 	const wxString &GetHelp() const { return help_text; }
 };
