@@ -1187,7 +1187,7 @@ int SynCheck(int linea_from, int linea_to) {
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',i))!=-1) {
 					tipo=vt_caracter_o_numerica;
-					EvaluarSC(cadena.substr(i,p-i),tipo,lang[LS_LAZY_SYNTAX]?vt_caracter_o_numerica:vt_numerica);
+					EvaluarSC(cadena.substr(i,p-i),tipo,lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
 					if (!tipo.cb_num&&!lang[LS_LAZY_SYNTAX]&&tipo!=vt_error)
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
@@ -1298,8 +1298,8 @@ int SynCheck(int linea_from, int linea_to) {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|')
 								{SynError (98,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (Lerrores==errores) EvaluarSC(str,tipo,lang[LS_LAZY_SYNTAX]?vt_caracter_o_numerica:vt_numerica);
-						if (!tipo.cb_num&&!lang[LS_LAZY_SYNTAX]) { SynError (100,"No coinciden los tipos."); errores++; }
+						if (Lerrores==errores) EvaluarSC(str,tipo,lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
+						if (!tipo.cb_num&&lang[LS_INTEGER_ONLY_SWITCH]) { SynError (100,"No coinciden los tipos."); errores++; }
 					}
 			}
 			if (instruccion=="MIENTRAS ") { // ------------ MIENTRAS -----------//

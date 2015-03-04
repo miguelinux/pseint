@@ -179,7 +179,7 @@ void ConfigManager::Read() {
 		} else {
 			key=str.BeforeFirst('=');
 			value=str.AfterFirst('=');
-			if (key=="version") { value.ToLong(&l); version=l; }
+			if (key=="version") { value.ToLong(&l); version=l; lang.Reset(version); }
 			else if (key=="font_size") { value.ToLong(&l); font_size=l; }
 			else if (key=="tabWidth") { value.ToLong(&l); tabw=l; }
 			else if (key=="size_x") { value.ToLong(&l); size_x=l; }
@@ -229,8 +229,8 @@ void ConfigManager::Read() {
 		}
 	}
 	fil.Close();
-	LoadProfile(profile);
-	
+	LoadProfile(profile); 
+	lang.Fix();
 	if (version<20130805) use_psterm=true;
 }
 

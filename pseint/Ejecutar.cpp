@@ -463,7 +463,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					positivo=(Evaluar(val_paso+">=0",tipo)=="VERDADERO");
 				} else { // si no hay paso adivinar
 					val_fin=cadena;
-					if (lang[LS_LAZY_SYNTAX] && Evaluar(val_fin+"<"+val_ini,tipo)=="VERDADERO") {
+					if (lang[LS_DEDUCE_NEGATIVE_FOR_STEP] && Evaluar(val_fin+"<"+val_ini,tipo)=="VERDADERO") {
 						_sub(line,"Se determina que el paso será -1.");
 						positivo=false; val_paso="-1";
 					} else {
@@ -556,8 +556,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_pos(line);
 				_sub(line,string("Se evalúa la expresion: ")+cadena);
 				Evaluar(aux2=cadena,tipo,tipo_master); // evaluar para verificar el tipo
-				if (!tipo.cb_num&&(!lang[LS_LAZY_SYNTAX]||!tipo.cb_car)) {
-					if (lang[LS_LAZY_SYNTAX]) 
+				if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) {
+					if (!lang[LS_INTEGER_ONLY_SWITCH]) 
 						ExeError(205,"La expresión del SEGUN debe ser de tipo numerica o caracter.");
 					else
 						ExeError(206,"La expresión del SEGUN debe ser numerica.");
@@ -593,7 +593,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 								_pos(x);
 								_sub(x,string("Se evalúa la opcion: ")+aux3);
 								aux1=Evaluar(aux3,tipo,tipo_master);
-								if (!tipo.cb_num&&(!lang[LS_LAZY_SYNTAX]||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
+								if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde
 								if (Evaluar(aux3+"="+aux2,tipo)==VERDADERO) {
 									_sub(x,"El resultado coincide, se ingresará en esta opción.");
