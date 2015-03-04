@@ -20,7 +20,7 @@ void WriteError(int num, string s) {
 
 bool PalabraReservada(const string &str) {
 	// Comprobar que no sea palabra reservada
-	if (word_operators && (str=="Y" || str=="O" || str=="NO" || str=="MOD"))
+	if (lang[LS_WORD_OPERATORS] && (str=="Y" || str=="O" || str=="NO" || str=="MOD"))
 		return true;
 	if (str=="LEER" || str=="ESCRIBIR" || str=="MIENTRAS" || str=="HACER" || str=="SEGUN" || str=="VERDADERO" || str=="FALSO" || str=="PARA")
 		return true;
@@ -135,7 +135,7 @@ tipo_var DeterminarTipo(const string &expresion, int p1, int p2) {
 		case '>':
 			return vt_logica;
 		case '+':
-			if (allow_concatenation) {
+			if (lang[LS_ALLOW_CONCATENATION]) {
 				int p1a=p1, p2b=p2;
 				t1 = DeterminarTipo(expresion,p1a,p1b);
 				t2 = DeterminarTipo(expresion,p2a,p2b);
@@ -290,7 +290,7 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 				if (args.pasajes[i]==PP_VALOR) { // por valor
 					memoria->EscribirValor(func->nombres[i+1],args.values[i]);
 					memoria->DefinirTipo(func->nombres[i+1],args.tipos[i]);
-					if (force_var_definition) memoria->DefinirTipo(func->nombres[i+1],args.tipos[i],args.tipos[i].rounded); // para que no genere error con force_var_definition, porque no se deja redefinir argumentos dentro del subproceso
+					if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running()) memoria->DefinirTipo(func->nombres[i+1],args.tipos[i],args.tipos[i].rounded); // para que no genere error con force_var_definition, porque no se deja redefinir argumentos dentro del subproceso
 				} else { // por referencia
 					memoria->AgregarAlias(func->nombres[i+1],args.values[i],caller_memoria);
 				}
@@ -374,12 +374,12 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return("");
 				}
 				tipo = memoria->LeerTipo(nombre);
-				if (force_var_definition && !memoria->EstaDefinida(nombre)) {
+				if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running() && !memoria->EstaDefinida(nombre)) {
 					WriteError(210,string("Variable no definida (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
-				if ((!allow_undef_vars || Inter.EvaluatingForDebug()) && !memoria->EstaInicializada(nombre)) {
+				if ((lang[LS_FORCE_INIT_VARS] || Inter.EvaluatingForDebug()) && Inter.Running() && !memoria->EstaInicializada(nombre)) {
 					WriteError(215,string("Variable no inicializada (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
@@ -396,14 +396,14 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 						tipo=vt_error;
 						ev_return("");
 					}
-					if (force_var_definition && !memoria->EstaDefinida(nombre)) {
+					if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running() && !memoria->EstaDefinida(nombre)) {
 						WriteError(209,string("Variable no definida (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					}
 					string aux=expresion.substr(p1,p2-p1+1);
 					if (CheckDims(aux)) {
-						if (!allow_undef_vars && !memoria->EstaInicializada(aux)) {
+						if (lang[LS_FORCE_INIT_VARS] && Inter.Running() && !memoria->EstaInicializada(aux)) {
 							WriteError(288,string("Posición no inicializada (")+aux+")");
 							tipo=vt_error;
 							ev_return("");
@@ -571,7 +571,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 		}
 			
 		case '+':
-			if (allow_concatenation) {
+			if (lang[LS_ALLOW_CONCATENATION]) {
 				if (t1.can_be(vt_logica) && !AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica)) {
 					WriteError(293,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
 					tipo = vt_error;
@@ -760,7 +760,7 @@ bool CheckDims(string &str) {
 			return false;
 		}
 		int idx=atoi(ret.c_str());
-		if (base_zero_arrays) {
+		if (lang[LS_BASE_ZERO_ARRAYS]) {
 			if (idx<0||idx>adims[i+1]-1) {
 				WriteError(302,string("Subindice (")+ret+") fuera de rango (0..."+IntToStr(adims[i+1]-1)+")");
 				return false;

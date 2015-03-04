@@ -140,20 +140,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("use_colors=")<<(use_colors?1:0));
 	fil.AddLine(wxString("animate_gui=")<<(animate_gui?1:0));
 	fil.AddLine(wxString("reorganize_for_debug=")<<(reorganize_for_debug?1:0));
-	fil.AddLine(wxString("base_zero_arrays=")<<(lang.base_zero_arrays?1:0));
-	fil.AddLine(wxString("allow_concatenation=")<<(lang.allow_concatenation?1:0));
-	fil.AddLine(wxString("use_alternative_io_shapes=")<<(lang.use_alternative_io_shapes?1:0));
-	fil.AddLine(wxString("use_nassi_schneiderman=")<<(lang.use_nassi_schneiderman?1:0));
-	fil.AddLine(wxString("allow_dinamyc_dimensions=")<<(lang.allow_dinamyc_dimensions?1:0));
-	fil.AddLine(wxString("force_define_vars=")<<(lang.force_define_vars?1:0));
-	fil.AddLine(wxString("force_init_vars=")<<(lang.force_init_vars?1:0));
-	fil.AddLine(wxString("force_semicolon=")<<(lang.force_semicolon?1:0));
-	fil.AddLine(wxString("enable_string_functions=")<<(lang.enable_string_functions?1:0));
-	fil.AddLine(wxString("enable_user_functions=")<<(lang.enable_user_functions?1:0));
-	fil.AddLine(wxString("allow_word_operators=")<<(lang.word_operators?1:0));
-	fil.AddLine(wxString("overload_equal=")<<(lang.overload_equal?1:0));
-	fil.AddLine(wxString("coloquial_conditions=")<<(lang.coloquial_conditions?1:0));
-	fil.AddLine(wxString("lazy_syntax=")<<(lang.lazy_syntax?1:0));
+	for(int i=0;i<LS_COUNT;i++) fil.AddLine(lang.GetConfigLine(i));
 	fil.AddLine(wxString("maximized=")<<(maximized?1:0));
 	fil.AddLine(wxString("font_size=")<<font_size);
 	fil.AddLine(wxString("tabw=")<<tabw);
@@ -223,21 +210,6 @@ void ConfigManager::Read() {
 			else if (key=="use_colors") use_colors=utils->IsTrue(value);
 			else if (key=="animate_gui") animate_gui=utils->IsTrue(value);
 			else if (key=="reorganize_for_debug") reorganize_for_debug=utils->IsTrue(value);
-			else if (key=="use_alternative_io_shapes") lang.use_alternative_io_shapes=utils->IsTrue(value);
-			else if (key=="use_nassi_schneiderman") lang.use_nassi_schneiderman=utils->IsTrue(value);
-			else if (key=="allow_dinamyc_dimensions") lang.allow_dinamyc_dimensions=utils->IsTrue(value);
-			else if (key=="allow_concatenation") lang.allow_concatenation=utils->IsTrue(value);
-			else if (key=="base_zero_arrays") lang.base_zero_arrays=utils->IsTrue(value);
-			else if (key=="force_define_vars") lang.force_define_vars=utils->IsTrue(value);
-			else if (key=="force_init_vars") lang.force_init_vars=utils->IsTrue(value);
-			else if (key=="enable_user_functions") lang.enable_user_functions=utils->IsTrue(value);
-			else if (key=="enable_string_functions") lang.enable_string_functions=utils->IsTrue(value);
-			else if (key=="force_dot_and_comma") lang.force_semicolon=utils->IsTrue(value);
-			else if (key=="force_semicolon") lang.force_semicolon=utils->IsTrue(value);
-			else if (key=="allow_word_operators") lang.word_operators=utils->IsTrue(value);
-			else if (key=="overload_equal") lang.overload_equal=utils->IsTrue(value);
-			else if (key=="coloquial_conditions") lang.coloquial_conditions=utils->IsTrue(value);
-			else if (key=="lazy_syntax") lang.lazy_syntax=utils->IsTrue(value);
 			else if (key=="images_path") images_path=value;
 			else if (key=="help_dir") help_dir=value;
 			else if (key=="proxy") proxy=value;
@@ -253,6 +225,7 @@ void ConfigManager::Read() {
 //			else if (key=="psdraw3_command") psdraw3_command=value;
 			else if (key=="terminal") { tty_command=value; }
 			else if (key=="history") last_files.Add(value);
+			else lang.ProcessConfigLine(key.c_str(),value.c_str());
 		}
 	}
 	fil.Close();
@@ -268,7 +241,7 @@ ConfigManager::~ConfigManager() {
 wxString ConfigManager::LoadProfile(wxString pname) {
 	profile=pname;
 	if (lang.Load(DIR_PLUS_FILE(profiles_dir,profile))) {
-		return lang.desc;
+		return lang.descripcion;
 	} else {
 		return _Z("Esta opcion le permite definir su propia configuracion. Utilice el boton \"Personalizar...\" para definirla.");
 	}
@@ -303,80 +276,5 @@ wxString ConfigManager::GetTTYCommand ( ) {
 		}
 	}
 	return tty_command;
-}
-
-bool LangSettings::Load (wxString fname) {
-	_LOG("LangSettings::Load "<<fname);
-	wxTextFile fil(fname);
-	if (!fil.Exists()) return false;
-	fil.Open();
-	if (!fil.IsOpened()) return false;
-	Reset(); // reset va despues de los "return false" para evitar resetear el perfile personalizado cuando se llama desde el ConfigManager
-	wxString key, value;
-	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-		if (str[0]=='#') continue;
-		key=str.BeforeFirst('=');
-		value=str.AfterFirst('=');
-		if (key=="allow_dinamyc_dimensions") allow_dinamyc_dimensions=utils->IsTrue(value);
-		else if (key=="use_alternative_io_shapes") use_alternative_io_shapes=utils->IsTrue(value);
-		else if (key=="use_nassi_schneiderman") use_nassi_schneiderman=utils->IsTrue(value);
-		else if (key=="force_define_vars") force_define_vars=utils->IsTrue(value);
-		else if (key=="force_init_vars") force_init_vars=utils->IsTrue(value);
-		else if (key=="allow_concatenation") allow_concatenation=utils->IsTrue(value);
-		else if (key=="enable_string_functions") enable_string_functions=utils->IsTrue(value);
-		else if (key=="enable_user_functions") enable_user_functions=utils->IsTrue(value);
-		else if (key=="force_semicolon") force_semicolon=utils->IsTrue(value);
-		else if (key=="allow_word_operators") word_operators=utils->IsTrue(value);
-		else if (key=="overload_equal") overload_equal=utils->IsTrue(value);
-		else if (key=="coloquial_conditions") coloquial_conditions=utils->IsTrue(value);
-		else if (key=="lazy_syntax") lazy_syntax=utils->IsTrue(value);
-		else if (key=="base_zero_arrays") base_zero_arrays=utils->IsTrue(value);
-		else if (key=="desc") desc+=value+"\n";
-	}
-	fil.Close();
-	return true;
-}
-
-bool LangSettings::Save (wxString fname) {
-	wxTextFile fil(fname);
-	if (!fil.Exists()) fil.Create();
-	fil.Open(); if (!fil.IsOpened()) return false;
-	fil.Clear();
-	wxString tmp=desc; tmp.Replace("\r",""); tmp.Replace("\n","\ndesc=");
-	fil.AddLine(wxString("desc=")<<tmp);
-	fil.AddLine(wxString("allow_dinamyc_dimensions=")<<(allow_dinamyc_dimensions?1:0));
-	fil.AddLine(wxString("use_alternative_io_shapes=")<<(use_alternative_io_shapes?1:0));
-	fil.AddLine(wxString("use_nassi_schneiderman=")<<(use_nassi_schneiderman?1:0));
-	fil.AddLine(wxString("force_define_vars=")<<(force_define_vars?1:0));
-	fil.AddLine(wxString("force_init_vars=")<<(force_init_vars?1:0));
-	fil.AddLine(wxString("allow_concatenation=")<<(allow_concatenation?1:0));
-	fil.AddLine(wxString("enable_string_functions=")<<(enable_string_functions?1:0));
-	fil.AddLine(wxString("enable_user_functions=")<<(enable_user_functions?1:0));
-	fil.AddLine(wxString("force_semicolon=")<<(force_semicolon?1:0));
-	fil.AddLine(wxString("allow_word_operators=")<<(word_operators?1:0));
-	fil.AddLine(wxString("overload_equal=")<<(overload_equal?1:0));
-	fil.AddLine(wxString("coloquial_conditions=")<<(coloquial_conditions?1:0));
-	fil.AddLine(wxString("lazy_syntax=")<<(lazy_syntax?1:0));
-	fil.AddLine(wxString("base_zero_arrays=")<<(base_zero_arrays?1:0));
-	fil.Write();
-	fil.Close();
-	return true;
-}
-
-void LangSettings::Log ( ) {
-	_LOG("Profile:"
-		<<" ac:"<<(allow_concatenation?1:0)
-		<<" add:"<<(allow_dinamyc_dimensions?1:0)
-		<<" bza:"<<(base_zero_arrays?1:0)
-		<<" cc:"<<(coloquial_conditions?1:0)
-		<<" esf:"<<(enable_string_functions?1:0)
-		<<" euf:"<<(enable_user_functions?1:0)
-		<<" fdv:"<<(force_define_vars?1:0)
-		<<" fiv:"<<(force_init_vars?1:0)
-		<<" fs:"<<(force_semicolon?1:0)
-		<<" ls:"<<(lazy_syntax?1:0)
-		<<" oe:"<<(overload_equal?1:0)
-		<<" wo:"<<(word_operators?1:0)
-		);	
 }
 

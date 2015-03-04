@@ -33,6 +33,7 @@ public:
 	bool DrawAndEdit(wxString file, bool check_first=false);
 	bool SaveDraw(wxString file, bool check_first=false);
 	bool ExportLang(wxString file, wxString lang, bool check_first=false);
+	static wxString GetDrawArgs();
 	static wxString GetProfileArgs();
 	wxString GetInputArgs();
 	~mxProcess();

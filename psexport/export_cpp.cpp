@@ -21,7 +21,7 @@ CppExporter::CppExporter() {
 	use_func_minusculas=false;
 	use_func_mayusculas=false;
 	use_func_convertiratexto=false;
-	base_zero_arrays=true;
+	output_base_zero_arrays=true;
 	use_arreglo_max=false;
 	read_strings=true;
 }

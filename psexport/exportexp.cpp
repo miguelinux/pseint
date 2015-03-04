@@ -12,7 +12,7 @@
 using namespace std;
 
 bool input_base_zero_arrays=false;
-#define output_base_zero_arrays base_zero_arrays 
+bool output_base_zero_arrays=false;
 
 static void Replace(string &src, int from, int to, string rep, unsigned int &i) {
 	int l=to-from+1;

@@ -115,7 +115,7 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 	
 	wxString command;	
 	command<<config->pseint_command<<_T(" --nouser --norun \"")<<file<<_T("\"");
-	command<<GetProfileArgs();
+	command<<" "<<GetProfileArgs();
 	if (extra_args!=wxEmptyString) command<<" "<<extra_args;
 	
 	wxArrayString output;
@@ -180,7 +180,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 #ifdef __WIN32__
 	if (!config->use_psterm) command<<" --fixwincharset";
 #endif
-	command<<GetProfileArgs()<<" "<<GetInputArgs();
+	command<<" "<<GetProfileArgs()<<" "<<GetInputArgs();
 	if (source)	source->SetStatus(STATUS_RUNNING);
 	_LOG("mxProcess::Run this="<<this);
 	_LOG("    "<<command);
@@ -217,7 +217,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
 	if (config->use_psterm) command<<_T(" --forpseintterminal");
-	command<<GetProfileArgs()<<" "<<GetInputArgs();
+	command<<" "<<GetProfileArgs()<<" "<<GetInputArgs();
 //	was_readonly = source->GetReadOnly();
 //	if (pid) source->SetReadOnly(true);
 	source->DebugMode(true);
@@ -227,16 +227,6 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	return pid!=0;
 }
 
-//bool mxProcess::Draw(wxString file, bool check_first) {
-//	what = check_first?mxPW_CHECK_AND_DRAW:mxPW_DRAW;
-//	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
-//	wxString command;
-//	command<<config->psdraw3_command<<" --noedit "<<(!config->lang.word_operators?"--nowordoperators ":"")<<(config->lang.use_nassi_schneiderman?"--nassischneiderman ":"")<<(config->lang.use_alternative_io_shapes?"--alternativeio ":"")<<"\""<<source->GetTempFilenamePSD()<<_T("\"");
-//	_LOG("mxProcess::Draw this="<<this);
-//	_LOG("    "<<command);
-//	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
-//}
-
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
 	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
@@ -244,11 +234,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	command<<config->psdraw3_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
-	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
-	if (config->shape_colors) command<<" --shapecolors";
-	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
-	if (config->lang.force_semicolon) command<<" --forcesemicolons";
-	if (!config->lang.word_operators) command<<" --nowordoperators";
+	command<<" "<<GetDrawArgs();
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
 	_LOG("mxProcess::DrawAndEdit this="<<this);
 	_LOG("    "<<command);
@@ -261,9 +247,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	wxString command;
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
-	if (config->lang.use_nassi_schneiderman) command<<" --nassischneiderman";
-	if (config->lang.use_alternative_io_shapes) command<<" --alternativeio";
-	if (config->shape_colors) command<<" --shapecolors";
+	command<<" "<<GetDrawArgs();
 	_LOG("mxProcess::SaveDraw this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -278,7 +262,7 @@ bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	wxString command;
 	command<<config->psexport_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
-	if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
+	if (config->lang[LS_BASE_ZERO_ARRAYS]) command<<_T(" --base_zero_arrays=1");
 	if (lang.size()) command<<" --lang="<<lang;
 	_LOG("mxProcess::ExportCpp this="<<this);
 	_LOG("    "<<command);
@@ -286,32 +270,7 @@ bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
 }
 
 wxString mxProcess::GetProfileArgs() {
-	wxString command;
-	if (config->lang.force_semicolon)
-		command<<_T(" --forcesemicolon");
-	if (!config->lang.enable_string_functions)
-		command<<_T(" --hidestringfunctions");
-	if (!config->lang.enable_user_functions)
-		command<<_T(" --disableuserfunctions");
-	if (config->lang.overload_equal)
-		command<<_T(" --overloadequal");
-	if (!config->lang.lazy_syntax)
-		command<<_T(" --nolazysyntax");
-	if (config->lang.coloquial_conditions)
-		command<<_T(" --coloquialconditions");
-	if (!config->lang.word_operators)
-		command<<_T(" --nowordoperators");
-	if (config->lang.allow_concatenation)
-		command<<_T(" --allowconcatenation");
-	if (config->lang.allow_dinamyc_dimensions)
-		command<<_T(" --allowddims");
-	if (config->lang.force_define_vars)
-		command<<_T(" --forcedefinevars");
-	if (config->lang.force_init_vars)
-		command<<_T(" --forceinitvars");
-	if (config->lang.base_zero_arrays)
-		command<<_T(" --basezeroarrays");
-	return command;
+	return wxString("--binprofile=")+config->lang.GetAsSingleString().c_str();
 }
 
 wxString mxProcess::GetInputArgs() {
@@ -330,5 +289,15 @@ wxString mxProcess::GetInputArgs() {
 
 void mxProcess::SetSourceDeleted ( ) {
 	source=NULL;
+}
+
+wxString mxProcess::GetDrawArgs ( ) {
+	wxString command;
+	if (config->shape_colors) command<<" --shapecolors";
+	if (config->lang[LS_USE_NASSI_SCHNEIDERMAN]) command<<" --use_nassi_schneiderman=1";
+	if (config->lang[LS_USE_ALTERNATIVE_IO_SHAPES]) command<<" --use_alternative_io_shapes=1";
+	if (config->lang[LS_FORCE_SEMICOLON]) command<<" --force_semicolon=1";
+	if (!config->lang[LS_WORD_OPERATORS]) command<<" --word_operators=0";
+	return command;
 }
 

@@ -1,1 +1,1 @@
---forcedefinevars --input=hola
+--force_define_vars=1 --input=hola

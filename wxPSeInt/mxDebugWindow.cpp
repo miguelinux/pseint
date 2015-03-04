@@ -48,7 +48,7 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	dp_check_step_in=new wxCheckBox(this,mxID_DEBUG_STEP_IN,"Entrar en subprocesos");
 	dp_check_step_in->SetToolTip(utils->FixTooltip("Cuando esta opción está activada y el proceso llega a la llamada de una función entra en dicha función y muestra pasa a paso cómo se ejecuta la misma, mientras que si está desactivada ejecuta la llamada completa en un solo paso sin mostrar la ejecución de la misma."));
 	dp_check_step_in->SetValue(true);
-	if (!config->lang.enable_user_functions) dp_check_step_in->Hide();
+	if (!config->lang[LS_ENABLE_USER_FUNCTIONS]) dp_check_step_in->Hide();
 	sizer->Add(dp_check_step_in,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10)); 
 	
 //	sizer->AddSpacer(20);
@@ -215,7 +215,7 @@ void mxDebugWindow::SetEvaluationValue (wxString val, char tipo) {
 }
 
 void mxDebugWindow::ProfileChanged ( ) {
-	dp_check_step_in->Show(config->lang.enable_user_functions);
+	dp_check_step_in->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
 	Layout();
 }
 

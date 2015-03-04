@@ -65,7 +65,7 @@ static void SynCheckAux1(string &cadena) {
 		}
 	}
 	// despues, word_operators
-	if (word_operators) {
+	if (lang[LS_WORD_OPERATORS]) {
 		comillas=false;
 		for (int tmp=0;tmp<len;tmp++) {
 			char &c=cadena[tmp];
@@ -114,7 +114,7 @@ static void SynCheckAux2(string &cadena) {
 		return;
 	}
 #endif
-	if (!cadena.size() || !coloquial_conditions) return;
+	if (!cadena.size() || !lang[LS_COLOQUIAL_CONDITIONS]) return;
 	if (cadena[cadena.size()-1]!=' ') cadena+=" ";
 	int comillas=-1;
 	for (int y=0;y<int(cadena.size());y++) {
@@ -470,7 +470,7 @@ int SynCheck(int linea_from, int linea_to) {
 			
 			
 			int len = cadena.size();
-			if (lazy_syntax && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
+			if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
 			if (LeftCompare(cadena,"BORRAR ")) { cadena="BORRAR"+cadena.substr(7); len--; }
 			// poner un espacio al final para evitar casos especiales cuando no hay punto y coma y la instruccion es una sola palabra (ej: borrarpantalla; finalgo )
 			if (len>2 && cadena[len-1]==';' && cadena[len-2]!=' ') { cadena.insert(len-1," "); len++; }
@@ -504,7 +504,7 @@ int SynCheck(int linea_from, int linea_to) {
 					programa.Insert(x+1,str);
 					flag_pyc+=1;
 				}
-			} else if (LeftCompare(cadena,"ESCRIBIR ") || (lazy_syntax && (LeftCompare(cadena,"IMPRIMIR ") || LeftCompare(cadena,"MOSTRAR ") || LeftCompare(cadena,"INFORMAR "))) ) {
+			} else if (LeftCompare(cadena,"ESCRIBIR ") || (lang[LS_LAZY_SYNTAX] && (LeftCompare(cadena,"IMPRIMIR ") || LeftCompare(cadena,"MOSTRAR ") || LeftCompare(cadena,"INFORMAR "))) ) {
 				instruccion="ESCRIBIR "; cadena.erase(0,cadena.find(" ")+1);
 				if (ReplaceIfFound(cadena,"SIN SALTAR","",true)||ReplaceIfFound(cadena,"SIN BAJAR","",true)||ReplaceIfFound(cadena,"SINBAJAR","",true)||ReplaceIfFound(cadena,"SINSALTAR","",true))
 					instruccion="ESCRIBNL ";
@@ -533,7 +533,7 @@ int SynCheck(int linea_from, int linea_to) {
 							break;
 						}
 					}
-			} else if (LeftCompareFix(cadena,"MIENTRAS ")&&(!lazy_syntax||!LeftCompareFix(cadena,"MIENTRAS QUE "))) { 
+			} else if (LeftCompareFix(cadena,"MIENTRAS ")&&(!lang[LS_LAZY_SYNTAX]||!LeftCompareFix(cadena,"MIENTRAS QUE "))) { 
 				instruccion="MIENTRAS "; cadena.erase(0,9);
 				bucles.push_back(programa.GetLoc(x,"MIENTRAS"));
 			} else if (LeftCompareFix(cadena,"SEGUN ")) {
@@ -546,7 +546,7 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="DIMENSION "; cadena.erase(0,10);
 			} else if (LeftCompareFix(cadena,"HASTA QUE ")) {
 				instruccion="HASTA QUE "; cadena.erase(0,10);
-			} else if (lazy_syntax&&LeftCompareFix(cadena,"MIENTRAS QUE ")) {
+			} else if (lang[LS_LAZY_SYNTAX]&&LeftCompareFix(cadena,"MIENTRAS QUE ")) {
 				instruccion="MIENTRAS QUE "; cadena.erase(0,13);
 			} else if (LeftCompare(cadena,"FINSI ")) {
 				instruccion="FINSI "; cadena.erase(0,6);
@@ -578,17 +578,17 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="SUBPROCESO "; cadena.erase(0,11);
 			} else if (LeftCompare(cadena,"FUNCION ")||LeftCompare(cadena,"FUNCIÓN ")) {
 				instruccion="SUBPROCESO "; cadena.erase(0,8);
-			} else if (lazy_syntax && LeftCompare(cadena,"PARACADA ")) {
+			} else if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"PARACADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,9);
 				bucles.push_back(programa.GetLoc(x,"PARACADA"));
-			} else if (lazy_syntax && LeftCompare(cadena,"PARA CADA ")) {
+			} else if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"PARA CADA ")) {
 				instruccion="PARACADA "; cadena.erase(0,10);
 				bucles.push_back(programa.GetLoc(x,"PARACADA"));
 			} else if (LeftCompare(cadena,"PARA ")) {
 				instruccion="PARA "; cadena.erase(0,5);
 				bucles.push_back(programa.GetLoc(x,"PARA"));
 				// si se puede asignar con igual, reemplazar aca
-				if (overload_equal) {
+				if (lang[LS_OVERLOAD_EQUAL]) {
 					int i=0, l=cadena.size();
 					while (i<l && EsLetra(cadena[i])) i++;
 					while (i<l && (cadena[i]==' '||cadena[i]=='\t')) i++;
@@ -597,7 +597,7 @@ int SynCheck(int linea_from, int linea_to) {
 				// evitar problema de operador incorrecto al poner el signo al numero
 				comillas=-1;
 				// si dice "i desde 1" en lugar de "i<-1" se reemplaza " desde " por "<-"
-				if (lazy_syntax && cadena.find("<-",0)==string::npos && cadena.find(" DESDE ")!=string::npos) 
+				if (lang[LS_LAZY_SYNTAX] && cadena.find("<-",0)==string::npos && cadena.find(" DESDE ")!=string::npos) 
 					cadena.replace(cadena.find(" DESDE "),7,"<-");
 				if (cadena.find("<-",0)!=string::npos) {
 					// se agregan parentesis al valor inicial para evitar problemas mas adelante (porque si el valor es negativo, con la flecha de asignacion queda un --)
@@ -623,7 +623,7 @@ int SynCheck(int linea_from, int linea_to) {
 				instruccion="FINSUBPROCESO "; cadena.erase(0,14);
 			} else if (LeftCompare(cadena,"REPETIR ")) {
 				instruccion="REPETIR "; cadena.erase(0,8);
-			} else if (lazy_syntax && LeftCompare(cadena,"HACER ")) {
+			} else if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"HACER ")) {
 				instruccion="REPETIR "; cadena.erase(0,6);
 			} else if (LeftCompare(cadena,"DEFINIR ")) {
 				instruccion="DEFINIR "; cadena.erase(0,8);
@@ -635,7 +635,7 @@ int SynCheck(int linea_from, int linea_to) {
 						int pos_dp=PSeudoFind(cadena,':');
 						if (pos_dp!=-1 && cadena[pos_dp+1]!='=') {
 							// ver ademas si dise "OPCION o CASO al principio"
-							if (lazy_syntax) {
+							if (lang[LS_LAZY_SYNTAX]) {
 								if (cadena.size()>6 && cadena.substr(0,5)=="CASO ") {
 									cadena=cadena.substr(5); pos_dp-=5;
 								} else if (cadena.size()>6 && cadena.substr(0,5)=="SIES ") {
@@ -675,7 +675,7 @@ int SynCheck(int linea_from, int linea_to) {
 					while (i<l && (cadena[i]=='\t'||cadena[i]==' ')) i++;
 					if (i>0&&i<l) {
 						if (i+1<l && cadena[i]==':' && cadena[i+1]=='=') {cadena[i]='<';cadena[i+1]='-';}
-						else if (overload_equal && cadena[i]=='=') cadena.replace(i,1,"<-");
+						else if (lang[LS_OVERLOAD_EQUAL] && cadena[i]=='=') cadena.replace(i,1,"<-");
 						if (i+1<l&&cadena[i]=='<'&&cadena[i+1]=='-') {
 							comillas=-1;
 							for (int y=0; y<(int)cadena.find("<-",0);y++)
@@ -696,7 +696,7 @@ int SynCheck(int linea_from, int linea_to) {
 							} 
 						} 
 					}
-					if (lazy_syntax && instruccion!="<-") { // definición de tipos alternativa (x es entero)
+					if (lang[LS_LAZY_SYNTAX] && instruccion!="<-") { // definición de tipos alternativa (x es entero)
 						size_t pos=cadena.rfind(' ',cadena.size()-(cadena[cadena.size()-1]==';'?3:2));
 						if (pos!=string::npos) {
 							pos=cadena.rfind(' ',pos-1);
@@ -746,7 +746,7 @@ int SynCheck(int linea_from, int linea_to) {
 			// Controlar que el si siempre tenga un entonces
 			if (x&&LeftCompare(programa[x-1],"SI "))
 				if (instruccion!="ENTONCES " && instruccion!="" && instruccion!="Error?") {
-					if (lazy_syntax) {
+					if (lang[LS_LAZY_SYNTAX]) {
 						programa.Insert(x,"ENTONCES"); 
 						programa[x].num_instruccion--;
 						x++;
@@ -764,7 +764,7 @@ int SynCheck(int linea_from, int linea_to) {
 			bool lleva_pyc=instruccion=="DIMENSION " || instruccion=="DEFINIR " || instruccion=="ESCRIBIR "|| instruccion=="ESCRIBNL " || instruccion=="<-"  || instruccion=="LEER " || instruccion=="ESPERAR " || instruccion=="ESPERARTECLA" || instruccion=="BORRARPANTALLA" || instruccion=="INVOCAR ";
 			if (lleva_pyc) {
 				if (cadena[cadena.size()-1]!=';') {
-					if (force_semicolon)
+					if (lang[LS_FORCE_SEMICOLON])
 					{ SynError (38,"Falta punto y coma."); errores++; }
 					cadena=cadena+';';
 				}
@@ -797,7 +797,7 @@ int SynCheck(int linea_from, int linea_to) {
 				current_func->userline_start=Inter.GetLineNumber();
 				memoria=current_func->memoria=new Memoria(current_func);
 			}
-			if (!in_process && cadena!="") {SynError (43,enable_user_functions?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;}
+			if (!in_process && cadena!="") {SynError (43,lang[LS_ENABLE_USER_FUNCTIONS]?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;}
 			if ((cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") ) {
 				bool sub=cadena!="FINPROCESO"; in_process=false;
 				if (!bucles.empty() && ( (!sub&&bucles.back()=="PROCESO")||(sub&&bucles.back()=="SUBPROCESO") ) ) {
@@ -899,7 +899,7 @@ int SynCheck(int linea_from, int linea_to) {
 						if (cadena[i]=='(') parentesis++;
 						if (cadena[i]==')') parentesis--;
 						if (i>0 && i<(int)cadena.size()-1) {
-							if (lazy_syntax && cadena[i]==' ') cadena[i]=',';
+							if (lang[LS_LAZY_SYNTAX] && cadena[i]==' ') cadena[i]=',';
 							if (cadena[i]==' ' && cadena[i-1]!='&' && cadena[i-1]!='|'  && cadena[i+1]!='&'  && cadena[i+1]!='|')
 								{SynError (54,"Se esperaba fin de expresion."); errores++;}
 						}
@@ -990,7 +990,7 @@ int SynCheck(int linea_from, int linea_to) {
 									} else {
 										if (!IsNumericConstant(str2)) {
 											dims[idims]=-1;
-											if (!allow_dinamyc_dimensions)
+											if (!lang[LS_ALLOW_DINAMYC_DIMENSIONS])
 												{SynError (153,"Las dimensiones deben ser constantes."); errores++;}
 										} else {
 											dims[idims]=(int)StrToDbl(res_eval);
@@ -1023,7 +1023,7 @@ int SynCheck(int linea_from, int linea_to) {
 						if (cadena[tmp1]=='\'') { comillas=-comillas; continue; }
 						else if (comillas>0) continue;
 						if (tmp1>0 && tmp1<(int)cadena.size()-1) {
-							if (lazy_syntax && cadena[tmp1]==' ') cadena[tmp1]=',';
+							if (lang[LS_LAZY_SYNTAX] && cadena[tmp1]==' ') cadena[tmp1]=',';
 							if (comillas<0 && cadena[tmp1]==' ' && cadena[tmp1-1]!='&' && cadena[tmp1-1]!='|'  && cadena[tmp1+1]!='&'  && cadena[tmp1+1]!='|')
 								{SynError (64,"Se esperaba fin de expresion."); errores++;}
 						}
@@ -1082,7 +1082,7 @@ int SynCheck(int linea_from, int linea_to) {
 				str.erase(0,5);
 				if (str.find(" ",0)==string::npos) {SynError (70,"Faltan parametros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
-					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
+					if (lang[LS_LAZY_SYNTAX]) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); errores++;}
 				}
 				if (RightCompareFix(str," HACER")) { // comprobar asignacion
@@ -1109,7 +1109,7 @@ int SynCheck(int linea_from, int linea_to) {
 									str=cadena;
 									size_t pos_hasta=str.find(" ",8);
 									str.erase(0,pos_hasta);
-									if (lazy_syntax && LeftCompare(str," CON PASO ")) { // si esta el "CON PASO" antes del "HASTA", dar vuelta
+									if (lang[LS_LAZY_SYNTAX] && LeftCompare(str," CON PASO ")) { // si esta el "CON PASO" antes del "HASTA", dar vuelta
 										size_t e=str.find(" ",10);
 										if (e!=string::npos) { // si hay algo despues del "CON PASO"
 											str.erase(e); // corta la parte de "CON PASO X"
@@ -1164,7 +1164,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (str.find(" ",0)==string::npos)
 				{SynError (70,"Faltan parametros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
-					if (lazy_syntax) { str+=" HACER"; cadena+=" HACER";}
+					if (lang[LS_LAZY_SYNTAX]) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); str+=" HACER"; errores++;}
 				}
 				if (RightCompareFix(str," HACER")) {
@@ -1179,7 +1179,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion==":") {  // ------------ opcion del SEGUN -----------//
 				int p;
 				// permitir utiliza O para separar la posibles opciones
-				if (lazy_syntax) {
+				if (lang[LS_LAZY_SYNTAX]) {
 					while ((p=cadena.find(" O "))!=-1) cadena.replace(p,3,",");
 					while ((p=cadena.find("|"))!=-1) cadena.replace(p,1,",");
 				}
@@ -1187,8 +1187,8 @@ int SynCheck(int linea_from, int linea_to) {
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',i))!=-1) {
 					tipo=vt_caracter_o_numerica;
-					EvaluarSC(cadena.substr(i,p-i),tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
-					if (!tipo.cb_num&&!lazy_syntax&&tipo!=vt_error)
+					EvaluarSC(cadena.substr(i,p-i),tipo,lang[LS_LAZY_SYNTAX]?vt_caracter_o_numerica:vt_numerica);
+					if (!tipo.cb_num&&!lang[LS_LAZY_SYNTAX]&&tipo!=vt_error)
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
 				}
@@ -1242,7 +1242,7 @@ int SynCheck(int linea_from, int linea_to) {
 					if (tmp1>0 && tmp1<(int)str.size()-1) {
 						// si encuentra un espacio (que no saco SynCheckAux3) es porque habia una instruccion despues del si, faltaba el "ENTONCES"
 						if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|') {
-							if (lazy_syntax) {
+							if (lang[LS_LAZY_SYNTAX]) {
 								programa.Insert(x+1,str.substr(tmp1)); flag_pyc++;
 								cadena.erase(3+tmp1);
 								break;
@@ -1283,7 +1283,7 @@ int SynCheck(int linea_from, int linea_to) {
 				{ SynError (96,"Falta la variable/expresión de control en la estructura Segun."); errores++; }
 				else
 					if (!RightCompareFix(cadena," HACER")) {
-						if (lazy_syntax) cadena+=" HACER";
+						if (lang[LS_LAZY_SYNTAX]) cadena+=" HACER";
 						else { SynError (97,"Falta HACER."); errores++; }
 					}
 					if (RightCompareFix(str," HACER")) {
@@ -1298,8 +1298,8 @@ int SynCheck(int linea_from, int linea_to) {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|')
 								{SynError (98,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (Lerrores==errores) EvaluarSC(str,tipo,lazy_syntax?vt_caracter_o_numerica:vt_numerica);
-						if (!tipo.cb_num&&!lazy_syntax) { SynError (100,"No coinciden los tipos."); errores++; }
+						if (Lerrores==errores) EvaluarSC(str,tipo,lang[LS_LAZY_SYNTAX]?vt_caracter_o_numerica:vt_numerica);
+						if (!tipo.cb_num&&!lang[LS_LAZY_SYNTAX]) { SynError (100,"No coinciden los tipos."); errores++; }
 					}
 			}
 			if (instruccion=="MIENTRAS ") { // ------------ MIENTRAS -----------//
@@ -1311,7 +1311,7 @@ int SynCheck(int linea_from, int linea_to) {
 						cadena.erase(cadena.size()-1,1);
 					}
 					if (!RightCompareFix(cadena," HACER")) {
-						if (lazy_syntax) cadena+=" HACER";
+						if (lang[LS_LAZY_SYNTAX]) cadena+=" HACER";
 						else { SynError (102,"Falta HACER."); errores++; }
 					}
 					if (RightCompareFix(cadena," HACER")) {
@@ -1325,7 +1325,7 @@ int SynCheck(int linea_from, int linea_to) {
 							if (str[tmp1]=='\'') comillas=-comillas;
 							if (tmp1>0 && tmp1<(int)str.size()-1)
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|') {
-									if (lazy_syntax) {
+									if (lang[LS_LAZY_SYNTAX]) {
 										string aux=str.substr(tmp1); flag_pyc++;
 										programa.Insert(x+1,aux);
 										break;
@@ -1418,7 +1418,7 @@ int SynCheck(int linea_from, int linea_to) {
 				} else {
 					SynError (111,"HASTA QUE mal colocado."); errores++;}
 			}
-			if (lazy_syntax && LeftCompare(cadena,"MIENTRAS QUE ")) {
+			if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"MIENTRAS QUE ")) {
 				if (!bucles.empty() && bucles.back()=="REPETIR") {
 					bucles.pop_back();
 				} else {
@@ -1514,7 +1514,7 @@ int SynCheck() {
 					if (have_proceso) { SynError (272,"Solo puede haber un Proceso."); errores++;}
 					main_process_name=func->id;
 					have_proceso=true;
-				} else if (!enable_user_functions)
+				} else if (!lang[LS_ENABLE_USER_FUNCTIONS])
 					{ SynError (309,"Este perfil no admite SubProcesos."); errores++;}
 			}
 	}

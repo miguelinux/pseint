@@ -154,7 +154,6 @@ bool cargar(list<t_proceso> &algs, string archivo){
 int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
-	input_base_zero_arrays=false;
 
 	_handle_version_query("psExport");
 	
@@ -164,7 +163,7 @@ int main(int argc, char *argv[]){
 			cout<<"OK";
 			return 0;
 		} else if (s=="--help") {
-			cerr<<"Use: "<<argv[0]<<" [--basezeroarrays] [--lang=<lenguaje>] <in_file.drw> <out_file.cpp>\n";
+			cerr<<"Use: "<<argv[0]<<" [--base_zero_arrays=1] [--lang=<lenguaje>] <in_file.drw> <out_file.cpp>\n";
 			return 1;
 		} else if (s.substr(0,7)=="--lang=") {
 			s.erase(0,7); 
@@ -192,10 +191,10 @@ int main(int argc, char *argv[]){
 					cerr<<"El lenguaje no es válido. Los lenguajes disponibles son: bas, c, cpp, html, java, js, pas, php, py2, py3, vb"<<endl;
 				}
 			}
-		} else if (s=="--basezeroarrays") {
-			input_base_zero_arrays=true;
 		} else if (s=="--for-testing") {
 			for_test=true;
+		} else if (s.substr(0,2)=="--" && lang.ProcessConfigLine(s.substr(2))) {
+			; // procesado en lang.ProcessConfigLine
 		} else if (fname_in.size() && fname_out.size()) {
 			cerr<<"Argumentos incorrectos"<<endl;
 			return 1;
@@ -213,7 +212,9 @@ int main(int argc, char *argv[]){
 		cerr<<"Argumentos incorrectos: no se especificó lenguaje."<<endl;
 		return 1;
 	}
-
+	lang.Fix();
+	input_base_zero_arrays=lang[LS_BASE_ZERO_ARRAYS];
+	lang[LS_BASE_ZERO_ARRAYS]=output_base_zero_arrays; // lo va a consultar el evaluador de expresiones
 	LoadFunciones();
 	
 	//cargar programa

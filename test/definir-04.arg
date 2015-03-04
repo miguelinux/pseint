@@ -1,1 +1,1 @@
---allowconcatenation --input=1 --input=2
+--allow_concatenation=1 --input=1 --input=2

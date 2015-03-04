@@ -132,7 +132,7 @@ bool CheckVariable(string str, int errcode) {
 		ret=false;
 	else if (str=="FINSEGUN" || str=="FINPROCESO" || str=="FINMIENTRAS" || str=="HASTA" || str=="DEFINIR" || str=="COMO")
 		ret=false;
-	else if (enable_user_functions && (str=="FINSUBPROCESO" || str=="SUBPROCESO" ||str=="FINFUNCION" || str=="FUNCION" ||str=="FINFUNCIÓN" || str=="FUNCIÓN") )
+	else if (lang[LS_ENABLE_USER_FUNCTIONS] && (str=="FINSUBPROCESO" || str=="SUBPROCESO" ||str=="FINFUNCION" || str=="FUNCION" ||str=="FINFUNCIÓN" || str=="FUNCIÓN") )
 		ret=false;
 	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no valido (")+str+")."); 
 	return ret;

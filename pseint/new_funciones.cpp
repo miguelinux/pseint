@@ -148,7 +148,7 @@ string func_minusculas(string *arg) {
 
 string func_subcadena(string *arg) {
 	string &s=arg[0]; int l=s.length(), f=(int)StrToDbl(arg[1]), t=(int)StrToDbl(arg[2]);
-	if (!base_zero_arrays) { f--; t--; }
+	if (!lang[LS_BASE_ZERO_ARRAYS]) { f--; t--; }
 	if (t>l-1) t=l-1; if (f<0) f=0;
 	if (t<f) return "";
 	return s.substr(f,t-f+1);
@@ -199,7 +199,7 @@ void LoadFunciones() {
 	funciones["AZAR"]=new Funcion(vt_numerica,func_azar,vt_numerica_entera);
 	funciones["TRUNC"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
 	funciones["REDON"]=new Funcion(vt_numerica,func_redon,vt_numerica);
-	if (enable_string_functions) {
+	if (lang[LS_ENABLE_STRING_FUNCTIONS]) {
 		funciones["CONVERTIRANÚMERO"]=new Funcion(vt_numerica,func_atof,vt_caracter);
 		funciones["CONVERTIRANUMERO"]=new Funcion(vt_numerica,func_atof,vt_caracter);
 		funciones["CONVERTIRATEXTO"]=new Funcion(vt_caracter,func_ftoa,vt_numerica);

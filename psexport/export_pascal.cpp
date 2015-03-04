@@ -21,7 +21,7 @@ PascalExporter::PascalExporter() {
 	uses_crt=false;
 	uses_math=false;
 	uses_sysutils=false;
-	base_zero_arrays=input_base_zero_arrays;
+	output_base_zero_arrays=input_base_zero_arrays;
 	has_matrix_func=false;
 	use_arreglo_max=false;
 }

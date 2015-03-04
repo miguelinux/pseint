@@ -75,8 +75,6 @@ int main(int argc, char* argv[]) {
 		log_file=false, // guardar errores en un archivo de log
 		error=false, 
 		for_draw=false, // generar entrada para psdraw
-		undef_vars=true, 
-		var_definition=false, 
 		write_positions=false,
 		real_time_syntax=false; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
 	int 
@@ -100,38 +98,14 @@ int main(int argc, char* argv[]) {
 				for_test=true;
 			else if (str=="--norun")
 				run=false;
-			else if (str=="--forcedefinevars")
-				var_definition=true;
 			else if (str=="--color")
 				colored_output=true;
-			else if (str=="--nowordoperators")
-				word_operators=false;
-			else if (str=="--allowconcatenation")
-				allow_concatenation=true;
-			else if (str=="--overloadequal")
-				overload_equal=true;
-			else if (str=="--allowddims")
-				allow_dinamyc_dimensions=true;
-			else if (str=="--basezeroarrays")
-				base_zero_arrays=true;
 			else if (str=="--nocheck")
 				check=false;
 			else if (str=="--nouser")
 				user=false;
 			else if (str=="--noinput")
 				noinput=true;
-			else if (str=="--nolazysyntax")
-				lazy_syntax=false;
-			else if (str=="--forceinitvars")
-				undef_vars=false;
-			else if (str=="--forcesemicolon")
-				force_semicolon=true;
-			else if (str=="--hidestringfunctions")
-				enable_string_functions=false;
-			else if (str=="--disableuserfunctions")
-				enable_user_functions=false;
-			else if (str=="--coloquialconditions")
-				coloquial_conditions=word_operators=true;
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
 			else if (str=="--usecasemap")
@@ -152,8 +126,9 @@ int main(int argc, char* argv[]) {
 				with_io_references=true;
 			} else if (str=="--foreval") {
 				for_eval=true;
-			} else 
+			} else if (str.substr(0,2)=="--" && !lang.ProcessConfigLine(str.substr(2))) {
 				error=true;
+			}
 		} else {
 			fil_args[fil_count++]=argv[i];
 		}
@@ -174,20 +149,7 @@ int main(int argc, char* argv[]) {
 		cout<<"      --color                utilizar colores para formatear la salida"<<endl;
 		cout<<"      --nocheck              no revisar la sintaxis"<<endl;
 		cout<<"      --norun                no ejecutar"<<endl;
-		cout<<"      --nowordoperators      no permitir utilzar las palabras y,o y no en lugar de &,| y ~"<<endl;
 		cout<<"      --nouser               no mostrar mensajes de estado ni esperar un tecla al final"<<endl;
-		cout<<"      --forcedefinevars      no permitir utilizar variables sin definir antes su tipo"<<endl;
-		cout<<"      --forceinitvars        no permitir utilizar variables sin inicializar"<<endl;
-		cout<<"      --forcesemicolon       controlar el uso del punto y coma en las instrucciones secuenciales"<<endl;
-		cout<<"      --allowddims           permitir utilizar variables para dimensionar arreglos"<<endl;
-		cout<<"      --nolazysyntax         no permitir sintaxis flexible (omitir algunas palabras, o utilizar sinonimos)"<<endl;
-		cout<<"      --basezeroarrays       trabajar con arreglos en base 0"<<endl;
-		cout<<"      --overloadequal        permitir asignar con ="<<endl;
-		cout<<"      --coloquialconditions  permite condiciones en lenguaje coloquial (ej: \"x es par\")"<<endl;
-		cout<<"      --delay=<num>          define el retardo entre instrucciones para la ejecucion paso a paso"<<endl;
-		cout<<"      --forcevardefinition   obliga a definir explicitamente los tipos de variable"<<endl;
-		cout<<"      --hidestringfunctions  deshabilitar funciones para el manejo de cadenas (ej: longitud(x), subcadena(x,i,j))"<<endl;
-		cout<<"      --disableuserfunctions no permitir la definición de subprocesos"<<endl;
 		cout<<"      --port=<num>           define el puerto tpc para comunicar controlar la depuracion"<<endl;
 		cout<<"      --fortest              ignora algunas instrucciones particulares para evitar ciertas entradas/salidas"<<endl;
 		cout<<"      --rawerrors            muestra los errores sin descripcion, para testing automatizado"<<endl;
@@ -195,9 +157,12 @@ int main(int argc, char* argv[]) {
 		cout<<"      --input=<str>          sirve para predefinir uno o más valores de entrada para acciones LEER"<<endl;
 		cout<<"      --fixwincharset        corrige la codificación de algunos caracteres para que se muestren correctamente"<<endl;
 		cout<<"                             en la consola de Windows"<<endl;
-		cout<<"       --writepositions      al generar el archivo parseado para el editor de diagrams de flujo incluye los"<<endl;
+		cout<<"      --writepositions       al generar el archivo parseado para el editor de diagrams de flujo incluye los"<<endl;
 		cout<<"                             numeros de linea e instrucción necesarios para marcar la ejecución paso a paso"<<endl;
-		cout<<"       --seed=<num>          semilla para el generador de numeros aleatorios"<<endl;
+		cout<<"      --delay=<num>          define el retardo entre instrucciones para la ejecucion paso a paso"<<endl;
+		cout<<"      --seed=<num>           semilla para el generador de numeros aleatorios"<<endl;
+		cout<<"      --profile=<archivo>    archivo de perfil a utilizar para configurar el intérprete"<<endl;
+		cout<<"      --<opt>=?              cambia la opcion <opt> del perfil, ? puede ser 0 o 1"<<endl;
 		exit(1);
 	}
 	
@@ -327,8 +292,6 @@ int main(int argc, char* argv[]) {
 			ExeInfo.close();
 			ExeInfoOn=false;
 		} else if (run) {
-			allow_undef_vars=undef_vars;
-			force_var_definition=var_definition;
 			if (ExeInfoOn) if (user) ExeInfo<<"*** Ejecucion Iniciada. ***"<<endl;
 			if (user) show_user_info("*** Ejecución Iniciada. ***");
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();

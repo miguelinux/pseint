@@ -14,7 +14,7 @@ using namespace std;
 PhpExporter::PhpExporter():CppExporter() {
 	use_stdin=false;
 	read_strings=false;
-	base_zero_arrays=false;
+	output_base_zero_arrays=false;
 }
 
 void PhpExporter::borrar_pantalla(t_output &prog, string param, string tabs){

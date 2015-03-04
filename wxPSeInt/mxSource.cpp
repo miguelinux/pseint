@@ -529,7 +529,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				ShowCalltip(GetCurrentPos(),"{una o mas variables, separadas por comas}");
 			else if (text=="esperar")
 				ShowCalltip(GetCurrentPos(),"{\"Tecla\" o intervalo de tiempo}");
-			else if (text=="escribir"||(config->lang.lazy_syntax&&(text=="mostrar"||text=="imprimir")))
+			else if (text=="escribir"||(config->lang[LS_LAZY_SYNTAX]&&(text=="mostrar"||text=="imprimir")))
 				ShowCalltip(GetCurrentPos(),"{una o mas expresiones, separadas por comas}");
 			else if (text=="mientras")
 				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
@@ -555,7 +555,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				ShowCalltip(GetCurrentPos(),"{acciones por falso}");
 			else if (text=="segun")
 				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
-			else if (config->lang.lazy_syntax && (text=="opcion"||text=="sies"||text=="caso"))
+			else if (config->lang[LS_LAZY_SYNTAX] && (text=="opcion"||text=="sies"||text=="caso"))
 				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
 			else
 				HideCalltip();
@@ -591,7 +591,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		wxString what = evt.GetText();
 		while (comp_list[i]!=what) i++;
 		wxString text(comp_list[i].text);
-		if (!config->lang.force_semicolon && text.Last()==';') text.RemoveLast();
+		if (!config->lang[LS_FORCE_SEMICOLON] && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
 			text.Last()='\n';
 		ReplaceTarget(text);
@@ -760,37 +760,37 @@ void mxSource::SetExample() {
 			if (p1==wxNOT_FOUND||p1>p2) {
 				
 				if (p2==2&&aux[1]==';') {
-					if (config->lang.force_semicolon)
+					if (config->lang[LS_FORCE_SEMICOLON])
 						str=str.Mid(0,p0)+";"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='&') {
-					if (config->lang.word_operators)
+					if (config->lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"Y"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"&"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='|') {
-					if (config->lang.word_operators)
+					if (config->lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"O"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"|"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='~') {
-					if (config->lang.word_operators)
+					if (config->lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"NO"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"~"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='%') {
-					if (config->lang.word_operators)
+					if (config->lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"MOD"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"%"+aux.Mid(p2+1);
 				
 				} else if (p2>8 && ( aux.Mid(1,8)=="DEFINIR "|| aux.Mid(1,8)=="Definir "|| aux.Mid(1,8)=="definir " ) ) {
-					if (config->lang.force_define_vars)
+					if (config->lang[LS_FORCE_DEFINE_VARS])
 						str=str.Mid(0,p0)+str.Mid(p0+1,p2-1)+aux.Mid(p2+1);
 					else
 						str="";
@@ -803,7 +803,7 @@ void mxSource::SetExample() {
 			} else {
 				
 				p1+=p0; p2+=p0;
-				if (config->lang.base_zero_arrays)
+				if (config->lang[LS_BASE_ZERO_ARRAYS])
 					str=str.Mid(0,p0)+str.Mid(p1+1,p2-p1-1)+str.Mid(p2+1);
 				else
 					str=str.Mid(0,p0)+str.Mid(p0+1,p1-p0-1)+str.Mid(p2+1);
@@ -919,7 +919,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						wxString word=line.SubString(wstart,i-1);
 						word.MakeUpper();
 						if (word=="SI") { 
-							if (config->lang.lazy_syntax) {
+							if (config->lang[LS_LAZY_SYNTAX]) {
 								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
 								if (toupper(line[y])!='E' || toupper(line[y+1])!='S' || (line[y+2]!=' '&&line[y+2]!='\t'))
 									{ cur+=4; btype=BT_SI; }
@@ -968,13 +968,13 @@ void mxSource::UnExample() {
 void mxSource::SetWords() {
 	// setear palabras claves para el coloreado
 	wxString s1=_Z(mxSourceWords1);
-	if (config->lang.enable_user_functions) s1<<_Z(mxSourceWords1_funcs);
-	if (config->lang.word_operators) s1<<_Z(mxSourceWords1_op);
-	if (config->lang.lazy_syntax) s1<<_Z(mxSourceWords1_extra);
-	if (config->lang.coloquial_conditions) s1<<_Z(mxSourceWords1_conds);
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) s1<<_Z(mxSourceWords1_funcs);
+	if (config->lang[LS_WORD_OPERATORS]) s1<<_Z(mxSourceWords1_op);
+	if (config->lang[LS_LAZY_SYNTAX]) s1<<_Z(mxSourceWords1_extra);
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) s1<<_Z(mxSourceWords1_conds);
 	SetKeyWords (0, s1);
 	wxString s2=_Z(mxSourceWords2_math);
-	if (config->lang.enable_string_functions) s2<<_Z(mxSourceWords2_string);
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) s2<<_Z(mxSourceWords2_string);
 	SetKeyWords (1, s2);
 	SetKeyWords (3, ""); // para resaltar las variables
 }
@@ -984,21 +984,21 @@ void mxSource::SetAutocompletion() {
 	comp_count=0;
 	
 	comp_list[comp_count++]=comp_list_item("Proceso","Proceso ","");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Funcion","Funcion ","");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("SubProceso","SubProceso ","");
-	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","SubProceso");
-	if (config->lang.enable_user_functions)	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","Funcion");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","SubProceso");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","Funcion");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Funcion","Funcion ","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("SubProceso","SubProceso ","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS])	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","SubProceso");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS])	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","Funcion");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","SubProceso");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","Funcion");
 	comp_list[comp_count++]=comp_list_item("Fin Proceso","Fin Proceso\n","");
 	comp_list[comp_count++]=comp_list_item("FinProceso","FinProceso\n","");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("Fin SubProceso","Fin SubProceso\n","");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("FinSubProceso","FinSubProceso\n","");
-	if (config->lang.enable_user_functions) comp_list[comp_count++]=comp_list_item("FinFuncion","FinFuncion\n","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Fin SubProceso","Fin SubProceso\n","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("FinSubProceso","FinSubProceso\n","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("FinFuncion","FinFuncion\n","");
 	
 	comp_list[comp_count++]=comp_list_item("Escribir","Escribir ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Imprimir","Imprimir ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Mostrar","Mostrar ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Imprimir","Imprimir ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Mostrar","Mostrar ","");
 	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Escribir");
 	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Mostrar");
 	comp_list[comp_count++]=comp_list_item("Sin Saltar","Sin Saltar","Imprimir");
@@ -1032,61 +1032,61 @@ void mxSource::SetAutocompletion() {
 	comp_list[comp_count++]=comp_list_item("FinMientras","FinMientras\n","");
 	
 	comp_list[comp_count++]=comp_list_item("Para","Para ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Para Cada","Para Cada ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Desde","Desde ","Para");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Hasta","Hasta ","Para");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Para Cada","Para Cada ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Desde","Desde ","Para");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Hasta","Hasta ","Para");
 	comp_list[comp_count++]=comp_list_item("Con Paso","Con Paso ","Para");
 	comp_list[comp_count++]=comp_list_item("Hacer","Hacer\n","Para");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Cada ","Cada ","Para");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Cada ","Cada ","Para");
 	comp_list[comp_count++]=comp_list_item("Fin Para","Fin Para\n","");
 	comp_list[comp_count++]=comp_list_item("FinPara","FinPara\n","");
 	
 	comp_list[comp_count++]=comp_list_item("Repetir","Repetir\n","");
 	comp_list[comp_count++]=comp_list_item("Hacer","Hacer\n","");
 	comp_list[comp_count++]=comp_list_item("Hasta Que","Hasta Que ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Mientras Que","Mientras Que ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Mientras Que","Mientras Que ","");
 	
 	comp_list[comp_count++]=comp_list_item("Segun","Segun ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Opcion","Opcion ","");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Caso","Caso ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Opcion","Opcion ","");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Caso","Caso ","");
 	comp_list[comp_count++]=comp_list_item("De Otro Modo:","De Otro Modo:\n","");
 	comp_list[comp_count++]=comp_list_item("FinSegun","FinSegun\n","");
 	comp_list[comp_count++]=comp_list_item("Fin Segun","Fin Segun\n","");
 	
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(","*");
-	if (config->lang.enable_string_functions) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Longitud","Longitud(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Mayusculas","Mayusculas(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Minusculas","Minusculas(","*");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Subcadena","Subcadena(","*");
 	
 	comp_list[comp_count++]=comp_list_item("Verdadero","Verdadero","*");
 	comp_list[comp_count++]=comp_list_item("Falso","Falso","*");
 	
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Cero","Es Cero","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Distinto De","Es Distinto De ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Divisible Por","Es Divisible Por ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Igual A","Es Igual A ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Impar","Es Impar","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Mayor O Igual A","Es Mayor O Igual A ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Mayor Que","Es Mayor Que ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Menor O Igual A","Es Menor O Igual A ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Menor Que","Es Menor Que ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Multiplo De","Es Multiplo De ","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Negativo","Es Negativo","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Par","Es Par","*");
-	if (config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Positivo","Es Positivo","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Cero","Es Cero","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Distinto De","Es Distinto De ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Divisible Por","Es Divisible Por ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Igual A","Es Igual A ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Impar","Es Impar","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Mayor O Igual A","Es Mayor O Igual A ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Mayor Que","Es Mayor Que ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Menor O Igual A","Es Menor O Igual A ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Menor Que","Es Menor Que ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Multiplo De","Es Multiplo De ","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Negativo","Es Negativo","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Par","Es Par","*");
+	if (config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Positivo","Es Positivo","*");
 	
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Real","Es Real;","Es");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Caracter","Es Caracter;","Es");
-	if (config->lang.lazy_syntax && !config->lang.coloquial_conditions) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero;","Es");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Es Logico","Es Logico;","Es");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Reales","Son Reales;","Son");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Caracteres","Son Caracteres;","Son");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Enteros","Son Enteros;","Son");
-	if (config->lang.lazy_syntax) comp_list[comp_count++]=comp_list_item("Son Logicos","Son Logicos;","Son");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Es Real","Es Real;","Es");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Es Caracter","Es Caracter;","Es");
+	if (config->lang[LS_LAZY_SYNTAX] && !config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list[comp_count++]=comp_list_item("Es Entero","Es Entero;","Es");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Es Logico","Es Logico;","Es");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Son Reales","Son Reales;","Son");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Son Caracteres","Son Caracteres;","Son");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Son Enteros","Son Enteros;","Son");
+	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Son Logicos","Son Logicos;","Son");
 	
 	sort(comp_list,comp_list+comp_count);
 }
@@ -1753,7 +1753,7 @@ bool mxSource::IsProcOrSub(int line) {
 	int l=s.Len(), i=0;
 	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
 	if (i+8<l && s.Mid(i,8).Upper()=="PROCESO ") return true;
-	if (config->lang.enable_user_functions) {
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
 		if (i+11<l && s.Mid(i,11).Upper()=="SUBPROCESO ") return true;
 		if (i+8<l && s.Mid(i,8).Upper()=="FUNCION ") return true;
 		while (i<l) {
@@ -1801,7 +1801,7 @@ void mxSource::DefineVar(int where, wxString var_name, int type) {
 	// agregar la definicion
 	int x=GetLineEndPosition(where);
 	SetTargetStart(x); SetTargetEnd(x);
-	ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(config->lang.force_semicolon?";":"")<<(add_line?"\n\t":""));
+	ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(config->lang[LS_FORCE_SEMICOLON]?";":"")<<(add_line?"\n\t":""));
 }
 
 void mxSource::OnDefineVar (wxCommandEvent & evt) {

@@ -311,14 +311,14 @@ void mxMainWindow::CreateMenus() {
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _T("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
-	mi_shape_colors->Enable(!config->lang.use_nassi_schneiderman);	
+	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SCHNEIDERMAN]);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
 	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
-	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang.use_nassi_schneiderman);
+	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos..."),"","");
@@ -405,7 +405,7 @@ void mxMainWindow::CreateCommandsPanel() {
 	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,"repetir.png",_Z("Repetir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,"para.png",_Z("Para"))->SetToolTip(tt);
 	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",_Z("SubProceso")))->SetToolTip(tt);
-	if (!config->lang.enable_user_functions) button_subproc->Hide();
+	if (!config->lang[LS_ENABLE_USER_FUNCTIONS]) button_subproc->Hide();
 	panel->SetSizerAndFit(sizer);
 	
 	wxAuiPaneInfo info_helper,info_win;
@@ -892,7 +892,7 @@ void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText("ASIGNAR"));
 	wxArrayString toins;
-	if (config->lang.force_semicolon)
+	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("{variable}<-{expresion};");
 	else
 		toins.Add("{variable}<-{expresion}");
@@ -903,7 +903,7 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText("LEER"));
 	wxArrayString toins;
-	if (config->lang.force_semicolon)
+	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("Leer {lista_de_variables};");
 	else
 		toins.Add("Leer {lista_de_variables}");
@@ -914,7 +914,7 @@ void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText("ESCRIBIR"));
 	wxArrayString toins;
-	if (config->lang.force_semicolon)
+	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("Escribir {lista_de_expresiones};");
 	else
 		toins.Add("Escribir {lista_de_expresiones}");
@@ -1059,7 +1059,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		// insertar el código con su correspondiente formato (en la linea dada por line, que está en blanco)
 		int oline=line;
 		for (unsigned int i=0;i<toins.GetCount();i++) {
-			if (config->lang.lazy_syntax && toins[i].StartsWith("Fin"))
+			if (config->lang[LS_LAZY_SYNTAX] && toins[i].StartsWith("Fin"))
 				toins[i].Replace("Fin","Fin ",false);
 			if (i) source->InsertText(source->PositionFromLine(line),"\n");
 			int pos = source->GetLineIndentPosition(line);
@@ -1525,11 +1525,11 @@ void mxMainWindow::UpdateRealTimeSyntax() {
 void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	if (!mi_nassi_schne->IsChecked()) {
 		mi_nassi_schne->Check(false);
-		config->lang.use_nassi_schneiderman=false;
+		config->lang[LS_USE_NASSI_SCHNEIDERMAN]=false;
 		mi_shape_colors->Enable(true);
 	} else {
 		mi_nassi_schne->Check(true);
-		config->lang.use_nassi_schneiderman=true;
+		config->lang[LS_USE_NASSI_SCHNEIDERMAN]=true;
 		mi_shape_colors->Enable(false);
 	}
 }
@@ -1543,10 +1543,10 @@ void mxMainWindow::ProfileChanged ( ) {
 		((mxSource*)(notebook->GetPage(i)))->KillRunningTerminal();
 	}
 	debug_panel->ProfileChanged();
-	mi_nassi_schne->Check(config->lang.use_nassi_schneiderman);
-	mi_shape_colors->Enable(!config->lang.use_nassi_schneiderman);
+	mi_nassi_schne->Check(config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
+	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
-	button_subproc->Show(config->lang.enable_user_functions);
+	button_subproc->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
 	commands->Layout();
 	opers_window->SetWordOperators();
 }

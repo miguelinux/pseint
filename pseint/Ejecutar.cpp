@@ -119,7 +119,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					cadena.erase(0,aux2.size()+1);
 					tmp2-=aux2.size();
 
-					if (force_var_definition && !memoria->EstaDefinida(aux2)) {
+					if (lang[LS_FORCE_DEFINE_VARS] && !memoria->EstaDefinida(aux2)) {
 						ExeError(208,"Variable no definida ("+aux2+").");
 					}
 					tipo=memoria->LeerTipo(aux2);
@@ -207,7 +207,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					}
 					dim=new int[tmp3+1]; dim[0]=tmp3;
 					int last=0;tmp3=1; tmp1=0; tmp2=0;
-					if (allow_dinamyc_dimensions) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
+					if (lang[LS_ALLOW_DINAMYC_DIMENSIONS]) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
 					while (tmp1<(int)aux2.size()) {
 						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
 							tmp1++;
@@ -293,7 +293,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tmp1=cadena.find("<-",0);
 				aux1=cadena.substr(0,tmp1);  
 				aux2=cadena.substr(tmp1+3,cadena.size()-tmp1-5); // ignorar flecha, punto y como y parentesis extras
-				if (force_var_definition && !memoria->EstaDefinida(aux1)) {
+				if (lang[LS_FORCE_DEFINE_VARS] && !memoria->EstaDefinida(aux1)) {
 					ExeError(211,string("La variable (")+aux1+") no esta definida.");
 				}
 				// verificar indices si es arreglo
@@ -463,7 +463,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					positivo=(Evaluar(val_paso+">=0",tipo)=="VERDADERO");
 				} else { // si no hay paso adivinar
 					val_fin=cadena;
-					if (lazy_syntax && Evaluar(val_fin+"<"+val_ini,tipo)=="VERDADERO") {
+					if (lang[LS_LAZY_SYNTAX] && Evaluar(val_fin+"<"+val_ini,tipo)=="VERDADERO") {
 						_sub(line,"Se determina que el paso será -1.");
 						positivo=false; val_paso="-1";
 					} else {
@@ -527,7 +527,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					string elemento=")";
 					int naux=1;
 					for (int j=dims[0];j>0;j--) {
-						elemento=string(",")+IntToStr((base_zero_arrays?0:1)+((i/naux)%dims[j]))+elemento;
+						elemento=string(",")+IntToStr((lang[LS_BASE_ZERO_ARRAYS]?0:1)+((i/naux)%dims[j]))+elemento;
 						naux*=dims[j];
 					}
 					elemento=aux2+"("+elemento.substr(1);
@@ -556,8 +556,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_pos(line);
 				_sub(line,string("Se evalúa la expresion: ")+cadena);
 				Evaluar(aux2=cadena,tipo,tipo_master); // evaluar para verificar el tipo
-				if (!tipo.cb_num&&(!lazy_syntax||!tipo.cb_car)) {
-					if (lazy_syntax) 
+				if (!tipo.cb_num&&(!lang[LS_LAZY_SYNTAX]||!tipo.cb_car)) {
+					if (lang[LS_LAZY_SYNTAX]) 
 						ExeError(205,"La expresión del SEGUN debe ser de tipo numerica o caracter.");
 					else
 						ExeError(206,"La expresión del SEGUN debe ser numerica.");
@@ -593,7 +593,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 								_pos(x);
 								_sub(x,string("Se evalúa la opcion: ")+aux3);
 								aux1=Evaluar(aux3,tipo,tipo_master);
-								if (!tipo.cb_num&&(!lazy_syntax||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
+								if (!tipo.cb_num&&(!lang[LS_LAZY_SYNTAX]||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde
 								if (Evaluar(aux3+"="+aux2,tipo)==VERDADERO) {
 									_sub(x,"El resultado coincide, se ingresará en esta opción.");

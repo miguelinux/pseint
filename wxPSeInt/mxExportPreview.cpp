@@ -114,7 +114,7 @@ void mxExportPreview::OnProcTerminate (wxProcessEvent & event) {
 	case mxEP_CHECK: { // estaba armando el psd, ahora exportar
 		wxString command;
 		command<<config->psexport_command<<_T(" \"")<<temp_filename<<".psd"<<_T("\" \"")<<temp_filename<<".exp"<<_T("\"");
-		if (config->lang.base_zero_arrays) command<<_T(" --basezeroarrays");
+		if (config->lang[LS_BASE_ZERO_ARRAYS]) command<<_T(" --base_zero_arrays=1");
 		int lang_id = mxID_FILE_EXPORT_LANG_FIRST+1+combo_lang->GetCurrentSelection();
 		command<<" --lang="<<utils->GetExportLangCode(lang_id);
 		

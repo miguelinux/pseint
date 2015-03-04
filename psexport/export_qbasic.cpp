@@ -13,7 +13,7 @@
 #include "export_tipos.h"
 
 QBasicExporter::QBasicExporter() {
-	base_zero_arrays=false;
+	output_base_zero_arrays=false;
 }
 
 void QBasicExporter::esperar_tecla(t_output &prog, string param, string tabs){

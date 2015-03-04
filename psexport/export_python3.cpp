@@ -24,7 +24,7 @@ Python3Exporter::Python3Exporter(int version) {
 	import_atan=false;
 	import_randint=false;
 	use_subprocesos=false;
-	base_zero_arrays=true;
+	output_base_zero_arrays=true;
 }
 
 void Python3Exporter::dimension(t_output &prog, t_arglist &args, string tabs) {

@@ -6,6 +6,7 @@
 class ExpIntrucciones;
 
 extern bool input_base_zero_arrays;
+extern bool output_base_zero_arrays;
 
 // conversion de expresiones
 string modificarConstante(string s,int diff);

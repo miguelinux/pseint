@@ -97,10 +97,10 @@ void mxOpersWindow::Replace(oper_item &o, wxString f1, wxString t1, wxString f2,
 
 void mxOpersWindow::SetWordOperators ( ) {
 	for(unsigned int i=0;i<lista.size();i++) {  
-		Replace(lista[i],"&","Y"," & "," Y ",config->lang.word_operators);
-		Replace(lista[i],"|","O"," | "," O ",config->lang.word_operators);
-		Replace(lista[i],"~","NO","~ ","NO ",config->lang.word_operators);
-		Replace(lista[i],"%","MOD","%"," MOD ",config->lang.word_operators);
+		Replace(lista[i],"&","Y"," & "," Y ",config->lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"|","O"," | "," O ",config->lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"~","NO","~ ","NO ",config->lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"%","MOD","%"," MOD ",config->lang[LS_WORD_OPERATORS]);
 	}
 }
 

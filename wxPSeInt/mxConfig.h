@@ -3,23 +3,11 @@
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
 #include "ConfigManager.h"
+#include "../pseint/LangSettings.h"
 
 class mxConfig:wxDialog {
 private:
-	wxCheckBox *chk_force_init_vars;
-	wxCheckBox *chk_force_define_vars;
-	wxCheckBox *chk_force_semicolon;
-	wxCheckBox *chk_base_zero_arrays;
-	wxCheckBox *chk_allow_concatenation;
-	wxCheckBox *chk_overload_equal;
-	wxCheckBox *chk_coloquial_conditions;
-	wxCheckBox *chk_lazy_syntax;
-	wxCheckBox *chk_word_operators;
-	wxCheckBox *chk_allow_dinamyc_dimensions;
-	wxCheckBox *chk_use_alternative_io;
-	wxCheckBox *chk_use_nassi_schneiderman;
-	wxCheckBox *chk_enable_string_functions;
-	wxCheckBox *chk_enable_user_functions;
+	wxCheckBox *chk[LS_COUNT];
 	void ReadFromStruct(LangSettings l);
 	void CopyToStruct(LangSettings &l);
 public:

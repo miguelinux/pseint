@@ -13,7 +13,7 @@
 #include "export_tipos.h"
 
 VbExporter::VbExporter() {
-	base_zero_arrays=false;
+	output_base_zero_arrays=false;
 }
 
 void VbExporter::esperar_tecla(t_output &prog, string param, string tabs){

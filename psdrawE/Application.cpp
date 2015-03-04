@@ -14,6 +14,7 @@
 #include "GLtoWX.h"
 #include "Version.h"
 #include <wx/choicdlg.h>
+#include "../pseint/LangSettings.h"
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -24,24 +25,26 @@ public:
 };
 
 #ifdef __WXMAC__
-// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
-#include <ApplicationServices/ApplicationServices.h>
+	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
+#	include <ApplicationServices/ApplicationServices.h>
 #endif
 
 IMPLEMENT_APP(mxApplication)
 	
 #if (wxUSE_LIBPNG==1)
-#define _IF_PNG(x) x
+#	define _IF_PNG(x) x
 #else
-#define _IF_PNG(x)
+#	define _IF_PNG(x)
 #endif
 #if (wxUSE_LIBJPEG==1)
-#define _IF_JPG(x) x
+#	define _IF_JPG(x) x
 #else
-#define _IF_JPG(x)
+#	define _IF_JPG(x)
 #endif
 
 bool mxApplication::OnInit() {
+	
+	_handle_version_query("psDraw3");
 	
 #ifdef __WXMAC__
 	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
@@ -51,11 +54,10 @@ bool mxApplication::OnInit() {
 	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 #endif
 	
-	
-	_handle_version_query("psDraw3");
+	LangSettings lang;
 	
 	if (argc==1) {
-		cerr<<"Use: "<<argv[0]<<" [--nassischneiderman] <input_file> <output_file>"<<endl;
+		cerr<<"Use: "<<argv[0]<<" [--use_nassi_schneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
 	}
 	
 	_IF_PNG(wxImage::AddHandler(new wxPNGHandler));
@@ -66,20 +68,21 @@ bool mxApplication::OnInit() {
 	int c=0; bool force=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
-		if (wxString(argv[i])=="--nassischneiderman")
-			Entity::nassi_schneiderman=true;
-		else if (wxString(argv[i])=="--alternativeio")
-			Entity::alternative_io=true;
-		else if (wxString(argv[i])=="--force")
+		wxString arg(argv[i]);
+		if (arg=="--force") {
 			force=true;
-		else if (wxString(argv[i])=="--shapecolors")
+		} else if (arg=="--shapecolors") {
 			Entity::shape_colors=true;
-		else if (wxString(argv[i]).Len()) {
-			if (fin.Len()) fout=argv[i];
-			else fin=argv[i]; 
+		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
+			; // procesado en lang.ProcessConfigLine
+		} else if (arg.Len()) {
+			if (fin.Len()) fout=arg;
+			else fin=arg; 
 		}
 	}
-	
+	lang.Fix();
+	Entity::nassi_schneiderman=lang[LS_USE_NASSI_SCHNEIDERMAN];
+	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	if (!Load(fin)) {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}

@@ -13,7 +13,7 @@
 #include "export_tipos.h"
 
 MatLabExporter::MatLabExporter() {
-	base_zero_arrays=false;
+	output_base_zero_arrays=false;
 	use_comparar_cadenas=false;
 	use_string_matrix=false;
 }
