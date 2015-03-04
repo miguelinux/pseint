@@ -51,6 +51,7 @@ public:
 	mxSource *OpenProgram(wxString path, bool is_example=false);
 	mxSource *OpenTestPackage(const wxString &path);
 	void CloseTestPackage();
+	void OnSourceClose(mxSource *src);
 	
 	mxMainWindow(wxPoint pos, wxSize size);
 	mxSource *last_source;

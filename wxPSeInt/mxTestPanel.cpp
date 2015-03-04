@@ -17,6 +17,7 @@ BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 END_EVENT_TABLE()
 
 mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
+	src = NULL;
 	sizer = new wxBoxSizer(wxHORIZONTAL);
 	eval_button = new wxButton(this,mxID_TESTPACK_RUN,_Z("Evaluar..."));
 	label = new wxStaticText(this,wxID_ANY,_Z("Cargando ejercicio..."),wxDefaultPosition,wxDefaultSize);
@@ -42,7 +43,7 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 }
 
 void mxTestPanel::OnRun (wxCommandEvent & event) {
-	src->SaveTemp();
+	main_window->SelectSource(src); src->SaveTemp();
 	wxString cmd = config->pseval_command +" \""+path+"\" \""+(key.Len()?key:"--nokey")+"\" "+ config->pseint_command+" "+mxProcess::GetProfileArgs() + " \""+src->GetTempFilenamePSC()+"\"";
 	_LOG("mxTestPanel::OnRun");
 	_LOG("    "<<cmd);

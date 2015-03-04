@@ -508,7 +508,6 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 }
 
 void mxMainWindow::CloseTestPackage() {
-	HideQuickHelp();
 	aui_manager.GetPane(test_panel).Hide();
 	aui_manager.DetachPane(test_panel);
 	test_panel->Destroy();
@@ -1323,9 +1322,6 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 			} else
 				source->SaveFile(source->filename);
 		}
-		if (test_panel && test_panel->GetSrc()==source) {
-			CloseTestPackage(); aui_manager.Update();
-		}
 	}
 }
 
@@ -2001,5 +1997,12 @@ void mxMainWindow::OnInconInstaller (wxCommandEvent & evt) {
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	new mxIconInstaller(false);
 #endif
+}
+
+void mxMainWindow::OnSourceClose (mxSource * src) {
+	if (last_source==src) src==NULL;
+	if (test_panel && test_panel->GetSrc()==src) {
+		CloseTestPackage(); aui_manager.Update(); HideQuickHelp(); 
+	}
 }
 

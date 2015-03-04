@@ -220,6 +220,7 @@ mxSource::~mxSource() {
 	rt_timer->Stop();
 	RTSyntaxManager::OnSourceClose(this);
 	if (debug) debug->Close(this);
+	main_window->OnSourceClose(this);
 	if (flow_socket) {
 		flow_socket->Write("quit\n",5);
 		flow_socket=NULL;
