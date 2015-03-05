@@ -85,9 +85,9 @@ struct LangSettings {
 	}
 	bool ProcessConfigLine(const std::string &key, const std::string &value) {
 		if (key=="desc") { descripcion+=value+"\n"; return true; }
-		if (key=="profile") { Load(value); }
-		if (key=="binprofile") { SetFromSingleString(value); }
-		if (key=="version") { version=atoi(value.c_str()); }
+		if (key=="profile") { Load(value); return true; }
+		if (key=="binprofile") { SetFromSingleString(value); return true; }
+		if (key=="version") { version=atoi(value.c_str()); return true; }
 		else for(int i=0;i<LS_COUNT;i++) { 
 			if (key==data[i].nombre) {
 				settings[i]=IsTrue(value);

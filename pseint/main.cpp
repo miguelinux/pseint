@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
 			else if (str=="--usecasemap")
 				case_map=new map<string,string>();
 			else if (str=="--draw") {
-				for_draw=true;
+				ignore_logic_errors=for_draw=true;
 				run=false;
 			} else if (str=="--easteregg") {
 				cerr<<"Bazinga!"<<endl;

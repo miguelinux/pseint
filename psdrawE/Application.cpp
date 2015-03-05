@@ -54,8 +54,6 @@ bool mxApplication::OnInit() {
 	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 #endif
 	
-	LangSettings lang;
-	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--use_nassi_schneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
 	}

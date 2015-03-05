@@ -229,12 +229,12 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap --writepositions \"")<<source->GetTempFilenamePSD()<<"\"");
+	if (check_first) return CheckSyntax(file,GetDrawPreArgs()+"--writepositions \""+source->GetTempFilenamePSD()+"\"");
 	wxString command;
 	command<<config->psdraw3_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
 	if (source->GetReadOnly()) command<<" --noedit";
-	command<<" "<<GetDrawArgs();
+	command<<" "<<GetDrawPostArgs();
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");
 	_LOG("mxProcess::DrawAndEdit this="<<this);
 	_LOG("    "<<command);
@@ -243,11 +243,11 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 
 bool mxProcess::SaveDraw(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_SAVEDRAW:mxPW_SAVEDRAW;
-	if (check_first) return CheckSyntax(file,wxString("--draw --usecasemap \"")<<source->GetTempFilenamePSD()<<"\"");
+	if (check_first) return CheckSyntax(file,GetDrawPreArgs()+" \""+source->GetTempFilenamePSD()+"\"");
 	wxString command;
 	command<<config->psdrawe_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" ");
 	command<<_("\"")<<DIR_PLUS_FILE(source->GetPathForExport(),source->GetNameForExport()+_T(".png"))<<_T("\"");
-	command<<" "<<GetDrawArgs();
+	command<<" "<<GetDrawPostArgs();
 	_LOG("mxProcess::SaveDraw this="<<this);
 	_LOG("    "<<command);
 	return wxExecute(command, wxEXEC_ASYNC, this)!=0;
@@ -291,7 +291,7 @@ void mxProcess::SetSourceDeleted ( ) {
 	source=NULL;
 }
 
-wxString mxProcess::GetDrawArgs ( ) {
+wxString mxProcess::GetDrawPostArgs ( ) {
 	wxString command;
 	if (config->shape_colors) command<<" --shapecolors";
 	if (config->lang[LS_USE_NASSI_SCHNEIDERMAN]) command<<" --use_nassi_schneiderman=1";
@@ -299,5 +299,9 @@ wxString mxProcess::GetDrawArgs ( ) {
 	if (config->lang[LS_FORCE_SEMICOLON]) command<<" --force_semicolon=1";
 	if (!config->lang[LS_WORD_OPERATORS]) command<<" --word_operators=0";
 	return command;
+}
+
+wxString mxProcess::GetDrawPreArgs ( ) {
+	return "--draw --usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
 }
 

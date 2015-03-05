@@ -14,22 +14,18 @@ bool mxApplication::OnInit() {
 	_handle_version_query("psDraw3");
 	
 	GlobalInit();
-	LangSettings lang;
 	int id=-1, port=-1;
 	string fname;
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--shapecolors") Entity::shape_colors=true;
 		else if (a=="--noedit") edit_on=false;
-		else if (a.substr(0,2)=="--" && !lang.ProcessConfigLine(a.substr(2))) {
-			; // done in lang.ProcessConfigLine
-		}
 		else if (a.size()>=5 && a.substr(0,5)=="--id=") {
 			id=atoi(a.substr(5).c_str());
 		} else if (a.size()>=7 && a.substr(0,7)=="--port=") {
 			port=atoi(a.substr(7).c_str());
 		} else if (a.substr(0,2)=="--" && lang.ProcessConfigLine(a.substr(2))) {
-			; // procesado en lang.ProcessConfigLine
+			; // done in lang.ProcessConfigLine
 		} else fname=a;
 	}
 	lang.Fix();

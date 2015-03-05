@@ -4,14 +4,15 @@
 #include <vector>
 #include <map>
 #include "Entity.h"
+#include "../pseint/LangSettings.h"
 using namespace std;
 
 
 // comunicacion con wxPseInt
+extern LangSettings lang;
 extern bool edit_on; // indica si se puede editar el diagrama
 extern bool debugging; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)
 extern string fname; // archivo que recibe como argumento
-//extern string pname; // nombre original del proceso
 
 extern bool modified; // para saber si hay que preguntar antes de salir sin guardar
 
@@ -94,8 +95,6 @@ extern const float color_menu_sel[3]; // fondo de elemento de menu seleccionado
 extern const float color_error[3]; // mensajes de error de sintaxis
 extern bool draw_shadow; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
 
-extern bool word_operators; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
-extern bool force_semicolons; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 // para interpolar en las animaciones, good converge pixel perfect, la otra puede que no
 #ifdef _FOR_EXPORT
 	#define interpolate(a,b) a=b

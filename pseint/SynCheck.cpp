@@ -331,7 +331,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 			} else if (act=='.') {
 				if (w!=w_operhand) { w=w_operhand; wext=w_number_dec; }
 				else if (wext!=w_number_int) {
-					SynError (231,"Constante numérica no válida."); errores++;
+					if (!ignore_logic_errors) { SynError (231,"Constante numérica no válida."); errores++; }
 				} else wext=w_number_dec;
 			
 			} else if (EsLetra(act)) {
@@ -341,7 +341,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					else if (wext==w_expr)
 						{ SynError (307,"Falta operando (posiblemente después de ')')."); errores++; }
 					else
-						{ SynError (238,"Constante numérica no válida."); errores++; }
+						if (!ignore_logic_errors) { SynError (238,"Constante numérica no válida."); errores++; }
 				}
 				w=w_operhand; wext=w_id;
 			
@@ -741,7 +741,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			
 			if (cadena.size()&&cadena[cadena.size()-1]==',')
-			{ SynError (31,"Parametro nulo."); errores++; }
+				{ SynError (31,"Parametro nulo."); errores++; }
 			while (cadena[0]==';' && cadena.size()>1) cadena.erase(0,1); // para que caso esta esto?
 			// Controlar que el si siempre tenga un entonces
 			if (x&&LeftCompare(programa[x-1],"SI "))
@@ -765,14 +765,9 @@ int SynCheck(int linea_from, int linea_to) {
 			if (lleva_pyc) {
 				if (cadena[cadena.size()-1]!=';') {
 					if (lang[LS_FORCE_SEMICOLON])
-					{ SynError (38,"Falta punto y coma."); errores++; }
+						{ SynError (38,"Falta punto y coma."); errores++; }
 					cadena=cadena+';';
 				}
-//			} else {
-//				if (instruccion!="Error?" && cadena[cadena.size()-1]==';') {
-//					SynError (39,"No lleva punto y coma."); errores++;
-//					cadena.erase(cadena.size()-1,1);
-//				}
 			}
 			// Pegar la instrucción
 			if (instruccion!="Error?" && instruccion!="<-" && instruccion!=":")
@@ -816,11 +811,11 @@ int SynCheck(int linea_from, int linea_to) {
 			// Controlar correcta y completa sintaxis de cada instruccion
 			if (instruccion=="DEFINIR "){  // ------------ DEFINIR -----------//
 				if (cadena=="DEFINIR" || cadena=="DEFINIR ;")
-				{SynError (44,"Faltan parametros."); errores++;}
+					{SynError (44,"Faltan parametros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]!=';') {
 						cadena=cadena+";";
-						SynError (45,"Falta punto y coma."); errores++;
+						if (!ignore_logic_errors) { SynError (45,"Falta punto y coma."); errores++; }
 					}
 					size_t pos_como=cadena.find(" COMO ");
 					string def_tipo; if (pos_como!=string::npos) {pos_como+=6; def_tipo=cadena.substr(pos_como); }
@@ -846,7 +841,7 @@ int SynCheck(int linea_from, int linea_to) {
 					else if (def_tipo=="LOGICA;") cadena.replace(cadena.size()-7,7,"LOGICO;");
 					
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
-						{SynError (46,"Falta tipo de dato o tipo no valido."); errores++;}
+						if (!ignore_logic_errors) { SynError (46,"Falta tipo de dato o tipo no valido."); errores++;}
 					} else {
 						int largotipo=0; tipo_var tipo_def=vt_desconocido;;
 						if (RightCompare(cadena," COMO REAL;")) { largotipo=11; tipo_def=vt_numerica; }
@@ -869,12 +864,12 @@ int SynCheck(int linea_from, int linea_to) {
 								if (str.find("(",0)==string::npos) {
 									if (!CheckVariable(str,48)) errores++;
 									else {
-										if (memoria->EsArgumento(str)) { SynError (222,"No debe redefinir el tipo de un argumento."); errores++; }
+										if (memoria->EsArgumento(str) && !ignore_logic_errors) { SynError (222,"No debe redefinir el tipo de un argumento."); errores++; }
 										memoria->DefinirTipo(str,tipo_def);
 									}
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
-									SynError (212,string("No debe utilizar subindices (")+str+")."); errores++;
+									if (!ignore_logic_errors) { SynError (212,string("No debe utilizar subindices (")+str+")."); errores++; }
 								}
 								tmp3=tmp1+1;
 							}
@@ -885,7 +880,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="ESCRIBIR " || instruccion=="ESCRIBNL "){  // ------------ ESCRIBIR -----------//
 				if (cadena=="ESCRIBIR" || cadena=="ESCRIBIR ;"||cadena=="ESCRIBNL" || cadena=="ESCRIBNL ;")
-				{SynError (53,"Faltan parametros."); errores++;}
+					{SynError (53,"Faltan parametros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]==';')
 						cadena[cadena.size()-1]=',';
@@ -921,7 +916,7 @@ int SynCheck(int linea_from, int linea_to) {
 					else if (RightCompare(cadena," SEGUNDO;")) str.erase(str.size()-9);
 					else if (RightCompare(cadena," MILISEGUNDOS;")) str.erase(str.size()-14);
 					else if (RightCompare(cadena," MILISEGUNDO;")) str.erase(str.size()-13);
-					else {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
+					else if (!ignore_logic_errors) {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
 					EvaluarSC(str,tipo,vt_numerica);
 					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
 						for (int tmp1=0;tmp1<(int)str.size();tmp1++) if (str[tmp1]==' ') {SynError (240,"Se esperaba una sola expresión."); errores++;}
@@ -948,14 +943,14 @@ int SynCheck(int linea_from, int linea_to) {
 							str.erase(tmp1,str.size()-tmp1);
 							str.erase(0,tmp3);
 							if (str.find("(",0)==string::npos){ 
-								SynError (58,"Faltan subindices."); errores++;
+								if (!ignore_logic_errors) { SynError (58,"Faltan subindices."); errores++; }
 								if (!CheckVariable(str,59)) errores++;
 								else if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 							} else {
 								string aname;
 								str.erase(str.find("(",0),str.size()-str.find("(",0));
 								if (!CheckVariable(str,60)) errores++;
-								if (memoria->EsArgumento(str)) { SynError (223,"No debe redimensionar un argumento."); errores++; }
+								if (memoria->EsArgumento(str) && !ignore_logic_errors) { SynError (223,"No debe redimensionar un argumento."); errores++; }
 								else aname=str; // para que aparezca en la lista de variables
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);
@@ -982,7 +977,7 @@ int SynCheck(int linea_from, int linea_to) {
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
-									{SynError (61,"Parametro nulo."); errores++;}
+										{SynError (61,"Parametro nulo."); errores++;}
 									if (Lerrores==errores) res_eval=EvaluarSC(str2,tipo,vt_numerica);
 									if (tipo!=vt_error&&!tipo.cb_num) {
 										{SynError (62,"No coinciden los tipos."); errores++;}
@@ -1035,14 +1030,14 @@ int SynCheck(int linea_from, int linea_to) {
 								if (!CheckVariable(str,65)) errores++;
 								else {
 									if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
-									if (memoria->LeerDims(str)) SynError(255,"Faltan subindices para el arreglo ("+str+").");
+									if (memoria->LeerDims(str) && !ignore_logic_errors) SynError(255,"Faltan subindices para el arreglo ("+str+").");
 								}
 							} else if (!memoria->EsArgumento(str.substr(0,str.find("(",0)))) {
 								bool name_ok=true;
 								string aname=str.substr(0,str.find("(",0));
 								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
 								else if (!memoria->EstaDefinida(aname)) memoria->DefinirTipo(aname,vt_desconocido); // para que aparezca en la lista de variables
-								if (!memoria->LeerDims(aname)) { 
+								if (!memoria->LeerDims(aname) && !ignore_logic_errors) { 
 									SynError(256,"La variable ("+aname+") no es un arreglo."); name_ok=false;
 								}
 								str=cadena;
@@ -1066,7 +1061,7 @@ int SynCheck(int linea_from, int linea_to) {
 									str.erase(0,str2.size()+1);
 									ca++;
 								}
-								if (name_ok && memoria->LeerDims(aname)[0]!=ca) {
+								if (name_ok && memoria->LeerDims(aname)[0]!=ca && !ignore_logic_errors) {
 									SynError(257,string("Cantidad de indices incorrecta para el arreglo (")+aname+(")"));
 									return false;
 								}
@@ -1307,7 +1302,7 @@ int SynCheck(int linea_from, int linea_to) {
 				{ SynError (101,"Falta la condicion en la estructura Mientras."); errores++; }
 				else
 					if (RightCompare(cadena,";")) {
-						SynError (262,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++;
+						if (!ignore_logic_errors) { SynError (262,"MIENTRAS no lleva punto y coma luego de la condicion."); errores++; }
 						cadena.erase(cadena.size()-1,1);
 					}
 					if (!RightCompareFix(cadena," HACER")) {
@@ -1359,13 +1354,13 @@ int SynCheck(int linea_from, int linea_to) {
 				string fname=NextToken(cadena,p);
 				const Funcion *func=EsFuncion(fname);
 				string args=cadena.substr(p);
-				if (func->GetTipo(0)!=vt_error) {SynError (310,string("La función retorna un valor, debe ser parte de una expresion (")+fname+")."); errores++;}
+				if (func->GetTipo(0)!=vt_error && !ignore_logic_errors) {SynError (310,string("La función retorna un valor, debe ser parte de una expresion (")+fname+")."); errores++;}
 				if (args==";") args="();"; // para que siempre aparezcan las llaves y se eviten así problemas
 				if (args=="();") {
-					if (func->cant_arg!=0) {SynError (264,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
+					if (func->cant_arg!=0 && !ignore_logic_errors) {SynError (264,string("Se esperaban argumentos para el subproceso (")+fname+")."); errores++;}
 				} else if (func->cant_arg==0) {
-					if (args!="();") {SynError (265,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
-				} else if (args[0]!='(') {SynError (266,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
+					if (args!="();" && !ignore_logic_errors) {SynError (265,string("El subproceso (")+fname+") no debe recibir argumentos."); errores++;}
+				} else if (args[0]!='(' && !ignore_logic_errors) {SynError (266,"Los argumentos para invocar a un subproceso deben ir entre paréntesis."); errores++;}
 				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
 					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
 					if (args_last_pos!=-1) { // si faltaban cerrar parentesis, el error salto antes
@@ -1375,12 +1370,12 @@ int SynCheck(int linea_from, int linea_to) {
 							if (pos_coma==-1) pos_coma=args_last_pos;
 							string arg_actual=args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1);
 							if (!SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
-								if (func->pasajes[cant_args+1]==PP_REFERENCIA) { SynError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
+								if (func->pasajes[cant_args+1]==PP_REFERENCIA && !ignore_logic_errors) { SynError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
 								else EvaluarSC(arg_actual,tipo,func->tipos[cant_args+1]);
 							}
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);
-						if (cant_args!=func->cant_arg) { SynError(268,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
+						if (cant_args!=func->cant_arg && !ignore_logic_errors) { SynError(268,string("Cantidad de argumentos incorrecta para el subproceso (")+fname+(")")); errores++; }
 						else if (args_last_pos!=int(args.length())-2) {SynError (269,"Se esperaba fin de instrucción."); errores++;} // el -2 de la condicion es por el punto y coma
 					}
 				}
@@ -1426,7 +1421,9 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if ( (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"SI "))
 				|| (x>0 && cadena=="SINO" && LeftCompare(programa[x-1],"ENTONCES")) )
-			{ SynError (113,"Debe haber acciones en la salida por verdadero."); errores++;}
+			{
+				if (!ignore_logic_errors) { SynError (113,"Debe haber acciones en la salida por verdadero."); errores++;}
+			}
 			
 			// Actualiza los vectores
 			programa[x]=cadena;

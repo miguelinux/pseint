@@ -2000,7 +2000,7 @@ void mxMainWindow::OnInconInstaller (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::OnSourceClose (mxSource * src) {
-	if (last_source==src) src==NULL;
+	if (last_source==src) src=NULL;
 	if (test_panel && test_panel->GetSrc()==src) {
 		CloseTestPackage(); aui_manager.Update(); HideQuickHelp(); 
 	}

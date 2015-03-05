@@ -101,7 +101,7 @@ void LoadProc(istream &fin) {
 		//cerr<<endl;
 		//cerr<<str<<endl;
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
-		if (word_operators) ReemplazarOperadores(str);
+		if (lang[LS_WORD_OPERATORS]) ReemplazarOperadores(str);
 		bool comillas=false;
 		for (unsigned int i=0;i<str.size();i++) {
 			if (str[i]=='\''||str[i]=='\"') comillas=!comillas;

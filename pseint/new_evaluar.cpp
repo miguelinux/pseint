@@ -657,6 +657,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 
 // wrapper para llamar al Evaluar que sigue desde SynCheck, para que verifique que no falten operandos al principio o al final, y aplique los tipos solo si la evaluación es correcta
 string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
+	if (ignore_logic_errors) { tipo=forced_tipo; return ""; }
 	// <<<el comentario que sigue ya no aplica porque eso ahora se verifica en SynCheckAux3>>
 	// el evaluar comun admite operandos nulos en los extremos, porque pueden ser variables 
 	// sin inicializar que han sido reemplazadas, esta version no 

@@ -1,6 +1,8 @@
 // comunicacion con wxPseInt
 #include "Global.h"
 
+LangSettings lang;
+
 bool edit_on=true; // indica si se puede editar el diagrama
 bool debugging=false; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)
 string fname; // archivo que recibe como argumento
@@ -69,9 +71,6 @@ const float color_menu_back[3]={.92,.97,.97}; // fondo de los menues
 const float color_menu_sel[3]={.75,.95,.95}; // fondo de elemento de menu seleccionado
 const float color_error[3]={.7,0,0}; // mensajes de error de sintaxis
 bool draw_shadow=true; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
-
-bool word_operators=true; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
-bool force_semicolons=false; // al cargar el pseudocódigo, reemplaza algunos operadores por sus versiones en palabras
 
 vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
 map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo

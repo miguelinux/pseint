@@ -491,11 +491,11 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 			return;
 		}
 	} else if (type==ET_ESCRIBIR) {
-		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Escribir "<<_fix(label,"{lista_de_expresiones}")<<(variante?" Sin Saltar":"")<<(force_semicolons?";":"")<<_endl_this;
+		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		out<<tab<<"Escribir "<<_fix(label,"{lista_de_expresiones}")<<(variante?" Sin Saltar":"")<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this;
 	} else if (type==ET_LEER) {
-		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		out<<tab<<"Leer "<<_fix(label,"{lista_de_variables}")<<(force_semicolons?";":"")<<_endl_this;
+		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		out<<tab<<"Leer "<<_fix(label,"{lista_de_variables}")<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this;
 	} else if (type==ET_MIENTRAS) {
 		out<<tab<<"Mientras "<<_fix(label,"{condicion}")<<" Hacer"<<_endl_this;
 		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
@@ -533,8 +533,8 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (child[0]) { child[0]->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
-		if (force_semicolons && label[label.size()-1]==';') label=label.erase(label.size()-1);
-		if (label.size()) { out<<tab<<label<<(force_semicolons?";":"")<<_endl_this; }
+		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
+		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
 	}
 	if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }
