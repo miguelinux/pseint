@@ -1,19 +1,19 @@
 all: 
-	make -C pseint -f Makefile.lnx
-	make -C psexport -f Makefile.lnx
-	make -C wxPSeInt -f Makefile.lnx
-	make -C pseval -f Makefile.lnx
-	make -C updatem -f Makefile.lnx
-	make -C psterm -f Makefile.lnx
-	make -C psdrawE -f Makefile.lnx
-	make -C psdraw3 -f Makefile.lnx
+	${MAKE} -C pseint -f Makefile.lnx
+	${MAKE} -C psexport -f Makefile.lnx
+	${MAKE} -C wxPSeInt -f Makefile.lnx
+	${MAKE} -C pseval -f Makefile.lnx
+	${MAKE} -C updatem -f Makefile.lnx
+	${MAKE} -C psterm -f Makefile.lnx
+	${MAKE} -C psdrawE -f Makefile.lnx
+	${MAKE} -C psdraw3 -f Makefile.lnx
 
 clean: 
-	make -C pseint -f Makefile.lnx clean
-	make -C psexport -f Makefile.lnx clean
-	make -C wxPSeInt -f Makefile.lnx clean
-	make -C pseval -f Makefile.lnx clean
-	make -C updatem -f Makefile.lnx clean
-	make -C psterm -f Makefile.lnx clean
-	make -C psdrawE -f Makefile.lnx clean
-	make -C psdraw3 -f Makefile.lnx clean
+	${MAKE} -C pseint -f Makefile.lnx clean
+	${MAKE} -C psexport -f Makefile.lnx clean
+	${MAKE} -C wxPSeInt -f Makefile.lnx clean
+	${MAKE} -C pseval -f Makefile.lnx clean
+	${MAKE} -C updatem -f Makefile.lnx clean
+	${MAKE} -C psterm -f Makefile.lnx clean
+	${MAKE} -C psdrawE -f Makefile.lnx clean
+	${MAKE} -C psdraw3 -f Makefile.lnx clean

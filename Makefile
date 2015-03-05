@@ -7,13 +7,13 @@ all:
 	@echo " "
 
 linux:
-	make -f Makefile.lnx
+	${MAKE} -f Makefile.lnx
 
 linux-clean:
-	make -f Makefile.lnx clean
+	${MAKE} -f Makefile.lnx clean
 
 win32:
-	mingw32-make -f Makefile.w32
+	${MAKE} -f Makefile.w32
 
 win32-clean:
-	mingw32-make -f Makefile.w32 clean
+	${MAKE} -f Makefile.w32 clean

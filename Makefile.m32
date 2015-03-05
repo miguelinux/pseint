@@ -1,19 +1,19 @@
 all: 
-	make -C pseint -f Makefile.m32
-	make -C psexport -f Makefile.m32
-	make -C wxPSeInt -f Makefile.m32
-	make -C pseval -f Makefile.m32
-	make -C updatem -f Makefile.m32
-	make -C psterm -f Makefile.m32
-	make -C psdraw3 -f Makefile.m32
-	make -C psdrawE -f Makefile.m32
+	${MAKE} -C pseint -f Makefile.m32
+	${MAKE} -C psexport -f Makefile.m32
+	${MAKE} -C wxPSeInt -f Makefile.m32
+	${MAKE} -C pseval -f Makefile.m32
+	${MAKE} -C updatem -f Makefile.m32
+	${MAKE} -C psterm -f Makefile.m32
+	${MAKE} -C psdraw3 -f Makefile.m32
+	${MAKE} -C psdrawE -f Makefile.m32
 
 clean: 
-	make -C pseint -f Makefile.m32 clean
-	make -C psexport -f Makefile.m32 clean
-	make -C wxPSeInt -f Makefile.m32 clean
-	make -C pseval -f Makefile.m32 clean
-	make -C updatem -f Makefile.m32 clean
-	make -C psterm -f Makefile.m32 clean
-	make -C psdraw3 -f Makefile.m32 clean
-	make -C psdrawE -f Makefile.m32 clean
+	${MAKE} -C pseint -f Makefile.m32 clean
+	${MAKE} -C psexport -f Makefile.m32 clean
+	${MAKE} -C wxPSeInt -f Makefile.m32 clean
+	${MAKE} -C pseval -f Makefile.m32 clean
+	${MAKE} -C updatem -f Makefile.m32 clean
+	${MAKE} -C psterm -f Makefile.m32 clean
+	${MAKE} -C psdraw3 -f Makefile.m32 clean
+	${MAKE} -C psdrawE -f Makefile.m32 clean
