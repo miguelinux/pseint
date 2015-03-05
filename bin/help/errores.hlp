@@ -746,5 +746,3 @@
 312
   Las funciones ASEN (arco-seno) y ACOS (arco-coseno) calculan un ángulo a partir de una valor de seno o coseno (su argumento). Los valores válidos para seno y coseno son los mayores o iguales a -1, y menores o iguales a +1. Está invocando a una de estas dos funciones utilizando un argumento que no se encuentra en ese rango.
   * Verifique el valor de la variable o de la expresión que utiliza como argumento para la función ASEN/ACOS.
-
-313

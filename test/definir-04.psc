@@ -1,6 +1,6 @@
 Proceso sin_titulo
 	z Es Entero
-	z<-3/2;
+	z<-trunc(3/2);
 	Escribir z;
 	a,b son cadenas;
 	Leer a,b;

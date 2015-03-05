@@ -160,15 +160,10 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (tipo==vt_logica && aux1.size()==1 && (toupper(aux1[0])=='F'||aux1[0]=='0')) aux1=FALSO;
 					if (tipo==vt_logica && aux1.size()==1 && (toupper(aux1[0])=='V'||aux1[0]=='1')) aux1=VERDADERO;
 					tipo_var tipo2 = GuestTipo(aux1);
-					if (!tipo.set(tipo2))
-//						if (tipo=='n' && (GuestTipo(aux1)=='c' || GuestTipo(aux1)=='l')) {
+					if (!tipo.set(tipo2)) 
 						ExeError(120,string("No coinciden los tipos (")+aux2+").");
-//						}
-//						if (tipo=='l' && (GuestTipo(aux1)=='c' || GuestTipo(aux1)=='n')) {
-//							ExeError(121,"No coinciden los tipos.");
-//						}
-//						if (tipo=='d') tipo=GuestTipo(aux1);
-//						if (tipo=='n') tipo='d'; // cambio 20080421
+					else if (tipo==vt_numerica_entera && tipo.rounded && aux1.find(".",0)!=string::npos)
+						ExeError(313,string("No coinciden los tipos (")+aux2+"), el valor ingresado debe ser un entero.");
 					_sub(line,string("El valor ingresado se almacena en ")+aux2); // tipo?
 					memoria->DefinirTipo(aux2,tipo);
 					memoria->EscribirValor(aux2,aux1);
@@ -309,11 +304,15 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_sub(line,string("Se evalúa la expresion a asignar: ")+aux2);
 				aux2=Evaluar(aux2,tipo);
 				// comprobar tipos
-				if (/*tipo.is_known() && */!memoria->LeerTipo(aux1).can_be(tipo))
+				tipo_var tipo_aux1 = memoria->LeerTipo(aux1);
+				if (!tipo_aux1.can_be(tipo))
 					ExeError(125,"No coinciden los tipos.");
+				else if (tipo_aux1==vt_numerica_entera && tipo_aux1.rounded && aux2.find(".")!=string::npos)
+					ExeError(314,"No coinciden los tipos, el valor a asignar debe ser un entero.");
 				_sub(line,string("El resultado es: ")+aux2);
 				// escribir en memoria
 				_sub(line,string("El resultado se guarda en ")+aux1);
+				tipo.rounded=false; // no forzar a entera la variable en la que se asigna
 				memoria->DefinirTipo(aux1,tipo);
 				memoria->EscribirValor(aux1,aux2);
 			}
