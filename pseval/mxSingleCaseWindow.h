@@ -14,7 +14,7 @@ private:
 	wxStyledTextCtrl *solution;
 public:
 	void AddCaso(wxString &nombre);
-	mxSingleCaseWindow(wxWindow *parent);
+	mxSingleCaseWindow(wxWindow *parent, bool only_first, bool show_solution);
 	void Show();
 protected:
 	void OnClose(wxCloseEvent &event);

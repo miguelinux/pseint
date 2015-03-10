@@ -1,14 +1,17 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Package.o ${OBJS_DIR}/mxSingleCaseWindow.o ${OBJS_DIR}/mxMainWindow.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Package.o ${OBJS_DIR}/mxSingleCaseWindow.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxCreatorWindow.o 
 
-${OBJS_DIR}/Application.o: Application.cpp Application.h mxMainWindow.h Package.h
+${OBJS_DIR}/Application.o: Application.cpp Application.h Package.h mxMainWindow.h version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
 ${OBJS_DIR}/Package.o: Package.cpp Package.h
 	${GPP} ${CXXFLAGS} -c Package.cpp -o $@
 
-${OBJS_DIR}/mxSingleCaseWindow.o: mxSingleCaseWindow.cpp mxSingleCaseWindow.h Package.h
+${OBJS_DIR}/mxSingleCaseWindow.o: mxSingleCaseWindow.cpp Application.h Package.h mxSingleCaseWindow.h
 	${GPP} ${CXXFLAGS} -c mxSingleCaseWindow.cpp -o $@
 
-${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxMainWindow.h Package.h mxSingleCaseWindow.h
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxMainWindow.h Package.h mxSingleCaseWindow.h Application.h version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c mxMainWindow.cpp -o $@
+
+${OBJS_DIR}/mxCreatorWindow.o: mxCreatorWindow.cpp mxCreatorWindow.h Package.h
+	${GPP} ${CXXFLAGS} -c mxCreatorWindow.cpp -o $@
 

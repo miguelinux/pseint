@@ -12,6 +12,7 @@ class wxSizer;
 class wxProcess;
 class TestCase;
 class wxButton;
+class Package;
 
 class mxMainWindow : public wxFrame {
 	wxStaticText *results_title;
@@ -22,7 +23,8 @@ class mxMainWindow : public wxFrame {
 public:
 	mxMainWindow();
 	bool Start(const wxString &fname, const wxString &passkey, const wxString &cmdline);
-	bool RunTest(wxString command, TestCase &test);
+	bool RunAllTests(const wxString &cmdline, bool for_create=false);
+	bool RunTest(wxString command, TestCase &test, bool for_create);
 	
 private:
 	void OnProcessTerminate(wxProcessEvent &event);

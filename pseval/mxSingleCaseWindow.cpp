@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(mxSingleCaseWindow,wxFrame)
 	EVT_CLOSE(mxSingleCaseWindow::OnClose)
 END_EVENT_TABLE()
 
-mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_ANY,"Resultados",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
+mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, bool only_first, bool show_solution) : wxFrame(parent,wxID_ANY,"Resultados",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
 	
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	
@@ -26,7 +26,7 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	
 	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	if (pack.GetConfigBool("mostrar soluciones")) {
+	if (show_solution) {
 		wxSizer *solution_sizer = new wxBoxSizer(wxVERTICAL);
 		solution = new wxStyledTextCtrl(this);
 		solution_sizer->Add(new wxStaticText(this,wxID_ANY,"Solución correcta:"),wxSizerFlags().Border(wxALL,5));
@@ -57,10 +57,10 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent) : wxFrame(parent,wxID_
 	but_sizer->AddStretchSpacer();
 	but_sizer->Add(but_close,wxSizerFlags().Left());
 	
-	if (pack.GetConfigStr("mostrar casos fallidos")!="primero") 
+	if (!only_first) 
 		main_sizer->Add(new wxStaticText(this,wxID_ANY,"Seleccione un caso de prueba:"),wxSizerFlags().Border(wxALL,5));
 	main_sizer->Add(list,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
-	if (pack.GetConfigStr("mostrar casos fallidos")=="primero") list->Hide(); 
+	if (only_first) list->Hide(); 
 	else main_sizer->Add(new wxStaticLine(this,wxID_ANY),wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
 	main_sizer->Add(sizer,wxSizerFlags().Proportion(1).Expand());
 	main_sizer->Add(but_sizer,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
@@ -85,11 +85,12 @@ void mxSingleCaseWindow::OnList (wxListEvent & event) {
 }
 
 void mxSingleCaseWindow::OnClose (wxCloseEvent & event) {
-	wxExit();
+	Destroy();
+	GetParent()->Destroy();
 }
 
 void mxSingleCaseWindow::OnCancel (wxCommandEvent & event) {
-	wxExit();
+	Close();
 }
 
 void mxSingleCaseWindow::Show ( ) {

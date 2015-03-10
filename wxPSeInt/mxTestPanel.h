@@ -22,6 +22,7 @@ public:
 	mxSource *GetSrc() { return src; }
 	const wxString &GetHelp() { return pack.GetHelp(); }
 private:
+	void Run(const wxString &source_fname);
 	void OnRun(wxCommandEvent &event);
 	void OnHelp(wxCommandEvent &event);
 	DECLARE_EVENT_TABLE();

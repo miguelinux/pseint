@@ -52,79 +52,86 @@ static bool process_finished=true;
 static wxProcess *the_process=NULL;
 static bool abort_test=false;
 
+bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
+
+	Show(); wxYield();
+	
+	wxArrayString tests;
+	int number = pack.GetNames(tests);
+	if (!number) {
+		wxMessageBox("No se encontraron casos de prueba","PSeInt",wxOK|wxICON_ERROR,this);
+		return false;
+	}
+	
+	if (!for_create && pack.GetConfigBool("mezclar casos")) {
+		std::random_shuffle(tests.begin(),tests.end());
+	}
+	
+	mxSingleCaseWindow *results_win = new mxSingleCaseWindow(this,
+		(!for_create)&&pack.GetConfigStr("mostrar casos fallidos")=="primero",
+		(!for_create)&&pack.GetConfigBool("mostrar soluciones"));
+	
+	results_bar->SetRange(number);
+	int results_ok=0, results_wrong=0;
+	for(int i=0;i<number&&!abort_test;i++) {
+		results_title->SetLabel(wxString("Probando ")+tests[i]);
+		results_bar->SetValue(i+1);
+		Refresh(); wxYield();
+		bool ok = RunTest(cmdline,pack.GetTest(tests[i]),for_create);
+		if (ok) results_ok++; else results_wrong++;
+		if ((!ok)||for_create) {
+			results_win->AddCaso(tests[i]);
+			if (!for_create && pack.GetConfigStr("mostrar casos fallidos")=="primero") {
+				if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje_error")
+					+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
+				{
+					results_win->Show();
+					return true;
+				} else {
+					results_win->Destroy();
+					return false;
+				}
+			}
+		}
+	}
+	if (!abort_test) {
+		Hide();
+		if (for_create||results_wrong) {
+			if (for_create||pack.GetConfigStr("mostrar casos fallidos")=="todos") {
+				if (for_create||wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
+					+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
+				{
+					results_win->Show();
+					return true;
+				}
+			} else {
+				wxMessageBox(pack.GetConfigStr("mensaje error"),"Resultado",wxOK|wxICON_ERROR,this);
+			}
+		} else {
+			wxMessageBox(pack.GetConfigStr("mensaje exito"),"Resultado",wxOK|wxICON_EXCLAMATION,this);
+		}
+	}
+	results_win->Destroy();
+	return false;
+}
+
 bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const wxString &cmdline) {
 	if (!pack.Load(fname,passkey=="--nokey"?"":passkey)) {
 		wxMessageBox("Error al cargar el ejercicio","PSeInt",wxOK|wxICON_ERROR,this);
 		return false;
 	} else {
 		
-		if (pack.GetConfigInt("version requerida")>VERSION) {
+		if (pack.GetConfigInt("version requerida")>PACKAGE_VERSION) {
 			wxMessageBox("Debe actualizar PSeInt para poder abrir este ejercicio","Error",wxID_OK|wxICON_ERROR,this);
 			return false;
 		}
-		
-		Show(); wxYield();
-		
-		wxArrayString tests;
-		int number = pack.GetNames(tests);
-		if (!number) {
-			wxMessageBox("No se encontraron casos de prueba","PSeInt",wxOK|wxICON_ERROR,this);
-			return false;
-		}
-		
-		if (pack.GetConfigBool("mezclar casos")) {
-			std::random_shuffle(tests.begin(),tests.end());
-		}
-		
-		mxSingleCaseWindow *results_win = new mxSingleCaseWindow(this);
-		
-		results_bar->SetRange(number);
-		int results_ok=0, results_wrong=0;
-		for(int i=0;i<number&&!abort_test;i++) {
-			results_title->SetLabel(wxString("Probando ")+tests[i]);
-			results_bar->SetValue(i+1);
-			Refresh(); wxYield();
-			bool ok = RunTest(cmdline,pack.GetTest(tests[i]));
-			if (ok) results_ok++; else results_wrong++;
-			if (!ok) {
-				results_win->AddCaso(tests[i]);
-				if (pack.GetConfigStr("mostrar casos fallidos")=="primero") {
-					if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje_error")
-						+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
-					{
-						results_win->Show();
-						return true;
-					} else {
-						results_win->Destroy();
-						return false;
-					}
-				}
-			}
-		}
-		if (!abort_test) {
-			Hide();
-			if (results_wrong) {
-				if (pack.GetConfigStr("mostrar casos fallidos")=="todos") {
-					if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
-						+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
-					{
-						results_win->Show();
-						return true;
-					}
-				} else {
-					wxMessageBox(pack.GetConfigStr("mensaje error"),"Resultado",wxOK|wxICON_ERROR,this);
-				}
-			} else {
-				wxMessageBox(pack.GetConfigStr("mensaje exito"),"Resultado",wxOK|wxICON_EXCLAMATION,this);
-			}
-		}
-		results_win->Destroy();
+		return RunAllTests(cmdline);
 	}
 	return false;
 }
 
 
-bool mxMainWindow::RunTest(wxString command, TestCase &test) {
+bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	
 	the_process  = new wxProcess(this->GetEventHandler());
 	the_process->Redirect();
@@ -149,6 +156,7 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test) {
 	output.Replace("\r","");
 	solution.Replace("\r","");
 	
+	if (for_create) solution=output;
 	return output==solution;
 	
 }

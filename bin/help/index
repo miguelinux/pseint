@@ -3,6 +3,7 @@
 		0 flow.html Edición de Diagramas de Flujo
 		0 debug.html Seguimiento de algoritmos
 			0 prueba.html Prueba de Escritorio
+		0 ejercicios.html Ejercicios autocontenidos
 	0 pseudocodigo.html PSeudoCódigo
 		0 forma.html Forma general de un algoritmo
 		0 variables.html Variables
@@ -31,6 +32,9 @@
 		0 otros.html Otras consideraciones
 		0 perfiles.html Personalización del lenguaje
 	0 ejemplos.html Ejemplos de algoritmos
+	0 docentes.html Información para docentes
+		0 doc_perfiles.html Creación de perfiles
+		0 doc_ejercicios.html Creación de ejercicios
 	0 about.html Notas sobre PSeInt
 		0 about.html#a Licencias y Contactos
 		0 cambios.html Registro de cambios

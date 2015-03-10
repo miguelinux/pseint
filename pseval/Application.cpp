@@ -3,6 +3,7 @@
 #include "version.h"
 #include <iostream>
 #include <cstdlib>
+#include "mxCreatorWindow.h"
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -17,8 +18,13 @@ bool mxApplication::OnInit() {
 		std::cerr<<"Use "<<argv[0]<<" <archivo_de_ejercicio> <clave> <comando pseint...>"<<std::endl;
 		return false;
 	}
-	wxString args; for(int i=3;i<argc;i++) { args+=argv[i]; args+=" "; } args+="--foreval";
-	return (new mxMainWindow())->Start(argv[1],argv[2],args);
+	bool creator_mode = false;
+	wxString args; for(int i=3;i<argc;i++) { 
+		if (wxString(argv[i])=="--create_new_test_package=1") creator_mode=true;
+		args+=argv[i]; args+=" "; 
+	} args+="--foreval";
+	if (creator_mode) { new mxCreatorWindow(args); return true; }
+	else return (new mxMainWindow())->Start(argv[1],argv[2],args);
 }
 
 

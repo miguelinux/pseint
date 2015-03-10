@@ -34,7 +34,7 @@ subcarpetas):
 				salida del alumno
 		- mezclar casos = si es "si" los casos se reordenan aleatoriamente antes
 				de ser verificados
-		- version requerida pseint = indica la versión mínima requerida en el 
+		- version requerida = indica la versión mínima requerida en el 
 				evaluador y en editor para procesar correctamente el caso, si no 
 				es la que el alumno utiliza en lugar de abrir el ejercicio 
 				muestra un mensaje de error indicandole que debe actualizar 

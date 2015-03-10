@@ -32,8 +32,12 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *src) {
 	this->path=path; this->key=key; this->src=src;
 	if (!pack.Load(path,key)) return false;
-	if (pack.GetConfigInt("version requerida")>VERSION) {
+	if (pack.GetConfigInt("version requerida")>PACKAGE_VERSION) {
 		wxMessageBox(_Z("Debe actualizar PSeInt para poder abrir este ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
+		return false;
+	}
+	if (pack.GetConfigBool("creator")) {
+		Run("--create_new_test_package=1");
 		return false;
 	}
 	label->SetLabel(_Z(" <- click aquí para evaluar su respuesta"));
@@ -44,14 +48,18 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 
 void mxTestPanel::OnRun (wxCommandEvent & event) {
 	main_window->SelectSource(src); src->SaveTemp();
-	wxString cmd = config->pseval_command +" \""+path+"\" \""+(key.Len()?key:"--nokey")+"\" "+ config->pseint_command+" "+mxProcess::GetProfileArgs() + " \""+src->GetTempFilenamePSC()+"\"";
-	_LOG("mxTestPanel::OnRun");
-	_LOG("    "<<cmd);
-	wxExecute(cmd,wxEXEC_ASYNC);
+	Run(src->GetTempFilenamePSC());
 }
 
 void mxTestPanel::OnHelp (wxCommandEvent & event) {
 	main_window->ShowQuickHelp(true,GetHelp(),false);
 }
 
+
+void mxTestPanel::Run (const wxString & source_fname) {
+	wxString cmd = config->pseval_command +" \""+path+"\" \""+(key.Len()?key:"--nokey")+"\" "+ config->pseint_command+" "+mxProcess::GetProfileArgs() + " \""+source_fname+"\"";
+	_LOG("mxTestPanel::Run");
+	_LOG("    "<<cmd);
+	wxExecute(cmd,wxEXEC_ASYNC);
+}
 
