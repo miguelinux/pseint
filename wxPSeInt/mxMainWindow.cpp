@@ -1910,11 +1910,13 @@ void mxMainWindow::RTreeDone (bool show, bool error) {
 	else if (result_tree_text_level==1) results_tree_text<<"</LI></UL>";
 	result_tree_done=true;
 	if (_avoid_results_tree) {
-		ShowQuickHelp(true); 
-		if (results_tree_errors.GetCount()==1) {
-			SelectError(results_tree_errors[0]);
-		} else if (results_tree_text.Len()) {
-			SetQuickHelpText(QH_SYNCHECK);
+		if (show) {
+			ShowQuickHelp(true); 
+			if (results_tree_errors.GetCount()==1) {
+				SelectError(results_tree_errors[0]);
+			} else if (results_tree_text.Len()) {
+				SetQuickHelpText(QH_SYNCHECK);
+			}
 		}
 	} else {
 		ShowResults(show,!error);
