@@ -11,6 +11,7 @@
 #include "Application.h"
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
+#include <wx/settings.h>
 
 enum { mxSTART=wxID_HIGHEST, mxID_INPUT_PATH_TEXT, mxID_INPUT_PATH_BUTTON, mxID_OUTPUT_PATH_BUTTON, mxID_SHOW_ERRORS, mxID_CREATE_BUTTON, mxID_GENERATE_SOLUTIONS, mxID_USE_PASSWORD, mxID_RELOAD_INPUT };
 
@@ -30,6 +31,8 @@ mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
 	: wxFrame(NULL,wxID_ANY,"PSeInt - Ejercicio",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE)
 	,timer(GetEventHandler())
 {
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
+	
 	pseint_command=cmdline;
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	

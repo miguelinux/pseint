@@ -21,7 +21,11 @@ bool mxApplication::OnInit() {
 	bool creator_mode = false;
 	wxString args; for(int i=3;i<argc;i++) { 
 		if (wxString(argv[i])=="--create_new_test_package=1") creator_mode=true;
-		args+=argv[i]; args+=" "; 
+		if (wxString(argv[i]).Contains(' ')) {
+			args+="\""; args+=argv[i]; args+="\" "; 
+		} else {
+			args+=argv[i]; args+=" "; 
+		}
 	} args+="--foreval";
 	if (creator_mode) { new mxCreatorWindow(args); return true; }
 	else return (new mxMainWindow())->Start(argv[1],argv[2],args);

@@ -178,24 +178,27 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		dc.SetTextForeground(colors[cur_fg][dimmed]);
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
 	}
-	wxString status;
-	if (want_input || wait_one_key) status+="linea "+int2str(cur_loc.line)+" instruccion "+int2str(cur_loc.inst);
-	else if (dimmed) status="El algoritmo fue modificado.\nClick aquí para aplicar los cambios.";
-	else if (selection_is_input) status="Utilice doble click para\nmodificar solo esa lectura.";
-	if (status.Len()) {
+	wxString status[2]; // una variable por linea porque en windows el drawtext no hace el salto de linea
+	if (dimmed) { status[0]="El algoritmo fue modificado."; status[1]="Click aquí para aplicar los cambios."; }
+	else if (selection_is_input) { status[0]="Utilice doble click para"; status[1]="modificar solo esa lectura."; }
+	else if (want_input || wait_one_key) status[1]+="linea "+int2str(cur_loc.line)+" instruccion "+int2str(cur_loc.inst);
+	if (status[1].Len()) {
 		wxColour &ct=colors[16][0];
 		wxColour &cb=colors[16][1];
 		int w=dc.GetSize().GetWidth();
 		int h=dc.GetSize().GetHeight();
-		int tw,th,margin=3;
-		dc.GetTextExtent(status,&tw,&th);
-		dc.SetPen(wxPen(cb));
-		dc.SetBrush(wxBrush(cb));
-		dc.SetTextForeground(ct);
-		int x0 = w-tw-2*margin, y0 = cur_y<=2*buffer_h/3?h-th-2*margin:0;
-		dc.DrawRectangle(x0,y0,tw+2*margin,th+2*margin);
-		dc.SetTextForeground(ct);
-		dc.DrawText(status,x0+margin,y0+margin);
+		for(int i=1;i>=0;i--) { 
+			int tw,th,margin=3;
+			dc.GetTextExtent(status[i],&tw,&th);
+			dc.SetPen(wxPen(cb));
+			dc.SetBrush(wxBrush(cb));
+			dc.SetTextForeground(ct);
+			int x0 = w-tw-2*margin, y0 = cur_y<=2*buffer_h/3?h-th-2*margin:0;
+			dc.DrawRectangle(x0,y0,tw+2*margin,th+2*margin);
+			dc.SetTextForeground(ct);
+			dc.DrawText(status[i],x0+margin,y0+margin);
+			h-=th;
+		}
 	}
 }
 

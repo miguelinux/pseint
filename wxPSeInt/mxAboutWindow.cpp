@@ -68,7 +68,7 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	text<<"<A href=\"lala\"><IMG src=\""<<DIR_PLUS_FILE(config->images_path,"logo.png")<<"\"/></A>";
 	text<<"</TD><TD>";
 	
-	text<<"<CENTER><B>Copyleft 2003-2014<BR>por Pablo Novara<BR>";
+	text<<"<CENTER><B>Copyleft 2003-2015<BR>por Pablo Novara<BR>";
 	text<<"zaskar_84@yahoo.com.ar<BR>";
 	text<<"<A href=\"about\">(ver más...)</A><BR><BR>";
 	text<<"Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)";

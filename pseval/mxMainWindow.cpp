@@ -82,7 +82,7 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 		if ((!ok)||for_create) {
 			results_win->AddCaso(tests[i]);
 			if (!for_create && pack.GetConfigStr("mostrar casos fallidos")=="primero") {
-				if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje_error")
+				if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
 					+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
 				{
 					results_win->Show();

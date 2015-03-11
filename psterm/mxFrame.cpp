@@ -6,6 +6,7 @@
 #include <wx/app.h>
 #include <iostream>
 #include <wx/checkbox.h>
+#include <wx/settings.h>
 using namespace std;
 
 enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RUN_AGAIN };
@@ -25,6 +26,8 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 	wxDefaultPosition, wxSize(props.width,props.height),
 	wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) {
 	
+		this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
+		
 		debug_mode=debug;
 		terminated=already_connected=false;
 		src_id=id;
