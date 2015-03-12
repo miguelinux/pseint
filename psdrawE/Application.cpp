@@ -44,7 +44,7 @@ IMPLEMENT_APP(mxApplication)
 
 bool mxApplication::OnInit() {
 	
-	_handle_version_query("psDraw3");
+	_handle_version_query("psDrawE");
 	
 #ifdef __WXMAC__
 	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
