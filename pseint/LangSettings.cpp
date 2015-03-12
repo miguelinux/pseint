@@ -142,7 +142,7 @@ bool LangSettings::Save (const wxString &fname) {
 }
 
 void LangSettings::Log ( ) {
-	_LOG("Profile: "<<VERSION<<" "<<GetAsSingleString());
+	_LOG("Profile: "<<VERSION<<" "<<GetAsSingleString().c_str());
 }
 #else // FOR_WXPSEINT
 #include <fstream>

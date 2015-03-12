@@ -140,7 +140,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("use_colors=")<<(use_colors?1:0));
 	fil.AddLine(wxString("animate_gui=")<<(animate_gui?1:0));
 	fil.AddLine(wxString("reorganize_for_debug=")<<(reorganize_for_debug?1:0));
-	for(int i=0;i<LS_COUNT;i++) fil.AddLine(lang.GetConfigLine(i));
+	for(int i=0;i<LS_COUNT;i++) fil.AddLine(lang.GetConfigLine(i).c_str());
 	fil.AddLine(wxString("maximized=")<<(maximized?1:0));
 	fil.AddLine(wxString("font_size=")<<font_size);
 	fil.AddLine(wxString("tabw=")<<tabw);
@@ -241,7 +241,7 @@ ConfigManager::~ConfigManager() {
 wxString ConfigManager::LoadProfile(wxString pname) {
 	profile=pname;
 	if (lang.Load(DIR_PLUS_FILE(profiles_dir,profile))) {
-		return lang.descripcion;
+		return lang.descripcion.c_str();
 	} else {
 		return _Z("Esta opcion le permite definir su propia configuracion. Utilice el boton \"Personalizar...\" para definirla.");
 	}

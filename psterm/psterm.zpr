@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=version.h
+current_source=mxConsole.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -24,7 +24,7 @@ marker=95
 open=true
 [source]
 path=mxConsole.cpp
-cursor=181:1
+cursor=183:57
 marker=153
 marker=446
 open=true

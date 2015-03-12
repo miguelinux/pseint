@@ -60,7 +60,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	perfiles.Sort(comp_nocase);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) { 
 		LangSettings l; l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
-		descripciones.Add(l.descripcion);
+		descripciones.Add(l.descripcion.c_str());
 	}
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);

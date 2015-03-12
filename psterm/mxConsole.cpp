@@ -181,7 +181,7 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 	wxString status[2]; // una variable por linea porque en windows el drawtext no hace el salto de linea
 	if (dimmed) { status[0]="El algoritmo fue modificado."; status[1]="Click aquí para aplicar los cambios."; }
 	else if (selection_is_input) { status[0]="Utilice doble click para"; status[1]="modificar solo esa lectura."; }
-	else if (want_input || wait_one_key) status[1]+="linea "+int2str(cur_loc.line)+" instruccion "+int2str(cur_loc.inst);
+	else if (want_input || wait_one_key) status[1]<<"linea "<<cur_loc.line<<" instruccion "<<cur_loc.inst;
 	if (status[1].Len()) {
 		wxColour &ct=colors[16][0];
 		wxColour &cb=colors[16][1];

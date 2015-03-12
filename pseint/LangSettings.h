@@ -85,7 +85,7 @@ struct LangSettings {
 	}
 	bool ProcessConfigLine(const std::string &key, const std::string &value) {
 		if (key=="desc") { descripcion+=value+"\n"; return true; }
-		if (key=="profile") { Load(value); return true; }
+		if (key=="profile") { Load(value.c_str()); return true; } // el .c_str es por si usa el Load(wxString)
 		if (key=="binprofile") { SetFromSingleString(value); return true; }
 		if (key=="version") { version=atoi(value.c_str()); return true; }
 		else for(int i=0;i<LS_COUNT;i++) { 
