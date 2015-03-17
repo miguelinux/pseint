@@ -55,8 +55,8 @@ struct LangSettings {
 	bool &operator[](LS_ENUM x) { return settings[x]; }
 	bool operator!=(const LangSettings &o) const {
 		for(int i=0;i<LS_COUNT;i++)
-			if (settings[i]!=o.settings[i]) return false;
-		return true;
+			if (settings[i]!=o.settings[i]) return true;
+		return false;
 	}
 	void Reset(int init_version = LS_VERSION) {
 		version=init_version;
