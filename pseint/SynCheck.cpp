@@ -615,6 +615,9 @@ int SynCheck(int linea_from, int linea_to) {
 				bucles.push_back(programa.GetLoc(x,"SEGUN"));
 			} else if (LeftCompare(cadena,"FINSEGÚN ")) {
 				instruccion="FINSEGUN "; cadena.erase(0,9);
+			} else if (LeftCompare(cadena,"FINPROCESO;")) {
+				instruccion="FINPROCESO "; cadena.erase(0,10);
+				if (!ignore_logic_errors) { SynError (315,"FINPROCESO no lleva punto y coma."); errores++; }
 			} else if (LeftCompare(cadena,"FINPROCESO ")) {
 				instruccion="FINPROCESO "; cadena.erase(0,11);
 			} else if (LeftCompare(cadena,"FINFUNCION ")||LeftCompare(cadena,"FINFUNCIÓN ")) {
