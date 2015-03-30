@@ -18,7 +18,23 @@ void fix_argv(char *argv[]) {
 }
 
 
+void FixMissingLibPNG12(string pseint_path) {
+	void *handle = dlopen ("libpng12.so", RTLD_LAZY);
+	if (!handle) {
+		string ld_library_path = my_getenv("LD_LIBRARY_PATH");
+		if (!ld_library_path.empty()) ld_library_path+=":";
+		if (pseint_path.find('/')==string::npos) pseint_path="";
+		else pseint_path=pseint_path.substr(0,pseint_path.rfind('/')+1);
+		ld_library_path+=pseint_path+"libs";
+		setenv("LD_LIBRARY_PATH",ld_library_path.c_str(),1);
+	} else {
+		dlclose(handle);
+	}
+}
+
 int main(int argc, char *argv[]) {
+	
+	FixMissingLibPNG12(argv[0]);
 	setenv("UBUNTU_MENUPROXY","",1);
 	setenv("LIBOVERLAY_SCROLLBAR","0",1);
 	setenv("LANG","",1); // for fixing the problem with utf8 locale and ansi wx build
