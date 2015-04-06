@@ -3,7 +3,7 @@ GPP=g++
 CXXFLAGS_OPT=-O2 
 CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8`
 LDFLAGS_OPT=-s
-LDFLAGS=${LDFLAGS_OPT} -lwx_gtk2_stc-2.8 `wx-config --libs --unicode=no --version=2.8`
+LDFLAGS=${LDFLAGS_OPT} -lwx_gtk2_stc-2.8 `wx-config --libs --unicode=no --version=2.8` -lX11
 
 all: ${OBJS_DIR} ../bin/pseval
 

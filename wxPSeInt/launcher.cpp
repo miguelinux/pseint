@@ -4,9 +4,16 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <dlfcn.h>
 using namespace std;
 
 const char *binname="wxPSeInt.bin";
+
+const char *my_getenv(const char *varname) {
+	char empty[]="";
+	const char *res = getenv(varname);
+	return res?res:empty;
+}
 
 void fix_argv(char *argv[]) {
 	int n=strlen(argv[0])-1;
