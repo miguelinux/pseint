@@ -1,6 +1,6 @@
 #include "global.h"
 
-LangSettings lang;
+//LangSettings lang(LS_DO_NOT_INIT); // no definir aqui, para forzar que cada proyecto lo defina y no se olvide de inicializarlo
 
 queue <string> predef_input; // entrada predefinida para los tests
 ofstream ExeInfo; // Archivo de Inforamacion de Ejecucion para el entorno

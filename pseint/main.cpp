@@ -56,6 +56,8 @@ void checksum(Programa &p) {
 	}
 }
 
+LangSettings lang(LS_DO_NOT_INIT);
+
 //----------------------------------------------------------------------------
 // ************************* Programa Principal ******************************
 //-----------------------------------------------------------------------------
@@ -68,6 +70,8 @@ int main(int argc, char* argv[]) {
 
 	_handle_version_query("PSeInt");
 
+	lang.Reset();
+	
 	bool 
 		check=true, // checkear syntaxis?
 		run=true, // ejecutar?

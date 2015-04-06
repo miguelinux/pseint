@@ -9,6 +9,11 @@
 #define LS_VERSION 20150304
 #include <cstdlib>
 
+enum LS_INIT_ENUM {
+	LS_INIT,
+	LS_DO_NOT_INIT
+};
+
 enum LS_ENUM {
 	LS_FORCE_INIT_VARS,
 	LS_FORCE_DEFINE_VARS,
@@ -59,12 +64,16 @@ struct LangSettings {
 		return false;
 	}
 	void Reset(int init_version = LS_VERSION) {
+		if (!init_done) init();
 		version=init_version;
 		descripcion.clear();
 		for(int i=0;i<LS_COUNT;i++) 
 			settings[i]=data[i].default_value;
 	}
-	LangSettings() { if (!init_done) init(); Reset(); }
+	LangSettings(LS_INIT_ENUM init_mode) { 
+		if (init_mode==LS_DO_NOT_INIT) return; 
+		Reset();
+	}
 	std::string GetAsSingleString();
 	bool SetFromSingleString(const std::string &str);
 	

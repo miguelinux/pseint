@@ -1,7 +1,7 @@
 // comunicacion con wxPseInt
 #include "Global.h"
 
-LangSettings lang;
+//LangSettings lang; // no definir aca, ver comentario en el global.cpp de pseint
 
 bool edit_on=true; // indica si se puede editar el diagrama
 bool debugging=false; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)

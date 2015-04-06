@@ -74,7 +74,7 @@ void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, "Cargar perfil desde archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 	if (dlg.ShowModal() == wxID_OK) {
 		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
-		LangSettings l;
+		LangSettings l(LS_INIT);
 		l.Load(dlg.GetPath());
 		ReadFromStruct(l);
 	}
@@ -84,7 +84,7 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, "Guardar perfil en archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
 		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
-		LangSettings l;
+		LangSettings l(LS_INIT);
 		l.descripcion=wxGetTextFromUser("Ingrese una descripción breve del perfil.","Guardar Perfil","",this);
 		CopyToStruct(l);
 		l.Save(dlg.GetPath());

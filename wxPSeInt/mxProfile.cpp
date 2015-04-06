@@ -29,7 +29,7 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 	return first.CmpNoCase(second);
 }
 
-mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize) {
+mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize),old_config(LS_INIT) {
 	
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
@@ -59,7 +59,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	}
 	perfiles.Sort(comp_nocase);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) { 
-		LangSettings l; l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
+		LangSettings l(LS_INIT); l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
 		descripciones.Add(l.descripcion.c_str());
 	}
 	

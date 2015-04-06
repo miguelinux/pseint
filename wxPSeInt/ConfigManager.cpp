@@ -10,7 +10,7 @@
 ConfigManager *config;
 
 
-ConfigManager::ConfigManager(wxString apath) {
+ConfigManager::ConfigManager(wxString apath):lang(LS_INIT) {
 	
 	pseint_dir = apath;
 	version=0; 

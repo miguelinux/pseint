@@ -149,13 +149,15 @@ bool cargar(list<t_proceso> &algs, string archivo){
 	return true;
 }
 
-
+LangSettings lang(LS_DO_NOT_INIT);
 
 int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
 
 	_handle_version_query("psExport");
+	
+	lang.Reset();
 	
 	for (int i=1;i<argc;i++) {
 		string s=argv[i];

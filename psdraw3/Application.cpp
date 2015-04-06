@@ -9,10 +9,13 @@
 #include "../pseint/LangSettings.h"
 using namespace std;
 
+LangSettings lang(LS_DO_NOT_INIT);
+
 bool mxApplication::OnInit() {
 	
 	_handle_version_query("psDraw3");
 	
+	lang.Reset();
 	GlobalInit();
 	int id=-1, port=-1;
 	string fname;

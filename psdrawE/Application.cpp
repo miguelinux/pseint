@@ -41,6 +41,8 @@ IMPLEMENT_APP(mxApplication)
 #else
 #	define _IF_JPG(x)
 #endif
+	
+LangSettings lang(LS_DO_NOT_INIT);
 
 bool mxApplication::OnInit() {
 	
@@ -57,13 +59,15 @@ bool mxApplication::OnInit() {
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--use_nassi_schneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
 	}
+
+	lang.Reset();
 	
 	_IF_PNG(wxImage::AddHandler(new wxPNGHandler));
 	_IF_JPG(wxImage::AddHandler(new wxJPEGHandler));
 	wxImage::AddHandler(new wxBMPHandler);
 	
 	// cargar el diagrama
-	int c=0; bool force=false;
+	/*int c=0; */bool force=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		wxString arg(argv[i]);
