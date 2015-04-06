@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 			string str(argv[i]);
 			if (str.substr(0,7)=="--seed=")
 				forced_seed=atoi(str.substr(7).c_str());
-			if (str.substr(0,8)=="--delay=")
+			else if (str.substr(0,8)=="--delay=")
 				delay=atoi(str.substr(8).c_str());
 			else if (str.substr(0,8)=="--input=")
 				predef_input.push(str.substr(8));
