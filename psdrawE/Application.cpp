@@ -85,6 +85,7 @@ bool mxApplication::OnInit() {
 	lang.Fix();
 	Entity::nassi_schneiderman=lang[LS_USE_NASSI_SCHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
+	GlobalInit();
 	if (!Load(fin)) {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}
