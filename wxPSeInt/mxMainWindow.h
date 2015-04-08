@@ -8,7 +8,7 @@
 #include <wx/socket.h>
 #include <wx/html/htmlwin.h>
 
-class wxHtmlWindow;
+class mxHtmlWindow;
 class mxFindDialog;
 class wxStaticText;
 class wxScrollBar;
@@ -24,7 +24,7 @@ private:
 	friend class mxSource; // para el page_text
 	friend class mxProcess;
 	friend class mxFindDialog;
-	wxHtmlWindow *quick_html;
+	mxHtmlWindow *quick_html;
 	int last_proc;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;

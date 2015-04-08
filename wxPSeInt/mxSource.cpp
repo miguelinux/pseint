@@ -1336,7 +1336,7 @@ void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
 	current_calltip.is_error=is_error;
 	CallTipShow(pos,l);
 	// si era un error y está el panel de ayuda rápida muestra también la descripción larga
-	if (!current_calltip.is_error || !main_window->aui_manager.GetPane(main_window->quick_html).IsShown()) return;
+	if (!current_calltip.is_error || !main_window->aui_manager.GetPane((wxHtmlWindow*)main_window->quick_html).IsShown()) return;
 	int il=LineFromPosition(current_calltip.pos);
 	if (il<0||il>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[il];

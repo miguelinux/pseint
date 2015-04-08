@@ -51,6 +51,7 @@
 #include "mxExportPreview.h"
 #include "mxIconInstaller.h"
 #include "mxTestPanel.h"
+#include "mxHtmlWindow.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -850,7 +851,7 @@ void mxMainWindow::HideQuickHelp() {
 }
 
 void mxMainWindow::CreateQuickHelp() {
-	quick_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
+	quick_html = new mxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
 	quick_html->SetPage(wxString(_Z("PSeInt "))<<VERSION);
 	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name("quick_html").Caption(_Z("Ayuda Rápida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }

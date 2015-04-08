@@ -1,9 +1,9 @@
-OBJS=${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxProcess.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxDesktopTestGrid.o ${OBJS_DIR}/mxDesktopTestPanel.o ${OBJS_DIR}/mxEvaluateDialog.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/mxProfile.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxInputDialog.o ${OBJS_DIR}/RTSyntaxManager.o ${OBJS_DIR}/mxIconInstaller.o ${OBJS_DIR}/mxVarWindow.o ${OBJS_DIR}/mxDebugWindow.o ${OBJS_DIR}/mxSubtitles.o ${OBJS_DIR}/mxStatusBar.o ${OBJS_DIR}/CommunicationsManager.o ${OBJS_DIR}/HtmlExporter.o ${OBJS_DIR}/mxOpersWindow.o ${OBJS_DIR}/Logger.o ${OBJS_DIR}/mxPanelHelper.o ${OBJS_DIR}/mxExportPreview.o ${OBJS_DIR}/Package.o ${OBJS_DIR}/mxTestPanel.o ${OBJS_DIR}/Application.o 
+OBJS=${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxProcess.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxDesktopTestGrid.o ${OBJS_DIR}/mxDesktopTestPanel.o ${OBJS_DIR}/mxEvaluateDialog.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/mxProfile.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxInputDialog.o ${OBJS_DIR}/RTSyntaxManager.o ${OBJS_DIR}/mxIconInstaller.o ${OBJS_DIR}/mxVarWindow.o ${OBJS_DIR}/mxDebugWindow.o ${OBJS_DIR}/mxSubtitles.o ${OBJS_DIR}/mxStatusBar.o ${OBJS_DIR}/CommunicationsManager.o ${OBJS_DIR}/HtmlExporter.o ${OBJS_DIR}/mxOpersWindow.o ${OBJS_DIR}/Logger.o ${OBJS_DIR}/mxPanelHelper.o ${OBJS_DIR}/mxExportPreview.o ${OBJS_DIR}/Package.o ${OBJS_DIR}/mxTestPanel.o ${OBJS_DIR}/Application.o ${OBJS_DIR}/mxHtmlWindow.o 
 
 ${OBJS_DIR}/LangSettings.o: ../pseint/LangSettings.cpp ../pseint/LangSettings.h Logger.h version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c ../pseint/LangSettings.cpp -o $@
 
-${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h RTSyntaxManager.h ids.h ConfigManager.h ../pseint/LangSettings.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTestPanel.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h mxVarWindow.h ../pseint/new_memoria_inter.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h mxOpersWindow.h mxPanelHelper.h Logger.h string_conversions.h mxExportPreview.h mxIconInstaller.h mxTestPanel.h ../pseval/Package.h
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h RTSyntaxManager.h ids.h ConfigManager.h ../pseint/LangSettings.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTestPanel.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h mxVarWindow.h ../pseint/new_memoria_inter.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h mxOpersWindow.h mxPanelHelper.h Logger.h string_conversions.h mxExportPreview.h mxIconInstaller.h mxTestPanel.h ../pseval/Package.h mxHtmlWindow.h
 	${GPP} ${CXXFLAGS} -c mxMainWindow.cpp -o $@
 
 ${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h ../pseint/LangSettings.h mxBitmapButton.h string_conversions.h ids.h
@@ -102,7 +102,7 @@ ${OBJS_DIR}/mxPanelHelper.o: mxPanelHelper.cpp mxPanelHelper.h mxMainWindow.h mx
 ${OBJS_DIR}/mxExportPreview.o: mxExportPreview.cpp mxExportPreview.h ids.h mxUtils.h mxMainWindow.h mxSource.h RTSyntaxManager.h string_conversions.h ConfigManager.h ../pseint/LangSettings.h mxProcess.h Logger.h
 	${GPP} ${CXXFLAGS} -c mxExportPreview.cpp -o $@
 
-${OBJS_DIR}/Package.o: ../pseval/Package.cpp ../pseval/Package.h
+${OBJS_DIR}/Package.o: ../pseval/Package.cpp ../pseval/Package.h ../pseval/version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c ../pseval/Package.cpp -o $@
 
 ${OBJS_DIR}/mxTestPanel.o: mxTestPanel.cpp mxTestPanel.h ../pseval/Package.h string_conversions.h ids.h mxSource.h RTSyntaxManager.h ConfigManager.h ../pseint/LangSettings.h mxProcess.h Logger.h mxMainWindow.h version.h ../pseint/version_common.h
@@ -110,4 +110,7 @@ ${OBJS_DIR}/mxTestPanel.o: mxTestPanel.cpp mxTestPanel.h ../pseval/Package.h str
 
 ${OBJS_DIR}/Application.o: Application.cpp Logger.h string_conversions.h Application.h mxMainWindow.h mxSource.h RTSyntaxManager.h version.h ../pseint/version_common.h mxUtils.h ConfigManager.h ../pseint/LangSettings.h HelpManager.h DebugManager.h mxProfile.h mxArt.h mxUpdatesChecker.h mxIconInstaller.h CommunicationsManager.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
+
+${OBJS_DIR}/mxHtmlWindow.o: mxHtmlWindow.cpp mxHtmlWindow.h
+	${GPP} ${CXXFLAGS} -c mxHtmlWindow.cpp -o $@
 
