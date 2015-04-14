@@ -28,6 +28,9 @@ public:
 	void SetLine(wxString proc, long line, long i=-1);
 	void ResetTest();
 	void SetEditable(bool can_edit);
+	void OnCopyOne(wxCommandEvent &event);
+	void OnCopyAll(wxCommandEvent &event);
+	void OnGotoLine(wxCommandEvent &event);
 };
 
 extern mxDesktopTestGrid *desktop_test;

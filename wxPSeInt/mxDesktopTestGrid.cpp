@@ -1,9 +1,10 @@
+#include <wx/textdlg.h>
+#include <wx/msgdlg.h>
+#include <wx/clipbrd.h>
 #include "mxDesktopTestGrid.h"
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "DebugManager.h"
-#include <wx/textdlg.h>
-#include <wx/msgdlg.h>
 using namespace std;
 
 mxDesktopTestGrid *desktop_test=NULL;
@@ -16,6 +17,9 @@ BEGIN_EVENT_TABLE(mxDesktopTestGrid, wxGrid)
 	EVT_GRID_SELECT_CELL(mxDesktopTestGrid::OnSelectCell)
 	EVT_SIZE(mxDesktopTestGrid::OnResize)
 	EVT_GRID_COL_SIZE(mxDesktopTestGrid::OnColResize)
+	EVT_MENU(mxID_DESKTOP_LIST_COPY_ONE,mxDesktopTestGrid::OnCopyOne)
+	EVT_MENU(mxID_DESKTOP_LIST_COPY_ALL,mxDesktopTestGrid::OnCopyAll)
+	EVT_MENU(mxID_DESKTOP_LIST_GOTO_LINE,mxDesktopTestGrid::OnGotoLine)
 END_EVENT_TABLE()
 	
 // cantidad de columnas fijas
@@ -66,15 +70,8 @@ void mxDesktopTestGrid::OnLabelRightClick(wxGridEvent &event) {
 }
 
 void mxDesktopTestGrid::OnCellDblClick(wxGridEvent &event) {
-	int r = event.GetRow();
-	long line=-1, inst=-1;
-	wxString pre=GetCellValue(r,1);
-	if (pre.Contains('(')) {
-		pre.AfterFirst('(').BeforeFirst(')').ToLong(&inst);
-		pre=pre.BeforeFirst('(');
-	}
-	if (pre.ToLong(&line) && line!=-1) 
-		debug->source->SelectInstruccion(line-1,inst-1);
+	wxString pre=GetCellValue(event.GetRow(),1);
+	wxCommandEvent evt; OnGotoLine(evt);
 }
 
 void mxDesktopTestGrid::OnResize(wxSizeEvent &evt) {
@@ -166,8 +163,12 @@ void mxDesktopTestGrid::OnSelectCell(wxGridEvent &evt) {
 }
 
 void mxDesktopTestGrid::OnCellRightClick (wxGridEvent & event) {
-	event.Skip();
-	OnCellDblClick(event);
+	wxGrid::SetGridCursor(event.GetRow(),event.GetCol());
+	wxMenu menu;
+	menu.Append(mxID_DESKTOP_LIST_COPY_ONE,"Copiar esta celda");
+	menu.Append(mxID_DESKTOP_LIST_COPY_ALL,"Copiar toda la tabla");
+	menu.Append(mxID_DESKTOP_LIST_GOTO_LINE,"Marcar esta linea en el algoritmo");
+	PopupMenu(&menu);
 }
 
 void mxDesktopTestGrid::SetEditable (bool can_edit) {
@@ -187,5 +188,41 @@ void mxDesktopTestGrid::OnClearVars ( ) {
 	SetColLabelValue(0,_T("Proceso/SubProceso"));
 	SetColLabelValue(1,_T("Linea(inst)"));
 	variables.Clear();
+}
+
+void mxDesktopTestGrid::OnCopyOne (wxCommandEvent & event) {
+	wxString data = GetCellValue(GetGridCursorRow(),GetGridCursorCol());
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(data));
+		wxTheClipboard->Close();
+	}
+}
+
+void mxDesktopTestGrid::OnCopyAll (wxCommandEvent & event) {
+	wxString data;
+	for(int j=0;j<GetNumberCols();j++)
+		data<<GetColLabelValue(j)<<(j==0?"":"\t");
+	data<<"\n";
+	for(int i=0;i<GetNumberRows();i++) { 
+		for(int j=0;j<GetNumberCols();j++) { 
+			data<<GetCellValue(i,j)<<(j==0?"":"\t");
+		}
+		data<<"\n";
+	}
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(data));
+		wxTheClipboard->Close();
+	}
+}
+
+void mxDesktopTestGrid::OnGotoLine (wxCommandEvent & event) {
+	int r = GetGridCursorRow(); long inst, line;
+	wxString pre=GetCellValue(r,1);
+	if (pre.Contains('(')) {
+		pre.AfterFirst('(').BeforeFirst(')').ToLong(&inst);
+		pre=pre.BeforeFirst('(');
+	}
+	if (pre.ToLong(&line) && line!=-1) 
+		debug->source->SelectInstruccion(line-1,inst-1);
 }
 

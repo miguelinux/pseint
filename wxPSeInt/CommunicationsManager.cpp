@@ -45,6 +45,7 @@ void mxSocketClient::ProcessLostFlow() {
 }
 
 void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
+	is_working++;
 	// leer datos y procesar
 	wxChar buf[256];
 	socket->Read(buf,255);
@@ -64,10 +65,10 @@ void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
 		socket->Read(buf,255);
 		n = socket->LastCount();
 	}
+	is_working--;
 }
 
 void mxSocketClient::ProcessCommand ( ) {
-	cerr<<"COMMAND: "<<buffer<<endl;
 	if (type==MXS_TYPE_DEBUG) debug->ProcSocketData(buffer);
 	else if (type==MXS_TYPE_FLOW) ProcessCommandFlow();
 	else if (type==MXS_TYPE_RUN) ProcessCommandRun();
@@ -163,6 +164,8 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 		while (it1!=it2) {
 			if ((**it1)==s) { 
 				(*it1)->ProcessInput(event);
+				if ((*it1)->should_delete && (*it1)->is_working==0) 
+					{ delete *it1; clients.erase(it1); }
 				return;
 			}
 			++it1;
@@ -173,8 +176,9 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 		while (it1!=it2) {
 			if ((**it1)==s) {
 				(*it1)->ProcessLost();
-				delete *it1;
-				clients.erase(it1);
+				// para evitar que un evento lost se procese mientras se esta procesando un input y entonces el lost lo destruya y el input no pueda continuar
+				if ((*it1)->is_working!=0) (*it1)->should_delete=true;
+				else { delete *it1; clients.erase(it1); }
 				return;
 			}
 			++it1;

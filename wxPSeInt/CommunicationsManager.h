@@ -13,6 +13,9 @@ class mxSocketClient {
 	int type, src_id; 
 	wxSocketBase *socket;
 	wxString buffer;
+	friend class CommunicationsManager;
+	int is_working;
+	bool should_delete; 
 public:
 	mxSocketClient(wxSocketBase *s);
 	~mxSocketClient();
