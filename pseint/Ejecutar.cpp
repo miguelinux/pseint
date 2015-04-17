@@ -381,7 +381,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 					tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
 					while (!(tmp2==0 && programa[tmp1]=="FINMIENTRAS")) {
 						// Saltear bucles anidados
-						if (LeftCompare(programa[tmp1],"MIENTRAS ")) tmp2++;
+						if (LeftCompare(programa[tmp1],"MIENTRAS ")
+							&& !LeftCompare(programa[tmp1],"MIENTRAS QUE ")) tmp2++;
 						if (programa[tmp1]=="FINMIENTRAS") tmp2--;
 						tmp1++;
 					}
