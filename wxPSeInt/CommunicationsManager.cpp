@@ -15,7 +15,10 @@ enum {MXS_TYPE_UNKNOWN, MXS_TYPE_DEBUG, MXS_TYPE_FLOW, MXS_TYPE_RUN};
 CommunicationsManager *comm_manager=NULL;
 
 
-mxSocketClient::mxSocketClient(wxSocketBase *s):type(MXS_TYPE_UNKNOWN),src_id(-1),socket(s){
+mxSocketClient::mxSocketClient(wxSocketBase *s)
+	: type(MXS_TYPE_UNKNOWN),src_id(-1),socket(s),
+	  is_working(0), should_delete(false)
+{
 	_LOG("mxSocketClient::mxSocketClient "<<this);
 	socket->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
 	socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);

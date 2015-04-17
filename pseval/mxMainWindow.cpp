@@ -50,6 +50,7 @@ mxMainWindow::mxMainWindow ( )
 
 static bool process_finished=true;
 static wxProcess *the_process=NULL;
+static int process_pid = 0;
 static bool abort_test=false;
 
 bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
@@ -136,8 +137,8 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	the_process  = new wxProcess(this->GetEventHandler());
 	the_process->Redirect();
 	std::cerr<<"pseval runs: "<<command<<std::endl;
-	int pid = wxExecute(command,wxEXEC_ASYNC,the_process);
-	if (!pid) return false;
+	process_pid = wxExecute(command,wxEXEC_ASYNC,the_process);
+	if (!process_pid) return false;
 	wxString &input=test.input, &output=test.output, &solution=test.solution;
 	wxTextOutputStream in(*the_process->GetOutputStream());
 	wxTextInputStream out(*the_process->GetInputStream());
@@ -167,7 +168,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent & event) {
 
 void mxMainWindow::OnButton (wxCommandEvent & event) {
 	if (the_process) {
-		if (!process_finished) the_process->Kill(wxSIGKILL);
+		if (!process_finished && process_pid) wxKill(process_pid,wxSIGKILL);
 		abort_test=true;
 	} else {
 		wxExit();
