@@ -568,6 +568,14 @@
   * Si el arreglo se dimensiona mas abajo, mueva esa linea hacia arriba. El arreglo debe ser dimensionado antes de utilizarlo por primera vez.
   * Recuerde que las dimensiones van siempre entre corchetes y separadas por comas.
 
+147
+  La raiz cuadrada de un número negativo no puede calcularse utilizando números reales. Su resultado se puede expresar solo con número complejos. Dado que el tipo de dato numérico de PSeInt solo puede almacenar números reales, esta operación no es válida.
+  * Verifique que el argumento para la función RAIZ (o RC) sea un número no negativo (cero o positivo).
+  
+148
+  El logaritmo de un número negativo no puede calcularse utilizando números reales. Su resultado se puede expresar solo con número complejos. Dado que el tipo de dato numérico de PSeInt solo puede almacenar números reales, esta operación no es válida.
+  * Verifique que el argumento para la función LN sea un número no negativo (cero o positivo).
+  
 149
   Esta utilizando un nombre de variable como arreglo, pero no fue previamente dimensionado.
   * Si no dimensiono el arreglo anteriormente hágalo utilizando la palabra Dimension seguida del nombre del arreglo y finalmente sus dimensiones entre corchetes y separadas por comas.
@@ -746,3 +754,4 @@
 312
   Las funciones ASEN (arco-seno) y ACOS (arco-coseno) calculan un ángulo a partir de una valor de seno o coseno (su argumento). Los valores válidos para seno y coseno son los mayores o iguales a -1, y menores o iguales a +1. Está invocando a una de estas dos funciones utilizando un argumento que no se encuentra en ese rango.
   * Verifique el valor de la variable o de la expresión que utiliza como argumento para la función ASEN/ACOS.
+

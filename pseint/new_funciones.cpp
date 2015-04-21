@@ -33,7 +33,7 @@ const Funcion* EsFuncion(const string &nombre, bool include_main_process) {
 
 string func_rc(string *arg) {
 	if (StrToDbl(*arg)<0) {
-		ExeError(147,"Raiz de negativo.",false);
+		ExeError(147,"Raiz cuadrada de número negativo.",false);
 		return "0";
 	} else
 		return DblToStr((double)(sqrt(double(StrToDbl(*arg)))));
@@ -87,6 +87,14 @@ string func_azar(string *arg) {
 	} else
 		return IntToStr(rand() % (int)StrToDbl(*arg));
 }
+
+string func_aleatorio(string *arg) {
+	int a = StrToDbl(*arg);
+	int b = StrToDbl(*(++arg));
+	if (b<a) { int x=a; a=b; b=x; }
+	return IntToStr(a+rand() % (b-a+1));
+}
+
 string func_trunc(string *arg) {
 	string str=*arg;
 	size_t pos_pt=str.find(".",0);
@@ -197,6 +205,7 @@ void LoadFunciones() {
 	funciones["TAN"]=new Funcion(vt_numerica,func_tan,vt_numerica);
 	funciones["ATAN"]=new Funcion(vt_numerica,func_atan,vt_numerica);
 	funciones["AZAR"]=new Funcion(vt_numerica,func_azar,vt_numerica_entera);
+	funciones["ALEATORIO"]=new Funcion(vt_numerica,func_aleatorio,vt_numerica_entera,vt_numerica_entera);
 	funciones["TRUNC"]=new Funcion(vt_numerica,func_trunc,vt_numerica);
 	funciones["REDON"]=new Funcion(vt_numerica,func_redon,vt_numerica);
 	if (lang[LS_ENABLE_STRING_FUNCTIONS]) {

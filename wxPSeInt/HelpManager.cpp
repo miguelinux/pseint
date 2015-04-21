@@ -157,6 +157,7 @@ wxString HelpManager::GetQuickHelp(wxString key, wxString def_val) {
 	else if (key==_Z("tan")) str="funciones.html";
 	else if (key==_Z("atan")) str="funciones.html";
 	else if (key==_Z("azar")) str="funciones.html";
+	else if (key==_Z("aleatorio")) str="funciones.html";
 	else if (key==_Z("trunc")) str="funciones.html";
 	else if (key==_Z("rc")) str="funciones.html";
 	else if (key==_Z("ln")) str="funciones.html";

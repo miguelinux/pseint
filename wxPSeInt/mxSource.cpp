@@ -54,7 +54,7 @@ const char *mxSourceWords1_funcs =
 	"subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ";
 
 const char* mxSourceWords2_math =
-	"cos sen tan acos asen atan raiz rc ln abs exp azar trunc redon pi ";
+	"cos sen tan acos asen atan raiz rc ln abs exp aleatorio azar trunc redon pi ";
 
 const char* mxSourceWords2_string =
 	"concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ";
@@ -110,7 +110,7 @@ struct comp_list_item {
 	operator wxString() { return label; }
 	bool operator<(const comp_list_item &o) const { return label<o.label; }
 };
-#define MAX_COMP_SIZE 100
+#define MAX_COMP_SIZE 256
 static comp_list_item comp_list[MAX_COMP_SIZE];
 static int comp_count=-1;
 
@@ -1075,7 +1075,8 @@ void mxSource::SetAutocompletion() {
 	comp_list[comp_count++]=comp_list_item("De Otro Modo:","De Otro Modo:\n","");
 	comp_list[comp_count++]=comp_list_item("FinSegun","FinSegun\n","");
 	comp_list[comp_count++]=comp_list_item("Fin Segun","Fin Segun\n","");
-	
+
+	comp_list[comp_count++]=comp_list_item("Aleatorio","Aleatorio(","*");
 	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("ConvertirATexto","ConvertirATexto(","*");
 	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("ConvertirANumero","ConvertirANumero(","*");
 	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Concatenar","Concatenar(","*");
