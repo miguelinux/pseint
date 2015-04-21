@@ -207,8 +207,11 @@ int main(int argc, char* argv[]) {
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) {
 				if (it1->first!=main_process_name) cout<<"SUB";
-				cout<<"PROCESO "<<it1->first<<":"<<it1->second->userline_start<<':'<<it1->second->userline_end<<endl;
-				(it1++)->second->memoria->ListVars();
+				cout<<"PROCESO ";
+				if (case_map) cout<<(*case_map)[it1->first];
+				else cout<<it1->first;
+				cout<<":"<<it1->second->userline_start<<':'<<it1->second->userline_end<<endl;
+				(it1++)->second->memoria->ListVars(case_map);
 			}
 			cout<<"<!{[END_OF_VARS]}!>"<<endl;
 			if (lcount) {

@@ -260,10 +260,11 @@ public:
 		}
 		return ret;
 	}
-	void ListVars() { // para que el proceso de rt_syntax le pase a la gui la lista de variables
+	void ListVars(map<string,string> *case_map) { // para que el proceso de rt_syntax le pase a la gui la lista de variables
 		map<string,tipo_var>::iterator it=var_info.begin(), it2=var_info.end();
 		while (it!=it2) {
-			cout<<it->first;
+			if (case_map) cout<<(*case_map)[it->first];
+			else cout<<it->first;
 			if (it->second.dims&&it->second.dims[0]>0) {
 				cout<<"[";
 				for (int i=1;i<it->second.dims[0];i++)
