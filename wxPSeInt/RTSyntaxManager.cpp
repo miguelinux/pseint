@@ -29,7 +29,7 @@ void RTSyntaxManager::Start ( ) {
 	the_one=new RTSyntaxManager;
 	the_one->restart=false;
 	wxString command;
-	command<<config->pseint_command<<" --forrealtimesyntax "<<mxProcess::GetProfileArgs();
+	command<<config->pseint_command<<" --forrealtimesyntax --usecasemap "<<mxProcess::GetProfileArgs();
 	the_one->pid=wxExecute(command,wxEXEC_ASYNC,the_one);
 	_LOG("RTSyntaxManager::Start  pid="<<the_one->pid<<"  command="<<command);
 }

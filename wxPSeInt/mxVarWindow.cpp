@@ -56,6 +56,7 @@ mxVarWindow::~mxVarWindow() {
 }
 
 void mxVarWindow::BeginInput ( ) {
+	all_vars.Clear();
 	wxTreeItemId s=GetSelection(); 
 	if (s.IsOk()) {
 		last_sel=tree->GetItemText(s).BeforeFirst('['); 
@@ -79,6 +80,7 @@ void mxVarWindow::AddProc(wxString vname, bool main_process) {
 }
 
 void mxVarWindow::AddVar(wxString vname, wxChar type) {
+	all_vars.Add(vname.BeforeFirst('['));
 	int icon = type-LV_BASE_CHAR;
 	vname.Replace("-1","??",true);
 	wxTreeItemId id=tree->AppendItem(tree_current,vname/*+stype*/,icon);

@@ -83,6 +83,10 @@ public:
 //	void OnModify(wxStyledTextEvent &event);
 	void OnCalltipClick(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
+private:
+	bool MakeCompletionFromKeywords(wxString &output, int start_pos, const wxString &typed);
+	bool MakeCompletionFromIdentifiers(wxString &output, int start_pos, const wxString &typed);
+public:
 	void OnCharAdded(wxStyledTextEvent &event);
 	void OnUserListSelection (wxStyledTextEvent &event);
 	void OnUpdateUI(wxStyledTextEvent &event);

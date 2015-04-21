@@ -10,6 +10,8 @@ private:
 	wxTreeCtrl *tree;
 	wxTreeItemId tree_root,tree_current;
 	wxString last_sel, last_parent;
+	friend class mxSource;
+	wxArrayString all_vars;
 protected:
 public:
 	void BeginInput();

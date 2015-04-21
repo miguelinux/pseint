@@ -438,6 +438,45 @@ void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 	SetSelection (0, GetTextLength ());
 }
 
+bool mxSource::MakeCompletionFromKeywords(wxString &output, int start_pos, const wxString &typed) {
+	int l = typed.Len();
+	wxString instruccion = GetInstruction(start_pos);
+	bool show = false;
+	for (int j,i=0;i<comp_count;i++) {
+		if (comp_list[i].instruction=="*") {
+			if (instruccion=="") continue;
+		} else {
+			if (comp_list[i].instruction!=instruccion) continue;
+		}
+		for (j=0;j<l;j++)
+			if (typed[j]!=wxTolower(comp_list[i].label[j]))
+				break;
+		if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
+			show=true;
+			if (!output.IsEmpty()) output<<"|";
+			output<<comp_list[i];
+		}
+	}
+	return show;
+}
+
+bool mxSource::MakeCompletionFromIdentifiers(wxString &output, int start_pos, const wxString &typed) {
+	bool show = false;
+	wxArrayString &vars = vars_window->all_vars;
+	int l=typed.Len(), j;
+	for(unsigned int i=0;i<vars.GetCount();i++) { 
+		for (j=0;j<l;j++)
+			if (typed[j]!=wxTolower(vars[i][j]))
+				break;
+		if (j==l) {
+			show=true;
+			if (!output.IsEmpty()) output<<"|";
+			output<<vars[i];
+		}
+	}
+	return show;
+}
+
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	char chr = event.GetKey();
 	if (chr=='\n') {
@@ -477,35 +516,18 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			UserListShow(1,res);
 			SetCurrentPos(p2);
 		}
-	} else if ((chr|32)>='a' && (chr|32)<='z' && config->autocomp) {
+	} else if ( EsLetra(chr,true) && config->autocomp) 
+	{
 		int p2=comp_to=GetCurrentPos();
 		int s=GetStyleAt(p2);
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2,true);
-		if (p2-p1>2)  {
-			wxString instruccion=GetInstruction(p1);
+		if (p2-p1>2 && EsLetra(GetCharAt(p1),false)) {
 			wxString str = GetTextRange(p1,p2);
 			str.MakeLower();
-			int l = str.Len();
-			bool show=false;
 			wxString res;
-			for (int j,i=0;i<comp_count;i++) {
-				if (comp_list[i].instruction=="*") {
-					if (instruccion=="") continue;
-				} else {
-					if (comp_list[i].instruction!=instruccion) continue;
-				}
-				for (j=0;j<l;j++)
-					if (str[j]!=wxTolower(comp_list[i].label[j]))
-						break;
-				if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
-					if (!show) {
-						show=true;
-						res=comp_list[i];
-					} else
-						res<<"|"<<comp_list[i];
-				}
-			}
+			bool show = MakeCompletionFromKeywords(res,p1,str);
+			show |= MakeCompletionFromIdentifiers(res,p1,str);
 			if (show) {
 				SetCurrentPos(p1);
 				UserListShow(1,res);
@@ -587,10 +609,11 @@ void mxSource::SetModify (bool modif) {
 void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 	SetTargetStart(comp_from);
 	SetTargetEnd(comp_to);
-	if (config->smart_indent) {
-		int i=0;
-		wxString what = evt.GetText();
-		while (comp_list[i]!=what) i++;
+	int i=0;
+	wxString what = evt.GetText();
+	if (config->smart_indent) 
+		while (i<comp_count && comp_list[i]!=what) i++;
+	if (config->smart_indent && i!=comp_count) {
 		wxString text(comp_list[i].text);
 		if (!config->lang[LS_FORCE_SEMICOLON] && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
@@ -607,10 +630,9 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 			if (config->autoclose) TryToAutoCloseSomething(lfp+1);
 		}
 	} else {
-		wxString text = evt.GetText();
-		while (text.Last()=='\n') text.RemoveLast();
-		ReplaceTarget(text);
-		SetSelection(comp_from+text.Len(),comp_from+text.Len());
+		while (what.Last()=='\n') what.RemoveLast();
+		ReplaceTarget(what);
+		SetSelection(comp_from+what.Len(),comp_from+what.Len());
 	}
 	wxStyledTextEvent evt2;
 	evt2.SetKey(' ');
