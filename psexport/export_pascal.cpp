@@ -166,7 +166,6 @@ void PascalExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string
 }
 
 void PascalExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, string tabs) {
-	// el "for x in a" de python sirve para solo-lectura (modificar x no modifica a)
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
 	const int *dims=memoria->LeerDims(var);
 	int n=dims[0];

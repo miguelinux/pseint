@@ -10,11 +10,10 @@ version_required=20131115
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=export_qbasic.cpp
 path_char=/
 [source]
 path=psexport.cpp
-cursor=230:1
+cursor=213:0
 [source]
 path=../pseint/utils.cpp
 cursor=-1:12714
@@ -29,7 +28,7 @@ path=../pseint/zcurlib.cpp
 cursor=-1:1086
 [source]
 path=../pseint/new_evaluar.cpp
-cursor=254:16
+cursor=360:42
 marker=174
 marker=395
 marker=711
@@ -44,7 +43,7 @@ path=../pseint/new_programa.cpp
 cursor=-1:0
 [source]
 path=export_cpp.cpp
-cursor=23:1
+cursor=459:29
 [source]
 path=exportexp.cpp
 cursor=61:41
@@ -57,10 +56,10 @@ path=../pseint/zcurlib_win.cpp
 cursor=-1:0
 [source]
 path=export_vb.cpp
-cursor=15:24
+cursor=354:0
 [source]
 path=export_php.cpp
-cursor=16:8
+cursor=238:0
 [source]
 path=export_common.cpp
 cursor=85:3
@@ -73,14 +72,13 @@ path=export_tipos.cpp
 cursor=131:1
 [source]
 path=export_java.cpp
-cursor=168:29
+cursor=321:41
 [source]
 path=export_python3.cpp
 cursor=26:8
 [source]
 path=export_pascal.cpp
-cursor=23:8
-marker=199
+cursor=198:0
 [source]
 path=export_javascript.cpp
 cursor=125:28
@@ -98,10 +96,7 @@ path=../pseint/LangSettings.cpp
 cursor=48:65
 [source]
 path=export_qbasic.cpp
-cursor=73:53
-breakpoint=201
-breakpoint_annotation=
-open=true
+cursor=20:38
 [header]
 path=exportexp.h
 cursor=8:36
@@ -185,7 +180,7 @@ path=../pseint/LangSettings.h
 cursor=0:0
 [header]
 path=export_qbasic.h
-cursor=0:0
+cursor=8:36
 [other]
 path=../bin/help/cambios.html
 cursor=4:86
@@ -199,7 +194,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../test/export/temp
 always_ask_args=0
-args=--for-testing --lang=qb 04-arreglos.psd lala
+args=--for-testing --lang=qb 10-otros.psd lala
 exec_method=0
 exec_script=
 env_vars=
@@ -362,6 +357,7 @@ exclude_list=
 expr=input_base_zero_arrays
 expr=output_base_zero_arrays
 expr=lang[LS_BASE_ZERO_ARRAYS]
+expr=fname
 [custom_tools]
 name_0=Run tests
 command_0=sh ./test_debug.sh ${PROJECT_BIN} qb

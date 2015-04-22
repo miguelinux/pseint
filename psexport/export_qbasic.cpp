@@ -13,33 +13,34 @@
 #include "export_tipos.h"
 
 QBasicExporter::QBasicExporter() {
+	use_pi=use_rand=use_asin=use_acos=false;
 	output_base_zero_arrays=input_base_zero_arrays;
 }
 
 void QBasicExporter::esperar_tecla(t_output &prog, string param, string tabs){
-	insertar(prog,tabs+"Console.ReadKey()");
+	insertar(prog,tabs+"WHILE INKEY$<>\"\": WEND");
 }
 
 void QBasicExporter::esperar_tiempo(t_output &prog, string tiempo, bool milis, string tabs){
 	stringstream inst;
-	inst<<"Thread.Sleep(";
-	if (milis) inst<<tiempo; 
-	else {
-		inst<<colocarParentesis(tiempo)<<"*1000";
-	}
-	inst<<")";
+	inst<<"SLEEP ";
+	if (!milis) inst<<tiempo; 
+	else inst<<"INT("<<colocarParentesis(tiempo)<<"/1000)";
 	insertar(prog,tabs+inst.str());
 }
 
 void QBasicExporter::borrar_pantalla(t_output &prog, string param, string tabs){
-	insertar(prog,tabs+"Console.Clear()");
+	insertar(prog,tabs+"CLS");
 }
 
 void QBasicExporter::invocar(t_output &prog, string param, string tabs){
 	string linea=expresion(param);
 	if (linea[linea.size()-1]!=')') 
 		linea+="()";
-		insertar(prog,tabs+linea);
+	string fname=ToUpper(linea.substr(0,linea.find('(')));
+	const Funcion *func=EsFuncion(fname);
+	if (func->nombres[0]=="") linea=string("CALL ")+linea;
+	insertar(prog,tabs+linea);
 }
 
 void QBasicExporter::escribir(t_output &prog, t_arglist args, bool saltar, string tabs){
@@ -90,14 +91,14 @@ void QBasicExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 	list<t_proceso_it>::iterator p,q,r;
 	q=p=its.begin();r=its.end();
 	t_proceso_it i=*q;
-	insertar(prog,tabs+"Select Case "+expresion((*i).par1));
+	insertar(prog,tabs+"SELECT CASE "+expresion((*i).par1));
 	++q;++p;
 	while (++p!=r) {
 		i=*q;
 		if ((*i).par1=="DE OTRO MODO")
-			insertar(prog,tabs+"Case Else");
+			insertar(prog,tabs+"\tCASE ELSE");
 		else {
-			string e="Case "+expresion((*i).par1);
+			string e="CASE "+expresion((*i).par1);
 			bool comillas=false; int parentesis=0, j=0,l=e.size();
 			while(j<l) {
 				if (e[j]=='\''||e[j]=='\"') comillas=!comillas;
@@ -110,12 +111,12 @@ void QBasicExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 				}
 				j++;
 			}
-			insertar(prog,tabs+e);
+			insertar(prog,tabs+"\t"+e);
 		}
-		bloque(prog,++i,*p,tabs+"\t");
+		bloque(prog,++i,*p,tabs+"\t\t");
 		++q;
 	}
-	insertar(prog,tabs+"End Select");
+	insertar(prog,tabs+"END SELECT");
 }
 
 void QBasicExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
@@ -130,67 +131,91 @@ void QBasicExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, str
 void QBasicExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=expresion((*r).par1), ini=expresion((*r).par2), fin=expresion((*r).par3), paso=(*r).par4;
 	if (paso=="1")
-		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin);
+		insertar(prog,tabs+"FOR "+var+" = "+ini+" TO "+fin);
 	else
-		insertar(prog,tabs+"For "+var+"="+ini+" To "+fin+" Step "+expresion(paso));
+		insertar(prog,tabs+"FOR "+var+" = "+ini+" TO "+fin+" STEP "+expresion(paso));
 	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"Next "+var);
+	insertar(prog,tabs+"NEXT "+var);
 }
 
-void QBasicExporter::paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
+void QBasicExporter::paracada(t_output &out, t_proceso_it r, t_proceso_it q, string tabs){
 	string var=ToLower((*r).par2), aux=ToLower((*r).par1);
-	insertar(prog,tabs+"For Each "+aux+" In "+var);
-	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"Next");
+	const int *dims=memoria->LeerDims(var);
+	int n=dims[0];
+	
+	string *auxvars=new string[n];
+	for(int i=0;i<n;i++) auxvars[i]=get_aux_varname("aux_index_");
+	
+	string vname=var;
+	for(int i=0;i<n;i++) { 
+		string idx=auxvars[i];
+		insertar(out,tabs+"FOR "+idx+" = LBOUND("+var+","+IntToStr(i+1)+") TO UBOUND("+var+","+IntToStr(i+1)+")");
+		if (vname==var) vname+="("; else vname[vname.size()-1]=',';
+		vname+=idx+")";
+		tabs+="\t";
+	}
+	
+	t_output aux_out;
+	bloque(aux_out,++r,q,tabs);
+	replace_var(aux_out,aux,vname);
+	insertar_out(out,aux_out);
+	
+	for(int i=n-1;i>=0;i--) { 
+		tabs=tabs.substr(0,tabs.size()-1);
+		insertar(out,tabs+"NEXT "+auxvars[i]);
+		release_aux_varname(auxvars[i]);
+	}
+	delete []auxvars;
 }
 
 string QBasicExporter::function(string name, string args) {
 	if (name=="SEN") {
-		return string("Math.Sin")+args;
+		return string("SIN")+args;
 	} else if (name=="TAN") {
-		return string("Math.Tan")+args;
+		return string("TAN")+args;
 	} else if (name=="ASEN") {
-		return string("Math.Asin")+args;
+		use_asin=true;
+		return string("ARCSIN")+args;
 	} else if (name=="ACOS") {
-		return string("Math.Acos")+args;
+		use_acos=true;
+		return string("ARCCOS")+args;
 	} else if (name=="COS") {
-		return string("Math.Cos")+args;
-	} else if (name=="RAIZ") {
-		return string("Math.Sqrt")+args;
-	} else if (name=="RC") {
-		return string("Math.Sqrt")+args;
+		return string("COS")+args;
+	} else if (name=="RAIZ"||name=="RC") {
+		return string("SQR")+args;
 	} else if (name=="ABS") {
-		return string("Math.Abs")+args;
+		return string("ABS")+args;
 	} else if (name=="LN") {
-		return string("Math.Log")+args;
+		return string("LOG")+args;
 	} else if (name=="EXP") {
-		return string("Math.Exp")+args;
+		return string("EXP")+args;
 	} else if (name=="AZAR") {
-		return string("New Random().Next")+args;
+		use_rand=true;
+		return string("INT(RND*")+get_arg(args,1)+")";
 	} else if (name=="ATAN") {
-		return string("Math.Atan")+args;
+		return string("ATN")+args;
 	} else if (name=="TRUNC") {
-		return string("Math.Truncate")+args;
+		return string("INT")+args;
 	} else if (name=="REDON") {
-		return string("Math.Round")+args;
+		return string("CINT")+args;
 	} else if (name=="CONCATENAR") {
-		return get_arg(args,1)+" & "+get_arg(args,2);
+		return get_arg(args,1)+"+"+get_arg(args,2);
 	} else if (name=="LONGITUD") {
-		return get_arg(args,1)+".Length()";
+		return string("LEN")+args;
 	} else if (name=="SUBCADENA") {
 		if (!input_base_zero_arrays) args=
 			string("(")+get_arg(args,1)+","
 			+sumarOrestarUno(get_arg(args,2),false)
 			+","+sumarOrestarUno(get_arg(args,3),false)+")";
-		return string("Mid")+args;
+		return string("MID$")+args;
 	} else if (name=="CONVERTIRANUMERO") {
-		return string("CDbl")+args;
+		return string("VAL")+args;
 	} else if (name=="CONVERTIRATEXTO") {
-		return string("CStr")+args;
+		return string("STR$")+args;
 	} else if (name=="MINUSCULAS") {
-		return get_arg(args,1)+".ToUpper()";
+		return string("LCASE$")+args;
 	} else if (name=="MAYUSCULAS") {
-		return get_arg(args,1)+".ToLower()";
+		return string("UCASE$")+args;
 	} else {
 		return ToLower(name)+args; // no deberia pasar esto
 	}
@@ -204,13 +229,12 @@ string QBasicExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_fu
 	if (t==vt_caracter) { stipo="STRING"; }
 	else if (t==vt_numerica) stipo=t.rounded?"LONG":"DOUBLE";
 	else if (t==vt_logica) stipo="INTEGER";
-	//else use_sin_tipo=true;
 	if (t.dims) {
 		if (!for_func) return "";
-		string pre=for_func?"BYVAL ":"DIM ";
+		string pre=for_func?"":"DIM ";
 		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" AS "+stipo;
 	} else {
-		string pre=for_func?(by_ref?"BYREF ":"BYVAL "):"DIM ";
+		string pre=for_func?"":"DIM ";
 		return pre+ToLower(mit->first)+" AS "+stipo;
 	}
 }
@@ -245,7 +269,7 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
-	bloque(out_proc,++proc.begin(),proc.end(),f?"\t":"");
+	bloque(out_proc,++proc.begin(),proc.end(),"");
 	
 	// cabecera del proceso
 	bool is_sub=true;
@@ -253,18 +277,19 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (f) {
 		string dec;
 		if (f->nombres[0]=="") {
-			dec="\tPublic Sub "; 
+			dec="SUB "; 
 		} else {
 			is_sub=false;
-			dec="\tPublic Function ";
-			ret=string("\tReturn ")+ToLower(f->nombres[0]);
+			dec="FUNCTION ";
+			ret=ToLower(f->id)+" = "+ToLower(f->nombres[0]);
 		}
-		dec+=ToLower(f->id)+"(";
+		dec+=ToLower(f->id)+" (";
 		for(int i=1;i<=f->cant_arg;i++) {
 			if (i!=1) dec+=", ";
 			dec+=get_tipo(f->nombres[i],f->pasajes[i]==PP_REFERENCIA);
 		}
 		dec+=")";
+		out.push_back("");
 		out.push_back(dec);
 		delete f;
 	}
@@ -274,8 +299,8 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	insertar_out(out,out_proc);
 	
 	// cola del proceso
-	if (ret.size()) out.push_back(string("\t")+ret);
-	if (f) out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
+	if (ret.size()) out.push_back(ret);
+	if (f) out.push_back(is_sub?"END SUB":"END FUNCTION");
 	if (!for_test) out.push_back("");
 	
 	delete memoria;
@@ -291,12 +316,40 @@ void QBasicExporter::translate(t_output &out, t_programa &prog) {
 	init_header(out,"' ");
 	if (!for_test) out.push_back("");
 	// procesos y subprocesos
+	t_output aux;
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(out,*it);	
+		translate_single(aux,*it);	
+	
+	if (use_pi) out.push_back("CONST PI = 3.141593");
+	if (use_rand) out.push_back("RANDOMIZE TIMER");
+	insertar_out(out,aux);
+	
+	if (use_asin) {
+		out.push_back("");
+		out.push_back("FUNCTION ARCSIN(x)");
+		out.push_back("	IF x <= 1 AND x >= -1 THEN");
+		out.push_back("		ARCSIN = ATN(x / SQR(1 - (x * x)))");
+		out.push_back("	ELSE");
+		out.push_back("		PRINT \"Domain Error\"");
+		out.push_back("		END");
+		out.push_back("	END IF");
+		out.push_back("END FUNCTION");
+	}
+	if (use_acos) {
+		out.push_back("");
+		out.push_back("FUNCTION ARCCOS(x)");
+		out.push_back("	IF x <= 1 AND x >= -1 THEN");
+		out.push_back("		ARCCOS = (2 * ATN(1)) - ATN(x / SQR(1 - x * x))");
+		out.push_back("	ELSE");
+		out.push_back("		PRINT \"Domain Error\"");
+		out.push_back("		END");
+		out.push_back("	END IF");
+		out.push_back("END FUNCTION  ");
+	}
 }
 
 string QBasicExporter::get_constante(string name) {
-	if (name=="PI") return "Math.Pi";
+	if (name=="PI") { use_pi=true; return "PI"; }
 	if (name=="VERDADERO") return "1";
 	if (name=="FALSO") return "0";
 	return name;
@@ -313,31 +366,21 @@ string QBasicExporter::get_operator(string op, bool for_string) {
 	if (op=="[") return "(";
 	if (op==",") return ",";
 	if (op=="]") return ")";
-	// otros
-	if (for_string) {
-		if (op=="+") return "&"; 
-		if (op=="=") return "func arg1.Equals(arg2)"; 
-		if (op=="<>") return "func Not arg1.Equals(arg2)"; 
-		if (op=="<") return "func arg1.CompareTo(arg2)<0"; 
-		if (op==">") return "func arg1.CompareTo(arg2)>0"; 
-		if (op=="<=") return "func arg1.CompareTo(arg2)<=0"; 
-		if (op==">=") return "func arg1.CompareTo(arg2)>=0"; 
-	}
 	if (op=="+") return "+"; 
 	if (op=="-") return "-"; 
 	if (op=="/") return "/"; 
 	if (op=="*") return "*";
 	if (op=="^") return "^";
-	if (op=="%") return " Mod ";
+	if (op=="%") return " MOD ";
 	if (op=="=") return "="; 
 	if (op=="<>") return "<>"; 
 	if (op=="<") return "<"; 
 	if (op==">") return ">"; 
 	if (op=="<=") return "<="; 
 	if (op==">=") return ">="; 
-	if (op=="&") return " And "; 
-	if (op=="|") return " Or "; 
-	if (op=="~") return "Not "; 
+	if (op=="&") return " AND "; 
+	if (op=="|") return " OR "; 
+	if (op=="~") return "NOT "; 
 	return op; // no deberia pasar nunca
 }
 

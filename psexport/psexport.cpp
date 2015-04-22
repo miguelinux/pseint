@@ -181,9 +181,7 @@ int main(int argc, char *argv[]){
 			else if (s=="py" || s=="pyton" || s=="py3" || s=="python3") exporter=new Python3Exporter(3);
 			else if (s=="py2" || s=="python2") exporter=new Python3Exporter(2);
 			else if (s=="vb" || s=="visualbasic") exporter=new VbExporter();
-#ifdef DEBUG
 			else if (s=="bas" || s=="qb" || s=="qbasic" || s=="quickbasic") exporter=new QBasicExporter();
-#endif
 			else {
 				if (s=="ook") { 
 					char s[]="Uû!op!fsft!vo!psbohvuâo-!qfsp!upnb!vob!cbobob;"; int i=0; while(s[i]!='\0') s[i++]--; cout<<s<<endl;
