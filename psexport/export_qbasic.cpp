@@ -13,7 +13,7 @@
 #include "export_tipos.h"
 
 QBasicExporter::QBasicExporter() {
-	output_base_zero_arrays=false;
+	output_base_zero_arrays=input_base_zero_arrays;
 }
 
 void QBasicExporter::esperar_tecla(t_output &prog, string param, string tabs){
@@ -46,12 +46,12 @@ void QBasicExporter::escribir(t_output &prog, t_arglist args, bool saltar, strin
 	t_arglist_it it=args.begin();
 	string linea;
 	while (it!=args.end()) {
-		if (linea.size()) linea+=",";
+		if (linea.size()) linea+=";";
 		linea+=expresion(*it);
 		++it;
 	}
-	if (saltar) linea=string("Console.WriteLine(")+linea+")"; 
-	else linea=string("Console.Write(")+linea+")";
+	if (saltar) linea=string("PRINT ")+linea; 
+	else linea=string("PRINT ")+linea+";";
 	insertar(prog,tabs+linea);
 }
 
@@ -60,10 +60,8 @@ void QBasicExporter::leer(t_output &prog, t_arglist args, string tabs){
 	while (it!=args.end()) {
 		tipo_var t;
 		string varname=expresion(*it,t);
-		if (t==vt_numerica && t.rounded) insertar(prog,tabs+varname+" = Integer.Parse(Console.ReadLine())");
-		else if (t==vt_numerica) insertar(prog,tabs+varname+" = Double.Parse(Console.ReadLine())");
-		else if (t==vt_logica) insertar(prog,tabs+varname+" = Boolean.Parse(Console.ReadLine())");
-		else  insertar(prog,tabs+varname+" = Console.ReadLine()");
+		if (t==vt_caracter||t==vt_desconocido) insertar(prog,tabs+"LINE INPUT "+varname);
+		else  insertar(prog,tabs+"INPUT "+varname);
 		++it;
 	}
 }
@@ -73,19 +71,19 @@ void QBasicExporter::asignacion(t_output &prog, string param1, string param2, st
 }
 
 void QBasicExporter::si(t_output &prog, t_proceso_it r, t_proceso_it q, t_proceso_it s, string tabs){
-	insertar(prog,tabs+"If "+expresion((*r).par1)+" Then");
+	insertar(prog,tabs+"IF "+expresion((*r).par1)+" THEN");
 	bloque(prog,++r,q,tabs+"\t");
 	if (q!=s) {
-		insertar(prog,tabs+"Else");
+		insertar(prog,tabs+"ELSE");
 		bloque(prog,++q,s,tabs+"\t");
 	}
-	insertar(prog,tabs+"End If");
+	insertar(prog,tabs+"END");
 }
 
 void QBasicExporter::mientras(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"While "+expresion((*r).par1));
+	insertar(prog,tabs+"WHILE "+expresion((*r).par1));
 	bloque(prog,++r,q,tabs+"\t");
-	insertar(prog,tabs+"End While");
+	insertar(prog,tabs+"WEND");
 }
 
 void QBasicExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
@@ -121,12 +119,12 @@ void QBasicExporter::segun(t_output &prog, list<t_proceso_it> its, string tabs){
 }
 
 void QBasicExporter::repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
-	insertar(prog,tabs+"Do");
+	insertar(prog,tabs+"DO");
 	bloque(prog,++r,q,tabs+"\t");
 	if ((*q).nombre=="HASTAQUE")
-		insertar(prog,tabs+"Loop Until "+expresion((*q).par1));
+		insertar(prog,tabs+"LOOP UNTIL "+expresion((*q).par1));
 	else
-		insertar(prog,tabs+"Loop While "+expresion((*q).par1));
+		insertar(prog,tabs+"LOOP WHILE "+expresion((*q).par1));
 }
 
 void QBasicExporter::para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs){
@@ -202,28 +200,27 @@ string QBasicExporter::function(string name, string args) {
 // y para obtener los tipos de los argumentos de la funcion para las cabeceras
 string QBasicExporter::get_tipo(map<string,tipo_var>::iterator &mit, bool for_func, bool by_ref) {
 	tipo_var &t=mit->second;
-	string stipo="String";
-	if (t==vt_caracter) { stipo="String"; }
-	else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
-	else if (t==vt_logica) stipo="Boolean";
+	string stipo="STRING";
+	if (t==vt_caracter) { stipo="STRING"; }
+	else if (t==vt_numerica) stipo=t.rounded?"LONG":"DOUBLE";
+	else if (t==vt_logica) stipo="INTEGER";
 	//else use_sin_tipo=true;
 	if (t.dims) {
 		if (!for_func) return "";
-		string pre=for_func?"ByVal ":"Dim ";
-		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" As "+stipo;
+		string pre=for_func?"BYVAL ":"DIM ";
+		return pre+ToLower(mit->first)+make_dims(t.dims,"(",",",")",!for_func)+" AS "+stipo;
 	} else {
-		string pre=for_func?(by_ref?"ByRef ":"ByVal "):"Dim ";
-		return pre+ToLower(mit->first)+" As "+stipo;
+		string pre=for_func?(by_ref?"BYREF ":"BYVAL "):"DIM ";
+		return pre+ToLower(mit->first)+" AS "+stipo;
 	}
 }
 
 // resolucion de tipos (todo lo que acceda a cosas privadas de memoria tiene que estar en esta clase porque es la unica amiga)
 void QBasicExporter::declarar_variables(t_output &prog) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().begin(), mit2=memoria->GetVarInfo().end();
-	string tab("\t\t");
 	while (mit!=mit2) {
 		string dec=get_tipo(mit);
-		if (dec.size()) prog.push_back(tab+dec);
+		if (dec.size()) prog.push_back(dec);
 		++mit;
 	}
 }
@@ -234,7 +231,7 @@ void QBasicExporter::declarar_variables(t_output &prog) {
 string QBasicExporter::get_tipo(string name, bool by_ref) {
 	map<string,tipo_var>::iterator mit=memoria->GetVarInfo().find(name);
 	if (mit==memoria->GetVarInfo().end()) 
-		return string("Dim ")+ToLower(name)+" As String"; // puede pasar si hay variables que no se usan dentro de la funcion
+		return string("DIM ")+ToLower(name)+" AS STRING"; // puede pasar si hay variables que no se usan dentro de la funcion
 	string ret = get_tipo(mit,true,by_ref);
 	memoria->GetVarInfo().erase(mit);
 	return ret;
@@ -248,14 +245,12 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
-	bloque(out_proc,++proc.begin(),proc.end(),"\t\t");
+	bloque(out_proc,++proc.begin(),proc.end(),f?"\t":"");
 	
 	// cabecera del proceso
 	bool is_sub=true;
 	string ret; // sentencia "Return ..." de la funcion
-	if (!f) {
-		out.push_back("\tSub Main()");
-	} else {
+	if (f) {
 		string dec;
 		if (f->nombres[0]=="") {
 			dec="\tPublic Sub "; 
@@ -280,7 +275,7 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret);
-	out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
+	if (f) out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
 	if (!for_test) out.push_back("");
 	
 	delete memoria;
@@ -294,18 +289,16 @@ void QBasicExporter::translate(t_output &out, t_programa &prog) {
 	
 	// cabecera
 	init_header(out,"' ");
-	out.push_back(string("Module ")+main_process_name);
 	if (!for_test) out.push_back("");
 	// procesos y subprocesos
 	for (t_programa_it it=prog.begin();it!=prog.end();++it)
 		translate_single(out,*it);	
-	out.push_back("End Module");
 }
 
 string QBasicExporter::get_constante(string name) {
 	if (name=="PI") return "Math.Pi";
-	if (name=="VERDADERO") return "True";
-	if (name=="FALSO") return "False";
+	if (name=="VERDADERO") return "1";
+	if (name=="FALSO") return "0";
 	return name;
 }
 
@@ -353,16 +346,24 @@ string QBasicExporter::make_string (string cont) {
 }
 
 void QBasicExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
+	ExporterBase::dimension(prog,args,tabs);
 	t_arglist_it it=args.begin();
+	string line;
 	while (it!=args.end()) {
-		string name=*it;
-		name.erase(name.find("("));
+		// obtener nombre y dimensiones
+		string name, dims; 
+		crop_name_and_dims(*it,name,dims,
+			input_base_zero_arrays?"(0 TO ":"(1 TO ",
+			input_base_zero_arrays?"-1, 0 TO":", 1 TO ",
+			input_base_zero_arrays?"-1)":")");
+		// armar la linea que hace el dim
 		tipo_var t = memoria->LeerTipo(name);
-		string stipo="String";
-		if (t==vt_caracter) { stipo="String"; }
-		else if (t==vt_numerica) stipo=t.rounded?"Integer":"Double";
-		else if (t==vt_logica) stipo="Boolean";
-		insertar(prog,tabs+"Dim "+expresion(*it)+" As "+stipo);
+		string stipo="STRING";
+		if (t==vt_caracter) { stipo="STRING"; }
+		else if (t==vt_numerica) stipo=t.rounded?"LONG":"DOUBLE";
+		else if (t==vt_logica) stipo="INTEGER";
+		if (line!="") line+=", "; line+=ToLower(name)+dims+" AS "+stipo;
 		++it;
 	}
+	insertar(prog,tabs+"DIM "+line);
 }

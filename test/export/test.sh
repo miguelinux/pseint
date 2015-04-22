@@ -3,16 +3,18 @@
 if [ "$1" = "" ]; then 
   echo "Use: $0 langcode"
 else
-  echo LANG: $0
+  LANGCODE=$1
   if ! make -C ../../psexport -f Makefile.lnx; then exit 1; fi
+  ebin=../../../bin/psexport
+  
+  echo LANG: $LANGCODE
   if ! make -C ../../pseint -f Makefile.lnx; then exit 1; fi
 
-  if ! test -e $1; then
-    mkdir $1
+  if ! test -e $LANGCODE; then
+    mkdir $LANGCODE
   fi
   cd psc
   
-  ebin=../../../bin/psexport
   ibin=../../../bin/pseint
   
   for A in *.psc; do
@@ -20,16 +22,15 @@ else
     echo "=== $A"
   
     B=$(echo $A|sed 's/psc/psd/')
-    C=$(echo $A|sed 's/psc/'$1'/')
+    C=$(echo $A|sed 's/psc/'$LANGCODE'/')
     
     $ibin --allow_dinamyc_dimensions=1 --nouser $A --draw ../temp/$B
     
-    if ! test -e ../$1/$C; then
-      $ebin --for-testing --lang=$1 ../temp/$B ../$1/$C >/dev/null
+    if ! test -e ../$LANGCODE/$C; then
+      $ebin --for-testing --lang=$LANGCODE ../temp/$B ../$LANGCODE/$C >/dev/null
     else
-      $ebin --for-testing --lang=$1 ../temp/$B ../temp/$C >/dev/null
-#      if ! diff --strip-trailing-cr ../temp/$C ../$1/$C; then read; fi
-          diff --strip-trailing-cr ../temp/$C ../$1/$C
+      $ebin --for-testing --lang=$LANGCODE ../temp/$B ../temp/$C >/dev/null
+      diff --strip-trailing-cr ../temp/$C ../$LANGCODE/$C
     fi
   done
 fi  
