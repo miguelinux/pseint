@@ -207,6 +207,7 @@ bool Package::SaveConfig (const wxString & fname) {
 		fil.AddLine(wxString()+it->first+" = "+it->second);
 		++it;
 	}
+	fil.Write();
 	fil.Close();
 	return true;
 }
