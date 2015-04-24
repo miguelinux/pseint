@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=mxAboutWindow.cpp
+current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=../pseint/LangSettings.cpp
@@ -55,7 +55,7 @@ path=mxFindDialog.cpp
 cursor=41:78
 [source]
 path=mxAboutWindow.cpp
-cursor=153:1
+cursor=152:0
 marker=71
 open=true
 [source]
@@ -282,7 +282,7 @@ path=mxHtmlWindow.h
 cursor=0:0
 [other]
 path=../bin/help/cambios.html
-cursor=4:6
+cursor=4:126
 open=true
 [other]
 path=../bin/help/errores.hlp

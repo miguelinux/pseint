@@ -103,12 +103,19 @@ void RTSyntaxManager::ContinueProcessing() {
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				src->MarkError(line);
-			} else if (fase_num==1 && (config->show_vars || extra_args.action==RTA_DEFINE_VAR)) {
+			} else if (fase_num==1) {
 				wxString what=line.BeforeFirst(' ');
-				if (what=="PROCESO"||what=="SUBPROCESO")
-					vars_window->AddProc(line.AfterFirst(' '),what=="PROCESO");
-				else
-					vars_window->AddVar(what,line.Last());
+				if (config->show_vars || extra_args.action==RTA_DEFINE_VAR) {
+					if (what=="PROCESO"||what=="SUBPROCESO")
+						vars_window->AddProc(line.AfterFirst(' '),what=="PROCESO");
+					else
+						vars_window->AddVar(what,line.Last());
+				} else {
+					if (what=="SUBPROCESO") 
+						vars_window->RegisterAutocompKey(line.AfterFirst(' ').BeforeFirst(':'));
+					else if (what!="PROCESO")
+						vars_window->RegisterAutocompKey(what.BeforeFirst('['));
+				}
 			} else if (fase_num==2 && config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 

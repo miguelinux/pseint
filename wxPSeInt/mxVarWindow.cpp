@@ -68,6 +68,7 @@ void mxVarWindow::BeginInput ( ) {
 }
 
 void mxVarWindow::AddProc(wxString vname, bool main_process) {
+	if (!main_process) RegisterAutocompKey(vname.BeforeFirst(':'));
 	range *r=NULL;
 	if (vname.Contains(":")) {
 		r=new range;
@@ -80,7 +81,7 @@ void mxVarWindow::AddProc(wxString vname, bool main_process) {
 }
 
 void mxVarWindow::AddVar(wxString vname, wxChar type) {
-	all_vars.Add(vname.BeforeFirst('['));
+	RegisterAutocompKey(vname.BeforeFirst('['));
 	int icon = type-LV_BASE_CHAR;
 	vname.Replace("-1","??",true);
 	wxTreeItemId id=tree->AppendItem(tree_current,vname/*+stype*/,icon);
@@ -188,5 +189,9 @@ void mxVarWindow::OnAgregarAPruebaDeEscritorio (wxCommandEvent & evt) {
 	wxTreeItemId parent=tree->GetItemParent(it);
 	if (parent==tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
 	desktop_test->AddDesktopVar(tree->GetItemText(it));
+}
+
+void mxVarWindow::RegisterAutocompKey (wxString vname) {
+	all_vars.Add(vname);
 }
 

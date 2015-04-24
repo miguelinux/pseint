@@ -16,6 +16,7 @@ protected:
 public:
 	void BeginInput();
 	void AddProc(wxString vname, bool main_process); ///< cuando el RTSyntaxManager recibe el nombre de un proceso o subproceso, lo registra en la lista con este método
+	void RegisterAutocompKey(wxString vname); ///<  cuando el RTSyntaxManager recibe el nombre de una variable
 	void AddVar(wxString vname, wxChar type); ///<  cuando el RTSyntaxManager recibe el nombre de una variable
 	void EndInput();
 	void OnTreeClick2(wxTreeEvent &evt);
