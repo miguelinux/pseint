@@ -15,6 +15,9 @@
 #include <wx/textfile.h>
 #include "mxHelpWindow.h"
 #include <wx/dataobj.h>
+#include "mxMainWindow.h"
+
+mxAboutWindow *mxAboutWindow::the_about_win = NULL;
 
 BEGIN_EVENT_TABLE(mxAboutWindow, wxDialog)
 
@@ -32,7 +35,9 @@ END_EVENT_TABLE()
 	"\t\t\t9: Escribir \" H A .         @@           ##########\";\n\t\t\t10: Escribir \" A C C     @@@@@@@@@@     ##  ######  ##\";\n\t\t\t3: Escribir \" U   O                          ##\";\n" \
 	"\t\t\t12: Escribir \"   N M     @@@@@@@@@@     ##    ##    ##\";\n\t\t\t7: Escribir \" A   O       @@@@@@         ##########\";\n\t\tFinSegun\n\tFinPara\n\tEscribir \"\";\nFinProceso"
 	
-mxAboutWindow::mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, "Acerca de...", pos, size, style) {
+mxAboutWindow::mxAboutWindow(wxWindow *parent) 
+	: wxDialog(parent, wxID_ANY, "Acerca de...", wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) 
+{
 		
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 
@@ -49,15 +54,14 @@ mxAboutWindow::mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos
 	html->SetPage(MakePageText(false));
 	Show(); wxYield();
 	html->SetPage(MakePageText(true));
-	ShowModal(); 
 }
 
 void mxAboutWindow::OnCloseButton(wxCommandEvent &event){
-	Destroy();
+	Hide();
 }
 
 void mxAboutWindow::OnClose(wxCloseEvent &event){
-	Destroy();
+	Hide();
 }
 
 wxString mxAboutWindow::MakePageText(bool full) {
@@ -139,5 +143,13 @@ wxString mxAboutWindow::GetVersion (wxString exe) {
 	wxString retval=utils->GetVersion(exe);
 	version_info<<retval<<"\n";
 	return retval;
+}
+
+void mxAboutWindow::Run (wxWindow *parent) {
+	if (!the_about_win) the_about_win=new mxAboutWindow(parent);
+	else the_about_win->Show(); 
+}
+mxAboutWindow::~mxAboutWindow ( ) {
+	the_about_win=NULL;
 }
 

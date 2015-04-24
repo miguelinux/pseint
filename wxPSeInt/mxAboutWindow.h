@@ -7,14 +7,16 @@
 class mxAboutWindow : public wxDialog {
 	wxString version_info;
 	wxString GetVersion(wxString exe);
+	static mxAboutWindow *the_about_win;
 public:
-	mxAboutWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	mxAboutWindow(wxWindow *parent);
+	~mxAboutWindow();
 	void OnCloseButton(wxCommandEvent &event);
 	void OnLink (wxHtmlLinkEvent &event);
 	void OnClose(wxCloseEvent &event);
 	wxString MakePageText(bool full);
 	wxHtmlWindow *html;
-
+	static void Run(wxWindow *parent);
 private:
 	DECLARE_EVENT_TABLE()
 

@@ -1128,7 +1128,7 @@ void mxMainWindow::OnEditReplace (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnHelpAbout(wxCommandEvent &evt) {
-	mxAboutWindow(this,wxID_ANY);
+	mxAboutWindow::Run(this);
 }
 
 void mxMainWindow::OnHelpIndex(wxCommandEvent &evt) {
