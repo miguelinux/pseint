@@ -15,6 +15,7 @@
 #include "Version.h"
 #include <wx/choicdlg.h>
 #include "../pseint/LangSettings.h"
+#include "../wxPSeInt/mac-stuff.h"
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -23,11 +24,6 @@ class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();
 };
-
-#ifdef __WXMAC__
-	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
-#	include <ApplicationServices/ApplicationServices.h>
-#endif
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -48,13 +44,7 @@ bool mxApplication::OnInit() {
 	
 	_handle_version_query("psDrawE");
 	
-#ifdef __WXMAC__
-	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
-	ProcessSerialNumber PSN;
-	GetCurrentProcess(&PSN);
-	TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
-	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
-#endif
+	fix_mac_focus_problem();
 	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--use_nassi_schneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;

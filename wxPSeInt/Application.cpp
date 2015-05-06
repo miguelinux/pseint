@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Logger.h"
 #include "string_conversions.h"
-using namespace std;
 #include "Application.h"
 #include "mxMainWindow.h"
 #include "version.h"
@@ -18,12 +17,10 @@ using namespace std;
 #include "mxUpdatesChecker.h"
 #include "mxIconInstaller.h"
 #include "CommunicationsManager.h"
+#include "mac-stuff.h"
 using namespace std;
 
-#ifdef __WXMAC__
-// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
-#include <ApplicationServices/ApplicationServices.h>
-#endif
+
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -33,13 +30,7 @@ bool mxApplication::OnInit() {
 	
 	_handle_version_query("wxPSeInt");
 	
-#ifdef __WXMAC__
-	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
-	ProcessSerialNumber PSN;
-	GetCurrentProcess(&PSN);
-	TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
-	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
-#endif
+	fix_mac_focus_problem();
 	
 	utils = new mxUtils;
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);

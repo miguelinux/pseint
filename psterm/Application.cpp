@@ -4,11 +4,7 @@ using namespace std;
 #include "Application.h"
 #include "mxFrame.h"
 #include "version.h"
-
-#ifdef __WXMAC__
-// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle (ver OnInit)
-#include <ApplicationServices/ApplicationServices.h>
-#endif
+#include "../wxPSeInt/mac-stuff.h"
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -29,15 +25,9 @@ static wxString EscapeString(wxString what) {
 
 bool mxApplication::OnInit() {
 	
-#ifdef __WXMAC__
-	// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
-	ProcessSerialNumber PSN;
-	GetCurrentProcess(&PSN);
-	TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
-	SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
-#endif
-	
 	_handle_version_query("psTerm");
+	
+	fix_mac_focus_problem();
 	
 	srand(time(0));
 	

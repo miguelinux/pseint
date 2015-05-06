@@ -7,6 +7,7 @@
 #include "Comm.h"
 #include "Load.h"
 #include "../pseint/LangSettings.h"
+#include "../wxPSeInt/mac-stuff.h"
 using namespace std;
 
 LangSettings lang(LS_DO_NOT_INIT);
@@ -14,6 +15,8 @@ LangSettings lang(LS_DO_NOT_INIT);
 bool mxApplication::OnInit() {
 	
 	_handle_version_query("psDraw3");
+	
+	fix_mac_focus_problem();
 	
 	lang.Reset();
 	GlobalInit();
