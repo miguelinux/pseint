@@ -101,6 +101,7 @@ string func_trunc(string *arg) {
 	if (pos_pt!=string::npos)
 		str.erase(pos_pt,str.size()-pos_pt);
 	if (str=="") str="0";
+	else if (str=="-0") str="0";
 	return str;
 }
 string func_redon(string *arg) {
