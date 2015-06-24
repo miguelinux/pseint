@@ -24,12 +24,13 @@ Tipos de entidades:
 	ET_PARA: para, 4 hijos, el 0 es el contenido del bucle, el 1,2,3 son val inicial, paso y final, estan fijos, los crea el ctor, la variante es para cada, donde hijo 2 tiene el arreglo
 	ET_AUX_PARA: hijos 1,2,3 y de para
 */
-enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_ASIGNAR, ET_AUX_PARA, ET_COUNT };
+enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_COUNT };
 
 struct Entity {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
 	static bool nassi_schneiderman; ///< usar diagramas de Nassi-Schneiderman en lugar de "clásico"
 	static bool shape_colors; ///< mostrar los bloques de diferentes colores
+	static bool enable_partial_text; ///< 
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;
@@ -68,6 +69,7 @@ struct Entity {
 	void EditLabel(unsigned char key);
 	void GetTextSize(const string &label, int &w, int &h);
 	void SetLabel(string _label, bool recalc=false);
+	int IsLabelCropped();
 	int CheckLinkChild(int x, int y);
 	int CheckLinkOpcion(int x, int y);
 	bool CheckLinkNext(int x, int y);
@@ -95,7 +97,6 @@ struct Entity {
 	void Print(ostream &out, string tab, Entity *process, int &line_num);
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
 };
-
 
 static const int flecha_h=25; // separacion entre bloques consecutivos
 static const int flecha_w=20; // separacion entre bloques hermanos

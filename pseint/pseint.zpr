@@ -12,6 +12,7 @@ version_required=20131115
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
+current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=main.cpp
@@ -142,7 +143,8 @@ marker=30
 marker=58
 [other]
 path=../bin/help/cambios.html
-cursor=5:157
+cursor=4:174
+open=true
 [other]
 path=../bin/help/errores.hlp
 cursor=757:0

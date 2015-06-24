@@ -14,6 +14,9 @@ static int edit_pos; // posición del cursor cuando se edita un texto
 bool Entity::nassi_schneiderman=false;
 bool Entity::alternative_io=false; 
 bool Entity::shape_colors=false; 
+bool Entity::enable_partial_text=true;
+static const int max_label_len_sec=25; // maxima longitud de un label antes de que se muestre cortado y con ..., para instrucciones secuenciales
+static const int max_label_len_cont=15; // maxima longitud de un label antes de que se muestre cortado y con ..., para estructuras de control
 
 // tamaño de las letras
 #define char_w 12
@@ -120,7 +123,13 @@ Entity::~Entity() {
 }
 
 void Entity::SetEdit() {
+	Entity *prev_edit = edit;
 	edit=this; EditLabel(0);
+	if (enable_partial_text) {
+		this->SetLabel(label,true);
+		if (prev_edit) 
+			prev_edit->SetLabel(prev_edit->label,true);
+	}
 	edit_pos=label.size();
 	error.clear();
 }
@@ -191,16 +200,27 @@ void Entity::EditLabel(unsigned char key) {
 		}
 	} else if (key==13 || key==27) {
 		edit=NULL;
+		if (enable_partial_text) SetLabel(label,true);
 	} else {
 		label.insert(edit_pos++,string(1,key));
 		SetLabel(label,true);
 	}
 }
 
+int Entity::IsLabelCropped ( ) {
+	if (!enable_partial_text || this==edit) return 0;
+	int max_len = type<=ET_ASIGNAR?max_label_len_sec:max_label_len_cont;
+	if (label.size()>max_len) return max_len; else return 0;
+}
+
+
 void Entity::SetLabel(string _label, bool recalc) {
-	SetModified();
+	if (_label!=label) SetModified();
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
-	label=_label; GetTextSize(label,t_w,t_h); w=t_w; h=t_h;
+	label=_label; 
+	int crop_len = IsLabelCropped();
+	if (crop_len) _label.replace(crop_len-3,_label.size()-crop_len+3,"...");
+	GetTextSize(_label,t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) {
 		if (nassi_schneiderman) { 
@@ -362,9 +382,15 @@ void Entity::DrawText() {
 		dibujar_caracter(lpre[i]);
 	}
 	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
-	for (unsigned int i=0;i<label.size();i++) {
+	int llen=label.size(), crop_len = IsLabelCropped();
+	if (crop_len) llen=crop_len-3;
+	for (unsigned int i=0;i<llen;i++) {
 		dibujar_caracter(label[i]);
 	}
+	if (llen!=label.size())
+		for (unsigned int i=0;i<3;i++)
+			dibujar_caracter('.');
+		
 	glPopMatrix();
 	if (edit==this && mouse!=this && w>0) {
 		blink++; if (blink==20) blink=0;
@@ -548,3 +574,5 @@ void Entity::SetPosition (int x0, int y0) {
 	fy=y=y0-d_dy;
 //	Calculate();
 }
+
+

@@ -122,6 +122,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_LANGUAGE, mxMainWindow::OnConfigLanguage)
 	EVT_MENU(mxID_CONFIG_ANIMATE_GUI, mxMainWindow::OnConfigAnimateGui)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
+	EVT_MENU(mxID_CONFIG_PSDRAW_NO_CROP, mxMainWindow::OnConfigPSDrawNoCrop)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
@@ -311,7 +312,8 @@ void mxMainWindow::CreateMenus() {
 	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _Z("Animar paneles"),"",config->animate_gui);
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
-	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _T("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
+	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
+	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
 	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SCHNEIDERMAN]);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
@@ -1227,6 +1229,16 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 	} else {
 		mi_use_colors->Check(true);
 		config->use_colors=true;
+	}
+}
+
+void mxMainWindow::OnConfigPSDrawNoCrop(wxCommandEvent &evt) {
+	if (!mi_psdraw_nocrop->IsChecked()) {
+		mi_psdraw_nocrop->Check(false);
+		config->psdraw_nocrop=false;
+	} else {
+		mi_psdraw_nocrop->Check(true);
+		config->psdraw_nocrop=true;
 	}
 }
 

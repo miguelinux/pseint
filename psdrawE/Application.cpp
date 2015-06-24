@@ -8,14 +8,14 @@
 #include <wx/numdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/choicdlg.h>
 #include "../psdraw3/Load.h"
 #include "../psdraw3/Global.h"
 #include "../psdraw3/Entity.h"
-#include "GLtoWX.h"
-#include "Version.h"
-#include <wx/choicdlg.h>
 #include "../pseint/LangSettings.h"
 #include "../wxPSeInt/mac-stuff.h"
+#include "GLtoWX.h"
+#include "Version.h"
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -57,13 +57,15 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxBMPHandler);
 	
 	// cargar el diagrama
-	/*int c=0; */bool force=false;
+	bool force=false;
+	Entity::enable_partial_text=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		wxString arg(argv[i]);
 		if (arg=="--force") {
 			force=true;
 		} else if (arg=="--shapecolors") {
+		} else if (arg=="--nocroplabels") {
 			Entity::shape_colors=true;
 		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
 			; // procesado en lang.ProcessConfigLine
