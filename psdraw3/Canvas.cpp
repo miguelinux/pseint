@@ -20,6 +20,7 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_RIGHT_UP(Canvas::OnMouseRightUp)
 	EVT_MIDDLE_DOWN(Canvas::OnMouseMiddleDown)
 	EVT_MIDDLE_UP(Canvas::OnMouseMiddleUp)
+	EVT_LEFT_DCLICK(Canvas::OnMouseDClick)
 	EVT_MOTION(Canvas::OnMouseMove)
 	EVT_ERASE_BACKGROUND(Canvas::OnEraseBackground)
 	EVT_TIMER(wxID_ANY, Canvas::OnRedrawTime)
@@ -69,6 +70,8 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 		cursores[Z_CURSOR_NONE]=wxCursor(wxCURSOR_SIZING);
 		cursores[Z_CURSOR_MOVE]=wxCursor(wxCURSOR_SIZING);
 	}
+	glLineStipple(zoom,0x0707);
+	
 	display_cb();
 	if (old_cursor!=mouse_cursor) wxSetCursor(cursores[mouse_cursor]);
 	glFlush();
@@ -163,5 +166,9 @@ void Canvas::OnKeyUp (wxKeyEvent & event) {
 
 void Canvas::OnChar (wxKeyEvent & event) {
 	keyboard_cb(event.GetKeyCode());
+}
+
+void Canvas::OnMouseDClick (wxMouseEvent & event) {
+	mouse_dcb(event.GetX(),event.GetY());
 }
 

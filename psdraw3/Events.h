@@ -27,9 +27,10 @@ enum MOUSE_BUTTONS { ZMB_MIDDLE, ZMB_LEFT, ZMB_RIGHT, ZMB_WHEEL_UP, ZMB_WHEEL_DO
 // old glut callbacks
 void reshape_cb (int w, int h);
 void idle_func();
-void passive_motion_cb(int x, int y);
-void motion_cb(int x, int y);
-void mouse_cb(int button, int state, int x, int y);
+void passive_motion_cb(int x, int y); // movimiento sin drag
+void motion_cb(int x, int y); // drag
+void mouse_cb(int button, int state, int x, int y); // down o up de cualquier bonton (incluido wheel)
+void mouse_dcb(int x, int y); // doble-click del izquierdo
 void keyboard_cb(unsigned char key/*, int x, int y*/);
 void keyboard_esp_cb(int key/*, int x, int y*/);
 	

@@ -191,7 +191,7 @@ void Entity::DrawClasico(bool force) {
 	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 	if (this==mouse && (prev||parent)) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
 		DrawShapeBorder(color_ghost,d_dx+x,d_dy+y,bwr+bwl,h);
-	else if (draw_shadow) /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
+	else if (type!=ET_COMENTARIO && draw_shadow) /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
 		DrawShapeSolid(color_shadow,d_fx+shadow_delta_x,d_fy-shadow_delta_y,d_w,d_h);
 	// flechas
 	glBegin(GL_LINES); 
@@ -263,21 +263,45 @@ void Entity::DrawClasico(bool force) {
 			// linea horizontal de abajo
 			glVertex2d(d_x+child_dx[0],d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[1],d_y-d_bh+flecha_h);
 		}
-		// punta de flecha que viene del anterior
-		if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
-		// linea de flecha que va al siguiente
-		if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+		if (type==ET_COMENTARIO) {
+			// linea de flecha que va al siguiente
+			if (parent||prev||next) {
+				glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-d_bh); // continuación del flujo
+				// linea punteada desde el flujo o desde la siguiente entidad hacie el comentario
+				glColor3fv(color_comment);
+				glEnd(); glEnable(GL_LINE_STIPPLE); glBegin(GL_LINES);
+				if (variante) { // apunta al siguiente no comentario
+					Entity *e_aux = next;
+					while (e_aux && e_aux->type==ET_COMENTARIO) e_aux = e_aux->next;
+					if (e_aux) { glVertex2i(e_aux->d_fx-3*margin,e_aux->d_fy-margin); glVertex2i(d_x-d_bwl/2,d_y-d_h); }
+				} else { 
+					glVertex2i(d_x+margin,d_y-d_h/2); glVertex2i(d_x+5*margin,d_y-d_h/2);
+				}
+				glEnd(); glDisable(GL_LINE_STIPPLE); glBegin(GL_LINES);
+			}
+		} else {
+			// punta de flecha que viene del anterior
+			if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
+			// linea de flecha que va al siguiente
+			if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+		}
 	} else if (mouse==this && (next||parent)) {
 		// flecha que va al siguiente item cuando este esta flotando
 		glVertex2i(d_dx+x,d_dy+y-bh); glVertex2i(d_dx+x,d_dy+y-bh+flecha_h);
 		if (type!=ET_OPCION) DrawFlechaDownHead(d_dx+x,d_dy+y); // no en inicio
 	}
 	glEnd();
-	// relleno de la forma
-	DrawShapeSolid(color_shape[Entity::shape_colors?type:ET_COUNT],d_fx,d_fy,d_w,d_h);
-	// borde de la forma
-	DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
-	
+	if (type==ET_COMENTARIO) {
+		glEnable(GL_LINE_STIPPLE);
+		// borde de la forma
+		DrawShapeBorder(mouse==this?color_selection:color_comment,d_fx,d_fy,d_w,d_h);
+		glDisable(GL_LINE_STIPPLE);
+	} else {
+		// relleno de la forma
+		DrawShapeSolid(color_shape[Entity::shape_colors?type:ET_COUNT],d_fx,d_fy,d_w,d_h);
+		// borde de la forma
+		DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
+	}
 	if (type==ET_OPCION) { // + para agregar opciones
 		if (edit_on && mouse!=this) {
 			glBegin(GL_LINES);
@@ -310,7 +334,7 @@ void Entity::DrawClasico(bool force) {
 			for(int i=0;i<n_child;i++) { 
 				child[i]->Draw(true);
 			}
-		} else  if (type==ET_PARA) {
+		} else if (type==ET_PARA) {
 			glColor3fv(color_border);
 			glBegin(GL_LINES);
 			glVertex2i(d_fx-w/2,d_fy-d_h/2); glVertex2i(d_fx+w/2,d_fy-d_h/2); // separadores de las cuatro partes del circulo
@@ -351,6 +375,14 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
 	if (alternative_io) {
 		if (type==ET_LEER) { bh+=margin; h+=margin; t_dy-=margin/2; }
+	}
+	if (type==ET_COMENTARIO) { 
+		if (variante || (next && next->type==ET_COMENTARIO)) bh-=flecha_h/2;
+		if (variante) {
+			fx-=w/2+5*margin; bwr=0; bwl=w+5*margin;
+		} else {
+			fx+=w/2+5*margin; bwl=0; bwr=w+5*margin;
+		}
 	}
 	
 	// si son estructuras de control, es un viaje
@@ -448,7 +480,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
 			else if (!edit_on && !child[2]->label.size()) { v2=0; child[2]->w=0; }
 			
-			// calcular el acnho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
+			// calcular el ancho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;
 			w=(v>t_w?v:t_w)*1.3+2*margin;
 			v+=2*margin;

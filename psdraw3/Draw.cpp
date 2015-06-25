@@ -11,6 +11,7 @@
 #include "Text.h"
 using namespace std;
 
+const int cant_shapes_in_bar = 9;
 
 class RaiiColorChanger {
 	float *p[5], v[5]; int n;
@@ -102,6 +103,7 @@ if (use_textures) {
 }
 #endif
 }
+
 static void DrawMenuAndShapeBar() {
 	glLineWidth(menu_line_width);
 	glColor3fv(color_menu_back);
@@ -127,7 +129,7 @@ static void DrawMenuAndShapeBar() {
 	glVertex2i(win_w-shapebar_size,win_h);
 	if (shapebar) {
 		
-		int y=win_h, x=win_w-shapebar_size, sh=win_h/8;
+		int y=win_h, x=win_w-shapebar_size, sh=win_h/cant_shapes_in_bar;
 		
 		if(shapebar_sel>0) {
 			glEnd();
@@ -148,9 +150,9 @@ if (use_textures) {
 		texture_shapes.Select();
 		glColor3f(1,1,1);
 		glBegin(GL_QUADS);
-		float dy=win_h/8, th0=0, th1=1.0/8, dth=1.0/8;
-		float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=win_h/8.0; 
-		float ratio=float(shapebar_size)/win_h/8;
+		float dy=win_h/cant_shapes_in_bar, th0=0, th1=1.0/cant_shapes_in_bar, dth=1.0/cant_shapes_in_bar;
+		float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=win_h/float(cant_shapes_in_bar); 
+		float ratio=float(shapebar_size)/win_h/(cant_shapes_in_bar-1);
 		if (ratio>texture_shapes.r) {
 			float dx=(x1-x0)*(1-texture_shapes.r/ratio)/2;
 			x0+=dx; x1-=dx;
@@ -158,7 +160,7 @@ if (use_textures) {
 			float dy=(y1-y0)*(1-ratio/texture_shapes.r)/2;
 			y0+=dy; y1-=dy;
 		}
-		for(int i=0;i<8;i++) {
+		for(int i=0;i<cant_shapes_in_bar;i++) {
 			glTexCoord2f(0*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x0,y0);
 			glTexCoord2f(1*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x1,y0);
 			glTexCoord2f(1*texture_shapes.max_s,th1*texture_shapes.max_t); glVertex2f(x1,y1);
@@ -169,7 +171,7 @@ if (use_textures) {
 		glDisable(GL_TEXTURE_2D);
 		glBegin(GL_LINES);
 		glColor3fv(color_menu);
-		for(int i=0,y0=win_h-dy;i<7;i++,y0-=dy) {
+		for(int i=0,y0=win_h-dy;i<cant_shapes_in_bar-1;i++,y0-=dy) {
 			glVertex2i(win_w-shapebar_size,y0);
 			glVertex2i(win_w,y0);
 		}
@@ -377,19 +379,26 @@ if (use_textures) {
 	// shapebar
 	if (shapebar) {
 		switch(shapebar_sel) {
-		case 1: SetStatus(color_selection,"Asignacion/Dimension/Definicion"); break;
-		case 2: SetStatus(color_selection,"Escribir (instruccion para generar salidas)"); break;
-		case 3: SetStatus(color_selection,"Leer (instruccion para obtener entradas)"); break;
-		case 4: SetStatus(color_selection,"Si-Entonces (estructura condicional simple)"); break;
-		case 5: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
-		case 6: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
-		case 7: 
+		case 1: 
+			SetStatus(color_selection,"Comentario (texto libre que el interprete ignora)"); break;
+		case 2: 
+			if (canvas->GetModifiers()&MODIFIER_SHIFT) 
+				SetStatus(color_selection,"Dimension/Definicion)");
+			else
+				SetStatus(color_selection,"Asignacion (shift para Dimension/Definicion)"); 
+			break;
+		case 3: SetStatus(color_selection,"Escribir (instruccion para generar salidas)"); break;
+		case 4: SetStatus(color_selection,"Leer (instruccion para obtener entradas)"); break;
+		case 5: SetStatus(color_selection,"Si-Entonces (estructura condicional simple)"); break;
+		case 6: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
+		case 7: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
+		case 8: 
 			if (canvas->GetModifiers()&MODIFIER_SHIFT)
 				SetStatus(color_selection,"Repetir-Mientras que (estructura repetitiva)"); 
 			else
 				SetStatus(color_selection,"Repetir-Hasta que (estructura repetitiva)");
 			break;
-		case 8: 
+		case 9: 
 			if (canvas->GetModifiers()&MODIFIER_SHIFT)
 				SetStatus(color_selection,"Para Cada (estructura repetitiva)"); 
 			else
@@ -655,22 +664,23 @@ void display_cb() {
 	if (edit_on) { DrawMenuAndShapeBar(); DrawTrash(); }
 	if (edit && !mouse && !status_color) {
 		switch (edit->type) {
-		case ET_LEER: SetStatus(color_selection,"Lista de variables a leer, separadas por coma."); break;
-		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "?"Nombre del proceso.":"Prototipo del subproceso."); break;
-		case ET_ESCRIBIR: SetStatus(color_selection,"Lista de expresiones a mostrar, separadas por comas."); break;
-		case ET_SI: SetStatus(color_selection,"Expresion logica."); break;
-		case ET_SEGUN: SetStatus(color_selection,"Expresion de control para la estructura."); break;
-		case ET_OPCION: SetStatus(color_selection,"Posible valor para la expresion de control."); break;
+		case ET_LEER: SetStatus(color_selection,"? Lista de variables a leer, separadas por coma."); break;
+		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
+		case ET_COMENTARIO: SetStatus(color_selection,"? Texto libre, sera ignorado por el interprete."); break;
+		case ET_ESCRIBIR: SetStatus(color_selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
+		case ET_SI: SetStatus(color_selection,"? Expresion logica."); break;
+		case ET_SEGUN: SetStatus(color_selection,"? Expresion de control para la estructura."); break;
+		case ET_OPCION: SetStatus(color_selection,"? Posible valor para la expresion de control."); break;
 		case ET_PARA: 
-			if (edit->variante)	SetStatus(color_selection,"Identificador temporal para el elemento del vector/matriz.");
-			else SetStatus(color_selection,"Identificador de la variable de control (contador)."); 
+			if (edit->variante)	SetStatus(color_selection,"? Identificador temporal para el elemento del vector/matriz.");
+			else SetStatus(color_selection,"? Identificador de la variable de control (contador)."); 
 			break;
-		case ET_MIENTRAS: SetStatus(color_selection,"Expresion de control (logica)."); break;
-		case ET_REPETIR: SetStatus(color_selection,"Expresion de control (logica)."); break;
-		case ET_ASIGNAR: SetStatus(color_selection,"Asignacion o instruccion secuencial."); break;
+		case ET_MIENTRAS: SetStatus(color_selection,"? Expresion de control (logica)."); break;
+		case ET_REPETIR: SetStatus(color_selection,"? Expresion de control (logica)."); break;
+		case ET_ASIGNAR: SetStatus(color_selection,"? Asignacion o instruccion secuencial."); break;
 		case ET_AUX_PARA: 
-			if (edit->parent->variante)	SetStatus(color_selection,"Identificador del vector/matriz a recorrer.");
-			else SetStatus(color_selection,edit->parent->child[1]==edit?"Valor inicial para el contador.":(edit->parent->child[2]==edit?"Paso, incremento del contador por cada iteracion.":"Valor final para el contador.")); 
+			if (edit->parent->variante)	SetStatus(color_selection,"? Identificador del vector/matriz a recorrer.");
+			else SetStatus(color_selection,edit->parent->child[1]==edit?"? Valor inicial para el contador.":(edit->parent->child[2]==edit?"? Paso, incremento del contador por cada iteracion.":"? Valor final para el contador.")); 
 			break;
 		default:;
 		}

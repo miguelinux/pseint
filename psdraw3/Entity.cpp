@@ -101,6 +101,7 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 }
 
 Entity::~Entity() {
+	if (this==edit) UnsetEdit();
 	if (entity_to_del==this) entity_to_del=NULL;
 	for (int i=0;i<n_child;i++) {
 		Entity *aux=child[i],*aux2;
@@ -381,7 +382,7 @@ void Entity::DrawText() {
 	for (unsigned int i=0;i<lpre.size();i++) {
 		dibujar_caracter(lpre[i]);
 	}
-	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
+	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:(type==ET_COMENTARIO?color_comment:color_label)));
 	int llen=label.size(), crop_len = IsLabelCropped();
 	if (crop_len) llen=crop_len-3;
 	for (int i=0;i<llen;i++) {
@@ -577,7 +578,9 @@ void Entity::SetPosition (int x0, int y0) {
 
 
 void Entity::UnsetEdit ( ) {
-	if (enable_partial_text)
-		EditLabel(27);
+	if (enable_partial_text) {
+		Entity *prev=this;
+		prev->EditLabel(27);
+	}
 }
 

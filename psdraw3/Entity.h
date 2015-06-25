@@ -24,7 +24,7 @@ Tipos de entidades:
 	ET_PARA: para, 4 hijos, el 0 es el contenido del bucle, el 1,2,3 son val inicial, paso y final, estan fijos, los crea el ctor, la variante es para cada, donde hijo 2 tiene el arreglo
 	ET_AUX_PARA: hijos 1,2,3 y de para
 */
-enum ETYPE { ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_COUNT };
+enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_COUNT };
 
 struct Entity {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir

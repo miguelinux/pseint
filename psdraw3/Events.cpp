@@ -18,6 +18,7 @@ static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cu
 
 static Entity *DuplicateEntity(Entity *orig) {
 	Entity *nueva=new Entity(orig->type,orig->label);
+	nueva->variante=orig->variante;
 	nueva->m_x=orig->m_x; nueva->m_y=orig->m_y;
 	nueva->x=orig->x; nueva->y=orig->y;
 	nueva->fx=orig->fx; nueva->fy=orig->fy;
@@ -133,8 +134,8 @@ void passive_motion_cb(int x, int y) {
 	//		else if (y>win_h-menu_size_h+45) menu_sel=6;
 	//		else menu_sel=0;
 		} else if (shapebar) {
-			shapebar_sel=y/(win_h/8)+1;
-			if (y==9) y=0;
+			shapebar_sel=y/(win_h/cant_shapes_in_bar)+1;
+			if (y>cant_shapes_in_bar) y=0;
 		}
 	}
 	cur_x=x; cur_y=win_h-y; canvas->Refresh();
@@ -205,6 +206,22 @@ void ProcessMenu(int op) {
 	}
 }
 
+static void fix_mouse_coords(int &x, int &y) {
+	y=win_h-y; y/=zoom; x/=zoom;
+}
+
+void mouse_dcb(int x, int y) {
+	fix_mouse_coords(x,y);
+	Entity *aux=start;
+	do {
+		if (aux->CheckMouse(x,y)) {
+			aux->SetEdit();
+			return;
+//			last_click_mouse=aux; last_click_time=click_time;
+		}
+		aux=aux->all_next;
+	} while (aux!=start);
+}
 void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
@@ -227,7 +244,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			}
 		}
 	}
-	y=win_h-y; y/=zoom; x/=zoom;
+	fix_mouse_coords(x,y);
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
 		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
 		zoom*=f;
@@ -247,17 +264,21 @@ void mouse_cb(int button, int state, int x, int y) {
 			shapebar=false;
 			Entity*aux=NULL;
 			switch (shapebar_sel) {
-			case 1: aux = new Entity(ET_ASIGNAR,""); break;
-			case 2: aux = new Entity(ET_ESCRIBIR,""); break;
-			case 3: aux = new Entity(ET_LEER,""); break;
-			case 4: aux = new Entity(ET_SI,""); break;
-			case 5: aux = new Entity(ET_SEGUN,""); break;
-			case 6: aux = new Entity(ET_MIENTRAS,""); break;
-			case 7: 
+			case 1: 
+				aux = new Entity(ET_COMENTARIO,"");
+				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
+				break;
+			case 2: aux = new Entity(ET_ASIGNAR,""); break;
+			case 3: aux = new Entity(ET_ESCRIBIR,""); break;
+			case 4: aux = new Entity(ET_LEER,""); break;
+			case 5: aux = new Entity(ET_SI,""); break;
+			case 6: aux = new Entity(ET_SEGUN,""); break;
+			case 7: aux = new Entity(ET_MIENTRAS,""); break;
+			case 8: 
 				aux = new Entity(ET_REPETIR,""); 
 				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
 				break;
-			case 8: 
+			case 9: 
 				aux = new Entity(ET_PARA,""); 
 				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
 				break;
@@ -274,7 +295,7 @@ void mouse_cb(int button, int state, int x, int y) {
 		Entity *aux=start;
 		if (mouse) mouse->UnSetMouse();
 		do {
-			if (aux->CheckMouse(x,y)) { 
+			if (aux->CheckMouse(x,y)) {
 				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
 				if (button==ZMB_RIGHT) {
 					aux->SetEdit(); return;
@@ -288,12 +309,6 @@ void mouse_cb(int button, int state, int x, int y) {
 					}
 					to_set_mouse=aux; mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
 					if (aux->type==ET_AUX_PARA) to_set_mouse=aux->parent; // para que no haga drag del hijo del para, sino de todo el para completo
-					// doble click
-					static int last_click_time=0;
-					static Entity *last_click_mouse=NULL;
-					int click_time=glutGet(GLUT_ELAPSED_TIME);
-					if (click_time-last_click_time<500 && (last_click_mouse==aux ||  (aux->type==ET_PARA && aux->parent==last_click_mouse)) ) aux->SetEdit();
-					last_click_mouse=aux; last_click_time=click_time;
 					return;
 				}
 				break;
@@ -302,7 +317,21 @@ void mouse_cb(int button, int state, int x, int y) {
 		} while (aux!=start);
 		m_x0=x; m_y0=y; panning=true;
 	} else {
-		if (button==ZMB_MIDDLE) {
+		if (button==ZMB_LEFT) {
+//			// doble click (por alguna extraña razon en mi wx un doble click genera un evento de down y dos de up)
+//			Entity *aux=start;
+//			if (mouse) mouse->UnSetMouse();
+//			do {
+//				if (aux->CheckMouse(x,y)) {
+//					static int last_click_time=0;
+//					static Entity *last_click_mouse=NULL;
+//					int click_time=glutGet(GLUT_ELAPSED_TIME);
+//					if (click_time-last_click_time<500 && (last_click_mouse==aux ||  (aux->type==ET_PARA && aux->parent==last_click_mouse)) ) aux->SetEdit();
+//					last_click_mouse=aux; last_click_time=click_time;
+//				}
+//				aux=aux->all_next;
+//			} while (aux!=start);
+		} else if (button==ZMB_MIDDLE) {
 			ZoomExtend(m_x0-d_dx,m_y0-d_dy,x-d_dx,y-d_dy);
 			selecting_zoom=false;
 			return;
