@@ -100,6 +100,8 @@ int main(int argc, char* argv[]) {
 				raw_errors=true;
 			else if (str=="--fortest")
 				for_test=true;
+			else if (str=="--preservecomments")
+				preserve_comments=true;
 			else if (str=="--norun")
 				run=false;
 			else if (str=="--color")
@@ -287,8 +289,10 @@ int main(int argc, char* argv[]) {
 			if (case_map) CaseMapPurge();
 			ofstream dibujo(fil_args[1]);
 			for (int i=0;i<programa.GetSize();i++) {
-				if (case_map) CaseMapApply(programa[i].instruccion);
-				if (write_positions) dibujo<<"#pos "<<programa[i].num_linea<<":"<<programa[i].num_instruccion<<endl;
+				if (case_map && (!preserve_comments || !LeftCompare(programa[i].instruccion,"#")))
+					CaseMapApply(programa[i].instruccion);
+				if (write_positions) 
+					dibujo<<"#pos "<<programa[i].num_linea<<":"<<programa[i].num_instruccion<<endl;
 #ifdef _DEBUG
 				cerr<<programa[i].instruccion<<endl;
 #endif

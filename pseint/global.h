@@ -21,6 +21,7 @@ extern bool noinput; // no pedir entradas al usuario, tomar de los argumentos
 extern bool fix_win_charset; // indica si hay que cambiar los caracteres de acentos y ñs de las cadenas para que se vean bien en la consola de windows
 extern bool for_pseint_terminal; // habilita algunas secuencias de escape adicionales para usar en la terminal propia
 extern bool with_io_references; // habilita algunas secuencias de escape adicionales para que la terminal propia sepa qué instrucción en el código generó cada entrada/salida
+extern bool preserve_comments; // guardar los comentarios en el archivo de salida (cuando es para psexport o psdraw)
 extern bool for_eval; // formateado para psEval
 extern bool ignore_logic_errors; // para que al generar el diagrama de flujo no marque ciertos errores que no afectan al diagrama (como los de tipos en expresiones)
 

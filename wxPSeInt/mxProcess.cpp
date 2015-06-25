@@ -293,9 +293,9 @@ void mxProcess::SetSourceDeleted ( ) {
 
 wxString mxProcess::GetDrawPostArgs ( ) {
 	wxString command;
-	if (config->shape_colors) command<<" --shapecolors";
 	if (config->psdraw_nocrop) command<<" --nocroplabels";
-	if (config->lang[LS_USE_NASSI_SCHNEIDERMAN]) command<<" --use_nassi_schneiderman=1";
+	if (config->shape_colors) command<<" --shapecolors";
+	if (config->lang[LS_USE_NASSI_SHNEIDERMAN]) command<<" --use_nassi_shneiderman=1";
 	if (config->lang[LS_USE_ALTERNATIVE_IO_SHAPES]) command<<" --use_alternative_io_shapes=1";
 	if (config->lang[LS_FORCE_SEMICOLON]) command<<" --force_semicolon=1";
 	if (!config->lang[LS_WORD_OPERATORS]) command<<" --word_operators=0";
@@ -303,6 +303,8 @@ wxString mxProcess::GetDrawPostArgs ( ) {
 }
 
 wxString mxProcess::GetDrawPreArgs ( ) {
-	return "--draw --usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
+	wxString command;
+	command<<"--preservecomments --draw ----usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
+	return command;
 }
 

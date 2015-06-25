@@ -122,6 +122,11 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
 		if (edit_on && type==ET_OPCION && mouse!=this) {
 			glVertex2i(x-w/2,y); glVertex2i(x-w/2+flecha_w,y); glVertex2i(x-w/2+flecha_w,y-h); glVertex2i(x-w/2,y-h);
+		} else if (type==ET_ASIGNAR && variante) {
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex2i(x-w/2+margin,y); glVertex2i(x-w/2+margin,y-h);
+			glVertex2i(x+w/2-margin,y-h); glVertex2i(x+w/2-margin,y);
 		}
 	}
 	glEnd();
@@ -262,28 +267,41 @@ void Entity::DrawClasico(bool force) {
 			DrawFlechaDown(d_x+child_dx[1],d_y-d_h-child_bh[1]-flecha_h,d_y-d_bh+flecha_h); 
 			// linea horizontal de abajo
 			glVertex2d(d_x+child_dx[0],d_y-d_bh+flecha_h); glVertex2d(d_x+child_dx[1],d_y-d_bh+flecha_h);
-		}
-		if (type==ET_COMENTARIO) {
+		} else if (type==ET_COMENTARIO) {
 			// linea de flecha que va al siguiente
 			if (parent||prev||next) {
-				glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-d_bh); // continuación del flujo
-				// linea punteada desde el flujo o desde la siguiente entidad hacie el comentario
-				glColor3fv(color_comment);
-				glEnd(); glEnable(GL_LINE_STIPPLE); glBegin(GL_LINES);
-				if (variante) { // apunta al siguiente no comentario
-					Entity *e_aux = next;
-					while (e_aux && e_aux->type==ET_COMENTARIO) e_aux = e_aux->next;
-					if (e_aux) { glVertex2i(e_aux->d_fx-3*margin,e_aux->d_fy-margin); glVertex2i(d_x-d_bwl/2,d_y-d_h); }
-				} else { 
-					glVertex2i(d_x+margin,d_y-d_h/2); glVertex2i(d_x+5*margin,d_y-d_h/2);
+				Entity *next_nc = GetNextNoComment();
+				bool fuera_de_proceso = IsOutOfProcess(next_nc);
+				if (!fuera_de_proceso) {
+					glVertex2i(d_x,d_y); glVertex2i(d_x,d_y-d_bh); // continuación del flujo
 				}
-				glEnd(); glDisable(GL_LINE_STIPPLE); glBegin(GL_LINES);
+				if (variante || !fuera_de_proceso) {
+					// linea punteada desde el flujo o desde la siguiente entidad hacia el comentario
+					glColor3fv(color_comment);
+	#ifndef _FOR_EXPORT
+					glEnd(); glEnable(GL_LINE_STIPPLE); glBegin(GL_LINES);
+	#endif
+					if (variante) { // apunta al siguiente no comentario
+						if (next_nc) { glVertex2i(next_nc->d_fx-5*margin,next_nc->d_fy); glVertex2i(d_x-d_bwl/2,d_y-d_h); }
+					} else {
+						glVertex2i(d_x+margin,d_y-d_h/2); glVertex2i(d_x+5*margin,d_y-d_h/2);
+					}
+	#ifndef _FOR_EXPORT
+					glEnd(); glDisable(GL_LINE_STIPPLE); glBegin(GL_LINES);
+	#endif
+				}
 			}
 		} else {
 			// punta de flecha que viene del anterior
-			if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
+//			if (type!=ET_OPCION && (prev||parent)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
 			// linea de flecha que va al siguiente
-			if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+//			if ((next||parent)&&(type!=ET_OPCION)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+			if (type!=ET_OPCION) {
+				// punta de flecha que viene del anterior
+				if (!(type==ET_PROCESO&&!variante)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
+				// linea de flecha que va al siguiente
+				if (!(type==ET_PROCESO&&variante)) { glVertex2i(d_x,d_y-d_bh); glVertex2i(d_x,d_y-d_bh+flecha_h); } // no en fin
+			}
 		}
 	} else if (mouse==this && (next||parent)) {
 		// flecha que va al siguiente item cuando este esta flotando
@@ -292,10 +310,14 @@ void Entity::DrawClasico(bool force) {
 	}
 	glEnd();
 	if (type==ET_COMENTARIO) {
+#ifndef _FOR_EXPORT
 		glEnable(GL_LINE_STIPPLE);
+#endif
 		// borde de la forma
 		DrawShapeBorder(mouse==this?color_selection:color_comment,d_fx,d_fy,d_w,d_h);
+#ifndef _FOR_EXPORT
 		glDisable(GL_LINE_STIPPLE);
+#endif
 	} else {
 		// relleno de la forma
 		DrawShapeSolid(color_shape[Entity::shape_colors?type:ET_COUNT],d_fx,d_fy,d_w,d_h);
@@ -366,6 +388,8 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
 		if (alternative_io) { if (type==ET_ESCRIBIR) { w+=2*(h-margin); }
 		} else { w+=2*margin; }
+	} else if (type==ET_ASIGNAR && variante) {
+		w+=2*margin;
 	} else if (type==ET_PARA) {
 		h=2*h+3*margin; w=1.3*w+2*margin;
 	} else if (type==ET_SEGUN) {

@@ -119,7 +119,7 @@ public:
 	wxMenuItem *mi_autocomp, *mi_autoclose, *mi_highlight_blocks, *mi_quickhelp, *mi_smart_indent,
 		//*mi_debug_panel, *mi_toolbar, *mi_commands, *mi_vars_panel
 		*mi_shape_colors, *mi_psdraw_nocrop,
-		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_schne, *mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm, *mi_animate_gui, *mi_use_dark_psterm;
+		*mi_calltip_helps, *mi_rt_syntax, *mi_nassi_shne, *mi_use_colors, *mi_reorganize_for_debug, *mi_use_psterm, *mi_animate_gui, *mi_use_dark_psterm;
 	
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];

@@ -12,7 +12,7 @@ using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
 
-bool Entity::nassi_schneiderman=false;
+bool Entity::nassi_shneiderman=false;
 bool Entity::alternative_io=false; 
 bool Entity::shape_colors=false; 
 bool Entity::enable_partial_text=true;
@@ -33,8 +33,9 @@ void Entity::GetTextSize(const string &label, int &w, int &h) {
 }
 
 Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
-	if (nassi_schneiderman) {
+	if (nassi_shneiderman) {
 		if (_type==ET_ESCRIBIR) lpre="ESCRIBIR ";
+		else if (_type==ET_COMENTARIO) lpre="// ";
 		else if (_type==ET_LEER) lpre="LEER ";
 		else if (_type==ET_PARA) lpre="PARA ";
 		else if (_type==ET_REPETIR) lpre="HASTA QUE ";
@@ -78,7 +79,7 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		LinkChild(1,new Entity(ET_AUX_PARA,""));
 		LinkChild(2,new Entity(ET_AUX_PARA,""));
 		LinkChild(3,new Entity(ET_AUX_PARA,""));
-		if (nassi_schneiderman) {
+		if (nassi_shneiderman) {
 			child[1]->lpre=" DESDE ";
 			child[1]->SetLabel("");
 			child[2]->lpre=" CON PASO ";
@@ -223,8 +224,8 @@ void Entity::SetLabel(string _label, bool recalc) {
 	GetTextSize(_label,t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) {
-		if (nassi_schneiderman) { 
-			if (start) start->Calculate(); // todo: recalcula demas, parche hasta que analice bien donde esta el problema con el otro metodo
+		if (nassi_shneiderman) { 
+			if (start) Entity::CalculateAll(); // todo: recalcula demas, parche hasta que analice bien donde esta el problema con el otro metodo
 		} else {
 			Calculate();
 			if (parent) parent->Calculate(true);
@@ -258,7 +259,8 @@ int Entity::CheckLinkOpcion(int x, int y) {
 }
 
 bool Entity::CheckLinkNext(int x, int y) {
-	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO && !next) || mouse==next || nolink) return false;
+	if (type==ET_COMENTARIO && mouse->type!=ET_COMENTARIO && IsOutOfProcess()) return false;
+	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO&&variante) || mouse==next || nolink) return false;
 	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh-selection_tolerance_y && y<d_y-d_bh+selection_tolerance_y);
 }
 
@@ -407,7 +409,7 @@ void Entity::DrawText() {
 }
 
 void Entity::Draw(bool force) {
-	if (nassi_schneiderman) DrawNassiSchne(force);
+	if (nassi_shneiderman) DrawNassiShne(force);
 	else DrawClasico(force);
 }
 
@@ -451,7 +453,7 @@ void Entity:: ResizeW(int aw, bool up) {
 }
 
 void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
-	if (nassi_schneiderman) CalculateNassiSchne();
+	if (nassi_shneiderman) CalculateNassiShne();
 	else CalculateClasico();
 	// pasar a la siguiente entidad
 	if (next) {
@@ -500,14 +502,14 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 
 #define _tabs "\t"
 
-#define _endl_this endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(process,this);} line_num++;
-#define _endl_prev endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,this);} line_num++;
-#define _endl_none endl; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,NULL);} line_num++;
+#define _endl_this inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(process,this);} line_num++;
+#define _endl_prev inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,this);} line_num++;
+#define _endl_none inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,NULL);} line_num++;
 
 #define _fix(label,def) (label.size()?label:def)
 
 void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
-//	string label=this->label; // para que al completar los campos vacios salga en el pseucodigo pero no altere el diagrama
+	static string inline_comments; 
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;
@@ -562,6 +564,16 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_ASIGNAR) {
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
 		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
+	} else if (type==ET_COMENTARIO) {
+		if (variante) { 
+			if (inline_comments=="") inline_comments=" // "; else inline_comments+=" - ";
+			inline_comments+=label;
+		} else {
+			string prev_ilc = inline_comments;
+			inline_comments = "";
+			out<<tab<<"// "<<label<<_endl_this;
+			inline_comments = prev_ilc;
+		}
 	}
 	if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }
@@ -584,3 +596,27 @@ void Entity::UnsetEdit ( ) {
 	}
 }
 
+Entity * Entity::GetTopEntity ( ) {
+	Entity *top=this; 
+	while(top->prev) top=top->prev;
+	return top;
+}
+
+void Entity::CalculateAll ( ) {
+	start->GetTopEntity()->Calculate();
+}
+
+Entity *Entity::GetNextNoComment() {
+	Entity *e_aux = next;
+	while (e_aux && e_aux->type==ET_COMENTARIO) e_aux = e_aux->next;
+	return e_aux;
+}
+
+bool Entity::IsOutOfProcess(Entity *next_no_commnet) {
+	return !next_no_commnet || // fin proceso
+		(next_no_commnet->type==ET_PROCESO&&!next_no_commnet->variante); // proceso
+}
+
+bool Entity::IsOutOfProcess() {
+	return IsOutOfProcess(GetNextNoComment());
+}

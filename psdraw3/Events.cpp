@@ -95,7 +95,7 @@ void idle_func() {
 		else interpolate(trash_size,trash_size_min);
 		menu=shapebar=false;
 	} else {
-//		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); start->Calculate(); }
+//		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); Entity::CalculateAll(); }
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
 		if (menu) { interpolate(menu_size_h,menu_option_height*(MO_HELP+2)); interpolate(menu_size_w,menu_w_max); }
@@ -146,7 +146,7 @@ void motion_cb(int x, int y) {
 	y/=zoom; x/=zoom;
 	if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
 		if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
-		to_set_mouse->SetMouse(); start->Calculate();
+		to_set_mouse->SetMouse(); Entity::CalculateAll();
 	}
 	if (selecting_zoom || choose_process_state) {
 		cur_x=x; cur_y=y;
@@ -166,7 +166,7 @@ void motion_cb(int x, int y) {
 	if (trash && mouse) {
 		if (mouse->type!=ET_OPCION && (mouse->parent||mouse->prev)) {
 			mouse->UnLink();
-			start->Calculate();
+			Entity::CalculateAll();
 		}
 	}
 	
@@ -189,8 +189,9 @@ void ProcessMenu(int op) {
 	menu=false; if (edit) edit->UnsetEdit();
 	if (op==MO_ZOOM_EXTEND) {
 		int h=0,wl=0,wr=0;
-		start->Calculate(wl,wr,h); // calcular tamaño total
-		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h,1.5);
+		Entity *real_start = start->GetTopEntity();
+		real_start->Calculate(wl,wr,h); // calcular tamaño total
+		ZoomExtend(real_start->x-wl,real_start->y,real_start->x+wr,real_start->y-h,1.5);
 	} else if (op==MO_FUNCTIONS) {
 		choose_process_d_base=choose_process_d_delta=0;
 		choose_process_state=1; if (edit) edit->UnsetEdit();
@@ -215,6 +216,7 @@ void mouse_dcb(int x, int y) {
 	Entity *aux=start;
 	do {
 		if (aux->CheckMouse(x,y)) {
+			if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
 			aux->SetEdit();
 			return;
 //			last_click_mouse=aux; last_click_time=click_time;
@@ -268,7 +270,10 @@ void mouse_cb(int button, int state, int x, int y) {
 				aux = new Entity(ET_COMENTARIO,"");
 				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
 				break;
-			case 2: aux = new Entity(ET_ASIGNAR,""); break;
+			case 2: 
+				aux = new Entity(ET_ASIGNAR,""); 
+				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
+				break;
 			case 3: aux = new Entity(ET_ESCRIBIR,""); break;
 			case 4: aux = new Entity(ET_LEER,""); break;
 			case 5: aux = new Entity(ET_SI,""); break;
@@ -301,7 +306,8 @@ void mouse_cb(int button, int state, int x, int y) {
 					aux->SetEdit(); return;
 				} else {
 					if (aux->type!=ET_PROCESO && canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
-						aux=DuplicateEntity(aux);
+						mouse=aux=DuplicateEntity(aux);
+//						aux->UnLink();
 						aux->SetEdit();
 					} 
 					if (edit!=aux) {
@@ -318,9 +324,9 @@ void mouse_cb(int button, int state, int x, int y) {
 		m_x0=x; m_y0=y; panning=true;
 	} else {
 		if (button==ZMB_LEFT) {
+			if (mouse) mouse->UnSetMouse();
 //			// doble click (por alguna extraña razon en mi wx un doble click genera un evento de down y dos de up)
 //			Entity *aux=start;
-//			if (mouse) mouse->UnSetMouse();
 //			do {
 //				if (aux->CheckMouse(x,y)) {
 //					static int last_click_time=0;
@@ -345,7 +351,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			} 
 			mouse->UnSetMouse();
 		}
-		start->Calculate();
+		Entity::CalculateAll();
 	}
 }
 
@@ -367,7 +373,7 @@ void ToggleEditable() {
 	} else {
 		edit_on=old_edit_on;
 	}
-	start->Calculate();
+	Entity::CalculateAll();
 }
 
 void keyboard_esp_cb(int key/*, int x, int y*/) {

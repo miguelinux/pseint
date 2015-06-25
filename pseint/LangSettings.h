@@ -29,7 +29,7 @@ enum LS_ENUM {
 	LS_COLOQUIAL_CONDITIONS,
 	LS_INTEGER_ONLY_SWITCH,
 	LS_DEDUCE_NEGATIVE_FOR_STEP,
-	LS_USE_NASSI_SCHNEIDERMAN,
+	LS_USE_NASSI_SHNEIDERMAN,
 	LS_USE_ALTERNATIVE_IO_SHAPES,
 	LS_COUNT 
 };
@@ -94,13 +94,16 @@ struct LangSettings {
 	}
 	bool ProcessConfigLine(const std::string &key, const std::string &value) {
 		if (key=="desc") { descripcion+=value+"\n"; return true; }
-		if (key=="profile") { Load(value.c_str()); return true; } // el .c_str es por si usa el Load(wxString)
-		if (key=="binprofile") { SetFromSingleString(value); return true; }
-		if (key=="version") { version=atoi(value.c_str()); return true; }
-		else for(int i=0;i<LS_COUNT;i++) { 
-			if (key==data[i].nombre) {
-				settings[i]=IsTrue(value);
-				return true;
+		else if (key=="profile") { Load(value.c_str()); return true; } // el .c_str es por si usa el Load(wxString)
+		else if (key=="binprofile") { SetFromSingleString(value); return true; }
+		else if (key=="version") { version=atoi(value.c_str()); return true; }
+		else if (key=="use_nassi_schneiderman") return ProcessConfigLine("use_nassi_shneiderman",value); // estaba mal deletreado... sChneiderman
+		else {
+			for(int i=0;i<LS_COUNT;i++) { 
+				if (key==data[i].nombre) {
+					settings[i]=IsTrue(value);
+					return true;
+				}
 			}
 		}
 		return false;

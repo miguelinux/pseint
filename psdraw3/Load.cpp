@@ -88,10 +88,10 @@ static void ReemplazarOperadores(string &str) {
 void LoadProc(istream &fin) {
 	code2draw.clear();
 	string cur_pos; Entity *cur_proc; // para llenar code2draw
-	
+	bool start_done=false;
 	string str;
 	cur_proc = start = new Entity(ET_PROCESO,"SinTitulo");
-	Entity *aux=start;
+	Entity *aux=start, *aux_end=start;
 	stack<int> ids; ids.push(-1);
 	while (getline(fin,str)) {
 		//stack<int> saux;
@@ -118,20 +118,32 @@ void LoadProc(istream &fin) {
 			string s2=str.substr(str.find(' ')+1);
 			if (s1=="PROCESO") { start->lpre="Proceso "; start->SetLabel(s2); }
 			else if (s1=="SUBPROCESO") { start->lpre="SubProceso "; start->SetLabel(s2); }
-			_new_this(start); cur_proc=start;
+			_new_this(start); /*cur_proc=start;*/ start_done=true;
 			continue;
 		}
 		else if (str=="FINPROCESO") {
+			aux_end=aux;
 			_new_none();
 			continue;
 		}
 		else if (!str.size()||str=="FINSUBPROCESO"||str=="ENTONCES") {
+			aux_end=aux;
 			_new_prev();
 			continue;
 		}
 		else if (StartsWith(str,"INVOCAR ")) {
 			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str.substr(8)));
+			aux->variante=true;
 			_new_this(aux);
+		}
+		else if (StartsWith(str,"#comment ")) {
+			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(9)));
+			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
+		}
+		else if (StartsWith(str,"#comment-inline ")) {
+			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(16)));
+			aux->variante=true;
+			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
 			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
@@ -260,9 +272,10 @@ void LoadProc(istream &fin) {
 		}
 	}
 	Entity *efin=new Entity(ET_PROCESO,""); 
+	efin->variante=true;
 	efin->lpre=string("Fin")+start->lpre.substr(0,start->lpre.size()-1);
 	efin->SetLabel("");
-	aux->LinkNext(efin);
+	aux_end->LinkNext(efin);
 }
 
 bool Load(const char *filename) {
@@ -271,21 +284,26 @@ bool Load(const char *filename) {
 	else { New(); return false; }
 	ifstream file(filename);
 	if (!file.is_open()) { New(); return false; }
-	string str, lstr; int imain=0;
-	while (getline(file,str)) {
+	string str; int imain=0;
+	stringstream comments_pre, comments_post;
+	// cargar todo el algoritmo en un vector
+	vector<string> vfile; while (getline(file,str)) vfile.push_back(str);
+	// separar por procesos/subprocesos
+	int i0=0; // posición en el vector donde empieza el proceso
+	for(unsigned int i=0;i<vfile.size();i++) {
+		string &str=vfile[i];
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
 			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
 			Entity::all_any=start=NULL;
 			stringstream ss;
-			ss<<lstr<<"\n"<<str<<"\n";
-			while (getline(file,str)) {
+			for(int j=i0;;j++) {
+				string &str=vfile[j];
 				ss<<str<<"\n";
-				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") break;
+				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") { i0=j+1; break; }
 			}
 			LoadProc(ss);
 			procesos.push_back(start);
 		}
-		lstr=str;
 	}
 	SetProc(procesos[choose_process_sel=imain]);
 	choose_process_state=procesos.size()>1?2:0;
@@ -316,7 +334,7 @@ void CreateEmptyProc(string type) {
 	start->LinkNext(aux);
 	start->lpre=type+" "; start->SetLabel("SinTitulo");
 	aux->lpre=string("Fin")+type; aux->SetLabel("");
-	start->Calculate();
+	Entity::CalculateAll();
 	procesos.push_back(start);
 }
 
@@ -329,12 +347,12 @@ void New() {
 
 void SetProc(Entity *proc) {
 	Entity::all_any=start=proc;
-	start->Calculate();
+	Entity::CalculateAll();
 	ProcessMenu(MO_ZOOM_EXTEND);
 //	pname=proc->prototipo;
-	Entity *ent=start, *ent2=start;
+	Entity *ent=start;
 	do {
 		ent->d_h=ent->d_w=ent->d_bh=ent->d_bwl=ent->d_bwr=ent->d_fx=ent->d_fy=ent->d_x=ent->d_y=0;
 		ent=ent->all_next;
-	} while(ent!=ent2);
+	} while(ent!=start);
 }

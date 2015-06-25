@@ -47,7 +47,7 @@ bool mxApplication::OnInit() {
 	fix_mac_focus_problem();
 	
 	if (argc==1) {
-		cerr<<"Use: "<<argv[0]<<" [--use_nassi_schneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
+		cerr<<"Use: "<<argv[0]<<" [--use_nassi_shneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
 	}
 
 	lang.Reset();
@@ -75,7 +75,7 @@ bool mxApplication::OnInit() {
 		}
 	}
 	lang.Fix();
-	Entity::nassi_schneiderman=lang[LS_USE_NASSI_SCHNEIDERMAN];
+	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInit();
 	if (!Load(fin)) {

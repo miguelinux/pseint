@@ -17,3 +17,4 @@ bool for_pseint_terminal=false;
 bool with_io_references=false;
 bool for_eval=false;
 bool ignore_logic_errors=false;
+bool preserve_comments=false;

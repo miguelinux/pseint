@@ -48,7 +48,7 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 	glPopMatrix();
 }
 
-void Entity::DrawNassiSchne(bool force) {
+void Entity::DrawNassiShne(bool force) {
 	if (this==start) DrawBackground();
 	if (mouse==this) DrawSolidRectangle(color_shape[ET_COUNT],d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
@@ -124,7 +124,7 @@ void Entity::DrawNassiSchne(bool force) {
 	DrawText();
 }
 
-void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
+void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
 	
 	// calcular tamaños de la forma segun el texto
 	if (!t_w) w=margin*6; else { w=t_w; w+=2*margin; } h=t_h+2*margin; 
@@ -216,9 +216,9 @@ void Entity::CalculateNassiSchne() { // calcula lo propio y manda a calcular al 
 		} else
 		if (type==ET_MIENTRAS||type==ET_PARA||type==ET_REPETIR) {
 			if (type==ET_PARA) {
-				child[1]->CalculateNassiSchne();
-				child[2]->CalculateNassiSchne();
-				child[3]->CalculateNassiSchne();
+				child[1]->CalculateNassiShne();
+				child[2]->CalculateNassiShne();
+				child[3]->CalculateNassiShne();
 				t_dx=child[1]->t_w+child[2]->t_w+child[3]->t_w;
 				w=w+t_dx; bwr=bwl=w/2; t_dx=-t_dx/2;
 			}

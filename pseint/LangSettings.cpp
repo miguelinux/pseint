@@ -36,14 +36,14 @@ void LangSettings::init() {
 			"Si esta opción esta activada se puede concatenar el contenido de dos variables de tipo caracter con el operador +. "
 			"Por ejemplo: NombreCompleto <- Nombre+\" \"+Apellido;"
 		);
-	data[LS_USE_NASSI_SCHNEIDERMAN	 ].Set("use_nassi_schneiderman",	false,
-		"Usar diagramas de Nassi-Schneiderman",
-			"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Schneiderman\n"
+	data[LS_USE_NASSI_SHNEIDERMAN	 ].Set("use_nassi_shneiderman",	false,
+		"Usar diagramas de Nassi-Shneiderman",
+			"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Shneiderman\n"
 			"en lugar del formato clásico de diagrama de flujo."
 		);
 	data[LS_USE_ALTERNATIVE_IO_SHAPES].Set("use_alternative_io_shapes",	false,
 		"Usar formas alternativas para Leer y Escribir en el diagrama",
-			"Con esta opción activada, si se utiliza el diagrama de flujo clásico (no Nassi-Schneiderman), los bloques para las instrucciones"
+			"Con esta opción activada, si se utiliza el diagrama de flujo clásico (no Nassi-Shneiderman), los bloques para las instrucciones"
 			"Leer y Escribir serán diferentes entre sí, siguiendo una convención alternativa"
 		);
 	data[LS_ALLOW_DINAMYC_DIMENSIONS ].Set("allow_dinamyc_dimensions",	true,

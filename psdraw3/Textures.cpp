@@ -186,7 +186,7 @@ Texture texture_font;
 bool LoadTextures() {
 	wxImage::AddHandler(new wxPNGHandler);
 	const char *shapes="imgs/flow/shapes.png";
-	if (Entity::nassi_schneiderman) shapes="imgs/flow/shapes_ns.png";
+	if (Entity::nassi_shneiderman) shapes="imgs/flow/shapes_ns.png";
 	else if (Entity::alternative_io) shapes="imgs/flow/shapes_alt.png";
 	if (!texture_shapes.Load(shapes)) return use_textures=false;
 	texture_shapes.r/=8;

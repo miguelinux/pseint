@@ -14,8 +14,8 @@ Ademas, todas forman una gran lista enlazada (atributos all_*) para recorrerlas 
 Tipos de entidades:
 	ET_LEER: leer, no tiene hijos
 	ET_ESCRIBIR: escribir, no tiene hijos
-	ET_ASIGNAR: asignar, dimension, definir, no tiene hijos
-	ET_PROCESO: inicio y fin, se distinguen por prev y next
+	ET_ASIGNAR: asignar, dimension, definir, no tiene hijos, la variante es llamada a subproceso
+	ET_PROCESO: inicio y fin, se distinguen por variante y !variante
 	ET_SI: si, dos hijos, el primero es el izquierdo, el segundo el derecho
 	ET_SEGUN: 1 o mas hijos, el ultimo siempre es "De Otro Modo"
 	ET_OPCION: 1 hijo, hijos de segun con las opciones, el hijo tiene las acciones para esa opcion
@@ -28,7 +28,7 @@ enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI,
 
 struct Entity {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
-	static bool nassi_schneiderman; ///< usar diagramas de Nassi-Schneiderman en lugar de "clásico"
+	static bool nassi_shneiderman; ///< usar diagramas de Nassi-Shneiderman en lugar de "clásico"
 	static bool shape_colors; ///< mostrar los bloques de diferentes colores
 	static bool enable_partial_text; ///< 
 	Entity *all_next, *all_prev;
@@ -85,18 +85,23 @@ struct Entity {
 	void DrawShapeBorder(const float *color,int x, int y, int w, int h);
 	void DrawText();
 	void Draw(bool force=false);
-	void DrawNassiSchne(bool force=false);
+	void DrawNassiShne(bool force=false);
 	void DrawClasico(bool force=false);
 	void Calculate(bool also_parent=false);
 	void MoveX(int dx);
 	void ResizeW(int aw, bool up);
 	void Calculate(int &gwl, int &gwr, int &gh);
-	void CalculateNassiSchne();
+	void CalculateNassiShne();
 	void CalculateClasico();
 	void CopyPos(Entity *o);
 	bool CheckMouse(int x, int y, bool click=true);
 	void Print(ostream &out, string tab, Entity *process, int &line_num);
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
+	Entity *GetTopEntity(); ///< sigue por prev hasta llegar a null
+	static void CalculateAll();
+	Entity *GetNextNoComment();
+	bool IsOutOfProcess();
+	static bool IsOutOfProcess(Entity *next_no_commnet);
 };
 
 static const int flecha_h=25; // separacion entre bloques consecutivos

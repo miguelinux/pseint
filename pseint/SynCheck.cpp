@@ -43,7 +43,8 @@ static bool IsNumericConstant(string &str) {
 }
 
 // pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y quita espacios extras
-static void SynCheckAux1(string &cadena) {
+static string SynCheckAux1(string &cadena) {
+	string retval;
 	// corregir saltos de linea win/linux
 	if (cadena.size()>0 && (cadena[cadena.size()-1]==13||cadena[cadena.size()-1]==10) ) cadena[cadena.size()-1]=' ';
 	if (cadena.size()>1 && (cadena[cadena.size()-2]==13||cadena[cadena.size()-2]==10) ) cadena[cadena.size()-2]=' ';
@@ -52,8 +53,19 @@ static void SynCheckAux1(string &cadena) {
 	// primero, todo a mayúsculas y cambio de comillas y paréntesis
 	for (int tmp=0;tmp<len;tmp++) {
 		char &c=cadena[tmp];
-		if (!comillas && tmp>0 && c=='/' && cadena[tmp-1]=='/')
-			{ cadena=cadena.substr(0,tmp-1); len=tmp-1; break; }
+		if (!comillas && tmp>0 && c=='/' && cadena[tmp-1]=='/') {
+			// "remover" comentarios
+			if (preserve_comments) {
+				bool is_inline = false;
+				for(int i=0;i<tmp-1;i++) 
+					if (cadena[i]!=' '&&cadena[i]!='\t'&&cadena[i]!=';') 
+						{ is_inline=true; break; }
+				retval = cadena.substr(tmp+1); 
+				while (retval.size() && (retval[0]==' '||retval[0]=='\t')) retval.erase(0,1);
+				retval.insert(0,is_inline?string("#comment-inline "):string("#comment "));
+			}
+			cadena=cadena.substr(0,tmp-1); len=tmp-1; break; 
+		}
 		if (c=='\"' || c=='\'') { 
 			c='\''; comillas=!comillas;
 		} else if (!comillas) {
@@ -94,11 +106,13 @@ static void SynCheckAux1(string &cadena) {
 //			if (cadena[i]==')' && i+2<len && EsLetra(cadena[i+1])) { cadena.insert(i+1," "); len++; }
 //		}
 //	}
+	return retval;
 }
 
 	
 // reescribir condiciones coloquiales
 static void SynCheckAux2(string &cadena) {
+	if (preserve_comments && (LeftCompare(cadena,"#comment ")||LeftCompare(cadena,"#comment-inline "))) return;
 	struct coloquial_aux {
 		string cond, pre, post, rep;
 		int csize;
@@ -252,6 +266,7 @@ int is_valid_operator(char act, char next, int &len, what_extra &type) {
 
 // verificar operadores, constantes y parentesis, y borrar los espacios en blanco que sobran entre ellos
 static void SynCheckAux3(const int &x, string &cadena, int &errores,const  string &instruccion, int &flag_pyc) {
+	if (preserve_comments && (LeftCompare(cadena,"#comment ")||LeftCompare(cadena,"#comment-inline "))) return;
 	bool allow_multiple_expresions=instruccion!=":" && instruccion!="<-";
 	what w=w_null; what_extra wext=w_other;
 	int parentesis=0, csize; bool comillas=false;
@@ -468,6 +483,9 @@ int SynCheck(int linea_from, int linea_to) {
 			while (pt2>0 && cadena[pt2-1]==' ') pt2--;
 			if (pt1!=0||pt2!=l) cadena=cadena.substr(pt1,pt2-pt1);
 			
+			if (preserve_comments && (LeftCompare(cadena,"#comment ") || LeftCompare(cadena,"#comment-inline "))) {
+				continue;
+			}
 			
 			int len = cadena.size();
 			if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }
@@ -1460,7 +1478,10 @@ int SynCheck() {
 	if (case_map) for(int i=0;i<programa.GetSize();i++) CaseMapFill(programa[i].instruccion);
 	
 	// pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y trimear
-	for(int i=0;i<programa.GetSize();i++) SynCheckAux1(programa[i].instruccion);
+	for(int i=0;i<programa.GetSize();i++) {
+		string comment = SynCheckAux1(programa[i].instruccion);
+		if (preserve_comments && comment.size()) { programa.Insert(i,comment); i++; }
+	}
 	
 	// parsear primero las funciones/subprocesos (j=0), luego el proceso (j=1)
 //	bool have_proceso=false;

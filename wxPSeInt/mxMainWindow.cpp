@@ -133,7 +133,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
-	EVT_MENU(mxID_CONFIG_NASSI_SCHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
+	EVT_MENU(mxID_CONFIG_NASSI_SHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_ICON_INSTALLER, mxMainWindow::OnInconInstaller)
 
@@ -314,14 +314,14 @@ void mxMainWindow::CreateMenus() {
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
-	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SCHNEIDERMAN]);	
+	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SHNEIDERMAN]);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
 	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
-	mi_nassi_schne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SCHNEIDERMAN, _Z("Utilizar diagramas Nassi-Schneiderman"),"",config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
+	mi_nassi_shne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SHNEIDERMAN, _Z("Utilizar diagramas Nassi-Shneiderman"),"",config->lang[LS_USE_NASSI_SHNEIDERMAN]);
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos..."),"","");
@@ -1486,8 +1486,8 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		if (source->GetFlowSocket()) { 
 			source->GetFlowSocket()->Write("raise\n",6); 
 			return;
-		} else if (!source->GetReadOnly() && source->HaveComments()) {
-			wxMessageBox(_Z("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_Z("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
+//		} else if (!source->GetReadOnly() && source->HaveComments()) {
+//			wxMessageBox(_Z("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_Z("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
 		wxString fname=source->SaveTemp();
 		if (debug->debugging)
@@ -1532,13 +1532,13 @@ void mxMainWindow::UpdateRealTimeSyntax() {
 }
 
 void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
-	if (!mi_nassi_schne->IsChecked()) {
-		mi_nassi_schne->Check(false);
-		config->lang[LS_USE_NASSI_SCHNEIDERMAN]=false;
+	if (!mi_nassi_shne->IsChecked()) {
+		mi_nassi_shne->Check(false);
+		config->lang[LS_USE_NASSI_SHNEIDERMAN]=false;
 		mi_shape_colors->Enable(true);
 	} else {
-		mi_nassi_schne->Check(true);
-		config->lang[LS_USE_NASSI_SCHNEIDERMAN]=true;
+		mi_nassi_shne->Check(true);
+		config->lang[LS_USE_NASSI_SHNEIDERMAN]=true;
 		mi_shape_colors->Enable(false);
 	}
 }
@@ -1552,8 +1552,8 @@ void mxMainWindow::ProfileChanged ( ) {
 		((mxSource*)(notebook->GetPage(i)))->KillRunningTerminal();
 	}
 	debug_panel->ProfileChanged();
-	mi_nassi_schne->Check(config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
-	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SCHNEIDERMAN]);
+	mi_nassi_shne->Check(config->lang[LS_USE_NASSI_SHNEIDERMAN]);
+	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SHNEIDERMAN]);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	button_subproc->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
 	commands->Layout();

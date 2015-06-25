@@ -36,7 +36,7 @@ bool mxApplication::OnInit() {
 		} else fname=a;
 	}
 	lang.Fix();
-	Entity::nassi_schneiderman=lang[LS_USE_NASSI_SCHNEIDERMAN];
+	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	if (port!=-1 && id!=-1) {
 		if (!::Connect(port,id)) edit_on=false;

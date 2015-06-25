@@ -150,9 +150,9 @@ if (use_textures) {
 		texture_shapes.Select();
 		glColor3f(1,1,1);
 		glBegin(GL_QUADS);
-		float dy=win_h/cant_shapes_in_bar, th0=0, th1=1.0/cant_shapes_in_bar, dth=1.0/cant_shapes_in_bar;
-		float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=win_h/float(cant_shapes_in_bar); 
-		float ratio=float(shapebar_size)/win_h/(cant_shapes_in_bar-1);
+		float dy=float(win_h)/float(cant_shapes_in_bar), th0=0, th1=1.0/float(cant_shapes_in_bar), dth=1.0/float(cant_shapes_in_bar);
+		float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=float(win_h)/float(cant_shapes_in_bar); 
+		float ratio=float(shapebar_size)/float(win_h)/float(cant_shapes_in_bar);
 		if (ratio>texture_shapes.r) {
 			float dx=(x1-x0)*(1-texture_shapes.r/ratio)/2;
 			x0+=dx; x1-=dx;
@@ -383,9 +383,9 @@ if (use_textures) {
 			SetStatus(color_selection,"Comentario (texto libre que el interprete ignora)"); break;
 		case 2: 
 			if (canvas->GetModifiers()&MODIFIER_SHIFT) 
-				SetStatus(color_selection,"Dimension/Definicion)");
+				SetStatus(color_selection,"Invocacion de un subproceso");
 			else
-				SetStatus(color_selection,"Asignacion (shift para Dimension/Definicion)"); 
+				SetStatus(color_selection,"Asignacion/Dimension/Definicion"); 
 			break;
 		case 3: SetStatus(color_selection,"Escribir (instruccion para generar salidas)"); break;
 		case 4: SetStatus(color_selection,"Leer (instruccion para obtener entradas)"); break;
@@ -568,7 +568,7 @@ Entity *next_entity(Entity *aux) {
 		// si no tiene hijos se pasa a la siguiente
 		if (aux->next) return aux->next;
 		// si no hay siguiente, se sube
-		if (pila_e.empty()) return start; // si no se puede subir estamos en "Fin Proceso"
+		if (pila_e.empty()) return start->GetTopEntity(); // si no se puede subir estamos en "Fin Proceso"
 		int last=++pila_nc.back();
 		aux=pila_e.back();
 		if (aux->n_child!=last) {
@@ -589,7 +589,8 @@ void display_cb() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	// dibujar el diagrama
 	float mx=cur_x/zoom, my=cur_y/zoom;
-	Entity *aux=start;
+	Entity *aux=start->GetTopEntity();
+	Entity *my_start=aux;
 	bool found=false;
 	int line_width=2*d_zoom<1?1:int(d_zoom*2);
 	glLineWidth(line_width);
@@ -601,7 +602,7 @@ void display_cb() {
 				mouse_link_x=cur_x; mouse_link_y=cur_y;
 				mouse->UnLink();
 				aux->LinkNext(mouse);
-				start->Calculate();
+				Entity::CalculateAll();
 				found=true;
 			} else if (aux->child) {
 				int i=aux->CheckLinkChild(cur_x,cur_y);
@@ -609,12 +610,12 @@ void display_cb() {
 					mouse_link_x=cur_x; mouse_link_y=cur_y;
 					mouse->UnLink();
 					aux->LinkChild(i,mouse);
-					start->Calculate();
+					Entity::CalculateAll();
 					found=true;
 				}
 			}
 		}
-		if (!Entity::nassi_schneiderman && edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+		if (!Entity::nassi_shneiderman && edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
 			RaiiColorChanger rcc;
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
@@ -626,7 +627,7 @@ void display_cb() {
 		} else if (debugging && debug_current==aux) {
 			RaiiColorChanger rcc;
 			glLineWidth(line_width+1);
-			if (!Entity::nassi_schneiderman) {
+			if (!Entity::nassi_shneiderman) {
 				rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.65); rcc.Change(color_arrow[1],.4);
 				rcc.Change(color_arrow[2],.4); // rcc.Change(color_arrow[0],1);
 			}
@@ -640,7 +641,7 @@ void display_cb() {
 		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
 //		aux=aux->all_next;
 		aux=next_entity(aux);
-	} while (aux!=start);
+	} while (aux!=my_start);
 	if (mouse && mouse->type==ET_OPCION) {
 		int i=mouse->parent->CheckLinkOpcion(cur_x,cur_y);
 		if (i!=-1) {
