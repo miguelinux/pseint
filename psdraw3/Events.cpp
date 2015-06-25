@@ -185,14 +185,14 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 }
 
 void ProcessMenu(int op) {
-	menu=false; edit=NULL;
+	menu=false; if (edit) edit->UnsetEdit();
 	if (op==MO_ZOOM_EXTEND) {
 		int h=0,wl=0,wr=0;
 		start->Calculate(wl,wr,h); // calcular tamaño total
 		ZoomExtend(start->x-wl,start->y,start->x+wr,start->y-h,1.5);
 	} else if (op==MO_FUNCTIONS) {
 		choose_process_d_base=choose_process_d_delta=0;
-		choose_process_state=1; edit=NULL;
+		choose_process_state=1; if (edit) edit->UnsetEdit();
 		if (mouse) mouse->UnSetMouse();
 	} else if (op==MO_SAVE||op==MO_RUN||op==MO_EXPORT||op==MO_DEBUG) {
 		SendUpdate(op);
@@ -284,7 +284,7 @@ void mouse_cb(int button, int state, int x, int y) {
 						aux->SetEdit();
 					} 
 					if (edit!=aux) {
-						edit=NULL;
+						if (edit) edit->UnsetEdit();
 					}
 					to_set_mouse=aux; mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
 					if (aux->type==ET_AUX_PARA) to_set_mouse=aux->parent; // para que no haga drag del hijo del para, sino de todo el para completo
@@ -334,7 +334,7 @@ void ToggleEditable() {
 	static bool old_edit_on;
 	if (edit_on) {
 		old_edit_on=true;
-		edit_on=false; edit=NULL;
+		edit_on=false; if (edit) edit->UnsetEdit();
 	} else {
 		edit_on=old_edit_on;
 	}

@@ -124,13 +124,11 @@ Entity::~Entity() {
 }
 
 void Entity::SetEdit() {
-	Entity *prev_edit = edit;
+	if (edit==this) return;
+	if (edit) edit->UnsetEdit();
 	edit=this; EditLabel(0);
-	if (enable_partial_text) {
+	if (enable_partial_text)
 		this->SetLabel(label,true);
-		if (prev_edit) 
-			prev_edit->SetLabel(prev_edit->label,true);
-	}
 	edit_pos=label.size();
 	error.clear();
 }
@@ -577,4 +575,9 @@ void Entity::SetPosition (int x0, int y0) {
 //	Calculate();
 }
 
+
+void Entity::UnsetEdit ( ) {
+	if (enable_partial_text)
+		EditLabel(27);
+}
 

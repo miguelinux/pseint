@@ -62,6 +62,7 @@ struct Entity {
 	Entity(ETYPE _type, string _label);
 	~Entity();
 	void SetEdit();
+	void UnsetEdit();
 	void SetMouse();
 	void UnSetMouse();
 	void SetNolink(Entity *m,bool n);
