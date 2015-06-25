@@ -139,3 +139,8 @@ void dibujar_caracter(char _c) {
 	dc->DrawText(s,m.x(0)+(w-tw)/2,m.y(0)-3*th/4);
 	m.tx+=100*m.sx*8/7;
 }
+void begin_texto( ) {
+}
+
+void end_texto( ) {
+}

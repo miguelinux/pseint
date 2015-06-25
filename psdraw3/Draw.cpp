@@ -8,6 +8,7 @@
 #include <wx/cursor.h>
 #include "MainWindow.h"
 #include "Canvas.h"
+#include "Text.h"
 using namespace std;
 
 
@@ -33,27 +34,7 @@ void SetStatus(const float *color, const string &text) {
 }
 
 
-void GetTextSize(const string &label, int &w, int &h) {
-	w=label.size()*10;
-	h=15;
-}
 
-void DrawTextRaster(const float *color, int x, int y, const char *t) {
-	glColor3fv(color);
-	glRasterPos2f(x,y);
-	int i=0;
-	while (t[i]!='\0') glutBitmapCharacter(GLUT_BITMAP_9_BY_15,t[i++]);
-}
-
-void DrawText(const float *color, int x, int y, const char *t) {
-	glColor3fv(color);
-	glPushMatrix();
-	glTranslated(x,y,0);
-	glScaled(.08,.12,.1);
-	while (*t) 
-		dibujar_caracter(*(t++));
-	glPopMatrix();
-}
 
 static void DrawTrash() {
 	glLineWidth(menu_line_width);
@@ -462,6 +443,7 @@ static void DrawChooseProcess() {
 			else glTranslated(px,py,0);
 			glScaled(.08,.12,.1);
 			
+			begin_texto();
 			string &sp=procesos[i]->lpre;
 			p=0; l=sp.size();
 			while (p<l)
@@ -469,10 +451,11 @@ static void DrawChooseProcess() {
 			
 			p=0; l=s.size();
 			while (p<l) {
-				if (p==f) glLineWidth(2);
+				if (p==int(f)) glLineWidth(2);
 				if (p==t) glLineWidth(1);
 				dibujar_caracter(s[p++],true);
 			}
+			end_texto();
 			glPopMatrix();		
 		}
 		

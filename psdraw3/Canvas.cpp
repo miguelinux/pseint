@@ -58,7 +58,7 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 #if _USE_TEXTURES
 		LoadTextures();
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #endif
 		cursores=new wxCursor[Z_CURSOR_COUNT];
 		cursores[Z_CURSOR_INHERIT]=wxCursor(wxCURSOR_ARROW);

@@ -1,47 +1,50 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/uglyfont.o ${OBJS_DIR}/LangSettings.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Text.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/uglyfont.o 
 
-${OBJS_DIR}/Application.o: Application.cpp GLstuff.h Application.h MainWindow.h Version.h ../pseint/version_common.h Global.h Entity.h Comm.h Load.h ../pseint/LangSettings.h
+${OBJS_DIR}/Application.o: Application.cpp GLstuff.h Application.h MainWindow.h Version.h ../pseint/version_common.h Global.h Entity.h ../pseint/LangSettings.h Comm.h Load.h ../wxPSeInt/mac-stuff.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
-${OBJS_DIR}/Canvas.o: Canvas.cpp Events.h Draw.h Global.h Entity.h Textures.h GLstuff.h Canvas.h
+${OBJS_DIR}/Canvas.o: Canvas.cpp Events.h Draw.h Global.h Entity.h ../pseint/LangSettings.h Textures.h GLstuff.h Canvas.h
 	${GPP} ${CXXFLAGS} -c Canvas.cpp -o $@
 
-${OBJS_DIR}/MainWindow.o: MainWindow.cpp Canvas.h MainWindow.h Global.h Entity.h Load.h Events.h Comm.h
+${OBJS_DIR}/MainWindow.o: MainWindow.cpp Canvas.h MainWindow.h Global.h Entity.h ../pseint/LangSettings.h Load.h Events.h Comm.h
 	${GPP} ${CXXFLAGS} -c MainWindow.cpp -o $@
 
-${OBJS_DIR}/Comm.o: Comm.cpp GLstuff.h ../pseint/zockets.h Comm.h Global.h Entity.h Events.h Load.h MainWindow.h
+${OBJS_DIR}/Comm.o: Comm.cpp GLstuff.h ../pseint/zockets.h Comm.h Global.h Entity.h ../pseint/LangSettings.h Events.h Load.h MainWindow.h
 	${GPP} ${CXXFLAGS} -c Comm.cpp -o $@
 
-${OBJS_DIR}/DClasico.o: DClasico.cpp GLstuff.h Entity.h Global.h Draw.h
+${OBJS_DIR}/DClasico.o: DClasico.cpp GLstuff.h Entity.h Global.h ../pseint/LangSettings.h Draw.h
 	${GPP} ${CXXFLAGS} -c DClasico.cpp -o $@
 
-${OBJS_DIR}/DNassiSchne.o: DNassiSchne.cpp GLstuff.h Entity.h Global.h Draw.h
+${OBJS_DIR}/DNassiSchne.o: DNassiSchne.cpp GLstuff.h Entity.h Global.h ../pseint/LangSettings.h Draw.h Text.h
 	${GPP} ${CXXFLAGS} -c DNassiSchne.cpp -o $@
 
-${OBJS_DIR}/Draw.o: Draw.cpp GLstuff.h Draw.h Global.h Entity.h Events.h Textures.h MainWindow.h Canvas.h
+${OBJS_DIR}/Draw.o: Draw.cpp GLstuff.h Draw.h Global.h Entity.h ../pseint/LangSettings.h Events.h Textures.h MainWindow.h Canvas.h Text.h
 	${GPP} ${CXXFLAGS} -c Draw.cpp -o $@
 
-${OBJS_DIR}/Entity.o: Entity.cpp GLstuff.h Entity.h Global.h Draw.h Events.h
+${OBJS_DIR}/Entity.o: Entity.cpp GLstuff.h Entity.h Global.h ../pseint/LangSettings.h Draw.h Events.h Text.h
 	${GPP} ${CXXFLAGS} -c Entity.cpp -o $@
 
-${OBJS_DIR}/Events.o: Events.cpp GLstuff.h Events.h Entity.h Global.h Comm.h Draw.h Load.h Textures.h MainWindow.h Canvas.h
+${OBJS_DIR}/Events.o: Events.cpp GLstuff.h Events.h Entity.h Global.h ../pseint/LangSettings.h Comm.h Draw.h Load.h Textures.h MainWindow.h Canvas.h
 	${GPP} ${CXXFLAGS} -c Events.cpp -o $@
 
-${OBJS_DIR}/Global.o: Global.cpp Global.h Entity.h
+${OBJS_DIR}/Global.o: Global.cpp Global.h Entity.h ../pseint/LangSettings.h
 	${GPP} ${CXXFLAGS} -c Global.cpp -o $@
 
-${OBJS_DIR}/Load.o: Load.cpp Load.h Global.h Entity.h Events.h
+${OBJS_DIR}/Load.o: Load.cpp Load.h Global.h Entity.h ../pseint/LangSettings.h Events.h
 	${GPP} ${CXXFLAGS} -c Load.cpp -o $@
 
-${OBJS_DIR}/Textures.o: Textures.cpp Textures.h GLstuff.h Entity.h
+${OBJS_DIR}/Textures.o: Textures.cpp Textures.h GLstuff.h Entity.h Text.h
 	${GPP} ${CXXFLAGS} -c Textures.cpp -o $@
 
 ${OBJS_DIR}/zockets.o: ../pseint/zockets.cpp ../pseint/zockets.h
 	${GPP} ${CXXFLAGS} -c ../pseint/zockets.cpp -o $@
 
-${OBJS_DIR}/uglyfont.o: uglyfont.cpp GLstuff.h
-	${GPP} ${CXXFLAGS} -c uglyfont.cpp -o $@
+${OBJS_DIR}/Text.o: Text.cpp Text.h GLstuff.h Textures.h
+	${GPP} ${CXXFLAGS} -c Text.cpp -o $@
 
 ${OBJS_DIR}/LangSettings.o: ../pseint/LangSettings.cpp ../pseint/LangSettings.h ../wxPSeInt/Logger.h ../wxPSeInt/version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c ../pseint/LangSettings.cpp -o $@
+
+${OBJS_DIR}/uglyfont.o: uglyfont.cpp GLstuff.h
+	${GPP} ${CXXFLAGS} -c uglyfont.cpp -o $@
 

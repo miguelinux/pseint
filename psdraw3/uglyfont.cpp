@@ -758,14 +758,7 @@ void YsDrawUglyFont(const char str[],int centering,int useDisplayList=1)
 	glPopMatrix();
 }
 
-void dibujar_caracter(const char chr) { 
-	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
-}
 
-void dibujar_caracter(const char chr, bool extra) { 
-	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
-	glTranslated(YsUglyFontWid*1.5/7.0,0.0,0.0);
-}
 
 
 //#define UFW1 8.0/7.0
@@ -789,3 +782,12 @@ void dibujar_caracter(const char chr, bool extra) {
 //			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
 //			UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,UFW1  ,
 //	};
+
+void ys_dibujar_caracter(const char chr) { 
+	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
+}
+
+void ys_dibujar_caracter(const char chr, bool extra) { 
+	YsDrawUglyFontPattern(YsUglyFontSet[((unsigned char)chr)]);
+	glTranslated(YsUglyFontWid*1.5/7.0,0.0,0.0);
+}

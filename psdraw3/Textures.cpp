@@ -5,6 +5,7 @@
 #include <wx/image.h>
 #include "Textures.h"
 #include "Entity.h"
+#include "Text.h"
 using namespace std;
 
 // función basada en código tomado de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
@@ -178,6 +179,9 @@ Texture texture_shapes;
 Texture texture_commands;
 Texture texture_menu;
 Texture texture_trash;
+#ifdef _USE_FONT
+Texture texture_font;
+#endif
 
 bool LoadTextures() {
 	wxImage::AddHandler(new wxPNGHandler);
@@ -189,6 +193,9 @@ bool LoadTextures() {
 	if (!texture_commands.Load("imgs/flow/commands.png")) return use_textures=false;
 	if (!texture_menu.Load("imgs/flow/menu.png")) return use_textures=false;
 	if (!texture_trash.Load("imgs/flow/trash.png")) return use_textures=false;
+#ifdef _USE_FONT
+	if (use_textures_font && !texture_font.Load("imgs/flow/font.png")) use_textures_font=false;
+#endif
 	return true;
 }
 

@@ -7,6 +7,7 @@
 #include "Draw.h"
 #include "Events.h"
 #include <wx/wx.h>
+#include "Text.h"
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -210,7 +211,7 @@ void Entity::EditLabel(unsigned char key) {
 int Entity::IsLabelCropped ( ) {
 	if (!enable_partial_text || this==edit) return 0;
 	int max_len = type<=ET_ASIGNAR?max_label_len_sec:max_label_len_cont;
-	if (label.size()>max_len) return max_len; else return 0;
+	if (int(label.size())>max_len) return max_len; else return 0;
 }
 
 
@@ -377,6 +378,7 @@ void Entity::DrawText() {
 	glPushMatrix();
 	glTranslated(d_fx+t_dx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0),d_fy-(d_h/2+margin)+t_dy,0);
 	glScaled((.105*d_w)/w,(.15*d_h)/h,.1);
+	begin_texto();
 	glColor3fv(color_label_fix);
 	for (unsigned int i=0;i<lpre.size();i++) {
 		dibujar_caracter(lpre[i]);
@@ -384,13 +386,13 @@ void Entity::DrawText() {
 	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:color_label));
 	int llen=label.size(), crop_len = IsLabelCropped();
 	if (crop_len) llen=crop_len-3;
-	for (unsigned int i=0;i<llen;i++) {
+	for (int i=0;i<llen;i++) {
 		dibujar_caracter(label[i]);
 	}
-	if (llen!=label.size())
+	if (llen!=int(label.size()))
 		for (unsigned int i=0;i<3;i++)
 			dibujar_caracter('.');
-		
+	end_texto();
 	glPopMatrix();
 	if (edit==this && mouse!=this && w>0) {
 		blink++; if (blink==20) blink=0;

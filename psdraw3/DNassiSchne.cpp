@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
+#include "Text.h"
 using namespace std;
 
 static int bk_x0,bk_x1,bk_y0,bk_y1;
@@ -40,8 +41,10 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 	glPushMatrix();
 	glTranslated(x,y,0);
 	glScaled(.105,.15,.1);
+	begin_texto();
 	for (unsigned int i=0;i<label.size();i++)
 		dibujar_caracter(label[i]);
+	end_texto();
 	glPopMatrix();
 }
 

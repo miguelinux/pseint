@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/drw3_lnx_rls
 GPP=g++
 CXXFLAGS_OPT=-O2
-CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8` -D_USE_TEXTURES
+CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8` -D_USE_TEXTURES -D_USE_FONT
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT} -lGL -lGLU -lglut `wx-config --libs --unicode=no --version=2.8` `wx-config --libs --unicode=no --version=2.8 gl` -lX11
 
