@@ -135,7 +135,7 @@ string JavaScriptExporter::function(string name, string args) {
 }
 
 void JavaScriptExporter::header(t_output &out) {
-	init_header(out,"// ");
+	init_header(out,for_html?"\t\t\t//":"// ");
 }
 
 void JavaScriptExporter::footer(t_output &out) {

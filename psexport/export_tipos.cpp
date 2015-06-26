@@ -126,7 +126,8 @@ string TiposExporter::function(string name, string args) {
 }
 
 void TiposExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
-	t_output out_proc; bloque(out_proc,++proc.begin(),proc.end(),"\t");
+	t_output out_proc; 
+	bloque(out_proc,++proc.begin(),proc.end(),"\t");
 	memoria=NULL; // para que translate_all_procs no la elimine
 }
 

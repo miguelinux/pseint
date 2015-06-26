@@ -414,12 +414,15 @@ void ExporterBase::translate_all_procs (t_output & out_main, t_output &out_procs
 		t_proceso_it it2 = it1->begin();
 		while (it2->nombre=="#comment"||it2->nombre=="#comment-inline") {
 			comentar(out_com,it2->par1,tabs);
-			if (++it2==it1->end()) return;
+			if (++it2==it1->end()) {
+				insertar_out(out_main,out_com);
+				return;
+			}
 		}
 		Funcion *f;
 		if (it2->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
 		else { int x; f=ParsearCabeceraDeSubProceso(it2->par1,false,x); set_memoria(f->id); }
-		insertar_out((f?out_procs:out_main),out_com);
+		insertar_out(f?out_procs:out_main,out_com);
 		translate_single_proc(f?out_procs:out_main,f,*it1);	
 		delete memoria; delete f;
 	}
