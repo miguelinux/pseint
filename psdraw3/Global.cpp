@@ -95,10 +95,10 @@ void GlobalInit( ) {
 	color_shape[ET_ASIGNAR][0] = 1;
 	color_shape[ET_ASIGNAR][1] = .95;
 	color_shape[ET_ASIGNAR][2] = .8;
-	color_shape[ET_SI][0] = color_shape[ET_SEGUN][0] = color_shape[ET_OPCION][0] = .8;
+	color_shape[ET_SI][0] = color_shape[ET_SEGUN][0] = color_shape[ET_OPCION][0] = .85;
 	color_shape[ET_SI][1] = color_shape[ET_SEGUN][1] = color_shape[ET_OPCION][1] = .9;
 	color_shape[ET_SI][2] = color_shape[ET_SEGUN][2] = color_shape[ET_OPCION][2] = 1;
-	color_shape[ET_PARA][0] = color_shape[ET_MIENTRAS][0] = .9;
+	color_shape[ET_PARA][0] = color_shape[ET_MIENTRAS][0] = .95;
 	color_shape[ET_PARA][1] = color_shape[ET_MIENTRAS][1] = .8;
 	color_shape[ET_PARA][2] = color_shape[ET_MIENTRAS][2] = 1;
 	color_shape[ET_REPETIR][0] = .8;

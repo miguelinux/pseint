@@ -331,6 +331,7 @@ void CreateEmptyProc(string type) {
 	Entity::all_any=NULL;
 	start = new Entity(ET_PROCESO,"");
 	Entity *aux = new Entity(ET_PROCESO,"");
+	aux->variante=true;
 	start->LinkNext(aux);
 	start->lpre=type+" "; start->SetLabel("SinTitulo");
 	aux->lpre=string("Fin")+type; aux->SetLabel("");
