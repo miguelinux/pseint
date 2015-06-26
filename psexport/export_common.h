@@ -6,7 +6,18 @@
 #include <stack>
 #include <vector>
 class Memoria;
+class Funcion;
 using namespace std;
+
+#if __cplusplus >= 201103
+#define _CPP11_ENABLED 1
+#else
+
+// missing keywords
+#define final
+#define override
+
+#endif // cpp11
 
 class ExporterBase {
 
@@ -47,6 +58,7 @@ protected:
 	virtual void para(t_output &prog, t_proceso_it r, t_proceso_it q,string tabs)=0;
 	virtual void dimension(t_output &prog, t_arglist &args, string tabs);
 	virtual void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
+	virtual void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	
@@ -99,6 +111,10 @@ public:
 	* @param prog    argumento de entrada, con el algoritmo ya parseado
 	**/
 	virtual void translate(t_output &out, t_programa &prog)=0;
+	
+	virtual void translate_all_procs(t_output &out, t_programa &prog, string tabs="");
+	virtual void translate_all_procs(t_output &out_main, t_output &out_procs, t_programa &prog, string tabs="");
+	virtual void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 };
 

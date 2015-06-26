@@ -240,11 +240,7 @@ string VbExporter::get_tipo(string name, bool by_ref) {
 	return ret;
 }
 
-void VbExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void VbExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -271,7 +267,6 @@ void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 		}
 		dec+=")";
 		out.push_back(dec);
-		delete f;
 	}
 	
 	declarar_variables(out);
@@ -282,8 +277,6 @@ void VbExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(string("\t")+ret);
 	out.push_back(is_sub?"\tEnd Sub":"\tEnd Function");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
 	
 }
 
@@ -297,8 +290,7 @@ void VbExporter::translate(t_output &out, t_programa &prog) {
 	out.push_back(string("Module ")+main_process_name);
 	if (!for_test) out.push_back("");
 	// procesos y subprocesos
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(out,*it);	
+	translate_all_procs(out,prog,"\t");
 	out.push_back("End Module");
 }
 
@@ -366,3 +358,8 @@ void VbExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		++it;
 	}
 }
+
+void VbExporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"' "+text);
+}
+

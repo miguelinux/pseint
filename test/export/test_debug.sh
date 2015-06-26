@@ -19,7 +19,7 @@ else
     B=$(echo $A|sed 's/psc/psd/')
     C=$(echo $A|sed 's/psc/'$LANGCODE'/')
     
-    $ibin --allow_dinamyc_dimensions=1 --nouser $A --draw ../temp/$B
+    $ibin --allow_dinamyc_dimensions=1 --nouser $A --preservecomments --draw ../temp/$B
     
     $ebin --for-testing --lang=$LANGCODE ../temp/$B ../temp/$C >../temp/$C
     if ! diff --strip-trailing-cr ../temp/$C ../$LANGCODE/$C; then read; fi

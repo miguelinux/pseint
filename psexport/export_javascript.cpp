@@ -142,11 +142,7 @@ void JavaScriptExporter::footer(t_output &out) {
 }
 
 
-void JavaScriptExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void JavaScriptExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -169,7 +165,6 @@ void JavaScriptExporter::translate_single(t_output &out, t_proceso &proc) {
 		}
 		dec+=") {";
 		out.push_back(dec);
-		delete f;
 	}
 	
 	declarar_variables(out,tab+"\t");
@@ -180,9 +175,6 @@ void JavaScriptExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(tab+"\t"+ret+";");
 	out.push_back(tab+"}");
 	if (!for_test) out.push_back(tab);
-	
-	delete memoria;
-	
 }
 
 string JavaScriptExporter::get_operator(string op, bool for_string) {
@@ -259,3 +251,8 @@ void JavaScriptExporter::definir(t_output &prog, t_arglist &arglist, string tipo
 		++it;
 	}
 }
+
+void JavaScriptExporter::translate_all_procs (t_output & out, t_programa & prog, string tabs) {
+	ExporterBase::translate_all_procs(out,prog,for_html?"\t\t\t":"");
+}
+

@@ -5,7 +5,7 @@
 #include "new_memoria.h"
 using namespace std;
 
-class Python3Exporter:public ExporterBase {
+class Python3Exporter : public ExporterBase {
 	
 	int version;
 	
@@ -26,7 +26,7 @@ class Python3Exporter:public ExporterBase {
 protected:
 	
 	void header(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 	void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
 	void dimension(t_output &prog, t_arglist &args, string tabs);
@@ -44,6 +44,7 @@ protected:
 	void repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
+	void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	string make_string (string cont);

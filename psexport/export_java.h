@@ -2,7 +2,7 @@
 #define EXPORT_JAVA_H
 #include "export_cpp.h"
 
-class JavaExporter:public CppExporter {
+class JavaExporter : public CppExporter {
 	
 	bool use_reader;
 	bool have_subprocesos;
@@ -14,8 +14,9 @@ class JavaExporter:public CppExporter {
 //	string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	void header(t_output &out);
 	void footer(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	string translate_tipo(const tipo_var &t);
+	void translate_all_procs(t_output &out, t_programa &prog, string tabs="") override;
 	
 	void dimension(t_output &prog, t_arglist &args, string tabs);
 	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);

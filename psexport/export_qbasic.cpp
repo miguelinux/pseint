@@ -3,13 +3,13 @@
 *
 * Las traducciones están basadas en los ejemplos enviados por el Prof. Tito Sánchez
 **/
-#include "export_qbasic.h"
 #include "../pseint/new_funciones.h"
+#include "../pseint/new_evaluar.h"
 #include "../pseint/utils.h"
+#include "export_qbasic.h"
 #include "export_common.h"
 #include "version.h"
 #include "exportexp.h"
-#include "../pseint/new_evaluar.h"
 #include "export_tipos.h"
 
 QBasicExporter::QBasicExporter() {
@@ -261,11 +261,7 @@ string QBasicExporter::get_tipo(string name, bool by_ref) {
 	return ret;
 }
 
-void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void QBasicExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -291,7 +287,6 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 		dec+=")";
 		out.push_back("");
 		out.push_back(dec);
-		delete f;
 	}
 	
 	declarar_variables(out);
@@ -302,9 +297,6 @@ void QBasicExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(ret);
 	if (f) out.push_back(is_sub?"END SUB":"END FUNCTION");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
-	
 }
 
 void QBasicExporter::translate(t_output &out, t_programa &prog) {
@@ -317,8 +309,7 @@ void QBasicExporter::translate(t_output &out, t_programa &prog) {
 	if (!for_test) out.push_back("");
 	// procesos y subprocesos
 	t_output aux;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(aux,*it);	
+	translate_all_procs(aux,prog);
 	
 	if (use_pi) out.push_back("CONST PI = 3.141593");
 	if (use_rand) out.push_back("RANDOMIZE TIMER");
@@ -410,3 +401,8 @@ void QBasicExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 	}
 	insertar(prog,tabs+"DIM "+line);
 }
+
+void QBasicExporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"' "+text);
+}
+

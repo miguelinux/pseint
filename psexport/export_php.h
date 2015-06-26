@@ -6,7 +6,7 @@
 #include "export_cpp.h"
 using namespace std;
 
-class PhpExporter:public CppExporter {
+class PhpExporter : public CppExporter {
 	
 protected:
 	
@@ -14,7 +14,7 @@ protected:
 	
 	void header(t_output &out);
 //	void footer(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	void esperar_tecla(t_output &prog, string param,string tabs);

@@ -198,11 +198,7 @@ void CSharpExporter::footer(t_output &out) {
 }
 
 
-void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void CSharpExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -232,7 +228,6 @@ void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
 		}
 		dec+=") {";
 		out.push_back(dec);
-		delete f;
 	}
 	
 	declarar_variables(out,"\t\t\t",true);
@@ -243,9 +238,6 @@ void CSharpExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(string("\t\t\t")+ret+";");
 	out.push_back("\t\t}");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
-	
 }
 
 
@@ -291,5 +283,9 @@ string CSharpExporter::get_constante(string name) {
 	if (name=="VERDADERO") return "true";
 	if (name=="FALSO") return "false";
 	return name;
+}
+
+void CSharpExporter::translate_all_procs (t_output & out, t_programa & prog, string tabs) {
+	ExporterBase::translate_all_procs(out,prog,"\t\t");
 }
 

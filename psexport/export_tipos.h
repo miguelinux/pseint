@@ -5,10 +5,10 @@
 #include "new_memoria.h"
 using namespace std;
 
-class TiposExporter:public ExporterBase {
+class TiposExporter : public ExporterBase {
 	bool switch_only_for_integers;
 protected:
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	void esperar_tecla(t_output &prog, string param,string tabs);
 	void dimension(t_output &prog, t_arglist &args, string tabs);

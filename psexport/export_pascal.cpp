@@ -326,11 +326,7 @@ void PascalExporter::header(t_output &out) {
 	}
 }
 
-void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void PascalExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -360,7 +356,6 @@ void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 			dec+=")";
 		}
 		insertar(out,dec+ret+";");
-		delete f;
 	}
 	
 	declarar_variables(out);
@@ -372,9 +367,6 @@ void PascalExporter::translate_single(t_output &out, t_proceso &proc) {
 	insertar(out,f?"End;":"End.");
 	
 	if (!for_test) insertar(out,"");
-	
-	delete memoria;
-	
 }
 
 void PascalExporter::translate(t_output &out, t_programa &prog) {
@@ -385,8 +377,7 @@ void PascalExporter::translate(t_output &out, t_programa &prog) {
 	init_header(out,"// ");
 	
 	t_output procedures;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(it->begin()->nombre=="PROCESO"?out:procedures,*it);	
+	translate_all_procs(out,procedures,prog);
 	
 	t_output_it it1=find(out.begin(),out.end(),string(linea_special_para_reemplazar_por_subprocesos));
 	it1=out.erase(it1); 
@@ -454,3 +445,8 @@ string PascalExporter::make_string (string cont) {
 		if (cont[i]=='\\') cont.insert(i++,"\\");
 	return string("\'")+cont+"\'";
 }
+
+void PascalExporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"// "+text);
+}
+

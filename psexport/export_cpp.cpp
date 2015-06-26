@@ -402,11 +402,7 @@ void CppExporter::footer(t_output &out) {
 }
 
 
-void CppExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void CppExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -434,7 +430,6 @@ void CppExporter::translate_single(t_output &out, t_proceso &proc) {
 		dec+=")";
 		prototipos.push_back(dec+";");
 		out.push_back(dec+" {");
-		delete f;
 	}
 	
 	declarar_variables(out);
@@ -445,9 +440,6 @@ void CppExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(string("\t")+ret+";");
 	out.push_back("}");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
-	
 }
 
 void CppExporter::translate(t_output &out, t_programa &prog) {
@@ -456,8 +448,8 @@ void CppExporter::translate(t_output &out, t_programa &prog) {
 	TiposExporter(prog,true); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
 	
 	t_output aux;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(aux,*it);	
+	translate_all_procs(aux,prog);
+	
 	header(out);
 	if (!prototipos.empty()) {
 		if (!for_test) {
@@ -519,5 +511,13 @@ string CppExporter::make_string (string cont) {
 	for(unsigned int i=0;i<cont.size();i++)
 		if (cont[i]=='\\') cont.insert(i++,"\\");
 	return string("\"")+cont+"\"";
+}
+
+void CppExporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"// "+text);
+}
+
+void CppExporter::translate_all_procs (t_output & out, t_programa & prog, string tabs) {
+	ExporterBase::translate_all_procs (out,prog,tabs);
 }
 

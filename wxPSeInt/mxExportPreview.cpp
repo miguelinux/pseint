@@ -83,7 +83,7 @@ void mxExportPreview::UpdatePrev ( ) {
 	if (!src) { SetMessage(_Z("No hay pseudocódigo para exportar")); state=mxEP_NONE; return; }
 	
 	wxString command;
-	command<<config->pseint_command<<_T(" --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
+	command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
 	command<<mxProcess::GetProfileArgs();
 	command<<" --draw \""<<temp_filename<<".psd"<<"\"";
 	

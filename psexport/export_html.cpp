@@ -7,7 +7,6 @@ HTMLExporter::HTMLExporter ( ) :JavaScriptExporter(true) {
 }
 
 void HTMLExporter::translate (t_output & out, t_programa & prog) {
-	
 	insertar(out,"<!DOCTYPE html>");
 	insertar(out,"<HTML>");
 	insertar(out,"\t<HEAD>");

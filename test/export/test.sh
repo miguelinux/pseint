@@ -24,7 +24,7 @@ else
     B=$(echo $A|sed 's/psc/psd/')
     C=$(echo $A|sed 's/psc/'$LANGCODE'/')
     
-    $ibin --allow_dinamyc_dimensions=1 --nouser $A --draw ../temp/$B
+    $ibin --allow_dinamyc_dimensions=1 --nouser $A --preservecomments --draw ../temp/$B
     
     if ! test -e ../$LANGCODE/$C; then
       $ebin --for-testing --lang=$LANGCODE ../temp/$B ../$LANGCODE/$C >/dev/null

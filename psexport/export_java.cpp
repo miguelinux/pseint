@@ -239,11 +239,7 @@ void JavaExporter::footer(t_output &out) {
 }
 
 
-void JavaExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void JavaExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -282,7 +278,6 @@ void JavaExporter::translate_single(t_output &out, t_proceso &proc) {
 		}
 		dec+=") "+exceptions+"{";
 		out.push_back(dec);
-		delete f;
 	}
 	
 	if (use_reader) insertar(out,_buf_reader_line);
@@ -295,8 +290,6 @@ void JavaExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(string("\t\t")+ret+";");
 	out.push_back("\t}");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
 	
 }
 
@@ -371,3 +364,8 @@ void JavaExporter::translate(t_output &out, t_programa &prog) {
 		}	
 	}
 }
+
+void JavaExporter::translate_all_procs (t_output & out, t_programa & prog, string tabs) {
+	ExporterBase::translate_all_procs(out,prog,"\t");
+}
+

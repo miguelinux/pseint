@@ -5,7 +5,7 @@
 #include "new_memoria.h"
 using namespace std;
 
-class CppExporter:public ExporterBase {
+class CppExporter : public ExporterBase {
 	
 protected:
 	
@@ -29,7 +29,8 @@ protected:
 	virtual string get_tipo(string name, bool by_ref=false, bool do_erase=true); // solo se usa para cabeceras de funciones
 	virtual void header(t_output &out);
 	virtual void footer(t_output &out);
-	virtual void translate_single(t_output &out, t_proceso &proc);
+	virtual void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
+	virtual void translate_all_procs(t_output &out, t_programa &prog, string tabs="") override;
 	
 	virtual void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	virtual void esperar_tecla(t_output &prog, string param,string tabs);
@@ -44,6 +45,7 @@ protected:
 	virtual void repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	virtual void para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	virtual void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
+	virtual void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	virtual string make_string(string cont);

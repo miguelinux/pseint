@@ -114,13 +114,13 @@ string colocarParentesis(const string &exp) {
 		}
 		return exp;
 	}
-	int i,parentesis=0,final=exp.size()-1;
-	for (i=0;i<=final;i++) {
+	int i,parentesis=0,ifinal=exp.size()-1;
+	for (i=0;i<=ifinal;i++) {
 		if (exp[i]=='[' || exp[i]=='(') parentesis++;
 		else if (exp[i]==']' || exp[i]==')') parentesis++;
 		else if (!parentesis && exp[i]!='.' && exp[i]!='+' && exp[i]!='-' && !(exp[i]>='A' && exp[i]<='Z') && !(exp[i]>='0' && exp[i]<='9') && exp[i]!=' ') break;
 	}
-	if (i>final) return exp;
+	if (i>ifinal) return exp;
 	return string("(")+exp+")";
 }
 

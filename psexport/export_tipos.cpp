@@ -125,18 +125,15 @@ string TiposExporter::function(string name, string args) {
 	return ToLower(name)+args; 
 }
 
-void TiposExporter::translate_single(t_output &out, t_proceso &proc) {
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void TiposExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	t_output out_proc; bloque(out_proc,++proc.begin(),proc.end(),"\t");
+	memoria=NULL; // para que translate_all_procs no la elimine
 }
 
 void TiposExporter::translate(t_output &out, t_programa &prog) {
 	ExporterBase *old=exporter;
 	exporter=this;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(out,*it);	
+	translate_all_procs(out,prog);
 	exporter=old;
 }
 

@@ -6,7 +6,7 @@
 #include "export_cpp.h"
 using namespace std;
 
-class CExporter:public CppExporter {
+class CExporter : public CppExporter {
 	
 	bool declare_cstrings;
 	bool use_bool;
@@ -19,7 +19,7 @@ class CExporter:public CppExporter {
 //	string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	void header(t_output &out);
 	void footer(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 //	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
 	void esperar_tecla(t_output &prog, string param,string tabs);
@@ -34,6 +34,7 @@ class CExporter:public CppExporter {
 //	void repetir(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
+	void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	string function(string name, string args);

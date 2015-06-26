@@ -145,7 +145,7 @@ string PhpExporter::function(string name, string args) {
 
 void PhpExporter::header(t_output &out) {
 	out.push_back("<?php");
-	init_header(out,"/* "," */");
+	init_header(out,"// ");
 	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin','r');");
 	if (read_strings) {
 		if (!for_test) {
@@ -158,11 +158,7 @@ void PhpExporter::header(t_output &out) {
 	}
 }
 
-void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+void PhpExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
 	t_output out_proc;
 	if (!f) {
@@ -190,8 +186,6 @@ void PhpExporter::translate_single(t_output &out, t_proceso &proc) {
 		insertar(out,string("\t\treturn ")+make_varname(f->nombres[0])+";");
 	insertar(out,"\t}");
 	if (!for_test) out.push_back("");
-	delete f;
-	delete memoria;
 }
 
 void PhpExporter::translate(t_output &out, t_programa &prog) {
@@ -200,8 +194,7 @@ void PhpExporter::translate(t_output &out, t_programa &prog) {
 	TiposExporter(prog,false);
 	
 	t_output aux;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(aux,*it);	
+	translate_all_procs(aux,prog,"\t");
 	header(out);
 	insertar_out(out,aux);
 	insertar(out,"?>");
@@ -246,3 +239,4 @@ void PhpExporter::dimension(t_output &prog, t_arglist &args, string tabs) {
 		++it;
 	}
 }
+

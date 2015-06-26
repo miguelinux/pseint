@@ -324,12 +324,8 @@ void CExporter::footer(t_output &out) {
 }
 
 
-void CExporter::translate_single(t_output &out, t_proceso &proc) {
+void CExporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
-	
 	//cuerpo del proceso
 	t_output out_proc;
 	bloque(out_proc,++proc.begin(),proc.end(),"\t");
@@ -361,7 +357,6 @@ void CExporter::translate_single(t_output &out, t_proceso &proc) {
 		dec+=")";
 		prototipos.push_back(dec+";");
 		out.push_back(dec+" {");
-		delete f;
 	}
 	
 	declarar_variables(out);
@@ -372,9 +367,6 @@ void CExporter::translate_single(t_output &out, t_proceso &proc) {
 	if (ret.size()) out.push_back(string("\t")+ret+";");
 	out.push_back("}");
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
-	
 }
 
 
@@ -393,3 +385,8 @@ string CExporter::get_operator(string op, bool for_string) {
 	} 
 	return CppExporter::get_operator(op,false);
 }
+
+void CExporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"/* "+text+" */");
+}
+

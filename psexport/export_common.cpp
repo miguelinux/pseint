@@ -4,6 +4,7 @@
 #include "../pseint/new_evaluar.h"
 #include <cstdlib>
 #include "version.h"
+#include "../pseint/new_funciones.h"
 using namespace std;
 
 map<string,Memoria*> ExporterBase::mapa_memorias;
@@ -27,7 +28,10 @@ void ExporterBase::bloque(t_output &prog, t_proceso_it r, t_proceso_it q,string 
 	
 	while (r!=q) {
 		s=(*r).nombre;
-		if (s=="ESCRIBIR") {
+		if (s=="#comment" || s=="#comment-inline") {
+			comentar(prog,(*r).par1,tabs);
+		}
+		else if (s=="ESCRIBIR") {
 			t_arglist args; string param=(*r).par1+",";
 			bool comillas=false, saltar=true;
 			int parentesis=0, lastcoma=0;
@@ -384,3 +388,44 @@ bool ExporterBase::replace_all(string &str, string from, string to) {
 	}
 	return retval;
 }
+
+void ExporterBase::comentar (t_output & prog, string text, string tabs) {
+	
+}
+
+void ExporterBase::translate_all_procs (t_output & out, t_programa & prog, string tabs) {
+	for (t_programa_it it1=prog.begin();it1!=prog.end();++it1) {
+		t_proceso_it it2 = it1->begin();
+		while (it2->nombre=="#comment"||it2->nombre=="#comment-inline") {
+			comentar(out,it2->par1,tabs);
+			if (++it2==it1->end()) return;
+		}
+		Funcion *f;
+		if (it2->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+		else { int x; f=ParsearCabeceraDeSubProceso(it2->par1,false,x); set_memoria(f->id); }
+		translate_single_proc(out,f,*it1);	
+		delete memoria; delete f;
+	}
+}
+
+void ExporterBase::translate_all_procs (t_output & out_main, t_output &out_procs, t_programa & prog, string tabs) {
+	for (t_programa_it it1=prog.begin();it1!=prog.end();++it1) {
+		t_output out_com;
+		t_proceso_it it2 = it1->begin();
+		while (it2->nombre=="#comment"||it2->nombre=="#comment-inline") {
+			comentar(out_com,it2->par1,tabs);
+			if (++it2==it1->end()) return;
+		}
+		Funcion *f;
+		if (it2->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
+		else { int x; f=ParsearCabeceraDeSubProceso(it2->par1,false,x); set_memoria(f->id); }
+		insertar_out((f?out_procs:out_main),out_com);
+		translate_single_proc(f?out_procs:out_main,f,*it1);	
+		delete memoria; delete f;
+	}
+}
+
+void ExporterBase::translate_single_proc (t_output & out, Funcion *f, t_proceso & proc) {
+	
+}
+

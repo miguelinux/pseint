@@ -2,7 +2,7 @@
 #define EXPORT_JAVASCRIPT_H
 #include "export_cpp.h"
 
-class JavaScriptExporter:public CppExporter {
+class JavaScriptExporter : public CppExporter {
 	
 	bool for_html;
 	
@@ -11,8 +11,8 @@ class JavaScriptExporter:public CppExporter {
 //	string get_tipo(string name, bool by_ref=false); // solo se usa para cabeceras de funciones
 	void header(t_output &out);
 	void footer(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
-//	string translate_tipo(const tipo_var &t);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
+	void translate_all_procs(t_output &out, t_programa &prog, string tabs) override;
 	
 	void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
 	void dimension(t_output &prog, t_arglist &args, string tabs);

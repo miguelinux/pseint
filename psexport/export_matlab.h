@@ -4,12 +4,12 @@
 #include "new_memoria.h"
 using namespace std;
 
-class MatLabExporter:public ExporterBase {
+class MatLabExporter : public ExporterBase {
 	
 	bool use_comparar_cadenas;
 	bool use_string_matrix;
 	
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 	void invocar(t_output &prog, string param, string tabs);
 	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
@@ -26,6 +26,7 @@ class MatLabExporter:public ExporterBase {
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void dimension(t_output &prog, t_arglist &args, string tabs);
 	void definir(t_output &prog, t_arglist &arglist, string tipo, string tabs);
+	void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	string make_string(string cont);

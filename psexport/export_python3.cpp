@@ -324,13 +324,9 @@ void Python3Exporter::header(t_output &out) {
 	}
 }
 
-void Python3Exporter::translate_single(t_output &out, t_proceso &proc) {
+void Python3Exporter::translate_single_proc(t_output &out, Funcion *f, t_proceso &proc) {
 	
-	use_subprocesos=true;
-	
-	t_proceso_it it=proc.begin(); Funcion *f;
-	if (it->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
-	else { int x; f=ParsearCabeceraDeSubProceso(it->par1,false,x); set_memoria(f->id); }
+	if (f) use_subprocesos=true;
 	
 	//cuerpo del proceso
 	t_output out_proc;
@@ -360,17 +356,15 @@ void Python3Exporter::translate_single(t_output &out, t_proceso &proc) {
 	// cola del proceso
 	if (ret.size()) out.push_back(string("\t")+ret);
 	if (!for_test) out.push_back("");
-	
-	delete memoria;
-	
 }
 
 void Python3Exporter::translate(t_output &out, t_programa &prog) {
 	// cppcheck-suppress unusedScopedObject
 	TiposExporter(prog,false); // para que se cargue el mapa_memorias con memorias que tengan ya definidos los tipos de variables que correspondan
+	
 	t_output aux_defs,aux_main;
-	for (t_programa_it it=prog.begin();it!=prog.end();++it)
-		translate_single(it->begin()->nombre=="PROCESO"?aux_main:aux_defs,*it);	
+	translate_all_procs(aux_main,aux_defs,prog);
+	
 	header(out);
 	insertar_out(out,aux_defs);
 	insertar_out(out,aux_main);
@@ -418,3 +412,8 @@ string Python3Exporter::make_string (string cont) {
 		if (cont[i]=='\\') cont.insert(i++,"\\");
 	return string("\"")+cont+"\"";
 }
+
+void Python3Exporter::comentar (t_output & prog, string text, string tabs) {
+	if (!for_test) insertar(prog,tabs+"# "+text);
+}
+

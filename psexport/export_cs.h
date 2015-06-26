@@ -2,7 +2,7 @@
 #define EXPORT_CS_H
 #include "export_cpp.h"
 
-class CSharpExporter:public CppExporter {
+class CSharpExporter : public CppExporter {
 	
 	bool use_random;
 	bool use_threading;
@@ -13,7 +13,8 @@ class CSharpExporter:public CppExporter {
 	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
 	void header(t_output &out);
 	void footer(t_output &out);
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
+	void translate_all_procs(t_output &out, t_programa &prog, string tabs) override;
 	string translate_tipo(const tipo_var &t);
 	
 	void dimension(t_output &prog, t_arglist &args, string tabs);

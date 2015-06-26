@@ -21,8 +21,8 @@ struct t_instruccion{
 
 
 //#ifndef _USE_COUT
-#define insertar(prog,text) prog.insert(prog.end(),text)
-#define insertar_out(prog,out) { t_output_it it=out.begin(); while (it!=out.end()) { prog.insert(prog.end(),*it); ++it; } }
+#define insertar(prog,text) prog.insert((prog).end(),text)
+#define insertar_out(prog,out) { t_output_it it=(out).begin(); while (it!=(out).end()) { (prog).insert((prog).end(),*it); ++it; } }
 #define mem_iterator map<string,tipo_var>::iterator
 //#else
 //#define insertar(prog,text) cerr<<text<<endl

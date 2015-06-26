@@ -32,14 +32,22 @@ bool cargar(list<t_proceso> &algs, string archivo){
 		getline(f,s);
 		programa.PushBack(s);
 		for (unsigned int ii=0;ii<s.size();ii++) if(s[ii]=='\t') s[ii]=' ';
-		if (LeftCompare(s,"PROCESO ")) { 
+		if (LeftCompare(s,"#comment ")) { 
+			i.nombre="#comment";
+			i.par1 = s.substr(9);
+			p.insert(p.end(),i);
+		} else if (LeftCompare(s,"#comment-inline ")) { 
+			i.nombre="#comment-inline";
+			i.par1 = s.substr(16);
+			p.insert(p.end(),i);
+		} else if (LeftCompare(s,"PROCESO ")) { 
 			i.nombre="PROCESO";
 			main_process_name=s.substr(8);
-			p.insert(p.begin(),i);
+			p.insert(p.end(),i);
 		} else if (LeftCompare(s,"SUBPROCESO")) { 
 			i.nombre="SUBPROCESO";
 			i.par1=CutString(s,11);
-			p.insert(p.begin(),i);
+			p.insert(p.end(),i);
 			int x;
 			Funcion *f=ParsearCabeceraDeSubProceso(i.par1,false,x);
 			subprocesos[f->id]=f;
@@ -145,7 +153,7 @@ bool cargar(list<t_proceso> &algs, string archivo){
 		}
 	}
 	f.close();
-	
+	if (!p.empty()) algs.push_back(p); 
 	return true;
 }
 

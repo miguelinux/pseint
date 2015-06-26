@@ -4,14 +4,14 @@
 #include "new_memoria.h"
 using namespace std;
 
-class QBasicExporter:public ExporterBase {
+class QBasicExporter : public ExporterBase {
 	
 	bool use_asin, use_acos, use_rand, use_pi;
 	
 	string get_tipo(map<string,tipo_var>::iterator &mit, bool for_func=false, bool by_ref=false); // se usa tanto desde el otro get_tipo como desde declarar_variables
 	void declarar_variables(t_output &prog);
 	string get_tipo(string name,bool by_ref=false); // solo se usa para cabeceras de funciones
-	void translate_single(t_output &out, t_proceso &proc);
+	void translate_single_proc(t_output &out, Funcion *f, t_proceso &proc);
 	
 	void invocar(t_output &prog, string param, string tabs);
 	void esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs);
@@ -27,6 +27,7 @@ class QBasicExporter:public ExporterBase {
 	void para(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void paracada(t_output &prog, t_proceso_it r, t_proceso_it q, string tabs);
 	void dimension(t_output &prog, t_arglist &args, string tabs);
+	void comentar(t_output &prog, string text, string tabs);
 	
 public:
 	string make_string(string cont);
