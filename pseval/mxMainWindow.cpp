@@ -134,6 +134,8 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 
 bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	
+	if (for_create) test.solution=test.output="";
+	
 	the_process  = new wxProcess(this->GetEventHandler());
 	the_process->Redirect();
 	std::cerr<<"pseval runs: "<<command<<std::endl;
