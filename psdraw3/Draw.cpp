@@ -581,6 +581,8 @@ Entity *next_entity(Entity *aux) {
 	}
 }
 
+int line_width_flechas, line_width_bordes;
+
 void display_cb() {
 	mouse_cursor=Z_CURSOR_CROSSHAIR;
 	if (choose_process_state) { DrawChooseProcess(); return; }
@@ -592,8 +594,9 @@ void display_cb() {
 	Entity *aux=start->GetTopEntity();
 	Entity *my_start=aux;
 	bool found=false;
-	int line_width=2*d_zoom<1?1:int(d_zoom*2);
-	glLineWidth(line_width);
+	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
+	line_width_bordes=1*d_zoom<1?1:int(d_zoom*1);
+	glLineWidth(line_width_flechas);
 	glPushMatrix();
 	glScalef(d_zoom,d_zoom,1);
 	do {
@@ -619,20 +622,20 @@ void display_cb() {
 			RaiiColorChanger rcc;
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
-			glLineWidth(line_width+1);
+			line_width_bordes*=2;
 			aux->Draw();
-			glLineWidth(line_width);
+			line_width_bordes/=2;
 			if (aux->error.size()) SetStatus(color_error,aux->error);
 			else if (aux->IsLabelCropped()) SetStatus(color_label,aux->label);
 		} else if (debugging && debug_current==aux) {
 			RaiiColorChanger rcc;
-			glLineWidth(line_width+1);
+			line_width_bordes*=2;
 			if (!Entity::nassi_shneiderman) {
 				rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.65); rcc.Change(color_arrow[1],.4);
 				rcc.Change(color_arrow[2],.4); // rcc.Change(color_arrow[0],1);
 			}
 			aux->Draw();
-			glLineWidth(line_width);
+			line_width_bordes/=2;
 			draw_debug_arrow(debug_current,5);
 		} else {
 			aux->Draw();

@@ -34,6 +34,9 @@ public:
 	void OnMouseMiddleUp(wxMouseEvent& event);
 	void OnMouseMiddleDown(wxMouseEvent& event);
 	void OnMouseDClick(wxMouseEvent& event);
+#ifdef __WIN32__
+	void OnMouseLeave(wxMouseEvent& event);
+#endif
 	void OnIdle(wxIdleEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnKeyUp(wxKeyEvent &event);

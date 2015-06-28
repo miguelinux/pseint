@@ -53,7 +53,7 @@ void Entity::DrawNassiShne(bool force) {
 	if (mouse==this) DrawSolidRectangle(color_shape[ET_COUNT],d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION)
 		if (!nolink || mouse==this) //todo: comentar esto y ver porque se estiran tanto los hijos
-			DrawRectangle(color_border,d_fx,d_fy,d_bwl,d_bwr,d_bh);
+			DrawRectangle(color_border[ET_COUNT],d_fx,d_fy,d_bwl,d_bwr,d_bh);
 	// guardar bb para el gran retangulo blanco de fondo
 	if (d_fy>bk_y1) bk_y1=d_fy;
 	if (d_fy-d_h<bk_y0) bk_y0=d_fy-d_h;
@@ -63,7 +63,7 @@ void Entity::DrawNassiShne(bool force) {
 		DrawRectangle(color_shadow,d_dx+fx,d_dy+fy,bwl,bwr,bh);
 	if (!nolink) {
 		if (type==ET_OPCION) {
-			glColor3fv(color_border);
+			glColor3fv(color_border[ET_COUNT]);
 			glBegin(GL_LINES);
 //			if (edit_on) { glVertex2i(d_x-d_bwl+flecha_w,d_y); glVertex2i(d_x-d_bwl+flecha_w,d_y-h); }
 			int px=parent->child_dx[child_id]-bwl;
@@ -76,7 +76,7 @@ void Entity::DrawNassiShne(bool force) {
 			glEnd();
 //			glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
 		} else if (type==ET_SEGUN) {
-			glColor3fv(color_border);
+			glColor3fv(color_border[ET_COUNT]);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
@@ -95,7 +95,7 @@ void Entity::DrawNassiShne(bool force) {
 		if (type==ET_SI) {
 			DrawTextNS(color_arrow,d_x-d_bwl+10,d_y-2*h,"Si");
 			DrawTextNS(color_arrow,d_x+d_bwr-35,d_y-2*h,"No");
-			glColor3fv(color_border);
+			glColor3fv(color_border[ET_COUNT]);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;

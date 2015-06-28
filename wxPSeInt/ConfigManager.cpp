@@ -49,7 +49,7 @@ void ConfigManager::LoadDefaults() {
 	show_debug_panel = false;
 	maximized = false;
 	psdraw_nocrop = false;
-	shape_colors = false;
+	shape_colors = true;
 	colour_sintax = true;
 	show_vars = false;
 	show_opers = false;
@@ -235,6 +235,7 @@ void ConfigManager::Read() {
 	LoadProfile(profile); 
 	lang.Fix();
 	if (version<20130805) use_psterm=true;
+	if (version<20150627) shape_colors = true;
 }
 
 ConfigManager::~ConfigManager() {

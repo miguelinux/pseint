@@ -1,5 +1,6 @@
 // comunicacion con wxPseInt
 #include "Global.h"
+#include <cmath>
 
 //LangSettings lang; // no definir aca, ver comentario en el global.cpp de pseint
 
@@ -56,7 +57,7 @@ Entity *all_any=NULL;
 int win_h=400,win_w=600; // tamaño de la ventana
 
 // colores
-const float color_border[3]={0,0,0}; // borde de la forma de una entidad
+float color_border[ET_COUNT+1][3]={0}; // borde de la forma de una entidad
 const float color_comment[3]={.4,.4,.4}; // borde de la forma de una entidad
 const float color_label[3]={0,0,.8}; // texto de la etiqueta de una entidad
 const float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entidad
@@ -72,7 +73,7 @@ const float color_menu[3]={.5,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.92,.97,.97}; // fondo de los menues
 const float color_menu_sel[3]={.75,.95,.95}; // fondo de elemento de menu seleccionado
 const float color_error[3]={.7,0,0}; // mensajes de error de sintaxis
-bool draw_shadow=true; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
+bool draw_shadow=false; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
 
 vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
 map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
@@ -83,8 +84,8 @@ bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un ar
 void GlobalInit( ) {
 	for(int i=0;i<=ET_COUNT;i++) { 
 		color_shape[i][0] = 1;
-		color_shape[i][1] = 1;
-		color_shape[i][2] = .9;
+		color_shape[i][1] = .95;
+		color_shape[i][2] = .8;
 	}
 	color_shape[ET_LEER][0] = 1;
 	color_shape[ET_LEER][1] = .9;
@@ -93,8 +94,8 @@ void GlobalInit( ) {
 	color_shape[ET_ESCRIBIR][1] = 1;
 	color_shape[ET_ESCRIBIR][2] = .9;
 	color_shape[ET_ASIGNAR][0] = 1;
-	color_shape[ET_ASIGNAR][1] = .95;
-	color_shape[ET_ASIGNAR][2] = .8;
+	color_shape[ET_ASIGNAR][1] = 1;
+	color_shape[ET_ASIGNAR][2] = .85;
 	color_shape[ET_SI][0] = color_shape[ET_SEGUN][0] = color_shape[ET_OPCION][0] = .85;
 	color_shape[ET_SI][1] = color_shape[ET_SEGUN][1] = color_shape[ET_OPCION][1] = .9;
 	color_shape[ET_SI][2] = color_shape[ET_SEGUN][2] = color_shape[ET_OPCION][2] = 1;
@@ -107,5 +108,11 @@ void GlobalInit( ) {
 //	color_shape[ET_OPCION][0] = .95;
 //	color_shape[ET_OPCION][1] = .95;
 //	color_shape[ET_OPCION][2] = .95;
+	
+	for(int i=0;i<ET_COUNT;i++) { 
+		for(int j=0;j<3;j++) 
+			color_border[i][j]=pow(color_shape[i][j],7)*.75;
+	}
+	
 }
 

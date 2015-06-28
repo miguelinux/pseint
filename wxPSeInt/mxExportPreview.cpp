@@ -83,24 +83,24 @@ void mxExportPreview::UpdatePrev ( ) {
 	if (!src) { SetMessage(_Z("No hay pseudocódigo para exportar")); state=mxEP_NONE; return; }
 	
 	wxString command;
-	command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
-	command<<mxProcess::GetProfileArgs();
-	command<<" --draw \""<<temp_filename<<".psd"<<"\"";
-	
-	_LOG("mxExportPreview, command="<<command);
-	pid = wxExecute(command,wxEXEC_ASYNC,the_process);
-	if (pid<=0) { SetMessage(_Z("Error al intentar exportar")); return; }
-	SetMessage("Actualizando...");
-	state=mxEP_CHECK;
+command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
+command<<mxProcess::GetProfileArgs();
+command<<" --draw \""<<temp_filename<<".psd"<<"\"";
+
+_LOG("mxExportPreview, command="<<command);
+pid = wxExecute(command,wxEXEC_ASYNC,the_process);
+if (pid<=0) { SetMessage(_Z("Error al intentar exportar")); return; }
+SetMessage("Actualizando...");
+state=mxEP_CHECK;
 }
 
 mxExportPreview::~mxExportPreview ( ) {
-	if (wxFileName::FileExists(temp_filename+".psd")) wxRemoveFile(temp_filename+".psd");
-	if (wxFileName::FileExists(temp_filename+".exp")) wxRemoveFile(temp_filename+".exp");
+if (wxFileName::FileExists(temp_filename+".psd")) wxRemoveFile(temp_filename+".psd");
+if (wxFileName::FileExists(temp_filename+".exp")) wxRemoveFile(temp_filename+".exp");
 }
 
 void mxExportPreview::OnProcTerminate (wxProcessEvent & event) {
-	_LOG("mxExportPreview::OnProcessTerminate");
+_LOG("mxExportPreview::OnProcessTerminate");
 	if (pid<=0||!the_process||event.GetPid()!=pid) return;
 	int exit_code = event.GetExitCode(); delete the_process; the_process=NULL;
 	if (exit_code!=0) { SetMessage(_Z("Error al intentar exportar")); state=mxEP_NONE; return; }

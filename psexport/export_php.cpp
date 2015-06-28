@@ -145,15 +145,15 @@ string PhpExporter::function(string name, string args) {
 
 void PhpExporter::header(t_output &out) {
 	out.push_back("<?php");
-	init_header(out,"// ");
+	init_header(out,"\t// ");
 	if (use_stdin) out.push_back("\t$stdin = fopen('php://stdin','r');");
 	if (read_strings) {
 		if (!for_test) {
-			out.push_back("// Para leer variables de texto se utiliza una $x=rtrim(fgets($stdin) porque el string");
-			out.push_back("// que lee fgets incluye el caracter de fin de linea (entonces se usa rtrim para");
-			out.push_back("// quitarlo); y la alternativa fscanf($stdin,\"%s\",$x) solo lee una palabra (lo cual");
-			out.push_back("// no sería equivalente a la instrucción Leer del pseudocódigo).");
-			out.push_back("");
+			out.push_back("\t// Para leer variables de texto se utiliza una $x=rtrim(fgets($stdin) porque el string");
+			out.push_back("\t// que lee fgets incluye el caracter de fin de linea (entonces se usa rtrim para");
+			out.push_back("\t// quitarlo); y la alternativa fscanf($stdin,\"%s\",$x) solo lee una palabra (lo cual");
+			out.push_back("\t// no sería equivalente a la instrucción Leer del pseudocódigo).");
+			out.push_back("\t");
 		}
 	}
 }

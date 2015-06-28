@@ -13,7 +13,7 @@ version_required=20131115
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=../bin/help/cambios.html
+current_source=export_php.cpp
 path_char=/
 [source]
 path=psexport.cpp
@@ -65,7 +65,7 @@ cursor=242:38
 open=true
 [source]
 path=export_php.cpp
-cursor=162:18
+cursor=155:20
 open=true
 [source]
 path=export_common.cpp

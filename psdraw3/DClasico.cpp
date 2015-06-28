@@ -90,6 +90,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 
 
 void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
+	glLineWidth(line_width_bordes);
 	glColor3fv(color);
 	glBegin(GL_LINE_LOOP);
 	if (type==ET_PARA) {
@@ -136,6 +137,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		}
 	}
 	glEnd();
+	glLineWidth(line_width_flechas);
 }
 
 inline void DrawTrue(int x, int y) {
@@ -299,7 +301,7 @@ void Entity::DrawClasico(bool force) {
 				}
 			}
 		}
-		if (type!=ET_OPCION) {
+		if (type!=ET_OPCION && type!=ET_COMENTARIO) {
 			// punta de flecha que viene del anterior
 			if (!(type==ET_PROCESO&&!variante)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
 			// linea de flecha que va al siguiente
@@ -316,15 +318,24 @@ void Entity::DrawClasico(bool force) {
 		glEnable(GL_LINE_STIPPLE);
 #endif
 		// borde de la forma
-		DrawShapeBorder(mouse==this?color_selection:color_comment,d_fx,d_fy,d_w,d_h);
+		DrawShapeBorder(/*mouse==this?color_selection:*/color_comment,d_fx,d_fy,d_w,d_h);
 #ifndef _FOR_EXPORT
 		glDisable(GL_LINE_STIPPLE);
 #endif
 	} else {
 		// relleno de la forma
-		DrawShapeSolid(color_shape[Entity::shape_colors?type:ET_COUNT],d_fx,d_fy,d_w,d_h);
+		int icolor=Entity::shape_colors?type:ET_COUNT;
+		float aux_color[3] = {
+			color_shape[icolor][0],
+			color_shape[icolor][1],
+			color_shape[icolor][2]
+		};
+		DrawShapeSolid(color_shape[icolor],d_fx,d_fy,d_w,d_h);
+		aux_color[0]=pow(aux_color[0],5)*.75;
+		aux_color[1]=pow(aux_color[1],5)*.75;
+		aux_color[2]=pow(aux_color[2],5)*.75;
 		// borde de la forma
-		DrawShapeBorder(mouse==this?color_selection:color_border,d_fx,d_fy,d_w,d_h);
+		DrawShapeBorder(/*mouse==this?color_selection:*/(color_border[icolor]),d_fx,d_fy,d_w,d_h);
 	}
 	if (type==ET_OPCION) { // + para agregar opciones
 		if (edit_on && mouse!=this) {
@@ -359,7 +370,7 @@ void Entity::DrawClasico(bool force) {
 				child[i]->Draw(true);
 			}
 		} else if (type==ET_PARA) {
-			glColor3fv(color_border);
+			glColor3fv(color_border[ET_PARA]);
 			glBegin(GL_LINES);
 			DrawLineaHorizontalW(d_fx-w/2,d_fy-d_h/2,w); // separadores de las cuatro partes del circulo
 			if (!variante) {
