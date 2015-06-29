@@ -279,7 +279,7 @@ void Entity::DrawClasico(bool force) {
 			// linea de flecha que va al siguiente
 			if (parent||prev||next) {
 				Entity *next_nc = GetNextNoComment();
-				bool fuera_de_proceso = IsOutOfProcess(next_nc)&&!parent;
+				bool fuera_de_proceso = IsOutOfProcess(next_nc);
 				if (!fuera_de_proceso) {
 					DrawLineaVerticalH(d_x,d_y,-d_bh); // continuación del flujo
 				}

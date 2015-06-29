@@ -16,6 +16,7 @@
 #include "../wxPSeInt/mac-stuff.h"
 #include "GLtoWX.h"
 #include "Version.h"
+#include "mxConfig.h"
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -85,33 +86,13 @@ bool mxApplication::OnInit() {
 	}
 	edit_on=false;
 //	draw_shadow=false;
-	
-	// elegir un proceso/subproceso
-	if (procesos.size()>1) {
-		wxArrayString procs;
-		for(unsigned int i=0;i<procesos.size();i++) 
-			procs.Add((procesos[i]->lpre+procesos[i]->label).c_str());
-		wxString r=wxGetSingleChoice("Elija el proceso/subproceso a exportar","Exportar diagrama de flujo",procs);
-		int i=procs.Index(r);
-		if (i!=wxNOT_FOUND)
-			SetProc(procesos[i]);
-	} else SetProc(procesos[0]);
+	if ((new mxConfig())->ShowModal()==wxID_CANCEL) return 0; // opciones del usuairo
 	
 	// calcular tamaño total
-	zoom=d_zoom=1;
 	int h=0,wl=0,wr=0, margin=10;
 	start->Calculate(wl,wr,h); 
 	int x0=start->x-wl,y0=start->y,x1=start->x+wr,y1=start->y-h;
-	cerr<<x0<<","<<y0<<","<<y0<<","<<y1<<endl;
 	start->Calculate();
-	
-	if (force) {
-		zoom=d_zoom=1;
-	} else {
-		long ret=wxGetNumberFromUser(wxString("Ingrese la escala para la imagen (100% = ")<<(x1-x0)+2*margin<<"x"<<(y0-y1)+2*margin<<"px)","Zoom (%)","Generar imagen",100,1,1000);
-		if (ret<=0) return false;
-		zoom=d_zoom=float(ret)/100;
-	}
 	
 	// hacer que las entidades tomen sus tamaños ideales
 	Entity *e=Entity::all_any;
@@ -124,7 +105,7 @@ bool mxApplication::OnInit() {
 //	int margin=10;
 	int bw=(x1-x0)*zoom+2*margin;
 	int bh=(y0-y1)*zoom+2*margin;
-	cerr<<bw<<","<<bh<<endl;
+//	cerr<<bw<<","<<bh<<endl;
 	wxBitmap bmp(bw,bh);
 	dc=new wxMemoryDC(bmp);
 	dc->SetBackground(wxColour(255,255,255));

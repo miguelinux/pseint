@@ -637,6 +637,6 @@ bool Entity::IsOutOfProcess(Entity *next_no_commnet) {
 }
 
 bool Entity::IsOutOfProcess() {
-	return IsOutOfProcess(GetNextNoComment())||parent;
+	return IsOutOfProcess(GetNextNoComment());
 }
 
