@@ -64,7 +64,7 @@ const float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entida
 float color_arrow[3]={.8,0,0}; // flechas que guian el flujo y unen entidades
 const float color_selection[3]={0,.4,0}; // texto o borde de forma seleccionada
 float color_shape[ET_COUNT+1][3]; // fondo de la forma
-const float color_shadow[3]={.7,.7,.7}; // sombras de las formas
+//const float color_shadow[3]={.7,.7,.7}; // sombras de las formas
 const float color_back[3]={.97,1,.97}; // fondo de la pantalla
 //const float color_back_alt[3]={.95,.95,.95}; // fondo de pantalla alternativo para usar con los bloques de colores
 const float color_back_alt[3]={1,1,1}; // fondo de pantalla alternativo para usar con los bloques de colores
@@ -73,7 +73,7 @@ const float color_menu[3]={.5,.2,.2}; // texto de los menues
 const float color_menu_back[3]={.92,.97,.97}; // fondo de los menues
 const float color_menu_sel[3]={.75,.95,.95}; // fondo de elemento de menu seleccionado
 const float color_error[3]={.7,0,0}; // mensajes de error de sintaxis
-bool draw_shadow=false; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
+//bool draw_shadow=false; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
 
 vector<Entity*> procesos; // para almacenar el proceso principal y los subprocesos
 map<string,LineInfo> code2draw; // para asociar las lineas de código al diagrama de flujo
@@ -105,6 +105,9 @@ void GlobalInit( ) {
 	color_shape[ET_REPETIR][0] = .8;
 	color_shape[ET_REPETIR][1] = .7;
 	color_shape[ET_REPETIR][2] = 1;
+	color_shape[ET_COMENTARIO][0] = 1;
+	color_shape[ET_COMENTARIO][1] = 1;
+	color_shape[ET_COMENTARIO][2] = 1;
 //	color_shape[ET_OPCION][0] = .95;
 //	color_shape[ET_OPCION][1] = .95;
 //	color_shape[ET_OPCION][2] = .95;

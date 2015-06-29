@@ -618,7 +618,7 @@ void display_cb() {
 				}
 			}
 		}
-		if (!Entity::nassi_shneiderman && edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+		if (/*!Entity::nassi_shneiderman &&*/ edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
 			RaiiColorChanger rcc;
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);

@@ -314,7 +314,6 @@ void mxMainWindow::CreateMenus() {
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
-	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SHNEIDERMAN]);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
@@ -1535,11 +1534,9 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	if (!mi_nassi_shne->IsChecked()) {
 		mi_nassi_shne->Check(false);
 		config->lang[LS_USE_NASSI_SHNEIDERMAN]=false;
-		mi_shape_colors->Enable(true);
 	} else {
 		mi_nassi_shne->Check(true);
 		config->lang[LS_USE_NASSI_SHNEIDERMAN]=true;
-		mi_shape_colors->Enable(false);
 	}
 }
 
@@ -1553,7 +1550,6 @@ void mxMainWindow::ProfileChanged ( ) {
 	}
 	debug_panel->ProfileChanged();
 	mi_nassi_shne->Check(config->lang[LS_USE_NASSI_SHNEIDERMAN]);
-	mi_shape_colors->Enable(!config->lang[LS_USE_NASSI_SHNEIDERMAN]);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	button_subproc->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
 	commands->Layout();

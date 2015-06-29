@@ -427,25 +427,27 @@ void Entity::MoveX(int dx) { // mueve al item y todos sus hijos en x
 }
 
 void Entity:: ResizeW(int aw, bool up) {
-	int old=bwl+bwr;
-	bwl+=(aw-old)/2;
-	bwr+=(aw-old)/2;
-	int nc=n_child; if (type==ET_PARA) nc=1;
-	for (int i=0;i<nc;i++)
-		if (child[i]) 
-			child[i]->ResizeW(child[i]->bwl+child[i]->bwr+(aw-old)/nc,false);
-	if (type==ET_SI) {
-		int dx=(aw-old)/4;
-		if (child[0]) child[0]->MoveX(dx);
-		if (child[1]) child[1]->MoveX(-dx);
-		child_dx[0]+=dx; child_dx[1]-=dx;
-	} else if (type==ET_SEGUN) {
-		int dx=(aw-old)/2;
-		int dx0=dx-dx/nc;
-		for(int i=0;i<n_child;i++) { 
-			int dd=-dx0+2*dx*(i)/nc;
-			child[i]->MoveX(dd);
-			child_dx[i]+=dd;
+	if (!nolink || this==nolink) {
+		int old=bwl+bwr;
+		bwl+=(aw-old)/2;
+		bwr+=(aw-old)/2;
+		int nc=n_child; if (type==ET_PARA) nc=1;
+		for (int i=0;i<nc;i++)
+			if (child[i]) 
+				child[i]->ResizeW(child[i]->bwl+child[i]->bwr+(aw-old)/nc,false);
+		if (type==ET_SI) {
+			int dx=(aw-old)/4;
+			if (child[0]) child[0]->MoveX(dx);
+			if (child[1]) child[1]->MoveX(-dx);
+			child_dx[0]+=dx; child_dx[1]-=dx;
+		} else if (type==ET_SEGUN) {
+			int dx=(aw-old)/2;
+			int dx0=dx-dx/nc;
+			for(int i=0;i<n_child;i++) { 
+				int dd=-dx0+2*dx*(i)/nc;
+				child[i]->MoveX(dd);
+				child_dx[i]+=dd;
+			}
 		}
 	}
 	if (up && prev) prev->ResizeW(aw,true);

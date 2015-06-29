@@ -86,7 +86,7 @@ extern const float color_label_fix[3]; // texto de la parte (pre)fija de la etiq
 extern float color_arrow[3]; // flechas que guian el flujo y unen entidades
 extern const float color_selection[3]; // texto o borde de forma seleccionada
 extern float color_shape[ET_COUNT+1][3]; // fondo de la forma
-extern const float color_shadow[3]; // sombras de las formas
+//extern const float color_shadow[3]; // sombras de las formas
 extern const float color_back[3]; // fondo de la pantalla
 extern const float color_back_alt[3]; // fondo de pantalla alternativo para usar con los bloques de colores
 extern const float color_ghost[3]; // borde fantasma cuando se arrastra una forma
@@ -94,7 +94,7 @@ extern const float color_menu[3]; // texto de los menues
 extern const float color_menu_back[3]; // fondo de los menues
 extern const float color_menu_sel[3]; // fondo de elemento de menu seleccionado
 extern const float color_error[3]; // mensajes de error de sintaxis
-extern bool draw_shadow; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
+//extern bool draw_shadow; // si debe o no dibujar sombra (para la pantalla si, para exportar no)
 
 // para interpolar en las animaciones, good converge pixel perfect, la otra puede que no
 #ifdef _FOR_EXPORT
