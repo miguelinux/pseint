@@ -29,7 +29,7 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 	return first.CmpNoCase(second);
 }
 
-mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize),old_config(LS_INIT) {
+mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),old_config(LS_INIT) {
 	
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
@@ -63,7 +63,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 		descripciones.Add(l.descripcion.c_str());
 	}
 	
-	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(250,250),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
+	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(200,200),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
 	list->InsertColumn(0,_Z("Perfil"));
 	wxImageList *iml = new wxImageList(24,24,true);
 	wxBitmap noimage(DIR_PLUS_FILE(DIR_PLUS_FILE(config->profiles_dir,"icons"),"null.png"),wxBITMAP_TYPE_PNG);
@@ -90,8 +90,8 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	
-	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas de su pseudocódigo:  ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
-	sizer->Add(list,wxSizerFlags().Expand().Proportion(2).FixedMinSize());
+	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas del lenguaje: ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
+	sizer->Add(list,wxSizerFlags().Expand().Proportion(3).FixedMinSize());
 	sizer->Add(new wxStaticText(this,wxID_ANY,_Z("")),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Descripción del perfil seleccionado:")),wxSizerFlags().Expand().Proportion(0));
 	sizer->Add(text,wxSizerFlags().Expand().Proportion(1).FixedMinSize());

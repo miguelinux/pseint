@@ -32,7 +32,7 @@ path=Comm.cpp
 cursor=44:0
 [source]
 path=DClasico.cpp
-cursor=289:6
+cursor=202:0
 marker=92
 marker=283
 marker=326
@@ -49,7 +49,7 @@ marker=417
 marker=420
 [source]
 path=Entity.cpp
-cursor=639:50
+cursor=642:0
 marker=138
 marker=210
 marker=392

@@ -83,11 +83,14 @@ Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en 
 bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
 
 void GlobalInit( ) {
-	for(int i=0;i<=ET_COUNT;i++) { 
+	for(int i=0;i<ET_COUNT;i++) { 
 		color_shape[i][0] = 1;
 		color_shape[i][1] = .95;
 		color_shape[i][2] = .8;
 	}
+	color_shape[ET_COUNT][0] = .95;
+	color_shape[ET_COUNT][1] = .95;
+	color_shape[ET_COUNT][2] = .95;
 	color_shape[ET_LEER][0] = 1;
 	color_shape[ET_LEER][1] = .9;
 	color_shape[ET_LEER][2] = .95;

@@ -1836,6 +1836,7 @@ void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 	}
 	pi.Resizable(); 
 	aui_manager.Update(); 
+	pi.MinSize(_min_size,final_h/2);
 }
 
 void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
