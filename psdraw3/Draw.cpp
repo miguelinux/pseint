@@ -623,7 +623,7 @@ void display_cb() {
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
 			line_width_bordes*=2;
-			aux->Draw();
+			aux->Draw(aux->type==ET_OPCION);
 			line_width_bordes/=2;
 			if (aux->error.size()) SetStatus(color_error,aux->error);
 			else if (aux->IsLabelCropped()) SetStatus(color_label,aux->label);

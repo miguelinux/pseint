@@ -324,6 +324,13 @@ void mouse_cb(int button, int state, int x, int y) {
 		m_x0=x; m_y0=y; panning=true;
 	} else {
 		if (button==ZMB_LEFT) {
+			if (mouse) {
+				if (trash && mouse->type==ET_OPCION) {
+					Entity *p=mouse->parent;
+					mouse->UnLink(); 
+					p->Calculate();
+				} 
+			}
 			if (mouse) mouse->UnSetMouse();
 //			// doble click (por alguna extraña razon en mi wx un doble click genera un evento de down y dos de up)
 //			Entity *aux=start;
@@ -343,14 +350,6 @@ void mouse_cb(int button, int state, int x, int y) {
 			return;
 		}
 		panning=false;
-		if (mouse) {
-			if (trash && mouse->type==ET_OPCION) {
-				Entity *p=mouse->parent;
-				mouse->UnLink(); 
-				p->Calculate();
-			} 
-			mouse->UnSetMouse();
-		}
 		Entity::CalculateAll();
 	}
 }

@@ -481,7 +481,7 @@ void Entity::CopyPos(Entity *o) {
 bool Entity::CheckMouse(int x, int y, bool click) {
 	if (!edit_on) return false;
 	if (click && type==ET_OPCION) {
-		if (x>=d_fx-d_w/2 && x<=d_fx-d_w/2+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
+		if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
 			parent->InsertChild(child_id,new Entity(ET_OPCION,""));
 			parent->child[child_id-1]->SetEdit();
 			parent->child[child_id-1]->CopyPos(this);
