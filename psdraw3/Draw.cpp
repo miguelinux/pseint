@@ -41,33 +41,32 @@ static void DrawTrash() {
 	glLineWidth(menu_line_width);
 	glColor3fv(color_menu_back);
 	glBegin(GL_QUADS);
-	// trash
-	glVertex2i(0,trash_size);
-	glVertex2i(trash_size,trash_size);
-	glVertex2i(trash_size,0);
-	glVertex2i(0,0);
+		// trash
+		glVertex2i(0,trash_size);
+		glVertex2i(trash_size,trash_size);
+		glVertex2i(trash_size,0);
+		glVertex2i(0,0);
 	glEnd();
 	glColor3fv(color_menu);
 	glBegin(GL_LINES);
-	glVertex2i(0,trash_size); glVertex2i(trash_size,trash_size);
-	glVertex2i(trash_size,0); glVertex2i(trash_size,trash_size);
-	
+		glVertex2i(0,trash_size); glVertex2i(trash_size,trash_size);
+		glVertex2i(trash_size,0); glVertex2i(trash_size,trash_size);
 	glEnd();
 	glEnable(GL_TEXTURE_2D);
 	texture_trash.Select();
 	glColor3f(1,1,1);
 	glBegin(GL_QUADS);
-	if (trash) {
-		glTexCoord2f(0*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(0,trash_size);
-		glTexCoord2f(1*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(trash_size,trash_size);
-		glTexCoord2f(1*texture_trash.max_s,0*texture_trash.max_t); glVertex2i(trash_size,0);
-		glTexCoord2f(0*texture_trash.max_s,0*texture_trash.max_t); glVertex2i(0,0);
-	} else {
-		glTexCoord2f(0*texture_trash.max_s,1*texture_trash.max_t); glVertex2i(0,trash_size);
-		glTexCoord2f(.32*texture_trash.max_s,1*texture_trash.max_t); glVertex2i(trash_size,trash_size);
-		glTexCoord2f(.32*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(trash_size,0);
-		glTexCoord2f(0*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(0,0);
-	}
+		if (trash) {
+			glTexCoord2f(0*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(0,trash_size);
+			glTexCoord2f(1*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(trash_size,trash_size);
+			glTexCoord2f(1*texture_trash.max_s,0*texture_trash.max_t); glVertex2i(trash_size,0);
+			glTexCoord2f(0*texture_trash.max_s,0*texture_trash.max_t); glVertex2i(0,0);
+		} else {
+			glTexCoord2f(0*texture_trash.max_s,1*texture_trash.max_t); glVertex2i(0,trash_size);
+			glTexCoord2f(.32*texture_trash.max_s,1*texture_trash.max_t); glVertex2i(trash_size,trash_size);
+			glTexCoord2f(.32*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(trash_size,0);
+			glTexCoord2f(0*texture_trash.max_s,.77*texture_trash.max_t); glVertex2i(0,0);
+		}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -75,18 +74,18 @@ static void DrawTrash() {
 static void DrawMenuAndShapeBar() {
 	glLineWidth(menu_line_width);
 	glColor3fv(color_menu_back);
-	glBegin(GL_QUADS);
 	// shapebar
-	glVertex2i(win_w-shapebar_size,0);
-	glVertex2i(win_w-shapebar_size,win_h);
-	glVertex2i(win_w,win_h);
-	glVertex2i(win_w,0);
+	glBegin(GL_QUADS);
+		glVertex2i(win_w-shapebar_size,0);
+		glVertex2i(win_w-shapebar_size,win_h);
+		glVertex2i(win_w,win_h);
+		glVertex2i(win_w,0);
 	glEnd();
 	// shapebar
 	glColor3fv(color_menu);
 	glBegin(GL_LINES);
-	glVertex2i(win_w-shapebar_size,0);
-	glVertex2i(win_w-shapebar_size,win_h);
+		glVertex2i(win_w-shapebar_size,0);
+		glVertex2i(win_w-shapebar_size,win_h);
 	glEnd();
 	if (shapebar) {
 		
@@ -95,10 +94,10 @@ static void DrawMenuAndShapeBar() {
 		if(shapebar_sel>0) {
 			glColor3fv(color_menu_sel);
 			glBegin(GL_QUADS);
-			glVertex2f(win_w,              win_h-sh*(shapebar_sel-1)); 
-			glVertex2f(win_w-shapebar_size,win_h-sh*(shapebar_sel-1)); 
-			glVertex2f(win_w-shapebar_size,win_h-sh*(shapebar_sel-0)); 
-			glVertex2f(win_w,              win_h-sh*(shapebar_sel-0)); 
+				glVertex2f(win_w,              win_h-sh*(shapebar_sel-1)); 
+				glVertex2f(win_w-shapebar_size,win_h-sh*(shapebar_sel-1)); 
+				glVertex2f(win_w-shapebar_size,win_h-sh*(shapebar_sel-0)); 
+				glVertex2f(win_w,              win_h-sh*(shapebar_sel-0)); 
 			glEnd();
 		}
 		
@@ -107,43 +106,43 @@ static void DrawMenuAndShapeBar() {
 		texture_shapes.Select();
 		glColor3f(1,1,1);
 		glBegin(GL_QUADS);
-		float dy=sh, th0=0, th1=1.0/float(cant_shapes_in_bar), dth=1.0/float(cant_shapes_in_bar);
-		float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=float(win_h)/float(cant_shapes_in_bar); 
-		float ratio=float(shapebar_size)/float(win_h)/float(cant_shapes_in_bar);
-		if (ratio>texture_shapes.r) {
-			float dx=(x1-x0)*(1-texture_shapes.r/ratio)/2;
-			x0+=dx; x1-=dx;
-		} else {
-			float dy=(y1-y0)*(1-ratio/texture_shapes.r)/2;
-			y0+=dy; y1-=dy;
-		}
-		for(int i=0;i<cant_shapes_in_bar;i++) {
-			glTexCoord2f(0*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x0,y0);
-			glTexCoord2f(1*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x1,y0);
-			glTexCoord2f(1*texture_shapes.max_s,th1*texture_shapes.max_t); glVertex2f(x1,y1);
-			glTexCoord2f(0*texture_shapes.max_s,th1*texture_shapes.max_t); glVertex2f(x0,y1);
-			y0+=dy; y1+=dy; th0+=dth; th1+=dth;
-		}
+			float dy=sh, th0=0, th1=1.0/float(cant_shapes_in_bar), dth=1.0/float(cant_shapes_in_bar);
+			float x0=win_w-shapebar_size, x1=win_w, y0=0, y1=float(win_h)/float(cant_shapes_in_bar); 
+			float ratio=float(shapebar_size)/float(win_h)/float(cant_shapes_in_bar);
+			if (ratio>texture_shapes.r) {
+				float dx=(x1-x0)*(1-texture_shapes.r/ratio)/2;
+				x0+=dx; x1-=dx;
+			} else {
+				float dy=(y1-y0)*(1-ratio/texture_shapes.r)/2;
+				y0+=dy; y1-=dy;
+			}
+			for(int i=0;i<cant_shapes_in_bar;i++) {
+				glTexCoord2f(0*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x0,y0);
+				glTexCoord2f(1*texture_shapes.max_s,th0*texture_shapes.max_t); glVertex2f(x1,y0);
+				glTexCoord2f(1*texture_shapes.max_s,th1*texture_shapes.max_t); glVertex2f(x1,y1);
+				glTexCoord2f(0*texture_shapes.max_s,th1*texture_shapes.max_t); glVertex2f(x0,y1);
+				y0+=dy; y1+=dy; th0+=dth; th1+=dth;
+			}
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 		// lineas que separan las entidades
 		glBegin(GL_LINES);
-		glColor3fv(color_menu);
-		y0=win_h-dy;
-		for(int i=0;i<cant_shapes_in_bar-1;i++,y0-=dy) {
-			glVertex2f(win_w-shapebar_size,y0);
-			glVertex2f(win_w,y0);
-		}
+			glColor3fv(color_menu);
+			y0=win_h-dy;
+			for(int i=0;i<cant_shapes_in_bar-1;i++,y0-=dy) {
+				glVertex2f(win_w-shapebar_size,y0);
+				glVertex2f(win_w,y0);
+			}
 		glEnd();
 	} else { 
 		glEnable(GL_TEXTURE_2D);
 		texture_commands.Select();
 		glColor3f(1,1,1);
 		glBegin(GL_QUADS);
-		glTexCoord2f(0*texture_commands.max_s,0*texture_commands.max_t); glVertex2i(win_w-shapebar_size,(win_h-texture_commands.h)/2);
-		glTexCoord2f(1*texture_commands.max_s,0*texture_commands.max_t); glVertex2i(win_w-shapebar_size+texture_commands.w,(win_h-texture_commands.h)/2);
-		glTexCoord2f(1*texture_commands.max_s,1*texture_commands.max_t); glVertex2i(win_w-shapebar_size+texture_commands.w,(win_h+texture_commands.h)/2);
-		glTexCoord2f(0*texture_commands.max_s,1*texture_commands.max_t); glVertex2i(win_w-shapebar_size,(win_h+texture_commands.h)/2);
+			glTexCoord2f(0*texture_commands.max_s,0*texture_commands.max_t); glVertex2i(win_w-shapebar_size,(win_h-texture_commands.h)/2);
+			glTexCoord2f(1*texture_commands.max_s,0*texture_commands.max_t); glVertex2i(win_w-shapebar_size+texture_commands.w,(win_h-texture_commands.h)/2);
+			glTexCoord2f(1*texture_commands.max_s,1*texture_commands.max_t); glVertex2i(win_w-shapebar_size+texture_commands.w,(win_h+texture_commands.h)/2);
+			glTexCoord2f(0*texture_commands.max_s,1*texture_commands.max_t); glVertex2i(win_w-shapebar_size,(win_h+texture_commands.h)/2);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -155,7 +154,7 @@ static void DrawMenuAndShapeBar() {
 		case MO_TOGGLE_COLORS: SetStatus(color_selection,"Alternar entre modo ventana y pantalla completa."); break;
 		case MO_CROP_LABELS: SetStatus(color_selection,"Acortar textos muy largos en etiquetas."); break;
 		case MO_TOGGLE_COMMENTS: SetStatus(color_selection,"Mostrar/Ocultar comentarios."); break;
-		case MO_CHANGE_STYLE: SetStatus(color_selection,"Cambiar el tipo de diagrama (clásico, i/o alternativo, N-S)."); break;
+		case MO_CHANGE_STYLE: SetStatus(color_selection,"Cambiar el tipo de diagrama (clásico, o Nassi-Shneiderman)."); break;
 		case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
 		case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
 		case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
@@ -209,18 +208,19 @@ static void DrawChooseProcess() {
 	DrawTextRaster(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para visualizar:");
 	
 	int base=win_h-choose_process_d_base, delta=choose_process_d_delta;
-	glColor3fv(color_menu); glBegin(GL_LINES); 
-	glVertex2i(0,base); glVertex2i(win_w,base);
+	glColor3fv(color_menu); 
+	glBegin(GL_LINES); 
+		glVertex2i(0,base); glVertex2i(win_w,base);
 	glEnd();
 	for(int i=0;i<=int(procesos.size()-(edit_on?0:1));i++) {
 		
 		if (choose_process_sel==i) {
 			glColor3fv(color_shape[ET_PROCESO]);
 			glBegin(GL_QUADS);
-			glVertex2i(0,base);
-			glVertex2i(win_w,base);
-			glVertex2i(win_w,base-delta);
-			glVertex2i(0,base-delta);
+				glVertex2i(0,base);
+				glVertex2i(win_w,base);
+				glVertex2i(win_w,base-delta);
+				glVertex2i(0,base-delta);
 			glEnd();
 		}
 		base-=delta;
@@ -243,24 +243,25 @@ static void DrawChooseProcess() {
 			glScaled(.08,.12,.1);
 			
 			begin_texto();
-			string &sp=procesos[i]->lpre;
-			p=0; l=sp.size();
-			while (p<l)
-				dibujar_caracter(sp[p++]);
-			
-			p=0; l=s.size();
-			while (p<l) {
-				if (p==int(f)) glLineWidth(2);
-				if (p==t) glLineWidth(1);
-				dibujar_caracter(s[p++],true);
-			}
+				string &sp=procesos[i]->lpre;
+				p=0; l=sp.size();
+				while (p<l)
+					dibujar_caracter(sp[p++]);
+				
+				p=0; l=s.size();
+				while (p<l) {
+					if (p==int(f)) glLineWidth(2);
+					if (p==t) glLineWidth(1);
+					dibujar_caracter(s[p++],true);
+				}
 			end_texto();
 			glPopMatrix();		
 		}
 		
 		glLineWidth(1);
-		glColor3fv(color_menu); glBegin(GL_LINES); 
-		glVertex2i(0,base); glVertex2i(win_w,base);
+		glColor3fv(color_menu); 
+		glBegin(GL_LINES); 
+			glVertex2i(0,base); glVertex2i(win_w,base);
 		glEnd();
 	}
 	glEnd();
@@ -275,29 +276,29 @@ void draw_error_mark(Entity *e, float delta) {
 	float y=e->d_fy-e->h/2+2*delta;
 	glColor3f(1,.85,.85);
 	glBegin(GL_QUADS);
-	glVertex2f(x+delta,y);
-	glVertex2f(x,y-2*delta);
-	glVertex2f(x-2*delta,y-2*delta);
-	glVertex2f(x,y+2*delta);
-	glVertex2f(x-2*delta,y-2*delta);
-	glVertex2f(x-3*delta,y);
-	glVertex2f(x-2*delta,y+2*delta);
-	glVertex2f(x,y+2*delta);
+		glVertex2f(x+delta,y);
+		glVertex2f(x,y-2*delta);
+		glVertex2f(x-2*delta,y-2*delta);
+		glVertex2f(x,y+2*delta);
+		glVertex2f(x-2*delta,y-2*delta);
+		glVertex2f(x-3*delta,y);
+		glVertex2f(x-2*delta,y+2*delta);
+		glVertex2f(x,y+2*delta);
 	glEnd();
 	glColor3fv(color_error);
 	glBegin(GL_LINE_LOOP);
-	glVertex2f(x+delta,y);
-	glVertex2f(x,y-2*delta);
-	glVertex2f(x-2*delta,y-2*delta);
-	glVertex2f(x-3*delta,y);
-	glVertex2f(x-2*delta,y+2*delta);
-	glVertex2f(x,y+2*delta);
+		glVertex2f(x+delta,y);
+		glVertex2f(x,y-2*delta);
+		glVertex2f(x-2*delta,y-2*delta);
+		glVertex2f(x-3*delta,y);
+		glVertex2f(x-2*delta,y+2*delta);
+		glVertex2f(x,y+2*delta);
 	glEnd();
 	glBegin(GL_LINES);
-	glVertex2f(x,y-delta);
-	glVertex2f(x-2*delta,y+delta);
-	glVertex2f(x,y+delta);
-	glVertex2f(x-2*delta,y-delta);
+		glVertex2f(x,y-delta);
+		glVertex2f(x-2*delta,y+delta);
+		glVertex2f(x,y+delta);
+		glVertex2f(x-2*delta,y-delta);
 	glEnd();
 }
 
@@ -306,10 +307,10 @@ void draw_error_mark_simple(Entity *e, float delta) {
 	float y=e->d_fy-e->h/2+2*delta;
 	glColor3fv(color_error);
 	glBegin(GL_LINES);
-	glVertex2f(x,y-delta);
-	glVertex2f(x-2*delta,y+delta);
-	glVertex2f(x,y+delta);
-	glVertex2f(x-2*delta,y-delta);
+		glVertex2f(x,y-delta);
+		glVertex2f(x-2*delta,y+delta);
+		glVertex2f(x,y+delta);
+		glVertex2f(x-2*delta,y-delta);
 	glEnd();
 }
 
@@ -319,25 +320,25 @@ void draw_debug_arrow(Entity *e, float delta) {
 	float y=e->d_fy-e->h/2;
 	glColor3f(0,1,0);
 	glBegin(GL_TRIANGLES);
-	glVertex2f(x,y-2*delta);
-	glVertex2f(x,y+2*delta);
-	glVertex2f(x+delta,y);
+		glVertex2f(x,y-2*delta);
+		glVertex2f(x,y+2*delta);
+		glVertex2f(x+delta,y);
 	glEnd();
 	glBegin(GL_QUADS);
-	glVertex2f(x-delta,y-delta);
-	glVertex2f(x,y-delta);
-	glVertex2f(x,y+delta);
-	glVertex2f(x-delta,y+delta);
+		glVertex2f(x-delta,y-delta);
+		glVertex2f(x,y-delta);
+		glVertex2f(x,y+delta);
+		glVertex2f(x-delta,y+delta);
 	glEnd();
 	glColor3f(0,.5,0);
 	glBegin(GL_LINE_LOOP);
-	glVertex2f(x-delta,y-delta);
-	glVertex2f(x,y-delta);
-	glVertex2f(x,y-2*delta);
-	glVertex2f(x+delta,y);
-	glVertex2f(x,y+2*delta);
-	glVertex2f(x,y+delta);
-	glVertex2f(x-delta,y+delta);
+		glVertex2f(x-delta,y-delta);
+		glVertex2f(x,y-delta);
+		glVertex2f(x,y-2*delta);
+		glVertex2f(x+delta,y);
+		glVertex2f(x,y+2*delta);
+		glVertex2f(x,y+delta);
+		glVertex2f(x-delta,y+delta);
 	glEnd();
 }
 
@@ -370,8 +371,6 @@ Entity *next_entity(Entity *aux) {
 		}
 	}
 }
-
-int line_width_flechas, line_width_bordes;
 
 void display_cb() {
 	mouse_cursor=Z_CURSOR_CROSSHAIR;
@@ -446,10 +445,10 @@ void display_cb() {
 	if (selecting_zoom) {
 		glColor3fv(color_menu);
 		glBegin(GL_LINE_LOOP);
-		glVertex2i(m_x0,m_y0);
-		glVertex2i(m_x0,cur_y);
-		glVertex2i(cur_x,cur_y);
-		glVertex2i(cur_x,m_y0);
+			glVertex2i(m_x0,m_y0);
+			glVertex2i(m_x0,cur_y);
+			glVertex2i(cur_x,cur_y);
+			glVertex2i(cur_x,m_y0);
 		glEnd();
 	}
 	glPopMatrix();
@@ -493,10 +492,10 @@ void display_cb() {
 		int w=status_text.size()*9,bh=10,bw=10,h=15;
 		bw-=3; w+=6; h+=6; bh-=6;
 		glBegin(GL_QUADS);
-		glVertex2i(bw,bh);
-		glVertex2i(bw,bh+h);
-		glVertex2i(bw+w,bh+h);
-		glVertex2i(bw+w,bh);
+			glVertex2i(bw,bh);
+			glVertex2i(bw,bh+h);
+			glVertex2i(bw+w,bh+h);
+			glVertex2i(bw+w,bh);
 		glEnd();
 		DrawTextRaster(status_color,10,10,status_text.c_str());
 	}

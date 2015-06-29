@@ -48,8 +48,8 @@ void begin_texto( ) {
 #ifdef _USE_FONT
 	if (!use_textures_font) return;
 	x_texto = 0;
-	glEnable(GL_TEXTURE_2D);
 	texture_font.Select();
+	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 #endif
 }

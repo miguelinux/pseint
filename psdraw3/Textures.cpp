@@ -177,7 +177,6 @@ void Texture::Select ( ) {
 
 Texture texture_shapes;
 Texture texture_commands;
-Texture texture_menu;
 Texture texture_trash;
 #ifdef _USE_FONT
 Texture texture_font;
@@ -190,7 +189,6 @@ bool LoadTextures() {
 	if (!texture_shapes.Load(shapes)) return use_textures=false;
 	texture_shapes.r/=8;
 	if (!texture_commands.Load("imgs/flow/commands.png")) return use_textures=false;
-	if (!texture_menu.Load("imgs/flow/menu.png")) return use_textures=false;
 	if (!texture_trash.Load("imgs/flow/trash.png")) return use_textures=false;
 #ifdef _USE_FONT
 	if (use_textures_font && !texture_font.Load("imgs/flow/font.png")) use_textures_font=false;

@@ -14,7 +14,6 @@ struct Texture {
 };
 extern Texture texture_shapes;
 extern Texture texture_commands;
-extern Texture texture_menu;
 extern Texture texture_trash;
 #ifdef _USE_FONT
 extern Texture texture_font;

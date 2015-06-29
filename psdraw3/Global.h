@@ -73,6 +73,7 @@ extern float d_dx; // "paning" del dibujo
 extern float d_dy; // "paning" del dibujo
 extern float d_zoom; // zoom del dibujo
 extern float zoom; // zoom final
+extern int line_width_flechas, line_width_bordes; // anchos de las lines y flechas
 
 // auxiliares varios
 extern Entity *entity_to_del; // para un delayed delete (cuando suelta uno que sale del shapebar y no queda en ningun lado)

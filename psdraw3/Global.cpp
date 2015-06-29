@@ -12,7 +12,8 @@ string pname; // nombre original del proceso
 bool modified=false; // para saber si hay que preguntar antes de salir sin guardar
 
 // lista de procesos/subprocesos
-int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
+int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar  
+   // 1 = muestra menu, 3=drag
 int choose_process_sel=0; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
 int choose_process_d_base=0;
 int choose_process_d_delta=0;
@@ -48,6 +49,7 @@ float d_dx=0; // "paning" del dibujo
 float d_dy=0; // "paning" del dibujo
 float d_zoom=0.1; // zoom del dibujo
 float zoom=0.1; // zoom final
+int line_width_flechas=2, line_width_bordes=1;
 
 // auxiliares varios
 Entity *entity_to_del=NULL; // para un delayed delete (cuando suelta uno que sale del shapebar y no queda en ningun lado)
@@ -82,11 +84,14 @@ Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en 
 bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
 
 void GlobalInit( ) {
-	for(int i=0;i<=ET_COUNT;i++) { 
+	for(int i=0;i<ET_COUNT;i++) { 
 		color_shape[i][0] = 1;
 		color_shape[i][1] = .95;
 		color_shape[i][2] = .8;
 	}
+	color_shape[ET_COUNT][0] = .95;
+	color_shape[ET_COUNT][1] = .95;
+	color_shape[ET_COUNT][2] = .95;
 	color_shape[ET_LEER][0] = 1;
 	color_shape[ET_LEER][1] = .9;
 	color_shape[ET_LEER][2] = .95;

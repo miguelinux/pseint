@@ -198,21 +198,9 @@ void ProcessMenu(int op) {
 	} else if (op==MO_TOGGLE_COLORS) {
 		Entity::shape_colors=!Entity::shape_colors;
 	} else if (op==MO_CHANGE_STYLE) {
-		bool rezoom = false;
-		if (Entity::nassi_shneiderman) {
-			Entity::nassi_shneiderman=false;
-			Entity::alternative_io=false;
-			rezoom = true;
-		} else {
-			if (Entity::alternative_io) {
-				Entity::nassi_shneiderman=true;
-				rezoom = true;
-			} else {
-				Entity::alternative_io=true;
-			}
-		}
+		Entity::nassi_shneiderman = !Entity::nassi_shneiderman;
 		Entity::CalculateAll(true);
-		if (rezoom) ProcessMenu(MO_ZOOM_EXTEND);
+		ProcessMenu(MO_ZOOM_EXTEND);
 	}
 }	
 
@@ -236,7 +224,6 @@ void mouse_dcb(int x, int y) {
 void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
-		if (choose_process_state==1) { choose_process_state=2; return; }
 		if (choose_process_sel==int(procesos.size())) {
 			CreateEmptyProc("SubProceso");
 		}
@@ -272,6 +259,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			Entity*aux=NULL;
 			switch (shapebar_sel) {
 			case 1: 
+				if (!Entity::show_comments) ProcessMenu(MO_TOGGLE_COMMENTS);
 				aux = new Entity(ET_COMENTARIO,"");
 				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
 				break;

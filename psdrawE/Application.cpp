@@ -65,16 +65,18 @@ bool mxApplication::OnInit() {
 		if (arg=="--force") {
 			force=true;
 		} else if (arg=="--shapecolors") {
-		} else if (arg=="--nocroplabels") {
 			Entity::shape_colors=true;
+//		} else if (arg=="--nocroplabels") {
+//			Entity::enable_partial_text=false;
 		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
 			; // procesado en lang.ProcessConfigLine
 		} else if (arg.Len()) {
 			if (fin.Len()) fout=arg;
-			else fin=arg; 
+			else fin=arg;
 		}
 	}
 	lang.Fix();
+	Entity::enable_partial_text=false;
 	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInit();
@@ -82,7 +84,7 @@ bool mxApplication::OnInit() {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}
 	edit_on=false;
-	draw_shadow=false;
+//	draw_shadow=false;
 	
 	// elegir un proceso/subproceso
 	if (procesos.size()>1) {
@@ -130,7 +132,9 @@ bool mxApplication::OnInit() {
 	
 	// dibujar
 	Entity *aux=start;
-	glLineWidth(2*d_zoom<1?1:int(d_zoom*2));
+	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
+	line_width_bordes=1*d_zoom<1?1:int(d_zoom*1);
+	glLineWidth(line_width_flechas);
 	glPushMatrix();
 	glScaled(d_zoom,-d_zoom,1);
 	glTranslated(wl+margin,-margin,0);
