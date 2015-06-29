@@ -3,16 +3,21 @@
 #include <wx/frame.h>
 
 class Canvas;
+class wxToolBar;
 
 class MainWindow : public wxFrame {
+	wxToolBar *toolbar;
 public:
 	MainWindow(wxString title);
 //	void SetAccelerators();
 //	void OnChar(wxKeyEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnMouseWheel(wxMouseEvent &event);
+	void OnToolOver(wxCommandEvent &event);
+	void OnTool(wxCommandEvent &event);
 	void ToggleFullScreen();
 	void AskForExit();
+	int MIDtoMO(int mid);
 	DECLARE_EVENT_TABLE();
 };
 

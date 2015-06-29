@@ -89,17 +89,13 @@ void idle_func() {
 	} while (aux!=start);
 	if (mouse || choose_process_state==3) { 
 		interpolate(shapebar_size,0);
-		interpolate(menu_size_h,0);
-		interpolate(menu_size_w,0);
 		if (trash) interpolate(trash_size,trash_size_max);
 		else interpolate(trash_size,trash_size_min);
-		menu=shapebar=false;
+		shapebar=false;
 	} else {
 //		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); Entity::CalculateAll(); }
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
-		if (menu) { interpolate(menu_size_h,menu_option_height*(MO_HELP+2)); interpolate(menu_size_w,menu_w_max); }
-		else { interpolate(menu_size_h,menu_h_min); interpolate(menu_size_w,menu_w_min); }
 		interpolate(trash_size,0); trash=false;
 	}
 	/*if (!skipped) */canvas->Refresh();
@@ -115,25 +111,12 @@ void passive_motion_cb(int x, int y) {
 	}
 	if (!win_h || !edit_on) return;
 	if (mouse) {
-		shapebar=false; menu=false;
+		shapebar=false;
 		return;
 	}
 	if (edit_on) {
-		menu=x<menu_size_w&&y<menu_size_h;
 		shapebar=x>win_w-shapebar_size;
-		if (menu) {
-	//		y=win_h-y;
-			y=y-10;
-			menu_sel=y/menu_option_height+1;
-			if (menu_sel<1 || menu_sel>MO_HELP) menu_sel=0;
-	//		if (y>win_h-menu_size_h+245) menu_sel=1;
-	//		else if (y>win_h-menu_size_h+205) menu_sel=2;
-	//		else if (y>win_h-menu_size_h+165) menu_sel=3;
-	//		else if (y>win_h-menu_size_h+125) menu_sel=4;
-	//		else if (y>win_h-menu_size_h+85) menu_sel=5;
-	//		else if (y>win_h-menu_size_h+45) menu_sel=6;
-	//		else menu_sel=0;
-		} else if (shapebar) {
+		if (shapebar) {
 			shapebar_sel=y/(win_h/cant_shapes_in_bar)+1;
 			if (y>cant_shapes_in_bar) y=0;
 		}
@@ -186,12 +169,14 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 }
 
 void ProcessMenu(int op) {
-	menu=false; if (edit) edit->UnsetEdit();
+	if (edit) edit->UnsetEdit();
 	if (op==MO_ZOOM_EXTEND) {
 		int h=0,wl=0,wr=0;
 		Entity *real_start = start->GetTopEntity();
 		real_start->Calculate(wl,wr,h); // calcular tamaño total
 		ZoomExtend(real_start->x-wl,real_start->y,real_start->x+wr,real_start->y-h,1.5);
+	} else if (op==MO_TOGGLE_FULLSCREEN) {
+		main_window->ToggleFullScreen();
 	} else if (op==MO_FUNCTIONS) {
 		choose_process_d_base=choose_process_d_delta=0;
 		choose_process_state=1; if (edit) edit->UnsetEdit();
@@ -204,6 +189,30 @@ void ProcessMenu(int op) {
 		Salir();
 	} else if (op==MO_HELP) {
 		SendHelp();
+	} else if (op==MO_CROP_LABELS) {
+		Entity::enable_partial_text=!Entity::enable_partial_text;
+		Entity::CalculateAll(true);
+	} else if (op==MO_TOGGLE_COMMENTS) {
+		Entity::show_comments=!Entity::show_comments;
+		Entity::CalculateAll();
+	} else if (op==MO_TOGGLE_COLORS) {
+		Entity::shape_colors=!Entity::shape_colors;
+	} else if (op==MO_CHANGE_STYLE) {
+		bool rezoom = false;
+		if (Entity::nassi_shneiderman) {
+			Entity::nassi_shneiderman=false;
+			Entity::alternative_io=false;
+			rezoom = true;
+		} else {
+			if (Entity::alternative_io) {
+				Entity::nassi_shneiderman=true;
+				rezoom = true;
+			} else {
+				Entity::alternative_io=true;
+			}
+		}
+		Entity::CalculateAll(true);
+		if (rezoom) ProcessMenu(MO_ZOOM_EXTEND);
 	}
 }	
 
@@ -255,10 +264,6 @@ void mouse_cb(int button, int state, int x, int y) {
 	} else if (state==ZMB_DOWN) {
 		if (button==ZMB_MIDDLE) { // click en el menu
 			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
-			return;
-		}
-		if (menu && button==ZMB_LEFT) { // click en el menu
-			if (menu_sel) ProcessMenu(menu_sel);
 			return;
 		}
 		if (shapebar && button==ZMB_LEFT) { // click en la barra de entidades
@@ -382,7 +387,7 @@ void keyboard_esp_cb(int key/*, int x, int y*/) {
 	else if (key==WXK_F9) ProcessMenu(MO_RUN);
 	else if (key==WXK_F1) ProcessMenu(MO_HELP);
 	else if (key==WXK_F7) { if (!debugging) ToggleEditable(); }
-	else if (key==WXK_F11) main_window->ToggleFullScreen();
+	else if (key==WXK_F11) ProcessMenu(MO_TOGGLE_FULLSCREEN);
 	else if (key==WXK_F12) ProcessMenu(MO_ZOOM_EXTEND);
 	else if (edit) edit->EditSpecialLabel(key);
 }

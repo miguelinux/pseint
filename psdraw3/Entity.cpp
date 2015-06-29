@@ -16,6 +16,7 @@ bool Entity::nassi_shneiderman=false;
 bool Entity::alternative_io=false; 
 bool Entity::shape_colors=false; 
 bool Entity::enable_partial_text=true;
+bool Entity::show_comments=true;
 static const int max_label_len_sec=25; // maxima longitud de un label antes de que se muestre cortado y con ..., para instrucciones secuenciales
 static const int max_label_len_cont=15; // maxima longitud de un label antes de que se muestre cortado y con ..., para estructuras de control
 
@@ -29,6 +30,12 @@ static const int max_label_len_cont=15; // maxima longitud de un label antes de 
 
 void Entity::GetTextSize(const string &label, int &w, int &h) {
 	w=label.size()*char_w;
+	h=char_h;
+}
+
+void Entity::GetTextSize(int &w, int &h) {
+	int pt = IsLabelCropped();
+	w=(pt==0?label.size():pt)*char_w;
 	h=char_h;
 }
 
@@ -219,9 +226,7 @@ void Entity::SetLabel(string _label, bool recalc) {
 	if (_label!=label) SetModified();
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 	label=_label; 
-	int crop_len = IsLabelCropped();
-	if (crop_len) _label.replace(crop_len-3,_label.size()-crop_len+3,"...");
-	GetTextSize(_label,t_w,t_h); w=t_w; h=t_h;
+	GetTextSize(t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) {
 		if (nassi_shneiderman) { 
@@ -409,6 +414,7 @@ void Entity::DrawText() {
 }
 
 void Entity::Draw(bool force) {
+	if (!show_comments && type==ET_COMENTARIO) return;
 	if (nassi_shneiderman) DrawNassiShne(force);
 	else DrawClasico(force);
 }
@@ -455,8 +461,12 @@ void Entity:: ResizeW(int aw, bool up) {
 }
 
 void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
-	if (nassi_shneiderman) CalculateNassiShne();
-	else CalculateClasico();
+	if (!show_comments && type==ET_COMENTARIO) {
+		gwl=gwr=gh=fx=fy=bwl=bwr=bh=0;
+	} else {
+		if (nassi_shneiderman) CalculateNassiShne();
+		else CalculateClasico();
+	}
 	// pasar a la siguiente entidad
 	if (next) {
 		next->x=x;
@@ -479,7 +489,7 @@ void Entity::CopyPos(Entity *o) {
 }
 
 bool Entity::CheckMouse(int x, int y, bool click) {
-	if (!edit_on) return false;
+	if (!edit_on || (!showbase&&type==ET_COMENTARIO)) return false;
 	if (click && type==ET_OPCION) {
 		if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
 			parent->InsertChild(child_id,new Entity(ET_OPCION,""));
@@ -604,7 +614,14 @@ Entity * Entity::GetTopEntity ( ) {
 	return top;
 }
 
-void Entity::CalculateAll ( ) {
+void Entity::CalculateAll (bool also_text_size) {
+	if (also_text_size) {
+		Entity *aux=Entity::all_any;
+		do {
+			aux->SetLabel(aux->label);
+			aux=aux->all_next;
+		} while (aux && aux!=Entity::all_any);
+	}
 	start->GetTopEntity()->Calculate();
 }
 
@@ -622,3 +639,4 @@ bool Entity::IsOutOfProcess(Entity *next_no_commnet) {
 bool Entity::IsOutOfProcess() {
 	return IsOutOfProcess(GetNextNoComment());
 }
+

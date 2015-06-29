@@ -8,6 +8,7 @@
 #include "Load.h"
 #include "../pseint/LangSettings.h"
 #include "../wxPSeInt/mac-stuff.h"
+#include <wx/image.h>
 using namespace std;
 
 LangSettings lang(LS_DO_NOT_INIT);
@@ -44,6 +45,7 @@ bool mxApplication::OnInit() {
 	if (fname.length()) Load(fname.c_str());
 	else Load();
 	glutInit (&argc, argv);
+	wxImage::AddHandler(new wxPNGHandler);
 	new MainWindow(wxString("PSDraw v2 - ")<<start->label.c_str());
 	return true;
 	

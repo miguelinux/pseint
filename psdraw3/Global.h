@@ -41,9 +41,9 @@ extern bool shapebar; // indica si el mouse esta sobre la barra de formas
 extern int shapebar_sel; // indica cual tipo de entidad esta seleccionada (1...n, 0 es ninguna) si shapebar==true
 
 // menu
-extern int menu_size_h; // ancho para dibujo de la shapebar
-extern int menu_size_w; // ancho para dibujo de la shapebar
-extern bool menu; // indica si el mouse esta sobre la papelera
+//extern int menu_size_h; // ancho para dibujo de la shapebar
+//extern int menu_size_w; // ancho para dibujo de la shapebar
+//extern bool menu; // indica si el mouse esta sobre la papelera
 extern int menu_sel; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
 #define menu_w_max_base 240
 #define menu_w_min_base 70

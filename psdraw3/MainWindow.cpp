@@ -6,22 +6,47 @@
 #include "Load.h"
 #include "Events.h"
 #include "Comm.h"
+#include <wx/toolbar.h>
+#include <iostream>
 
 MainWindow *main_window=NULL;
 
-enum { MID_MAIN = wxID_HIGHEST };
+enum { MID_MAIN = wxID_HIGHEST, MID_ZOOM, MID_FULLSCREEN, MID_STYLE, MID_COMMENTS, MID_CROPLABEL, MID_COLORS, MID_SUB, MID_RUN, MID_DEBUG, MID_EXPORT, MID_CLOSE, MID_HELP };
 
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 //	EVT_CHAR(Canvas::OnChar)
 #if WIN32
 	EVT_MOUSEWHEEL(MainWindow::OnMouseWheel)
 #endif
+	EVT_TOOL_ENTER(wxID_ANY,MainWindow::OnToolOver)
+	EVT_TOOL(wxID_ANY,MainWindow::OnTool)
 	EVT_CLOSE(MainWindow::OnClose)
 END_EVENT_TABLE()
 
 MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(win_w,win_h),wxDEFAULT_FRAME_STYLE) {
 	main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
+	
+	toolbar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT);
+	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
+//	toolbar->AddTool(MID_SETTINGS,"","imgs/floaw/tb_settings.png");
+	toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddSeparator();
+	toolbar->AddTool(MID_RUN  ,"",wxBitmap("imgs/flow/tb_run.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_DEBUG,"",wxBitmap("imgs/flow/tb_debug.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_EXPORT ,"",wxBitmap("imgs/flow/tb_save.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddSeparator();
+	toolbar->AddTool(MID_ZOOM ,"",wxBitmap("imgs/flow/tb_zoom.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_FULLSCREEN ,"",wxBitmap("imgs/flow/tb_fullscreen.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddSeparator();
+	toolbar->AddTool(MID_STYLE ,"",wxBitmap("imgs/flow/tb_style.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COMMENTS ,"",wxBitmap("imgs/flow/tb_comments.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CROPLABEL ,"",wxBitmap("imgs/flow/tb_crop.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COLORS,"",wxBitmap("imgs/flow/tb_colors.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddSeparator();
+	toolbar->AddTool(MID_HELP ,"",wxBitmap("imgs/flow/tb_help.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CLOSE,"",wxBitmap("imgs/flow/tb_close.png",wxBITMAP_TYPE_PNG));
+	
 	sizer->Add(new Canvas(this),wxSizerFlags().Expand().Proportion(1));
 	SetSizer(sizer);
 	canvas->SetFocusFromKbd();
@@ -49,7 +74,9 @@ void MainWindow::OnMouseWheel (wxMouseEvent & event) {
 }
 
 void MainWindow::ToggleFullScreen ( ) {
-	main_window->ShowFullScreen(!main_window->IsFullScreen());
+	bool fs = !main_window->IsFullScreen();
+//	toolbar->Show(!fs);
+	main_window->ShowFullScreen(fs);
 }
 
 void MainWindow::AskForExit ( ) {
@@ -60,6 +87,33 @@ void MainWindow::AskForExit ( ) {
 		Salir(true);
 	} else {
 		return;
+	}
+}
+
+void MainWindow::OnToolOver (wxCommandEvent & event) {
+	menu_sel = MIDtoMO(event.GetSelection()); 
+	canvas->Refresh();
+}
+
+void MainWindow::OnTool (wxCommandEvent & event) {
+	ProcessMenu(MIDtoMO(event.GetId()));
+}
+
+int MainWindow::MIDtoMO (int mid) {
+	switch(mid) {
+	case MID_ZOOM: return MO_ZOOM_EXTEND;
+	case MID_FULLSCREEN: return MO_TOGGLE_FULLSCREEN;
+	case MID_CROPLABEL: return MO_CROP_LABELS;
+	case MID_COMMENTS: return MO_TOGGLE_COMMENTS;
+	case MID_STYLE: return MO_CHANGE_STYLE;
+	case MID_COLORS: return MO_TOGGLE_COLORS;
+	case MID_SUB: return MO_FUNCTIONS;
+	case MID_RUN: return MO_RUN;
+	case MID_DEBUG: return MO_DEBUG;
+	case MID_EXPORT: return MO_EXPORT;
+	case MID_CLOSE:return MO_CLOSE;
+	case MID_HELP:return MO_HELP;
+	default: return MO_NONE;
 	}
 }
 

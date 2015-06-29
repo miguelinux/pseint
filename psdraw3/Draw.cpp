@@ -81,18 +81,10 @@ static void DrawMenuAndShapeBar() {
 	glVertex2i(win_w-shapebar_size,win_h);
 	glVertex2i(win_w,win_h);
 	glVertex2i(win_w,0);
-	// menu
-	glVertex2i(0,win_h);
-	glVertex2i(menu_size_w,win_h);
-	glVertex2i(menu_size_w,win_h-menu_size_h);
-	glVertex2i(0,win_h-menu_size_h);
 	glEnd();
+	// shapebar
 	glColor3fv(color_menu);
 	glBegin(GL_LINES);
-	// menu
-	glVertex2i(0,win_h-menu_size_h); glVertex2i(menu_size_w,win_h-menu_size_h);
-	glVertex2i(menu_size_w,win_h); glVertex2i(menu_size_w,win_h-menu_size_h);
-	// shapebar
 	glVertex2i(win_w-shapebar_size,0);
 	glVertex2i(win_w-shapebar_size,win_h);
 	glEnd();
@@ -156,59 +148,23 @@ static void DrawMenuAndShapeBar() {
 		glDisable(GL_TEXTURE_2D);
 	}
 	
-	// menu
-	int top=menu_option_height*(MO_HELP+1), left=menu_size_w-menu_w_max+15;
-	if (use_textures) left+=25;
-	if(menu_sel!=MO_NONE) {
-		glColor3fv(color_menu_sel);
-		glBegin(GL_QUADS);
-		glVertex2i(3,            win_h-menu_size_h+top-menu_option_height*(menu_sel-1.7)); 
-		glVertex2i(menu_size_w-4,win_h-menu_size_h+top-menu_option_height*(menu_sel-1.7)); 
-		glVertex2i(menu_size_w-4,win_h-menu_size_h+top-menu_option_height*(menu_sel-0.7)); 
-		glVertex2i(3,            win_h-menu_size_h+top-menu_option_height*(menu_sel-0.7)); 
-		glEnd();
+	if (menu_sel!=MO_NONE) {
+		switch(menu_sel) {
+		case MO_ZOOM_EXTEND: SetStatus(color_selection,"Ajustar el zoom para visualizar todo el diagrama."); break;
+		case MO_TOGGLE_FULLSCREEN: SetStatus(color_selection,"Alternar entre modo ventana y pantalla completa."); break;
+		case MO_TOGGLE_COLORS: SetStatus(color_selection,"Alternar entre modo ventana y pantalla completa."); break;
+		case MO_CROP_LABELS: SetStatus(color_selection,"Acortar textos muy largos en etiquetas."); break;
+		case MO_TOGGLE_COMMENTS: SetStatus(color_selection,"Mostrar/Ocultar comentarios."); break;
+		case MO_CHANGE_STYLE: SetStatus(color_selection,"Cambiar el tipo de diagrama (clásico, i/o alternativo, N-S)."); break;
+		case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
+		case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
+		case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
+		case MO_EXPORT: SetStatus(color_selection,"Permite guardar el diagrama como imagen."); break;
+		case MO_CLOSE: SetStatus(color_selection,"Cierra el editor, preguntando antes si se deben aplicar los cambios en el pseudocodigo"); break;
+		case MO_HELP: SetStatus(color_selection,"Muestra una ventana de ayuda que explica como utilizar este editor y cuales son sus atajos de teclado."); break;
+		default:;
+		}
 	}
-	DrawTextRaster(menu_sel==MO_ZOOM_EXTEND?color_selection:color_menu,left,win_h-menu_size_h+top,"Auto-ajustar Zoom"); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_FUNCTIONS?color_selection:color_menu,left,win_h-menu_size_h+top,"Procesos/SubProcesos..."); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_RUN       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ejecutar..."); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_DEBUG        ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ejecutar Paso a Paso..."); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_EXPORT ?color_selection:color_menu,left,win_h-menu_size_h+top,"Guardar Imagen..."); top-=menu_option_height;
-//	DrawTextRaster(menu_sel==MO_SAVE_CLOSE ?color_selection:color_menu,left,win_h-menu_size_h+top,"Aplicar y Cerrar"); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_CLOSE      ?color_selection:color_menu,left,win_h-menu_size_h+top,"Cerrar"); top-=menu_option_height;
-	DrawTextRaster(menu_sel==MO_HELP       ?color_selection:color_menu,left,win_h-menu_size_h+top,"Ayuda...");
-	if (menu) switch(menu_sel) {
-	case MO_ZOOM_EXTEND: SetStatus(color_selection,"Ajusta el zoom para visualizar todo el diagrama."); break;
-	case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
-	case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
-	case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
-	case MO_EXPORT: SetStatus(color_selection,"Permite guardar el diagrama como imagen."); break;
-	case MO_CLOSE: SetStatus(color_selection,"Cierra el editor, preguntando antes si se deben aplicar los cambios en el pseudocodigo"); break;
-	case MO_HELP: SetStatus(color_selection,"Muestra una ventana de ayuda que explica como utilizar este editor y cuales son sus atajos de teclado."); break;
-	default:;
-	}
-	
-	glEnable(GL_TEXTURE_2D);
-	texture_trash.Select();
-	glColor3f(1,1,1);
-	glBegin(GL_QUADS);
-	glTexCoord2f(.32*texture_trash.max_s,.77*texture_trash.max_t); glVertex2d(menu_size_w-75,win_h-menu_size_h);
-	glTexCoord2f(1*texture_trash.max_s,.77*texture_trash.max_t); glVertex2d(menu_size_w-75+texture_trash.w*.68,win_h-menu_size_h);
-	glTexCoord2f(1*texture_trash.max_s,1*texture_trash.max_t); glVertex2d(menu_size_w-75+texture_trash.w*.68,win_h-menu_size_h+texture_trash.h*.23);
-	glTexCoord2f(.32*texture_trash.max_s,1*texture_trash.max_t); glVertex2d(menu_size_w-75,win_h-menu_size_h+texture_trash.h*.23);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	
-	left-=30; top-=8;
-	glEnable(GL_TEXTURE_2D);
-	texture_menu.Select();
-	glColor3f(1,1,1);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0*texture_menu.max_s,0*texture_menu.max_t); glVertex2d(left,win_h-menu_size_h+top);
-	glTexCoord2f(1*texture_menu.max_s,0*texture_menu.max_t); glVertex2d(left+texture_menu.w,win_h-menu_size_h+top);
-	glTexCoord2f(1*texture_menu.max_s,1*texture_menu.max_t); glVertex2d(left+texture_menu.w,win_h-menu_size_h+top+texture_menu.h);
-	glTexCoord2f(0*texture_menu.max_s,1*texture_menu.max_t); glVertex2d(left,win_h-menu_size_h+top+texture_menu.h);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
 	
 	// shapebar
 	if (shapebar) {
@@ -546,6 +502,6 @@ void display_cb() {
 	}
 	if (trash) mouse_cursor=Z_CURSOR_DESTROY;
 	else if (mouse) mouse_cursor=Z_CURSOR_NONE;
-	else if (menu||shapebar||choose_process_sel) mouse_cursor=Z_CURSOR_INHERIT;
+	else if (shapebar||choose_process_sel) mouse_cursor=Z_CURSOR_INHERIT;
 }
 

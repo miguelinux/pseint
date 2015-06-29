@@ -30,7 +30,8 @@ struct Entity {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
 	static bool nassi_shneiderman; ///< usar diagramas de Nassi-Shneiderman en lugar de "clásico"
 	static bool shape_colors; ///< mostrar los bloques de diferentes colores
-	static bool enable_partial_text; ///< 
+	static bool enable_partial_text; ///< acortar labels largos
+	static bool show_comments; ///< mostrar entidades de tipo ET_COMENTARIO
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;
@@ -68,6 +69,7 @@ struct Entity {
 	void SetNolink(Entity *m,bool n);
 	void EditSpecialLabel(int key);
 	void EditLabel(unsigned char key);
+	void GetTextSize(int &w, int &h);
 	void GetTextSize(const string &label, int &w, int &h);
 	void SetLabel(string _label, bool recalc=false);
 	int IsLabelCropped();
@@ -98,7 +100,7 @@ struct Entity {
 	void Print(ostream &out, string tab, Entity *process, int &line_num);
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
 	Entity *GetTopEntity(); ///< sigue por prev hasta llegar a null
-	static void CalculateAll();
+	static void CalculateAll(bool also_text_size=false);
 	Entity *GetNextNoComment();
 	bool IsOutOfProcess();
 	static bool IsOutOfProcess(Entity *next_no_commnet);

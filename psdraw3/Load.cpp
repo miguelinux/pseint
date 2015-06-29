@@ -348,7 +348,7 @@ void New() {
 
 void SetProc(Entity *proc) {
 	Entity::all_any=start=proc;
-	Entity::CalculateAll();
+	Entity::CalculateAll(true);
 	ProcessMenu(MO_ZOOM_EXTEND);
 //	pname=proc->prototipo;
 	Entity *ent=start;
