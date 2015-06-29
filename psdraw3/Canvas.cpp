@@ -56,11 +56,9 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 		int win_w,win_h;
 		GetClientSize(&win_w, &win_h);
 		reshape_cb(win_w,win_h);
-#if _USE_TEXTURES
 		LoadTextures();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-#endif
 		cursores=new wxCursor[Z_CURSOR_COUNT];
 		cursores[Z_CURSOR_INHERIT]=wxCursor(wxCURSOR_ARROW);
 		cursores[Z_CURSOR_CROSSHAIR]=wxCursor(wxCURSOR_CROSS);

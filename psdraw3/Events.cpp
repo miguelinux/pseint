@@ -205,7 +205,7 @@ void ProcessMenu(int op) {
 	} else if (op==MO_HELP) {
 		SendHelp();
 	}
-}
+}	
 
 static void fix_mouse_coords(int &x, int &y) {
 	y=win_h-y; y/=zoom; x/=zoom;
