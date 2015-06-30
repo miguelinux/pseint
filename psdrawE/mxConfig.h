@@ -25,9 +25,11 @@ public:
 	void OnAncho(wxCommandEvent &evt);
 	void OnAlto(wxCommandEvent &evt);
 	void OnZoom(wxCommandEvent &evt);
+	void OnColors(wxCommandEvent &evt);
 	void OnComments(wxCommandEvent &evt);
 	void OnCrop(wxCommandEvent &evt);
 	void OnProc(wxCommandEvent &evt);
+	void OnStyle(wxCommandEvent &evt);
 };
 
 #endif

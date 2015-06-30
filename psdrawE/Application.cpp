@@ -60,6 +60,7 @@ bool mxApplication::OnInit() {
 	// cargar el diagrama
 	bool force=false;
 	Entity::enable_partial_text=false;
+	Entity::show_comments=true;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		wxString arg(argv[i]);
@@ -67,7 +68,7 @@ bool mxApplication::OnInit() {
 			force=true;
 		} else if (arg=="--shapecolors") {
 			Entity::shape_colors=true;
-//		} else if (arg=="--nocroplabels") {
+		} else if (arg=="--nocroplabels") {
 //			Entity::enable_partial_text=false;
 		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
 			; // procesado en lang.ProcessConfigLine
@@ -77,7 +78,6 @@ bool mxApplication::OnInit() {
 		}
 	}
 	lang.Fix();
-	Entity::enable_partial_text=false;
 	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInit();
@@ -90,9 +90,10 @@ bool mxApplication::OnInit() {
 	
 	// calcular tamaño total
 	int h=0,wl=0,wr=0, margin=10;
-	start->Calculate(wl,wr,h); 
-	int x0=start->x-wl,y0=start->y,x1=start->x+wr,y1=start->y-h;
-	start->Calculate();
+	Entity *real_start = start->GetTopEntity();
+	real_start->Calculate(wl,wr,h); 
+	int x0=real_start->x-wl,y0=real_start->y,x1=real_start->x+wr,y1=real_start->y-h;
+	real_start->Calculate();
 	
 	// hacer que las entidades tomen sus tamaños ideales
 	Entity *e=Entity::all_any;
@@ -112,7 +113,7 @@ bool mxApplication::OnInit() {
 	dc->Clear();
 	
 	// dibujar
-	Entity *aux=start;
+	Entity *aux=real_start;
 	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
 	line_width_bordes=1*d_zoom<1?1:int(d_zoom*1);
 	glLineWidth(line_width_flechas);
@@ -121,8 +122,8 @@ bool mxApplication::OnInit() {
 	glTranslated(wl+margin,-margin,0);
 	do {
 		aux->Draw();
-		aux=aux->all_next;
-	} while (aux!=start);
+		aux=Entity::NextEntity(aux);
+	} while (aux!=real_start);
 	
 	// guardar
 	if (!force) {
@@ -138,9 +139,8 @@ bool mxApplication::OnInit() {
 	if (fout.Lower().EndsWith(".bmp")) type=wxBITMAP_TYPE_BMP;
 	_IF_PNG(if (fout.Lower().EndsWith(".png")) type=wxBITMAP_TYPE_PNG;)
 	_IF_JPG(else if (fout.Lower().EndsWith(".jpg")||fout.Lower().EndsWith(".jpeg")) type=wxBITMAP_TYPE_JPEG;)
-	bmp.SaveFile(fout,type);
-	
-	cerr<<"saved"<<endl;
+	if (bmp.SaveFile(fout,type))
+		wxMessageBox("Diagrama guardado","PSeInt");
 	
 	return false;
 }

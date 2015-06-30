@@ -640,3 +640,32 @@ bool Entity::IsOutOfProcess() {
 	return IsOutOfProcess(GetNextNoComment());
 }
 
+Entity *Entity::NextEntity(Entity *aux) {
+	static vector<int> pila_nc;
+	static vector<Entity*> pila_e;
+	// si tiene hijos, se empieza por los hijos
+	if (aux->n_child) {
+		for(int i=0;i<aux->n_child;i++) { 
+			if (aux->child[i]) {
+				pila_nc.push_back(i);
+				pila_e.push_back(aux);
+				return aux->child[i];
+			}
+		}
+	}
+	while(true) {
+		// si no tiene hijos se pasa a la siguiente
+		if (aux->next) return aux->next;
+		// si no hay siguiente, se sube
+		if (pila_e.empty()) return start->GetTopEntity(); // si no se puede subir estamos en "Fin Proceso"
+		int last=++pila_nc.back();
+		aux=pila_e.back();
+		if (aux->n_child!=last) {
+			if (aux->child[last]) return aux->child[last];
+			else pila_nc.back()=last;
+		} else {
+			pila_nc.pop_back();
+			pila_e.pop_back();
+		}
+	}
+}

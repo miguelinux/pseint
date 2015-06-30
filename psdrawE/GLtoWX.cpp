@@ -72,8 +72,8 @@ static void post_vertex() {
 		wxPoint v[4]; 
 		v[0]=wxPoint(p[0][0],p[0][1]); 
 		v[1]=wxPoint(p[1][0],p[1][1]); 
-		v[3]=wxPoint(p[2][0],p[2][1]); 
-		v[2]=wxPoint(p[3][0],p[3][1]); 
+		v[2]=wxPoint(p[2][0],p[2][1]); 
+		v[3]=wxPoint(p[3][0],p[3][1]); 
 		dc->DrawPolygon(4,v);
 		np=0;
 	} break;

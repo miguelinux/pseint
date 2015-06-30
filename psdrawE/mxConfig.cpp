@@ -14,10 +14,11 @@ BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_TEXT(MID_ANCHO,mxConfig::OnAncho)
 	EVT_TEXT(MID_ALTO,mxConfig::OnAlto)
 	EVT_TEXT(MID_ZOOM,mxConfig::OnZoom)
-//	EVT_CHECKBOX(MID_COLORS)
+	EVT_CHECKBOX(MID_COLORS,mxConfig::OnColors)
 	EVT_CHECKBOX(MID_COMMENTS,mxConfig::OnComments)
 	EVT_CHECKBOX(MID_CROP,mxConfig::OnCrop)
 	EVT_CHECKBOX(MID_PROC,mxConfig::OnProc)
+	EVT_COMBOBOX(MID_STYLE,mxConfig::OnStyle)
 END_EVENT_TABLE()
 
 static wxSizerFlags szflag;
@@ -57,9 +58,10 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,"Guardar diagrama de flujo",wxDefaul
 	AddWithLabel(this,sizer,"Alto(px):",tx_alto);
 	
 	ch_comments = new wxCheckBox(this,MID_COMMENTS,"Incluir comentarios");
-	ch_comments->SetValue(true);
+	ch_comments->SetValue(Entity::show_comments);
 	sizer->Add (ch_comments,szflag);
 	ch_colors = new wxCheckBox(this,MID_COLORS,"Utilizar colores");
+	ch_colors->SetValue(Entity::shape_colors);
 	sizer->Add (ch_colors,szflag);
 	ch_crop  = new wxCheckBox(this,MID_CROP,"Cortar textos largos");
 	sizer->Add (ch_crop,szflag);
@@ -67,9 +69,8 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,"Guardar diagrama de flujo",wxDefaul
 	wxButton *ok = new wxButton(this,wxID_OK,"Guardar");
 	wxButton *cancel = new wxButton(this,wxID_CANCEL,"Cancelar");
 	wxSizer *aux_sizer = new wxBoxSizer(wxHORIZONTAL);
-	aux_sizer->AddStretchSpacer();
-	aux_sizer->Add(ok,szflag);
 	aux_sizer->Add(cancel,szflag);
+	aux_sizer->Add(ok,szflag);
 	sizer->Add(aux_sizer,szflag);
 	
 	ok->SetDefault();
@@ -83,25 +84,25 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,"Guardar diagrama de flujo",wxDefaul
 }
 
 static void get_wh(float z, int &rw, int &rh) {
-	float prev_z=100;
-	if (z==0) z=prev_z;
 	zoom=d_zoom=z;
 	int h=0,wl=0,wr=0, margin=10;
 	Entity::CalculateAll(true);
-	Entity *aux = start->GetTopEntity();
-	aux->Calculate(wl,wr,h); 
-	int x0=start->x-wl,y0=start->y,x1=start->x+wr,y1=start->y-h;
+	Entity *real_start = start->GetTopEntity();
+	real_start->Calculate(wl,wr,h); 
+	int x0=real_start->x-wl,y0=real_start->y,x1=real_start->x+wr,y1=real_start->y-h;
 	rw=( (x1-x0)+2*margin )*z;
 	rh=( (y0-y1)+2*margin )*z;
-	prev_z=z;
 }
 
 void mxConfig::SetZoom (float f, int noup) {
+	float prev_f=100;
+	if (f==0) f=prev_f;
 	int rw,rh; get_wh(f/100.f,rw,rh);
 	wxString sz; sz.Printf("%.2f",f);
 	if (noup!=0) tx_zoom->SetValue(sz);
 	if (noup!=1) tx_ancho->SetValue(wxString()<<rw);
 	if (noup!=2) tx_alto->SetValue(wxString()<<rh);
+	prev_f=f;
 }
 
 void mxConfig::OnAncho (wxCommandEvent & evt) {
@@ -144,16 +145,16 @@ void mxConfig::OnZoom (wxCommandEvent & evt) {
 void mxConfig::OnComments (wxCommandEvent &evt) {
 	evt.Skip();
 	if (ignore_events) return;
-	Entity::CalculateAll();
 	Entity::show_comments=ch_comments->GetValue();
+	Entity::CalculateAll();
 	SetZoom();
 }
 
 void mxConfig::OnCrop (wxCommandEvent &evt) {
 	evt.Skip();
 	if (ignore_events) return;
-	Entity::CalculateAll(true);
 	Entity::enable_partial_text=ch_crop->GetValue();
+	Entity::CalculateAll(true);
 	SetZoom();	
 }
 
@@ -166,5 +167,19 @@ void mxConfig::OnProc (wxCommandEvent & evt) {
 	evt.Skip();
 	if (ignore_events) return;
 	SetProceso(cm_proc->GetSelection());
+}
+
+void mxConfig::OnColors (wxCommandEvent & evt) {
+	evt.Skip();
+	Entity::shape_colors=ch_colors->GetValue();
+}
+
+void mxConfig::OnStyle (wxCommandEvent & evt) {
+	evt.Skip();
+	int i = cm_style->GetSelection();
+	Entity::nassi_shneiderman = i==2;
+	Entity::alternative_io = i==1;
+	Entity::CalculateAll(true);
+	SetZoom();	
 }
 

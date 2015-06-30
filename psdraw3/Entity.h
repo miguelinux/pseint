@@ -104,6 +104,7 @@ struct Entity {
 	Entity *GetNextNoComment();
 	bool IsOutOfProcess();
 	static bool IsOutOfProcess(Entity *next_no_commnet);
+	static Entity *NextEntity(Entity *aux);
 };
 
 static const int flecha_h=25; // separacion entre bloques consecutivos

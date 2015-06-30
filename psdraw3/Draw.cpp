@@ -342,36 +342,6 @@ void draw_debug_arrow(Entity *e, float delta) {
 	glEnd();
 }
 
-Entity *next_entity(Entity *aux) {
-	static vector<int> pila_nc;
-	static vector<Entity*> pila_e;
-	// si tiene hijos, se empieza por los hijos
-	if (aux->n_child) {
-		for(int i=0;i<aux->n_child;i++) { 
-			if (aux->child[i]) {
-				pila_nc.push_back(i);
-				pila_e.push_back(aux);
-				return aux->child[i];
-			}
-		}
-	}
-	while(true) {
-		// si no tiene hijos se pasa a la siguiente
-		if (aux->next) return aux->next;
-		// si no hay siguiente, se sube
-		if (pila_e.empty()) return start->GetTopEntity(); // si no se puede subir estamos en "Fin Proceso"
-		int last=++pila_nc.back();
-		aux=pila_e.back();
-		if (aux->n_child!=last) {
-			if (aux->child[last]) return aux->child[last];
-			else pila_nc.back()=last;
-		} else {
-			pila_nc.pop_back();
-			pila_e.pop_back();
-		}
-	}
-}
-
 void display_cb() {
 	mouse_cursor=Z_CURSOR_CROSSHAIR;
 	if (choose_process_state) { DrawChooseProcess(); return; }
@@ -431,8 +401,7 @@ void display_cb() {
 		}
 		if (!aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
 		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
-//		aux=aux->all_next;
-		aux=next_entity(aux);
+		aux=Entity::NextEntity(aux);
 	} while (aux!=my_start);
 	if (mouse && mouse->type==ET_OPCION) {
 		int i=mouse->parent->CheckLinkOpcion(cur_x,cur_y);
