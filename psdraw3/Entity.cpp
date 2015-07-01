@@ -120,7 +120,7 @@ void Entity::SetEdit() {
 	edit=this; EditLabel(0);
 	if (enable_partial_text)
 		this->SetLabel(label,true);
-	edit_pos=label.size();
+	SetEditPos(label.size());
 	error.clear();
 }
 
@@ -148,16 +148,16 @@ void Entity::SetNolink(Entity *m,bool n) {
 
 void Entity::EditSpecialLabel(int key) {
 	if (key==WXK_LEFT) {
-		if (edit_pos>0) edit_pos--;
+		if (edit_pos>0) SetEditPos(edit_pos-1);
 	}
 	else if (key==WXK_RIGHT) {
-		if (edit_pos<int(label.size())) edit_pos++;
+		if (edit_pos<int(label.size())) SetEditPos(edit_pos+1);
 	}
 	else if (key==WXK_HOME) {
-		edit_pos=0;
+		SetEditPos(0);
 	}
 	else if (key==WXK_END) {
-		edit_pos=label.size();
+		SetEditPos(label.size());
 	}
 }
 
@@ -180,7 +180,8 @@ void Entity::EditLabel(unsigned char key) {
 	if (key==180) { acento=true; return; }
 	if (key=='\b') {
 		if (edit_pos>0) {
-			label.erase(--edit_pos,1);
+			label.erase(edit_pos-1,1);
+			SetEditPos(edit_pos-1);
 			SetLabel(label,true);
 		}
 	} else if (key==127) {
@@ -192,10 +193,12 @@ void Entity::EditLabel(unsigned char key) {
 		edit=NULL;
 		if (enable_partial_text) SetLabel(label,true);
 	} else {
-		label.insert(edit_pos++,string(1,key));
+		label.insert(edit_pos,string(1,key));
+		SetEditPos(edit_pos+1);
 		SetLabel(label,true);
 	}
 }
+
 
 int Entity::IsLabelCropped ( ) {
 	if (!enable_partial_text || this==edit) return 0;
@@ -365,7 +368,8 @@ void Entity::Tick() {
 void Entity::DrawText() {
 	glPushMatrix();
 	glTranslated(d_fx+t_dx-t_w/2+(edit_on&&type==ET_OPCION?flecha_w/2:0),d_fy-(d_h/2+margin)+t_dy,0);
-	glScaled((.105*d_w)/w,(.15*d_h)/h,.1);
+	if (this==edit) { glScaled(.105,.15,1); } // el escalado molesta visualmente al editar el texto
+	else glScaled((.105*d_w)/w,(.15*d_h)/h,1);
 	begin_texto();
 	glColor3fv(color_label_fix);
 	for (unsigned int i=0;i<lpre.size();i++) {
@@ -386,13 +390,21 @@ void Entity::DrawText() {
 		blink++; if (blink==20) blink=0;
 		if (blink<10) {
 			glBegin(GL_LINES);
-			int lz=label.size(); if (!lz) lz=1;
+			int lz=label.size(); if (!lz) lz=1; // ojo estas dos lineas deben coincidir con las dos de EnsureCaretVisible
 			lz= d_fx+t_dx-t_w/2+t_prew+(t_w-t_prew)*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
 			glVertex2i(lz,d_fy-h/2-t_h/2-margin/2+t_dy);
 			glVertex2i(lz,d_fy-h/2+t_h/2+margin/2+t_dy);
 			glEnd();
 		}
 	}
+}
+
+void Entity::EnsureCaretVisible() {
+	int lz=label.size(); if (!lz) lz=1; // ojo estas dos lineas deben coincidir con las dos de DrawText
+	lz= d_fx+t_dx-t_w/2+t_prew+(t_w-t_prew)*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
+	// asegurarse de que el cursor se vea
+	int max_x = (win_w-2*shapebar_size_min)/zoom, min_x=2*shapebar_size_min;;
+	if (lz>max_x) d_dx-=(lz-max_x); else if (lz<min_x) d_dx+=(min_x-lz);
 }
 
 void Entity::Draw(bool force) {
@@ -610,8 +622,9 @@ Entity *Entity::GetNextNoComment() {
 }
 
 bool Entity::IsOutOfProcess(Entity *next_no_commnet) {
-	return !next_no_commnet || // fin proceso
-		(next_no_commnet->type==ET_PROCESO&&!next_no_commnet->variante); // proceso
+//	return !next_no_commnet || // fin proceso
+//		(next_no_commnet->type==ET_PROCESO&&!next_no_commnet->variante); // proceso
+	return next_no_commnet && (next_no_commnet->type==ET_PROCESO&&!next_no_commnet->variante); // proceso
 }
 
 bool Entity::IsOutOfProcess() {
@@ -690,5 +703,10 @@ void Entity::SetLabels() {
 	case ET_COUNT: return;
 	}
 	SetLabel(label);
+}
+
+void Entity::SetEditPos (int pos) {
+	edit_pos=pos;
+	EnsureCaretVisible();
 }
 

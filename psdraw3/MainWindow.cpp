@@ -28,6 +28,9 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
 	toolbar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT);
+	color_menu_back[0] = toolbar->GetBackgroundColour().Red()/255.f;
+	color_menu_back[1] = toolbar->GetBackgroundColour().Green()/255.f;
+	color_menu_back[2] = toolbar->GetBackgroundColour().Blue()/255.f;
 	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
 //	toolbar->AddTool(MID_SETTINGS,"","imgs/floaw/tb_settings.png");
 	toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));

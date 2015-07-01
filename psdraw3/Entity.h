@@ -98,6 +98,8 @@ struct Entity {
 	void CalculateNassiShne();
 	void CalculateClasico();
 	void CopyPos(Entity *o);
+	void SetEditPos(int pos);
+	void EnsureCaretVisible();
 	bool CheckMouse(int x, int y, bool click=true);
 	void Print(ostream &out, string tab, Entity *process, int &line_num);
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
