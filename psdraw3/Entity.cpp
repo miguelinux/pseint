@@ -17,8 +17,7 @@ bool Entity::alternative_io=false;
 bool Entity::shape_colors=false; 
 bool Entity::enable_partial_text=true;
 bool Entity::show_comments=true;
-static const int max_label_len_sec=25; // maxima longitud de un label antes de que se muestre cortado y con ..., para instrucciones secuenciales
-static const int max_label_len_cont=15; // maxima longitud de un label antes de que se muestre cortado y con ..., para estructuras de control
+int Entity::max_label_len[ET_COUNT];
 
 // tamaño de las letras
 #define char_w 12
@@ -39,16 +38,7 @@ void Entity::GetTextSize(int &w, int &h) {
 	h=char_h;
 }
 
-Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
-	if (nassi_shneiderman) {
-		if (_type==ET_ESCRIBIR) lpre="ESCRIBIR ";
-		else if (_type==ET_COMENTARIO) lpre="// ";
-		else if (_type==ET_LEER) lpre="LEER ";
-		else if (_type==ET_PARA) lpre="PARA ";
-		else if (_type==ET_REPETIR) lpre="HASTA QUE ";
-		else if (_type==ET_MIENTRAS) lpre="MIENTRAS ";
-	}		
-	variante=false;
+Entity::Entity(ETYPE _type, string _label, bool _variante) :type(_type),variante(_variante),label(_label) {
 	if (!all_any) {
 		all_any=this; 
 		all_next=all_prev=this;
@@ -66,7 +56,6 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 	parent=prev=next=NULL; child=NULL;
 	if (type==ET_PROCESO) { 
 		n_child=0;
-		lpre="Proceso ";
 	} else if (type==ET_SI) { // dos hijos
 		n_child=2;
 		child_bh=(int*)malloc(sizeof(int)*2);
@@ -83,17 +72,9 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		child[0]=child[1]=child[2]=child[3]=NULL;
 		child_bh[0]=child_bh[1]=child_bh[2]=child_bh[3]=0;
 		child_dx[0]=child_dx[1]=child_dx[2]=child_dx[3]=0;
-		LinkChild(1,new Entity(ET_AUX_PARA,""));
-		LinkChild(2,new Entity(ET_AUX_PARA,""));
-		LinkChild(3,new Entity(ET_AUX_PARA,""));
-		if (nassi_shneiderman) {
-			child[1]->lpre=" DESDE ";
-			child[1]->SetLabel("");
-			child[2]->lpre=" CON PASO ";
-			child[2]->SetLabel("");
-			child[3]->lpre=" HASTA ";
-			child[3]->SetLabel("");
-		}
+		LinkChild(1,new Entity(ET_AUX_PARA,"")); child[1]->SetLabels();
+		LinkChild(2,new Entity(ET_AUX_PARA,"")); child[2]->SetLabels();
+		LinkChild(3,new Entity(ET_AUX_PARA,"")); child[3]->SetLabels();
 	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
 		n_child=1;
 		child_bh=(int*)malloc(sizeof(int)*1);
@@ -101,10 +82,11 @@ Entity::Entity(ETYPE _type, string _label) :type(_type),label(_label) {
 		child=(Entity**)malloc(sizeof(Entity*)*1);
 		child[0]=NULL; child_dx[0]=child_bh[0]=0;
 		if (type!=ET_OPCION && type!=ET_SEGUN) flecha_in=flecha_h; 
-		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo"));
+		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo",true));
 	} else {
 		n_child=0;
 	}
+	SetLabels();
 	Calculate(false); // para que tengan un tamaño inicial no nulo al arrastrarlas desde la shapebar
 }
 
@@ -217,7 +199,7 @@ void Entity::EditLabel(unsigned char key) {
 
 int Entity::IsLabelCropped ( ) {
 	if (!enable_partial_text || this==edit) return 0;
-	int max_len = type<=ET_ASIGNAR?max_label_len_sec:max_label_len_cont;
+	int max_len = max_label_len[type];
 	if (int(label.size())>max_len) return max_len; else return 0;
 }
 
@@ -461,12 +443,8 @@ void Entity:: ResizeW(int aw, bool up) {
 }
 
 void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
-	if (!show_comments && type==ET_COMENTARIO) {
-		gwl=gwr=gh=fx=fy=bwl=bwr=bh=0;
-	} else {
-		if (nassi_shneiderman) CalculateNassiShne();
-		else CalculateClasico();
-	}
+	if (nassi_shneiderman) CalculateNassiShne();
+	else CalculateClasico();
 	// pasar a la siguiente entidad
 	if (next) {
 		next->x=x;
@@ -618,7 +596,7 @@ void Entity::CalculateAll (bool also_text_size) {
 	if (also_text_size) {
 		Entity *aux=Entity::all_any;
 		do {
-			aux->SetLabel(aux->label);
+			aux->SetLabels();
 			aux=aux->all_next;
 		} while (aux && aux!=Entity::all_any);
 	}
@@ -669,3 +647,48 @@ Entity *Entity::NextEntity(Entity *aux) {
 		}
 	}
 }
+
+void Entity::SetLabels() {
+	switch(type) {
+		case ET_COMENTARIO:
+			lpre=nassi_shneiderman?"// ":"";
+			break;
+		case ET_LEER:
+			lpre=nassi_shneiderman?"Leer ":"";
+		case ET_PROCESO: // se fija desde afuera, nunca cambia
+//			lpre=variante?"Fin Proceso":"Proceso ";
+			break;
+		case ET_ESCRIBIR:
+			lpre=nassi_shneiderman?"Escribir ":"";
+		case ET_ASIGNAR:
+			break;
+		case ET_SI:
+			break;
+		case ET_SEGUN:
+			break;
+		case ET_OPCION:
+			break;
+		case ET_PARA:
+			lpre=nassi_shneiderman?(variante?"Para Cada":"Para "):"";
+			break;
+		case ET_MIENTRAS:
+			lpre=nassi_shneiderman?"Mientras ":"";
+			break;
+		case ET_REPETIR:
+			lpre=nassi_shneiderman?(variante?"Mientras Que ":"Hasta Que "):"";
+			break;
+		case ET_AUX_PARA:
+			if (!parent) return; // en el ctor todavía no está linkeado al padre, y el lpre depende de la posicion en el padre
+			if (nassi_shneiderman) {
+				if (parent->child[1]==this) lpre=" Desde ";
+				else if (parent->child[2]==this) lpre=" Con Paso ";
+				else if (parent->child[3]==this) lpre=" Hasta ";
+			} else {
+				lpre="";
+			}
+			break;
+	case ET_COUNT: return;
+	}
+	SetLabel(label);
+}
+

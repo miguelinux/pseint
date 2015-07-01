@@ -17,7 +17,7 @@ BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_CHECKBOX(MID_COLORS,mxConfig::OnColors)
 	EVT_CHECKBOX(MID_COMMENTS,mxConfig::OnComments)
 	EVT_CHECKBOX(MID_CROP,mxConfig::OnCrop)
-	EVT_CHECKBOX(MID_PROC,mxConfig::OnProc)
+	EVT_COMBOBOX(MID_PROC,mxConfig::OnProc)
 	EVT_COMBOBOX(MID_STYLE,mxConfig::OnStyle)
 END_EVENT_TABLE()
 

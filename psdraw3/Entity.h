@@ -15,7 +15,7 @@ Tipos de entidades:
 	ET_LEER: leer, no tiene hijos
 	ET_ESCRIBIR: escribir, no tiene hijos
 	ET_ASIGNAR: asignar, dimension, definir, no tiene hijos, la variante es llamada a subproceso
-	ET_PROCESO: inicio y fin, se distinguen por variante y !variante
+	ET_PROCESO: inicio y fin, se distinguen por !variante y variante
 	ET_SI: si, dos hijos, el primero es el izquierdo, el segundo el derecho
 	ET_SEGUN: 1 o mas hijos, el ultimo siempre es "De Otro Modo"
 	ET_OPCION: 1 hijo, hijos de segun con las opciones, el hijo tiene las acciones para esa opcion
@@ -32,6 +32,7 @@ struct Entity {
 	static bool shape_colors; ///< mostrar los bloques de diferentes colores
 	static bool enable_partial_text; ///< acortar labels largos
 	static bool show_comments; ///< mostrar entidades de tipo ET_COMENTARIO
+	static int max_label_len[ET_COUNT];
 	Entity *all_next, *all_prev;
 	static Entity *all_any;
 	ETYPE type;
@@ -58,9 +59,9 @@ struct Entity {
 	int flecha_in; // si las flechas de entrada son mas largas que lo normal (ej, entrada en un repetitivo), se pone aca la diferencia (esto se podria sacar, no?)
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
-	string label, lpre; // rotulo(editable) y prefijo(no editable)
+	string lpre, label; // rotulo(editable) y prefijo(no editable)
 	string error; // mensaje de error si es que la estructura tiene un error de sintaxis
-	Entity(ETYPE _type, string _label);
+	Entity(ETYPE _type, string _label, bool _variante=false);
 	~Entity();
 	void SetEdit();
 	void UnsetEdit();
@@ -72,6 +73,7 @@ struct Entity {
 	void GetTextSize(int &w, int &h);
 	void GetTextSize(const string &label, int &w, int &h);
 	void SetLabel(string _label, bool recalc=false);
+	void SetLabels();
 	int IsLabelCropped();
 	int CheckLinkChild(int x, int y);
 	int CheckLinkOpcion(int x, int y);

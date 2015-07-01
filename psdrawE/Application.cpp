@@ -60,7 +60,7 @@ bool mxApplication::OnInit() {
 	// cargar el diagrama
 	bool force=false;
 	Entity::enable_partial_text=false;
-	Entity::show_comments=true;
+	Entity::show_comments=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		wxString arg(argv[i]);
@@ -139,8 +139,10 @@ bool mxApplication::OnInit() {
 	if (fout.Lower().EndsWith(".bmp")) type=wxBITMAP_TYPE_BMP;
 	_IF_PNG(if (fout.Lower().EndsWith(".png")) type=wxBITMAP_TYPE_PNG;)
 	_IF_JPG(else if (fout.Lower().EndsWith(".jpg")||fout.Lower().EndsWith(".jpeg")) type=wxBITMAP_TYPE_JPEG;)
-	if (bmp.SaveFile(fout,type))
-		wxMessageBox("Diagrama guardado","PSeInt");
+	if (bmp.SaveFile(fout,type)) {
+		if (force) cerr << "Guardado: "<<fout<<endl;
+		else wxMessageBox("Diagrama guardado","PSeInt");
+	}
 	
 	return false;
 }

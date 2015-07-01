@@ -194,7 +194,7 @@ void ProcessMenu(int op) {
 		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COMMENTS) {
 		Entity::show_comments=!Entity::show_comments;
-		Entity::CalculateAll();
+		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COLORS) {
 		Entity::shape_colors=!Entity::shape_colors;
 	} else if (op==MO_CHANGE_STYLE) {

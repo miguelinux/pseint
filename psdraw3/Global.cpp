@@ -83,6 +83,22 @@ Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en 
 bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
 
 void GlobalInit( ) {
+	
+	for(int i=0;i<ET_COUNT;i++)
+		Entity::max_label_len[i]=15;
+	Entity::max_label_len[ET_COMENTARIO]=25;
+	Entity::max_label_len[ET_LEER]=25;
+	Entity::max_label_len[ET_PROCESO]=25;
+	Entity::max_label_len[ET_ESCRIBIR]=25;
+	Entity::max_label_len[ET_ASIGNAR]=25;
+	Entity::max_label_len[ET_SI]=15;
+	Entity::max_label_len[ET_SEGUN]=15;
+	Entity::max_label_len[ET_OPCION]=10;
+	Entity::max_label_len[ET_PARA]=15;
+	Entity::max_label_len[ET_MIENTRAS]=15;
+	Entity::max_label_len[ET_REPETIR]=15;
+	Entity::max_label_len[ET_AUX_PARA]=10;
+	
 	for(int i=0;i<ET_COUNT;i++) { 
 		color_shape[i][0] = 1;
 		color_shape[i][1] = .95;

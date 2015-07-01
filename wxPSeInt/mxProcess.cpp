@@ -304,7 +304,7 @@ wxString mxProcess::GetDrawPostArgs ( ) {
 
 wxString mxProcess::GetDrawPreArgs ( ) {
 	wxString command;
-	command<<"--preservecomments --draw ----usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
+	command<<"--preservecomments --draw --usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
 	return command;
 }
 

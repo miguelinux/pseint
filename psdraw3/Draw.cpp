@@ -385,7 +385,7 @@ void display_cb() {
 			aux->Draw(aux->type==ET_OPCION);
 			line_width_bordes/=2;
 			if (aux->error.size()) SetStatus(color_error,aux->error);
-			else if (aux->IsLabelCropped()) SetStatus(color_label,aux->label);
+			else if (!mouse && aux->IsLabelCropped()) SetStatus(color_label,aux->label);
 		} else if (debugging && debug_current==aux) {
 			RaiiColorChanger rcc;
 			line_width_bordes*=2;

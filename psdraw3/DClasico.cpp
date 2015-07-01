@@ -414,6 +414,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 		if (type==ET_LEER) { bh+=margin; h+=margin; t_dy-=margin/2; }
 	}
 	if (type==ET_COMENTARIO) { 
+		if (!show_comments) { bwl=bwr=bh=0; return; }
 		if (variante || (next && next->type==ET_COMENTARIO)) bh-=flecha_h/2;
 		if (variante) {
 			fx-=w/2+5*margin; bwr=0; bwl=w+5*margin;

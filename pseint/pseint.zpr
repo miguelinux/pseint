@@ -13,11 +13,11 @@ version_required=20131115
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=SynCheck.cpp
+current_source=main.cpp
 path_char=/
 [source]
 path=main.cpp
-cursor=102:20
+cursor=116:30
 marker=134
 open=true
 [source]
@@ -26,7 +26,7 @@ cursor=133:41
 marker=268
 [source]
 path=SynCheck.cpp
-cursor=64:20
+cursor=0:0
 marker=66
 open=true
 [source]
