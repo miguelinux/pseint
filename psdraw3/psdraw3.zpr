@@ -12,7 +12,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=Entity.cpp
+current_source=Version.h
 path_char=/
 [source]
 path=Application.cpp
@@ -23,25 +23,26 @@ cursor=58:14
 marker=50
 [source]
 path=MainWindow.cpp
-cursor=93:43
-marker=52
+cursor=30:50
+marker=55
 [source]
 path=Comm.cpp
 cursor=44:0
 [source]
 path=DClasico.cpp
-cursor=279:18
+cursor=0:19
 marker=92
-marker=283
-marker=326
-marker=407
+marker=288
+marker=331
+marker=412
+open=true
 [source]
 path=DNassiSchne.cpp
 cursor=135:46
 marker=135
 [source]
 path=Draw.cpp
-cursor=213:9
+cursor=184:0
 marker=387
 marker=390
 [source]
@@ -54,7 +55,6 @@ marker=376
 marker=380
 marker=381
 marker=382
-open=true
 [source]
 path=Events.cpp
 cursor=123:6
@@ -62,14 +62,14 @@ marker=30
 marker=193
 [source]
 path=Global.cpp
-cursor=93:21
+cursor=0:28
 [source]
 path=Load.cpp
 cursor=259:62
 marker=302
 [source]
 path=Textures.cpp
-cursor=179:16
+cursor=180:16
 marker=193
 [source]
 path=../pseint/zockets.cpp
@@ -109,7 +109,7 @@ path=GLstuff.h
 cursor=6:24
 [header]
 path=Global.h
-cursor=19:31
+cursor=94:17
 [header]
 path=Load.h
 cursor=7:35
@@ -137,7 +137,7 @@ path=manifest.xml
 cursor=-1:0
 [other]
 path=../bin/help/cambios.html
-cursor=4:1
+cursor=4:41
 [config]
 name=Linux_Debug
 toolchain=
@@ -148,7 +148,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=--port=15 --shapecolors --use_alternative_io_shapes=1 --use_nassi_schneiderman=1 /home/zaskar/.pseint/temp_1.psd
+args=--port=15 --shapecolors --use_alternative_io_shapes=1 --use_nassi_schneiderman=0 /home/zaskar/.pseint/temp_7.psd
 exec_method=0
 exec_script=fasds
 env_vars=

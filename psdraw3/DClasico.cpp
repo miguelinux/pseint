@@ -242,10 +242,15 @@ void Entity::DrawClasico(bool force) {
 			DrawLineaVerticalH(d_x,d_y,-flecha_in); // flecha que entra del bloque
 			DrawLineaVerticalTo(d_x,d_y-child_bh[0]-flecha_h,d_y-d_bh+flecha_h); // flecha que sale del bloque
 			DrawLineaVerticalTo(d_fx,d_y,d_fy); // flecha que sale del circulo
-			DrawFlechaR(d_fx,d_x,d_y); 
+			DrawFlechaR(d_fx,(d_fx+d_x)/2,d_y); 
+			DrawLineaHorizontalTo((d_fx+d_x)/2,d_y,d_x); 
 			DrawLineaVerticalTo(d_fx,d_y,d_fy); // flecha que sale del circulo
 			DrawFlechaUp(d_fx,d_y-d_bh+flecha_h,d_fy-d_h); // flecha que entra al circulo
 			DrawLineaHorizontalTo(d_fx,d_y-d_bh+flecha_h,d_x);
+			glColor3fv(color_border[shape_colors?ET_PARA:ET_COUNT]);
+			DrawLinea(d_x-2*margin,d_y-d_bh+flecha_h-margin,d_x+2*margin,d_y-d_bh+flecha_h+margin);
+			DrawLinea(d_x-2*margin,d_y-margin,d_x+2*margin,d_y+margin);
+			glColor3fv(color_arrow);
 		} else if (type==ET_REPETIR) {
 			DrawFlechaDownHead(d_fx,d_fy);
 			if (variante) {
@@ -370,7 +375,7 @@ void Entity::DrawClasico(bool force) {
 				child[i]->Draw(true);
 			}
 		} else if (type==ET_PARA) {
-			glColor3fv(color_border[ET_PARA]);
+			glColor3fv(color_border[shape_colors?ET_PARA:ET_COUNT]);
 			glBegin(GL_LINES);
 			DrawLineaHorizontalW(d_fx-w/2,d_fy-d_h/2,w); // separadores de las cuatro partes del circulo
 			if (!variante) {
