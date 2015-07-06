@@ -208,12 +208,18 @@ int main(int argc, char* argv[]) {
 			cout<<"<!{[END_OF_OUTPUT]}!>"<<endl;
 			map<string,Funcion*>::iterator it1=subprocesos.begin(), it2=subprocesos.end();
 			while (it1!=it2) {
+				Funcion *func=it1->second;
+				for(int j=0;j<=func->cant_arg;j++) { // agregar argumentos y valor de retorno de la funcion
+					if (func->nombres[j].size() && !func->memoria->Existe(func->nombres[j]))
+						func->memoria->DefinirTipo(func->nombres[j],vt_desconocido);
+				}
 				if (it1->first!=main_process_name) cout<<"SUB";
 				cout<<"PROCESO ";
 				if (case_map) cout<<(*case_map)[it1->first];
 				else cout<<it1->first;
-				cout<<":"<<it1->second->userline_start<<':'<<it1->second->userline_end<<endl;
-				(it1++)->second->memoria->ListVars(case_map);
+				cout<<":"<<func->userline_start<<':'<<func->userline_end<<endl;
+				func->memoria->ListVars(case_map);
+				++it1;
 			}
 			cout<<"<!{[END_OF_VARS]}!>"<<endl;
 			if (lcount) {
