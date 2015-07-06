@@ -68,7 +68,7 @@ static const int hdbg[]={2,0,1};
 static const int pvar[]={0,1,0}; // LEFT	vars_window
 static const int popr[]={0,2,0}; // LEFT	opers_window
 static const int pdbg[]={0,1,0}; // RIGHT	debug_panel
-static const int pcmd[]={0,2,0}; // RIGHT	commands
+static const int pcmd[]={2,1,0}; // RIGHT	commands
 static const int prtr[]={1,1,0}; // BOTTOM	results_tree_ctrl
 static const int phlp[]={1,1,1}; // BOTTOM	help
 static const int pdkt[]={1,1,2}; // BOTTOM	desktop_test_panel
@@ -504,7 +504,9 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		CloseTestPackage();
 		aui_manager.Update(); 
 	} else {
-		if (!test_panel->GetHelp().IsEmpty()) ShowQuickHelp(true,test_panel->GetHelp(),false);
+		SetQuickHelpText(QH_NULL);
+		if (!test_panel->GetHelp().IsEmpty()) 
+			ShowQuickHelp(true,test_panel->GetHelp(),false);
 	}
 	return src;
 }

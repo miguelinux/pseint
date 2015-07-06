@@ -10,6 +10,7 @@ class mxSource;
 
 class mxTestPanel : public wxPanel {
 private:
+	static bool first_time; ///< flag to register a new wxMemoryFSHandler only once
 	Package pack;
 	wxSizer *sizer;
 	wxButton *eval_button, *help_button;
@@ -18,6 +19,7 @@ private:
 	mxSource *src;
 public:
 	mxTestPanel(wxWindow *parent);
+	bool Destroy();
 	bool Load(const wxString &path, const wxString &key, mxSource *src);
 	mxSource *GetSrc() { return src; }
 	const wxString &GetHelp() { return pack.GetHelp(); }

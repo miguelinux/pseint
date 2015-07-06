@@ -21,6 +21,7 @@ private:
 	wxString base_psc; ///< codigo inicial a mostrar en el editor
 	wxString help_text; ///< texto de ayuda para el problema, opcional
 	void ProcessFile(wxString name, wxString &content);
+	wxArrayString images;
 public:
 	Package();
 	void Reset();
@@ -40,6 +41,7 @@ public:
 	const wxString &GetHelp() const { return help_text; }
 	bool IsOk() { return is_ok; }
 	bool SaveConfig (const wxString &fname);
+	void UnloadImages();
 	wxString GetFullConfig();
 };
 

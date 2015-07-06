@@ -9,6 +9,10 @@
 #include <wx/textfile.h>
 #include "version.h"
 #include <wx/stream.h>
+#include <wx/mstream.h>
+#include <wx/fs_mem.h>
+#include <wx/image.h>
+#include <wx/filesys.h>
 
 class mxFilterInputStream : public wxFilterInputStream {
 	wxString key; int pos, len, base_pos;
@@ -62,7 +66,6 @@ protected:
 		}
 		return m_parent_o_stream->Write(uaux, size);
 	}
-	
 };
 
 bool Package::Load (const wxString & fname, const wxString &passkey) {
@@ -82,10 +85,21 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 		}
 		zip.OpenEntry(*entry);
 		if (!zip.CanRead()) return false;
-		wxString content;
-		wxStringOutputStream os(&content);
-		zip.Read(os);
-		ProcessFile(name,content);
+		if (name.Lower().EndsWith(".png")) {
+			wxMemoryOutputStream os;
+			zip.Read(os);
+#ifdef FOR_WXPSEINT
+			images.Add(name);
+			wxMemoryInputStream is(os);
+			wxImage img(is,wxBITMAP_TYPE_PNG);
+			wxMemoryFSHandler::AddFile(name,img,wxBITMAP_TYPE_PNG);
+#endif
+		} else {
+			wxString content;
+			wxStringOutputStream os(&content);
+			zip.Read(os);
+			ProcessFile(name,content);
+		}
 	}
 	return is_ok=read_something;
 }
@@ -98,10 +112,14 @@ bool Package::Load (const wxString &dir) {
 		wxString filename;
 		bool cont = wxdir.GetFirst(&filename, "*" , wxDIR_FILES);
 		while ( cont ) {
-			wxFile file(mdir+wxFileName::GetPathSeparator()+filename);
-			wxString content; wxStringOutputStream sos(&content);
-			wxFileInputStream fis(file); fis.Read(sos);
-			ProcessFile(filename,content);
+			if(filename.Lower().EndsWith(".png")) {
+				images.Add(mdir+wxFileName::GetPathSeparator()+filename);
+			} else {
+				wxFile file(mdir+wxFileName::GetPathSeparator()+filename);
+				wxString content; wxStringOutputStream sos(&content);
+				wxFileInputStream fis(file); fis.Read(sos);
+				ProcessFile(filename,content);
+			}
 			cont = wxdir.GetNext(&filename);
 		}
 	}
@@ -176,6 +194,7 @@ void Package::Reset ( ) {
 	tests.clear();
 	base_psc.Clear();
 	config.clear();
+	images.Clear();
 	SetConfigStr  ( "mensaje exito" , "El algoritmo es correcto" );
 	SetConfigStr  ( "mensaje error" , "El algoritmo no es correcto" );
 	SetConfigBool ( "mostrar soluciones" , true );
@@ -252,5 +271,17 @@ bool Package::Save (const wxString & fname, const wxString & passkey) {
 		wxStringInputStream is2(it->second.solution);
 		zip<<is2;
 	}
+	for(unsigned int i=0;i<images.GetCount();i++) {
+		wxFileInputStream is(images[i]);
+		zip.PutNextEntry(images[i].BeforeLast(wxFileName::GetPathSeparator()));
+		zip<<is;
+	}
 	return true;
 }
+
+void Package::UnloadImages( ) {
+	for(unsigned int i=0;i<images.GetCount();i++)
+		wxMemoryFSHandler::RemoveFile(images[i]);
+	images.Clear();
+}
+

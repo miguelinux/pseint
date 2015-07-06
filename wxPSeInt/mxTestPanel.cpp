@@ -10,13 +10,19 @@
 #include "Logger.h"
 #include "mxMainWindow.h"
 #include "version.h"
+#include <wx/fs_mem.h>
 
 BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 	EVT_BUTTON(mxID_TESTPACK_RUN,mxTestPanel::OnRun)
 	EVT_BUTTON(wxID_HELP,mxTestPanel::OnHelp)
 END_EVENT_TABLE()
+	
+bool mxTestPanel::first_time = true;
 
 mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
+	
+	if (first_time) wxFileSystem::AddHandler(new wxMemoryFSHandler); first_time=false;
+	
 	src = NULL;
 	sizer = new wxBoxSizer(wxHORIZONTAL);
 	eval_button = new wxButton(this,mxID_TESTPACK_RUN,_Z("Evaluar..."));
@@ -61,5 +67,10 @@ void mxTestPanel::Run (const wxString & source_fname) {
 	_LOG("mxTestPanel::Run");
 	_LOG("    "<<cmd);
 	wxExecute(cmd,wxEXEC_ASYNC);
+}
+
+bool mxTestPanel::Destroy ( ) {
+	pack.UnloadImages();
+	return wxPanel::Destroy();
 }
 
