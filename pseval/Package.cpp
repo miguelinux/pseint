@@ -273,7 +273,7 @@ bool Package::Save (const wxString & fname, const wxString & passkey) {
 	}
 	for(unsigned int i=0;i<images.GetCount();i++) {
 		wxFileInputStream is(images[i]);
-		zip.PutNextEntry(images[i].BeforeLast(wxFileName::GetPathSeparator()));
+		zip.PutNextEntry(images[i].AfterLast(wxFileName::GetPathSeparator()));
 		zip<<is;
 	}
 	return true;

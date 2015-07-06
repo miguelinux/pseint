@@ -144,7 +144,7 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	wxString &input=test.input, &output=test.output, &solution=test.solution;
 	wxTextOutputStream in(*the_process->GetOutputStream());
 	wxTextInputStream out(*the_process->GetInputStream());
-	
+	input.Replace("\r","",true);
 	in<<input;
 	process_finished=false;
 	while(!process_finished) {
