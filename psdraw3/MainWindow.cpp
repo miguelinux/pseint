@@ -49,7 +49,7 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	toolbar->AddSeparator();
 	toolbar->AddTool(MID_HELP ,"",wxBitmap("imgs/flow/tb_help.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddTool(MID_CLOSE,"",wxBitmap("imgs/flow/tb_close.png",wxBITMAP_TYPE_PNG));
-	
+	toolbar->Realize();
 	sizer->Add(new Canvas(this),wxSizerFlags().Expand().Proportion(1));
 	SetSizer(sizer);
 	canvas->SetFocusFromKbd();

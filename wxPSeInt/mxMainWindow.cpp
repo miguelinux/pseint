@@ -780,7 +780,8 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 		}
 	}
 	
-	/** @todo: ver porque esto rompe al x (pid incorrecto?) **/
+	wxYield(); // ~mxClose mata su proceso de paso a paso, el yield es para procesar su OnTerminate antes del while que sigue y no matarlo dos veces
+	
 	if (proc_for_killing) delete proc_for_killing;
 	proc_for_killing=NULL;
 	mxProcess *proc=proc_list;

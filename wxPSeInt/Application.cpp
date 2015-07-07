@@ -19,6 +19,7 @@
 #include "CommunicationsManager.h"
 #include "mac-stuff.h"
 #include "error_recovery.h"
+#include <wx/textfile.h>
 using namespace std;
 
 
