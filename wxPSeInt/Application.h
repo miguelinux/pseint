@@ -9,6 +9,7 @@ extern wxSplashScreen *splash;
 class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();
+	void RecoverFromError();
 };
 
 #endif

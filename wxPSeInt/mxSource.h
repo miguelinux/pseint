@@ -9,6 +9,7 @@ class mxInputDialog;
 class mxProcess;
 class wxTimer;
 class wxSocketBase;
+class er_source_register;
 
 #define mxSOURCE_BOLD 1
 #define mxSOURCE_ITALIC 2
@@ -203,6 +204,10 @@ public:
 	
 	void OnMouseWheel(wxMouseEvent &event);
 	void OnClick(wxMouseEvent &evt);
+	
+	bool IsExample() { return is_example; }
+	
+	er_source_register *er_register;
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -18,6 +18,7 @@
 #include "mxIconInstaller.h"
 #include "CommunicationsManager.h"
 #include "mac-stuff.h"
+#include "error_recovery.h"
 using namespace std;
 
 
@@ -114,6 +115,44 @@ bool mxApplication::OnInit() {
 	
 	comm_manager=new CommunicationsManager();
 	
+	RecoverFromError();
+	
 	return true;
 	
 }
+
+void mxApplication::RecoverFromError ( ) {
+	
+	wxTextFile fil(er_get_recovery_fname());	
+	if (!fil.Exists()) return;
+	
+	wxArrayString rec_names, rec_files;
+	fil.Open();
+	fil.GetFirstLine(); // hora de explosion
+	wxString str;
+	while (!fil.Eof()) {
+		str = fil.GetNextLine(); // nombre de la pestaña
+		if (str.Len() && !fil.Eof()) {
+			fil.GetNextLine(); // nombre real del archivo antes de la explosion
+			rec_names.Add(str);
+			rec_files.Add(str=fil.GetNextLine()); // nombre del archivo de segurida generado en la explosion
+		}
+	}
+	fil.Close();
+	
+	if ( !rec_names.GetCount() ) return;
+	int res =wxMessageBox("PSeInt no se cerró correctamente durante su última ejecución.\n"
+							"Algunos algoritmos en los que trabajaba fueron guardados,\n"
+							"automaticamente y ahora puede recuperarlos. ¿Desea recuperarlos?","PSeInt - Recuperación ante errores",wxYES_NO|wxICON_WARNING);
+	if (res==wxYES) {
+		for (unsigned int i=0;i<rec_files.GetCount();i++) {
+			mxSource *src =	main_window->OpenProgram(rec_files[i],false);
+			src->SetPageText(rec_names[i]);
+			src->SetModify(true);
+			src->sin_titulo = true;
+		}
+	}	
+	
+	wxRemoveFile(er_get_recovery_fname());
+}
+

@@ -12,7 +12,7 @@
 #include "mxVarWindow.h"
 #include <wx/choicdlg.h>
 #include "mxDesktopTestGrid.h"
-using namespace std;
+#include "error_recovery.h"
 #include "mxUtils.h"
 #include "mxSource.h"
 #include "mxStatusBar.h"
@@ -204,6 +204,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	
 	SetMouseDwellTime(500);
 	
+	er_register_source(this);
 }
 
 static void mxRemoveFile(const wxString &file) {
@@ -212,6 +213,7 @@ static void mxRemoveFile(const wxString &file) {
 
 mxSource::~mxSource() {
 	_LOG("mxSource::~mxSource "<<this);
+	er_unregister_source(this);
 	mxRemoveFile(GetTempFilenameOUT());
 	mxRemoveFile(GetTempFilenamePSC());
 	mxRemoveFile(GetTempFilenamePSD());

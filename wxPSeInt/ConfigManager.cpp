@@ -6,6 +6,7 @@
 #include <wx/msgdlg.h>
 #include "Logger.h"
 #include "string_conversions.h"
+#include "error_recovery.h"
 
 ConfigManager *config;
 
@@ -39,6 +40,8 @@ ConfigManager::ConfigManager(wxString apath):lang(LS_INIT) {
 #endif
 	
 	lang.Log();
+	
+	er_init(temp_dir);
 }
 
 void ConfigManager::LoadDefaults() {

@@ -52,6 +52,7 @@
 #include "mxIconInstaller.h"
 #include "mxTestPanel.h"
 #include "mxHtmlWindow.h"
+#include "error_recovery.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -806,6 +807,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 		config->maximized=false;
 	}	
 	config->Save();
+	er_uninit();
 	delete find_replace_dialog; find_replace_dialog=NULL;
 	delete help; help=NULL;
 	delete debug; debug=NULL;
@@ -841,6 +843,10 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 	}
 	// si no hay clave, preguntar
 	if (ask) key = wxGetTextFromUser(_Z("Palabra a buscar:"), _Z("Ayuda Rápida"), _T(""), this);
+	if (key=="K-BOOM!!!") { // para probar el error-recovery
+		int *p = NULL;
+		cout << *p;
+	}
 	// mostrar panel y cargar ayuda
 	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),true);
 }
