@@ -92,7 +92,7 @@ void LangSettings::init() {
 			"selección múltiple (\"Según\" en PSeInt). Si habilita esta opción, PSeInt aplicará esta restricción. En caso "
 			"contrario, podrá utilizar también variables de tipo caracter."
 		);
-	data[LS_DEDUCE_NEGATIVE_FOR_STEP].Set("integer_only_switch",	true,
+	data[LS_DEDUCE_NEGATIVE_FOR_STEP].Set("deduce_negative_for_step",	true,
 		"Permitir omitir el paso -1 en ciclos Para",
 			"Con esta opción activa, si no se especifica el valor del \"paso\" en una estructura de tipo \"Para\", se utiliza +1 o -1 "
 			"según corresponda. Se determina comparando los valores iniciales y finales, si el primero es mayor al segundo +1, o -1 "

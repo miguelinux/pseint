@@ -13,6 +13,6 @@ enable_user_functions=1
 lazy_syntax=0
 coloquial_conditions=0
 integer_only_switch=1
-integer_only_switch=0
+deduce_negative_for_step=0
 use_nassi_schneiderman=1
 use_alternative_io_shapes=0
