@@ -318,7 +318,7 @@ bool Save(const char *filename) {
 	code2draw.clear(); debug_current=NULL;
 	int line=1;
 	for(unsigned int i=0;i<procesos.size();i++) {
-		procesos[i]->Print(fout,"",procesos[i],line);
+		procesos[i]->GetTopEntity()->Print(fout,"",procesos[i],line);
 		fout<<endl; line++;
 	}
 	fout.close();
