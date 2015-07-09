@@ -483,9 +483,9 @@ int SynCheck(int linea_from, int linea_to) {
 			while (pt2>0 && cadena[pt2-1]==' ') pt2--;
 			if (pt1!=0||pt2!=l) cadena=cadena.substr(pt1,pt2-pt1);
 			
-			if (preserve_comments && (LeftCompare(cadena,"#comment ") || LeftCompare(cadena,"#comment-inline "))) {
-				continue;
-			}
+			if (preserve_comments && LeftCompare(cadena,"#comment") && 
+				(cadena=="#comment" || cadena=="#comment-line" || LeftCompare(cadena,"#comment ") || LeftCompare(cadena,"#comment-inline "))
+			) continue;
 			
 			int len = cadena.size();
 			if (lang[LS_LAZY_SYNTAX] && LeftCompare(cadena,"FIN ")) { cadena="FIN"+cadena.substr(4); len--; }

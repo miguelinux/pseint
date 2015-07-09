@@ -1990,6 +1990,7 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 }
 
 void mxMainWindow::OnKillFocus (wxFocusEvent &event) {
+	_LOG("mxMainWindow::OnKillFocus");
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
 }
 

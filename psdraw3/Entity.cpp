@@ -400,6 +400,7 @@ void Entity::DrawText() {
 }
 
 void Entity::EnsureCaretVisible() {
+	if (!w) return;
 	int lz=label.size(); if (!lz) lz=1; // ojo estas dos lineas deben coincidir con las dos de DrawText
 	lz= d_fx+t_dx-t_w/2+t_prew+(t_w-t_prew)*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
 	// asegurarse de que el cursor se vea

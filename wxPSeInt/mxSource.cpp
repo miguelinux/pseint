@@ -1118,6 +1118,7 @@ void mxSource::SetAutocompletion() {
 }
 
 void mxSource::ReloadFromTempPSD (bool check_syntax) {
+	_LOG("mxSource::ReloadFromTempPSD "<<this);
 	mask_timers=true;
 	int cl=GetCurrentLine(), cp=GetCurrentPos(); cp-=PositionFromLine(cl);
 	wxString file=GetTempFilenamePSD();
@@ -1342,14 +1343,17 @@ void mxSource::StopRTSyntaxChecking ( ) {
 void mxSource::OnTimer (wxTimerEvent & te) {
 //	_LOG("mxSource::OnTimer in");
 	if (te.GetEventObject()==flow_timer) {
+		_LOG("mxSource::OnTimes(flow) "<<this);
 		UpdateFromFlow();
 	} else if (te.GetEventObject()==rt_timer) {
+		_LOG("mxSource::OnTimes(rt) "<<this);
 		if (main_window->GetCurrentSource()!=this) {
 //			_LOG("mxSource::OnTimer out");
 			return; // solo si tiene el foco
 		}
 		DoRealTimeSyntax(); HighLightBlock();
 	} else if (te.GetEventObject()==reload_timer) {
+		_LOG("mxSource::OnTimes(reload) "<<this);
 		if (run_socket && rt_errors.empty()) UpdateRunningTerminal();
 	}
 //	_LOG("mxSource::OnTimer out");
@@ -1686,6 +1690,7 @@ void mxSource::DebugMode (bool on) {
 }
 
 void mxSource::OnSetFocus (wxFocusEvent & evt) {
+	_LOG("mxSource::SetFocus "<<this);
 	flow_timer->Start(100,true);
 	evt.Skip();
 }
