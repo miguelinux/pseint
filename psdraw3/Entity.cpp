@@ -184,6 +184,7 @@ void Entity::EditLabel(unsigned char key) {
 			SetEditPos(edit_pos-1);
 			SetLabel(label,true);
 		}
+		SetModified();
 	} else if (key==127) {
 		if (edit_pos<int(label.size())) {
 			label.erase(edit_pos,1);
@@ -196,6 +197,7 @@ void Entity::EditLabel(unsigned char key) {
 		label.insert(edit_pos,string(1,key));
 		SetEditPos(edit_pos+1);
 		SetLabel(label,true);
+		SetModified();
 	}
 }
 
