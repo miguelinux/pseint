@@ -568,13 +568,14 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
 		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
 	} else if (type==ET_COMENTARIO) {
-		if (variante) { 
-			if (inline_comments=="") inline_comments=" // "; else inline_comments+=" - ";
+		string pre="// "; if (!label.empty() && label[0]=='/') pre="//";
+		if (variante) {
+			if (inline_comments=="") inline_comments=string(" ")+pre; else inline_comments+=" - ";
 			inline_comments+=label;
 		} else {
 			string prev_ilc = inline_comments;
 			inline_comments = "";
-			out<<tab<<"// "<<label<<_endl_this;
+			out<<tab<<pre<<label<<_endl_this;
 			inline_comments = prev_ilc;
 		}
 	}
