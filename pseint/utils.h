@@ -76,15 +76,16 @@ inline string DblToStr(double f) {
 // -------------------------------------------------------------------
 //    Convierte un double a una cadena - Baja Precision
 // -------------------------------------------------------------------
-inline string DblToStr(double f,bool low_precision) {
+inline string DblToStr(double f,bool low_precision) { // low precision está para distinguir la sobrecarga, aunque no se use adentro
 	char ret[2048];
 	sprintf(ret,"%.10f",f);
 	// eliminar ceros que sobren y el punto si era entero
 	int i=0; while (ret[i]!=0) i++;
-	while (ret[--i]=='0');
-	if (ret[i]=='.') i--;
-	ret[++i]='\0';
-	return ret;
+	while (ret[--i]=='0'); // contar ceros de atras para adelante
+	if (ret[i]=='.') i--; // si llegamos al '.' sacarla tambien
+	if (ret[0]=='-'&&ret[1]=='0'&&i==1) return "0"; // si quedo "-0" sacar el -
+	else ret[++i]='\0'; // aplicar el corte
+	return ret; 
 }
 
 // ***************** Control de Errores y Depuración **********************
