@@ -210,10 +210,6 @@ void mxDebugWindow::OnDebugEvaluate(wxCommandEvent &evt) {
 	evaluate_window->Show();
 }
 
-void mxDebugWindow::SetEvaluationValue (wxString val, char tipo) {
-	evaluate_window->SetEvaluationValue(val,tipo);
-}
-
 void mxDebugWindow::ProfileChanged ( ) {
 	dp_check_step_in->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
 	Layout();

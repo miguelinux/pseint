@@ -73,25 +73,27 @@ void Intercambio::ProcData(string order) {
 		zocket_escribir(zocket,"estado ejecutando\n",18);
 	} else if (order.substr(0,6)=="delay ") {
 		delay=atoi(order.substr(6).c_str());
-	} else if (order.substr(0,8)=="evaluar ") {
-		is_evaluation_error=false;
-		evaluating_for_debug=true;
-		string exp = order.substr(8);
-		string res,str="evaluacion x ";
-		ParseInspection(exp);
+	} else if (order.substr(0,8)=="evaluar ") { // "evaluar key value"
+		is_evaluation_error=false; evaluating_for_debug=true; // evaluador en modo debug
+		string res, str="evaluacion ";
+		int key_end = 8; while(order[key_end]!=' ') ++key_end; // cortar clave
+		str+= order.substr(8,(++key_end)-8);  // agregar clave en la respuesta 
+		int pos_tipo = str.size(); str+="x "; // agregar espacio para el tipo
+		string exp = order.substr(key_end); // cortar expresion
+		ParseInspection(exp); // reformatear
 		tipo_var tipo;
-		if (!is_evaluation_error)
-			res = Evaluar(exp,tipo);
-		if (is_evaluation_error) 
-			str+=evaluation_error+"\n";
-		else {
-			if (tipo==vt_numerica)
+		if (!is_evaluation_error) // si parecia corrcta
+			res = Evaluar(exp,tipo); // evaluar
+		if (is_evaluation_error) // si no se pude evaluar
+			str+=evaluation_error+"\n"; // responder con error
+		else { // si se pudo evaluar
+			if (tipo==vt_numerica) // si era numerica, redondear para salida
 				res=DblToStr(StrToDbl(res),true);
-			str+=res+"\n";
+			str+=res+"\n"; // agregar la expresion
 		}
-		str[11]='0'+(tipo.cb_log?1:0)+(tipo.cb_num?2:0)+(tipo.cb_car?4:0); // reemplaza la x por el tipo
-		zocket_escribir(zocket,str.c_str(),str.size());
-		evaluating_for_debug=false;
+		str[pos_tipo]='0'+(tipo.cb_log?1:0)+(tipo.cb_num?2:0)+(tipo.cb_car?4:0); // reemplaza la x por el tipo
+		zocket_escribir(zocket,str.c_str(),str.size()); // enviar respuesta
+		evaluating_for_debug=false; // quitar evaluador del modo debug
 	} else if (order.substr(0,12)=="autoevaluar ") {
 		string exp = order.substr(12);
 		evaluating_for_debug=true;

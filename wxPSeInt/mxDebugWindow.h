@@ -37,7 +37,6 @@ public:
 	void OnDesktopTestPanelHide();
 	bool IsDesktopTestEnabled();
 	void StartDebugging(mxSource *source, bool paused);
-	void SetEvaluationValue(wxString val, char tipo);
 	void ProfileChanged();
 	void ShowInEvaluateDialog(wxString s);
 	void SetSubtitles(bool on);

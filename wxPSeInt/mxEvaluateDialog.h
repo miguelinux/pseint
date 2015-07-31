@@ -18,10 +18,11 @@ public:
 	void OnCloseButton(wxCommandEvent &evt);
 //	void OnClose(wxCloseEvent &evt);
 	void EvaluateExpression(wxString exp);
-	void SetEvaluationValue(wxString val, char c);
+	void SetEvaluationValue(wxString val);
 	void OnCharHook(wxKeyEvent &evt);
 	void Evaluate();
 	void Show();
+	static wxString Char2Tipo(char c);
 	DECLARE_EVENT_TABLE();
 	~mxEvaluateDialog();
 };

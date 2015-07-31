@@ -213,6 +213,7 @@ static void mxRemoveFile(const wxString &file) {
 
 mxSource::~mxSource() {
 	_LOG("mxSource::~mxSource "<<this);
+	debug->InvalidateLambda(this);
 	er_unregister_source(this);
 	mxRemoveFile(GetTempFilenameOUT());
 	mxRemoveFile(GetTempFilenamePSC());
@@ -1455,12 +1456,24 @@ void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
 void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	
 	if (main_window->GetCurrentSource()!=this) return;
-	if (!config->rt_syntax || !main_window->IsActive()) return; 
-	int p = event.GetPosition();
-	int s = GetStyleAt(p);
-	if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
-		unsigned int l=LineFromPosition(p);
-		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
+	if (debug->debugging && debug->paused) {
+		int p=event.GetPosition(); if (p<0) return; int s=GetStyleAt(p);
+		wxString key=GetCurrentKeyword(p);
+		if (key.Len()!=0 && (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS)) {
+			if (GetCharAt(p+key.Len()=='('||GetCharAt(p+key.Len()=='['))) { // si es arreglo, incluir los indices
+				int p2 = BraceMatch(p+key.Len());
+				if (p2!=wxSTC_INVALID_POSITION) key+=GetTextRange(p+key.Len(),++p2);
+			}
+			_DEBUG_LAMBDA_3( lmbCalltip, mxSource,src, wxString,var, int,pos, { src->CallTipShow(pos,var+": "+ans.Mid(2)); } );
+			debug->SendEvaluation(key,new lmbCalltip(this,key,p));
+		}
+	} else if (config->rt_syntax && main_window->IsActive()) {
+		int p = event.GetPosition();
+		int s = GetStyleAt(p);
+		if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
+			unsigned int l=LineFromPosition(p);
+			if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
+		}
 	}
 }
 

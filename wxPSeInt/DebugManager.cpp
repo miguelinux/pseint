@@ -16,8 +16,6 @@ DebugManager *debug;
 DebugManager::DebugManager() {
 	do_desktop_test=false;
 	debugging=false;
-//	server=NULL;
-//	port=-1;
 	step_in=true;
 	subtitles_on=false;
 	source=NULL;
@@ -31,21 +29,9 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	source=src;
 	debugging=true;
 	paused=false;
+	on_evaluar.clear();
 	subtitles->Reset();
 	desktop_test->ResetTest();
-	
-//	if (server!=NULL) return;
-//	
-//	do {
-//		if (server) delete server;
-//		wxIPV4address adrs;
-//		adrs.Hostname("127.0.0.1");
-//		adrs.Service(port=config->GetDebugPort());
-//		server = new wxSocketServer(adrs,wxSOCKET_NOWAIT);
-//		server->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-//		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-//		server->Notify(true);
-//	} while (!server->IsOk());
 	return;
 	
 }
@@ -110,7 +96,7 @@ void DebugManager::ProcSocketData(wxString data) {
 			debug_panel->SetState(DS_NONE);
 		}
 	} else if (data.StartsWith("evaluacion ")) {
-		debug_panel->SetEvaluationValue(data.Mid(13),data[11]);
+		RunLambda(data.AfterFirst(' ').BeforeFirst(' '),data.AfterFirst(' ').AfterFirst(' '));
 	}	
 }
 
@@ -158,9 +144,21 @@ void DebugManager::Stop() {
 	}
 }
 
-void DebugManager::SendEvaluation(wxString exp) {
+static wxString aux_SendEvaluation_GetNextKey() {
+	static wxString key = "@";
+	int a=0; 
+	while( (key[a]++)=='Z' ) {
+		key[a++]='A';
+		if (a==int(key.length())) key+="@";
+	}
+	return key;
+}
+
+void DebugManager::SendEvaluation(wxString exp, DebugLambda *lambda) {
+	wxString key = aux_SendEvaluation_GetNextKey();
+	on_evaluar[key] = lambda;
 	wxString str("evaluar ");
-	str<<exp<<"\n";
+	str<<key<<" "<<exp<<"\n";
 	socket->Write(str.c_str(),str.Len());	
 }
 
@@ -188,3 +186,16 @@ void DebugManager::ProcessSocketLost() {
 	debugging=false;
 	socket=NULL;
 }
+
+void DebugManager::InvalidateLambda (void * ptr) {
+	for ( map<wxString,DebugLambda*>::iterator it=on_evaluar.begin(), end=on_evaluar.end(), aux; it!=end; ) {
+		if (it->second->Invalidate(ptr)) { aux = it++; on_evaluar.erase(aux); } else ++it;
+	}
+}
+
+void DebugManager::RunLambda (wxString key, wxString ans) {
+	map<wxString,DebugLambda*>::iterator it=on_evaluar.find(key);
+	if (it==on_evaluar.end()) return;
+	it->second->Do(ans); delete it->second; on_evaluar.erase(it);
+}
+

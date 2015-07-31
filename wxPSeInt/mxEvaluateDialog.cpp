@@ -67,7 +67,8 @@ void mxEvaluateDialog::Evaluate() {
 		act_expression=combo->GetValue();
 		if ( !last_expression.Len() || (act_expression.Len() && last_expression!=act_expression) )
 			combo->Append(act_expression);
-		debug->SendEvaluation(act_expression);
+		_DEBUG_LAMBDA_1( lmbEvaluate, mxEvaluateDialog,ev_dlg, { ev_dlg->SetEvaluationValue(ans); } );
+		debug->SendEvaluation(act_expression, new lmbEvaluate(this));
 		combo->SetSelection(0,act_expression.Len());
 		last_expression=act_expression;
 	} else
@@ -78,17 +79,9 @@ void mxEvaluateDialog::OnCloseButton(wxCommandEvent &evt) {
 	Hide();
 }
 
-void mxEvaluateDialog::SetEvaluationValue(wxString val, char t) {
-	result->SetValue(val);
-	switch (t) {
-	case '1': tipo->SetValue("Lógico"); break;
-	case '2': tipo->SetValue("Numérico"); break;
-	case '3': tipo->SetValue("Lógico o Numérico"); break;
-	case '4': tipo->SetValue("Caracter"); break;
-	case '5': tipo->SetValue("Lógico o Caracter"); break;
-	case '6': tipo->SetValue("Numérico o Caracter"); break;
-	default: tipo->SetValue("Indefinido"); break;
-	}
+void mxEvaluateDialog::SetEvaluationValue(wxString val) {
+	result->SetValue(val.Mid(2));
+	tipo->SetValue(Char2Tipo(val[0]));
 }
 
 //void mxEvaluateDialog::OnClose(wxCloseEvent &evt) {
@@ -111,5 +104,17 @@ void mxEvaluateDialog::EvaluateExpression (wxString exp) {
 	combo->SetValue(exp);
 	wxCommandEvent evt;
 	OnEvaluateButton(evt);
+}
+
+wxString mxEvaluateDialog::Char2Tipo (char c) {
+	switch (c) {
+	case '1': return "Lógico";
+	case '2': return "Numérico";
+	case '3': return "Lógico o Numérico";
+	case '4': return "Caracter";
+	case '5': return "Lógico o Caracter";
+	case '6': return "Numérico o Caracter";
+	default:  return "Indefinido";
+	}
 }
 
