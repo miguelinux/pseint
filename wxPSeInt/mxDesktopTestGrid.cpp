@@ -104,9 +104,9 @@ void mxDesktopTestGrid::SetCols() {
 	Freeze();
 	BeginBatch();
 	created=false;
-	DeleteRows(0,rows_num);
+	if (rows_num) DeleteRows(0,rows_num);
 	int cols_num=GetNumberCols();
-	DeleteCols(PRECOLS,cols_num-PRECOLS);
+	if (cols_num-PRECOLS) DeleteCols(PRECOLS,cols_num-PRECOLS);
 	unsigned int c = variables.GetCount();
 	InsertCols(PRECOLS,c);
 	old_size = GetSize().GetWidth()-GetColSize(0)-GetColSize(1);
@@ -154,7 +154,7 @@ void mxDesktopTestGrid::SetLine(wxString proc, long line, long i) {
 }
 
 void mxDesktopTestGrid::ResetTest() {
-	DeleteRows(0,rows_num);
+	if (rows_num) DeleteRows(0,rows_num);
 	rows_num=0;
 }
 

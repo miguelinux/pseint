@@ -1827,7 +1827,7 @@ void mxSource::DefineVar(int where, wxString var_name, int type) {
 	
 	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('['); // cortar las dimensiones si fuera un arreglo
 	
-	if (type==-1) type = vars_window->GetVarType(where, var_name);
+	if (type==-1) { int line=where+1; type = vars_window->GetVarType(line, var_name); }
 	if (type==-1) type = 0; else if (type&LV_DEFINIDA) return;
 	wxString var_type;
 	

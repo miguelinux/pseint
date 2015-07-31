@@ -156,11 +156,11 @@ int mxVarWindow::GetVarType (int &line, wxString var_name) {
 	wxTreeItemId it = tree->GetFirstChild(tree->GetRootItem(),cookie);
 	while (it.IsOk()) {
 		range *r=(range*)tree->GetItemData(it);
-		if (line>=r->from && line<=r->to) {
+		if (/*r && */line>=r->from && line<=r->to) {
 			line = r->from;
 			break;
 		}
-		it = tree->GetNextChild(it,cookie);
+		it = tree->GetNextSibling(it);
 	}
 	if (!it.IsOk()) return -1;
 	it = tree->GetFirstChild(it,cookie);
@@ -173,7 +173,7 @@ int mxVarWindow::GetVarType (int &line, wxString var_name) {
 			if (it_text.Upper()==var_name) 
 				return GetVarType(it);
 		}
-		it = tree->GetNextChild(it,cookie);
+		it = tree->GetNextSibling(it);
 	}
 	return -1;
 	
