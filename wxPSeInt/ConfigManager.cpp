@@ -57,7 +57,7 @@ void ConfigManager::LoadDefaults() {
 	show_vars = false;
 	show_opers = false;
 	show_commands = true;
-	show_toolbar = true;
+//	show_toolbar = true;
 	autocomp = true;
 	highlight_blocks = true;
 	autoclose = true;
@@ -136,7 +136,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("show_opers=")<<(show_opers?1:0));
 	fil.AddLine(wxString("show_commands=")<<(show_commands?1:0));
 	fil.AddLine(wxString("show_debug_panel=")<<(show_debug_panel?1:0));
-	fil.AddLine(wxString("show_toolbar=")<<(show_toolbar?1:0));
+//	fil.AddLine(wxString("show_toolbar=")<<(show_toolbar?1:0));
 	fil.AddLine(wxString("calltip_helps=")<<(calltip_helps?1:0));
 	fil.AddLine(wxString("autocomp=")<<(autocomp?1:0));
 	fil.AddLine(wxString("highlight_blocks=")<<(highlight_blocks?1:0));
@@ -204,7 +204,7 @@ void ConfigManager::Read() {
 			else if (key=="show_vars") show_vars=utils->IsTrue(value);
 			else if (key=="show_opers") show_opers=utils->IsTrue(value);
 			else if (key=="show_debug_panel") show_debug_panel=utils->IsTrue(value);
-			else if (key=="show_toolbar") show_toolbar=utils->IsTrue(value);
+//			else if (key=="show_toolbar") show_toolbar=utils->IsTrue(value);
 			else if (key=="auto_quickhelp") auto_quickhelp=utils->IsTrue(value);
 			else if (key=="calltip_helps") calltip_helps=utils->IsTrue(value);
 			else if (key=="autocomp") autocomp=utils->IsTrue(value);

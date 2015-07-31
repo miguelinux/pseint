@@ -388,7 +388,7 @@ void mxMainWindow::CreateToolbars() {
 //	utils->AddTool(toolbar,mxID_FILE_EXIT,"Salir","salir.png","");
 	toolbar->Realize();
 	wxAuiPaneInfo info; info.Name("toolbar").Caption("Toolbar").ToolbarPane().Top().Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]).LeftDockable(false).RightDockable(false).Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]);
-	if (config->show_toolbar) info.Show(); else info.Hide();
+	/*if (config->show_toolbar)*/ info.Show(); /*else info.Hide();*/
 	aui_manager.AddPane(toolbar, info);
 	
 }
@@ -797,7 +797,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 	config->show_vars = aui_manager.GetPane(vars_window).IsShown();
 	config->show_opers = aui_manager.GetPane(opers_window).IsShown();
 	config->show_commands = aui_manager.GetPane(commands).IsShown();
-	config->show_toolbar = aui_manager.GetPane(toolbar).IsShown();
+//	config->show_toolbar = aui_manager.GetPane(toolbar).IsShown();
 	if (IsMaximized()) {
 		config->maximized=true;
 	} else if (!IsIconized()) { 

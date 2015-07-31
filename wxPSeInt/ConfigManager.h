@@ -49,7 +49,7 @@ public:
 	bool colour_sintax;
 	bool shape_colors; ///< usar diferentes colores de fondo para las distintas estructuras de control
 	bool psdraw_nocrop; ///< no cortar labels largos en el diagrama (por defecto remplaza "xxxxxxxxxx" por "xxx...")
-	bool show_toolbar;
+//	bool show_toolbar;
 	bool show_vars;
 	bool show_opers;
 	bool show_commands;
