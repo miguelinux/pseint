@@ -618,11 +618,11 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			if (!t1.cb_num || !t2.cb_num) { tipo=vt_error; ev_return(""); }
 			// operar
 			double res=0, o1=StrToDbl(s1), o2=StrToDbl(s2);
-			if (op=='+')
+			if (op=='+') {
 				res=o1+o2;
-			else if (op=='-')
+			} else if (op=='-') { 
 				res=o1-o2;
-			else if (op=='/')
+			} else if (op=='/') {
 				if (o2==0) {
 					if (Inter.Running()) {
 						WriteError(296,"Division por cero");
@@ -631,9 +631,9 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return("0");
 				} else
 					res=o1/o2;
-			else if (op=='*')
+			} else if (op=='*') {
 				res=o1*o2;
-			else if (op=='%')
+			} else if (op=='%') {
 				if (o2==0) {
 					if (Inter.Running()) {
 						WriteError(297,"Division por cero");
@@ -641,12 +641,16 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 					ev_return("0");
 				} else {
-					if (o1!=int(o1)||o2!=int(o2))
+					if (o1!=int(o1)||o2!=int(o2)) {
 						WriteError(298,"Los operandos para el operador MOD deben ser enteros");
-					res=int(o1)%int(o2);
+					} else if (o2==0) {
+						WriteError(316,"El segundo operando para el operador MOD no puede ser cero");
+					} else 
+						res=int(o1)%int(o2);
 				}
-			else if (op=='^')
+			} else if (op=='^') {
 				res=pow(o1,o2);
+			}
 			ev_return(DblToStr(res));
 		}
 		}
