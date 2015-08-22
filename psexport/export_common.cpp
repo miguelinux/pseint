@@ -403,7 +403,8 @@ void ExporterBase::translate_all_procs (t_output & out, t_programa & prog, strin
 		Funcion *f;
 		if (it2->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
 		else { int x; f=ParsearCabeceraDeSubProceso(it2->par1,false,x); set_memoria(f->id); }
-		translate_single_proc(out,f,*it1);	
+		t_proceso proc(it2,it1->end());
+		translate_single_proc(out,f,proc);	
 		delete memoria; delete f;
 	}
 }
@@ -423,7 +424,8 @@ void ExporterBase::translate_all_procs (t_output & out_main, t_output &out_procs
 		if (it2->nombre=="PROCESO") { f=NULL; set_memoria(main_process_name); }
 		else { int x; f=ParsearCabeceraDeSubProceso(it2->par1,false,x); set_memoria(f->id); }
 		insertar_out(f?out_procs:out_main,out_com);
-		translate_single_proc(f?out_procs:out_main,f,*it1);	
+		t_proceso proc(it2,it1->end());
+		translate_single_proc(f?out_procs:out_main,f,proc);
 		delete memoria; delete f;
 	}
 }
