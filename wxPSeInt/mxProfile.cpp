@@ -14,6 +14,7 @@
 
 #define _PERSONALIZADO "<personalizado>"
 #include "string_conversions.h"
+#include "Logger.h"
 
 BEGIN_EVENT_TABLE(mxProfile,wxDialog)
 	EVT_TEXT(wxID_FIND,mxProfile::OnSearchText)
@@ -30,6 +31,8 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 }
 
 mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),old_config(LS_INIT) {
+
+	_LOG("mxProfile::mxProfile Start");
 	
 	text=NULL; // para que no procese el evento de seleccion al crear la lista
 	
@@ -108,7 +111,11 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	
 	search->SetFocus();
 	
+	_LOG("mxProfile::mxProfile ShowModal");
+	
 	ShowModal();
+	
+	_LOG("mxProfile::mxProfile End");
 }
 
 mxProfile::~mxProfile() {

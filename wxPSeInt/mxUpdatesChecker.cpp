@@ -28,6 +28,8 @@ wxProcess *mxUpdatesChecker::process;
 	
 mxUpdatesChecker::mxUpdatesChecker(bool show) : wxDialog(main_window, wxID_ANY, "Buscar Actualizaciones", wxDefaultPosition, wxSize(450,150) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
+	_LOG("mxUpdatesChecker::mxUpdatesChecker show="<<(show?"true":"false"));
+	
 //	wxBoxSizer *iSizer = new wxBoxSizer(wxHORIZONTAL);
 	
 	done=false; shown=show;

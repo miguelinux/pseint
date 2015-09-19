@@ -10,6 +10,7 @@
 #include <wx/msgdlg.h>
 #include <wx/filename.h>
 #include "mxArt.h"
+#include "Logger.h"
 
 BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)
 	EVT_BUTTON(wxID_OK,mxIconInstaller::OnButtonOk)
@@ -18,6 +19,8 @@ BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)
 END_EVENT_TABLE()
 
 mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,"Iconos lanzadores") {
+
+	_LOG("mxIconInstaller::mxIconInstaller first_run="<<(first_run?"true":"false"));
 	
 	xdg_not_found=icon_installed=false;
 	
@@ -51,7 +54,11 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,"Iconos 
 	
 	SetSizerAndFit(sizer);
 	
+	_LOG("mxIconInstaller::mxIconInstaller ShowModal");
+	
 	ShowModal(); desktop->SetFocus();
+	
+	_LOG("mxIconInstaller::mxIconInstaller Done");
 	
 }
 
@@ -71,6 +78,8 @@ void mxIconInstaller::OnClose (wxCloseEvent & evt) {
 }
 
 void mxIconInstaller::InstallIcons ( ) {
+	_LOG("mxIconInstaller::InstallIcons Start");
+	
 	if (icon_installed) return;
 	wxString icon_file=DIR_PLUS_FILE(config->temp_dir,"pseint.png");
 	
@@ -84,9 +93,12 @@ void mxIconInstaller::InstallIcons ( ) {
 	wxExecute(wxString("xdg-icon-resource install --novendor --size ")<<32<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	
 	icon_installed=true;
+	
+	_LOG("mxIconInstaller::InstallIcons End");
 }
 
 void mxIconInstaller::InstallDesktop ( bool menu ) {
+	_LOG("mxIconInstaller::InstallDesktop Start");
 	if (xdg_not_found) { MakeDesktopIcon(); return; }
 	InstallIcons();
 	wxString desk_file=DIR_PLUS_FILE(config->temp_dir,"pseint.desktop");
@@ -110,9 +122,11 @@ void mxIconInstaller::InstallDesktop ( bool menu ) {
 		wxExecute(wxString("xdg-desktop-menu install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	else
 		wxExecute(wxString("xdg-desktop-icon install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+	_LOG("mxIconInstaller::InstallDesktop End");
 }
 
 void mxIconInstaller::InstallMime() { // todavia no se usa
+	_LOG("mxIconInstaller::InstallMime() Start");
 	wxString mime_type="text/pseint-psc";
 	wxString mime_desc="pseudocódigo PSeInt";
 	wxString icon="pseint-psc.png";
@@ -120,11 +134,12 @@ void mxIconInstaller::InstallMime() { // todavia no se usa
 	exts.Add("*.psc");
 	exts.Add("*.PSC");
 	InstallMime(mime_type,mime_desc,icon,exts);
+	_LOG("mxIconInstaller::InstallMime() End");
 }
 
 
 void mxIconInstaller::InstallMime ( wxString mime_type, wxString mime_desc, wxString icon, wxArrayString exts ) {
-	
+	_LOG("mxIconInstaller::InstallMime(...) Start");
 	wxString xml_file=DIR_PLUS_FILE(config->temp_dir,"pseint-psc.xml");
 	wxTextFile fil(xml_file);
 	if (fil.Exists())
@@ -151,10 +166,11 @@ void mxIconInstaller::InstallMime ( wxString mime_type, wxString mime_desc, wxSt
 		wxExecute(wxString("xdg-icon-resource install --context mimetypes --size ")<<sizes[i]<<" \""<<icon_file<<"\" "<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	}
 	wxExecute(wxString("xdg-mime default pseint.desktop ")<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	_LOG("mxIconInstaller::InstallMime(...) End");
 }
 
 void mxIconInstaller::MakeDesktopIcon() { // si no hay xdg, crear el .desktop a pata
-		
+	_LOG("mxIconInstaller::MakeDesktopIcon Start");
 	wxString desk_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop");
 	if (!wxFileName::DirExists(desk_dir) && wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio")))
 		desk_dir=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio");
@@ -174,7 +190,7 @@ void mxIconInstaller::MakeDesktopIcon() { // si no hay xdg, crear el .desktop a 
 	fil.AddLine(wxString("URL=\"")<<DIR_PLUS_FILE(config->pseint_dir,"wxPSeInt")<<"\"");
 	fil.Write();
 	fil.Close();
-	
+	_LOG("mxIconInstaller::MakeDesktopIcon End");	
 }
 
 

@@ -19,9 +19,10 @@ inline wxString &operator<<(wxString &s, void *p) { return s<<reinterpret_cast<u
 
 extern Logger *logger;
 #ifdef DEBUG
-	#define _LOG(x) cerr<<x<<endl; if (logger) logger->Write(wxString()<<x)
+#	include<iostream>
+#	define _LOG(x) std::cerr<<x<<endl; if (logger) logger->Write(wxString()<<x)
 #else
-	#define _LOG(x) if (logger) logger->Write(wxString()<<x)
+#	define _LOG(x) if (logger) logger->Write(wxString()<<x)
 #endif
 
 #endif
