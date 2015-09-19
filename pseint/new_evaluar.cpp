@@ -55,12 +55,20 @@ int BuscarComa(const string &expresion, int p1, int p2, char coma) {
 	return -1;
 }
 
-static int operadores[]={',','|','&','~','!','=','<','>','+','-','*','/','^','%',' '};
-static int oper_lev[]=  { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 8 , 10, 10, 12, 13, 14};
+
+struct InfoOperador {
+	char oper;
+	int level;
+	bool right;
+};
+
+static const InfoOperador operadores[] = {
+	{',',0,true},{'|',1,true},{'&',2,true},{'~',3,false},{'!',4,true},{'=',5,true},{'<',6,true},{'>',7,true},
+	{'+',8,true},{'-',8,true},{'*',10,true},{'/',10,true},{'^',12,true},{'%',13,true},{' ',14,true} };
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
-	static int max_ind=sizeof(operadores)/sizeof(int)-1;
+	static const int max_ind=sizeof(operadores)/sizeof(InfoOperador)-1;
 	int j, indice_operador=max_ind, posicion_operador=-1;
 	while (parentesis_externos) {
 		char c=expresion[p1]; int i=p1;
@@ -82,8 +90,12 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 						parentesis_externos=false;
 					if ((c<'A'||c>'Z')&&(c<'0'||c>'9')) { // este if no es necesario pero baja considerablemente los tiempos
 						j=0;
-						while (j<max_ind && c!=operadores[j]) j++;
-						if (j!=max_ind && oper_lev[j]<=oper_lev[indice_operador]) {
+						while (j<max_ind && c!=operadores[j].oper) j++;
+						if ( j!=max_ind && (
+								operadores[j].level<operadores[indice_operador].level || 
+								(operadores[j].right && operadores[j].level==operadores[indice_operador].level)
+										   ) )
+						{
 							posicion_operador=i;
 							indice_operador=j;
 							char nc=expresion[i+1];
