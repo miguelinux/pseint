@@ -207,6 +207,13 @@ public:
 	
 	bool IsExample() { return is_example; }
 	
+#ifdef __APPLE__
+	void SaveFile(const wxString &s) {
+		ConvertEOLs(wxSTC_EOL_LF); // por alguna razon el copy-paste en mac solo pone CR pero no LF
+		wxStyledTextCtrl::SaveFile(s);
+	}
+#endif
+	
 	er_source_register *er_register;
 	
 	DECLARE_EVENT_TABLE();
