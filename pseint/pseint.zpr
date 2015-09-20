@@ -25,7 +25,9 @@ cursor=187:36
 marker=270
 [source]
 path=SynCheck.cpp
-cursor=176:16
+cursor=1245:32
+breakpoint=1245
+breakpoint_annotation=
 marker=66
 open=true
 [source]
@@ -51,7 +53,7 @@ path=zcurlib.cpp
 cursor=71:19
 [source]
 path=new_evaluar.cpp
-cursor=300:0
+cursor=675:1
 marker=304
 marker=366
 marker=416
@@ -151,7 +153,7 @@ marker=30
 marker=58
 [other]
 path=../bin/help/cambios.html
-cursor=7:6
+cursor=4:189
 open=true
 [other]
 path=../bin/help/errores.hlp
@@ -328,6 +330,9 @@ additional_files=
 exclude_list=
 [inspections]
 expr=cadena
+expr=str
+expr=tipo_def
+expr=vname
 [custom_tools]
 name_0=Run tests
 command_0=sh runall ${PROJECT_BIN}

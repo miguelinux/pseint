@@ -1245,7 +1245,7 @@ int SynCheck(int linea_from, int linea_to) {
 					else {
 						str.erase(str.size()-1,1);
 						tipo_var tipo_left = memoria->LeerTipo(vname);
-						if (Lerrores==errores) EvaluarSC(str,tipo,tipo_left);
+						if (Lerrores==errores) EvaluarSC(str,tipo,tipo_left.is_ok()?tipo_left:vt_desconocido);
 						if (!tipo_left.can_be(tipo)) {
 							SynError(125,"No coinciden los tipos."); errores++; 
 							if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
