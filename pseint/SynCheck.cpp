@@ -111,7 +111,7 @@ static string SynCheckAux1(string &cadena) {
 
 	
 // reescribir condiciones coloquiales
-static void SynCheckAux2(string &cadena) {
+static void SynCheckAux2(string &cadena, int &errores) {
 	if (preserve_comments && (LeftCompare(cadena,"#comment ")||LeftCompare(cadena,"#comment-inline "))) return;
 	struct coloquial_aux {
 		string cond, pre, post, rep;
@@ -174,6 +174,14 @@ static void SynCheckAux2(string &cadena) {
 		coloquial_conditions_list[i++]=coloquial_aux(" ES ",					"(",	")=(",			")"		);
 		coloquial_conditions_list_size=i;
 	}
+	for(int i=0;i<coloquial_conditions_list_size;i++) { 
+		string cadena2 = string(" ")+cadena;
+		if (LeftCompare(cadena2,coloquial_conditions_list[i].cond)) {
+			SynError(317,string("Falta operadorando (antes de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
+		} else if (coloquial_conditions_list[i].post.size() && RightCompare(cadena2,coloquial_conditions_list[i].cond)) {
+			SynError(318,string("Falta operadorando (después de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
+		}
+	}	
 	for (int y=0;y<int(cadena.size());y++) {
 		if (cadena[y]=='\'' || cadena[y]=='\"') comillas=-comillas;
 		else if (comillas<0) {
@@ -746,7 +754,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			
 			// reescribir condiciones coloquiales
-			SynCheckAux2(cadena);
+			SynCheckAux2(cadena, errores);
 
 			// verificar operadores
 			SynCheckAux3(x,cadena,errores,instruccion,flag_pyc);
@@ -1463,8 +1471,8 @@ int SynCheck(int linea_from, int linea_to) {
 int ParseInspection(string &cadena) {
 	SynCheckAux1(cadena); // acomodar caracteres
 	if (cadena.size() && cadena[cadena.size()-1]==';') cadena.erase(cadena.size()-1,1);
-	SynCheckAux2(cadena); // word_operators
 	int errores=0, flag_pyc=0;
+	SynCheckAux2(cadena, errores); // word_operators
 	SynCheckAux3(-1,cadena,errores,"<-",flag_pyc); // verificar operadores
 	if (flag_pyc) { SynError (271,"No puede haber más de una expresión."); errores++; }
 	return errores+flag_pyc;
@@ -1545,7 +1553,7 @@ int SynCheck() {
 	
 #ifdef _DEBUG
 	string del_ccl="<<<delete coloquial_conditions_list>>>";
-	SynCheckAux2(del_ccl);
+	SynCheckAux2(del_ccl, errores);
 #endif
 	
 	return errores;

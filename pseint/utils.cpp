@@ -246,8 +246,18 @@ tipo_var GuestTipo(string str) {
 			ret=vt_caracter_o_logica;
 		} else {
 			ret=vt_caracter_o_numerica;
-			for (int x=0;x<(int)str.size();x++)
-				if ((str[x]<46 || str[x]>57 || str[x]==47) && !(str[x]=='-' && x==0)) ret=vt_caracter;
+			bool punto=false;
+			for (int x=0;x<(int)str.size();x++) {
+				if (str[x]=='.') {
+					if (punto) { ret=vt_caracter; break; }
+					else punto=true;
+				} else if (str[x]<'0' || str[x]>'9') {
+					if (x||(str[x]!='-'&&str[x]!='+')) {
+						ret=vt_caracter;
+						break;
+					}
+				}
+			}
 		}
 	}
 	return ret;
@@ -256,7 +266,7 @@ tipo_var GuestTipo(string str) {
 // ----------------------------------------------------------------------
 //    Reemplaza una cadena por otra si es que se encuentra
 // ----------------------------------------------------------------------
-bool ReplaceIfFound(string &str, string str1,string str2,bool saltear_literales) { 
+bool ReplaceIfFound(string &str, string str1, string str2, bool saltear_literales) { 
 	size_t x=str.find(str1,0);
 	size_t ox=0;
 	bool ret=false;
