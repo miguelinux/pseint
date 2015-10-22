@@ -185,7 +185,7 @@ string func_atof(string *arg) {
 }
 
 string func_ftoa(string *arg) {
-	return arg[0];
+	return DblToStr(StrToDbl(arg[0]),true); // la conversión es para que redondee
 }
 
 string func_pi(string *arg) {
