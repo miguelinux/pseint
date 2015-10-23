@@ -1,4 +1,4 @@
-desc=Perfil para Fundamentos de programacion en la Universidad de Manizales (enviado por el Ing. Ronald Vinasco Salazar).
+desc=Perfil para el Instituto Parralense A.C. (enviado por la lic. Erika Silveyra Rodríguez).
 version=20150304
 force_init_vars=1
 force_define_vars=1
@@ -15,4 +15,4 @@ coloquial_conditions=1
 integer_only_switch=0
 deduce_negative_for_step=1
 use_nassi_shneiderman=0
-use_alternative_io_shapes=0
+use_alternative_io_shapes=1
