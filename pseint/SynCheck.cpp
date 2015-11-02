@@ -109,25 +109,57 @@ static string SynCheckAux1(string &cadena) {
 	return retval;
 }
 
+struct coloquial_aux {
+	string cond, pre, post, rep;
+	int csize;
+	bool binary;
+	coloquial_aux(){}
+	coloquial_aux(string c, string pr, string re, string po) 
+		: cond(c),pre(pr),post(po),rep(re), csize(cond.size()), binary(po.size()) {}
+	coloquial_aux(string c, string pr, string re, string po, bool bin) 
+		: cond(c),pre(pr),post(po),rep(re), csize(cond.size()), binary(bin) {}
+};
+
+vector<coloquial_aux> &GetColoquialConditions() {
+	static vector<coloquial_aux> v;
+	if (v.empty()) {
+		v.push_back(coloquial_aux(" ES ENTERO ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux(" ES ENTERA ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux(" ES MENOR A ",			"(",	")<(",			")"			));
+		v.push_back(coloquial_aux(" ES MENOR QUE ",			"(",	")<(",			")"			));
+		v.push_back(coloquial_aux(" ES MAYOR A ",			"(",	")>(",			")"			));
+		v.push_back(coloquial_aux(" ES MAYOR QUE ",			"(",	")>(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL | MAYOR A ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL | MAYOR QUE ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL | MENOR A ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL | MENOR QUE ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux(" ES MAYOR | IGUAL A ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux(" ES MAYOR | IGUAL QUE ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux(" ES MENOR | IGUAL A ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux(" ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL A ",			"(",	")=(",			")"			));
+		v.push_back(coloquial_aux(" ES IGUAL QUE ",			"(",	")=(",			")"			));
+		v.push_back(coloquial_aux(" ES DISTINTO A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux(" ES DISTINTO DE ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux(" ES DISTINTA A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux(" ES DISTINTA DE ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux(" ES PAR ",				"(",	")%2=0 ",		""			));
+		v.push_back(coloquial_aux(" ES IMPAR ",				"(",	")%2=1 ",		""			));
+		v.push_back(coloquial_aux(" ES POSITIVO ",			"(",	")>0 ",			""			));
+		v.push_back(coloquial_aux(" ES POSITIVA ",			"(",	")>0 ",			""			));
+		v.push_back(coloquial_aux(" ES NEGATIVO ",			"(",	")<0 ",			""			));
+		v.push_back(coloquial_aux(" ES NEGATIVA ",			"(",	")<0 ",			""			));
+		v.push_back(coloquial_aux(" ES CERO ",				"(",	")=0 ",			""			));
+		v.push_back(coloquial_aux(" ES DIVISIBLE POR ",		"(",	") % (",		")=0"		));
+		v.push_back(coloquial_aux(" ES MULTIPLO DE ",		"(",	") % (",		")=0"		));
+		v.push_back(coloquial_aux(" ES ",					"(",	")=(",			")"			));
+	}
+	return v;
+}
 	
 // reescribir condiciones coloquiales
 static void SynCheckAux2(string &cadena, int &errores) {
 	if (preserve_comments && (LeftCompare(cadena,"#comment ")||LeftCompare(cadena,"#comment-inline "))) return;
-	struct coloquial_aux {
-		string cond, pre, post, rep;
-		int csize;
-		coloquial_aux(){}
-		coloquial_aux(string c, string pr, string re, string po) : cond(c),pre(pr),post(po),rep(re), csize(cond.size()){}
-	};
-	static coloquial_aux *coloquial_conditions_list=NULL;
-	static int coloquial_conditions_list_size=0;
-#ifdef _DEBUG
-	if (coloquial_conditions_list && cadena=="<<<delete coloquial_conditions_list>>>") {
-		delete []coloquial_conditions_list;
-		coloquial_conditions_list=NULL;
-		return;
-	}
-#endif
 	if (!cadena.size() || !lang[LS_COLOQUIAL_CONDITIONS]) return;
 	if (cadena[cadena.size()-1]!=' ') cadena+=" ";
 	int comillas=-1;
@@ -140,45 +172,13 @@ static void SynCheckAux2(string &cadena, int &errores) {
 	}
 	comillas=-1;
 	
-	if (!coloquial_conditions_list) {
-		coloquial_conditions_list=new coloquial_aux[200]; int i=0;
-		coloquial_conditions_list[i++]=coloquial_aux(" ES ENTERO ",				"(",	")=TRUNC(",		"<PRE>)"	);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES ENTERA ",				"(",	")=TRUNC(",		"<PRE>)"	);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR A ",			"(",	")<(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR QUE ",			"(",	")<(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR A ",			"(",	")>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR QUE ",			"(",	")>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MAYOR A ",	"(",	")>=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MAYOR QUE ",	"(",	")>=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MENOR A ",	"(",	")<=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL | MENOR QUE ",	"(",	")<=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR | IGUAL A ",	"(",	")>=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MAYOR | IGUAL QUE ",	"(",	")>=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR | IGUAL A ",	"(",	")<=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL A ",			"(",	")=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IGUAL QUE ",			"(",	")=(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTO A ",			"(",	")<>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTO DE ",		"(",	")<>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTA A ",			"(",	")<>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES DISTINTA DE ",		"(",	")<>(",			")"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES PAR ",				"(",	")%2=0 ",		""		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES IMPAR ",				"(",	")%2=1 ",		""		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES POSITIVO ",			"(",	")>0 ",			""			);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES POSITIVA ",			"(",	")>0 ",			""			);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES NEGATIVO ",			"(",	")<0 ",			""			);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES NEGATIVA ",			"(",	")<0 ",			""			);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES CERO ",				"(",	")=0 ",			""			);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES DIVISIBLE POR ",		"(",	") % (",		")=0"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES MULTIPLO DE ",		"(",	") % (",		")=0"		);
-		coloquial_conditions_list[i++]=coloquial_aux(" ES ",					"(",	")=(",			")"		);
-		coloquial_conditions_list_size=i;
-	}
-	for(int i=0;i<coloquial_conditions_list_size;i++) { 
+	vector<coloquial_aux> &coloquial_conditions_list = GetColoquialConditions();
+	
+	for(size_t i=0;i<coloquial_conditions_list.size();i++) { 
 		string cadena2 = string(" ")+cadena;
 		if (LeftCompare(cadena2,coloquial_conditions_list[i].cond)) {
 			SynError(317,string("Falta operadorando (antes de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
-		} else if (coloquial_conditions_list[i].post.size() && RightCompare(cadena2,coloquial_conditions_list[i].cond)) {
+		} else if (coloquial_conditions_list[i].binary && RightCompare(cadena2,coloquial_conditions_list[i].cond)) {
 			SynError(318,string("Falta operadorando (después de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
 		}
 	}	
@@ -188,7 +188,7 @@ static void SynCheckAux2(string &cadena, int &errores) {
 			if (y+3<int(cadena.size()) && cadena[y]==' '&&cadena[y+1]=='E'&&cadena[y+2]=='S'&&cadena[y+3]==' ') {
 				int cual=-1;
 				bool negate=(y>1 && cadena[y-1]=='~' && cadena[y-2]==' ');
-				for(int j=0;j<coloquial_conditions_list_size;j++) { // buscar si coincide con alguna expresion de la lista
+				for(size_t j=0;j<coloquial_conditions_list.size();j++) { // buscar si coincide con alguna expresion de la lista
 					if (cadena.substr(y,coloquial_conditions_list[j].csize)==coloquial_conditions_list[j].cond) {
 						cual=j;	break;
 					}
@@ -1551,11 +1551,6 @@ int SynCheck() {
 	errores=SynCheck(0,programa.GetSize());
 	
 	if (!have_proceso) { Inter.SetLineAndInstructionNumber(0); SynError (273,"Debe haber un Proceso."); errores++;}
-	
-#ifdef _DEBUG
-	string del_ccl="<<<delete coloquial_conditions_list>>>";
-	SynCheckAux2(del_ccl, errores);
-#endif
 	
 	return errores;
 }
