@@ -123,36 +123,36 @@ struct coloquial_aux {
 vector<coloquial_aux> &GetColoquialConditions() {
 	static vector<coloquial_aux> v;
 	if (v.empty()) {
-		v.push_back(coloquial_aux(" ES ENTERO ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
-		v.push_back(coloquial_aux(" ES ENTERA ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
-		v.push_back(coloquial_aux(" ES MENOR A ",			"(",	")<(",			")"			));
-		v.push_back(coloquial_aux(" ES MENOR QUE ",			"(",	")<(",			")"			));
-		v.push_back(coloquial_aux(" ES MAYOR A ",			"(",	")>(",			")"			));
-		v.push_back(coloquial_aux(" ES MAYOR QUE ",			"(",	")>(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL | MAYOR A ",	"(",	")>=(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL | MAYOR QUE ",	"(",	")>=(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL | MENOR A ",	"(",	")<=(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL | MENOR QUE ",	"(",	")<=(",			")"			));
-		v.push_back(coloquial_aux(" ES MAYOR | IGUAL A ",	"(",	")>=(",			")"			));
-		v.push_back(coloquial_aux(" ES MAYOR | IGUAL QUE ",	"(",	")>=(",			")"			));
-		v.push_back(coloquial_aux(" ES MENOR | IGUAL A ",	"(",	")<=(",			")"			));
-		v.push_back(coloquial_aux(" ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL A ",			"(",	")=(",			")"			));
-		v.push_back(coloquial_aux(" ES IGUAL QUE ",			"(",	")=(",			")"			));
-		v.push_back(coloquial_aux(" ES DISTINTO A ",		"(",	")<>(",			")"			));
-		v.push_back(coloquial_aux(" ES DISTINTO DE ",		"(",	")<>(",			")"			));
-		v.push_back(coloquial_aux(" ES DISTINTA A ",		"(",	")<>(",			")"			));
-		v.push_back(coloquial_aux(" ES DISTINTA DE ",		"(",	")<>(",			")"			));
-		v.push_back(coloquial_aux(" ES PAR ",				"(",	")%2=0 ",		""			));
-		v.push_back(coloquial_aux(" ES IMPAR ",				"(",	")%2=1 ",		""			));
-		v.push_back(coloquial_aux(" ES POSITIVO ",			"(",	")>0 ",			""			));
-		v.push_back(coloquial_aux(" ES POSITIVA ",			"(",	")>0 ",			""			));
-		v.push_back(coloquial_aux(" ES NEGATIVO ",			"(",	")<0 ",			""			));
-		v.push_back(coloquial_aux(" ES NEGATIVA ",			"(",	")<0 ",			""			));
-		v.push_back(coloquial_aux(" ES CERO ",				"(",	")=0 ",			""			));
-		v.push_back(coloquial_aux(" ES DIVISIBLE POR ",		"(",	") % (",		")=0"		));
-		v.push_back(coloquial_aux(" ES MULTIPLO DE ",		"(",	") % (",		")=0"		));
-		v.push_back(coloquial_aux(" ES ",					"(",	")=(",			")"			));
+		v.push_back(coloquial_aux("ES ENTERO ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux("ES ENTERA ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux("ES MENOR A ",			"(",	")<(",			")"			));
+		v.push_back(coloquial_aux("ES MENOR QUE ",			"(",	")<(",			")"			));
+		v.push_back(coloquial_aux("ES MAYOR A ",			"(",	")>(",			")"			));
+		v.push_back(coloquial_aux("ES MAYOR QUE ",			"(",	")>(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL | MAYOR A ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL | MAYOR QUE ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL | MENOR A ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL | MENOR QUE ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux("ES MAYOR | IGUAL A ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux("ES MAYOR | IGUAL QUE ",	"(",	")>=(",			")"			));
+		v.push_back(coloquial_aux("ES MENOR | IGUAL A ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux("ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL A ",			"(",	")=(",			")"			));
+		v.push_back(coloquial_aux("ES IGUAL QUE ",			"(",	")=(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTO A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTO DE ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTA A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTA DE ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES PAR ",				"(",	")%2=0 ",		""			));
+		v.push_back(coloquial_aux("ES IMPAR ",				"(",	")%2=1 ",		""			));
+		v.push_back(coloquial_aux("ES POSITIVO ",			"(",	")>0 ",			""			));
+		v.push_back(coloquial_aux("ES POSITIVA ",			"(",	")>0 ",			""			));
+		v.push_back(coloquial_aux("ES NEGATIVO ",			"(",	")<0 ",			""			));
+		v.push_back(coloquial_aux("ES NEGATIVA ",			"(",	")<0 ",			""			));
+		v.push_back(coloquial_aux("ES CERO ",				"(",	")=0 ",			""			));
+		v.push_back(coloquial_aux("ES DIVISIBLE POR ",		"(",	") % (",		")=0"		));
+		v.push_back(coloquial_aux("ES MULTIPLO DE ",		"(",	") % (",		")=0"		));
+		v.push_back(coloquial_aux("ES ",					"(",	")=(",			")"			));
 	}
 	return v;
 }
@@ -170,74 +170,72 @@ static void SynCheckAux2(string &cadena, int &errores) {
 				cadena.insert(y++," ");
 		}
 	}
-	comillas=-1;
 	
 	vector<coloquial_aux> &coloquial_conditions_list = GetColoquialConditions();
-	
-	for(size_t i=0;i<coloquial_conditions_list.size();i++) { 
-		string cadena2 = string(" ")+cadena;
-		if (LeftCompare(cadena2,coloquial_conditions_list[i].cond)) {
-			SynError(317,string("Falta operadorando (antes de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
-		} else if (coloquial_conditions_list[i].binary && RightCompare(cadena2,coloquial_conditions_list[i].cond)) {
-			SynError(318,string("Falta operadorando (después de la condición coloquial ")+coloquial_conditions_list[i].cond+")."); errores++; break;
-		}
-	}	
 	for (int y=0;y<int(cadena.size());y++) {
-		if (cadena[y]=='\'' || cadena[y]=='\"') comillas=-comillas;
-		else if (comillas<0) {
-			if (y+3<int(cadena.size()) && cadena[y]==' '&&cadena[y+1]=='E'&&cadena[y+2]=='S'&&cadena[y+3]==' ') {
-				int cual=-1;
-				bool negate=(y>1 && cadena[y-1]=='~' && cadena[y-2]==' ');
-				for(size_t j=0;j<coloquial_conditions_list.size();j++) { // buscar si coincide con alguna expresion de la lista
-					if (cadena.substr(y,coloquial_conditions_list[j].csize)==coloquial_conditions_list[j].cond) {
-						cual=j;	break;
-					}
-				}
-				if (cual!=-1) {
-					if (negate) { cadena.erase(y-2,2); y-=2; }
-					coloquial_aux &col=coloquial_conditions_list[cual];
-					cadena.replace(y,col.csize,col.rep);
-					// si era una expresion coloquial, agregar pre y post antes y despues de los operandos
-					string pre;
-					{
-						int parentesis=0, yold=y--; bool comillas=false;
-						while ( y>=0 && ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!='(') ) ) {
-								if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
-								else if (!comillas) {
-									if (cadena[y]==')') parentesis++;
-									else if (cadena[y]=='(') parentesis--;
-								}
-								y--;
-						}
-						int y2=yold-1; while (y2>y && cadena[y2]==' ') y2--;
-						pre=cadena.substr(y+1,y2-y);
-						if (col.pre.size()) cadena.insert(y+1,col.pre);
-						if (negate) { cadena.insert(y+1,"~"); yold++; }
-						y=yold+col.pre.size();
-					}
-					if (col.post.size()) {
-						int parentesis=0, yold=y,l=cadena.size(); y+=col.rep.size();  bool comillas=false;
-						while ( y<l 
-							&& ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!=')' && cadena[y]!=';'))
-							&& (comillas||(cadena.substr(y,2)!="//"&&cadena.substr(y,10)!=" ENTONCES "&&cadena.substr(y,7)!=" HACER ")) ) {
-								if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
-								else if (!comillas) {
-									if (cadena[y]==')') parentesis--;
-									else if (cadena[y]=='(') parentesis++;
-								}
-								y++;
-						}
-						while (y>yold && cadena[y-1]==' ') y--;
-						string post=col.post;
-						size_t n=post.find("<PRE>");
-						if (n!=string::npos) post.replace(n,5,pre);
-						cadena.insert(y,post);
-						y=yold;
-					}
-				}
-			}
+		if (cadena[y]=='\'' || cadena[y]=='\"') {
+			while (++y<int(cadena.size()) && cadena[y]!='\'' && cadena[y]!='\"');
+			continue;
+		}	
+		if (y+2>=int(cadena.size()) || (y>0&&cadena[y-1]!=' '&&cadena[y-1]!=',')||cadena[y]!='E'||cadena[y+1]!='S'||cadena[y+2]!=' ') continue;
+		// buscar si coincide con alguna expresion de la lista
+		int cual=-1;
+		for(size_t j=0;j<coloquial_conditions_list.size();j++) { 
+			coloquial_aux &col = coloquial_conditions_list[j];
+			if (cadena.substr(y,col.csize)==col.cond) {	cual=j;	break;}
 		}
-	}
+		if (cual==-1) continue; // si no era ninguna de las expresiones coloquiales
+		// ver si decia "NO ES" en lugar de "ES"
+		bool negate=(y>=2 && cadena[y-2]=='~'); 
+		if (negate) { cadena.erase(y-2,2); y-=2; }
+		// elegir la condicion y reemplazarla por su operador
+		coloquial_aux &col=coloquial_conditions_list[cual];
+		cadena.replace(y,col.csize,col.rep);
+		// agregar pre y post antes y despues de los operandos
+		string pre;
+		{
+			int parentesis=0, yold=y--; bool comillas=false;
+			while ( y>=0 && ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!='(') ) ) {
+				if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
+				else if (!comillas) {
+					if (cadena[y]==')') parentesis++;
+					else if (cadena[y]=='(') parentesis--;
+				}
+				y--;
+			}
+			int y2=yold-1; while (y2>y && cadena[y2]==' ') y2--;
+			
+			pre=cadena.substr(y+1,y2-y);
+			if (pre.empty()) { SynError(317,string("Falta operando (antes de la condición coloquial ")+col.cond+")."); errores++; }
+			if (col.pre.size()) cadena.insert(y+1,col.pre);
+			if (negate) { cadena.insert(y+1,"~"); yold++; }
+			y=yold+col.pre.size();
+		}
+		{
+			int parentesis=0, yold=y,l=cadena.size(); int y0 = y+=col.rep.size();  bool comillas=false;
+			while ( y<l 
+				   && ( (parentesis>0||comillas) || (cadena[y]!='&' && cadena[y]!=',' && cadena[y]!='|' && cadena[y]!='~' && cadena[y]!=')' && cadena[y]!=';'))
+				   && (comillas||(cadena.substr(y,2)!="//"&&cadena.substr(y,10)!=" ENTONCES "&&cadena.substr(y,7)!=" HACER ")) ) {
+				if (cadena[y]=='\''||cadena[y]=='\"') comillas=!comillas;
+				else if (!comillas) {
+					if (cadena[y]==')') parentesis--;
+					else if (cadena[y]=='(') parentesis++;
+				}
+				y++;
+			}
+			while (y>yold && cadena[y-1]==' ') y--;
+			if (col.binary) {
+				if (y0>=y) { SynError(318,string("Falta operando (después de la condición coloquial ")+col.cond+")."); errores++; }
+			} else {
+				if (y0<y) { SynError(319,string("No corresponde operando (después de la condición coloquial ")+col.cond+")."); errores++; }
+			}
+			string post=col.post;
+			size_t n=post.find("<PRE>");
+			if (n!=string::npos) post.replace(n,5,pre);
+			cadena.insert(y,post);
+			y=yold;
+		}
+	} // for y=0...cadena.size()
 }
 
 enum what { w_null, w_operhand, w_operator, w_space };
