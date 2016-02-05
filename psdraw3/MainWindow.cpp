@@ -8,6 +8,7 @@
 #include "Comm.h"
 #include <wx/toolbar.h>
 #include <iostream>
+#include <wx/settings.h>
 
 MainWindow *main_window=NULL;
 
@@ -31,6 +32,10 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	color_menu_back[0] = toolbar->GetBackgroundColour().Red()/255.f;
 	color_menu_back[1] = toolbar->GetBackgroundColour().Green()/255.f;
 	color_menu_back[2] = toolbar->GetBackgroundColour().Blue()/255.f;
+	wxColour color_sel = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
+	color_menu_sel[0] = color_sel.Red()/255.f;
+	color_menu_sel[1] = color_sel.Green()/255.f;
+	color_menu_sel[2] = color_sel.Blue()/255.f;
 	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
 //	toolbar->AddTool(MID_SETTINGS,"","imgs/floaw/tb_settings.png");
 	toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));

@@ -420,7 +420,7 @@ void mxMainWindow::CreateCommandsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(commands, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile("imgs","tb_commands.png")), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile("imgs","tb_commands.png"),"Comandos y Estructuras"), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
@@ -433,7 +433,7 @@ void mxMainWindow::CreateVarsPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile("imgs","tb_vars.png")), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile("imgs","tb_vars.png"),"Lista de Variables"), info_helper);
 	aui_manager.AddPane(vars_window, info_win);
 }
 
@@ -447,7 +447,7 @@ void mxMainWindow::CreateOpersPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png")), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png"),"Operadores y Funciones"), info_helper);
 	aui_manager.AddPane(opers_window, info_win);
 }
 
@@ -465,7 +465,7 @@ void mxMainWindow::CreateDebugControlsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png")), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png"),"Ejecución Paso a Paso"), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {

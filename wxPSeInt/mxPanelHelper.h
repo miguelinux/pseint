@@ -9,9 +9,12 @@
 class mxPanelHelper:public wxPanel {
 	wxBitmap bmp;
 	wxWindowID mid;
+	wxString label;
 	bool selected;
+	wxFont font;
+	int text_x;
 public:
-	mxPanelHelper(wxWindow* parent, wxWindowID id, wxString bitmap);
+	mxPanelHelper(wxWindow* parent, wxWindowID id, wxString bitmap, wxString label);
 	void OnEnter(wxMouseEvent &evt);
 	void OnLeave(wxMouseEvent &evt);
 	void OnClick(wxMouseEvent &evt);

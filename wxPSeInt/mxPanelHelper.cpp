@@ -10,11 +10,24 @@ BEGIN_EVENT_TABLE(mxPanelHelper,wxPanel)
 	EVT_LEFT_DOWN(mxPanelHelper::OnClick)
 END_EVENT_TABLE()
 	
-mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, wxString label)
+	: wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize),
+	 font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))
+{
+	this->label=label;
 	mid=id; selected=false;
+	
 	bmp.LoadFile(bitmap,wxBITMAP_TYPE_PNG);
-	SetMinSize(wxSize(bmp.GetWidth()+6,bmp.GetHeight()+8));
-	SetSize(wxSize(bmp.GetWidth()+6,bmp.GetHeight()+8));
+	
+	wxClientDC dc(this);
+	dc.SetFont(font);
+	wxSize text_size = dc.GetTextExtent(label);
+	
+	wxSize size ( bmp.GetWidth()+6, bmp.GetHeight()+8+text_size.GetWidth()+10 );
+	text_x = (size.GetWidth()+text_size.GetWidth())/2;
+	
+	SetMinSize(size);
+	SetSize(size);
 }
 
 void mxPanelHelper::OnEnter(wxMouseEvent &evt) { 
@@ -33,7 +46,11 @@ void mxPanelHelper::OnClick(wxMouseEvent &evt) {
 void mxPanelHelper::OnPaint(wxPaintEvent &evt) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_3DHIGHLIGHT:wxSYS_COLOUR_3DFACE));
+	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_HIGHLIGHT:wxSYS_COLOUR_MENU));
 	dc.Clear();
 	dc.DrawBitmap(bmp,3,4,true);
+	
+	dc.SetFont(font);
+	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+	dc.DrawRotatedText(label,15,bmp.GetHeight()+10,270);
 }
