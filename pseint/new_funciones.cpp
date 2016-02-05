@@ -58,14 +58,14 @@ string func_sen(string *arg) {
 	return DblToStr((double)(sin((double)(StrToDbl(*arg)))));
 }
 string func_asen(string *arg) {
-	if (int(StrToDbl(*arg))<-1||int(StrToDbl(*arg))>+1) {
+	if (StrToDbl(*arg)<-1||StrToDbl(*arg)>+1) {
 		ExeError(312,"Argumento inválido para la función ASEN (debe estar en [-1;+1]).",false);
 		return "";
 	}
 	return DblToStr((double)(asin((double)(StrToDbl(*arg)))));
 }
 string func_acos(string *arg) {
-	if (int(StrToDbl(*arg))<-1||int(StrToDbl(*arg))>+1) {
+	if (StrToDbl(*arg)<-1||StrToDbl(*arg)>+1) {
 		ExeError(312,"Argumento inválido para la función ACOS (debe estar en [-1;+1]).",false);
 		return "";
 	}

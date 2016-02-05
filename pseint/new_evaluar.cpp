@@ -499,7 +499,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica);
 				}
 				if (!t1.is_ok() || !t2.is_ok()) { 
-					WriteError(292,"No coinciden los tipos (<, >, <= o >=). Los operandos deben ser logicos.");
+					WriteError(292,"No coinciden los tipos (<, >, <= o >=). Los operandos no deben ser logicos.");
 					tipo=vt_error; 
 					ev_return("");
 				}

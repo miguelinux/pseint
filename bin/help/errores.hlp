@@ -738,6 +738,11 @@
   * Verifique que la declaración del subproceso (mediante las palabras clave SubProceso o Función en el pseudocódigo) sea correcta.
   * Compruebe que la cantidad de los mismos sea igual a la cantidad declarada al crear el subproceso mencionado.
 
+292
+  Dos valores lógicos solo pueden compararse para determinar si son iguales, pero no existe una relación de orden entre los posibles valores lógicos (Verdadero y Falso). Por lo tanto no es posible aplicar los operadores &lt;, &gt;, &lt;= y &gt;= a operandos de este tipo de dato.
+  * Verifique que la expresión ingresada sea correcta considerando la presedencia de los operadores involucrados, y analizando el tipo de operandos y de resultados para cada uno de ellos.
+  * Por ejemplo, la expresión "3 &lt; x &lt; 7" es incorrecta, porque equivale a "(3 &lt; x) &lt; 7". Entonces primero se resuelve 3 &lt; x, lo cual puede arrojar Verdadaro o Falso, y luego se intenta compara ese resultado (de tipo lógico), con 7.
+
 308
   Se encontró la palabra clave FINPROCESO en un lugar donde no se esperaba. Esto puede deberse a uno de los siguientes tres motivos:
   * Faltan cerrar estructuras de control abiertas dentro del proceso antes de cerrar el proceso. Verifique que las estructuras de control del proceso estén anidadas y cerradas con sus respectivos FINXXX correctamente.
