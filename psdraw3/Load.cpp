@@ -85,21 +85,15 @@ static void ReemplazarOperadores(string &str) {
 #define _new_prev() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,cur_proc)
 #define _new_none() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,NULL)
 
-void LoadProc(istream &fin) {
+void LoadProc(vector<string> &vproc) {
 	code2draw.clear();
 	string cur_pos; Entity *cur_proc; // para llenar code2draw
 	bool start_done=false;
-	string str;
 	cur_proc = start = new Entity(ET_PROCESO,"SinTitulo");
 	Entity *aux=start, *aux_end=start;
 	stack<int> ids; ids.push(-1);
-	while (getline(fin,str)) {
-		//stack<int> saux;
-		//cerr<<"ids:";
-		//while (!ids.empty()) { saux.push(ids.top()); ids.pop(); }
-		//while (!saux.empty()) { ids.push(saux.top()); cerr<<" "<<saux.top(); saux.pop(); }
-		//cerr<<endl;
-		//cerr<<str<<endl;
+	for(size_t iv=0;iv<vproc.size();iv++) { 
+		string str = vproc[iv];
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
 		if (lang[LS_WORD_OPERATORS]) ReemplazarOperadores(str);
 		bool comillas=false;
@@ -136,11 +130,24 @@ void LoadProc(istream &fin) {
 			aux->variante=true;
 			_new_this(aux);
 		}
+		else if (StartsWith(str,"#comment") && aux && aux->type==ET_SEGUN) {
+			// no puedo poner comentarios a las opciones del segun... por ahora el 
+			// parche es bajarlos hasta despues de la opcion, o sea ponerlos dentro
+			// de su rama, para al menos no perderlos
+			if (StartsWith(str,"#comment-inline ")) vproc[iv].erase(8,7);
+			int j = iv+1;
+			while (StartsWith(vproc[j],"#comment")) ++j;
+			string opcion = vproc[j];
+			vproc.erase(vproc.begin()+j);
+			vproc.insert(vproc.begin()+iv,opcion);
+			--iv; continue;
+		}
 		else if (StartsWith(str,"#comment ")) {
 			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(9)));
 			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
 		}
 		else if (StartsWith(str,"#comment-inline ")) {
+			if (aux && aux->type==ET_SEGUN) continue;
 			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(16)));
 			aux->variante=true;
 			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
@@ -279,29 +286,31 @@ void LoadProc(istream &fin) {
 }
 
 bool Load(const char *filename) {
+	// cargar todo el algoritmo en un vector
 	loading=true;
 	if (filename) fname=filename;
 	else { New(); return false; }
 	ifstream file(filename);
 	if (!file.is_open()) { New(); return false; }
-	string str; int imain=0;
-	stringstream comments_pre, comments_post;
-	// cargar todo el algoritmo en un vector
+	string str; 
 	vector<string> vfile; while (getline(file,str)) vfile.push_back(str);
+	file.close();
+	
 	// separar por procesos/subprocesos
+	int imain=0;
 	int i0=0; // posición en el vector donde empieza el proceso
 	for(unsigned int i=0;i<vfile.size();i++) {
 		string &str=vfile[i];
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
 			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
 			Entity::all_any=start=NULL;
-			stringstream ss;
+			vector<string> vproc;
 			for(int j=i0;;j++) {
 				string &str=vfile[j];
-				ss<<str<<"\n";
+				vproc.push_back(str);
 				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") { i0=j+1; break; }
 			}
-			LoadProc(ss);
+			LoadProc(vproc);
 			procesos.push_back(start);
 		}
 	}
