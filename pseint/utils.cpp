@@ -41,7 +41,7 @@ void ExeError(int num,string s) {
 			exit(0);
 		}
 		if (colored_output) setForeColor(COLOR_ERROR);
-		if (with_io_references) Inter.SendPositionToTerminal();
+		if (with_io_references) Inter.SendErrorPositionToTerminal();
 		cout<<"Lin "<<Inter.GetLineNumber()<<" (inst "<<Inter.GetInstNumber()<<"): ERROR "<<num<<": "<<s<<endl;
 		for(int i=Inter.GetBacktraceLevel()-1;i>0;i--) {  
 			FrameInfo fi=Inter.GetFrame(i);

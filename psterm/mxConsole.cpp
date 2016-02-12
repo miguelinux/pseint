@@ -318,20 +318,19 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 	while (i<l) {
 		if (input[i]=='\033' && input[i+1]=='[') {
 			if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
-			if (input[i+2]=='z' && input[i+3]=='p') { // raise window
+			if (input[i+2]=='z' && (input[i+3]=='p'||input[i+3]=='e')) { // receives code location
+				cur_loc.is_error = input[i+3]=='e';
 				int j=i+4, i0=i; 
-				int cur_line=0, cur_inst=0;
+				cur_loc.line=0, cur_loc.inst=0;
 				while (input[j]>='0'&&input[j]<='9') {
-					cur_line=cur_line*10+(input[j]-'0');
+					cur_loc.line=cur_loc.line*10+(input[j]-'0');
 					j++;
 				}
 				i=j+1;
 				while (input[i]>='0'&&input[i]<='9') {
-					cur_inst=cur_inst*10+(input[i]-'0');
+					cur_loc.inst=cur_loc.inst*10+(input[i]-'0');
 					i++;
 				}
-//				if (cur_line==cur_loc.line && cur_inst==cur_loc.inst) cur_loc.sub++;
-				/*else*/ { /*cur_loc.sub=0; */cur_loc.line=cur_line; cur_loc.inst=cur_inst; }
 				if (record) history<<input.Mid(i0,i-i0+1);
 			} else if (input[i+2]=='z' && input[i+3]=='r') { // raise window
 				GetParent()->Raise(); i+=3;
@@ -684,7 +683,7 @@ void mxConsole::GetSourceLocationFromOutput (int pos) {
 	while (selection_start>0 && buffer[selection_start-1].loc==buffer[pos].loc) selection_start--;
 	while (selection_end+1<buffer_w*buffer_h && buffer[selection_end+1].loc==buffer[pos].loc) selection_end++;
 	// buscar en los eventos de entrada, si justo seleccionamos uno para ofrecer modificarla
-	selection_is_input = buffer[pos].loc!=cur_loc && GetInputPositionFromBufferPosition(pos)!=-1;
+	selection_is_input = (buffer[pos].loc!=cur_loc||cur_loc.is_error) && GetInputPositionFromBufferPosition(pos)!=-1;
 	// mostrar seleccion y marcar en el pseudocódigo la instrucción correspondiente
 	Refresh();
 	parent->SendLocation(buffer[pos].loc.line,buffer[pos].loc.inst);
@@ -702,11 +701,14 @@ void mxConsole::OnMouseDClick (wxMouseEvent & evt) {
 int mxConsole::GetInputPositionFromBufferPosition (int pos) {
 	code_location &loc = buffer[pos].loc; // linea de codigo que genero el caracter de esa pos, para ver si es una entrada
 	// puede haber varias entradas generadas por la misma linea de codigo, ver cuantas saltear (buscando de atras para adelante)
+	// entre lectura y lectura va a haber en el buffer al menos un lugar con loc(-1,-1), cuento esos cambios para distinguir
+	// en cual de las varias para un mismo loc estoy... el problema es que puede haber un cambio adicional debido a un mensaje 
+	// de error debido a la lectura (tendra su mismo loc)
 	int cant_skip = 0; int cpos = cur_y*buffer_w+cur_x-1;
 	code_location cloc = loc;
 	while(cpos>=pos) {
 		if (cloc!=buffer[cpos].loc) {
-			if (cloc==loc) cant_skip++;
+			if (cloc==loc && !cloc.is_error) cant_skip++;
 			cloc=buffer[cpos].loc;
 		}
 		cpos--;

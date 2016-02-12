@@ -44,12 +44,13 @@ public:
 	int char_h; ///< height in pixels for a char with current fontsize
 	int bg; ///< index for current console background color (the same for the whole console)
 	struct code_location { ///< linea and instruction number in source pseudocode
+		bool is_error;
 		int line, inst/*, sub*/;
-		code_location():line(-1),inst(-1)/*,sub(0)*/{}
+		code_location():line(-1),inst(-1),is_error(false){}
 		bool IsValid() const { return line!=-1&&inst!=-1; }
 		bool operator==(const code_location &o) const { return o.line==line&&o.inst==inst/*&&o.sub==sub*/; }
 		bool operator!=(const code_location &o) const { return !((*this)==o); }
-		void Clear() { line=inst=-1; }
+		void Clear() { line=inst=-1; is_error=false; }
 	};
 	struct console_char { ///< data for each visible char in the console
 		wxChar the_char; ///< the char to show

@@ -136,6 +136,10 @@ void Intercambio::SendPositionToGUI () {
 void Intercambio::SendPositionToTerminal () {
 	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<<';';
 }
+
+void Intercambio::SendErrorPositionToTerminal () {
+	cout<<"\033[ze"<<lineNumber<<':'<<instNumber<<';';
+}
 		
 void Intercambio::ChatWithGUI () {
 #ifdef USE_ZOCKETS
