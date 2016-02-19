@@ -272,6 +272,28 @@
        fx="3606.0364"
        fy="986.37585"
        r="24.428572" />
+    <linearGradient
+       id="linearGradient6150">
+      <stop
+         id="stop6152"
+         offset="0"
+         style="stop-color:#daa6d1;stop-opacity:1;" />
+      <stop
+         id="stop6154"
+         offset="1"
+         style="stop-color:#ac0000;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient5828">
+      <stop
+         id="stop5830"
+         offset="0"
+         style="stop-color:#ffffa1;stop-opacity:1;" />
+      <stop
+         id="stop5832"
+         offset="1"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -280,19 +302,25 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.15493057"
-     inkscape:cx="-2245.2057"
-     inkscape:cy="-2540.3039"
+     inkscape:zoom="1.7528393"
+     inkscape:cx="3059.3054"
+     inkscape:cy="-384.27323"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1354"
-     inkscape:window-height="715"
+     inkscape:window-height="716"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     showguides="true"
-     inkscape:guide-bbox="true" />
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <sodipodi:guide
+       position="3098.6155,-356.49303"
+       orientation="0,1"
+       id="guide4385" />
+  </sodipodi:namedview>
   <metadata
      id="metadata3205">
     <rdf:RDF>
@@ -7409,5 +7437,187 @@
        inkscape:export-filename="/mnt/ex/pseint/bin/imgs/flow/shapes_ns.png"
        inkscape:export-xdpi="39.738247"
        inkscape:export-ydpi="39.738247" />
+    <rect
+       inkscape:export-ydpi="49.25"
+       inkscape:export-xdpi="49.25"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/ejecutar.png"
+       y="1412.9747"
+       x="2950.8848"
+       height="36.547398"
+       width="36.547398"
+       id="rect6126-2"
+       style="opacity:0.75;fill:none;stroke:none" />
+    <path
+       inkscape:connector-curvature="0"
+       inkscape:export-ydpi="16.16"
+       inkscape:export-xdpi="16.16"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/valgrind_run.png"
+       sodipodi:nodetypes="cccc"
+       id="path6300-9"
+       d="m 2956.8416,1417.1352 c -2.2181,1.8832 -2.0346,25.5594 -0.3873,28.1249 1.4417,1.8983 26.249,-10.5664 26.4541,-13.4328 -0.073,-3.0772 -23.2313,-16.2912 -26.0668,-14.6921 z"
+       style="fill:#00a800;fill-opacity:1;stroke:#000000;stroke-width:1.64019036;stroke-miterlimit:4;stroke-dasharray:none" />
+    <rect
+       style="opacity:0.75;fill:none;stroke:none"
+       id="rect4281"
+       width="36.547398"
+       height="36.547398"
+       x="3070.5024"
+       y="1376.1772"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/ejecutar.png"
+       inkscape:export-xdpi="49.251118"
+       inkscape:export-ydpi="49.251118" />
+    <rect
+       style="opacity:0.75;fill:none;stroke:none"
+       id="rect6719"
+       width="36.547398"
+       height="36.547398"
+       x="3021.9365"
+       y="1414.49"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/paso_pausar.png"
+       inkscape:export-xdpi="49.25"
+       inkscape:export-ydpi="49.25" />
+    <rect
+       style="opacity:0.75;fill:none;stroke:none"
+       id="rect6723"
+       width="36.547398"
+       height="36.547398"
+       x="3021.9365"
+       y="1467.2244"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/guardarComo.png"
+       inkscape:export-xdpi="49.251118"
+       inkscape:export-ydpi="49.251118" />
+    <path
+       inkscape:connector-curvature="0"
+       inkscape:export-ydpi="16.16"
+       inkscape:export-xdpi="16.16"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/valgrind_run.png"
+       sodipodi:nodetypes="zzzzz"
+       id="path7205"
+       d="m 3030.0123,1474.1495 c -1.6695,1.2589 -1.3541,21.4614 0.5901,22.8856 1.9442,1.4242 17.7281,1.1194 19.895,-0.3962 2.1669,-1.5156 2.2003,-20.6043 0.4491,-22.3377 -1.7512,-1.7334 -19.2647,-1.4106 -20.9342,-0.1517 z"
+       style="fill:#ac0000;fill-opacity:1;stroke:#000000;stroke-width:1.30521417;stroke-miterlimit:4;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       inkscape:export-ydpi="16.16"
+       inkscape:export-xdpi="16.16"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/valgrind_run.png"
+       sodipodi:nodetypes="cccc"
+       id="path6300-9-8"
+       d="m 3074.7809,1382.0674 c -2.1618,1.8845 -1.9829,22.44 -0.3775,25.0073 1.4051,1.8997 19.6849,-9.1477 19.8847,-12.0162 -0.071,-3.0794 -16.7437,-14.5914 -19.5072,-12.9911 z"
+       style="fill:#00a800;fill-opacity:1;stroke:#000000;stroke-width:1.61980653;stroke-miterlimit:4;stroke-dasharray:none" />
+    <g
+       id="g7057"
+       transform="matrix(1.3128214,0,0,1.3128214,3235.042,1112.293)">
+      <path
+         inkscape:export-ydpi="69.184341"
+         inkscape:export-xdpi="69.184341"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/console.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="rect5031"
+         d="m -112.35987,246.67129 c 5.92361,-0.44539 11.79218,-0.98986 18.513156,0 0.260802,4.77927 0.03402,9.31474 0,13.94658 -5.267297,0.7101 -10.963386,1.08329 -18.513156,0 -0.27254,-4.64886 -1.10039,-9.29772 0,-13.94658 z"
+         style="fill:#000000;fill-opacity:1;stroke:#999999;stroke-width:1.53239596;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         inkscape:export-ydpi="69.184341"
+         inkscape:export-xdpi="69.184341"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/console.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path5038"
+         d="m -112.35987,246.67129 c 5.92361,-0.4987 11.79218,-1.10834 18.513156,0 0.260802,5.35131 0.03402,10.42964 0,15.61588 -5.267297,0.79509 -10.963386,1.21295 -18.513156,0 -0.27254,-5.20529 -1.10039,-10.41058 0,-15.61588 z"
+         style="fill:#000000;fill-opacity:1;stroke:#999999;stroke-width:1.62151265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         inkscape:export-ydpi="69.184341"
+         inkscape:export-xdpi="69.184341"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/console.png"
+         style="fill:#ffffff;fill-opacity:1;stroke:#999999;stroke-width:1.51605284;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+         d="m -112.35987,246.67129 c 5.92361,-0.43594 11.79218,-0.96886 18.513156,0 0.260802,4.67787 0.03402,9.11711 0,13.65069 -5.267297,0.69503 -10.963386,1.0603 -18.513156,0 -0.27254,-4.55023 -1.10039,-9.10046 0,-13.65069 z"
+         id="path5034"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc" />
+      <text
+         transform="scale(1.5258598,0.6553682)"
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.28886127px;font-family:'Bitstream Vera Sans';fill:#00ff00;fill-opacity:1;stroke:none"
+         x="-72.78302"
+         y="385.54062"
+         id="text3478-7"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/console.png"
+         inkscape:export-xdpi="69.184341"
+         inkscape:export-ydpi="69.184341"><tspan
+           sodipodi:role="line"
+           id="tspan3480-8"
+           x="-72.78302"
+           y="385.54062"
+           style="font-family:'Hobbit SF';fill:#00ff00">&gt;.</tspan></text>
+    </g>
+    <g
+       transform="matrix(1.5820027,0,0,1.5700504,2457.3008,954.63869)"
+       id="g5045"
+       inkscape:export-filename="/mnt/ms/zinjai/imgs/cerrarTodo.png"
+       inkscape:export-xdpi="74.683365"
+       inkscape:export-ydpi="74.683365">
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="99.618126"
+         inkscape:export-xdpi="99.618126"
+         inkscape:export-filename="/mnt/hda7/zinjai/imgs/cerrar.png"
+         sodipodi:nodetypes="cc"
+         id="path5056"
+         d="m 407.80155,304.00399 c 3.04129,4.1076 3.86485,5.42109 6.05655,8.29007"
+         style="fill:none;stroke:#800000;stroke-width:2.87950015;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="99.618126"
+         inkscape:export-xdpi="99.618126"
+         inkscape:export-filename="/mnt/hda7/zinjai/imgs/cerrar.png"
+         sodipodi:nodetypes="cc"
+         id="path5058"
+         d="m 407.14443,312.62463 c 3.90958,-4.24686 5.10235,-5.83119 7.4241,-8.69419"
+         style="fill:none;stroke:#800000;stroke-width:2.87950015;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <rect
+       inkscape:export-ydpi="49.251118"
+       inkscape:export-xdpi="49.251118"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/guardarComo.png"
+       y="1427.2244"
+       x="3081.9365"
+       height="36.547398"
+       width="36.547398"
+       id="rect7641"
+       style="opacity:0.75;fill:none;stroke:none" />
+    <g
+       id="g7647"
+       transform="translate(0.61269349,0.08900719)"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/paso_pausar.png"
+       inkscape:export-xdpi="49.25"
+       inkscape:export-ydpi="49.25">
+      <path
+         inkscape:export-ydpi="78.80172"
+         inkscape:export-xdpi="78.80172"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/32/paso_pausar.png"
+         style="fill:#ff9955;fill-opacity:1;stroke:#000000;stroke-width:1.40101039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 3027.2024,1420.4839 c 1.0057,-1.4239 7.7967,-1.2676 8.8985,0.2506 1.1018,1.5182 0.8802,22.0391 0.068,23.737 -0.812,1.6978 -7.9427,2.0228 -9.0749,-0.1492 -1.1322,-2.172 -0.8975,-22.4144 0.1082,-23.8384 z"
+         id="path7643"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="czzzzc" />
+      <path
+         sodipodi:nodetypes="czzzzc"
+         inkscape:connector-curvature="0"
+         id="path7645"
+         d="m 3043.2024,1420.4839 c 1.0057,-1.4239 7.7967,-1.2676 8.8985,0.2506 1.1018,1.5182 0.8802,22.0391 0.068,23.737 -0.812,1.6978 -7.9427,2.0228 -9.0749,-0.1492 -1.1322,-2.172 -0.8975,-22.4144 0.1082,-23.8384 z"
+         style="fill:#ff9955;fill-opacity:1;stroke:#000000;stroke-width:1.40101039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/32/paso_pausar.png"
+         inkscape:export-xdpi="78.80172"
+         inkscape:export-ydpi="78.80172" />
+    </g>
+    <path
+       sodipodi:nodetypes="czzzzc"
+       inkscape:connector-curvature="0"
+       id="path7645-1"
+       d="m 3096.053,1382.2923 c 1.0057,-1.4239 6.5131,-1.2676 7.6149,0.2506 1.1018,1.5182 0.8802,22.0391 0.068,23.737 -0.812,1.6978 -6.6591,2.0228 -7.7913,-0.1492 -1.1322,-2.172 -0.8975,-22.4144 0.1082,-23.8384 z"
+       style="fill:#ff9955;fill-opacity:1;stroke:#000000;stroke-width:1.40101039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/paso_pausar.png"
+       inkscape:export-xdpi="78.80172"
+       inkscape:export-ydpi="78.80172" />
   </g>
 </svg>

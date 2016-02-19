@@ -13,6 +13,7 @@
 #include "mxDesktopTestPanel.h"
 #include "mxEvaluateDialog.h"
 #include "mxSubtitles.h"
+#include "mxBitmapButton.h"
 
 mxDebugWindow *debug_panel=NULL;
 
@@ -28,15 +29,28 @@ BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 END_EVENT_TABLE()	
 
 mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
+	
+	wxBitmap bmp_pausar("imgs/paso_pausar.png",wxBITMAP_TYPE_PNG), bmp_comenzar("imgs/paso_iniciar.png",wxBITMAP_TYPE_PNG), 
+		     bmp_un_paso("imgs/paso_un_paso.png",wxBITMAP_TYPE_PNG), bmp_detener("imgs/paso_detener.png",wxBITMAP_TYPE_PNG),
+		     bmp_cerrar("imgs/paso_cerrar.png",wxBITMAP_TYPE_PNG);
+	
+	dp_bmps[BMP_COMENZAR] = mxBitmapButton::GenerateButtonImage("Comenzar",&bmp_comenzar);
+	dp_bmps[BMP_PAUSAR] = mxBitmapButton::GenerateButtonImage("Pausar",&bmp_pausar);
+	dp_bmps[BMP_PRIMER_PASO] = mxBitmapButton::GenerateButtonImage("Primer Paso",&bmp_un_paso);
+	dp_bmps[BMP_FINALIZAR] = mxBitmapButton::GenerateButtonImage("Detener",&bmp_detener);
+	dp_bmps[BMP_CONTINUAR] = mxBitmapButton::GenerateButtonImage("Continuar",&bmp_comenzar);
+	dp_bmps[BMP_UN_PASO] = mxBitmapButton::GenerateButtonImage("Avanzar un Paso",&bmp_un_paso);
+	dp_bmps[BMP_CERRAR] = mxBitmapButton::GenerateButtonImage("Cerrar",&bmp_cerrar);
+	
 	evaluate_window=NULL;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->AddSpacer(5);
 //	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Estado:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
 //	debug_status = new wxStaticText(this,wxID_ANY,_T("No iniciada"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
 //	sizer->Add(debug_status,wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_run = new wxButton(this,mxID_DEBUG_BUTTON,_T("Comenzar")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
-	sizer->Add(dp_button_pause = new wxButton(this,mxID_DEBUG_PAUSE,_T("Pausar/Continuar")),wxSizerFlags().Proportion(0).Expand());
-	sizer->Add(dp_button_step = new wxButton(this,mxID_DEBUG_STEP,_T("Primer Paso")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	sizer->Add(dp_button_run = new wxBitmapButton(this,mxID_DEBUG_BUTTON,dp_bmps[BMP_COMENZAR]),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
+	sizer->Add(dp_button_pause = new wxBitmapButton(this,mxID_DEBUG_PAUSE,dp_bmps[BMP_PAUSAR]),wxSizerFlags().Proportion(0).Expand());
+	sizer->Add(dp_button_step = new wxBitmapButton(this,mxID_DEBUG_STEP,dp_bmps[BMP_PRIMER_PASO]),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	sizer->Add(dp_button_evaluate = new wxButton(this,mxID_DEBUG_EVALUATE,_T("Evaluar...")),wxSizerFlags().Proportion(0).Expand().Border(wxBOTTOM,10));
 	dp_button_evaluate->SetToolTip(utils->FixTooltip("Puede utilizar este botón para evaluar una expresión o conocer el valor de una variable durante la ejecución paso a paso. Para ello debe primero pausar el algoritmo."));
 	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Velocidad:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));
@@ -75,12 +89,12 @@ void mxDebugWindow::SetSpeed(int speed) {
 void mxDebugWindow::SetState(ds_enum state) {
 	switch (state) {
 	case DS_STARTING:
-		dp_button_run->SetLabel(_T("Finalizar"));
+		dp_button_run->SetBitmapLabel(dp_bmps[BMP_FINALIZAR]);
 		dp_button_run->SetToolTip(utils->FixTooltip("Utilice este botón para detener definitivamente la ejecución del algoritmo y abandonar el modo de ejecución paso a paso."));
 		subtitles->text->SetValue("Haga click en \"Continuar\" para leer en este panel los detalles las próximas acciones que realize el intérprete.");
 //		debug_status->SetLabel(_T("Iniciando"));
 		dp_button_step->Disable();
-		dp_button_step->SetLabel(_T("Avanzar un Paso"));
+		dp_button_step->SetBitmapLabel(dp_bmps[BMP_UN_PASO]);
 		dp_button_step->SetToolTip(utils->FixTooltip("Utilice este botón para avanzar ejecutar solamente la siguiente instrucción del algoritmo."));
 		subtitles->button_next->Disable();
 		subtitles->button_next->SetLabel("Continuar");
@@ -91,9 +105,9 @@ void mxDebugWindow::SetState(ds_enum state) {
 		subtitles->button_next->SetLabel(_T("Comenzar"));
 		subtitles->text->SetValue("Haga click en \"Comenzar\" para iniciar la ejecución paso a paso y leer en este panel los detalles de cada acción que realiza el intérprete.");
 		subtitles->button_next->Enable();
-		dp_button_run->SetLabel(_T("Comenzar"));
+		dp_button_run->SetBitmapLabel(dp_bmps[BMP_COMENZAR]);
 		dp_button_run->SetToolTip(utils->FixTooltip("Utilice este botón para que el algoritmo comience a ejecutarse automáticamente y paso a paso, señalando cada instrucción que ejecuta, según la velocidad definida en el menú configuración."));
-		dp_button_step->SetLabel(_T("Primer Paso"));
+		dp_button_step->SetBitmapLabel(dp_bmps[BMP_PRIMER_PASO]);
 		dp_button_step->SetToolTip(utils->FixTooltip("Utilice este botón para ejecutar solo la primer instrucción del algoritmo y pausar inmediatamente la ejecución del mismo."));
 		dp_button_step->Enable();
 		dp_check_desktop_test->Enable();
@@ -107,7 +121,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 	case DS_FINALIZED:
 		subtitles->button_next->SetLabel(_T("Cerrar"));
 		subtitles->button_next->Enable();
-		dp_button_run->SetLabel(_T("Cerrar"));
+		dp_button_run->SetBitmapLabel(dp_bmps[BMP_CERRAR]);
 		dp_button_run->SetToolTip(utils->FixTooltip("Ha finalizado la ejecución del algoritmo. Utilice este botón para cerrar la ventana de la ejecución del mismo."));
 		dp_button_pause->Disable();
 		dp_button_step->Disable();
@@ -117,7 +131,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->Enable();
 		subtitles->button_next->Enable();
 		dp_button_pause->Enable();
-		dp_button_pause->SetLabel(_T("Continuar"));
+		dp_button_pause->SetBitmapLabel(dp_bmps[BMP_CONTINUAR]);
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para que el algoritmo continúe avanzando paso a paso automáticamente."));
 		dp_button_evaluate->Enable();
 		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_PAUSED);
@@ -126,7 +140,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_button_step->Disable();
 		subtitles->button_next->Disable();
 		dp_button_pause->Enable();
-		dp_button_pause->SetLabel(_T("Pausar"));
+		dp_button_pause->SetBitmapLabel(dp_bmps[BMP_PAUSAR]);
 		dp_button_pause->SetToolTip(utils->FixTooltip("Utilice este botón para detener temporalmente la ejecución del algoritmo. Al detener el algoritmo puede observar el valor de las variables con el botón Evaluar."));
 		dp_button_evaluate->Disable();
 		if (debug&&debug->source) debug->source->SetStatus(STATUS_DEBUG_RUNNING);
