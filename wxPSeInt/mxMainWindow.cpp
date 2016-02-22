@@ -192,16 +192,11 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "
 		file_history[i]=NULL;
 	
 	wxIconBundle bundle;
-	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap("imgs/icon16.png",wxBITMAP_TYPE_PNG));
-	bundle.AddIcon(wxIcon(icon16));
-	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/icon32.png",wxBITMAP_TYPE_PNG));
-	bundle.AddIcon(wxIcon(icon32));
-	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap("imgs/icon48.png",wxBITMAP_TYPE_PNG));
-	bundle.AddIcon(wxIcon(icon48));
-	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap("imgs/icon64.png",wxBITMAP_TYPE_PNG));
-	bundle.AddIcon(wxIcon(icon64));
-	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap("imgs/icon128.png",wxBITMAP_TYPE_PNG));
-	bundle.AddIcon(wxIcon(icon128));
+	wxIcon icon16; icon16.CopyFromBitmap(wxBitmap("imgs/icon16.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon16);
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/icon32.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon32);
+	wxIcon icon48; icon48.CopyFromBitmap(wxBitmap("imgs/icon48.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon48);
+	wxIcon icon64; icon64.CopyFromBitmap(wxBitmap("imgs/icon64.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon64);
+	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap("imgs/icon128.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon128);
 	SetIcons(bundle);
 	
 	find_replace_dialog = new mxFindDialog(this,wxID_ANY);
