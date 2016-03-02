@@ -1,5 +1,6 @@
-#include "LangSettings.h"
 #include <iostream>
+#include "LangSettings.h"
+#include <algorithm>
 using namespace std;
 
 LangSettings::aux_struct LangSettings::data[LS_COUNT];
@@ -110,51 +111,54 @@ void LangSettings::init() {
 #ifdef FOR_WXPSEINT
 #include <wx/string.h>
 #include <wx/textfile.h>
+#include "../wxPSeInt/string_conversions.h"
 #include "../wxPSeInt/Logger.h"
 #include "../wxPSeInt/version.h"
 
 
 bool LangSettings::Load (const wxString &fname) {
 	_LOG("LangSettings::Load "<<fname);
-	wxTextFile fil(fname); if (!fil.Exists()) return false;
-	fil.Open(); if (!fil.IsOpened()) return false;
-	Reset(0); // reset va despues de los "return false" para evitar resetear el perfil personalizado cuando se llama desde el ConfigManager
-	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() )
-		ProcessConfigLine(str.c_str());
-	fil.Close();
-	Fix();
-	return true;
+	return Load(std::string(_W2S(fname)));
 }
 
 bool LangSettings::Save (const wxString &fname) {
-	wxTextFile fil(fname);
-	if (!fil.Exists()) fil.Create();
-	fil.Open(); if (!fil.IsOpened()) return false;
-	fil.Clear();
-	wxString tmp=descripcion.c_str(); tmp.Replace("\r",""); tmp.Replace("\n","\ndesc=");
-	fil.AddLine(wxString("desc=")<<tmp);
-	fil.AddLine(wxString("version=")<<LS_VERSION);
-	for(int i=0;i<LS_COUNT;i++) 
-		fil.AddLine(GetConfigLine(i).c_str());
-	fil.Write();
-	fil.Close();
-	return true;
+	return Save(std::string(_W2S(fname)));
 }
 
 void LangSettings::Log ( ) {
 	_LOG("Profile: "<<VERSION<<" "<<GetAsSingleString().c_str());
 }
-#else // FOR_WXPSEINT
+#endif // FOR_WXPSEINT
 #include <fstream>
 bool LangSettings::Load(const std::string &fname) {
 	ifstream fil(fname.c_str());
 	if (!fil.is_open()) return false; 
-	Reset(0); string str; 
+	Reset(0); string str; // reset va despues de los "return false" para evitar resetear el perfil personalizado cuando se llama desde el ConfigManager
 	while (getline(fil,str)) ProcessConfigLine(str);
 	Fix();
 	return true;
 }
-#endif // FOR_WXPSEINT
+
+static void replace(string  &s, string from, string to) {
+	size_t p = s.find(from);
+	while(p!=string::npos) {
+		s.replace(p,from.size(),to);
+		p = s.find(from,p+to.size());
+	}
+}
+
+bool LangSettings::Save (const string &fname) {
+	ofstream fil(fname.c_str(),ios::trunc);
+	if (!fil.is_open()) return false;
+	string tmp = descripcion.c_str(); 
+	replace(tmp,"\r",""); replace(tmp,"\n","\ndesc=");
+	fil << "desc=" << tmp << endl;
+	fil << "version=" <<LS_VERSION << endl;
+	for(int i=0;i<LS_COUNT;i++) 
+		fil << GetConfigLine(i);
+	fil.close();
+	return true;
+}
 
 std::string LangSettings::GetAsSingleString() {
 	std::string retval(LS_COUNT,'?');

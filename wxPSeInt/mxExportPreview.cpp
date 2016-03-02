@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include <wx/bmpbuttn.h>
 #include <wx/settings.h>
+#include <wx/filedlg.h>
 
 //mxExportPreview *export_preview=NULL;
 
@@ -150,7 +151,7 @@ void mxExportPreview::OnButtonSave (wxCommandEvent & event) {
 	wxString extension = utils->GetExportLangCode(lang_id);
 	while(extension.Last()>='0'&&extension.Last()<='9') extension.RemoveLast();
 		
-	wxFileDialog dlg (main_window, _T("Guardar Código Exportado"),config->last_dir,wxString(".")+extension, wxString("Archivo ")+extension+"|*."+extension, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg (main_window, _Z("Guardar Código Exportado"),config->last_dir,wxString(".")+extension, wxString("Archivo ")+extension+"|*."+extension, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return;
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	

@@ -5,6 +5,8 @@
 #include "mxSource.h"
 #include "mxMainWindow.h"
 #include "Logger.h"
+#include "string_conversions.h"
+#include <wx/msgdlg.h>
 using namespace std;
 
 string er_dir;
@@ -71,10 +73,10 @@ void er_sigsev(int sig) {
 	_LOG("signal: "<<sig);
 	
 	if (main_window) {
-		wxMessageDialog(main_window,"Ha ocurrido un error grave y PSeInt se cerrará. Por,\n"
-									"suerte se han podido guardar todos sus archivos para\n"
-									"ser recuperados la proxima vez que inicie el entorno.",
-						_T("OOOPS!!!"),wxOK|wxICON_ERROR).ShowModal();
+		wxMessageDialog	(main_window,_Z("Ha ocurrido un error grave y PSeInt se cerrará. Por,\n"
+									   "suerte se han podido guardar todos sus archivos para\n"
+									   "ser recuperados la proxima vez que inicie el entorno."),
+						_Z("OOOPS!!!"),wxOK|wxICON_ERROR).ShowModal();
 	}
 	exit(sig);
 }

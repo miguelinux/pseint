@@ -81,9 +81,9 @@ struct LangSettings {
 	bool Load(const wxString &fname);
 	bool Save(const wxString &fname);
 	void Log();
-#else
-	bool Load(const std::string &fname);
 #endif
+	bool Save(const std::string &fname);
+	bool Load(const std::string &fname);
 
 	bool IsTrue(const std::string &value) const {
 		return (value.size() && (value[0]=='1' || value[0]=='V' || value[0]=='v' || value[0]=='s' || value[0]=='S' || value[0]=='T' || value[0]=='t'));
@@ -94,7 +94,7 @@ struct LangSettings {
 	}
 	bool ProcessConfigLine(const std::string &key, const std::string &value) {
 		if (key=="desc") { descripcion+=value+"\n"; return true; }
-		else if (key=="profile") { Load(value.c_str()); return true; } // el .c_str es por si usa el Load(wxString)
+		else if (key=="profile") { Load(value); return true; } // el .c_str es por si usa el Load(wxString)
 		else if (key=="binprofile") { SetFromSingleString(value); return true; }
 		else if (key=="version") { version=atoi(value.c_str()); return true; }
 		else if (key=="use_nassi_schneiderman") return ProcessConfigLine("use_nassi_shneiderman",value); // estaba mal deletreado... sChneiderman

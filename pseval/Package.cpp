@@ -13,6 +13,7 @@
 #include <wx/fs_mem.h>
 #include <wx/image.h>
 #include <wx/filesys.h>
+#include "../wxPSeInt/string_conversions.h"
 
 class mxFilterInputStream : public wxFilterInputStream {
 	wxString key; int pos, len, base_pos;
@@ -20,7 +21,7 @@ public:
 	mxFilterInputStream(wxInputStream &stream, const wxString &key) : wxFilterInputStream(stream) { 
 		this->key=key; 
 		len=key.size();
-		pos=0; for(int i=0;i<len;i++) pos+=key[i]; 
+		pos=0; for(int i=0;i<len;i++) pos+=_C(key[i]); 
 		if (len) base_pos=pos=(pos%len); else base_pos=0;
 	}
 protected:
@@ -30,7 +31,7 @@ protected:
 		unsigned char *auxb = reinterpret_cast<unsigned char*>(buffer);
 		for(unsigned int i=0;i<count;i++) { 
 			int x = auxb[i]; 
-			x = ( x + 256 - key[pos] ) % 256;
+			x = ( x + 256 - _C(key[pos]) ) % 256;
 			pos=(pos+1)%len;
 			auxb[i] = x;
 		}
@@ -44,7 +45,7 @@ public:
 	mxFilterOutputStream(wxOutputStream &stream, const wxString &key) : wxFilterOutputStream(stream) { 
 		this->key=key; 
 		len=key.size();
-		pos=0; for(int i=0;i<len;i++) pos+=key[i]; 
+		pos=0; for(int i=0;i<len;i++) pos+=_C(key[i]);
 		if (len) base_pos=pos=(pos%len); else base_pos=0;
 	}
 protected:
@@ -60,7 +61,7 @@ protected:
 		unsigned char *uaux = reinterpret_cast<unsigned char*>(auxbuf);
 		for(unsigned int i=0;i<size;i++) { 
 			int x = ubuf[i]; 
-			x = ( x + key[pos] ) % 256;
+			x = ( x + _C(key[pos]) ) % 256;
 			pos=(pos+1)%len;
 			uaux[i] = x;
 		}

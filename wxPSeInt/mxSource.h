@@ -63,6 +63,7 @@ public:
 	void SetWords();
 	static void SetAutocompletion();
 	void SetStyle(int idx, const char *fontName, int fontSize, const char *foreground, const char *background, int fontStyle);
+	void SetIndics(int from, int len, int indic, bool on);
 	void SetFieldIndicator(int p1, int p2, bool select=true); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();

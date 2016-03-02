@@ -63,7 +63,7 @@ mxProfile::mxProfile(wxWindow *parent):wxDialog(parent,wxID_ANY,_Z("Opciones del
 	perfiles.Sort(comp_nocase);
 	for(unsigned int i=0;i<perfiles.GetCount();i++) { 
 		LangSettings l(LS_INIT); l.Load(DIR_PLUS_FILE(config->profiles_dir,perfiles[i]));
-		descripciones.Add(l.descripcion.c_str());
+		descripciones.Add(_Z(l.descripcion.c_str()));
 	}
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(200,200),wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
@@ -186,12 +186,24 @@ void mxProfile::OnSearchText (wxCommandEvent & evt) {
 	Search();
 }
 
+static wxString normalize(wxString s) {
+	s.MakeLower();
+	s.Replace(_Z("á"),_T("a"),true);
+	s.Replace(_Z("é"),_T("e"),true);
+	s.Replace(_Z("í"),_T("i"),true);
+	s.Replace(_Z("ó"),_T("o"),true);
+	s.Replace(_Z("ú"),_T("u"),true);
+	s.Replace(_Z("ñ"),_T("n"),true);
+	s.Replace(_Z("ü"),_T("u"),true);
+	return s;
+}
+
 void mxProfile::Search ( ) {
 	list->DeleteAllItems();
 	int sel=-1, cont=0;
-	wxString pat=search->GetValue().Lower();
+	wxString pat=normalize(search->GetValue());
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
-		if (pat.Len()==0 || perfiles[i].Lower().Contains(pat) || descripciones[i].Lower().Contains(pat)) {
+		if (pat.Len()==0 || perfiles[i].Lower().Contains(pat) || normalize(descripciones[i]).Contains(pat)) {
 			list->InsertItem(cont,perfiles[i],i);
 			if (perfiles[i].Lower()==config->profile.Lower()) sel=cont;
 			cont++;

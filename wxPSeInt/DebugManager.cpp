@@ -147,7 +147,7 @@ void DebugManager::Stop() {
 static wxString aux_SendEvaluation_GetNextKey() {
 	static wxString key = "@";
 	int a=0; 
-	while( (key[a]++)=='Z' ) {
+	while( (key[a]=_C(key[a])+1)=='Z' ) {
 		key[a++]='A';
 		if (a==int(key.length())) key+="@";
 	}

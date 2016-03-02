@@ -7,6 +7,7 @@
 #include "mxDesktopTestGrid.h"
 #include "mxHelpWindow.h"
 #include "string_conversions.h"
+#include <wx/textdlg.h>
 
 mxDesktopTestPanel *desktop_test_panel=NULL;
 

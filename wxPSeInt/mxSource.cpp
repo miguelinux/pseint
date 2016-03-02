@@ -64,6 +64,14 @@ const char* mxSourceWords2_string =
 
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
+enum {INDIC_FIELD=0, INDIC_ERROR_1, INDIC_ERROR_2};
+#ifdef WX3
+static int indic_to_mask[] = { 0, 1, 2, 4, 8, 16 };
+const int ANNOTATION_STYLE = wxSTC_STYLE_LASTPREDEFINED + 1;
+#else
+static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC2_MASK };
+#endif
+
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
@@ -133,13 +141,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	
 	id=++last_id;
 	temp_filename_prefix=DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);	
-	
-// se modifica en launcher.txt en lugar de aca, para nadie use utf8 y entonces se vea igual en todos lados y tampoco tenga que convertir los ejemplos
-  // #ifndef __WIN32__
-// 	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
-// 	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
-// 		SetCodePage(wxSTC_CP_UTF8);
-// #endif
   
 	SetModEventMask(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT|wxSTC_PERFORMED_USER|wxSTC_PERFORMED_UNDO|wxSTC_PERFORMED_REDO|wxSTC_LASTSTEPINUNDOREDO);
 	
@@ -177,13 +178,13 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxSt
 	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
-	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
-	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
-	IndicatorSetStyle(1,wxSTC_INDIC_BOX);
+	IndicatorSetStyle(INDIC_FIELD,wxSTC_INDIC_BOX);
+	IndicatorSetStyle(INDIC_ERROR_1,wxSTC_INDIC_SQUIGGLE);
+	IndicatorSetStyle(INDIC_ERROR_2,wxSTC_INDIC_SQUIGGLE);
 //	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
-	IndicatorSetForeground (0, 0x0000FF);
-	IndicatorSetForeground (1, 0x005555);
-	IndicatorSetForeground (2, 0x004499);
+	IndicatorSetForeground (INDIC_FIELD, 0x005555);
+	IndicatorSetForeground (INDIC_ERROR_1, 0x0000FF);
+	IndicatorSetForeground (INDIC_ERROR_2, 0x004499);
 	
 	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, "WHITE", "RED");
 	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
@@ -249,6 +250,7 @@ void mxSource::SetStyle(int idx, const char *fontName, int fontSize, const char 
 }
 
 void mxSource::SetStyling(bool colour) {
+	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
 	SetWords();
 	SetStyle(wxSTC_C_DEFAULT,"",config->font_size,"BLACK","WHITE",0); // default
 	SetStyle(wxSTC_C_COMMENT,"",config->font_size,"BLACK","WHITE",0); // comment
@@ -272,7 +274,10 @@ void mxSource::SetStyling(bool colour) {
 	SetStyle(wxSTC_C_GLOBALCLASS,"",config->font_size,"BLACK","LIGHT BLUE",0); // keywords errors
 	SetStyle(wxSTC_STYLE_BRACELIGHT,"",config->font_size,"RED","Z LIGHT BLUE",mxSOURCE_BOLD); 
 	SetStyle(wxSTC_STYLE_BRACEBAD,"",config->font_size,"DARK RED","WHITE",mxSOURCE_BOLD); 
-	SetLexer(wxSTC_LEX_CPPNOCASE);
+#ifdef WX3
+	SetStyle(ANNOTATION_STYLE,"",config->font_size-1,"DARK RED","LIGHT YELLOW",mxSOURCE_ITALIC); 
+	AnnotationSetVisible(wxSTC_ANNOTATION_INDENTED);
+#endif
 }
 
 void mxSource::OnEditCut(wxCommandEvent &evt) {
@@ -643,21 +648,18 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 }
 
 void mxSource::SetFieldIndicator(int p1, int p2, bool select) {
-	int lse = GetEndStyled();
-	StartStyling(p1,wxSTC_INDICS_MASK);
-	wxStyledTextCtrl::SetStyling(p2-p1,wxSTC_INDIC1_MASK);
+	SetIndics(p1,p2-p1,INDIC_FIELD,true);
 	if (select) { GotoPos(p1); SetSelection(p1,p2); }
-	StartStyling(lse,0x1F);
 }
 
 void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	int p = GetCurrentPos();
-	int s = GetStyleAt(p);
-	if (s&wxSTC_INDIC1_MASK) {
+	int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
+	if (indics&indic_to_mask[INDIC_FIELD]) {
 		int p2=p;
-		while (GetStyleAt(p2)&wxSTC_INDIC1_MASK)
+		while (GetStyleAt(p2)&indic_to_mask[INDIC_FIELD])
 			p2++;
-		while (GetStyleAt(p)&wxSTC_INDIC1_MASK)
+		while (GetStyleAt(p)&indic_to_mask[INDIC_FIELD])
 			p--;
 		int s1=GetAnchor(), s2=GetCurrentPos();
 		if (s1==s2) {
@@ -675,12 +677,13 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 			if (s1>p+1) SetAnchor(p+1);
 		}
 		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
-	} else if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy sobre un error del rt_syntax muestra el calltip con el mensaje
+	} 
+	else if (indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) { // si estoy sobre un error del rt_syntax muestra el calltip con el mensaje
 		unsigned int l=GetCurrentLine();
 		if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
 	} else if (!AutoCompActive()) { // para que un error por no haber terminado de escribir detectado por rt_syntax no oculte el autocompletado
-		if (p) p--; s = GetStyleAt(p);
-		if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) { // si estoy justo despues de un error del rt_syntax tambien muestra el calltip con el mensaje
+		if (p) p--; indics = GetStyleAt(p);
+		if (indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) { // si estoy justo despues de un error del rt_syntax tambien muestra el calltip con el mensaje
 			unsigned int l=GetCurrentLine();
 			if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
 		} else { // si no estoy sobre ningun error, oculta el calltip si es que habia
@@ -964,7 +967,6 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
-//						if (first_word && btype) *btype=old_btype;
 						first_word=false;
 					}
 				}
@@ -1291,10 +1293,11 @@ void mxSource::DoRealTimeSyntax (RTSyntaxManager::Info *args) {
 void mxSource::ClearErrorData() {
 	if (flow_socket) flow_socket->Write("errors reset\n",13);
 	rt_errors.clear();
-	int lse = GetEndStyled();
-	StartStyling(0,wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK);
-	wxStyledTextCtrl::SetStyling(GetLength(),0);
-	StartStyling(lse,0x1F);
+	SetIndics(0,GetLength(),INDIC_ERROR_1,false);
+	SetIndics(0,GetLength(),INDIC_ERROR_2,false);
+#ifdef WX3
+	AnnotationClearAll();
+#endif
 }
 
 void mxSource::MarkError(wxString line) {
@@ -1322,14 +1325,16 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 		flow_socket->Write(msg.c_str(),msg.Len());
 	}
 	// marcarlo en el pseudocódigo subrayando la instrucción y poniendo la cruz en el margen
-	int lse = GetEndStyled();
 	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;
 	if (!(MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerAdd(l,MARKER_ERROR_LINE);
+#ifdef WX3
+	wxString prev = AnnotationGetText(l); if (!prev.IsEmpty()) prev<<"\n";
+	AnnotationSetText(l,prev<<"en inst. "<<i+1<<": "<<str);
+	AnnotationSetStyle(l,ANNOTATION_STYLE);
+#endif
 	l=PositionFromLine(l);
-	StartStyling(l+v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
-	wxStyledTextCtrl::SetStyling(v[2*i+1]-v[2*i],special?wxSTC_INDIC2_MASK:wxSTC_INDIC0_MASK);
-	StartStyling(lse,0x1F);
+	SetIndics(l+v[2*i],v[2*i+1]-v[2*i],special?INDIC_ERROR_2:INDIC_ERROR_1,true);
 }
 
 void mxSource::StartRTSyntaxChecking ( ) {
@@ -1343,17 +1348,18 @@ void mxSource::StopRTSyntaxChecking ( ) {
 
 void mxSource::OnTimer (wxTimerEvent & te) {
 //	_LOG("mxSource::OnTimer in");
-	if (te.GetEventObject()==flow_timer) {
+	wxObject *obj = _wxEvtTimer_to_wxTimerPtr(te);
+	if (obj==flow_timer) {
 		_LOG("mxSource::OnTimes(flow) "<<this);
 		UpdateFromFlow();
-	} else if (te.GetEventObject()==rt_timer) {
+	} else if (obj==rt_timer) {
 		_LOG("mxSource::OnTimes(rt) "<<this);
 		if (main_window->GetCurrentSource()!=this) {
 //			_LOG("mxSource::OnTimer out");
 			return; // solo si tiene el foco
 		}
 		DoRealTimeSyntax(); HighLightBlock();
-	} else if (te.GetEventObject()==reload_timer) {
+	} else if (obj==reload_timer) {
 		_LOG("mxSource::OnTimes(reload) "<<this);
 		if (run_socket && rt_errors.empty()) UpdateRunningTerminal();
 	}
@@ -1361,13 +1367,15 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 }
 
 void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
-	// muestra el tip
-	current_calltip.pos=pos;
-	current_calltip.is_error=is_error;
-	CallTipShow(pos,l);
+	if (_if_wx3_else(!is_error,true)) {
+		// muestra el tip
+		current_calltip.pos=pos;
+		current_calltip.is_error=is_error;
+		CallTipShow(pos,l);
+	}
 	// si era un error y está el panel de ayuda rápida muestra también la descripción larga
-	if (!current_calltip.is_error || !main_window->aui_manager.GetPane((wxHtmlWindow*)main_window->quick_html).IsShown()) return;
-	int il=LineFromPosition(current_calltip.pos);
+	if (!is_error || !main_window->aui_manager.GetPane((wxHtmlWindow*)main_window->quick_html).IsShown()) return;
+	int il=LineFromPosition(pos);
 	if (il<0||il>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[il];
 	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
@@ -1467,10 +1475,11 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			_DEBUG_LAMBDA_3( lmbCalltip, mxSource,src, wxString,var, int,pos, { src->CallTipShow(pos,var+": "+ans.Mid(2)); } );
 			debug->SendEvaluation(key,new lmbCalltip(this,key,p));
 		}
-	} else if (config->rt_syntax && main_window->IsActive()) {
+	} 
+	else if (config->rt_syntax && main_window->IsActive()) {
 		int p = event.GetPosition();
-		int s = GetStyleAt(p);
-		if (s&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) {
+		int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
+		if (indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) {
 			unsigned int l=LineFromPosition(p);
 			if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
 		}
@@ -1683,7 +1692,8 @@ void mxSource::OnMarginClick (wxStyledTextEvent & event) {
 	event.Skip();
 	int l = LineFromPosition(event.GetPosition());
 	int p = PositionFromLine(l), pl=GetLineEndPosition(l);
-	while ( p<pl && !(GetStyleAt(p)&(wxSTC_INDIC0_MASK|wxSTC_INDIC2_MASK)) ) p++;
+	int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
+	while ( p<pl && !(indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) ) p++;
 	if (p<pl) {
 		main_window->ShowQuickHelp(true);
 		main_window->SetQuickHelpText(QH_NULL); // para que muestre la ayuda rapida..
@@ -1890,12 +1900,24 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 			else if (result==wxDragCancel && ss==GetSelectionStart()) {
 				DoDropText(evt.GetX(),evt.GetY(),""); // para evitar que se congele el cursor
 				SetSelection(p,p);
-//				evt.Skip();
 			} else {
 				DoDropText(evt.GetX(),evt.GetY(),"");
 			}
 		} else
 			evt.Skip();
-//	}
+}
+
+void mxSource::SetIndics (int from, int len, int indic, bool on) {
+#ifdef WX3
+	SetIndicatorCurrent(indic);
+	if (on) IndicatorFillRange(from,len);
+	else    IndicatorClearRange(from,len);
+#else
+	indic = indic_to_mask[indic];
+	int lse = GetEndStyled();
+	StartStyling(from,indic);
+	wxStyledTextCtrl::SetStyling(len,on?indic:0);
+	StartStyling(lse,0x1F);
+#endif
 }
 

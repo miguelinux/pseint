@@ -231,7 +231,7 @@ void ConfigManager::Read() {
 //			else if (key=="psdraw3_command") psdraw3_command=value;
 			else if (key=="terminal") { tty_command=value; }
 			else if (key=="history") last_files.Add(value);
-			else lang.ProcessConfigLine(key.c_str(),value.c_str());
+			else lang.ProcessConfigLine(_W2S(key),_W2S(value));
 		}
 	}
 	fil.Close();

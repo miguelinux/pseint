@@ -216,6 +216,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "
 	CreateStatusBar();
 	
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
+	_if_wx3( aui_manager.GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE,wxAUI_GRADIENT_NONE) );
 	aui_manager.Update();
 
 	SetDropTarget(new mxDropTarget(NULL));
@@ -460,12 +461,12 @@ void mxMainWindow::CreateDebugControlsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png"),"Ejecución Paso a Paso"), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png"),_Z("Ejecución Paso a Paso")), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
 	wxSize client_size = GetClientSize();
-	notebook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxSize(430,200), wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxNO_BORDER | wxAUI_NB_WINDOWLIST_BUTTON);
+	notebook = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition,wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxNO_BORDER | wxAUI_NB_WINDOWLIST_BUTTON);
 //	wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
 	aui_manager.AddPane(notebook, wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
 }
@@ -883,8 +884,8 @@ void mxMainWindow::SelectError(wxString text) {
 		long e=0;
 		text.Mid(7).ToLong(&e);
 		if (config->auto_quickhelp) 
-			ShowQuickHelp(true,help->GetErrorText(text,e));
-	}	
+			ShowQuickHelp(true,help->GetErrorText(text,e),QH_LINK_SELECTERROR);
+	}
 }
 
 void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
@@ -1630,9 +1631,9 @@ void mxMainWindow::ShowResults(bool show, bool no_error) {
 // show=true muestra el panel
 // show=true, text!="" muestra el panel con ese texto(str)
 // show=true, text!="", load=true muestra el panel y carga ese archivo(str)
-void mxMainWindow::ShowQuickHelp(bool show, const wxString &str, bool load) {
+void mxMainWindow::ShowQuickHelp(bool show, const wxString &str, int mode) {
 	if (show) {
-		if (str.Len()) SetQuickHelpText(load?QH_HELP_LOAD:QH_HELP_SET,str);
+		if (str.Len()) SetQuickHelpText(mode,str);
 		ShowPanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
 	} else 
 		HidePanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
@@ -1973,6 +1974,8 @@ void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool fo
 			_set_quick_help_check_code;
 			quick_html->SetPage(_Z("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo."));
 			break;
+		case QH_LINK_SELECTERROR:
+			code = QH_RT_SELECTERROR; last_code=QH_RT_NOERROR;
 		case QH_RT_SELECTERROR:
 			if (last_code>=QH_LASTERR && last_code!=QH_RT_NOERROR) return; // no reemplazar si no era un mensaje de error
 			_set_quick_help_check_code;

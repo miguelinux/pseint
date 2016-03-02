@@ -15,7 +15,7 @@ class wxScrollBar;
 class mxDesktopTestPanel;
 class mxTestPanel;
 
-enum QH_CODE { QH_LASTERR=10000, QH_QUICKHELP, QH_HELP_LOAD, QH_HELP_SET, QH_SYNCHECK, QH_RT_NOERROR, QH_RT_SELECTERROR, QH_NULL };
+enum QH_CODE { QH_LASTERR=10000, QH_QUICKHELP, QH_HELP_LOAD, QH_HELP_SET, QH_SYNCHECK, QH_RT_NOERROR, QH_RT_SELECTERROR, QH_LINK_SELECTERROR, QH_NULL };
 
 class mxMainWindow : public wxFrame {
 private:
@@ -179,7 +179,7 @@ public:
 	void ShowDebugPanel(bool show, bool anim=false);
 	void ShowCommandsPanel(bool show, bool anim=false);
 	void ShowResults(bool show, bool no_error);
-	void ShowQuickHelp(bool show, const wxString &text="", bool load=false);
+	void ShowQuickHelp(bool show, const wxString &text="", int mode = QH_HELP_SET);
 	void ShowSubtitles(bool show, bool anim=false);
 	void ShowDesktopTestPanel(bool show, bool anim=false);
 	

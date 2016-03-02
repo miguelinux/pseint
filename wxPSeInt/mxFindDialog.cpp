@@ -13,6 +13,7 @@
 #include "ConfigManager.h"
 #include "mxArt.h"
 #include <wx/msgdlg.h>
+#include "string_conversions.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxFindDialog, wxDialog)
@@ -22,30 +23,30 @@ BEGIN_EVENT_TABLE(mxFindDialog, wxDialog)
 	EVT_BUTTON(mxID_FIND_REPLACE_ALL,mxFindDialog::OnReplaceAllButton)
 END_EVENT_TABLE()
 
-mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, _T("Buscar"), pos, size, style) {
+mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, _Z("Buscar"), pos, size, style) {
 	
 	wxBoxSizer *mySizer= new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *optSizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxVERTICAL);
 	
-	optSizer->Add(new wxStaticText(this, wxID_ANY, _T("Texto a buscar:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
+	optSizer->Add(new wxStaticText(this, wxID_ANY, _Z("Texto a buscar:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
 	combo_find = new wxComboBox(this, wxID_ANY);
 	optSizer->Add(combo_find,wxSizerFlags().Proportion(0).Expand().Border(wxLEFT|wxBOTTOM,5));
 	
-	optSizer->Add(replace_static = new wxStaticText(this, wxID_ANY, _T("Reemplazar por:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
+	optSizer->Add(replace_static = new wxStaticText(this, wxID_ANY, _Z("Reemplazar por:"), wxDefaultPosition, wxDefaultSize, 0), wxSizerFlags().Border(wxALL,5));
 	combo_replace = new wxComboBox(this, wxID_ANY);
 	optSizer->Add(combo_replace,wxSizerFlags().Proportion(0).Expand().Border(wxLEFT|wxBOTTOM,5));
 	
-	check_word = utils->AddCheckBox(optSizer,this,_T("Solo palabras completas"),false);
-	check_start = utils->AddCheckBox(optSizer,this,_T("Solo al comienzo de la palabra"),false);
-	check_case = utils->AddCheckBox(optSizer,this,_T("Distinguir mayúsculas y minúsculas"),false);
-	check_close = utils->AddCheckBox(optSizer,this,_T("Cerrar este dialogo después de encontrar"),true);
+	check_word = utils->AddCheckBox(optSizer,this,_Z("Solo palabras completas"),false);
+	check_start = utils->AddCheckBox(optSizer,this,_Z("Solo al comienzo de la palabra"),false);
+	check_case = utils->AddCheckBox(optSizer,this,_Z("Distinguir mayúsculas y minúsculas"),false);
+	check_close = utils->AddCheckBox(optSizer,this,_Z("Cerrar este dialogo después de encontrar"),true);
 	
-	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, _T("Reemplazar"));
-	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, _T("Reemplazar Todo"));
-	next_button = new mxBitmapButton (this, mxID_FIND_FIND_NEXT, bitmaps->buttons.find, _T("Buscar Siguiente"));
-	wxButton *prev_button = new mxBitmapButton (this, mxID_FIND_FIND_PREV, bitmaps->buttons.find, _T("Buscar Anterior"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
+	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, _Z("Reemplazar"));
+	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, _Z("Reemplazar Todo"));
+	next_button = new mxBitmapButton (this, mxID_FIND_FIND_NEXT, bitmaps->buttons.find, _Z("Buscar Siguiente"));
+	wxButton *prev_button = new mxBitmapButton (this, mxID_FIND_FIND_PREV, bitmaps->buttons.find, _Z("Buscar Anterior"));
+	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _Z("Cancelar"));
 	
 	butSizer->Add(replace_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	butSizer->Add(replace_all_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
@@ -96,7 +97,7 @@ void mxFindDialog::ShowFind(mxSource *source) {
 	replace_all_button->Hide();
 	replace_button->Hide();
 	next_button->SetDefault();
-	SetTitle(_T("Buscar"));
+	SetTitle(_Z("Buscar"));
 	GetSizer()->SetSizeHints(this);
 	Fit();
 	combo_find->SetFocus();
@@ -132,7 +133,7 @@ void mxFindDialog::ShowReplace(mxSource *source) {
 	replace_all_button->Show();
 	replace_button->Show();
 	replace_button->SetDefault();
-	SetTitle(_T("Reemplazar"));
+	SetTitle(_Z("Reemplazar"));
 	GetSizer()->SetSizeHints(this);
 	Fit();
 	combo_find->SetFocus();
@@ -166,7 +167,7 @@ bool mxFindDialog::FindPrev() {
 			source->SetSelection(source->GetTargetStart(),source->GetTargetEnd());
 			return true;
 		} else { 
-			wxMessageBox(wxString(_T("La cadena \""))<<last_search<<_T("\" no se encontró."), _T("Buscar"));
+			wxMessageBox(wxString(_Z("La cadena \""))<<last_search<<_Z("\" no se encontró."), _Z("Buscar"));
 			return false;
 		}
 	}
@@ -235,7 +236,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 			combo_find->SetFocus();
 		}
 	} else {
-		wxMessageBox(wxString(_T("La cadena \""))<<last_search<<_T("\" no se encontró."), _T("Buscar"));
+		wxMessageBox(wxString(_Z("La cadena \""))<<last_search<<_Z("\" no se encontró."), _Z("Buscar"));
 		Raise();
 	}
 	
@@ -249,7 +250,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 	}
 	
 	if (!main_window->notebook->GetPageCount()) {
-		wxMessageBox(_T("No hay ningún archivo abierto actualmente."),_T("Error"));
+		wxMessageBox(_Z("No hay ningún archivo abierto actualmente."),_Z("Error"));
 		return;
 	}
 
@@ -272,7 +273,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 			combo_find->SetFocus();
 		}
 	} else
-		wxMessageBox(wxString(_T("La cadena \""))<<last_search<<_T("\" no se encontró."), _T("Buscar"));
+		wxMessageBox(wxString(_Z("La cadena \""))<<last_search<<_Z("\" no se encontró."), _Z("Buscar"));
 }
 
 void mxFindDialog::OnReplaceButton(wxCommandEvent &event) {
@@ -283,7 +284,7 @@ void mxFindDialog::OnReplaceButton(wxCommandEvent &event) {
 	}
 
 	if (!main_window->notebook->GetPageCount()) {
-		wxMessageBox(_T("No hay ningún archivo abierto actualmente."),_T("Error"));
+		wxMessageBox(_Z("No hay ningún archivo abierto actualmente."),_Z("Error"));
 		return;
 	}
 	
@@ -325,7 +326,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	}
 
 	if (!main_window->notebook->GetPageCount()) {
-		wxMessageBox(_T("No hay ningún archivo abierto actualmente."),_T("Error"));
+		wxMessageBox(_Z("No hay ningún archivo abierto actualmente."),_Z("Error"));
 		return;
 	}
 	
@@ -380,11 +381,11 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	}
 
 	if (c==0)
-		wxMessageBox(_T("No se realizó ningún reemplazo."), _T("Reemplazar"));
+		wxMessageBox(_Z("No se realizó ningún reemplazo."), _Z("Reemplazar"));
 	else if (c==1)
-		wxMessageBox(_T("Se realizó un remplazo."), _T("Reemplazar"));
+		wxMessageBox(_Z("Se realizó un remplazo."), _Z("Reemplazar"));
 	else
-		wxMessageBox(wxString(_T("Se realizaron "))<<c<<_T(" reemplazos."), _T("Reemplazar"));
+		wxMessageBox(wxString(_Z("Se realizaron "))<<c<<_Z(" reemplazos."), _Z("Reemplazar"));
 
 }
 

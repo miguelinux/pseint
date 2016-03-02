@@ -11,6 +11,7 @@
 #include "mxMainWindow.h"
 #include "version.h"
 #include <wx/fs_mem.h>
+#include <wx/msgdlg.h>
 
 BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 	EVT_BUTTON(mxID_TESTPACK_RUN,mxTestPanel::OnRun)

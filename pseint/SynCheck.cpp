@@ -1166,7 +1166,7 @@ int SynCheck(int linea_from, int linea_to) {
 												if (str=="CON PASO")
 													{SynError (258,"Falta el valor del paso."); errores++;}
 												else
-													{SynError (82,"Se esparaba CON PASO o fin de instruccion."); errores++;}
+													{SynError (82,"Se esparaba CON PASO o fin de instrucción."); errores++;}
 											} else {
 												str.erase(0,9);
 												EvaluarSC(str,tipo,vt_numerica);
@@ -1366,7 +1366,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (LeftCompare(instruccion,"FIN") || instruccion=="REPETIR "||instruccion=="BORRARPANTALLA"||instruccion=="ESPERARTECLA") {
 				size_t sp=cadena.find(" ",0);
 				if (sp!=string::npos && cadena.substr(sp)!=" ;") {
-					SynError (105,"La instruccion no debe tener parametros."); errores++;
+					SynError (105,"La instrucción no debe tener parámetros."); errores++;
 					cadena.erase(sp,cadena.size()-sp);
 				}
 			}
@@ -1374,7 +1374,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (LeftCompare(cadena,"FIN "))
 				{SynError (99,"Instrucción no válida."); errores++;}
 				else
-					{SynError (106,"Instrucción no valida."); errores++;}
+					{SynError (106,"Instrucción no válida."); errores++;}
 			}
 			// llama directa a un subproceso
 			if (instruccion=="INVOCAR ") {
