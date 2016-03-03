@@ -6,38 +6,32 @@ macros_file=
 default_fext_source=cpp
 default_fext_header=h
 autocomp_extra=wxWidgets
-active_configuration=prueba_wx3
+active_configuration=prueba_wx3_unicode
 version_saved=20160302
 version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
-explorer_path=
-current_source=mxSource.cpp
+explorer_path=/src/manual/wx/3.1.0-dbg-u/src/stc/scintilla/src
 path_char=/
 [source]
 path=DebugManager.cpp
 cursor=149:17
 [source]
 path=mxMainWindow.cpp
-cursor=198:89
-marker=1644
-marker=1705
-marker=1707
+cursor=66:23
 [source]
 path=mxUtils.cpp
 cursor=0:8
 [source]
 path=ConfigManager.cpp
-cursor=229:60
+cursor=249:12
 marker=39
 marker=69
 marker=87
 [source]
 path=mxSource.cpp
-cursor=282:0
-marker=443
-marker=521
-open=true
+cursor=163:12
+marker=1300
 [source]
 path=mxProcess.cpp
 cursor=225:16
@@ -45,7 +39,7 @@ marker=188
 marker=222
 [source]
 path=HelpManager.cpp
-cursor=48:23
+cursor=53:1
 [source]
 path=mxBitmapButton.cpp
 cursor=13:1
@@ -64,7 +58,7 @@ path=mxDropTarget.cpp
 cursor=36:6
 [source]
 path=../pseint/LangSettings.cpp
-cursor=123:23
+cursor=134:24
 [source]
 path=mxDesktopTestGrid.cpp
 cursor=167:1
@@ -84,7 +78,7 @@ path=mxConfig.cpp
 cursor=83:0
 [source]
 path=mxProfile.cpp
-cursor=117:31
+cursor=26:17
 marker=137
 [source]
 path=mxArt.cpp
@@ -97,7 +91,7 @@ path=mxInputDialog.cpp
 cursor=20:65
 [source]
 path=RTSyntaxManager.cpp
-cursor=63:8
+cursor=90:79
 [source]
 path=mxIconInstaller.cpp
 cursor=22:5
@@ -117,7 +111,7 @@ path=mxStatusBar.cpp
 cursor=33:22
 [source]
 path=CommunicationsManager.cpp
-cursor=140:71
+cursor=73:35
 marker=132
 [source]
 path=HtmlExporter.cpp
@@ -142,7 +136,7 @@ path=mxTestPanel.cpp
 cursor=42:14
 [source]
 path=Application.cpp
-cursor=111:13
+cursor=81:25
 [source]
 path=mxHtmlWindow.cpp
 cursor=0:0
@@ -154,7 +148,7 @@ path=Application.h
 cursor=11:25
 [header]
 path=mxMainWindow.h
-cursor=121:47
+cursor=17:121
 [header]
 path=mxUtils.h
 cursor=29:0
@@ -164,7 +158,7 @@ path=ConfigManager.h
 cursor=51:0
 [header]
 path=mxSource.h
-cursor=212:28
+cursor=126:15
 [header]
 path=mxProcess.h
 cursor=31:33
@@ -212,7 +206,7 @@ path=mxConfig.h
 cursor=10:23
 [header]
 path=mxProfile.h
-cursor=17:11
+cursor=0:0
 [header]
 path=mxArt.h
 cursor=-1:371
@@ -257,7 +251,7 @@ path=mxPanelHelper.h
 cursor=14:11
 [header]
 path=string_conversions.h
-cursor=13:22
+cursor=18:40
 [header]
 path=../pseint/new_memoria_inter.h
 cursor=0:0
@@ -272,7 +266,7 @@ path=mxTestPanel.h
 cursor=24:1
 [header]
 path=../pseint/LangSettings.h
-cursor=84:37
+cursor=81:34
 [header]
 path=mxHtmlWindow.h
 cursor=0:0
@@ -469,7 +463,7 @@ strip_executable=0
 console_program=1
 dont_generate_exe=0
 [config]
-name=prueba_wx3
+name=prueba_wx3_ansi
 toolchain=
 toolchain_argument_0=${DEFAULT}
 toolchain_argument_1=${DEFAULT}
@@ -483,11 +477,11 @@ exec_method=0
 exec_script=
 env_vars=
 wait_for_key=1
-temp_folder=../temp/wx_wx3
-output_file=../temp/wx_wx3/wxPSeInt.bin
+temp_folder=../temp/wx_wx3_a
+output_file=../temp/wx_wx3_a/wxPSeInt.bin
 icon_file=
 manifest_file=
-compiling_extra=`wx-config --unicode=no --cppflags --version=3.1 `
+compiling_extra=`wx-config --unicode=no --cppflags --version=3.1`
 macros=DEBUG FOR_WXPSEINT
 warnings_level=1
 warnings_as_errors=0
@@ -498,7 +492,43 @@ debug_level=2
 optimization_level=0
 enable_lto=0
 headers_dirs=
-linking_extra=`wx-config --libs --unicode=no --version=3.1 ` `wx-config --libs stc aui --unicode=no --version=3.1 ` 
+linking_extra=`wx-config --libs --unicode=no --version=3.1` `wx-config --libs stc aui --unicode=no --version=3.1` 
+libraries_dirs=
+libraries=
+strip_executable=0
+console_program=1
+dont_generate_exe=0
+[config]
+name=prueba_wx3_unicode
+toolchain=
+toolchain_argument_0=${DEFAULT}
+toolchain_argument_1=${DEFAULT}
+toolchain_argument_2=${DEFAULT}
+toolchain_argument_3=${DEFAULT}
+toolchain_argument_4=${DEFAULT}
+working_folder=../bin
+always_ask_args=0
+args=
+exec_method=0
+exec_script=
+env_vars=
+wait_for_key=1
+temp_folder=../temp/wx_wx3_u
+output_file=../temp/wx_wx3_u/wxPSeInt.bin
+icon_file=
+manifest_file=
+compiling_extra=`wx-config --unicode=yes --cppflags --version=3.1 --debug=yes`
+macros=DEBUG FOR_WXPSEINT
+warnings_level=1
+warnings_as_errors=0
+pedantic_errors=0
+std_c=
+std_cpp=
+debug_level=2
+optimization_level=0
+enable_lto=0
+headers_dirs=
+linking_extra=`wx-config --libs --unicode=yes --version=3.1 --debug=yes` `wx-config --libs stc aui --unicode=yes --version=3.1 --debug=yes` 
 libraries_dirs=
 libraries=
 strip_executable=0
@@ -518,10 +548,7 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
-expr=s2.npos
-expr=s2.m_impl.npos
-expr=s2.m_impl._M_dataplus._M_p
-expr=s2.m_convertedToWChar.m_str
-expr=s2.m_convertedToWChar.m_len
+expr=s.m_impl._M_dataplus._M_p
+expr=(*it).m_pos._M_current
 [custom_tools]
 [end]

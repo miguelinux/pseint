@@ -215,6 +215,9 @@ public:
 	}
 #endif
 	
+	bool LoadFile(const wxString &fname);
+	bool SaveFile(const wxString &fname);
+	
 	er_source_register *er_register;
 	
 	DECLARE_EVENT_TABLE();

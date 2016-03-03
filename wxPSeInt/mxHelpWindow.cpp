@@ -73,7 +73,7 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (main_window,mxID_HELPW, "Ayud
 			}
 		}
 		fil.Close();
-		tree->Expand(root);
+//		tree->Expand(root);
 		wxTreeItemIdValue cokkie;
 		node = tree->GetFirstChild(root,cokkie);
 		while (node.IsOk()) {

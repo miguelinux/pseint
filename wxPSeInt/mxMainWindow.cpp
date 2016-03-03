@@ -254,7 +254,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PREVIEW, _Z("Vista previa..."),"","export_preview.png");
 	export_menu->AppendSeparator();
 	for (int id = mxID_FILE_EXPORT_LANG_FIRST+1; id < int(mxID_FILE_EXPORT_LANG_LAST); id++)
-		utils->AddItemToMenu( export_menu,id, _ZZ("Convertir a ")+utils->GetExportLangName(id)+"...","",wxString("exp_")+utils->GetExportLangCode(id)+".png");
+		utils->AddItemToMenu( export_menu,id, _ZZ("Convertir a ")+utils->GetExportLangName(id)+_T("..."),"",wxString("exp_")+utils->GetExportLangCode(id)+".png");
 	
 	export_menu->AppendSeparator();
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _Z("Pseudocódigo coloreado (html)..."),"","html.png");
@@ -639,7 +639,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
-	source->LoadFile(path); 
+	source->LoadFile(path);
 	if (is_example) source->SetExample();
 	if (config->rt_syntax) source->DoRealTimeSyntax();
 	source->SetStatus(STATUS_NEW_SOURCE);
@@ -2025,4 +2025,3 @@ void mxMainWindow::OnSourceClose (mxSource * src) {
 		CloseTestPackage(); aui_manager.Update(); HideQuickHelp(); 
 	}
 }
-

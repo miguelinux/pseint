@@ -11,6 +11,7 @@
 #	define _if_wx2(a) a
 #	define _if_wx3(a) 
 #	define _if_wx3_else(a,b) b 
+#	define _if_unicode(x)
 #else	
 #	define WX3
 #	define _Z(x) wxString::From8BitData(x)
@@ -21,6 +22,11 @@
 #	define _if_wx2(a)
 #	define _if_wx3(a) a
 #	define _if_wx3_else(a,b) a
+# 	ifdef wxUSE_UNICODE
+#		define _if_unicode(x) x
+#	else
+#		define _if_unicode(x)
+#	endif
 #endif
 
 #endif

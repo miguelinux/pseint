@@ -26,6 +26,7 @@
 
 #define RT_DELAY 1000
 #define RELOAD_DELAY 3500
+#include <wx/ffile.h>
 
 int mxSource::last_id=0;
 
@@ -135,7 +136,9 @@ static bool EsLetra(const char &c, bool incluir_nros) {
 #define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
 #define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 
-mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
+mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename) 
+	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) 
+{
 
 	_LOG("mxSource::mxSource "<<this);
 	
@@ -1330,7 +1333,7 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	if (!(MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerAdd(l,MARKER_ERROR_LINE);
 #ifdef WX3
 	wxString prev = AnnotationGetText(l); if (!prev.IsEmpty()) prev<<"\n";
-	AnnotationSetText(l,prev<<"en inst. "<<i+1<<": "<<str);
+	AnnotationSetText(l,prev<<_if_unicode(wxString(L"\u25ba ")<<)"en inst. "<<i+1<<": "<<str);
 	AnnotationSetStyle(l,ANNOTATION_STYLE);
 #endif
 	l=PositionFromLine(l);
@@ -1921,3 +1924,31 @@ void mxSource::SetIndics (int from, int len, int indic, bool on) {
 #endif
 }
 
+
+bool mxSource::LoadFile (const wxString & fname) {
+//#ifdef WX3
+//	wxFFile file(fname,_T("r"));
+//	wxString full_content;
+//	if (file.ReadAll(&full_content,
+//					 wxCSConv("ISO-8851")
+////					 wxConvUTF8
+//					 )) {
+//		SetText(full_content);
+//		EmptyUndoBuffer();
+//		return true;
+//	} else 
+//#endif
+		return wxStyledTextCtrl::LoadFile(fname);
+}
+
+bool mxSource::SaveFile (const wxString & fname) {
+#ifdef WX3
+	wxFFile file(fname,_T("w"));
+	wxString full_content = GetText();
+	if (file.Write(full_content,wxCSConv("ISO-8851"))) {
+		SetModify(false);
+		return true;
+	} else 
+#endif
+		return wxStyledTextCtrl::SaveFile(fname);
+}
