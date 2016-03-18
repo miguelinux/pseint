@@ -75,6 +75,7 @@ void ConfigManager::LoadDefaults() {
 	check_for_updates = true;
 	fixed_port = false;
 	rt_syntax = true;
+	rt_annotate= true;
 	smart_indent = true;
 	last_dir=wxFileName::GetHomeDir();
 #if defined(_WIN32) || defined(__WIN32__)
@@ -128,6 +129,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("profile=")<<profile);
 	fil.AddLine(wxString("examples_dir=")<<examples_dir);
 	fil.AddLine(wxString("rt_syntax=")<<(rt_syntax?1:0));
+	fil.AddLine(wxString("rt_annotate=")<<(rt_annotate?1:0));
 	fil.AddLine(wxString("smart_indent=")<<(smart_indent?1:0));
 	fil.AddLine(wxString("psdraw_nocrop=")<<(psdraw_nocrop?1:0));
 	fil.AddLine(wxString("shape_colors=")<<(shape_colors?1:0));
@@ -199,6 +201,7 @@ void ConfigManager::Read() {
 			else if (key=="fixed_port") fixed_port=utils->IsTrue(value);
 			else if (key=="stepstep_tspeed") { value.ToLong(&l); stepstep_tspeed=l; }
 			else if (key=="rt_syntax") rt_syntax=utils->IsTrue(value);
+			else if (key=="rt_annotate") rt_annotate=utils->IsTrue(value);
 			else if (key=="smart_indent") smart_indent=utils->IsTrue(value);
 			else if (key=="show_commands") show_commands=utils->IsTrue(value);
 			else if (key=="show_vars") show_vars=utils->IsTrue(value);

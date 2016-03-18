@@ -60,6 +60,7 @@ public:
 	bool autoclose;
 	bool calltip_helps;
 	bool rt_syntax;
+	bool rt_annotate;
 	bool smart_indent;
 	int font_size;
 	int tabw;

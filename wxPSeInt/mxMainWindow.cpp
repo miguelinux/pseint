@@ -134,6 +134,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
+	EVT_MENU(mxID_CONFIG_RT_ANNOTATE, mxMainWindow::OnConfigRealTimeAnnotate)
 	EVT_MENU(mxID_CONFIG_NASSI_SHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_ICON_INSTALLER, mxMainWindow::OnInconInstaller)
@@ -308,6 +309,9 @@ void mxMainWindow::CreateMenus() {
 	wxMenu *cfg_pres = new wxMenu;
 	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _Z("Animar paneles"),"",config->animate_gui);
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
+#ifdef WX3
+	mi_rt_annotate = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_RT_ANNOTATE, _Z("Intercalar los mensajes de error en el pseudocódigo"),"",config->rt_annotate);
+#endif
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
@@ -497,13 +501,13 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 	aui_manager.Update(); wxYield();
 	wxString key = path.Lower().EndsWith(".psx")?wxGetTextFromUser(_Z("Ingrese la clave:"),_Z("PSeInt"),"",this):"";
 	if (!test_panel->Load(path,key,src)) {
-		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
+		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxOK|wxICON_ERROR,this);
 		CloseTestPackage();
 		aui_manager.Update(); 
 	} else {
 		SetQuickHelpText(QH_NULL);
 		if (!test_panel->GetHelp().IsEmpty()) 
-			ShowQuickHelp(true,test_panel->GetHelp(),false);
+			ShowQuickHelp(true,test_panel->GetHelp(),QH_HELP_SET);
 	}
 	return src;
 }
@@ -845,7 +849,7 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 		cout << *p;
 	}
 	// mostrar panel y cargar ayuda
-	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),true);
+	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),QH_HELP_LOAD);
 }
 
 
@@ -1181,6 +1185,21 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 		config->rt_syntax=true;
 		ShowResults(false,true);
 	}
+	CheckIfNeedsRTS();
+}
+
+void mxMainWindow::OnConfigRealTimeAnnotate(wxCommandEvent &evt) {
+	if (!mi_rt_annotate->IsChecked()) {
+		mi_rt_annotate->Check(false);
+		config->rt_annotate=false;
+	} else {
+		mi_rt_annotate->Check(true);
+		config->rt_annotate=true;
+	}
+//	for(unsigned int i=0;i<notebook->GetPageCount();i++) {
+//		((mxSource*)notebook->GetPage(i))->ClearErrorData();
+//		((mxSource*)notebook->GetPage(i))->ClearErrorMarks();
+//	}
 	CheckIfNeedsRTS();
 }
 

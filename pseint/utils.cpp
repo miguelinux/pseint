@@ -134,7 +134,7 @@ bool CheckVariable(string str, int errcode) {
 		ret=false;
 	else if (lang[LS_ENABLE_USER_FUNCTIONS] && (str=="FINSUBPROCESO" || str=="SUBPROCESO" ||str=="FINFUNCION" || str=="FUNCION" ||str=="FINFUNCIÓN" || str=="FUNCIÓN") )
 		ret=false;
-	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no valido (")+str+")."); 
+	if (!ret && errcode!=-1) SynError (errcode,string("Identificador no válido (")+str+")."); 
 	return ret;
 }
 

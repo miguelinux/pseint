@@ -1,3 +1,4 @@
+#include <iostream>
 #include <wx/txtstrm.h>
 #include "RTSyntaxManager.h"
 #include "mxProcess.h"
@@ -5,7 +6,6 @@
 #include "mxMainWindow.h"
 #include "mxVarWindow.h"
 #include "ids.h"
-#include <iostream>
 #include "Logger.h"
 #include "string_conversions.h"
 using namespace std;
@@ -14,7 +14,7 @@ RTSyntaxManager *RTSyntaxManager::the_one=NULL;
 RTSyntaxManager::Info RTSyntaxManager::extra_args;
 int RTSyntaxManager::lid=0;
 
-RTSyntaxManager::RTSyntaxManager():wxProcess(wxPROCESS_REDIRECT) {
+RTSyntaxManager::RTSyntaxManager():wxProcess(wxPROCESS_REDIRECT),conv("ISO-8851") {
 	_LOG("RTSyntaxManager::RTSyntaxManager");
 	processing=running=restart=false;
 	timer = new wxTimer(main_window->GetEventHandler(),mxID_RT_TIMER);
@@ -57,7 +57,11 @@ bool RTSyntaxManager::Process (mxSource * src, Info *args) {
 	if (args) extra_args=*args; else extra_args.action=RTA_NULL;
 //	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
-	wxTextOutputStream output(*(the_one->GetOutputStream()));
+	wxTextOutputStream output(*(the_one->GetOutputStream())
+#ifdef UNICODE
+							  ,wxEOL_NATIVE,the_one->conv
+#endif
+							  );
 	the_one->processing=true;
 	for(int i=0;i<src->GetLineCount();i++) {
 		wxString s=src->GetLine(i);

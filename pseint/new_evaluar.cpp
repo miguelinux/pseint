@@ -366,14 +366,14 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			if (pm==string::npos) { // si es una variable comun
 				string nombre = expresion.substr(p1,p2-p1+1);
 				if (PalabraReservada(nombre) || nombre==main_process_name) {
-					WriteError(285,string("Identificador no valido (")+nombre+")");
+					WriteError(285,string("Identificador no válido (")+nombre+")");
 					tipo=vt_error;
 					ev_return("");
 				}
 				const Funcion *func=EsFuncion(nombre);
 				if (func) {
 					if (func->cant_arg!=0) {
-						WriteError(286,string("Faltan parametros para la funcion (")+nombre+")");
+						WriteError(286,string("Faltan parámetros para la función (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					} else {
@@ -404,7 +404,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
 				} else {
 					if (PalabraReservada(nombre)) {
-						WriteError(287,string("Identificador no valido (")+nombre+")");
+						WriteError(287,string("Identificador no válido (")+nombre+")");
 						tipo=vt_error;
 						ev_return("");
 					}

@@ -27,6 +27,7 @@ class wxTimer;
 enum RTArgs { RTA_NULL, RTA_DEFINE_VAR };
 
 class RTSyntaxManager:public wxProcess {
+	wxCSConv conv;
 	wxTimer *timer;
 	static RTSyntaxManager *the_one;
 	static int lid;

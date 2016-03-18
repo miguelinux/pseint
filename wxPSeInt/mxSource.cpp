@@ -67,7 +67,7 @@ enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_B
 
 enum {INDIC_FIELD=0, INDIC_ERROR_1, INDIC_ERROR_2};
 #ifdef WX3
-static int indic_to_mask[] = { 0, 1, 2, 4, 8, 16 };
+static int indic_to_mask[] = { 1, 2, 4, 8, 16 };
 const int ANNOTATION_STYLE = wxSTC_STYLE_LASTPREDEFINED + 1;
 #else
 static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC2_MASK };
@@ -643,7 +643,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 	} else {
 		while (what.Last()=='\n') what.RemoveLast();
 		ReplaceTarget(what);
-		SetSelection(comp_from+what.Len(),comp_from+what.Len());
+		SetSelection(GetTargetEnd(),GetTargetEnd());
 	}
 	wxStyledTextEvent evt2;
 	evt2.SetKey(' ');
@@ -884,13 +884,19 @@ void mxSource::IndentLine(int l, bool goup) {
 		else if (word=="DE" && i+10<n && line.SubString(ws,i+10).Upper()=="DE OTRO MODO:") cur-=4;
 		else if (word=="HASTA" && i+4<n && line.SubString(ws,i+4).Upper()=="HASTA QUE ") cur-=4;
 		else if (word=="MIENTRAS" && i+4<n && line.SubString(ws,i+4).Upper()=="MIENTRAS QUE ") cur-=4;
-		else if (word=="FINSEGUN") cur-=8;
+		else if (word=="FINSEGUN"||word==_Z("FINSEGÚN")) cur-=8;
 		else if (word=="FINMIENTRAS") cur-=4;
 		else if (word=="FINPARA") cur-=4;
-		else if (word=="FIN") cur-=4;
+		else if (word=="FIN") { 
+			cur-=4; 
+			if (i+6<n) { 
+				wxString aux = line.SubString(ws+4,i+5).Upper();
+				if (aux=="SEGUN"||aux==_Z("SEGÚN")) cur-=4;
+			}
+		}
 		else if (word=="FINSI") cur-=4;
 		else if (word=="FINPROCESO") cur-=4;
-		else if (word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION") cur-=4;
+		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN")) cur-=4;
 		else {
 			bool comillas=false;
 			while (i<n) {
@@ -937,7 +943,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 	bool ignore_next=false; // para que despues de Fin se saltee lo que sigue
 	int wstart=0; // para guardar donde empezaba la palabra
 	for (int i=0;i<n;i++) {
-		char c=line[i];
+		wxChar c=line[i];
 		if (c=='\'' || c=='\"') {
 			comillas=!comillas;
 		} else if (!comillas) {
@@ -959,14 +965,14 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						}
 						else if (word=="SINO") { cur+=4; btype=BT_SINO; }
 						else if (word=="PROCESO") { cur+=4; btype=BT_PROCESO; }
-						else if (word=="FUNCION"||word=="FUNCIÓN") { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
+						else if (word=="FUNCION"||word==_Z("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
 						else if (word=="SUBPROCESO") { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
 						else if (word=="MIENTRAS" && !(i+4<n && line.SubString(wstart,i+4).Upper()=="MIENTRAS QUE ")) { cur+=4; btype=BT_MIENTRAS; }
-						else if (word=="SEGUN"||word=="SEGÚN") { cur+=8; btype=BT_SEGUN; }
+						else if (word=="SEGUN"||word==_Z("SEGÚN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word=="PARA") { cur+=4; btype=BT_PARA;	}
 						else if (word=="REPETIR"||(first_word && word=="HACER")) { cur+=4; btype=BT_REPETIR; }
 						else if (word=="FIN") { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word=="FINSEGÚN"||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINSUBPROCESO"||word=="FINFUNCIÓN"||word=="FINFUNCION")) {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word==_Z("FINSEGÚN")||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN"))) {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
@@ -1321,23 +1327,35 @@ void mxSource::MarkError(wxString line) {
 **/
 void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	if (l<0 || l>=GetLineCount()) return; // el error debe caer en una linea valida
+	vector<int> &v=FillAuxInstr(l);
+	int pos =PositionFromLine(l)+v[2*i], len = v[2*i+1]-v[2*i];
+	// ver que no sea culpa de una plantilla sin completar
+	for(int p=0;p<len;p++) { 
+		int indics = _if_wx3_else(IndicatorAllOnFor(pos+p),GetStyleAt(pos+p));
+		cout << char(GetCharAt(pos+p)) << indics << " ";
+		if (indics&indic_to_mask[INDIC_FIELD]) return;
+	}
+	cout << endl;
+	// ok, entonces agregarlo como error
 	while (l>=int(rt_errors.size())) rt_errors.push_back(rt_err()); // hacer lugar en el arreglo de errores por linea si no hay
 	rt_errors[l].Add(i,n,str); // guardarlo en el vector de errores
 	if (flow_socket) { // avisarle al diagrama de flujo
 		wxString msg("errors add "); msg<<l+1<<':'<<i+1<<' '<<str<<'\n';
 		flow_socket->Write(msg.c_str(),msg.Len());
 	}
+	
 	// marcarlo en el pseudocódigo subrayando la instrucción y poniendo la cruz en el margen
-	vector<int> &v=FillAuxInstr(l);
 	if (int(v.size())<=2*i+1) return;
 	if (!(MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerAdd(l,MARKER_ERROR_LINE);
+	// agregar el error como anotacion y subrayar la instruccion
 #ifdef WX3
-	wxString prev = AnnotationGetText(l); if (!prev.IsEmpty()) prev<<"\n";
-	AnnotationSetText(l,prev<<_if_unicode(wxString(L"\u25ba ")<<)"en inst. "<<i+1<<": "<<str);
-	AnnotationSetStyle(l,ANNOTATION_STYLE);
+	if (config->rt_annotate) {
+		wxString prev = AnnotationGetText(l); if (!prev.IsEmpty()) prev<<"\n";
+		AnnotationSetText(l,prev<<_if_unicode(wxString(L"\u25ba ")<<)"en inst. "<<i+1<<": "<<str);
+		AnnotationSetStyle(l,ANNOTATION_STYLE);
+	}
 #endif
-	l=PositionFromLine(l);
-	SetIndics(l+v[2*i],v[2*i+1]-v[2*i],special?INDIC_ERROR_2:INDIC_ERROR_1,true);
+	SetIndics(pos,len,special?INDIC_ERROR_2:INDIC_ERROR_1,true);
 }
 
 void mxSource::StartRTSyntaxChecking ( ) {
@@ -1370,7 +1388,7 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 }
 
 void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
-	if (_if_wx3_else(!is_error,true)) {
+	if (_if_wx3_else(!is_error||!config->rt_annotate,true)) {
 		// muestra el tip
 		current_calltip.pos=pos;
 		current_calltip.is_error=is_error;

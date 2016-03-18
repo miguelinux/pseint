@@ -22,7 +22,7 @@
 #	define _if_wx2(a)
 #	define _if_wx3(a) a
 #	define _if_wx3_else(a,b) a
-# 	ifdef wxUSE_UNICODE
+# 	ifdef UNICODE
 #		define _if_unicode(x) x
 #	else
 #		define _if_unicode(x)

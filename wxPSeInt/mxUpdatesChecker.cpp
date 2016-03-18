@@ -49,9 +49,9 @@ mxUpdatesChecker::mxUpdatesChecker(bool show) : wxDialog(main_window, wxID_ANY, 
 	close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,"&Cerrar");
 	changes_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,"Ir al &sitio...");
 	proxy_button = new mxBitmapButton (this,wxID_FIND,bitmaps->buttons.ok,"Conf. Proxy...");
-	buttonSizer->Add(changes_button,wxSizerFlags().Border(wxALL,5).Right());
-	buttonSizer->Add(proxy_button,wxSizerFlags().Border(wxALL,5).Right());
-	buttonSizer->Add(close_button,wxSizerFlags().Border(wxALL,5).Right());
+	buttonSizer->Add(changes_button,wxSizerFlags().Border(wxALL,5));
+	buttonSizer->Add(proxy_button,wxSizerFlags().Border(wxALL,5));
+	buttonSizer->Add(close_button,wxSizerFlags().Border(wxALL,5));
 	mySizer->Add(buttonSizer,wxSizerFlags().Right());
 	
 //	iSizer->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap("upgrade.png", wxBITMAP_TYPE_PNG)),sizers->BA10);

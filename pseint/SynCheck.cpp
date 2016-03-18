@@ -319,7 +319,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 					cadena.erase(i,1); i--;
 				}
 			} else if (act==';' || act==':') {
-				if (act==':' && instruccion!=":") {SynError (226,"Operador no valido (:)."); errores++;}
+				if (act==':' && instruccion!=":") {SynError (226,"Operador no válido (:)."); errores++;}
 				else if (w==w_operator) {
 					SynError (227,"Falta operando (antes de "+string(1,act)+")."); errores++;
 				}
@@ -378,7 +378,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,const  strin
 						if (w==w_operator && wext==w_aritmetic_op) { SynError (235,"Falta operando (antes de "+cadena.substr(i,len)+")."); errores++; }
 					}
 					w=w_operator; wext=op_type;
-				} else {SynError (68,"Caracter no valido."); errores++;}
+				} else {SynError (68,"Caracter no válido."); errores++;}
 			} 
 		}
 	}
@@ -838,7 +838,7 @@ int SynCheck(int linea_from, int linea_to) {
 			// Controlar correcta y completa sintaxis de cada instruccion
 			if (instruccion=="DEFINIR "){  // ------------ DEFINIR -----------//
 				if (cadena=="DEFINIR" || cadena=="DEFINIR ;")
-					{SynError (44,"Faltan parametros."); errores++;}
+					{SynError (44,"Faltan parámetros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]!=';') {
 						cadena=cadena+";";
@@ -868,7 +868,7 @@ int SynCheck(int linea_from, int linea_to) {
 					else if (def_tipo=="LOGICA;") cadena.replace(cadena.size()-7,7,"LOGICO;");
 					
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
-						if (!ignore_logic_errors) { SynError (46,"Falta tipo de dato o tipo no valido."); errores++;}
+						if (!ignore_logic_errors) { SynError (46,"Falta tipo de dato o tipo no válido."); errores++;}
 					} else {
 						int largotipo=0; tipo_var tipo_def=vt_desconocido;;
 						if (RightCompare(cadena," COMO REAL;")) { largotipo=11; tipo_def=vt_numerica; }
@@ -907,13 +907,13 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="ESCRIBIR " || instruccion=="ESCRIBNL "){  // ------------ ESCRIBIR -----------//
 				if (cadena=="ESCRIBIR" || cadena=="ESCRIBIR ;"||cadena=="ESCRIBNL" || cadena=="ESCRIBNL ;")
-					{SynError (53,"Faltan parametros."); errores++;}
+					{SynError (53,"Faltan parámetros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]==';')
 						cadena[cadena.size()-1]=',';
 					else
 						cadena=cadena+",";
-					bool comillas=false; // cortar parametros
+					bool comillas=false; // cortar parámetros
 					int parentesis=0;
 					for (int last_i=9, i=9;i<(int)cadena.size();i++) {
 						if (cadena[i]=='\'') comillas=!comillas;
@@ -936,7 +936,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="ESPERAR "){  // ------------ ESCRIBIR -----------//
 				if (cadena=="ESPERAR" || cadena=="ESPERAR ;")
-					{SynError (217,"Faltan parametros."); errores++;}
+					{SynError (217,"Faltan parámetros."); errores++;}
 				else {
 					string str=cadena.substr(8);
 					if (RightCompare(cadena," SEGUNDOS;")) str.erase(str.size()-10);
@@ -952,7 +952,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="DIMENSION "){  // ------------ DIMENSION -----------//
 				if (cadena=="DIMENSION" || cadena=="DIMENSION ;")
-				{SynError (56,"Faltan parametros."); errores++;}
+				{SynError (56,"Faltan parámetros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]==';')
 						cadena[cadena.size()-1]=',';
@@ -1031,7 +1031,7 @@ int SynCheck(int linea_from, int linea_to) {
 			}
 			if (instruccion=="LEER "){  // ------------ LEER -----------//
 				if (cadena=="LEER" || cadena=="LEER ;")
-				{SynError (63,"Faltan parametros."); errores++;}
+				{SynError (63,"Faltan parámetros."); errores++;}
 				else {
 					if (cadena[cadena.size()-1]==';')
 						cadena[cadena.size()-1]=',';
@@ -1102,7 +1102,7 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruccion=="PARA "){  // ------------ PARA -----------//
 				str=cadena; // cortar instruccion
 				str.erase(0,5);
-				if (str.find(" ",0)==string::npos) {SynError (70,"Faltan parametros."); errores++;}
+				if (str.find(" ",0)==string::npos) {SynError (70,"Faltan parámetros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
 					if (lang[LS_LAZY_SYNTAX]) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); errores++;}
@@ -1184,7 +1184,7 @@ int SynCheck(int linea_from, int linea_to) {
 				str=cadena; // cortar instruccion
 				str.erase(0,9);
 				if (str.find(" ",0)==string::npos)
-				{SynError (70,"Faltan parametros."); errores++;}
+				{SynError (70,"Faltan parámetros."); errores++;}
 				if (!RightCompareFix(str," HACER")) {
 					if (lang[LS_LAZY_SYNTAX]) { str+=" HACER"; cadena+=" HACER";}
 					else {SynError (71,"Falta HACER."); str+=" HACER"; errores++;}
@@ -1236,7 +1236,7 @@ int SynCheck(int linea_from, int linea_to) {
 							if (comillas<0 && str[y]==' ' && str[y-1]!='&' && str[y-1]!='|'  && str[y+1]!='&'  && str[y+1]!='|')
 							{SynError (87,"Se esperaba fin de expresion."); errores++;}
 						if (comillas<0 && parentesis==1 && str[y]==',')
-						{SynError (88,"Demasiados parametros."); errores++;}
+						{SynError (88,"Demasiados parámetros."); errores++;}
 					}
 					if (str.size()==3)
 					{SynError (89,"Asignacion incompleta."); errores++;}
