@@ -91,7 +91,7 @@ void er_init(const char *dir) {
 #endif
 	}
 	er_first_source = new er_source_register(NULL,NULL,NULL);
-#ifndef _ZINJAI_DEBUG
+#ifndef DEBUG
 	signal(SIGSEGV,er_sigsev);
 	signal(SIGPIPE,er_sigsev);
 #endif

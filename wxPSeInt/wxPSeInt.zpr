@@ -19,9 +19,7 @@ path=DebugManager.cpp
 cursor=149:17
 [source]
 path=mxMainWindow.cpp
-cursor=861:0
-breakpoint=1653
-breakpoint_annotation=
+cursor=0:20
 marker=645
 marker=851
 open=true
@@ -36,9 +34,9 @@ marker=69
 marker=88
 [source]
 path=mxSource.cpp
-cursor=116:0
-marker=1309
-marker=1336
+cursor=1281:5
+marker=1313
+marker=1340
 [source]
 path=mxProcess.cpp
 cursor=225:16
@@ -149,13 +147,13 @@ path=mxHtmlWindow.cpp
 cursor=0:0
 [source]
 path=error_recovery.cpp
-cursor=11:14
+cursor=93:8
 [header]
 path=Application.h
 cursor=11:25
 [header]
 path=mxMainWindow.h
-cursor=127:22
+cursor=21:27
 open=true
 [header]
 path=mxUtils.h
@@ -283,7 +281,7 @@ path=error_recovery.h
 cursor=0:0
 [other]
 path=../bin/help/cambios.html
-cursor=7:80
+cursor=0:0
 [other]
 path=../bin/help/errores.hlp
 cursor=-1:0
@@ -300,7 +298,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=
+args=/home/zaskar/Desktop/borrame.psc
 exec_method=0
 exec_script=
 env_vars=
@@ -516,7 +514,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=
+args=/home/zaskar/Desktop/borrame.psc
 exec_method=0
 exec_script=
 env_vars=
@@ -576,7 +574,8 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
-expr=str.m_impl._M_dataplus._M_p
-expr=mode
+expr=s.m_impl._M_dataplus._M_p
+expr=i
+expr=(char)(s[i])
 [custom_tools]
 [end]

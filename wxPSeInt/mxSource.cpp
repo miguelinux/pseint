@@ -566,11 +566,11 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			else if (text=="escribir"||(config->lang[LS_LAZY_SYNTAX]&&(text=="mostrar"||text=="imprimir")))
 				ShowCalltip(GetCurrentPos(),"{una o mas expresiones, separadas por comas}");
 			else if (text=="mientras")
-				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+				ShowCalltip(GetCurrentPos(),"{condición, expresion lógica}");
 			else if (text=="que")
-				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+				ShowCalltip(GetCurrentPos(),"{condición, expresion lógica}");
 			else if (text=="para")
-				ShowCalltip(GetCurrentPos(),"{asignacion inicial: variable<-valor}");
+				ShowCalltip(GetCurrentPos(),"{asignación inicial: variable<-valor}");
 			else if (text=="desde")
 				ShowCalltip(GetCurrentPos(),"{valor inicial}");
 			else if (text=="hasta") {
@@ -582,15 +582,15 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			} else if (text=="paso")
 				ShowCalltip(GetCurrentPos(),"{valor del paso}");
 			else if (text=="si")
-				ShowCalltip(GetCurrentPos(),"{condicion, expresion logica}");
+				ShowCalltip(GetCurrentPos(),"{condicion, expresión lógica}");
 			else if (text=="entonces")
 				ShowCalltip(GetCurrentPos(),"{acciones por verdadero}");
 			else if (text=="sino")
 				ShowCalltip(GetCurrentPos(),"{acciones por falso}");
-			else if (text=="segun")
-				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
-			else if (config->lang[LS_LAZY_SYNTAX] && (text=="opcion"||text=="sies"||text=="caso"))
-				ShowCalltip(GetCurrentPos(),"{variable o expresion numerica}");
+			else if (text=="segun"||text=="según")
+				ShowCalltip(GetCurrentPos(),"{variable o expresión numérica}");
+			else if (config->lang[LS_LAZY_SYNTAX] && (text=="opcion"||text=="opción"||text=="sies"||text=="caso"))
+				ShowCalltip(GetCurrentPos(),"{variable o expresión numérica}");
 			else
 				HideCalltip();
 		}
@@ -1267,7 +1267,7 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 		if (s[i]!=' '&&s[i]!='\t') {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
-				else if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
+				if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
 				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8],true)) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
@@ -1275,6 +1275,10 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 				else if (wxTolower(s[i])=='h' && i+5<len && s.Mid(i,5).Upper()=="HACER" && !EsLetra(s[i+5],true)) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+5); 
 					i+=4; starting=true;
+				}
+				else if (wxTolower(s[i])=='s' && i+4<len && s.Mid(i,4).Upper()=="SINO" && !EsLetra(s[i+4],true)) {
+					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+4); 
+					i+=3; starting=true;
 				}
 			}
 			last_ns=i+1;
@@ -1459,7 +1463,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 		InsertText(PositionFromLine(l+1),"FinPara\n");
 		IndentLine(l+1,true);
 	} else if (btype==BT_SI) {
-		if (sl2.StartsWith("FINSI") || sl2.StartsWith("FIN SI")) return;
+		if (sl2.StartsWith("FINSI") || sl2.StartsWith("FIN SI") || sl2.StartsWith("SINO")) return;
 		InsertText(PositionFromLine(l+1),"FinSi\n");
 		IndentLine(l+1,true);
 	} else if (btype==BT_REPETIR) {
