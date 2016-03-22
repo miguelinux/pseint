@@ -238,8 +238,7 @@ void ConfigManager::Read() {
 		}
 	}
 	fil.Close();
-	LoadProfile(profile); 
-	lang.Fix();
+	if (!LoadProfile(profile)) lang.Fix();
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
 }

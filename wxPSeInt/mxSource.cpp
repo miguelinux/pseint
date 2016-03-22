@@ -1,16 +1,17 @@
+#include <iostream>
+#include <vector>
 #include <wx/clipbrd.h>
 #include <wx/process.h>
 #include <wx/socket.h>
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <wx/msgdlg.h>
+#include <wx/menu.h>
+#include <wx/choicdlg.h>
+#include <wx/ffile.h>
 #include "HelpManager.h"
 #include "Logger.h"
-#include <wx/msgdlg.h>
 #include "string_conversions.h"
-#include <wx/menu.h>
 #include "mxVarWindow.h"
-#include <wx/choicdlg.h>
 #include "mxDesktopTestGrid.h"
 #include "error_recovery.h"
 #include "mxUtils.h"
@@ -26,38 +27,39 @@
 
 #define RT_DELAY 1000
 #define RELOAD_DELAY 3500
-#include <wx/ffile.h>
 
 int mxSource::last_id=0;
 
-const char *mxSourceWords1 =
+// IMPORTANTE, todos los char* de abajo con las keywords tienen que terminar con un espacio por si se concatenan entre si
+
+static const char *mxSourceWords1 =
 	"leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso "
 	"repetir mientras de otro modo escribir finpara "
 	"fin finproceso finsi finmientras finsegun "
-	"verdadero falso "
+	"verdadero falso algoritmo finalgoritmo "
 	"numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos "
 	"entero entera enteros enteras real reales "
 	"caracter carácter caracteres texto cadena cadenas "
 	"logico lógico logica lógica logicos lógicos logicas lógicas "
 	"borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar "
-	"según finsegún "; // scintilla no funciona con los acentos
+	"según finsegún dimensión "; // scintilla no funciona con los acentos
 
-const char *mxSourceWords1_op =
+static const char *mxSourceWords1_op =
 	"y no o mod ";
 
-const char *mxSourceWords1_extra =
+static const char *mxSourceWords1_extra =
 	"es sies opcion caso desde imprimir cada mostrar opción son ";
 
-const char *mxSourceWords1_conds =
+static const char *mxSourceWords1_conds =
 	"es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ";
 
-const char *mxSourceWords1_funcs =
-	"subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia ";
+static const char *mxSourceWords1_funcs =
+	"subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia subalgoritmo finsubalgoritmo ";
 
-const char* mxSourceWords2_math =
+static const char* mxSourceWords2_math =
 	"cos sen tan acos asen atan raiz rc ln abs exp aleatorio azar trunc redon pi ";
 
-const char* mxSourceWords2_string =
+static const char* mxSourceWords2_string =
 	"concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ";
 
 //const wxChar* mxSourceWords3 = 
@@ -557,7 +559,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				p--;
 			wxString text = GetTextRange(p+1,p2).MakeLower();
 			if (GetTextRange(p-3,p+1).Upper()=="FIN ") return;
-			if (text=="función"||text=="funcion"||text=="subproceso")
+			if (text=="función"||text=="funcion"||text=="subproceso"||text=="subalgoritmo")
 				ShowCalltip(GetCurrentPos(),"{variable de retorno} <- {nombre} ( {lista de argumentos, separados por coma} )\n{nombre} ( {lista de argumentos, separados por coma} )");
 			else if (text=="leer"||text=="definir")
 				ShowCalltip(GetCurrentPos(),"{una o mas variables, separadas por comas}");
@@ -895,8 +897,8 @@ void mxSource::IndentLine(int l, bool goup) {
 			}
 		}
 		else if (word=="FINSI") cur-=4;
-		else if (word=="FINPROCESO") cur-=4;
-		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN")) cur-=4;
+		else if (word=="FINPROCESO"||word=="FINALGORITMO") cur-=4;
+		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word=="FINSUBALGORITMO"||word==_Z("FINFUNCIÓN")) cur-=4;
 		else {
 			bool comillas=false;
 			while (i<n) {
@@ -965,14 +967,16 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 						}
 						else if (word=="SINO") { cur+=4; btype=BT_SINO; }
 						else if (word=="PROCESO") { cur+=4; btype=BT_PROCESO; }
+						else if (word=="ALGORITMO") { cur+=4; btype=diff_proc_sub_func?BT_ALGORITMO:BT_PROCESO; }
 						else if (word=="FUNCION"||word==_Z("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
 						else if (word=="SUBPROCESO") { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
+						else if (word=="SUBALGORITMO") { cur+=4; btype=diff_proc_sub_func?BT_SUBALGORITMO:BT_PROCESO; }
 						else if (word=="MIENTRAS" && !(i+4<n && line.SubString(wstart,i+4).Upper()=="MIENTRAS QUE ")) { cur+=4; btype=BT_MIENTRAS; }
 						else if (word=="SEGUN"||word==_Z("SEGÚN")) { cur+=8; btype=BT_SEGUN; }
 						else if (word=="PARA") { cur+=4; btype=BT_PARA;	}
 						else if (word=="REPETIR"||(first_word && word=="HACER")) { cur+=4; btype=BT_REPETIR; }
 						else if (word=="FIN") { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word==_Z("FINSEGÚN")||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN"))) {
+						else if (btype!=BT_NONE && (word=="FINSEGUN"||word==_Z("FINSEGÚN")||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINALGORITMO"||word=="FINSUBALGORITMO"||word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN"))) {
 							if (btype==BT_SEGUN) cur-=4;
 							btype=BT_NONE; cur-=4;
 						}
@@ -1021,17 +1025,24 @@ void mxSource::SetAutocompletion() {
 	comp_count=0;
 	
 	comp_list[comp_count++]=comp_list_item("Proceso","Proceso ","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Algoritmo","Algoritmo ","");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Funcion","Funcion ","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("SubAlgoritmo","SubAlgoritmo ","");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("SubProceso","SubProceso ","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS])	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","SubAlgoritmo");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS])	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","SubProceso");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS])	comp_list[comp_count++]=comp_list_item("Por Valor","Por Valor","Funcion");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","SubAlgoritmo");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","SubProceso");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Por Referencia","Por Referencia","Funcion");
 	comp_list[comp_count++]=comp_list_item("Fin Proceso","Fin Proceso\n","");
 	comp_list[comp_count++]=comp_list_item("FinProceso","FinProceso\n","");
+	comp_list[comp_count++]=comp_list_item("Fin Algoritmo","Fin Algoritmo\n","");
+	comp_list[comp_count++]=comp_list_item("FinAlgoritmo","FinAlgoritmo\n","");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("Fin SubProceso","Fin SubProceso\n","");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("FinSubProceso","FinSubProceso\n","");
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("FinFuncion","FinFuncion\n","");
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) comp_list[comp_count++]=comp_list_item("FinSubAlgoritmo","FinSubAlgoritmo\n","");
 	
 	comp_list[comp_count++]=comp_list_item("Escribir","Escribir ","");
 	if (config->lang[LS_LAZY_SYNTAX]) comp_list[comp_count++]=comp_list_item("Imprimir","Imprimir ","");
@@ -1435,7 +1446,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	GetIndentLevel(l,false,&btype,true); 
 	// buscar la siguiente linea no nula
 	int l2=l+1,ln=GetLineCount();
-	if (btype==BT_NONE||btype==BT_SINO||btype==BT_PROCESO||btype==BT_CASO) return;
+	if (btype==BT_NONE||btype==BT_SINO||btype==BT_CASO) return;
 	while (l2<ln && GetLineEndPosition(l2)==GetLineIndentPosition(l2)) l2++;
 	// comparar los indentados para ver si la siguiente esta dentro o fuera
 	int i1=GetIndent(l-1), i2=GetIndent(l2);
@@ -1453,6 +1464,14 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	} else if (btype==BT_SUBPROCESO) {
 		if (sl2.StartsWith("FINSUBPROCESO") || sl2.StartsWith("FIN SUBPROCESO")) return;
 		InsertText(PositionFromLine(l+1),"FinSubProceso\n");
+		IndentLine(l+1,true);
+	}else if (btype==BT_ALGORITMO) {
+		if (sl2.StartsWith("FINALGORITMO") || sl2.StartsWith("FIN ALGORITMO")) return;
+		InsertText(PositionFromLine(l+1),"FinAlgoritmo\n");
+		IndentLine(l+1,true);
+	} else if (btype==BT_SUBALGORITMO) {
+		if (sl2.StartsWith("FINSUBALGORITMO") || sl2.StartsWith("FIN SUBALGORITMO")) return;
+		InsertText(PositionFromLine(l+1),"FinSubAlgoritmo\n");
 		IndentLine(l+1,true);
 	} else if (btype==BT_FUNCION) {
 		if (sl2.StartsWith("FINFUNCION") || sl2.StartsWith("FIN FUNCION")) return;
@@ -1828,16 +1847,21 @@ bool mxSource::IsDimOrDef(int line) {
 }
 
 bool mxSource::IsProcOrSub(int line) {
-	wxString s=GetLine(line);
-	int l=s.Len(), i=0;
+	wxString s = GetLine(line);
+	int l = s.Len(), i=0;
 	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
 	if (i+8<l && s.Mid(i,8).Upper()=="PROCESO ") return true;
+	if (i+8<l && s.Mid(i,10).Upper()=="ALGORITMO ") return true;
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
 		if (i+11<l && s.Mid(i,11).Upper()=="SUBPROCESO ") return true;
 		if (i+8<l && s.Mid(i,8).Upper()=="FUNCION ") return true;
+		if (i+8<l && s.Mid(i,8).Upper()=="FUNCIÓN ") return true;
+		if (i+8<l && s.Mid(i,13).Upper()=="SUBALGORITMO ") return true;
 		while (i<l) {
 			if (i+12<l && s.Mid(i,12).Upper()==" SUBPROCESO ") return true;
 			if (i+9<l && s.Mid(i,9).Upper()==" FUNCION ") return true;
+			if (i+9<l && s.Mid(i,9).Upper()==" FUNCIÓN ") return true;
+			if (i+9<l && s.Mid(i,14).Upper()==" SUBALGORITMO ") return true;
 			i++;
 		}
 	}

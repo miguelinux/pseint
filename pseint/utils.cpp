@@ -452,7 +452,7 @@ string ExtraerNombreDeSubProceso(string cadena) {
 }
 
 string FirstWord(const string & s) {
-	int i=0,l=s.size();
+	size_t i=0, l=s.size();
 	while (i<l && EsLetra(s[i],i!=0)) i++;
 	return s.substr(0,i);
 }

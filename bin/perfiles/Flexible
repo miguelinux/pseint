@@ -1,9 +1,10 @@
-
 # descripcion del perfil
 
 # puede utilizar varias lineas desc=...... para escribir una descripcion del perfil para mostrar en el cuadro de configuracion
 desc=Este perfil configura el pseudolenguaje de la forma más flexible y permisiva posible. Si no sabe qué perfil seleccionar puede comenzar con este.
 
+# Version del intérprete que generó esta configuración
+version=20160321
 
 # configuracion de perfil, para los siguientes valores se acepta 1 como verdadero, 0 como falso
 
@@ -45,3 +46,12 @@ enable_string_functions=1
 
 # permitir definir nuevas funciones en el algoritmo con las palabras claves funcion o subproceso
 enable_user_functions=1
+
+# habilitar el uso de acentos y eñes en nombres de variables y funciones
+allow_accents=1
+
+# preferir "algoritmo" antes que "subproceso"
+	=1
+
+# preferir "funcion" antes que "subproceso" o "algoritmo"
+prefer_funcion=1

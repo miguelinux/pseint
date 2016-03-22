@@ -12,23 +12,24 @@
 using namespace std;
 
 // ********************* Ejecutar un Bloque de Instrucciones **************************
+// Ejecuta desde linestart+1 hasta lineend inclusive, o hasta finproceso/finsubproceso si lineend es -1.
+// Las variables aux?, tmp? y tipo quedaron del código viejo, se reutilizan para diferentes
+// cosas, por lo que habría que analizarlas y cambiarlas por varias otras variables con scope y 
+// nombres mas claros... por ahora cambie las obvias y reduje el scope de las que quedaron, pero falta...
 void Ejecutar(int LineStart, int LineEnd) {
 	// variables auxiliares
-	string aux1,aux2;
-//	char tipo;
-	tipo_var tipo;
-	int tmp1,tmp2,tmp3;
 	string cadena;
 	// Ejecutar el bloque
-//	for (int line=LineStart;line<=LineEnd;line++) {
 	int line=LineStart-1;
 	while (true) {
 		line++;
 		if (LineEnd!=-1 && line>LineEnd) break; 
 		cadena=programa[line].instruccion;
-		if (cadena=="FINPROCESO" || cadena=="FINSUBPROCESO") {
+		InstructionType instruction_type=programa[line].type;
+//cout << LineStart << ":"<<LineEnd<< "   " << cadena << endl; // debug
+		if (instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO) {
 			_pos(line);
-			if (cadena=="FINSUBPROCESO") {
+			if (instruction_type==IT_FINSUBPROCESO) {
 				_sub(line,string("Se sale del subproceso ")+cadena);
 				Inter.OnFunctionOut();
 			} else {
@@ -36,8 +37,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 			}
 			break;
 		}
-		if (LeftCompare(cadena,"PROCESO ") || LeftCompare(cadena,"SUBPROCESO ")) {
-			bool es_proc=LeftCompare(cadena,"PROCESO ");
+		if (instruction_type==IT_PROCESO || instruction_type==IT_SUBPROCESO) {
+			bool es_proc=instruction_type==IT_PROCESO;
 			size_t p=cadena.find(' '); cadena=cadena.substr(p);
 			p=cadena.find('<'); if (p==string::npos) p=cadena.find('='); else p++;
 			if (p==string::npos) p=0; else p++; cadena=cadena.substr(p);
@@ -49,28 +50,28 @@ void Ejecutar(int LineStart, int LineEnd) {
 		}
 		if (cadena[cadena.size()-1]==';') { // Si es una accion secuencial
 			_pos(line);
-			if (cadena=="BORRARPANTALLA;") {
+			if (instruction_type==IT_BORRARPANTALLA) {
 				if (for_test) cout<<"***LimpiarPantalla***"<<endl; else { clrscr(); gotoXY(1,1); }
 				_sub(line,"Se borra la pantalla");
-			} else if (cadena=="ESPERARTECLA;") {
+			} else if (instruction_type==IT_ESPERARTECLA) {
 				_sub_msg(line,"Se espera a que el usuario presione una tecla.");
 				_sub_raise();
 				if (for_test) cout<<"***EsperarTecla***"<<endl; else getKey();
 				_sub_wait();
-			} else if (LeftCompare(cadena,"INVOCAR ")) {
+			} else if (instruction_type==IT_INVOCAR) {
 				string llamada=cadena.substr(8); llamada.erase(llamada.length()-1,1); // cortar el "invocar" y el ";"
-				tipo=vt_desconocido; size_t p=llamada.find('(',0);
+				tipo_var tipo=vt_desconocido; size_t p=llamada.find('(',0);
 				_sub(line,string("Se va a invocar al subproceso")+llamada.substr(0,p));
 				if (p==string::npos)
 					EvaluarFuncion(EsFuncion(llamada),"()",tipo,false);
 				else
 					EvaluarFuncion(EsFuncion(llamada.substr(0,p)),llamada.substr(p),tipo,false);
 				// ----------- ESCRIBIR ------------ //
-			} else if (LeftCompare(cadena,"ESCRIBIR ") || LeftCompare(cadena,"ESCRIBNL ")) {
-				bool saltar=LeftCompare(cadena,"ESCRIBIR ");
+			} else if (instruction_type==IT_ESCRIBIR || instruction_type==IT_ESCRIBIRNL) {
+				bool saltar=instruction_type==IT_ESCRIBIR;
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-1,1);
-				tmp1=-1;tmp2=0;tmp3=0;
+				int tmp1=-1,tmp2=0,tmp3=0;
 				// Separar parametros
 				while (tmp3<(int)cadena.size()) {
 					while (tmp3<(int)cadena.size() && !(tmp1<0 && tmp2==0 && cadena[tmp3]==',')) {
@@ -81,7 +82,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						}
 						tmp3++;
 					}
-					aux1=cadena;
+					string aux1=cadena;
 					aux1.erase(tmp3,aux1.size()-tmp3);
 					tmp3-=aux1.size();
 					cadena.erase(0,aux1.size()+1);
@@ -103,10 +104,10 @@ void Ejecutar(int LineStart, int LineEnd) {
 				if (saltar) cout<<endl; else cout<<flush;
 			} else 
 			// ------------- LEER --------------- //
-			if (LeftCompare(cadena,"LEER ")) {
+			if (instruction_type==IT_LEER) {
 				cadena.erase(0,5);
 				cadena.erase(cadena.size()-1,1);
-				tmp1=0; tmp2=0;
+				int tmp1=0,tmp2=0;
 				while (tmp2<(int)cadena.size()) {
 					while (tmp2<(int)cadena.size() && !(tmp1==0 && cadena[tmp2]==',')) {
 						tmp2++;
@@ -114,7 +115,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						if (cadena[tmp2]==')') tmp1--;
 					}
 					// Cortar el nombre de la variable a leer
-					aux2=cadena;
+					string aux2=cadena;
 					aux2.erase(tmp2,cadena.size()-tmp2);
 					cadena.erase(0,aux2.size()+1);
 					tmp2-=aux2.size();
@@ -122,7 +123,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (lang[LS_FORCE_DEFINE_VARS] && !memoria->EstaDefinida(aux2)) {
 						ExeError(208,"Variable no definida ("+aux2+").");
 					}
-					tipo=memoria->LeerTipo(aux2);
+					tipo_var tipo=memoria->LeerTipo(aux2);
 					const int *dims=memoria->LeerDims(aux2);
 					size_t pp=aux2.find("(");
 					if (dims && pp==string::npos)
@@ -143,6 +144,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					_sub_msg(line,"Se espera a que el usuario ingrese un valor y presiones enter."); // tipo?
 					_sub_raise();
 					
+					string aux1;
 					if (!predef_input.empty() || noinput) {
 						if (predef_input.empty()) ExeError(214,"Sin entradas disponibles.");
 						aux1=predef_input.front(); predef_input.pop(); cout<<aux1<<endl;
@@ -171,13 +173,14 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 			} else 
 					// ------------- DIMENSION --------------- //
-			if (LeftCompare(cadena,"DIMENSION ")) {
+			if (instruction_type==IT_DIMENSION) {
+				int tmp1, tmp2, tmp3; tipo_var tipo;
 				do {
 					string otro=""; // por si hay mas de un arreglo
 					cadena.erase(0,10);
 					tmp1=cadena.find("(",0);  // Cortar nombre del arreglo
-					aux1=cadena; aux1.erase(tmp1,aux1.size()-tmp1);
-					aux2=cadena; // cortar indices
+					string aux1=cadena; aux1.erase(tmp1,aux1.size()-tmp1);
+					string aux2=cadena; // cortar indices
 					aux2.erase(0,aux1.size()+1); aux2.erase(aux2.size()-2,2);
 					// Separar indices
 					tmp2=0; tmp1=0;
@@ -236,8 +239,9 @@ void Ejecutar(int LineStart, int LineEnd) {
 				} while (cadena.size());
 			} else
 			// ------------- DEFINICION --------------- //
-			if (LeftCompare(cadena,"DEFINIR ")) {
-				tmp1=0; tmp2=0; cadena.erase(0,8); bool rounded=false;
+			if (instruction_type==IT_DEFINIR) {
+				string aux1, aux2; tipo_var tipo;
+				int tmp1=0, tmp2=0; cadena.erase(0,8); bool rounded=false;
 				if (RightCompare(cadena," COMO LOGICO;")) { tipo=vt_logica; aux1="FALSO"; cadena.erase(cadena.size()-13,13); }
 				else if (RightCompare(cadena," COMO REAL;")) { tipo=vt_numerica; aux1="0"; cadena.erase(cadena.size()-11,11); }
 				else if (RightCompare(cadena," COMO ENTERO;")) { tipo=vt_numerica; aux1="0"; cadena.erase(cadena.size()-13,13); rounded=true; }
@@ -268,26 +272,27 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 			} else
 			// ------------- ESPERAR un tiempo --------------- //
-			if (LeftCompare(cadena,"ESPERAR ")) {
-				aux2=cadena.substr(8); 
+			if (instruction_type==IT_ESPERAR) {
+				string aux2=cadena.substr(8); 
 				int factor=1;
 				if (RightCompare(aux2," SEGUNDO;")) { factor=1000; aux2.erase(aux2.size()-9); }
 				else if (RightCompare(aux2," SEGUNDOS;")) { factor=1000; aux2.erase(aux2.size()-10); }
 				if (RightCompare(aux2," MILISEGUNDO;")) { factor=1; aux2.erase(aux2.size()-13); }
 				else if (RightCompare(aux2," MILISEGUNDOS;")) { factor=1; aux2.erase(aux2.size()-14); }
 				_sub(line,string("Se evalúa la cantidad de tiempo: ")+aux2);
-				aux2=Evaluar(aux2,tipo);
+				tipo_var tipo; aux2=Evaluar(aux2,tipo);
 				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
 				else {
 					_sub(line,string("Se esperan ")+aux2+(factor==1?" milisengudos":" segundos"));
 					if (!Inter.subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
 				}
-			} else {
-				// ------------- ASIGNACION --------------- //
+			} else 
+			// ------------- ASIGNACION --------------- //
+			if (instruction_type==IT_ASIGNAR) {
 				// separar variable y expresion en aux1 y aux2
-				tmp1=cadena.find("<-",0);
-				aux1=cadena.substr(0,tmp1);  
-				aux2=cadena.substr(tmp1+3,cadena.size()-tmp1-5); // ignorar flecha, punto y como y parentesis extras
+				int tmp1=cadena.find("<-",0);
+				string aux1=cadena.substr(0,tmp1);
+				string aux2=cadena.substr(tmp1+3,cadena.size()-tmp1-5); // ignorar flecha, punto y como y parentesis extras
 				if (lang[LS_FORCE_DEFINE_VARS] && !memoria->EstaDefinida(aux1)) {
 					ExeError(211,string("La variable (")+aux1+") no esta definida.");
 				}
@@ -302,7 +307,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 				// evaluar expresion
 				_sub(line,string("Se evalúa la expresion a asignar: ")+aux2);
-				aux2=Evaluar(aux2,tipo);
+				tipo_var tipo; aux2=Evaluar(aux2,tipo);
 				// comprobar tipos
 				tipo_var tipo_aux1 = memoria->LeerTipo(aux1);
 				if (!tipo_aux1.can_be(tipo))
@@ -315,55 +320,44 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tipo.rounded=false; // no forzar a entera la variable en la que se asigna
 				memoria->DefinirTipo(aux1,tipo);
 				memoria->EscribirValor(aux1,aux2);
+			} else {
+				ExeError(-1,"Ha ocurrido un error interno en PSeInt. Por favor, reporte el problema a zaskar_84@yahoo.com.ar");
 			}
 		} else { // Si no es secuencial
 			// ---------------- SI ------------------ //
-			if (LeftCompare(cadena,"SI ")) {
+			if (instruction_type==IT_SI) {
 				cadena.erase(0,3);
 				_pos(line);
-				_sub(line,string("Se evalúa la condicion para Si-Entonces: ")+cadena);
-				aux1=Evaluar(cadena,tipo,vt_logica);
+				_sub(line,string("Se evalúa la condición para Si-Entonces: ")+cadena);
+				tipo_var tipo;
+				bool condition_is_true = Evaluar(cadena,tipo,vt_logica)=="VERDADERO";
 				if (tipo!=vt_error) {
-					if (aux1=="VERDADERO") {
+					// Buscar hasta donde llega el bucle
+					int anidamiento=0, line_sino=-1,line_finsi=line+1; 
+					while (!(anidamiento==0 && programa[line_finsi]==IT_FINSI)) {
+						// Saltear bucles anidados
+						if (anidamiento==0 && programa[line_finsi]==IT_SINO) line_sino=line_finsi; 
+						else if (programa[line_finsi]==IT_SI) anidamiento++;
+						else if (programa[line_finsi]==IT_FINSI) anidamiento--;
+						line_finsi++;
+					}
+					// ejecutar lo que corresponda
+					if (condition_is_true) {
 						_sub(line+1,"El resultado es Verdadero, se sigue por la rama del Entonces");
-						tmp1=line+2; tmp2=0; // Buscar hasta donde llega el verdadero
-						while (!(tmp2==0 && (programa[tmp1]=="SINO" || programa[tmp1]=="FINSI"))) {
-							// Saltear bucles anidados
-							if (LeftCompare(programa[tmp1],"SI ")) tmp2++;
-							if (programa[tmp1]=="FINSI") tmp2--;
-							tmp1++;
-						}
-						Ejecutar(line+2,tmp1-1); // ejecutar salida por verdadero
-						while (!(tmp2==0 &&  (LeftCompare(programa[tmp1],"FINSI")))) {
-							// Buscar salida del bucle
-							if (LeftCompare(programa[tmp1],"SI ")) tmp2++;
-							if (programa[tmp1]=="FINSI") tmp2--;
-							tmp1++;
-						}
-						line=tmp1;
+						if (line_sino==-1) line_sino=line_finsi;
+						Ejecutar(line+2,line_sino-1); // ejecutar salida por verdadero
 					} else {
-						tmp1=line+1; tmp2=0; // Buscar hasta donde llega el verdadero
-						while (!(tmp2==0 && (programa[tmp1]=="SINO" || programa[tmp1]=="FINSI"))) {
-							// Saltear bucles anidados
-							if (LeftCompare(programa[tmp1],"SI ")) tmp2++;
-							if (programa[tmp1]=="FINSI") tmp2--;
-							tmp1++;
-						}
-						if (programa[tmp1]=="SINO") {
-							line=tmp1; // Buscar hasta donde llega el falso
-							while (!(tmp2==0 && programa[tmp1]=="FINSI")) {
-								if (LeftCompare(programa[tmp1],"SI ")) tmp2++;
-								if (LeftCompare(programa[tmp1],"FINSI")) tmp2--;
-								tmp1++;
-							}
+						if (line_sino!=-1) {
+							line = line_sino;
 							_pos(line);
 							_sub(line,"El resultado es Falso, se sigue por la rama del Sino");
-							Ejecutar(line+1,tmp1-1); // ejecutar salida por falso
+							Ejecutar(line+1,line_finsi-1); // ejecutar salida por falso
 						} else {
 							_sub(line,"El resultado es Falso, no se hace nada");
 						}
-						line=tmp1;
 					}
+					// marcar la salida
+					line=line_finsi;
 					_pos(line);
 					_sub(line,"Se sale de la estructura Si-Entonces");
 				} else {
@@ -371,84 +365,85 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 			} else 
 			// ---------------- MIENTRAS ------------------ //
-			if (LeftCompare(cadena,"MIENTRAS ")) {
+			if (instruction_type==IT_MIENTRAS) {
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-6,6);
 				_pos(line);
-				_sub(line,string("Se evalúa la condicion para Mientras: ")+cadena);
-				aux1=Evaluar(cadena,tipo);
+				_sub(line,string("Se evalúa la condición para Mientras: ")+cadena);
+				tipo_var tipo;
+				bool condition_is_true = Evaluar(cadena,tipo)=="VERDADERO";
 				if (tipo!=vt_error) {
-					tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
-					while (!(tmp2==0 && programa[tmp1]=="FINMIENTRAS")) {
+					int line_finmientras = line+1, anidamiento=0; // Buscar hasta donde llega el bucle
+					while (!(anidamiento==0 && programa[line_finmientras]==IT_FINMIENTRAS)) {
 						// Saltear bucles anidados
-						if (LeftCompare(programa[tmp1],"MIENTRAS ")
-							&& !LeftCompare(programa[tmp1],"MIENTRAS QUE ")) tmp2++;
-						if (programa[tmp1]=="FINMIENTRAS") tmp2--;
-						tmp1++;
+						if (programa[line_finmientras]==IT_MIENTRAS) anidamiento++;
+						else if (programa[line_finmientras]==IT_FINMIENTRAS) anidamiento--;
+						line_finmientras++;
 					}
-					while (aux1=="VERDADERO") {
-						_sub(line,"La condicion es Verdadera, se iniciará una iteración.");
-						Ejecutar(line+1,tmp1-1);
+					while (condition_is_true) {
+						_sub(line,"La condición es Verdadera, se iniciará una iteración.");
+						Ejecutar(line+1,line_finmientras-1);
 						_pos(line);
-						_sub(line,string("Se evalúa nuevamente la condicion: ")+cadena);
-						aux1=Evaluar(cadena,tipo);
+						_sub(line,string("Se evalúa nuevamente la condición: ")+cadena);
+						condition_is_true = Evaluar(cadena,tipo)=="VERDADERO";
 					}
-					line=tmp1;
+					line=line_finmientras;
 					_pos(line);
-					_sub(line,"La condicion es Falsa, se sale de la estructura Mientras.");
+					_sub(line,"La condición es Falsa, se sale de la estructura Mientras.");
 				}
 			} else 
 			// ---------------- REPETIR HASTA QUE ------------------ //
-			if (cadena=="REPETIR") {
+			if (instruction_type==IT_REPETIR) {
 				_pos(line);
-				tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
-				while (!(tmp2==0 && (LeftCompare(programa[tmp1],"HASTA QUE ")||LeftCompare(programa[tmp1],"MIENTRAS QUE ")))) {
+				int line_hastaque=line+1, anidamiento=0; // Buscar hasta donde llega el bucle
+				while (!(anidamiento==0 && (programa[line_hastaque]==IT_HASTAQUE||programa[line_hastaque]==IT_MIENTRASQUE))) {
 					// Saltear bucles anidados
-					if (programa[tmp1]=="REPETIR") tmp2++;
-					else if (LeftCompare(programa[tmp1],"HASTA QUE ")) tmp2--;
-					else if (LeftCompare(programa[tmp1],"MIENTRAS QUE ")) tmp2--;
-					tmp1++;
+					if (programa[line_hastaque]==IT_REPETIR) anidamiento++;
+					else if (programa[line_hastaque]==IT_HASTAQUE || programa[line_hastaque]==IT_MIENTRASQUE) anidamiento--;
+					line_hastaque++;
 				}
 				// cortar condicion de cierre
-				cadena=programa[tmp1];
+				cadena=programa[line_hastaque];
+				instruction_type=programa[line_hastaque].type;
 				string valor_verdad;
-				if (LeftCompare(cadena,"HASTA QUE ")){
+				if (instruction_type==IT_HASTAQUE){
 					cadena.erase(0,10);
 					valor_verdad="FALSO";
 				} else {
 					cadena.erase(0,13);
 					valor_verdad="VERDADERO";
 				}
-				_sub(line,"Se ejecutaran las acciones contenidas en la estructura Repetir");
-				do {
-					Ejecutar(line+1,tmp1-1);
+				_sub(line,"Se ejecutarán las acciones contenidas en la estructura Repetir");
+				tipo_var tipo;
+				bool should_continue_iterating=true;
+				while (should_continue_iterating) {
+					Ejecutar(line+1,line_hastaque-1);
 					// evaluar condicion y seguir
-					_pos(tmp1);
-					_sub(tmp1,string("Se evalúa la condicion: ")+cadena);
-					aux1=Evaluar(cadena,tipo);
-//					if (tipo==vt_error) ???
-					if (aux1==valor_verdad) 
-						_sub(tmp1,string("La condicion es ")+Evaluar(cadena,tipo)+", se sale de la estructura Repetir.");
-				} while (aux1==valor_verdad);
-				line=tmp1;
-				_sub(tmp1,string("La condicion es ")+Evaluar(cadena,tipo)+", se sale de la estructura Repetir.");
+					_pos(line_hastaque);
+					_sub(line_hastaque,string("Se evalúa la condición: ")+cadena);
+					should_continue_iterating = Evaluar(cadena,tipo)==valor_verdad;
+					if (should_continue_iterating)
+						_sub(line_hastaque,string("La condición es ")+Evaluar(cadena,tipo)+", se contiúa iterando.");
+				} while (should_continue_iterating);
+				line=line_hastaque;
+				_sub(line_hastaque,string("La condición es ")+Evaluar(cadena,tipo)+", se sale de la estructura Repetir.");
 			} else 
 			// ------------------- PARA --------------------- //
-			if (LeftCompare(cadena,"PARA ")) {
+			if (instruction_type==IT_PARA) {
 				_pos(line);
 				bool positivo; // para saber si es positivo o negativo
 				cadena.erase(0,5); // saca "PARA "
 				cadena.erase(cadena.size()-6,6); // saca " HACER"
 				// corta condicion
-				tmp1=cadena.find(" HASTA ");
-				aux1=cadena.substr(0,tmp1);
+				int tmp1=cadena.find(" HASTA ");
+				string aux1=cadena.substr(0,tmp1);
 				cadena.erase(0,tmp1+7); // saca la asignacion inicial
 				tmp1=aux1.find("<-",0);
 				string contador=aux1.substr(0,tmp1); // variable del para
 				memoria->DefinirTipo(aux1,vt_numerica);
 				string val_ini=aux1.substr(tmp1+2); // valor inicial
 				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+val_ini);
-				val_ini=Evaluar(val_ini,tipo);
+				tipo_var tipo; val_ini=Evaluar(val_ini,tipo);
 				if (!memoria->LeerTipo(aux1).cb_num || !tipo.cb_num)
 					ExeError(126,"No coinciden los tipos.");
 				
@@ -473,12 +468,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 				
 				// Buscar hasta donde llega el bucle
-				tmp1=line+1; tmp2=0;
-				while (!(tmp2==0 && LeftCompare(programa[tmp1],"FINPARA"))) {
+				int line_finpara=line+1, anidamiento=0;
+				while (!(anidamiento==0 && programa[line_finpara]==IT_FINPARA)) {
 					// Saltear bucles anidados
-					if (LeftCompare(programa[tmp1],"PARA ")||LeftCompare(programa[tmp1],"PARACADA ")) tmp2++;
-					if (programa[tmp1]=="FINPARA") tmp2--;
-					tmp1++;
+					if (programa[line_finpara]==IT_PARA||programa[line_finpara]==IT_PARACADA) anidamiento++;
+					else if (programa[line_finpara]==IT_FINPARA) anidamiento--;
+					line_finpara++;
 				}
 				
 				_sub(line,string("Se inicializar el contador ")+contador+" en "+val_ini);
@@ -487,32 +482,32 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+val_fin);
 				while (Evaluar(contador+comp+val_fin,tipo)=="VERDADERO") {
 					_sub(line,"La expresión fue Verdadera, se iniciará una iteración.");
-					Ejecutar(line+1,tmp1-1);
+					Ejecutar(line+1,line_finpara-1);
 					_pos(line);
 					memoria->EscribirValor(contador,aux1=Evaluar(contador+"+("+val_paso+")",tipo));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
 					_sub(line,string("Se compara el contador con el valor final: ")+contador+comp+val_fin);
 				}
-				line=tmp1;
+				line=line_finpara;
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para.");
 			} else 
 			// ------------------- PARA CADA --------------------- //
-			if (LeftCompare(cadena,"PARACADA ")) {
+			if (instruction_type==IT_PARACADA) {
 				bool primer_iteracion=true; _pos(line);
 				cadena.erase(0,9); // borrar "PARACADA "
 				cadena.erase(cadena.size()-6,6); // borrar " HACER"
-				tmp1=cadena.find(" ");
-				tmp2=cadena.find(" ",tmp1+4);
-				aux1=cadena.substr(0,tmp1); // indetificador para el elemento
-				aux2=cadena.substr(tmp1+4,tmp2-tmp1-3); // identificador del arreglo
+				int tmp1=cadena.find(" ");
+				int tmp2=cadena.find(" ",tmp1+4);
+				string aux1=cadena.substr(0,tmp1); // indetificador para el elemento
+				string aux2=cadena.substr(tmp1+4,tmp2-tmp1-3); // identificador del arreglo
 				
-				tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
-				while (!(tmp2==0 && LeftCompare(programa[tmp1],"FINPARA"))) {
+				int line_finpara=line+1, anidamiento=0; // Buscar hasta donde llega el bucle
+				while (!(anidamiento==0 && programa[line_finpara]==IT_FINPARA)) {
 					// Saltear bucles anidados
-					if (LeftCompare(programa[tmp1],"PARA ")||LeftCompare(programa[tmp1],"PARACADA ")) tmp2++;
-					if (programa[tmp1]=="FINPARA") tmp2--;
-					tmp1++;
+					if (programa[line_finpara]==IT_PARA||programa[line_finpara]==IT_PARACADA) anidamiento++;
+					else if (programa[line_finpara]==IT_FINPARA) anidamiento--;
+					line_finpara++;
 				}
 
 				const int *dims=memoria->LeerDims(aux2);
@@ -538,86 +533,84 @@ void Ejecutar(int LineStart, int LineEnd) {
 						ExeError(277,"No coinciden los tipos.");
 					memoria->EscribirValor(aux1,memoria->LeerValor(elemento));
 					// ejecutar la iteracion
-					Ejecutar(line+1,tmp1-1);
+					Ejecutar(line+1,line_finpara-1);
 					// asignar la variable del bucle en el elemento
 					memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
-				line=tmp1; // linea del finpara
+				line=line_finpara; // linea del finpara
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para Cada.");
 				
 			} else 
 			// ------------------- SEGUN --------------------- //
-			if (LeftCompare(cadena,"SEGUN ")) {
-				int fin;
-				cadena.erase(0,6); cadena.erase(cadena.size()-6,6); // Cortar la variable
+			if (instruction_type==IT_SEGUN) {
+				string expr_control = cadena.substr(6,cadena.size()-12); // Cortar la variable (sacar SEGUN y HACER)
 				tipo_var tipo_master=vt_caracter_o_numerica;
 				_pos(line);
-				_sub(line,string("Se evalúa la expresion: ")+cadena);
-				Evaluar(aux2=cadena,tipo,tipo_master); // evaluar para verificar el tipo
+				_sub(line,string("Se evalúa la expresion: ")+expr_control);
+				tipo_var tipo; string val_control = Evaluar(expr_control,tipo,tipo_master); // evaluar para verificar el tipo
 				if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) {
 					if (!lang[LS_INTEGER_ONLY_SWITCH]) 
 						ExeError(205,"La expresión del SEGUN debe ser de tipo numerica o caracter.");
 					else
 						ExeError(206,"La expresión del SEGUN debe ser numerica.");
 				}
-				_sub(line,string("El resultado es: ")+Evaluar(cadena,tipo,tipo_master));
-				tmp1=line+1; tmp2=0; // Buscar hasta donde llega el bucle
-				while (!(tmp2==0 && LeftCompare(programa[tmp1],"FINSEGUN"))) {
+				_sub(line,string("El resultado es: ")+Evaluar(expr_control,tipo,tipo_master));
+				int line_finsegun=line+1, anidamiento=0; // Buscar hasta donde llega el bucle
+				while (!(anidamiento==0 && LeftCompare(programa[line_finsegun],"FINSEGUN"))) {
 					// Saltear bucles anidados
-					if (LeftCompare(programa[tmp1],"SEGUN ")) tmp2++;
-					if (programa[tmp1]=="FINSEGUN") tmp2--;
-					tmp1++;
+					if (programa[line_finsegun]==IT_SEGUN) anidamiento++;
+					else if (programa[line_finsegun]==IT_FINSEGUN) anidamiento--;
+					line_finsegun++;
 				}
-				fin=tmp1-1;
-				int x, flag_coincide=0, anid=0;
-				string aux3;
-				for (x=line+1;x<fin && flag_coincide==0;x++) {
-					cadena=programa[x];
-					if (LeftCompare(cadena,"SEGUN ")) anid++;
-					if (cadena=="FINSEGUN") anid--;
-					if (cadena[cadena.size()-1]==':' && anid==0) {
-						if (cadena=="DE OTRO MODO:") { 
-							_pos(x);
-							_sub(x,"Se ingresará en la opción De Otro Modo");
-							flag_coincide=1; break;
+				int line_opcion=line+1; bool encontrado=false; anidamiento=0;
+				for (;line_opcion+1<line_finsegun && !encontrado;line_opcion++) {
+					instruction_type=programa[line_opcion].type;
+					if (instruction_type==IT_SEGUN) anidamiento++;
+					else if (instruction_type==IT_FINSEGUN) anidamiento--;
+					else if ((instruction_type==IT_OPCION||instruction_type==IT_DEOTROMODO) && anidamiento==0) {
+						if (instruction_type==IT_DEOTROMODO) { 
+							_pos(line_opcion);
+							_sub(line_opcion,"Se ingresará en la opción De Otro Modo");
+							encontrado=true; break;
 						}
 						else {
-							cadena[cadena.size()-1]=',';
-							tmp2=cadena.find(",",0);
-							while (tmp2<=(int)cadena.size() && tmp2>=0) {
+							string posibles_valores = programa[line_opcion];
+							posibles_valores[posibles_valores.size()-1]=',';
+							size_t pos_fin_valor = posibles_valores.find(",",0);
+							while (pos_fin_valor!=string::npos) {
 								// evaluar el parametro para verificar el tipo
-								aux3=cadena.substr(0,tmp2);
-								cadena.erase(0,aux3.size()+1);
-								_pos(x);
-								_sub(x,string("Se evalúa la opcion: ")+aux3);
-								aux1=Evaluar(aux3,tipo,tipo_master);
+								string expr_opcion=posibles_valores.substr(0,pos_fin_valor);
+								posibles_valores.erase(0,expr_opcion.size()+1);
+								_pos(line_opcion);
+								_sub(line_opcion,string("Se evalúa la opcion: ")+expr_opcion);
+								string val_opcion = Evaluar(expr_opcion,tipo,tipo_master);
 								if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde
-								if (Evaluar(aux3+"="+aux2,tipo)==VERDADERO) {
-									_sub(x,"El resultado coincide, se ingresará en esta opción.");
-									cadena=aux1;flag_coincide=1;x--;break;
+								if (Evaluar(string("(")+expr_control+")=("+expr_opcion+")",tipo)==VERDADERO) {
+									_sub(line_opcion,"El resultado coincide, se ingresará en esta opción.");
+									encontrado=true; break;
 								} else {
-									_sub(x,string("El resultado no coincide: ")+aux1);
+									_sub(line_opcion,string("El resultado no coincide: ")+val_opcion);
 								}
 //								if (tipo==vt_error) ExeError(127,"No coinciden los tipos."); // no parece hacer falta
-								tmp2=cadena.find(",",0);
+								pos_fin_valor=posibles_valores.find(",",0);
 							}
 						}
 					}
 				}
-				if (x<tmp1) { // si coincide, buscar el final del bucle
-					tmp1=x+1; tmp2=0; // Buscar hasta donde llega el bucle
-					while (!(tmp2==0 && ((programa[tmp1]=="FINSEGUN") || (RightCompare(programa[tmp1],":"))) )) {
+				if (encontrado) { // si coincide, buscar el final del bucle
+					int line_finopcion=line_opcion+1; anidamiento=0; // Buscar hasta donde llega ese caso
+					while (!(anidamiento==0 && ((programa[line_finopcion]==IT_FINSEGUN) || (programa[line_finopcion]==IT_OPCION||programa[line_finopcion]==IT_DEOTROMODO)) )) {
 						// Saltear bucles anidados
-						if (LeftCompare(programa[tmp1],"SEGUN ")) tmp2++;
-						if (programa[tmp1]=="FINSEGUN") tmp2--;
-						tmp1++;
+						if (programa[line_finopcion]==IT_SEGUN) anidamiento++;
+						else if (programa[line_finopcion]==IT_FINSEGUN) anidamiento--;
+						line_finopcion++;
 					}
-					Ejecutar(x+1,tmp1-1); 
+					Ejecutar(line_opcion,line_finopcion-1); 
 				}
-				line=fin+1;
+				line=line_finsegun;
 				_pos(line);
 				_sub(line,"Se sale de la estructura Segun.	");
 			}

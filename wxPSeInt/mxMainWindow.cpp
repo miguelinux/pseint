@@ -483,9 +483,15 @@ void mxMainWindow::CreateStatusBar() {
 mxSource *mxMainWindow::NewProgram(const wxString &title) {
 	mxSource *source = new mxSource(notebook,title);
 	notebook->AddPage(source,title,true);
-	source->SetText("Proceso sin_titulo\n\t\nFinProceso\n");
-	source->SetFieldIndicator(8,18);
-	source->SetSelection(20,20);
+	if (config->lang[LS_PREFER_ALGORITMO]) {
+		source->SetText("Algoritmo sin_titulo\n\t\nFinAlgoritmo\n");
+		source->SetFieldIndicator(10,20);
+		source->SetSelection(20,20);
+	} else {
+		source->SetText("Proceso sin_titulo\n\t\nFinProceso\n");
+		source->SetFieldIndicator(8,18);
+		source->SetSelection(20,20);
+	}
 	source->SetModify(false);
 	source->SetFocus();
 	source->SetStatus(STATUS_NEW_SOURCE);
@@ -965,9 +971,19 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		ShowQuickHelp(true,help->GetCommandText("SUBPROCESO"));
 	wxArrayString toins;
-	toins.Add("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
-	toins.Add("\t");
-	toins.Add("FinSubProceso");
+	if (config->lang[LS_PREFER_FUNCION]) {
+		toins.Add("Funcion {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
+		toins.Add("\t");
+		toins.Add("FinFuncion");
+	} else if (config->lang[LS_PREFER_ALGORITMO]) {
+		toins.Add("SubAlgoritmo {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
+		toins.Add("\t");
+		toins.Add("FinSubAlgoritmo");
+	} else {
+		toins.Add("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
+		toins.Add("\t");
+		toins.Add("FinSubProceso");
+	}
 	toins.Add("");
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;

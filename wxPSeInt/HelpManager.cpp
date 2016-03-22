@@ -88,6 +88,8 @@ wxString HelpManager::GetQuickHelp(wxString key, wxString def_val) {
 	else if (key==_Z("subprocesos")) str="subprocesos.html";
 	else if (key==_Z("función")) str="subprocesos.html";
 	else if (key==_Z("funcion")) str="subprocesos.html";
+	else if (key==_Z("subalgoritmo")) str="subprocesos.html";
+	else if (key==_Z("finsubalgoritmo")) str="subprocesos.html";
 	else if (key==_Z("sin")) str="escritura.html";
 	else if (key==_Z("saltar")) str="escritura.html";
 	else if (key==_Z("bajar")) str="escritura.html";
@@ -145,6 +147,8 @@ wxString HelpManager::GetQuickHelp(wxString key, wxString def_val) {
 	else if (key==_Z("mientras")) str="mientras.html";
 	else if (key==_Z("proceso")) str="forma.html";
 	else if (key==_Z("finproceso")) str="forma.html";
+	else if (key==_Z("algoritmo")) str="forma.html";
+	else if (key==_Z("finalgoritmo")) str="forma.html";
 	else if (key==_Z("vectores")) str="arreglos.html";
 	else if (key==_Z("operador")) str="operadores.html";
 	else if (key==_Z("operadores")) str="operadores.html";

@@ -4,9 +4,10 @@
 #include <string>
 #ifdef FOR_WXPSEINT
 #	include <wx/string.h>
+#	include "../wxPSeInt/string_conversions.h"
 #endif
 
-#define LS_VERSION 20150304
+#define LS_VERSION 20160321
 #include <cstdlib>
 
 enum LS_INIT_ENUM {
@@ -31,6 +32,9 @@ enum LS_ENUM {
 	LS_DEDUCE_NEGATIVE_FOR_STEP,
 	LS_USE_NASSI_SHNEIDERMAN,
 	LS_USE_ALTERNATIVE_IO_SHAPES,
+	LS_ALLOW_ACCENTS,
+	LS_PREFER_ALGORITMO,
+	LS_PREFER_FUNCION,
 	LS_COUNT 
 };
 
@@ -45,7 +49,7 @@ struct LangSettings {
 		void Set(const char *nom, bool val, const char *udesc, const char *ldesc) { 
 			nombre=nom; default_value=val;
 #ifdef FOR_WXPSEINT
-			user_desc=udesc; long_desc=ldesc;
+			user_desc=_Z(udesc); long_desc=_Z(ldesc);
 #endif
 		}
 	};

@@ -37,7 +37,7 @@ void LangSettings::init() {
 			"Si esta opción esta activada se puede concatenar el contenido de dos variables de tipo caracter con el operador +. "
 			"Por ejemplo: NombreCompleto <- Nombre+\" \"+Apellido;"
 		);
-	data[LS_USE_NASSI_SHNEIDERMAN	 ].Set("use_nassi_shneiderman",	false,
+	data[LS_USE_NASSI_SHNEIDERMAN	 ].Set("use_nassi_shneiderman",		false,
 		"Usar diagramas de Nassi-Shneiderman",
 			"Con esta opción activada, el editor de diagramas utilizará el formato de Nassi-Shneiderman\n"
 			"en lugar del formato clásico de diagrama de flujo."
@@ -71,7 +71,7 @@ void LangSettings::init() {
 			"Esta opcion habilita variaciones opcionales en la sintaxis de ciertas instrucciones y estructuras de control. Por ejemplo"
 			"omitir la palabra HACER en un bucle MIENTRAS o PARA, utilizar la palabra DESDE para indicar el valor de inicio de un ciclo "
 			"PARA, separar la expresiones/variables en una lectura/escritura con espacios en lugar de comas, escribir FinProceso como Fin "
-			"Proceso, FinSi como Fin Si, etc.."
+			"Proceso, FinSi como Fin Si, etc."
 		);
 	data[LS_WORD_OPERATORS			 ].Set("word_operators",			true,
 		"Permitir las palabras Y, O, NO y MOD para los operadores &&, |, ~ y %",
@@ -87,7 +87,7 @@ void LangSettings::init() {
 			"Esta opción habilita un conjunto de funciones predefinidas que sirven para operar sobre cadenas de "
 			"caracteres. Las funciones son: Longitud, SubCadena, Mayusculas, Minusculas y Concatenar)."
 		);
-	data[LS_INTEGER_ONLY_SWITCH].Set("integer_only_switch",	false,
+	data[LS_INTEGER_ONLY_SWITCH].Set("integer_only_switch",				false,
 		"Limitar la estructura Según a variables de control numéricas",
 			"Muchos lenguajes solo permiten utilizar números enteros para las expresiones de control de la estructura de "
 			"selección múltiple (\"Según\" en PSeInt). Si habilita esta opción, PSeInt aplicará esta restricción. En caso "
@@ -98,6 +98,25 @@ void LangSettings::init() {
 			"Con esta opción activa, si no se especifica el valor del \"paso\" en una estructura de tipo \"Para\", se utiliza +1 o -1 "
 			"según corresponda. Se determina comparando los valores iniciales y finales, si el primero es mayor al segundo +1, o -1 "
 			"en caso contrario. Si se desactiva esta opción, se utilizará siempre +1 como paso por defecto."
+		);
+	data[LS_ALLOW_ACCENTS].Set("allow_accents",							true,
+		"Permitir utilizar acentos en nombres de variables",
+			"Con esta opción activada, los identificadores de variables y funciones pueden incluir letras con "
+			"acento, diéresis y/o la letra ñ. Si está desactivada, el uso de estas letras generará errores de "
+			"\"identificador no válido\" y/o \"caracter no válido\"."
+		);
+	data[LS_PREFER_ALGORITMO].Set("prefer_algoritmo",					true,
+		"Preferir las palabras clave \"Algoritmo\" y \"FinAlgoritmo\"",
+			"Con esta opción activada, al insertar plantillas, generar o autocompletar el pseudocódigo, "
+			"se priorizará el uso de las palabras claves \"Algoritmo\" y \"FinAlgoritmo\" frente a "
+			"\"Proceso\" y \"FinProceso\" respectivamente. Si la opción está desactivada se utilizarán "
+		    "por defecto las palabras clave \"Proceso\" y \"FinProceso\""
+		);
+	data[LS_PREFER_FUNCION].Set("prefer_funcion",						true,
+		"Preferir las palabras clave \"Función\" y \"FinFunción\"",
+			"Con esta opción activada, al insertar plantillas, generar o autocompletar el pseudocódigo, "
+			"se priorizará el uso de las palabras claves \"Función\" y \"FinFunción\" frente a "
+			"\"Proceso\" y \"FinProceso\" (o \"Algoritmo\" y \"FinAlgoritmo\") respectivamente."
 		);
 #ifdef DEBUG
 	for(int i=0;i<LS_COUNT;i++) { 
@@ -168,6 +187,10 @@ std::string LangSettings::GetAsSingleString() {
 
 
 void LangSettings::Fix ( ) {
+	if (version<20160321) { 
+		settings[LS_ALLOW_ACCENTS]=settings[LS_LAZY_SYNTAX]; // antes LS_ALLOW_ACCENTS era parte de LS_LAZY_SYNTAX
+		settings[LS_PREFER_ALGORITMO]=settings[LS_PREFER_FUNCION]=false; // antes LS_PREFER_ALGORITMO y LS_PREFER_FUNCION no existían
+	}
 	if (version<20150304) { // antes LS_INTEGER_ONLY_SWITCH y LS_DEDUCE_NEGATIVE_FOR_STEP eran parte de LS_LAZY_SYNTAX
 		settings[LS_INTEGER_ONLY_SWITCH]=!settings[LS_LAZY_SYNTAX];
 		settings[LS_DEDUCE_NEGATIVE_FOR_STEP]=settings[LS_LAZY_SYNTAX];
