@@ -350,7 +350,7 @@ void CreateEmptyProc(string type) {
 
 void New() {
 	fname="temp.psd"; 
-	CreateEmptyProc("Proceso");
+	CreateEmptyProc(lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso");
 	ProcessMenu(MO_ZOOM_EXTEND);
 	modified=false;
 }

@@ -225,14 +225,14 @@ void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
 		if (choose_process_sel==int(procesos.size())) {
-			CreateEmptyProc("SubProceso");
+			CreateEmptyProc(lang[LS_PREFER_FUNCION]?"Funcion":(lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso"));
 		}
 		if (choose_process_sel!=-1) {
 			if (state==ZMB_DOWN) {
 				choose_process_state=3;
 				cur_x=m_x0=x; cur_y=m_y0=win_h-y;
 			} else if (trash) {
-				if (edit_on && procesos[choose_process_sel]->lpre!="Proceso ")
+				if (edit_on && (procesos[choose_process_sel]->lpre!="Proceso "&&procesos[choose_process_sel]->lpre!="Algoritmo "))
 					procesos.erase(procesos.begin()+choose_process_sel); // no lo quita de la memoria, solo del arreglo, con eso alcanza, algun día corregiré el memory leak
 				choose_process_state=2;
 			} else {

@@ -226,7 +226,10 @@ static void DrawChooseProcess() {
 		base-=delta;
 		
 		if (i==int(procesos.size())) {
-			DrawTextRaster(choose_process_sel==i?color_selection:color_menu,20,base+10,"Agregar Nuevo SubProceso");
+			DrawTextRaster(choose_process_sel==i?color_selection:color_menu,20,base+10,
+						   lang[LS_PREFER_FUNCION]?"Agregar Nueva Funcion"
+								:(lang[LS_PREFER_ALGORITMO]?"Agregar Nuevo SubAlgoritmo"
+									:"Agregar Nuevo SubProceso") );
 		} else {
 			
 			string &s=procesos[i]->label;
@@ -427,7 +430,7 @@ void display_cb() {
 	if (edit && !mouse && !status_color) {
 		switch (edit->type) {
 		case ET_LEER: SetStatus(color_selection,"? Lista de variables a leer, separadas por coma."); break;
-		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
+		case ET_PROCESO: SetStatus(color_selection,edit->lpre=="Proceso "||edit->lpre=="Algoritmo "?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
 		case ET_COMENTARIO: SetStatus(color_selection,"? Texto libre, sera ignorado por el interprete."); break;
 		case ET_ESCRIBIR: SetStatus(color_selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
 		case ET_SI: SetStatus(color_selection,"? Expresion logica."); break;
