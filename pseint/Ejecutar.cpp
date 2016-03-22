@@ -26,7 +26,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 		if (LineEnd!=-1 && line>LineEnd) break; 
 		cadena=programa[line].instruccion;
 		InstructionType instruction_type=programa[line].type;
-//cout << LineStart << ":"<<LineEnd<< "   " << cadena << endl; // debug
+//cout << LineStart+1 << ":"<<LineEnd+1<< "   " << cadena << endl; // debug
 		if (instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO) {
 			_pos(line);
 			if (instruction_type==IT_FINSUBPROCESO) {
@@ -215,11 +215,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						cadena=aux2; // Cortar la expresion indice
 						cadena.erase(tmp1,cadena.size()-tmp1); cadena.erase(0,last);
 						cadena=Evaluar(cadena,tipo);
-						if (!tipo.cb_num) // Controlar tipo
-	//								if (tipo<'c')
-	//									ExpError(tipo,1);
-	//								else
-								ExeError(122,"No coinciden los tipos.");
+						if (!tipo.cb_num) ExeError(122,"No coinciden los tipos.");
 						dim[tmp3]=(int)StrToDbl(cadena);
 						if (dim[tmp3]<=0) {
 							ExeError(274,"Las dimensiones deben ser mayores a 0.");
@@ -260,15 +256,17 @@ void Ejecutar(int LineStart, int LineEnd) {
 					if (memoria->EstaDefinida(aux2) || memoria->EstaInicializada(aux2)) 
 						ExeError(124,string("La variable (")+aux2+") ya estaba definida.");
 					memoria->DefinirTipo(aux2,tipo,rounded);
-					if (tipo==vt_numerica_entera) {
-						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Entero).");
-					} else if (tipo==vt_numerica) {
-						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Real).");
+					if (tipo==vt_numerica) {
+						if (rounded) {
+							_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Entero).");
+						} else {
+							_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Numérico(Real).");
+						}
 					} else if (tipo==vt_caracter) {
 						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Caracter/Cadena de Caracteres.");
 					} else if (tipo==vt_logica) {
 						_sub(line,string("Se define el tipo de la variable \"")+aux2+"\" como Lógico.");
-					}
+					} 
 				}
 			} else
 			// ------------- ESPERAR un tiempo --------------- //
@@ -284,7 +282,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
 				else {
 					_sub(line,string("Se esperan ")+aux2+(factor==1?" milisengudos":" segundos"));
-					if (!Inter.subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
+					if (for_test) cout<<"***Esperar"<<int(StrToDbl(aux2)*factor)<<"***"<<endl;
+					else if (!Inter.subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
 				}
 			} else 
 			// ------------- ASIGNACION --------------- //
@@ -320,8 +319,9 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tipo.rounded=false; // no forzar a entera la variable en la que se asigna
 				memoria->DefinirTipo(aux1,tipo);
 				memoria->EscribirValor(aux1,aux2);
-			} else {
-				ExeError(-1,"Ha ocurrido un error interno en PSeInt. Por favor, reporte el problema a zaskar_84@yahoo.com.ar");
+			} // ya deberíamos haber cubierto todas las opciones
+			else {
+				ExeError(0,"Ha ocurrido un error interno en PSeInt.");
 			}
 		} else { // Si no es secuencial
 			// ---------------- SI ------------------ //
@@ -564,8 +564,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 					else if (programa[line_finsegun]==IT_FINSEGUN) anidamiento--;
 					line_finsegun++;
 				}
-				int line_opcion=line+1; bool encontrado=false; anidamiento=0;
-				for (;line_opcion+1<line_finsegun && !encontrado;line_opcion++) {
+				int line_opcion=line; bool encontrado=false; anidamiento=0;
+				while (!encontrado && ++line_opcion<line_finsegun) {
 					instruction_type=programa[line_opcion].type;
 					if (instruction_type==IT_SEGUN) anidamiento++;
 					else if (instruction_type==IT_FINSEGUN) anidamiento--;
@@ -608,11 +608,14 @@ void Ejecutar(int LineStart, int LineEnd) {
 						else if (programa[line_finopcion]==IT_FINSEGUN) anidamiento--;
 						line_finopcion++;
 					}
-					Ejecutar(line_opcion,line_finopcion-1); 
+					Ejecutar(line_opcion+1,line_finopcion-1); 
 				}
 				line=line_finsegun;
 				_pos(line);
 				_sub(line,"Se sale de la estructura Segun.	");
+			} // ya deberíamos haber cubierto todas las opciones
+			else {
+				ExeError(0,"Ha ocurrido un error interno en PSeInt.");
 			}
 		}
 	}

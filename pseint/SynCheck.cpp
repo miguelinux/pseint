@@ -42,61 +42,67 @@ static bool IsNumericConstant(string &str) {
 	return true;
 }
 
+static string Trim(const string &str) {
+	size_t ini=0, len=str.size(), last=str.size();
+	while (ini<len && str[ini]==' ') ++ini;
+	while (last>0 && str[last-1]==' ') --last;
+	return str.substr(ini,last);
+}
+
 // pasar todo a mayusculas, reemplazar tabs, comillas, word_operators, corchetes, y quita espacios extras
 static string SynCheckAux1(string &cadena) {
 	string retval;
 	// corregir saltos de linea win/linux
 	if (cadena.size()>0 && (cadena[cadena.size()-1]==13||cadena[cadena.size()-1]==10) ) cadena[cadena.size()-1]=' ';
 	if (cadena.size()>1 && (cadena[cadena.size()-2]==13||cadena[cadena.size()-2]==10) ) cadena[cadena.size()-2]=' ';
-	bool comillas=false;
 	int len = cadena.size();
 	// primero, todo a mayúsculas y cambio de comillas y paréntesis
-	for (int tmp=0;tmp<len;tmp++) {
-		char &c=cadena[tmp];
-		if (!comillas && tmp>0 && c=='/' && cadena[tmp-1]=='/') {
-			// "remover" comentarios
+	for (int i=0;i<len;i++) {
+		char &c=cadena[i];
+		if (i>0 && c=='/' && cadena[i-1]=='/') { // "remover" comentarios
 			if (preserve_comments) {
 				bool is_inline = false;
-				for(int i=0;i<tmp-1;i++) 
-					if (cadena[i]!=' '&&cadena[i]!='\t'&&cadena[i]!=';') 
+				for(int j=0;j<i-1;j++) 
+					if (cadena[j]!=' '&&cadena[j]!='\t'&&cadena[j]!=';') 
 						{ is_inline=true; break; }
-				retval = cadena.substr(tmp+1); 
+				retval = cadena.substr(i+1); 
 				while (retval.size() && (retval[0]==' '||retval[0]=='\t')) retval.erase(0,1);
 				retval.insert(0,is_inline?string("#comment-inline "):string("#comment "));
 			}
-			cadena=cadena.substr(0,tmp-1); len=tmp-1; break; 
+			cadena=cadena.substr(0,i-1); len=i-1; break; 
 		}
-		if (c=='\"' || c=='\'') { 
-			c='\''; comillas=!comillas;
-		} else if (!comillas) {
+		if (c=='\"' || c=='\'') { // saltear cadenas literales normalizando las comillas a '
+			c='\'';
+			while ((++i)<len&&(cadena[i]!='\"'&&cadena[i]!='\''));
+			if (i<len) cadena[i]='\'';
+		} else { // normalizar lo que queda
 			if (c=='[') c='(';
 			else if (c==']') c=')';
 			else if (c==9) c=' ';
-			else if (c==' ' && tmp!=0 && cadena[tmp-1]==' ') { cadena.erase(--tmp,1); len--; }
+			else if (c==' ' && i!=0 && cadena[i-1]==' ') { cadena.erase(--i,1); len--; }
 			else c=ToUpper(c);
 		}
 	}
 	// despues, word_operators
 	if (lang[LS_WORD_OPERATORS]) {
-		comillas=false;
-		for (int tmp=0;tmp<len;tmp++) {
-			char &c=cadena[tmp];
-			if (c=='\'') comillas=!comillas;
-			else if (!comillas) {
-				if (c=='Y' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
+		for (int i=0;i<len;i++) {
+			char &c = cadena[i];
+			if (c=='\'') { // saltera cadenas literales
+				while (i<len&&cadena[++i]!='\'');
+			} else {
+				if (c=='Y' && (i==0 || !parteDePalabra(cadena[i-1])) && (i==len-1 || !parteDePalabra(cadena[i+1])) )
 					c='&';
-				if (c=='O' && (tmp==0 || !parteDePalabra(cadena[tmp-1])) && (tmp==len-1 || !parteDePalabra(cadena[tmp+1])) )
+				if (c=='O' && (i==0 || !parteDePalabra(cadena[i-1])) && (i==len-1 || !parteDePalabra(cadena[i+1])) )
 					c='|';
-				if (c=='O' && tmp>0 && cadena[tmp-1]=='N' && (tmp-1==0 || !parteDePalabra(cadena[tmp-2])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
-				{ cadena[tmp-1]='~'; cadena.erase(tmp,1); tmp--; len--; }
-				if (c=='D' && tmp>1 && cadena[tmp-1]=='O' && cadena[tmp-2]=='M' && (tmp-2==0 || !parteDePalabra(cadena[tmp-3])) && (tmp+1==len || !parteDePalabra(cadena[tmp+1])) )
-				{ cadena[tmp-2]='%'; cadena.erase(tmp-1,2); tmp-=2; len-=2;	}
+				if (c=='O' && i>0 && cadena[i-1]=='N' && (i-1==0 || !parteDePalabra(cadena[i-2])) && (i+1==len || !parteDePalabra(cadena[i+1])) )
+				{ cadena[i-1]='~'; cadena.erase(i,1); i--; len--; }
+				if (c=='D' && i>1 && cadena[i-1]=='O' && cadena[i-2]=='M' && (i-2==0 || !parteDePalabra(cadena[i-3])) && (i+1==len || !parteDePalabra(cadena[i+1])) )
+				{ cadena[i-2]='%'; cadena.erase(i-1,2); i-=2; len-=2;	}
 			}
 		}
 	}
 	// Borrar espacios en blanco al principio y al final
-	while (cadena.size() && cadena[0]==' ') {cadena.erase(0,1); len--;}
-	while (cadena.size() && cadena[cadena.size()-1]==' ') {cadena.erase(cadena.size()-1,1);; len--;}
+	cadena = Trim(cadena);
 	// agregar espacios para evitar que cosas como "SI(x<2)ENTONCES" generen un error
 //	comillas=false;
 //	for(int i=0;i<len;i++) {
@@ -385,9 +391,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,InstructionT
 	if (w==w_operator) { SynError (236,"Falta operando al final de la expresión"); errores++; }
 	// Posibles errores encontrados
 	if (parentesis<0) { SynError (35,"Se cerraron parentesis o corchetes demás."); errores++; }
-	if (parentesis>0) { 
-		SynError (36,"Falta cerrar parentesis o corchete."); errores++;
-	}
+	if (parentesis>0) { SynError (36,"Falta cerrar parentesis o corchete."); errores++; }
 	if (comillas) { SynError (37,"Falta cerrar comillas."); errores++; }
 }
 
@@ -404,20 +408,6 @@ static bool RightCompareFix(string &s, string e) {
 	else if (s[ls-le-1]==')') { s.insert(ls-le," "); ls++; };
 	return s[ls-le-1]==' ';
 }
-
-//static bool LeftCompareFix(string &s, string e) {
-//	int ls=s.size(), le=e.size();
-//	bool fix=e[le-1]==' ';
-//	if (fix) { le--; e=e.substr(0,le); }
-//	if (ls<le) return false;
-//	else if (ls==le) {
-//		if (s==e) { if (fix) s+=" "; return true;}
-//		else return false;
-//	}
-//	else if (s.substr(0,le)!=e) return false;
-//	else if (s[le]=='(') s.insert(le," ");
-//	return s[le]==' ';
-//}
 
 static void FixAcentos(string &s) {
 	for(size_t i=0;i<s.size();i++) { 
@@ -440,8 +430,8 @@ void InformUnclosedLoops(deque<Instruccion> &bucles, int &errores) {
 		else if (bucles.back()==IT_MIENTRAS) {SynError (116,"Falta cerrar MIENTRAS.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()==IT_SI||bucles.back()==IT_SINO) {SynError (117,"Falta cerrar SI.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		else if (bucles.back()==IT_SEGUN) {SynError (118,"Falta cerrar SEGUN.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
-		else if (bucles.back()==IT_PROCESO) {SynError (119,"Falta cerrar PROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
-		else if (bucles.back()==IT_SUBPROCESO) {SynError (119,"Falta cerrar SUBPROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
+		else if (bucles.back()==IT_PROCESO) {SynError (119,"Falta cerrar ALGORITMO/PROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
+		else if (bucles.back()==IT_SUBPROCESO) {SynError (119,"Falta cerrar FUNCION/SUBPROCESO.",bucles.back().num_linea,bucles.back().num_instruccion); errores++;}
 		bucles.pop_back();
 	}
 }
@@ -593,7 +583,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (LeftCompare(cadena,"UNA TECLA ")) {
 					instruction_type=IT_ESPERARTECLA; cadena.erase(0,9);
 				} else if (first_word=="ESPERAR" && LeftCompare(cadena,"TECLA ")) {
-					instruction_type=IT_ESPERARTECLA; cadena.erase(0,7);
+					instruction_type=IT_ESPERARTECLA; cadena.erase(0,6);
 				} else
 					instruction_type=IT_ESPERAR;
 			} else if (first_word=="LIMPIARPANTALLA") {
@@ -922,14 +912,15 @@ int SynCheck(int linea_from, int linea_to) {
 			if (instruction_type==IT_ESPERAR){  // ------------ ESCRIBIR -----------//
 				if (cadena=="" || cadena==";") {SynError (217,"Faltan parámetros."); errores++;}
 				else {
-					if (RightCompare(cadena," SEGUNDOS;")) cadena.erase(cadena.size()-10);
-					else if (RightCompare(cadena," SEGUNDO;")) cadena.erase(cadena.size()-9);
-					else if (RightCompare(cadena," MILISEGUNDOS;")) cadena.erase(cadena.size()-14);
-					else if (RightCompare(cadena," MILISEGUNDO;")) cadena.erase(cadena.size()-13);
+					string args = cadena;
+					if (RightCompare(args," SEGUNDOS;")) args.erase(args.size()-10);
+					else if (RightCompare(args," SEGUNDO;")) args.erase(args.size()-9);
+					else if (RightCompare(args," MILISEGUNDOS;")) args.erase(args.size()-14);
+					else if (RightCompare(args," MILISEGUNDO;")) args.erase(args.size()-13);
 					else if (!ignore_logic_errors) {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
-					EvaluarSC(cadena,tipo,vt_numerica);
+					EvaluarSC(args,tipo,vt_numerica);
 					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
-						for (int tmp1=0;tmp1<(int)cadena.size();tmp1++) if (cadena[tmp1]==' ') {SynError (240,"Se esperaba una sola expresión."); errores++;}
+						for (int tmp1=0;tmp1<(int)args.size();tmp1++) if (args[tmp1]==' ') {SynError (240,"Se esperaba una sola expresión."); errores++;}
 					}
 				}
 			}

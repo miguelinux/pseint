@@ -30,8 +30,8 @@ struct Instruccion {
 	Instruccion(InstructionType _type, int _num_linea=-1, int _num_instruccion=-1)
 		:type(_type),instruccion(""),num_linea(_num_linea),num_instruccion(_num_instruccion){}
 	operator string() {return instruccion;}
-	bool operator==(const string &s) const { return instruccion==s; }
-	bool operator!=(const string &s) const { return instruccion!=s; }
+//	bool operator==(const string &s) const { return instruccion==s; }
+//	bool operator!=(const string &s) const { return instruccion!=s; }
 	bool operator==(InstructionType t) const { return type==t; }
 	bool operator!=(InstructionType t) const { return type!=t; }
 	string &operator=(const string &s) { return instruccion=s; }
@@ -96,7 +96,7 @@ public:
 		if (type==IT_LEER) return aux_type2str("LEER",args);
 		if (type==IT_ASIGNAR) return args;
 		if (type==IT_ESCRIBIR) return aux_type2str("ESCRIBIR",args);
-		if (type==IT_ESCRIBIRNL) return aux_type2str("ESCRIBIRNL",args);
+		if (type==IT_ESCRIBIRNL) return aux_type2str("ESCRIBNL",args);
 		if (type==IT_DIMENSION) return aux_type2str("DIMENSION",args);
 		if (type==IT_DEFINIR) return aux_type2str("DEFINIR",args);
 		if (type==IT_ESPERARTECLA) return aux_type2str("ESPERARTECLA",args);

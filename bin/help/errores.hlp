@@ -1,3 +1,6 @@
+0
+  Este error es un fallo en PSeInt, y no necesariamente de su algoritmo. Por favor, asegúrese de tener instalada la última versión disponible del intérprete, y si el problema persiste envíe el algoritmo que produce esta situación a zaskar_84@yahoo.com.ar para que pueda ser analizado y corregido.
+
 1
   La palabra clave ENTONCES debe colocarse a continuación de la condición de un SI separado por un espacio, o en la siguiente linea sin ninguna otra instrucción o expresión en medio.
   * Compruebe que la condición del SI anterior esté bien expresada.
