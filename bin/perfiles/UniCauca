@@ -1,5 +1,5 @@
 desc=Perfil para la Universidad del Cauca - Colombia (enviado por Erwin Meza Vega).
-version=20150304
+version=20160321
 force_init_vars=1
 force_define_vars=1
 force_semicolon=0
@@ -16,3 +16,5 @@ integer_only_switch=0
 deduce_negative_for_step=1
 use_nassi_shneiderman=0
 use_alternative_io_shapes=1
+prefer_funcion=1
+prefer_algoritmo=1

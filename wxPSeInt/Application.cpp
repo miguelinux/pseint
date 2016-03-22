@@ -82,11 +82,12 @@ bool mxApplication::OnInit() {
 		main_window = new mxMainWindow(wxPoint(config->pos_x,config->pos_y), wxSize(config->size_x,config->size_y));
 	main_window->Maximize(config->maximized);
 	main_window->Show(true);
-	if (logger || argc==1)
-		main_window->NewProgram();
-	else
+	if (logger || argc==1) {
+		if (config->profile!=NO_PROFILE) main_window->NewProgram();
+	} else {
 		for (int i=1;i<argc;i++)
 			main_window->OpenProgram(DIR_PLUS_FILE(cmd_path,argv[i]));
+	}
 	SetTopWindow(main_window);
 	wxYield();	
 	main_window->Refresh();
@@ -110,6 +111,7 @@ bool mxApplication::OnInit() {
 			),_Z("Bienvenido a PSeInt"),wxOK,main_window);
 		config->profile=_Z("Flexible");
 		new mxProfile(main_window);
+		main_window->NewProgram();
 	} else {
 		if (config->check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();
