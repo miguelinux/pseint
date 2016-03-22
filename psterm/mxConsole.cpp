@@ -8,6 +8,7 @@
 #include <wx/dataobj.h>
 #include "mxFrame.h"
 #include "mxConsole.h"
+#include "../wxPSeInt/string_conversions.h"
 using namespace std;
 
 enum { CONSOLE_ID_BASE=wxID_HIGHEST, CONSOLE_ID_TIMER_SIZE, CONSOLE_ID_TIMER_CARET, CONSOLE_ID_TIMER_PROCESS, CONSOLE_ID_POPUP_PASTE, CONSOLE_ID_POPUP_COPY, CONSOLE_ID_POPUP_STAY_ON_TOP, CONSOLE_ID_POPUP_CLOSE_AFTER_RUN, CONSOLE_ID_POPUP_RESET, CONSOLE_ID_POPUP_CHANGE_INPUT, CONSOLE_ID_POPUP_FROM_HERE };
@@ -179,9 +180,9 @@ void mxConsole::OnPaint (wxPaintEvent & event) {
 		dc.DrawText(wxString()<<"|",margin+cur_x*char_w-char_w/2,margin+cur_y*char_h);
 	}
 	wxString status[2]; // una variable por linea porque en windows el drawtext no hace el salto de linea
-	if (dimmed) { status[0]="El algoritmo fue modificado."; status[1]="Click aquí para aplicar los cambios."; }
-	else if (selection_is_input) { status[0]="Utilice doble click para"; status[1]="modificar solo esa lectura."; }
-	else if ( (want_input || wait_one_key) && cur_loc.IsValid()) status[1]<<"linea "<<cur_loc.line<<" instruccion "<<cur_loc.inst;
+	if (dimmed) { status[0]=_Z("El algoritmo fue modificado."); status[1]=_Z("Click aquí para aplicar los cambios."); }
+	else if (selection_is_input) { status[0]=_Z("Utilice doble click para"); status[1]=_Z("modificar solo esa lectura."); }
+	else if ( (want_input || wait_one_key) && cur_loc.IsValid()) status[1]<<_Z("línea ")<<cur_loc.line<<_Z(" instrucción ")<<cur_loc.inst;
 	if (status[1].Len()) {
 		wxColour &ct=colors[16][0];
 		wxColour &cb=colors[16][1];
@@ -211,7 +212,11 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 	if (the_process) {
 		if (!want_input || cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
-		char c=char(event.GetKeyCode());
+#ifdef WX3
+		wxChar c = event.GetUnicodeKey();
+#else 
+		char c = char(event.GetKeyCode());
+#endif
 		if (wait_one_key) {
 			if (c=='\r') c='\n';
 		 	wait_one_key=false;
@@ -226,7 +231,14 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 				return;
 			} else if (c=='\r'||c=='\n') { 
 				current_input<<"\n";
-				output->Write(current_input.c_str(),current_input.Len());
+#ifdef WX3
+				string val((const char*)(current_input.mb_str(wxCSConv("ISO-8859"))));
+				cerr << current_input << current_input.size()<<endl;
+				cerr << val << val.size()<<endl;
+				output->Write(val.c_str(),val.size());
+#else
+				output->Write(current_input,current_input.Len());
+#endif
 				RecordInput(current_input);
 				c='\n';
 			} else if (c=='\b') {
@@ -337,7 +349,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			} else if (input[i+2]=='z' && input[i+3]=='t') { // change window title
 				int j=i+4; while (j<int(input.Len()) && input[j]!='\n') j++;
 				wxString title=input.SubString(i+4,j-1); if (title.Last()=='\r') title.RemoveLast();
-				parent->SetTitle(wxString("PSeInt - Ejecutando proceso ")+title);
+				parent->SetTitle(_ZZ("PSeInt - Ejecutando proceso ")+title);
 				i=j;
 			} else if (input[i+2]=='z' && input[i+3]=='k') { // getKey
 				if (input_history_position>=int(input_history.size())) { 
@@ -620,19 +632,19 @@ static int popup_src_pos=-1;
 void mxConsole::OnMouseRightDown (wxMouseEvent & evt) {
 	popup_src_pos = auxGetPosition(evt,margin,char_w,char_h,buffer_w,buffer_h);
 	wxMenu menu;
-	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_POPUP_COPY,"&Copiar");
+	wxMenuItem *mcopy=menu.Append(CONSOLE_ID_POPUP_COPY,_Z("&Copiar"));
 	if (selection_end==-1) mcopy->Enable(false);
-	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_POPUP_PASTE,"&Pegar");
+	wxMenuItem *mpaste=menu.Append(CONSOLE_ID_POPUP_PASTE,_Z("&Pegar"));
 	if (!GetClipboardText().Len()) mpaste->Enable(false);
 	menu.AppendSeparator();
 //	menu.Append(CONSOLE_ID_POPUP_RESET,"Reiniciar ejecución");
 //	menu.Append(CONSOLE_ID_POPUP_FROM_HERE,"Continuar desde aquí");
 	if (popup_src_pos!=-1 && GetInputPositionFromBufferPosition(popup_src_pos)!=-1) {
-		menu.Append(CONSOLE_ID_POPUP_CHANGE_INPUT,"Cambiar valor ingresado");
+		menu.Append(CONSOLE_ID_POPUP_CHANGE_INPUT,_Z("Cambiar valor ingresado"));
 		menu.AppendSeparator();
 	}
-	menu.AppendCheckItem(CONSOLE_ID_POPUP_STAY_ON_TOP,"Ventana siempre visible")->Check(parent->GetStayOnTop());
-	menu.AppendCheckItem(CONSOLE_ID_POPUP_CLOSE_AFTER_RUN,"Cerrar al finalizar la ejecución")->Check(!parent->GetDoNotClose());
+	menu.AppendCheckItem(CONSOLE_ID_POPUP_STAY_ON_TOP,_Z("Ventana siempre visible"))->Check(parent->GetStayOnTop());
+	menu.AppendCheckItem(CONSOLE_ID_POPUP_CLOSE_AFTER_RUN,_Z("Cerrar al finalizar la ejecución"))->Check(!parent->GetDoNotClose());
 	PopupMenu(&menu);
 }
 

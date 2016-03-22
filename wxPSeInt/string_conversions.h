@@ -6,6 +6,7 @@
 #	define _Z(x) x
 #	define _ZZ(x) wxString(x)
 #	define _W2S(wxs) wxs.c_str()
+#	define _W2S_Len(wxs) wxs.Len()
 #	define _C(wxchar) wxchar
 #	define _wxEvtTimer_to_wxTimerPtr(evt) evt.GetEventObject()
 #	define _if_wx2(a) a
@@ -17,6 +18,7 @@
 #	define _Z(x) wxString::From8BitData(x)
 #	define _ZZ(x) wxString::From8BitData(x)
 #	define _W2S(wxstring) ((const char*)(wxstring.mb_str()))
+#	define _W2S_Len(wxstring) strlen((const char*)(wxstring.mb_str()))
 #	define _C(wxchar) ((wxchar).GetValue())
 #	define _wxEvtTimer_to_wxTimerPtr(evt) &(evt.GetTimer())
 #	define _if_wx2(a)
