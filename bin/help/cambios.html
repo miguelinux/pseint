@@ -2,15 +2,20 @@
 <UL>
 
 </UL><BR><BR><B>Release 201603xx</B><BR><UL>
-	<LI>(solo en la versión de prueba) Se agregó una opción en el submenú presentación para que los mensajes de los errores de sintaxis se intercalen en el código, en lugar de aparecer emergentes solo al posicionarse sobre el error.</LI>
-	<LI>(solo en la versión de prueba) Se pueden abrir pseudocódigos con codificaciones de caracteres diferentes a la iso-8859.</LI>
+	<LI>(solo en la versión de prueba wx3) Se agregó una opción en el submenú presentación para que los mensajes de los errores de sintaxis se intercalen en el código, en lugar de aparecer emergentes solo al posicionarse sobre el error.</LI>
+	<LI>(solo en la versión de prueba wx3) Se pueden abrir pseudocódigos con codificaciones de caracteres diferentes a la iso-8859.</LI>
 	<LI>Se agregaron las palabras clave Algoritmo, FinAlgoritmo, SubAlgoritmo y FinSubAlgoritmo como sinónimos de Proceso, FinProceso, SubProceso y FinSubProceso respectivamente.</LI>
+	<LI>Se permite especificar en el perfil la preferencia entre las palabras claves Proceso, Algoritmo y Función.</LI>
+	<LI>El editor de diagramas tiene en cuenta la preferencia entre las palabras claves Proceso, Algoritmo y Función al generar el pseugo-código.</LI>
 	<LI>Varios cambio internos en el código del análisis sintáctico del intérprete para mejorar mantenibilidad y eficiencia.</LI>
 	<LI>Corregidos algunos errores en el cierre automático de estructuras de control al escribir el pseudocódigo, y en el marcado de errores en tiempo real.</LI>
 	<LI>Corregido el problema por el cual la ayuda rápida de una palabra clave no mostraba el contenido correcto.</LI>
 	<LI>No se tienen en cuenta para señalar errores en tiempo real las instrucciones con campos (partes marcadas con recuadros) sin reemplazar.</LI>
-	<LI>Corregido el indentado automática de "Fin Según" cuando se escribe separado.</LI>
+	<LI>Corregido el indentado automático de "Fin Según" cuando se escribe separado.</LI>
+	<LI>Se agregó una opción en el perfil exclusivamente para la posibilidad de utilizar acentos y eñes en identificadores de funciones y variables (era parte de "sintaxis flexible").</LI>
+	<LI>Corregidos algunos problemas tanto en la interpretación como en la interfaz relacionados al uso de acentos en palabras claves.</LI>
 	<LI>Agregados los perfiles UContinental, UniCauca, COBAO, UMBVirtual e IVJRV.</LI>
+	<LI>Se modificó el módulo de interfaz principal (wxPSeint) para que pueda ser compilado con wxWidgets 3.x tanto en version Ansi como en Unicode (experimental).</LI>
 	
 </UL><BR><BR><B>Release 20160219</B><BR><UL>
 	<LI>Se agregaron íconos para los botones del panel de ejecución paso a paso.</LI>

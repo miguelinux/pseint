@@ -155,7 +155,12 @@ static void DrawMenuAndShapeBar() {
 		case MO_CROP_LABELS: SetStatus(color_selection,"Acortar textos muy largos en etiquetas."); break;
 		case MO_TOGGLE_COMMENTS: SetStatus(color_selection,"Mostrar/Ocultar comentarios."); break;
 		case MO_CHANGE_STYLE: SetStatus(color_selection,"Cambiar el tipo de diagrama (clásico, o Nassi-Shneiderman)."); break;
-		case MO_FUNCTIONS: SetStatus(color_selection,"Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente."); break;
+		case MO_FUNCTIONS: 
+			SetStatus(color_selection,
+					  lang[LS_PREFER_FUNCION] ? "Permite elegir cual función editar, crear una nueva o eliminar una existente."
+						: (lang[LS_PREFER_ALGORITMO] ? "Permite elegir cual subalgoritmo editar, crear uno nuevo o eliminar uno existente."
+							: "Permite elegir cual subproceso editar, crear uno nuevo o eliminar uno existente.") ); 
+			break;
 		case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
 		case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
 		case MO_EXPORT: SetStatus(color_selection,"Permite guardar el diagrama como imagen."); break;
@@ -205,7 +210,14 @@ static void DrawChooseProcess() {
 	
 	glLineWidth(1);
 	glClear(GL_COLOR_BUFFER_BIT); glLineWidth(menu_line_width);
-	DrawTextRaster(color_menu,10,win_h-25,"Seleccione un proceso/subproceso para visualizar:");
+	DrawTextRaster(color_menu,10,win_h-25,
+				   (lang[LS_PREFER_FUNCION]
+						? (lang[LS_PREFER_ALGORITMO]
+							? "Seleccione un algoritmo/funcion para visualizar:"
+							: "Seleccione un proceso/funcion para visualizar:")
+						: (lang[LS_PREFER_ALGORITMO]
+						   ? "Seleccione un proceso/subproceso para visualizar:"
+						   : "Seleccione un algoritmo/subalgoritmo para visualizar:") ) );
 	
 	int base=win_h-choose_process_d_base, delta=choose_process_d_delta;
 	glColor3fv(color_menu); 

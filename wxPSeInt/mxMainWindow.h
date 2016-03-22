@@ -37,6 +37,7 @@ private:
 	void CreateNotebook();
 	void CreateResultsTree();
 	void CreateQuickHelp();
+	void CreateButtonSubProceso(wxPanel *panel, wxSizer *sizer); ///< helper function for CreateCommandsPanel y ProfileChanged
 	void CreateCommandsPanel();
 	void CreateDebugControlsPanel();
 	void CreateStatusBar();

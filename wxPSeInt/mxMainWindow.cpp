@@ -407,8 +407,7 @@ void mxMainWindow::CreateCommandsPanel() {
 	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,"mientras.png",_Z("Mientras"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,"repetir.png",_Z("Repetir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,"para.png",_Z("Para"))->SetToolTip(tt);
-	(button_subproc=utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",_Z("SubProceso")))->SetToolTip(tt);
-	if (!config->lang[LS_ENABLE_USER_FUNCTIONS]) button_subproc->Hide();
+	button_subproc=NULL; CreateButtonSubProceso(panel,sizer);
 	panel->SetSizerAndFit(sizer);
 	
 	wxAuiPaneInfo info_helper,info_win;
@@ -1580,6 +1579,15 @@ void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	}
 }
 
+void mxMainWindow::CreateButtonSubProceso(wxPanel *panel, wxSizer *sizer){
+	if (button_subproc) { sizer->Detach(button_subproc); button_subproc->Destroy(); }
+	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
+		wxString but_label = config->lang[LS_PREFER_FUNCION]?_Z("Función"):(config->lang[LS_PREFER_ALGORITMO]?_Z("SubAlgoritmo"):_Z("SubProceso"));
+		button_subproc = utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",but_label);
+	} else 
+		button_subproc = NULL;
+}
+
 void mxMainWindow::ProfileChanged ( ) {
 	mxSource::SetAutocompletion();
 	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
@@ -1591,7 +1599,7 @@ void mxMainWindow::ProfileChanged ( ) {
 	debug_panel->ProfileChanged();
 	mi_nassi_shne->Check(config->lang[LS_USE_NASSI_SHNEIDERMAN]);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
-	button_subproc->Show(config->lang[LS_ENABLE_USER_FUNCTIONS]);
+	CreateButtonSubProceso(commands,commands->GetSizer());
 	commands->Layout();
 	opers_window->SetWordOperators();
 }
