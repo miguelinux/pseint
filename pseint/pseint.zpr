@@ -12,7 +12,6 @@ version_required=20131115
 custom_tabs=4
 tab_use_spaces=0
 explorer_path=
-current_source=SynCheck.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -31,7 +30,6 @@ marker=229
 marker=233
 marker=640
 marker=643
-open=true
 [source]
 path=Ejecutar.cpp
 cursor=165:18

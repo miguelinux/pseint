@@ -115,13 +115,8 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-"ARCHITECTURE);
 	fil.AddLine(wxString("version=")<<VERSION);
 	fil.AddLine(wxString("images_path=")<<images_path);
-//	fil.AddLine(wxString("pseint_command=")<<pseint_command);
-//	fil.AddLine(wxString("psterm_command=")<<psterm_command);
-//	fil.AddLine(wxString("psexport_command=")<<psexport_command);
-//	fil.AddLine(wxString("psdrawe_command=")<<psdrawe_command);
-//	fil.AddLine(wxString("psdraw3_command=")<<psdraw3_command);
 	if (tty_command!=_no_tty) fil.AddLine(wxString("terminal=")<<tty_command);
-	fil.AddLine(wxString("temp_dir=")<<temp_dir);
+	if (temp_dir!=home_dir) fil.AddLine(wxString("temp_dir=")<<temp_dir); // evitar rutas absolutas al home, parece que puede cambiar si se renombra el usuario o se migran configuraciones de uno a otro
 	fil.AddLine(wxString("last_dir=")<<last_dir);
 	fil.AddLine(wxString("help_dir=")<<help_dir);
 	fil.AddLine(wxString("proxy=")<<proxy);
@@ -239,6 +234,7 @@ void ConfigManager::Read() {
 	}
 	fil.Close();
 	if (!LoadProfile(profile)) lang.Fix();
+	if (version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
 }
