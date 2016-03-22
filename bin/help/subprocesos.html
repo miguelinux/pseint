@@ -7,15 +7,15 @@
 		<BR><BR>
 		&nbsp;&nbsp;&nbsp;Si el perfil de lenguaje seleccionado lo permite (ver <A href="perfiles.html">Opciones del Pseudocódigo</A>), se pueden declarar nuevas funciones o subprocesos en un algoritmo en Pseudocódigo. La sintaxis para ello es la siguiente:<BR><BR>
 		<CODE>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SubProceso variable_de_retorno &lt;- nombre_de_la_funcion ( argumento_1, argumento_2, ... )<BR>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Funcion variable_de_retorno &lt;- nombre_de_la_funcion ( argumento_1, argumento_2, ... )<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acción 1;<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acción 1;<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<BR>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acción n;<BR>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FinSubproceso</CODE><BR><BR>
-		&nbsp;&nbsp;&nbsp;Comienza con la palabra clave <i>SubProceso</i> (o <I>Función</I>, son equivalentes) seguida de la variable de retorno, el signo de asignación, el nombre del subproceso, y finalmente, la lista de argumentos entre paréntesis. Existen variantes para esta estructura. Si la función no retorna ningún valor, pueden omitirse el identificador variable_de_retorno y el signo de asignación, es decir, colocar directamente el nombre y los argumentos a continuación de la palabra clave <I>SubProceso</I>. Si el subproceso no recibe ningún valor pueden colocarse los paréntesis vacíos u omitirse, finalizando la primer línea con el nombre del subproceso. Las reglas para los nombres de subprocesos, variables de retorno y argumentos son las mismas que para cualquier identificador en pseudocódigo.<BR>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FinFuncion</CODE><BR><BR>
+		&nbsp;&nbsp;&nbsp;Comienza con la palabra clave <i>Funcion</I> (alternativamente puede utilizar<i>SubProceso</i> o <I>SubAlgoritmo</I>, son sinónimos) seguida de la variable de retorno, el signo de asignación, el nombre del subproceso, y finalmente, la lista de argumentos entre paréntesis. Existen variantes para esta estructura. Si la función no retorna ningún valor, pueden omitirse la variable de retorno y el signo de asignación. Es decir, se puede colocar directamente el nombre y los argumentos a continuación de la palabra clave <I>Funcion</I>. Si el subproceso no recibe ningún valor pueden colocarse los paréntesis vacíos u omitirse, finalizando la primer línea con el nombre del subproceso. Las reglas para los nombres de subprocesos, variables de retorno y argumentos son las mismas que para cualquier <A href="variables">identificador</A> en pseudocódigo.<BR>
 		<BR>
 		&nbsp;&nbsp;&nbsp;Además, opcionalmente pueden agregarse las palabras claves <I>Por Valor</I> o <I>Por Referencia</I> para indicar el tipo de pasaje en cada argumento. Si no se indica, los arreglos se pasan por referencia, las demás expresiones por valor. El pasaje por referencia implica que si la función modifica el argumento, se modificará en realidad la variable que se utilizó en la llamada, mientras que el pasaje por valor implica que la función opera con una copia de la variable (o el resultado de la expresión) que se utilizó en la llamada, por lo que las modificaciones que aplique la función no se verán reflejadas fuera de la misma.<BR>
 		<BR>
