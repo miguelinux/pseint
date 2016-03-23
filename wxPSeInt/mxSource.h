@@ -90,6 +90,7 @@ private:
 	bool MakeCompletionFromIdentifiers(wxString &output, int start_pos, const wxString &typed);
 public:
 	void OnCharAdded(wxStyledTextEvent &event);
+	void OnKeyDown(wxKeyEvent &evt);
 	void OnUserListSelection (wxStyledTextEvent &event);
 	void OnUpdateUI(wxStyledTextEvent &event);
 	void SetModify(bool);

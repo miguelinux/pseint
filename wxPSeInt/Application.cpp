@@ -22,10 +22,8 @@
 #include <wx/textfile.h>
 using namespace std;
 
-
-
 IMPLEMENT_APP(mxApplication)
-	
+
 wxSplashScreen *splash;
 
 bool mxApplication::OnInit() {

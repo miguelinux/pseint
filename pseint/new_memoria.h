@@ -291,7 +291,15 @@ public:
 		if (var_value.find(nombre)!=var_value.end()) var_value.erase(var_value.find(nombre));
 	}
 #endif
+	~Memoria() {
+		for(map<string,tipo_var>::iterator it1=var_info.begin(), it2=var_info.end();it1!=it2;++it1)
+			if (it1->second.dims && var_alias.count(it1->first)==0)
+				delete [] it1->second.dims;
+	}
 	
+private:
+	Memoria(const Memoria &); // forbidden
+	Memoria &operator=(const Memoria &);  // forbidden
 };
 
 extern Memoria *memoria;

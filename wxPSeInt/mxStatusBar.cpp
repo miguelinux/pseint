@@ -94,7 +94,7 @@ void mxStatusBar::OnClick (wxMouseEvent & event) {
 
 void mxStatusBar::SetStatus (int what) {
 	if (what==STATUS_NEW_SOURCE && status<STATUS_NEW_SOURCE) return;
-	else if (what==STATUS_SYNTAX_ERROR && main_window->IsQuickHelpVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
+	else if (what==STATUS_SYNTAX_ERROR && main_window->QuickHelp().IsVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
 	status=what;
 	Refresh();
 }

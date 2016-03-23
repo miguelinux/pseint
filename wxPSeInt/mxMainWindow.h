@@ -15,16 +15,42 @@ class wxScrollBar;
 class mxDesktopTestPanel;
 class mxTestPanel;
 
-enum QH_CODE { QH_LASTERR=10000, QH_QUICKHELP, QH_HELP_LOAD, QH_HELP_SET, QH_SYNCHECK, QH_RT_NOERROR, QH_RT_SELECTERROR, QH_LINK_SELECTERROR, QH_NULL };
-
 class mxMainWindow : public wxFrame {
+	
+public:
+	
+	class QuickHelpPanelPolicy {
+		friend class mxMainWindow;
+		enum QUICKHELP_MODE { 
+			QHM_RT_RESULT, // iarg=as bool (1/0)
+			QHM_RT_ERROR, // iargs=error num
+			QHM_HELP,  // help _PAGE/_TEXT
+			QHM_OUTPUT, // error list, or runtime error
+			QHM_NULL 
+		} m_mode;
+		int m_last_code;
+		mxHtmlWindow *m_ctrl;
+		bool m_visible;
+	public:
+		QuickHelpPanelPolicy() : m_mode(QHM_NULL), m_visible(false), m_ctrl(NULL), m_last_code(-1) {}
+		void ShowRTResult(bool errors, bool force=false);
+		void ShowRTError(int code, wxString msg, bool force=false);
+		void ShowHelpPage(wxString help_file);
+		void ShowHelpText(wxString html_text);
+		void ShowOutput(wxString html_text);
+		void HideOutput();
+		void Hide();
+		bool IsVisible() const { return m_visible; }
+		void EnsureVisible();
+	} m_quick_help;
+	QuickHelpPanelPolicy &QuickHelp() { return m_quick_help; }
+	
 private:
 	friend class DebugManager;
 	mxFindDialog *find_replace_dialog;
 	friend class mxSource; // para el page_text
 	friend class mxProcess;
 	friend class mxFindDialog;
-	mxHtmlWindow *quick_html;
 	int last_proc;
 	wxAuiManager aui_manager;
 	wxToolBar *toolbar;
@@ -126,11 +152,10 @@ public:
 	wxMenu *file_menu;
 	wxMenuItem *file_history[5];
 	
-	void SetQuickHelpText(int code, const wxString &argument=wxEmptyString, bool force_error=false); ///< carga un texto en el panel de ayuda rapida (evita recargar nuevamente el mismo si se llama varias veces con el mismo contenido)
 	void OnClose(wxCloseEvent &evt);
 	void OnSelectError(wxTreeEvent &evt);
 	void SelectError(wxString text);
-	void HideQuickHelp();
+//	void HideQuickHelp();
 
 	void OnCmdEscribir(wxCommandEvent &evt);
 	void OnCmdLeer(wxCommandEvent &evt);
@@ -181,7 +206,7 @@ public:
 	void ShowDebugPanel(bool show, bool anim=false);
 	void ShowCommandsPanel(bool show, bool anim=false);
 	void ShowResults(bool show, bool no_error);
-	void ShowQuickHelp(bool show, const wxString &text="", int mode = QH_HELP_SET);
+	void ShowQuickHelp(bool show);
 	void ShowSubtitles(bool show, bool anim=false);
 	void ShowDesktopTestPanel(bool show, bool anim=false);
 	
@@ -190,8 +215,6 @@ public:
 	void RunCurrent(bool raise, bool from_psdraw=false); // ejecuta o re-ejecuta el source actual (si ya estaba corriendo en un psterm, raise indica si debe pasar al frente esa ventana)
 	
 	void ReorganizeForDebugging();
-	
-	bool IsQuickHelpVisible();
 	
 	// para los paneles laterales
 	void ShowPanel(wxString helper, wxWindow *panel, bool anim=true);

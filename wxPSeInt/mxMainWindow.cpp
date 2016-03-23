@@ -177,7 +177,9 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_KILL_FOCUS(mxMainWindow::OnKillFocus)
 END_EVENT_TABLE()
 
-mxMainWindow::mxMainWindow(wxPoint pos, wxSize size) : wxFrame(NULL, wxID_ANY, "PSeInt", pos, size, wxDEFAULT_FRAME_STYLE) {
+mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
+	: wxFrame(NULL, wxID_ANY, "PSeInt", pos, size, wxDEFAULT_FRAME_STYLE)
+{
 
 	wxTheColourDatabase->AddColour("Z LIGHT GRAY",wxColour(240,240,240));
 	wxTheColourDatabase->AddColour("Z LIGHT BLUE",wxColour(240,240,255));
@@ -510,9 +512,8 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		CloseTestPackage();
 		aui_manager.Update(); 
 	} else {
-		SetQuickHelpText(QH_NULL);
-		if (!test_panel->GetHelp().IsEmpty()) 
-			ShowQuickHelp(true,test_panel->GetHelp(),QH_HELP_SET);
+		if (!test_panel->GetHelp().IsEmpty())
+			QuickHelp().ShowHelpText(test_panel->GetHelp());
 	}
 	return src;
 }
@@ -854,21 +855,21 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 		cout << *p;
 	}
 	// mostrar panel y cargar ayuda
-	if (key.Len()) ShowQuickHelp(true,help->GetQuickHelp(key),QH_HELP_LOAD);
+	if (key.Len()) QuickHelp().ShowHelpPage(help->GetQuickHelp(key));
 }
 
 
-void mxMainWindow::HideQuickHelp() {
-	if (aui_manager.GetPane(quick_html).IsShown()) {
-		aui_manager.GetPane(quick_html).Hide();
-		aui_manager.Update();
-	} 
-}
+//void mxMainWindow::HideQuickHelp() {
+//	if (aui_manager.GetPane(m_quick_help.m_ctrl).IsShown()) {
+//		aui_manager.GetPane(quick_html).Hide();
+//		aui_manager.Update();
+//	} 
+//}
 
 void mxMainWindow::CreateQuickHelp() {
-	quick_html = new mxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
-	quick_html->SetPage(wxString(_Z("PSeInt "))<<VERSION);
-	aui_manager.AddPane(quick_html, wxAuiPaneInfo().Name("quick_html").Caption(_Z("Ayuda Rápida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
+	m_quick_help.m_ctrl = new mxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
+	m_quick_help.m_ctrl->SetPage(wxString(_Z("PSeInt "))<<VERSION);
+	aui_manager.AddPane(m_quick_help.m_ctrl, wxAuiPaneInfo().Name("quick_html").Caption(_Z("Ayuda Rápida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }
 
 void mxMainWindow::SelectError(wxString text) {
@@ -893,7 +894,7 @@ void mxMainWindow::SelectError(wxString text) {
 		long e=0;
 		text.Mid(7).ToLong(&e);
 		if (config->auto_quickhelp) 
-			ShowQuickHelp(true,help->GetErrorText(text,e),QH_LINK_SELECTERROR);
+			QuickHelp().ShowOutput(help->GetErrorText(text,e));
 	}
 }
 
@@ -905,7 +906,7 @@ void mxMainWindow::OnSelectError(wxTreeEvent &evt) {
 
 void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("ASIGNAR"));
+		QuickHelp().ShowHelpText(help->GetCommandText("ASIGNAR"));
 	wxArrayString toins;
 	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("{variable}<-{expresion};");
@@ -916,7 +917,7 @@ void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("LEER"));
+		QuickHelp().ShowHelpText(help->GetCommandText("LEER"));
 	wxArrayString toins;
 	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("Leer {lista_de_variables};");
@@ -927,7 +928,7 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("ESCRIBIR"));
+		QuickHelp().ShowHelpText(help->GetCommandText("ESCRIBIR"));
 	wxArrayString toins;
 	if (config->lang[LS_FORCE_SEMICOLON])
 		toins.Add("Escribir {lista_de_expresiones};");
@@ -938,7 +939,7 @@ void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("MIENTRAS"));
+		QuickHelp().ShowHelpText(help->GetCommandText("MIENTRAS"));
 	wxArrayString toins;
 	toins.Add("Mientras {expresion_logica} Hacer");
 	toins.Add("\t{secuencia_de_acciones}");
@@ -948,7 +949,7 @@ void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("REPETIR"));
+		QuickHelp().ShowHelpText(help->GetCommandText("REPETIR"));
 	wxArrayString toins;
 	toins.Add("Repetir");
 	toins.Add("\t{secuencia_de_acciones}");
@@ -958,7 +959,7 @@ void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("PARA"));
+		QuickHelp().ShowHelpText(help->GetCommandText("PARA"));
 	wxArrayString toins;
 	toins.Add("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer");
 	toins.Add("\t{secuencia_de_acciones}");
@@ -968,7 +969,7 @@ void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("SUBPROCESO"));
+		QuickHelp().ShowHelpText(help->GetCommandText("SUBPROCESO"));
 	wxArrayString toins;
 	if (config->lang[LS_PREFER_FUNCION]) {
 		toins.Add("Funcion {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
@@ -994,7 +995,7 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("SI"));
+		QuickHelp().ShowHelpText(help->GetCommandText("SI"));
 	wxArrayString toins;
 	toins.Add("Si {expresion_logica} Entonces");
 	toins.Add("\t{acciones_por_verdadero}");
@@ -1006,7 +1007,7 @@ void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSegun(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
-		ShowQuickHelp(true,help->GetCommandText("SEGUN"));
+		QuickHelp().ShowHelpText(help->GetCommandText("SEGUN"));
 	wxArrayString toins;
 	toins.Add("Segun {variable_numerica} Hacer");
 	toins.Add("\t{opcion_1}:");
@@ -1661,25 +1662,22 @@ void mxMainWindow::ShowSubtitles(bool show, bool anim) {
 }
 
 void mxMainWindow::ShowResults(bool show, bool no_error) {
-//	if (_avoid_results_tree) { ShowQuickHelp(show); return; }
 	if (show) {
 		results_tree_ctrl->ExpandAll();
-		if (no_error) HidePanel(quick_html,false);
-		ShowPanel(results_tree_ctrl,!aui_manager.GetPane(quick_html).IsShown());
+		if (no_error) HidePanel(m_quick_help.m_ctrl,false);
+		ShowPanel(results_tree_ctrl,!aui_manager.GetPane(m_quick_help.m_ctrl).IsShown());
 	} else 
-		HidePanel(results_tree_ctrl,!aui_manager.GetPane(quick_html).IsShown());
+		HidePanel(results_tree_ctrl,!aui_manager.GetPane(m_quick_help.m_ctrl).IsShown());
 }
 
-// show=false, oculta
-// show=true muestra el panel
-// show=true, text!="" muestra el panel con ese texto(str)
-// show=true, text!="", load=true muestra el panel y carga ese archivo(str)
-void mxMainWindow::ShowQuickHelp(bool show, const wxString &str, int mode) {
+void mxMainWindow::ShowQuickHelp(bool show) {
+	m_quick_help.m_visible = show;
 	if (show) {
-		if (str.Len()) SetQuickHelpText(mode,str);
-		ShowPanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
-	} else 
-		HidePanel(quick_html,!aui_manager.GetPane(results_tree_ctrl).IsShown());
+		ShowPanel(m_quick_help.m_ctrl,!aui_manager.GetPane(results_tree_ctrl).IsShown());
+	} else {
+		HidePanel(m_quick_help.m_ctrl,!aui_manager.GetPane(results_tree_ctrl).IsShown());
+		m_quick_help.m_mode = QuickHelpPanelPolicy::QHM_NULL;
+	}
 }
 
 void mxMainWindow::ShowDesktopTestPanel(bool show, bool anim) {
@@ -1885,6 +1883,7 @@ void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 	pi.Resizable(); 
 	aui_manager.Update(); 
 	pi.MinSize(_min_size,final_h/2);
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus();
 }
 
 void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
@@ -1908,10 +1907,6 @@ void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {
 	}
 	pi.Hide(); 
 	aui_manager.Update(); 
-}
-
-bool mxMainWindow::IsQuickHelpVisible ( ) {
-	return aui_manager.GetPane(quick_html).IsShown();
 }
 
 void mxMainWindow::RTreeReset ( ) {
@@ -1969,66 +1964,62 @@ void mxMainWindow::RTreeDone (bool show, bool error) {
 	result_tree_done=true;
 	if (_avoid_results_tree) {
 		if (show) {
-			ShowQuickHelp(true); 
 			if (results_tree_errors.GetCount()==1) {
 				SelectError(results_tree_errors[0]);
 			} else if (results_tree_text.Len()) {
-				SetQuickHelpText(QH_SYNCHECK);
+				QuickHelp().ShowOutput(results_tree_text);
 			}
-		}
+		} else 
+			QuickHelp().HideOutput();
 	} else {
 		ShowResults(show,!error);
 		SelectFirstError();
 	}
 }
 
-/**
-* @param code 		Indica el texto a mostrar, si es un codigo de error de pseint, muestra la
-*             		ayuda rapida de ese error, sino es alguna de las constantes del enum QH_CODE.
-* @param argument	Si se requieren argumentos (donde esta el error, que archivo de ayuda, 
-*              		etc, van en el segundo parametro)
-**/
-void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool force_error) {
-#define _set_quick_help_check_code if (last_code==code) return; last_code=code
-#define _set_quick_help_check_both if (last_code==code && last_argument==argument) return; last_code=code; last_argument=argument
-	static int last_code = QH_NULL;
-	static wxString last_argument;
-	if (code<QH_LASTERR) {
-		if (force_error || (last_code<QH_LASTERR || last_code==QH_RT_NOERROR || last_code==QH_RT_SELECTERROR || last_code==QH_NULL)) { // no pisar ayudas pedidas por el usuario
-			_set_quick_help_check_both;
-			quick_html->SetPage(help->GetErrorText(argument,code));
-		}
-	} else {
-		switch (code) {
-		case QH_HELP_LOAD:
-			_set_quick_help_check_both;
-			quick_html->LoadPage(argument); 
-			break;
-		case QH_HELP_SET:
-			_set_quick_help_check_both;
-			quick_html->SetPage(argument);
-			break;
-		case QH_SYNCHECK:
-			_set_quick_help_check_code;
-			quick_html->SetPage(results_tree_text);
-			break;
-		case QH_RT_NOERROR:
-			if (last_code>=QH_LASTERR && last_code!=QH_RT_SELECTERROR) return; // no reemplazar si no era un mensaje de error
-			_set_quick_help_check_code;
-			quick_html->SetPage(_Z("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo."));
-			break;
-		case QH_LINK_SELECTERROR:
-			code = QH_RT_SELECTERROR; last_code=QH_RT_NOERROR;
-		case QH_RT_SELECTERROR:
-			if (last_code>=QH_LASTERR && last_code!=QH_RT_NOERROR) return; // no reemplazar si no era un mensaje de error
-			_set_quick_help_check_code;
-			quick_html->SetPage(_Z("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles."));
-			break;
-		default:
-			last_code=code; // solo debería pasar para QH_NULL
-		}
-	}
-}
+// /**
+//* @param code 		Indica el texto a mostrar, si es un codigo de error de pseint, muestra la
+//*             		ayuda rapida de ese error, sino es alguna de las constantes del enum QH_CODE.
+//* @param argument	Si se requieren argumentos (donde esta el error, que archivo de ayuda, 
+//*              		etc, van en el segundo parametro)
+//**/
+//void mxMainWindow::SetQuickHelpText (int code, const wxString &argument, bool force_error) {
+//#define _set_quick_help_check_code if (last_code==code) return; last_code=code
+//#define _set_quick_help_check_both if (last_code==code && last_argument==argument) return; last_code=code; last_argument=argument
+//	static int last_code = QH_NULL;
+//	static wxString last_argument;
+//	if (code<QH_LASTERR) {
+//		if (force_error || (last_code<QH_LASTERR || last_code==QH_RT_NOERROR || last_code==QH_RT_SELECTERROR || last_code==QH_NULL)) { // no pisar ayudas pedidas por el usuario
+//			_set_quick_help_check_both;
+//			quick_html->SetPage(help->GetErrorText(argument,code));
+//		}
+//	} else {
+//		switch (code) {
+//		case QH_HELP_LOAD:
+//			_set_quick_help_check_both;
+//			quick_html->LoadPage(argument); 
+//			break;
+//		case QH_HELP_SET:
+//			_set_quick_help_check_both;
+//			quick_html->SetPage(argument);
+//			break;
+//		case QH_RT_NOERROR:
+//			if (last_code>=QH_LASTERR && last_code!=QH_RT_SELECTERROR) return; // no reemplazar si no era un mensaje de error
+//			_set_quick_help_check_code;
+//			quick_html->SetPage(_Z("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo."));
+//			break;
+//		case QH_LINK_SELECTERROR:
+//			code = QH_RT_SELECTERROR; last_code=QH_RT_NOERROR;
+//		case QH_RT_SELECTERROR:
+//			if (last_code>=QH_LASTERR && last_code!=QH_RT_NOERROR) return; // no reemplazar si no era un mensaje de error
+//			_set_quick_help_check_code;
+//			quick_html->SetPage(_Z("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles."));
+//			break;
+//		default:
+//			last_code=code; // solo debería pasar para QH_NULL
+//		}
+//	}
+//}
 
 void mxMainWindow::OnKillFocus (wxFocusEvent &event) {
 	_LOG("mxMainWindow::OnKillFocus");
@@ -2065,6 +2056,50 @@ void mxMainWindow::OnInconInstaller (wxCommandEvent & evt) {
 void mxMainWindow::OnSourceClose (mxSource * src) {
 	if (last_source==src) src=NULL;
 	if (test_panel && test_panel->GetSrc()==src) {
-		CloseTestPackage(); aui_manager.Update(); HideQuickHelp(); 
+		CloseTestPackage(); aui_manager.Update(); 
+		main_window->ShowQuickHelp(false); 
 	}
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowRTResult (bool errors, bool force) {
+	if ( (!m_visible || (m_mode!=QHM_RT_ERROR && m_mode!=QHM_RT_RESULT) ) && !force) return;
+	if (m_mode==QHM_RT_RESULT && errors==(m_last_code!=0)) return;
+	m_mode = QHM_RT_RESULT; m_last_code = errors?1:0;
+	if (errors) 
+		m_ctrl->SetPage(_Z("La sintaxis no es correcta. Haga click sobre los errores señalados en el pseudocódigo para más detalles."));
+	else
+		m_ctrl->SetPage(_Z("La sintaxis es correcta. Puede presionar F9 para ejecutar el algoritmo."));
+	EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowHelpPage (wxString help_file) {
+	m_mode = QHM_HELP; m_ctrl->LoadPage(help_file); EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowHelpText (wxString html_text) {
+	m_mode = QHM_HELP; m_ctrl->SetPage(html_text); EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowOutput (wxString html_text) {
+	m_mode = QHM_OUTPUT; m_ctrl->SetPage(html_text); EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::HideOutput() {
+	if (m_mode==QHM_OUTPUT) Hide();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::Hide ( ) {
+	if (m_visible) main_window->ShowQuickHelp(false);
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::EnsureVisible ( ) {
+	if (!m_visible) main_window->ShowQuickHelp(true);
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowRTError (int code, wxString msg, bool force) {
+	if ( (!m_visible || (m_mode!=QHM_RT_ERROR && m_mode!=QHM_RT_RESULT) ) && !force) return;
+	if (m_mode==QHM_RT_ERROR && m_last_code==code) return;
+	m_mode = QHM_RT_ERROR; m_last_code = code;
+	msg = wxString("Error ")<<code<<": "<<(msg.Contains("\n")?msg.BeforeFirst('\n'):msg);
+	m_ctrl->SetPage(help->GetErrorText(msg,code)); EnsureVisible();
 }

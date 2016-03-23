@@ -80,6 +80,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
+	EVT_KEY_DOWN(mxSource::OnKeyDown)
 	EVT_STC_USERLISTSELECTION (wxID_ANY, mxSource::OnUserListSelection)
 	EVT_STC_ROMODIFYATTEMPT (wxID_ANY, mxSource::OnModifyOnRO)
 	EVT_STC_DWELLSTART (wxID_ANY, mxSource::OnToolTipTime)
@@ -1410,12 +1411,11 @@ void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
 		CallTipShow(pos,l);
 	}
 	// si era un error y está el panel de ayuda rápida muestra también la descripción larga
-	if (!is_error || !main_window->aui_manager.GetPane((wxHtmlWindow*)main_window->quick_html).IsShown()) return;
+	if (!is_error || !main_window->QuickHelp().IsVisible()) return;
 	int il=LineFromPosition(pos);
 	if (il<0||il>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[il];
-	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
-	main_window->SetQuickHelpText(e.n,msg);
+	if (e.is) main_window->QuickHelp().ShowRTError(e.n,e.s);
 }
 
 void mxSource::ShowRealTimeError (int pos, const wxString & l) {
@@ -1425,7 +1425,7 @@ void mxSource::ShowRealTimeError (int pos, const wxString & l) {
 void mxSource::HideCalltip (bool if_is_error, bool if_is_not_error) {
 	if (current_calltip.is_error && if_is_error) {
 		CallTipCancel();
-		main_window->SetQuickHelpText(rt_errors.empty()?QH_RT_NOERROR:QH_RT_SELECTERROR);
+		main_window->QuickHelp().ShowRTResult(!rt_errors.empty());
 		
 	} else if (!current_calltip.is_error && if_is_not_error) CallTipCancel();
 }
@@ -1694,9 +1694,7 @@ void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
 	int l=LineFromPosition(current_calltip.pos);
 	if (l<0||l>int(rt_errors.size())) return;
 	rt_err &e=rt_errors[l];
-	wxString msg=wxString("Error ")<<e.n<<": "<<(e.s.Contains("\n")?e.s.BeforeFirst('\n'):e.s);
-	main_window->ShowQuickHelp(true);
-	main_window->SetQuickHelpText(e.n,msg,true);
+	if (e.is) main_window->QuickHelp().ShowRTError(e.n,e.s,true);
 }
 
 void mxSource::ProfileChanged ( ) {
@@ -1718,6 +1716,7 @@ void mxSource::RTOuputStarts ( ) {
 
 void mxSource::RTOuputEnds ( ) {
 	if (config->rt_syntax) ClearErrorMarks();
+	main_window->QuickHelp().ShowRTResult(!rt_errors.empty());
 	SetStatus(); // para que diga en la barra de estado si hay o no errores
 }
 
@@ -1735,13 +1734,9 @@ void mxSource::ClearErrorMarks ( ) {
 void mxSource::OnMarginClick (wxStyledTextEvent & event) {
 	event.Skip();
 	int l = LineFromPosition(event.GetPosition());
-	int p = PositionFromLine(l), pl=GetLineEndPosition(l);
-	int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
-	while ( p<pl && !(indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) ) p++;
-	if (p<pl) {
-		main_window->ShowQuickHelp(true);
-		main_window->SetQuickHelpText(QH_NULL); // para que muestre la ayuda rapida..
-		GotoPos(p); 
+	if (l<rt_errors.size()) {
+		rt_err &e = rt_errors[l];
+		if (e.is) main_window->QuickHelp().ShowRTError(e.n,e.s,true);
 	}
 }
 
@@ -1997,4 +1992,11 @@ bool mxSource::SaveFile (const wxString & fname) {
 	} else 
 #endif
 		return wxStyledTextCtrl::SaveFile(fname);
+}
+
+void mxSource::OnKeyDown(wxKeyEvent &evt) {
+	if (evt.GetKeyCode()==WXK_ESCAPE) {
+		if (CallTipActive()) HideCalltip();
+		else main_window->QuickHelp().Hide();
+	} else evt.Skip();
 }

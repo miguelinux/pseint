@@ -59,7 +59,7 @@ void mxTestPanel::OnRun (wxCommandEvent & event) {
 }
 
 void mxTestPanel::OnHelp (wxCommandEvent & event) {
-	main_window->ShowQuickHelp(true,GetHelp(),false);
+	main_window->QuickHelp().ShowHelpText(GetHelp());
 }
 
 
