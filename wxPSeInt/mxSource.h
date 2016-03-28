@@ -86,8 +86,8 @@ public:
 	void OnCalltipClick(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
 private:
-	bool MakeCompletionFromKeywords(wxString &output, int start_pos, const wxString &typed);
-	bool MakeCompletionFromIdentifiers(wxString &output, int start_pos, const wxString &typed);
+	void MakeCompletionFromKeywords(wxArrayString &output, int start_pos, const wxString &typed);
+	void MakeCompletionFromIdentifiers(wxArrayString &output, int start_pos, const wxString &typed);
 public:
 	void OnCharAdded(wxStyledTextEvent &event);
 	void OnKeyDown(wxKeyEvent &evt);
@@ -220,7 +220,7 @@ public:
 	bool LoadFile(const wxString &fname);
 	bool SaveFile(const wxString &fname);
 	
-	void ShowUserList(wxString &list, int p1, int p2);
+	void ShowUserList(wxArrayString &arr, int p1, int p2);
 	
 	er_source_register *er_register;
 	

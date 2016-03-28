@@ -453,10 +453,9 @@ void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 	SetSelection (0, GetTextLength ());
 }
 
-bool mxSource::MakeCompletionFromKeywords(wxString &output, int start_pos, const wxString &typed) {
+void mxSource::MakeCompletionFromKeywords(wxArrayString &output, int start_pos, const wxString &typed) {
 	int l = typed.Len();
 	wxString instruccion = GetInstruction(start_pos);
-	bool show = false;
 	for (int j,i=0;i<comp_count;i++) {
 		if (comp_list[i].instruction=="*") {
 			if (instruccion=="") continue;
@@ -467,16 +466,12 @@ bool mxSource::MakeCompletionFromKeywords(wxString &output, int start_pos, const
 			if (typed[j]!=wxTolower(comp_list[i].label[j]))
 				break;
 		if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
-			show=true;
-			if (!output.IsEmpty()) output<<"|";
-			output<<comp_list[i];
+			output.Add(comp_list[i]);
 		}
 	}
-	return show;
 }
 
-bool mxSource::MakeCompletionFromIdentifiers(wxString &output, int start_pos, const wxString &typed) {
-	bool show = false;
+void mxSource::MakeCompletionFromIdentifiers(wxArrayString &output, int start_pos, const wxString &typed) {
 	wxArrayString &vars = vars_window->all_vars;
 	int l=typed.Len(), j;
 	for(unsigned int i=0;i<vars.GetCount();i++) { 
@@ -484,12 +479,9 @@ bool mxSource::MakeCompletionFromIdentifiers(wxString &output, int start_pos, co
 			if (typed[j]!=wxTolower(vars[i][j]))
 				break;
 		if (j==l) {
-			show=true;
-			if (!output.IsEmpty()) output<<"|";
-			output<<vars[i];
+			output.Add(vars[i]);
 		}
 	}
-	return show;
 }
 
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
@@ -517,16 +509,13 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		int p2=comp_to=GetCurrentPos(), s=GetStyleAt(p2-2);
 		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
 		int p1=comp_from=WordStartPosition(p2-1,true);
-		wxString st=GetTextRange(p1,p2).Lower(), res; st[0]=toupper(st[0]);
+		wxString st=GetTextRange(p1,p2).Lower(); st[0]=toupper(st[0]);
+		wxArrayString res;
 		for (int i=0;i<comp_count;i++) {
-			if (comp_list[i].label.StartsWith(st)) {
-				if (res.Len())
-					res<<"|"<<comp_list[i];
-				else
-					res=comp_list[i];
-			}
+			if (comp_list[i].label.StartsWith(st))
+				res.Add(comp_list[i]);
 		}
-		if (res.Len()) ShowUserList(res,p1,p2);
+		if (!res.IsEmpty()) ShowUserList(res,p1,p2);
 	} else if ( EsLetra(chr,true) && config->autocomp) 
 	{
 		int p2=comp_to=GetCurrentPos();
@@ -536,10 +525,10 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (p2-p1>2 && EsLetra(GetCharAt(p1),false)) {
 			wxString str = GetTextRange(p1,p2);
 			str.MakeLower();
-			wxString res;
-			bool show = MakeCompletionFromKeywords(res,p1,str);
-			show |= MakeCompletionFromIdentifiers(res,p1,str);
-			if (show) ShowUserList(res,p1,p2);
+			wxArrayString res;
+			MakeCompletionFromKeywords(res,p1,str);
+			MakeCompletionFromIdentifiers(res,p1,str);
+			if (!res.IsEmpty()) ShowUserList(res,p1,p2);
 		}
 	} else if (chr==';' && GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRINGEOL) HideCalltip(false,true);
 	if (config->calltip_helps && (chr==' ' || chr=='\n' || chr=='\t' || chr=='\r')) {
@@ -2002,23 +1991,16 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 	} else evt.Skip();
 }
 
-void mxSource::ShowUserList (wxString &list, int p1, int p2) {
-	// reordenar la lista de palabras... hay que separarlas, ordenar, y juntarlas otra vez
-	wxArrayString arr;
-	for (int pb=0, pi=0, pe=list.Len();pb<=pe;++pi) {
-		if (pi==pe||list[pi]=='|') {
-			arr.Add(list.SubString(pb,pi));
-			pb=pi+1;
-		}
-	}
-	list.Clear();
+void mxSource::ShowUserList (wxArrayString &arr, int p1, int p2) {
+	// reordenar la lista de palabras... el "desorden" viene de mezclar los menues de identificadores y de palabras clave
 	arr.Sort();
+	wxString res;
 	for(unsigned int i=0;i<arr.GetCount();i++) { 
-		if (i) list<<'|'; 
-		list<<arr[i];
+		if (i) res<<'|'; 
+		res<<arr[i];
 	}
 	SetCurrentPos(p1);
-	UserListShow(1,list);
+	UserListShow(1,res);
 	SetCurrentPos(p2);
 }
 
