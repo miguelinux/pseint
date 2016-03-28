@@ -150,7 +150,8 @@ public:
 	wxString GetCurrentKeyword (int pos=-1); // auxiliar para OnPopupMenu y otros
 	void OnPopupMenu(wxMouseEvent &evt);
 	
-	void AddToDesktopTest(wxCommandEvent &evt);
+	void AddOneToDesktopTest(wxCommandEvent &evt);
+//	void AddAllToDesktopTest(wxCommandEvent &evt);
 	void OnDefineVar(wxCommandEvent &evt);
 	void OnAddVarDefinition(int line, const wxString &vname);
 	

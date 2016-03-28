@@ -100,7 +100,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 //	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_MENU (mxID_VARS_DEFINIR, mxSource::OnDefineVar)
-	EVT_MENU (mxID_VARS_ADD_TO_DESKTOP_TEST, mxSource::AddToDesktopTest)
+	EVT_MENU (mxID_VARS_ADD_ONE_TO_DESKTOP_TEST, mxSource::AddOneToDesktopTest)
+//	EVT_MENU (mxID_VARS_ADD_ALL_TO_DESKTOP_TEST, mxSource::AddAllToDesktopTest)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
 	EVT_STC_MARGINCLICK (wxID_ANY, mxSource::OnMarginClick)
@@ -1789,9 +1790,13 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
 	
-	if (key.Len()!=0 && s==wxSTC_C_IDENTIFIER && !IsProcOrSub(GetCurrentLine())) {
-		menu.Append(mxID_VARS_DEFINIR,_ZZ("Definir variable \"")+key+_Z("\""));
-		menu.Append(mxID_VARS_ADD_TO_DESKTOP_TEST,_ZZ("Agregar variable \"")+key+_Z("\" a la prueba de escritorio"));
+	if (key.Len()!=0 && s==wxSTC_C_IDENTIFIER) {
+		if (IsProcOrSub(GetCurrentLine())) {
+//			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_ZZ("Agregar todas las variables a la prueba de escritorio"));
+		} else {
+			menu.Append(mxID_VARS_DEFINIR,_ZZ("Definir variable \"")+key+_Z("\""));
+			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_ZZ("Agregar variable \"")+key+_Z("\" a la prueba de escritorio"));
+		}
 	}
 	if (key.Len()!=0 && help->GetQuickHelp(key,"").Len())
 		menu.Append(mxID_HELP_QUICKHELP,_ZZ("Ayuda sobre \"")+key+"\"");
@@ -1917,9 +1922,13 @@ void mxSource::OnAddVarDefinition (int line, const wxString &vname) {
 	DefineVar(line-1,vname,type);
 }
 
-void mxSource::AddToDesktopTest (wxCommandEvent & evt) {
+void mxSource::AddOneToDesktopTest (wxCommandEvent & evt) {
 	desktop_test->AddDesktopVar(GetCurrentKeyword());
 }
+
+//void mxSource::AddAllToDesktopTest (wxCommandEvent & evt) {
+//	desktop_test->AddDesktopVar(GetCurrentKeyword());
+//}
 
 void mxSource::OnClick(wxMouseEvent &evt) {
 //	if (evt.ControlDown()) {

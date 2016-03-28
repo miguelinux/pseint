@@ -21,7 +21,7 @@ public:
 	void OnResize(wxSizeEvent &evt);
 	void OnColResize(wxGridSizeEvent &evt);
 	const wxArrayString &GetDesktopVars();
-	void AddDesktopVar(const wxString &val);
+	void AddDesktopVar(const wxString &val, bool force=true);
 	void OnClearVars();
 	void SetCols();
 	void SetAutoevaluation(long l, wxString value);

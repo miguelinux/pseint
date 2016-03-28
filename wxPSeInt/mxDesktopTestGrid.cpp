@@ -176,8 +176,8 @@ void mxDesktopTestGrid::SetEditable (bool can_edit) {
 	editable=can_edit;
 }
 
-void mxDesktopTestGrid::AddDesktopVar (const wxString &val) {
-	if (val.size()) {
+void mxDesktopTestGrid::AddDesktopVar (const wxString &val, bool force) {
+	if (val.size() && (force || variables.Index(val)==wxNOT_FOUND)) {
 		variables.Add(val);
 		SetCols();
 	}

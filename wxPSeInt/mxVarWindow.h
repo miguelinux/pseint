@@ -23,7 +23,8 @@ public:
 	void OnTreeClick(wxTreeEvent &evt);
 	void OnTreeTooltip(wxTreeEvent &evt);
 	void OnDefinir(wxCommandEvent &evt);
-	void OnAgregarAPruebaDeEscritorio(wxCommandEvent &evt);
+	void OnAgregarUnaAPruebaDeEscritorio(wxCommandEvent &evt);
+	void OnAgregarTodasAPruebaDeEscritorio(wxCommandEvent &evt);
 	wxTreeItemId GetSelection();
 	mxVarWindow(wxWindow *parent);
 	~mxVarWindow();

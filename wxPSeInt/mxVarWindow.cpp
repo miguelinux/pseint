@@ -20,7 +20,8 @@ BEGIN_EVENT_TABLE(mxVarWindow,wxPanel)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
 	EVT_MENU(mxID_VARS_DEFINIR,mxVarWindow::OnDefinir)
-	EVT_MENU(mxID_VARS_ADD_TO_DESKTOP_TEST,mxVarWindow::OnAgregarAPruebaDeEscritorio)
+	EVT_MENU(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,mxVarWindow::OnAgregarUnaAPruebaDeEscritorio)
+	EVT_MENU(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,mxVarWindow::OnAgregarTodasAPruebaDeEscritorio)
 END_EVENT_TABLE()
 	
 static wxString tooltip;
@@ -117,10 +118,13 @@ void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 			debug_panel->ShowInEvaluateDialog(tree->GetItemText(it).BeforeFirst('['));
 		}
 	} else { // cuando no se depura muestra un menu contextual
-		if (tree->GetItemParent(evt.GetItem())==tree_root) return;
 		wxMenu menu;
-		menu.Append(mxID_VARS_DEFINIR,_Z("Definir variable...")); // para mostrar en el dialogo
-		menu.Append(mxID_VARS_ADD_TO_DESKTOP_TEST,_Z("Agregar la variable a la Prueba de Escritorio...")); // para mostrar en el dialogo
+		if (tree->GetItemParent(evt.GetItem())==tree_root) {
+			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_Z("Agregar todas las variable a la Prueba de Escritorio")); // para mostrar en el dialogo
+		} else {
+			menu.Append(mxID_VARS_DEFINIR,_Z("Definir variable...")); // para mostrar en el dialogo
+			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_Z("Agregar la variable a la Prueba de Escritorio")); // para mostrar en el dialogo
+		}
 		PopupMenu(&menu);
 	}
 }
@@ -183,12 +187,25 @@ int mxVarWindow::GetVarType (const wxTreeItemId & it) {
 	return tree->GetItemImage(it);
 }
 
-void mxVarWindow::OnAgregarAPruebaDeEscritorio (wxCommandEvent & evt) {
+void mxVarWindow::OnAgregarUnaAPruebaDeEscritorio (wxCommandEvent & evt) {
 	wxTreeItemId it=GetSelection();
 	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
 	wxTreeItemId parent=tree->GetItemParent(it);
 	if (parent==tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
-	desktop_test->AddDesktopVar(tree->GetItemText(it));
+	desktop_test->AddDesktopVar(tree->GetItemText(it),false);
+}
+
+void mxVarWindow::OnAgregarTodasAPruebaDeEscritorio (wxCommandEvent & evt) {
+	wxTreeItemId it=GetSelection();
+	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
+	wxTreeItemId parent=tree->GetItemParent(it);
+	if (parent!=tree_root) return; // ver que el item si sea el nombre de un proceso o subproceso
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = tree->GetFirstChild(it,cookie);
+	while (child.IsOk()) {
+		desktop_test->AddDesktopVar(tree->GetItemText(child),false);
+		child = tree->GetNextChild(it,cookie);
+	}
 }
 
 void mxVarWindow::RegisterAutocompKey (wxString vname) {
