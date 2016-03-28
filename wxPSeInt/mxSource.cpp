@@ -1956,6 +1956,7 @@ void mxSource::SetIndics (int from, int len, int indic, bool on) {
 }
 
 
+#ifndef __APPLE__
 bool mxSource::LoadFile (const wxString & fname) {
 //#ifdef WX3
 //	wxFFile file(fname,_T("r"));
@@ -1983,6 +1984,8 @@ bool mxSource::SaveFile (const wxString & fname) {
 #endif
 		return wxStyledTextCtrl::SaveFile(fname);
 }
+#endif
+
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
 	if (evt.GetKeyCode()==WXK_ESCAPE) {

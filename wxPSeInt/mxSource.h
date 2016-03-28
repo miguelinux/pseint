@@ -215,10 +215,11 @@ public:
 		ConvertEOLs(wxSTC_EOL_LF); // por alguna razon el copy-paste en mac solo pone CR pero no LF
 		wxStyledTextCtrl::SaveFile(s);
 	}
-#endif
 	
+#else
 	bool LoadFile(const wxString &fname);
 	bool SaveFile(const wxString &fname);
+#endif
 	
 	void ShowUserList(wxArrayString &arr, int p1, int p2);
 	
