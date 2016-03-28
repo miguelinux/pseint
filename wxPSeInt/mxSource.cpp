@@ -526,11 +526,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					res=comp_list[i];
 			}
 		}
-		if (res.Len()) {
-			SetCurrentPos(p1);
-			UserListShow(1,res);
-			SetCurrentPos(p2);
-		}
+		if (res.Len()) ShowUserList(res,p1,p2);
 	} else if ( EsLetra(chr,true) && config->autocomp) 
 	{
 		int p2=comp_to=GetCurrentPos();
@@ -543,11 +539,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			wxString res;
 			bool show = MakeCompletionFromKeywords(res,p1,str);
 			show |= MakeCompletionFromIdentifiers(res,p1,str);
-			if (show) {
-				SetCurrentPos(p1);
-				UserListShow(1,res);
-				SetCurrentPos(p2);
-			}
+			if (show) ShowUserList(res,p1,p2);
 		}
 	} else if (chr==';' && GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRINGEOL) HideCalltip(false,true);
 	if (config->calltip_helps && (chr==' ' || chr=='\n' || chr=='\t' || chr=='\r')) {
@@ -2009,3 +2001,24 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 		else main_window->QuickHelp().Hide();
 	} else evt.Skip();
 }
+
+void mxSource::ShowUserList (wxString &list, int p1, int p2) {
+	// reordenar la lista de palabras... hay que separarlas, ordenar, y juntarlas otra vez
+	wxArrayString arr;
+	for (int pb=0, pi=0, pe=list.Len();pb<=pe;++pi) {
+		if (pi==pe||list[pi]=='|') {
+			arr.Add(list.SubString(pb,pi));
+			pb=pi+1;
+		}
+	}
+	list.Clear();
+	arr.Sort();
+	for(unsigned int i=0;i<arr.GetCount();i++) { 
+		if (i) list<<'|'; 
+		list<<arr[i];
+	}
+	SetCurrentPos(p1);
+	UserListShow(1,list);
+	SetCurrentPos(p2);
+}
+

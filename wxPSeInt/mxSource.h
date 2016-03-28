@@ -220,6 +220,8 @@ public:
 	bool LoadFile(const wxString &fname);
 	bool SaveFile(const wxString &fname);
 	
+	void ShowUserList(wxString &list, int p1, int p2);
+	
 	er_source_register *er_register;
 	
 	DECLARE_EVENT_TABLE();
