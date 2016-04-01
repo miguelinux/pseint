@@ -14,15 +14,19 @@
 #include <wx/image.h>
 #include <wx/filesys.h>
 #include "../wxPSeInt/string_conversions.h"
+#include <wx/msgdlg.h>
 
 class mxFilterInputStream : public wxFilterInputStream {
-	wxString key; int pos, len, base_pos;
+	wxString m_key; 
+	bool m_old_cypher;
+	int pos, len, base_pos, base_delta;
 public:
-	mxFilterInputStream(wxInputStream &stream, const wxString &key) : wxFilterInputStream(stream) { 
-		this->key=key; 
-		len=key.size();
-		pos=0; for(int i=0;i<len;i++) pos+=_C(key[i]); 
-		if (len) base_pos=pos=(pos%len); else base_pos=0;
+	mxFilterInputStream(wxInputStream &stream, const wxString &key, bool old_cypher) 
+		: wxFilterInputStream(stream), m_key(key), m_old_cypher(old_cypher), len(key.Len())
+	{
+		pos=0; for(int i=0;i<len;i++) pos+=_C(m_key[i]); 
+		if (len) base_delta=base_pos=pos=(pos%len); 
+		else base_delta=base_pos=0;
 	}
 protected:
 	size_t OnSysRead(void *buffer, size_t size) {
@@ -30,8 +34,9 @@ protected:
 		if (!len) return count;
 		unsigned char *auxb = reinterpret_cast<unsigned char*>(buffer);
 		for(unsigned int i=0;i<count;i++) { 
-			int x = auxb[i]; 
-			x = ( x + 256 - _C(key[pos]) ) % 256;
+			int x = auxb[i];
+			base_delta = ((m_old_cypher?0:base_delta) + _C(m_key[pos]))%256;
+			x = ( x + 256 - base_delta) % 256;
 			pos=(pos+1)%len;
 			auxb[i] = x;
 		}
@@ -40,13 +45,14 @@ protected:
 };
 
 class mxFilterOutputStream : public wxFilterOutputStream {
-	wxString key; int pos, len, base_pos;
+	wxString m_key; int pos, len, base_pos, base_delta;
 public:
-	mxFilterOutputStream(wxOutputStream &stream, const wxString &key) : wxFilterOutputStream(stream) { 
-		this->key=key; 
-		len=key.size();
-		pos=0; for(int i=0;i<len;i++) pos+=_C(key[i]);
-		if (len) base_pos=pos=(pos%len); else base_pos=0;
+	mxFilterOutputStream(wxOutputStream &stream, const wxString &key) 
+		: wxFilterOutputStream(stream), m_key(key), len(key.Len())
+	{ 
+		pos=0; for(int i=0;i<len;i++) pos+=_C(m_key[i]);
+		if (len) base_delta=base_pos=pos=(pos%len); 
+		else base_delta=base_pos=0;
 	}
 protected:
 	virtual wxOutputStream& Write(const void *buffer, size_t size) {
@@ -61,7 +67,8 @@ protected:
 		unsigned char *uaux = reinterpret_cast<unsigned char*>(auxbuf);
 		for(unsigned int i=0;i<size;i++) { 
 			int x = ubuf[i]; 
-			x = ( x + _C(key[pos]) ) % 256;
+			base_delta = (base_delta+_C(m_key[pos]))%256;
+			x = ( x + base_delta ) % 256;
 			pos=(pos+1)%len;
 			uaux[i] = x;
 		}
@@ -69,11 +76,38 @@ protected:
 	}
 };
 
+static int cyper_version_int = 20160401;
+static const char cypher_version_str[] = "ver20160401";
+
 bool Package::Load (const wxString & fname, const wxString &passkey) {
 	if (!wxFileName::FileExists(fname)) return false;
 	wxZipEntry *entry = NULL;
 	wxFileInputStream in_orig(fname);
-	mxFilterInputStream in(in_orig,passkey);
+	
+	// detectar el tipo de encriptacion del ejercicio, y ver si esta versión de pseint la soporta, o el ejercicio viene de una futura
+	bool old_cypher = false;
+	if (passkey.Len()) {
+		char version_buff[] = "xxx11112233";
+		in_orig.Read(version_buff,12);
+		if (version_buff[0]=='v'&&version_buff[1]=='e' && version_buff[2]=='r' && version_buff[11]=='\0') {
+			int req_ver = 0;
+			for(int i=10,mult=1;i>2;i--,mult*=10) req_ver+=(version_buff[i]-'0')*mult;
+			if (req_ver>cyper_version_int) {
+				wxMessageBox(wxString("Este ejercicio no se puede abrir porque fue\n"
+									  "creado para una versión de PSeInt más reciente\n"
+									  "que esta. Actualice PSeInt para poder continuar.\n\n"
+									  "La versión mínima necesaria es: ")<<req_ver<<"\n\n"
+									  "Puede descargar las actualizaciones desde:\n"
+									  "http://pseint.sourceforge.net");
+				return false;
+			}
+		} else {
+			old_cypher = true;
+			in_orig.SeekI(0);
+		}
+	}
+		
+	mxFilterInputStream in(in_orig,passkey,old_cypher);
 	if (!in) return false;
 	wxZipInputStream zip(in);
 	bool read_something=false;
@@ -245,6 +279,7 @@ wxString Package::GetFullConfig() {
 
 bool Package::Save (const wxString & fname, const wxString & passkey) {
 	wxFFileOutputStream out(fname);
+	out.Write(cypher_version_str,12);
 	mxFilterOutputStream fout(out,passkey);
 	wxZipOutputStream zip(fout);
 	{
