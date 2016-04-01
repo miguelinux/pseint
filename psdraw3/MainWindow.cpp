@@ -38,8 +38,10 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	color_menu_sel[2] = color_sel.Blue()/255.f;
 	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
 //	toolbar->AddTool(MID_SETTINGS,"","imgs/floaw/tb_settings.png");
-	toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddSeparator();
+	if (lang[LS_ENABLE_USER_FUNCTIONS]) {
+		toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));
+		toolbar->AddSeparator();
+	}
 	toolbar->AddTool(MID_RUN  ,"",wxBitmap("imgs/flow/tb_run.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddTool(MID_DEBUG,"",wxBitmap("imgs/flow/tb_debug.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddTool(MID_EXPORT ,"",wxBitmap("imgs/flow/tb_save.png",wxBITMAP_TYPE_PNG));

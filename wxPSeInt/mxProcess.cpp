@@ -299,6 +299,7 @@ wxString mxProcess::GetDrawPostArgs ( ) {
 	if (config->lang[LS_USE_ALTERNATIVE_IO_SHAPES]) command<<" --use_alternative_io_shapes=1";
 	if (config->lang[LS_FORCE_SEMICOLON]) command<<" --force_semicolon=1";
 	if (!config->lang[LS_WORD_OPERATORS]) command<<" --word_operators=0";
+	if (!config->lang[LS_ENABLE_USER_FUNCTIONS]) command<<" --enable_user_functions=0";
 	return command;
 }
 
