@@ -61,6 +61,7 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 	int number = pack.GetNames(tests);
 	if (!number) {
 		wxMessageBox("No se encontraron casos de prueba","PSeInt",wxOK|wxICON_ERROR,this);
+		Destroy();
 		return false;
 	}
 	

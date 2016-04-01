@@ -65,22 +65,13 @@ void Raise() {
 
 void idle_func() {
 	ReadComm();
+	const int _delta_t=25000;
 	static int last=glutGet( GLUT_ELAPSED_TIME );
 	int now=glutGet( GLUT_ELAPSED_TIME );
-//	static int frames=0;
-//	static double times=0;
-//	static bool skipped=false;
-#define _delta_t 25000
-//	times+=now-last; frames++;
-//	cerr<<"DT: "<<times/frames<<"     \r";
 	if (now-last<_delta_t) {
 		wxMicroSleep(_delta_t-(now-last));
 		last=now;
 	}
-//		skipped=false;
-//	} else if (now-last>2*_delta_t && !skipped) {
-//		skipped=true;
-//	} else skipped=false;
 	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
 	Entity *aux=start;
 	do {
@@ -93,12 +84,11 @@ void idle_func() {
 		else interpolate(trash_size,trash_size_min);
 		shapebar=false;
 	} else {
-//		if (mouse_setted && --mouse_setted==0 && to_set_mouse) { to_set_mouse->SetMouse(); Entity::CalculateAll(); }
 		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
 		else interpolate(shapebar_size,shapebar_size_min);
 		interpolate(trash_size,0); trash=false;
 	}
-	/*if (!skipped) */canvas->Refresh();
+	canvas->Refresh();
 }
 
 void passive_motion_cb(int x, int y) {
@@ -216,7 +206,6 @@ void mouse_dcb(int x, int y) {
 			if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
 			aux->SetEdit();
 			return;
-//			last_click_mouse=aux; last_click_time=click_time;
 		}
 		aux=aux->all_next;
 	} while (aux!=start);

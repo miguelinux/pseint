@@ -13,7 +13,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=/src/manual/wx/3.1.0-dbg-u/src/stc/scintilla/src
-current_source=../bin/help/cambios.html
+current_source=mxSource.cpp
 path_char=/
 [source]
 path=DebugManager.cpp
@@ -41,7 +41,7 @@ marker=69
 marker=88
 [source]
 path=mxSource.cpp
-cursor=1998:12
+cursor=1988:0
 marker=1307
 marker=1334
 marker=1833
@@ -173,7 +173,7 @@ path=ConfigManager.h
 cursor=86:45
 [header]
 path=mxSource.h
-cursor=88:6
+cursor=218:5
 open=true
 [header]
 path=mxProcess.h

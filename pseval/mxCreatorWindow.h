@@ -35,13 +35,13 @@ public:
 	void OnTimer(wxTimerEvent &event);
 	void OnCreate(wxCommandEvent &event);
 	void OnInputPath(wxCommandEvent &event);
-//	void OnOutputPath(wxCommandEvent &event);
+	void OnInputReload(wxCommandEvent &event);
 	void OnInputChange(wxCommandEvent &event);
 	void OnShowErrors(wxCommandEvent &event);
 	void OnGenerateSolutions(wxCommandEvent &event);
 	void OnCheckPass(wxCommandEvent &event);
-	void OnReloadInput(wxCommandEvent &event);
 	void EnableDisable();
+	void LoadDirectory();
 	wxString GetFilePath(const wxString &name);
 	DECLARE_EVENT_TABLE();
 };

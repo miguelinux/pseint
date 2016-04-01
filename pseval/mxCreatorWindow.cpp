@@ -13,15 +13,15 @@
 #include <wx/filedlg.h>
 #include <wx/settings.h>
 
-enum { mxSTART=wxID_HIGHEST, mxID_INPUT_PATH_TEXT, mxID_INPUT_PATH_BUTTON, mxID_OUTPUT_PATH_BUTTON, mxID_SHOW_ERRORS, mxID_CREATE_BUTTON, mxID_GENERATE_SOLUTIONS, mxID_USE_PASSWORD, mxID_RELOAD_INPUT };
+enum { mxSTART=wxID_HIGHEST, mxID_INPUT_PATH_TEXT, mxID_INPUT_RELOAD, mxID_INPUT_PATH_BUTTON, mxID_OUTPUT_PATH_BUTTON, mxID_SHOW_ERRORS, mxID_CREATE_BUTTON, mxID_GENERATE_SOLUTIONS, mxID_USE_PASSWORD };
 
 BEGIN_EVENT_TABLE(mxCreatorWindow,wxFrame)
 	EVT_BUTTON(mxID_INPUT_PATH_BUTTON,mxCreatorWindow::OnInputPath)
 //	EVT_BUTTON(mxID_OUTPUT_PATH_BUTTON,mxCreatorWindow::OnOutputPath)
 	EVT_BUTTON(mxID_CREATE_BUTTON,mxCreatorWindow::OnCreate)
 	EVT_BUTTON(mxID_GENERATE_SOLUTIONS,mxCreatorWindow::OnGenerateSolutions)
-	EVT_BUTTON(mxID_RELOAD_INPUT,mxCreatorWindow::OnReloadInput)
 	EVT_TEXT(mxID_INPUT_PATH_TEXT,mxCreatorWindow::OnInputChange)
+	EVT_BUTTON(mxID_INPUT_RELOAD,mxCreatorWindow::OnInputReload)
 	EVT_TIMER(wxID_ANY,mxCreatorWindow::OnTimer)
 	EVT_CHECKBOX(mxID_SHOW_ERRORS,mxCreatorWindow::OnShowErrors)
 	EVT_CHECKBOX(mxID_USE_PASSWORD,mxCreatorWindow::OnCheckPass)
@@ -42,6 +42,9 @@ mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
 	input_sizer->Add(input_path,wxSizerFlags().Proportion(1).Center().Border(wxLEFT|wxTOP|wxBOTTOM,5));
 	wxButton *input_button = new wxButton(this,mxID_INPUT_PATH_BUTTON," ... ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
 	input_sizer->Add(input_button,wxSizerFlags().Border(wxRIGHT|wxTOP|wxBOTTOM,5));
+	wxButton *reload_button = new wxButton(this,mxID_INPUT_RELOAD," R ",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	reload_button->SetToolTip("Recargar información desde el directorio de entrada actual");
+	input_sizer->Add(reload_button,wxSizerFlags().Border(wxRIGHT|wxTOP|wxBOTTOM,5));
 	main_sizer->Add(input_sizer,wxSizerFlags().Proportion(0).Expand());
 	
 	static1 = new wxStaticText(this,wxID_ANY,"Mensaje en caso de éxito:");
@@ -104,21 +107,7 @@ mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
 }
 
 void mxCreatorWindow::OnTimer (wxTimerEvent & event) {
-	if (!input_path->GetValue().IsEmpty()) {
-		if (pack.Load(input_path->GetValue())) {
-			wxArrayString names;
-			num_tests->SetValue(wxString()<<pack.GetNames(names));
-			shuffle_tests->SetValue(pack.GetConfigBool("mezclar casos"));
-			show_errors->SetValue(pack.GetConfigStr("mostrar casos fallidos")=="primero"||pack.GetConfigStr("mostrar casos fallidos")=="todos");
-			stop_on_first_error->SetValue(pack.GetConfigStr("mostrar casos fallidos")=="primero");
-			show_solutions->SetValue(pack.GetConfigBool("mostrar soluciones"));
-			msg_bad->SetValue(pack.GetConfigStr("mensaje error"));
-			msg_ok->SetValue(pack.GetConfigStr("mensaje exito"));
-			base_psc->SetValue(!pack.GetBaseSrc().IsEmpty());
-			help_html->SetValue(!pack.GetHelp().IsEmpty());
-		}
-	} else pack.Reset();
-	EnableDisable();
+	LoadDirectory();
 }
 
 void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
@@ -126,6 +115,23 @@ void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 	if (chk_pass->GetValue() && password1->GetValue().IsEmpty()) {
 		wxMessageBox("Debe completar la constraseña","Error",wxOK|wxICON_ERROR,this);
 		return;
+	}
+	
+	wxArrayString tests;
+	int tests_count = pack.GetNames(tests);
+	if (tests_count==0) {
+		wxMessageBox("No hay casos de prueba","Error",wxOK|wxICON_ERROR,this);
+		return;
+	}
+	
+	wxString all_output;
+	for(unsigned int i=0;i<tests.GetCount();i++) { 
+		all_output << pack.GetTest(tests[i]).solution;
+	}
+	
+	if (all_output.IsEmpty()) {
+		if (wxNO==wxMessageBox("Las soluciones están vacías. ¿Continuar igualmente?","Advertencia",wxYES_NO|wxICON_ERROR,this))
+			return;
 	}
 	
 	pack.SetConfigStr  ( "mensaje exito" , msg_ok->GetValue() );
@@ -169,10 +175,6 @@ void mxCreatorWindow::OnInputPath (wxCommandEvent & event) {
 	}
 }
 
-//void mxCreatorWindow::OnOutputPath (wxCommandEvent & event) {
-//	
-//}
-
 void mxCreatorWindow::OnInputChange (wxCommandEvent & event) {
 	timer.Start(500,true);
 }
@@ -189,10 +191,6 @@ void mxCreatorWindow::OnGenerateSolutions (wxCommandEvent & event) {
 
 void mxCreatorWindow::OnCheckPass (wxCommandEvent & event) {
 	EnableDisable();
-}
-
-void mxCreatorWindow::OnReloadInput (wxCommandEvent & event) {
-	timer.Start(10,true);
 }
 
 void mxCreatorWindow::EnableDisable ( ) {
@@ -223,5 +221,28 @@ wxString mxCreatorWindow::GetFilePath (const wxString &name) {
 	wxString ipath = input_path->GetValue();
 	if (ipath.EndsWith("\\")||ipath.EndsWith("/")) ipath.RemoveLast();
 	return ipath+wxFileName::GetPathSeparator()+name;
+}
+
+void mxCreatorWindow::OnInputReload (wxCommandEvent & event) {
+	LoadDirectory();
+}
+
+void mxCreatorWindow::LoadDirectory ( ) {
+	timer.Stop();
+	if (!input_path->GetValue().IsEmpty()) {
+		if (pack.Load(input_path->GetValue())) {
+			wxArrayString names;
+			num_tests->SetValue(wxString()<<pack.GetNames(names));
+			shuffle_tests->SetValue(pack.GetConfigBool("mezclar casos"));
+			show_errors->SetValue(pack.GetConfigStr("mostrar casos fallidos")=="primero"||pack.GetConfigStr("mostrar casos fallidos")=="todos");
+			stop_on_first_error->SetValue(pack.GetConfigStr("mostrar casos fallidos")=="primero");
+			show_solutions->SetValue(pack.GetConfigBool("mostrar soluciones"));
+			msg_bad->SetValue(pack.GetConfigStr("mensaje error"));
+			msg_ok->SetValue(pack.GetConfigStr("mensaje exito"));
+			base_psc->SetValue(!pack.GetBaseSrc().IsEmpty());
+			help_html->SetValue(!pack.GetHelp().IsEmpty());
+		}
+	} else pack.Reset();
+	EnableDisable();
 }
 
