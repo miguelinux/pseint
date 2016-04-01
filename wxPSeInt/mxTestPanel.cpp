@@ -31,7 +31,7 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 	sizer->Add(eval_button,wxSizerFlags().Border(wxALL,5));
 	sizer->Add(label,wxSizerFlags().Center().Centre().Border(wxALL,5));
 	sizer->AddStretchSpacer();
-	help_button = new wxButton(this,wxID_HELP,_Z(" ? "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	help_button = new wxButton(this,wxID_HELP,_Z("Mostrar Enunciado"),wxDefaultPosition,wxDefaultSize);
 	sizer->Add(help_button,wxSizerFlags().Border(wxALL,5));
 	SetSizerAndFit(sizer);
 }
@@ -48,6 +48,12 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 		return false;
 	}
 	label->SetLabel(_Z(" <- click aquí para evaluar su respuesta"));
+	if (pack.GetHelp().IsEmpty()) {
+		main_window->QuickHelp().Hide();
+		help_button->Hide();
+	} else {
+		help_button->Show();
+	}
 	sizer->Layout();
 	src->SetText(pack.GetBaseSrc());
 	return true;
@@ -59,7 +65,7 @@ void mxTestPanel::OnRun (wxCommandEvent & event) {
 }
 
 void mxTestPanel::OnHelp (wxCommandEvent & event) {
-	main_window->QuickHelp().ShowHelpText(GetHelp());
+	main_window->QuickHelp().ShowTestHelp(GetHelp());
 }
 
 

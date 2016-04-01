@@ -25,6 +25,7 @@ public:
 			QHM_RT_RESULT, // iarg=as bool (1/0)
 			QHM_RT_ERROR, // iargs=error num
 			QHM_HELP,  // help _PAGE/_TEXT
+			QHM_TEST,  // enuncidao de ejercicio autocontenido
 			QHM_OUTPUT, // error list, or runtime error
 			QHM_NULL 
 		} m_mode;
@@ -37,6 +38,8 @@ public:
 		void ShowRTError(int code, wxString msg, bool force=false);
 		void ShowHelpPage(wxString help_file);
 		void ShowHelpText(wxString html_text);
+		void ShowTestHelp(wxString html_text);
+		void HideTestHelp();
 		void ShowOutput(wxString html_text);
 		void HideOutput();
 		void Hide();

@@ -349,7 +349,7 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 			tipo = vt_logica;
 			ev_return(expresion.substr(p1,p2-p1+1));
 		} else { // sino es variable... ver si es comun o arreglo
-			size_t pm=expresion.find('(',p1);
+			size_t pm = expresion.find('(',p1);
 			if (int(pm)>p2) pm=string::npos;
 //			size_t pp=expresion.find('(',p1);
 //			if (int(pp)>p2) pp=string::npos;
@@ -653,12 +653,12 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 					}
 					ev_return("0");
 				} else {
-					if (o1!=int(o1)||o2!=int(o2)) {
+					if (o1!=floor(o1)||o2!=floor(o2)) {
 						WriteError(298,"Los operandos para el operador MOD deben ser enteros");
 					} else if (o2==0) {
 						WriteError(316,"El segundo operando para el operador MOD no puede ser cero");
 					} else 
-						res=int(o1)%int(o2);
+						res=(long long)(o1)%(long long)(o2);
 				}
 			} else if (op=='^') {
 				res=pow(o1,o2);

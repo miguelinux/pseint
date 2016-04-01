@@ -514,7 +514,7 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		aui_manager.Update(); 
 	} else {
 		if (!test_panel->GetHelp().IsEmpty())
-			QuickHelp().ShowHelpText(test_panel->GetHelp());
+			QuickHelp().ShowTestHelp(test_panel->GetHelp());
 	}
 	return src;
 }
@@ -1614,10 +1614,22 @@ mxSource * mxMainWindow::GetCurrentSource ( ) {
 void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 	event.Skip(); 
 	// para que se actualice la lista de variables
-	if (config->rt_syntax && notebook->GetPageCount()) {
+	if (notebook->GetPageCount()) {
 		mxSource *src=CURRENT_SOURCE;
-		src->SetStatus();
-		src->StartRTSyntaxChecking();
+		if (config->rt_syntax) {
+			src->SetStatus();
+			src->StartRTSyntaxChecking();
+		}
+		if (test_panel) {
+			if (test_panel->GetSrc()==src) {
+				aui_manager.GetPane(test_panel).Show();
+			} else {
+				aui_manager.GetPane(test_panel).Hide();
+			}
+			main_window->QuickHelp().HideTestHelp();
+			aui_manager.Update();
+		}
+		main_window->QuickHelp().HideOutput();
 	} else
 		status_bar->SetStatus(STATUS_WELCOME);
 }
@@ -2079,6 +2091,14 @@ void mxMainWindow::QuickHelpPanelPolicy::ShowHelpPage (wxString help_file) {
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowHelpText (wxString html_text) {
 	m_mode = QHM_HELP; m_ctrl->SetPage(html_text); EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::ShowTestHelp (wxString html_text) {
+	m_mode = QHM_TEST; m_ctrl->SetPage(html_text); EnsureVisible();
+}
+
+void mxMainWindow::QuickHelpPanelPolicy::HideTestHelp () {
+	if (m_mode == QHM_TEST) Hide();
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowOutput (wxString html_text) {
