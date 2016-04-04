@@ -38,7 +38,10 @@ void Entity::GetTextSize(int &w, int &h) {
 	h=char_h;
 }
 
-Entity::Entity(ETYPE _type, string _label, bool _variante) :type(_type),variante(_variante),label(_label) {
+Entity::Entity(ETYPE _type, string _label, bool _variante) 
+	: type(_type), variante(_variante), label(_label), parent(NULL), prev(NULL), next(NULL),
+	  child_id(-1), child(NULL), child_dx(NULL), child_bh(NULL), n_child(0), nolink(NULL)
+{
 	if (!all_any) {
 		all_any=this; 
 		all_next=all_prev=this;
@@ -51,12 +54,8 @@ Entity::Entity(ETYPE _type, string _label, bool _variante) :type(_type),variante
 	t_dx=t_dy=0; fx=x=0; fy=y=0; flecha_in=0;
 	d_fx=d_fy=d_y=d_x=100;
 	d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=bh=0;
-	nolink=NULL;
 	SetLabel(label);
-	parent=prev=next=NULL; child=NULL;
-	if (type==ET_PROCESO) { 
-		n_child=0;
-	} else if (type==ET_SI) { // dos hijos
+	if (type==ET_SI) { // dos hijos
 		n_child=2;
 		child_bh=(int*)malloc(sizeof(int)*2);
 		child_dx=(int*)malloc(sizeof(int)*2);
@@ -83,8 +82,6 @@ Entity::Entity(ETYPE _type, string _label, bool _variante) :type(_type),variante
 		child[0]=NULL; child_dx[0]=child_bh[0]=0;
 		if (type!=ET_OPCION && type!=ET_SEGUN) flecha_in=flecha_h; 
 		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo",true));
-	} else {
-		n_child=0;
 	}
 	SetLabels();
 	Calculate(false); // para que tengan un tamaño inicial no nulo al arrastrarlas desde la shapebar
@@ -264,20 +261,30 @@ void Entity::UnLink() {
 		if (type==ET_OPCION) {
 			parent->RemoveChild(child_id);
 		} else {
-			if (parent->child[child_id]==this)
+			if (parent->child[child_id]==this) {
 				parent->child[child_id]=next;
+				if (next) next->child_id = child_id;
+			}
 		}
 	}
+	child_id = -1;
 	parent=next=prev=NULL;
 }
 
 void Entity::LinkNext(Entity *e) {
 	SetModified();
-	e->prev=this; e->next=next;
-	if (next) next->prev=e;
+	Entity *old_next = next;
+	e->prev = this;
 	next=e;
-	e->parent=parent;
-	e->child_id=child_id;
+	e->parent = parent;
+	if (old_next) {
+		while (e->next) {
+			e = e->next;
+			e->parent = parent;
+		}
+		e->next = old_next;
+		old_next->prev = e;
+	}
 }
 
 void Entity::RemoveChild(int j) { // elimina un hijo de la lista, reduciendo n_child
@@ -316,6 +323,7 @@ void Entity::MoveChild(int i0, int i1) {
 		}
 	}
 }
+
 void Entity::LinkChild(int i, Entity *e) { // i esta en base 0 y no puede ser negativo ni mayor a n_child
 	SetModified();
 	if (!n_child) { // si no tenia hijos, inicializar los arreglos child y child_dx
@@ -335,8 +343,15 @@ void Entity::LinkChild(int i, Entity *e) { // i esta en base 0 y no puede ser ne
 	}
 	if (e) {
 		e->prev=NULL; if (child[i]) child[i]->prev=e; 
-		e->next=child[i]; child[i]=e; 
-		e->parent=this;	e->child_id=i;
+		Entity *old_child = child[i];
+		child[i] = e; 
+		e->child_id=i; e->parent=this;	
+		while (e->next) {
+			e = e->next; 
+			e->parent = this;
+		}
+		e->next = old_child; 
+		if (old_child) old_child->child_id = -1;
 	}
 }
 

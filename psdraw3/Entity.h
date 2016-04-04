@@ -51,10 +51,10 @@ struct Entity {
 	// otras
 	int m_x,m_y; // coordenadas del mouse relativas a x,y, para cuando se arrastra
 	Entity *next,*prev,*parent;
-	int child_id; // indice de this en el arreglo child del parent
+	int child_id; // indice de this en el arreglo child del parent (-1 si no es el hijo directo o no tiene parent)
 	Entity **child; // arreglo de hijos (primer entidad de los sub-bloques, 1 para repetitivas, 2 para si, n para segun)
 	int *child_dx; // posicion de los hijos relativa al x del padre(this)
-	int *child_bh; // arreglo con el alto tiene cada hijo para que el padre sepa desde donde cerrar las flechas
+	int *child_bh; // arreglo con el alto que tiene cada hijo para que el padre sepa desde donde cerrar las flechas
 	int n_child; // cantidad de hijos
 	int flecha_in; // si las flechas de entrada son mas largas que lo normal (ej, entrada en un repetitivo), se pone aca la diferencia (esto se podria sacar, no?)
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre

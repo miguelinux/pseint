@@ -10,13 +10,14 @@
 #include "Textures.h"
 #include "MainWindow.h"
 #include "Canvas.h"
+#include "EntityVerifier.h"
 using namespace std;
 
 #define mouse_setted_delta 1000
 static int mouse_setted_x,mouse_setted_y; // posicion del click que va a setear el mouse en una entidad cuando se mueva, con correccion de y y zoom aplicados
 static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
 
-static Entity *DuplicateEntity(Entity *orig) {
+static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 	Entity *nueva=new Entity(orig->type,orig->label);
 	nueva->variante=orig->variante;
 	nueva->m_x=orig->m_x; nueva->m_y=orig->m_y;
@@ -24,9 +25,12 @@ static Entity *DuplicateEntity(Entity *orig) {
 	nueva->fx=orig->fx; nueva->fy=orig->fy;
 	nueva->d_x=orig->d_x; nueva->d_y=orig->d_y;
 	nueva->d_fx=orig->d_fx; nueva->d_fy=orig->d_fy;
-	for(int i=0;i<orig->n_child;i++) { 
-		if (orig->child[i]) nueva->LinkChild(i,DuplicateEntity(orig->child[i]));
+	for(int i=0;i<orig->n_child;i++) {
+		if (orig->child[i]) nueva->LinkChild(i,DuplicateEntity(orig->child[i],true));
 		else nueva->LinkChild(i,NULL);
+	}
+	if (and_next_one_too && orig->next) {
+		nueva->LinkNext(DuplicateEntity(orig->next,true));
 	}
 	return nueva;
 }
@@ -210,6 +214,7 @@ void mouse_dcb(int x, int y) {
 		aux=aux->all_next;
 	} while (aux!=start);
 }
+
 void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
 	if (choose_process_state) {
