@@ -1,3 +1,4 @@
+#include <wx/image.h>
 #include "GLstuff.h"
 #include "Application.h"
 #include "MainWindow.h"
@@ -8,7 +9,6 @@
 #include "Load.h"
 #include "../pseint/LangSettings.h"
 #include "../wxPSeInt/mac-stuff.h"
-#include <wx/image.h>
 using namespace std;
 
 LangSettings lang(LS_DO_NOT_INIT);

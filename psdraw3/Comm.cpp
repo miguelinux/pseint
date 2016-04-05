@@ -87,11 +87,11 @@ void ReadComm( ) {
 				Salir();
 			}
 			else if (sr=="errors reset") {
-				Entity *aux=Entity::all_any;
-				do {
-					aux->error.clear();
-					aux=aux->all_next;
-				} while (aux && aux!=Entity::all_any);
+				Entity::AllIterator it = Entity::AllBegin();
+				while (it!=Entity::AllEnd()) {
+					it->error.clear();
+					++it;
+				} 
 			}
 			else if (sr.substr(0,11)=="errors add ") {
 				sr=sr.substr(11);

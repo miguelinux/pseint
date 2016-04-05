@@ -202,7 +202,7 @@ inline void DrawFlechaL(int x1, int x2, int y) {
 
 void Entity::DrawClasico(bool force) {
 	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
-	if (this==mouse && (prev||parent)) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
+	if (this==mouse && (GetPrev()||GetParent())) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
 		DrawShapeBorder(color_ghost,d_dx+x,d_dy+y,bwr+bwl,h);
 //	else if (type!=ET_COMENTARIO && draw_shadow) /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
 //		DrawShapeSolid(color_shadow,d_fx+shadow_delta_x,d_fy-shadow_delta_y,d_w,d_h);
@@ -211,21 +211,21 @@ void Entity::DrawClasico(bool force) {
 	glColor3fv(color_arrow);
 	if (!nolink) {
 		if (type==ET_OPCION) {
-			DrawLineaVerticalH((child[0]?child[0]->d_x:d_x),d_y-d_h,-flecha_h); 
+			DrawLineaVerticalH((GetChild(0)?GetChild(0)->d_x:d_x),d_y-d_h,-flecha_h); 
 		} else if (type==ET_SEGUN) {
-			for(int i=0;i<n_child;i++) {
-				if (!child[i]->child[0]) {
-					DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-child[i]->bh);
+			for(int i=0;i<GetChildCount();i++) {
+				if (!GetChild(i)->GetChild(0)) {
+					DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-GetChild(i)->bh);
 					DrawFlechaDown(d_x+child_dx[i],d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
 				}
-				else if (child[i]!=mouse) {
-					DrawFlechaDown(child[i]->child[0]->d_x,d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
-					DrawFlechaDownHead(child[i]->child[0]->d_x,child[i]->child[0]->d_y-child[i]->child[0]->d_bh); 
+				else if (GetChild(i)!=mouse) {
+					DrawFlechaDown(GetChild(i)->GetChild(0)->d_x,d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
+					DrawFlechaDownHead(GetChild(i)->GetChild(0)->d_x,GetChild(i)->GetChild(0)->d_y-GetChild(i)->GetChild(0)->d_bh); 
 				}
 			}
 			// linea horizontal de abajo
-			DrawLineaHorizontalW(d_x,d_y-d_bh+flecha_h,child_dx[0]+(child[0]?child[0]->child_dx[0]:0));
-			DrawLineaHorizontalW(d_x,d_y-d_bh+flecha_h,child_dx[n_child-1]+(child[n_child-1]?child[n_child-1]->child_dx[0]:0));
+			DrawLineaHorizontalW(d_x,d_y-d_bh+flecha_h,child_dx[0]+(GetChild(0)?GetChild(0)->child_dx[0]:0));
+			DrawLineaHorizontalW(d_x,d_y-d_bh+flecha_h,child_dx[GetChildCount()-1]+(GetChild(GetChildCount()-1)?GetChild(GetChildCount()-1)->child_dx[0]:0));
 		} else if (type==ET_MIENTRAS) {
 			DrawTrue(d_fx+2*vf_size,d_fy-d_h-5*vf_size/2);
 			DrawFalse(d_fx+d_w/2+2*vf_size,d_fy-d_h/2+vf_size);
@@ -267,18 +267,18 @@ void Entity::DrawClasico(bool force) {
 			// linea horizontal de arriba
 			DrawLineaHorizontalTo(d_x+child_dx[0],d_y-d_h/2,d_x+child_dx[1]);
 			// flechas que bajan por el verdadero
-			if (child[0]) DrawLineaVerticalTo(d_x+child_dx[0],d_y-d_h/2,d_y-d_h-flecha_h);
+			if (GetChild(0)) DrawLineaVerticalTo(d_x+child_dx[0],d_y-d_h/2,d_y-d_h-flecha_h);
 			else DrawFlechaDown(d_x+child_dx[0],d_y-d_h/2,d_y-d_h-flecha_h); 
 			DrawFlechaDown(d_x+child_dx[0],d_y-d_h-child_bh[0]-flecha_h,d_y-d_bh+flecha_h); 
 			// flechas que bajan por el falso
-			if (child[1]) DrawLineaVerticalTo(d_x+child_dx[1],d_y-d_h/2,d_y-d_h-flecha_h);
+			if (GetChild(1)) DrawLineaVerticalTo(d_x+child_dx[1],d_y-d_h/2,d_y-d_h-flecha_h);
 			else DrawFlechaDown(d_x+child_dx[1],d_y-d_h/2,d_y-d_h-flecha_h); 
 			DrawFlechaDown(d_x+child_dx[1],d_y-d_h-child_bh[1]-flecha_h,d_y-d_bh+flecha_h); 
 			// linea horizontal de abajo
 			DrawLineaHorizontalTo(d_x+child_dx[0],d_y-d_bh+flecha_h,d_x+child_dx[1]);
 		} else if (type==ET_COMENTARIO) {
 			// linea de flecha que va al siguiente
-			if (parent||prev||next) {
+			if (GetParent()||GetPrev()||GetNext()) {
 				Entity *next_nc = GetNextNoComment();
 				bool fuera_de_proceso = IsOutOfProcess(next_nc);
 				if (!fuera_de_proceso) {
@@ -308,7 +308,7 @@ void Entity::DrawClasico(bool force) {
 			// linea de flecha que va al siguiente
 			if (!(type==ET_PROCESO&&variante)) DrawLineaVerticalH(d_x,d_y-d_bh,flecha_h);
 		}
-	} else if (mouse==this && (next||parent)) {
+	} else if (mouse==this && (GetNext()||GetParent())) {
 		// flecha que va al siguiente item cuando este esta flotando
 		DrawLineaVerticalH(d_dx+x,d_dy+y-bh,flecha_h);
 		if (type!=ET_OPCION) DrawFlechaDownHead(d_dx+x,d_dy+y); // no en inicio
@@ -367,8 +367,8 @@ void Entity::DrawClasico(bool force) {
 	DrawText();
 	if (!nolink) {
 		if (type==ET_SEGUN) {
-			for(int i=0;i<n_child;i++) { 
-				child[i]->Draw(true);
+			for(int i=0;i<GetChildCount();i++) { 
+				GetChild(i)->Draw(true);
 			}
 		} else if (type==ET_PARA) {
 			glColor3fv(color_border[shape_colors?ET_PARA:ET_COUNT]);
@@ -380,19 +380,19 @@ void Entity::DrawClasico(bool force) {
 			glBegin(GL_LINES);
 			DrawLineaHorizontalW(d_fx-w/2,d_fy-d_h/2,w); // separadores de las cuatro partes del circulo
 			if (!variante) {
-				if (edit_on||child[2]->label.size()) {
+				if (edit_on||GetChild(2)->label.size()) {
 					DrawLineaVerticalTo(d_x+child_dx[1],d_fy-d_h/2,d_fy-d_h+margin);
 					DrawLineaVerticalTo(d_x+child_dx[2],d_fy-d_h/2,d_fy-d_h+margin);
 				} else {
 					DrawLineaVerticalTo(d_x+(child_dx[1]+child_dx[2])/2,d_fy-d_h/2,d_fy-d_h+margin);
 				}
 				glEnd();
-				child[1]->DrawText();
-				child[2]->DrawText();
-				child[3]->DrawText();
+				GetChild(1)->DrawText();
+				GetChild(2)->DrawText();
+				GetChild(3)->DrawText();
 			} else {
 				glEnd();
-				child[2]->DrawText();
+				GetChild(2)->DrawText();
 			}
 			glLineWidth(line_width_flechas);
 		}
@@ -422,7 +422,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	}
 	if (type==ET_COMENTARIO) { 
 		if (!show_comments) { bwl=bwr=bh=0; return; }
-		if (variante || (next && next->type==ET_COMENTARIO)) bh-=flecha_h/2;
+		if (variante || (GetNext() && GetNext()->type==ET_COMENTARIO)) bh-=flecha_h/2;
 		if (variante) {
 			fx-=w/2+5*margin; bwr=0; bwl=w+5*margin;
 		} else {
@@ -431,22 +431,22 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	}
 	
 	// si son estructuras de control, es un viaje
-	if (!nolink && n_child) {
+	if (!nolink && GetChildCount()) {
 		if (type==ET_OPCION) {
 			bwr=bwl=(w=t_w+2*margin)/2;
 			if (edit_on) 
 			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
 			child_dx[0]=0; child_bh[0]=0;
-			if (child[0]) {
-				child[0]->x=x; child[0]->y=y-bh;
+			if (GetChild(0)) {
+				GetChild(0)->x=x; GetChild(0)->y=y-bh;
 				int cwl=0,cwr=0,ch=0;
-				child[0]->Calculate(cwl,cwr,ch);
+				GetChild(0)->Calculate(cwl,cwr,ch);
 				bh+=ch; 
 				if (cwl+cwr>bwl+bwr) bwl=bwr=(cwl+cwr)/2;
 				bwl+=flecha_w/2;
 				bwr+=flecha_w/2;
 				child_dx[0]-=(cwr-cwl)/2;
-				child[0]->MoveX(child_dx[0]);
+				GetChild(0)->MoveX(child_dx[0]);
 			}
 			// el ancho se lo define el segun padre
 			w=bwl+bwr;
@@ -455,10 +455,10 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			bwr=bwl=(w=t_w*2)/2;
 //				w=bwr=bwl=0; // todo: ver como corregir esto
 			int sw=0, sh=0;
-			for (int i=0;i<n_child;i++) {
+			for (int i=0;i<GetChildCount();i++) {
 				int cwl=0,cwr=0,ch=0;
-				child[i]->x=0; child[i]->y=y-h;
-				child[i]->Calculate(cwl,cwr,ch);
+				GetChild(i)->x=0; GetChild(i)->y=y-h;
+				GetChild(i)->Calculate(cwl,cwr,ch);
 				child_bh[i]=ch; child_dx[i]=sw+cwl;
 				sw+=cwl+cwr-2;
 				if (ch>sh) sh=ch;
@@ -466,43 +466,43 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			if (sw>w) w=sw; 
 			bwr=bwl=w/2; 
 			bh+=sh;
-			for (int i=0;i<n_child;i++) {
+			for (int i=0;i<GetChildCount();i++) {
 				child_dx[i]-=w/2;
-				child[i]->MoveX(child_dx[i]);
+				GetChild(i)->MoveX(child_dx[i]);
 			}
-			Entity *dom=child[n_child-1];
+			Entity *dom=GetChild(GetChildCount()-1);
 			if (dom->x+dom->bwr<x+bwr) {
 				int dif=(x+bwr)-(dom->x+dom->bwr);
 				dom->bwl+= dif/2;
 				dom->bwr+= dif/2;
 				dom->w+= dif;
 				dom->MoveX(dif/2);
-				child_dx[n_child-1]+=dif/2;
+				child_dx[GetChildCount()-1]+=dif/2;
 			}
 		} if (type==ET_SI) {
 			int c1l=0,c1r=0,c1h=0;
-			if (child[0]) {
-				child[0]->y=y-bh; child[0]->x=x;
-				child[0]->Calculate(c1l,c1r,c1h);
+			if (GetChild(0)) {
+				GetChild(0)->y=y-bh; GetChild(0)->x=x;
+				GetChild(0)->Calculate(c1l,c1r,c1h);
 			} 
 			int c2l=0,c2r=0,c2h=0;
-			if (child[1]) {
-				child[1]->y=y-bh; child[1]->x=x;
-				child[1]->Calculate(c2l,c2r,c2h);
+			if (GetChild(1)) {
+				GetChild(1)->y=y-bh; GetChild(1)->x=x;
+				GetChild(1)->Calculate(c2l,c2r,c2h);
 			} 
 			bh += (c1h>c2h?c1h:c2h) + flecha_h;
 			child_bh[0]=c1h; child_bh[1]=c2h;
 			child_dx[0] = -flecha_w-(c1r>bwl?c1r:bwl);
 			child_dx[1] =  flecha_w+(c2l>bwr?c2l:bwr);
-			if (child[0]) child[0]->MoveX(child_dx[0]);
-			if (child[1]) child[1]->MoveX(child_dx[1]);
+			if (GetChild(0)) GetChild(0)->MoveX(child_dx[0]);
+			if (GetChild(1)) GetChild(1)->MoveX(child_dx[1]);
 			if (c1l-child_dx[0]>bwl) bwl=c1l-child_dx[0];
 			if (c2r+child_dx[1]>bwr) bwr=c2r+child_dx[1];
 		} else if (type==ET_MIENTRAS||type==ET_REPETIR) {
 			int c1l=0,c1r=0,c1h=0;
-			if (child[0]) {
-				child[0]->y=y-(type==ET_MIENTRAS?bh+flecha_h:flecha_h); child[0]->x=x;
-				child[0]->Calculate(c1l,c1r,c1h);
+			if (GetChild(0)) {
+				GetChild(0)->y=y-(type==ET_MIENTRAS?bh+flecha_h:flecha_h); GetChild(0)->x=x;
+				GetChild(0)->Calculate(c1l,c1r,c1h);
 			} 
 			child_dx[0]=0; child_bh[0]=c1h;
 			if (c1l>bwl) bwl=c1l;
@@ -514,16 +514,16 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			t_dy=(t_h+margin)/2;
 			
 			// averiguar cuanto miden las tres etiquetas de abajo en el circulo
-			child[1]->x=child[2]->x=child[3]->x=x;
+			GetChild(1)->x=GetChild(2)->x=GetChild(3)->x=x;
 			int vl=0,vr=0,vh=0;
-			child[1]->Calculate(vl,vr,vh); 
+			GetChild(1)->Calculate(vl,vr,vh); 
 			int v1=vl+vr; vl=vr=0;
-			child[2]->Calculate(vl,vr,vh); 
+			GetChild(2)->Calculate(vl,vr,vh); 
 			int v2=vl+vr; vl=vr=0;
-			child[3]->Calculate(vl,vr,vh); 
+			GetChild(3)->Calculate(vl,vr,vh); 
 			int v3=vl+vr;
-			if (variante) { v1=v3=0; child[1]->w=child[3]->w=0; }
-			else if (!edit_on && !child[2]->label.size()) { v2=0; child[2]->w=0; }
+			if (variante) { v1=v3=0; GetChild(1)->w=GetChild(3)->w=0; }
+			else if (!edit_on && !GetChild(2)->label.size()) { v2=0; GetChild(2)->w=0; }
 			
 			// calcular el ancho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;
@@ -533,9 +533,9 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			// acomodar el circulo
 			bwr=0; bwl=w;
 			int c1l=0,c1r=0,c1h=0;
-			if (child[0]) {
-				child[0]->y=y-flecha_h; child[0]->x=x;
-				child[0]->Calculate(c1l,c1r,c1h);
+			if (GetChild(0)) {
+				GetChild(0)->y=y-flecha_h; GetChild(0)->x=x;
+				GetChild(0)->Calculate(c1l,c1r,c1h);
 			} 
 			child_dx[0]=0; child_bh[0]=c1h;
 			if (c1r>bwr) bwr=c1r;
@@ -547,9 +547,9 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			
 			// acomodar las tres etiquetas
 			int cy=fy-h/2-margin/2;
-			child[1]->fy=cy; child[1]->MoveX(fx-x+(-v+v1)/2); child_dx[1]=child[1]->fx+v1/2;
-			child[2]->fy=cy; child[2]->MoveX(fx-x+(-v+v2)/2+v1); child_dx[2]=child[2]->fx+v2/2;
-			child[3]->fy=cy; child[3]->MoveX(fx-x+(v-v3)/2); child_dx[3]=child[3]->fx+v3/2;
+			GetChild(1)->fy=cy; GetChild(1)->MoveX(fx-x+(-v+v1)/2); child_dx[1]=GetChild(1)->fx+v1/2;
+			GetChild(2)->fy=cy; GetChild(2)->MoveX(fx-x+(-v+v2)/2+v1); child_dx[2]=GetChild(2)->fx+v2/2;
+			GetChild(3)->fy=cy; GetChild(3)->MoveX(fx-x+(v-v3)/2); child_dx[3]=GetChild(3)->fx+v3/2;
 		}
 	}
 }

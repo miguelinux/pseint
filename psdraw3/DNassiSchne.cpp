@@ -72,28 +72,27 @@ void Entity::DrawNassiShne(bool force) {
 			glColor3fv(color_border[icolor]);
 			glBegin(GL_LINES);
 //			if (edit_on) { glVertex2i(d_x-d_bwl+flecha_w,d_y); glVertex2i(d_x-d_bwl+flecha_w,d_y-h); }
-			int px=parent->child_dx[child_id]-bwl;
-			int px0=-parent->bwl, px1=parent->child_dx[parent->n_child-1]-parent->child[parent->n_child-1]->bwl;
+			int px=GetParent()->child_dx[GetChildId()]-bwl;
+			int px0=-GetParent()->bwl, px1=GetParent()->child_dx[GetParent()->GetChildCount()-1]-GetParent()->GetChild(GetParent()->GetChildCount()-1)->bwl;
 			int ax=px1-px; if (ax<0) ax=-ax;
 			if (px1==px0) px1++;
 			int ah=ax*5*h/(px1-px0)/2;
 			glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x-d_bwl,d_y-h/2+ah);
-			if (!child[0]) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
+			if (!GetChild(0)) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
 			glEnd();
-//			glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h); glVertex2i((child[0]?child[0]->d_x:d_x),d_y-d_h-flecha_h);
 		} else if (type==ET_SEGUN) {
 			glColor3fv(color_border[icolor]);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
-			px+=child_dx[n_child-1]-child[n_child-1]->d_bwl;
+			px+=child_dx[GetChildCount()-1]-GetChild(GetChildCount()-1)->d_bwl;
 			glVertex2i(px,d_y-5*h/2);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
 			glBegin(GL_LINES);
-			for(int i=0;i<n_child-1;i++) { 
-				glVertex2i(d_x+child_dx[i]+child[i]->bwr,child[i]->d_y-child[i]->d_h);
-				glVertex2i(d_x+child_dx[i]+child[i]->bwr,d_y-d_bh);
+			for(int i=0;i<GetChildCount()-1;i++) { 
+				glVertex2i(d_x+child_dx[i]+GetChild(i)->bwr,GetChild(i)->d_y-GetChild(i)->d_h);
+				glVertex2i(d_x+child_dx[i]+GetChild(i)->bwr,d_y-d_bh);
 			}
 			glEnd();
 			
@@ -105,8 +104,8 @@ void Entity::DrawNassiShne(bool force) {
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
-			if (child[1]) px+=child_dx[1]+child[1]->d_bwr;
-			else if (child[0]) px+=child_dx[0]-child[0]->d_bwl;
+			if (GetChild(1)) px+=child_dx[1]+GetChild(1)->d_bwr;
+			else if (GetChild(0)) px+=child_dx[0]-GetChild(0)->d_bwl;
 			glVertex2i(px,d_y-2*h-margin);
 			glVertex2i(d_x+d_bwr,d_y);
 			glEnd();
@@ -140,21 +139,21 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 		t_dy=t_dx=0; fx=x; fy=y; bh=h; bwr=bwl=w/2; // esto es si fuera solo la forma
 	}
 	// si son estructuras de control...
-	if (!nolink && n_child) {
+	if (!nolink && GetChildCount()) {
 		if (type==ET_OPCION) {
 			bwr=bwl=(w=t_w+2*margin)/2;
 			if (edit_on) 
 			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
 			child_dx[0]=0; child_bh[0]=0;
-			if (child[0]) {
-				child[0]->x=x; child[0]->y=y-bh;
+			if (GetChild(0)) {
+				GetChild(0)->x=x; GetChild(0)->y=y-bh;
 				int cwl=0,cwr=0,ch=0;
-				child[0]->Calculate(cwl,cwr,ch);
+				GetChild(0)->Calculate(cwl,cwr,ch);
 				bh+=ch; 
 				if (cwl+cwr>bwl+bwr) bwl=bwr=(cwl+cwr)/2;
-				else child[0]->ResizeW(bwl+bwr,false);
+				else GetChild(0)->ResizeW(bwl+bwr,false);
 				child_dx[0]-=(cwr-cwl)/2;
-				child[0]->MoveX(child_dx[0]);
+				GetChild(0)->MoveX(child_dx[0]);
 			}
 			// el ancho se lo define el segun padre
 			w=bwl+bwr;
@@ -163,10 +162,10 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 			bh+=h;
 			bwr=bwl=(w=t_w*2)/2;
 			int sw=0, sh=0;
-			for (int i=0;i<n_child;i++) {
+			for (int i=0;i<GetChildCount();i++) {
 				int cwl=0,cwr=0,ch=0;
-				child[i]->x=0; child[i]->y=y-2*h;
-				child[i]->Calculate(cwl,cwr,ch);
+				GetChild(i)->x=0; GetChild(i)->y=y-2*h;
+				GetChild(i)->Calculate(cwl,cwr,ch);
 				child_bh[i]=ch; child_dx[i]=sw+cwl;
 				sw+=cwl+cwr;
 				if (ch>sh) sh=ch;
@@ -174,18 +173,18 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 			if (sw>w) w=sw; 
 			bwr=bwl=w/2; 
 			bh+=sh;
-			for (int i=0;i<n_child;i++) {
+			for (int i=0;i<GetChildCount();i++) {
 				child_dx[i]-=w/2;
-				child[i]->MoveX(child_dx[i]);
+				GetChild(i)->MoveX(child_dx[i]);
 			}
-			Entity *dom=child[n_child-1];
+			Entity *dom=GetChild(GetChildCount()-1);
 			if (dom->x+dom->bwr<x+bwr) {
 				int dif=(x+bwr)-(dom->x+dom->bwr);
 				dom->bwl+= dif/2;
 				dom->bwr+= dif/2;
 				dom->w+= dif;
 				dom->MoveX(dif/2);
-				child_dx[n_child-1]+=dif/2;
+				child_dx[GetChildCount()-1]+=dif/2;
 			}
 		} else 
 		if (type==ET_SI) {
@@ -193,17 +192,17 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 			bh+=margin;
 			// calcular tamaño hijo por verdadero
 			int c1l=0,c1r=0,c1h=0;
-			if (child[0]) {
-				child[0]->y=y-bh; child[0]->x=x;
-				child[0]->Calculate(c1l,c1r,c1h);
+			if (GetChild(0)) {
+				GetChild(0)->y=y-bh; GetChild(0)->x=x;
+				GetChild(0)->Calculate(c1l,c1r,c1h);
 			} else {
 				c1r=c1l=c1h=20;
 			}
 			// calcular tamaño hijo por falso
 			int c2l=0,c2r=0,c2h=0;
-			if (child[1]) {
-				child[1]->y=y-bh; child[1]->x=x;
-				child[1]->Calculate(c2l,c2r,c2h);
+			if (GetChild(1)) {
+				GetChild(1)->y=y-bh; GetChild(1)->x=x;
+				GetChild(1)->Calculate(c2l,c2r,c2h);
 			} else {
 				c2r=c2l=c2h=20;
 			}
@@ -212,8 +211,8 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 				bwl=bwr=(c1r+c1l+c2r+c2l)/2;
 			} else  {
 				int dw=(w-(c1r+c1l+c2r+c2l))/2;
-				if (child[0]) child[0]->ResizeW(c1r+c1l+dw,false);
-				if (child[1]) child[1]->ResizeW(c2r+c2l+dw,false);
+				if (GetChild(0)) GetChild(0)->ResizeW(c1r+c1l+dw,false);
+				if (GetChild(1)) GetChild(1)->ResizeW(c2r+c2l+dw,false);
 				c1l+=dw/2; c1r+=dw/2; c2l+=dw/2; c2r+=dw/2;
 			}
 			bh += (c1h>c2h?c1h:c2h);
@@ -221,22 +220,22 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 			// mover hijos horizontalmente
 			child_dx[0] = bwr-c1r;
 			child_dx[1] = -bwl+c2l;
-			if (child[0]) child[0]->MoveX(child_dx[0]);
-			if (child[1]) child[1]->MoveX(child_dx[1]);
+			if (GetChild(0)) GetChild(0)->MoveX(child_dx[0]);
+			if (GetChild(1)) GetChild(1)->MoveX(child_dx[1]);
 		} else
 		if (type==ET_MIENTRAS||type==ET_PARA||type==ET_REPETIR) {
 			if (type==ET_PARA) {
-				child[1]->CalculateNassiShne();
-				child[2]->CalculateNassiShne();
-				child[3]->CalculateNassiShne();
-				t_dx=child[1]->t_w+child[2]->t_w+child[3]->t_w;
+				GetChild(1)->CalculateNassiShne();
+				GetChild(2)->CalculateNassiShne();
+				GetChild(3)->CalculateNassiShne();
+				t_dx=GetChild(1)->t_w+GetChild(2)->t_w+GetChild(3)->t_w;
 				w=w+t_dx; bwr=bwl=w/2; t_dx=-t_dx/2;
 			}
 			// calcular tamaño hijo por verdadero
 			int c1l=0,c1r=0,c1h=0;
-			if (child[0]) {
-				child[0]->y=y-(type==ET_REPETIR?0:bh); child[0]->x=x;
-				child[0]->Calculate(c1l,c1r,c1h);
+			if (GetChild(0)) {
+				GetChild(0)->y=y-(type==ET_REPETIR?0:bh); GetChild(0)->x=x;
+				GetChild(0)->Calculate(c1l,c1r,c1h);
 			} else {
 				c1r=c1l=c1h=20;
 			}
@@ -244,28 +243,28 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 			if (c1r+c1l+40>w) 
 				bwl=bwr=(c1r+c1l)/2+20;
 			else
-				if (child[0]) child[0]->ResizeW(w-40,false);
+				if (GetChild(0)) GetChild(0)->ResizeW(w-40,false);
 			bh+=c1h;
 			child_bh[0]=0;
-			if (child[0]) child[0]->MoveX(child_dx[0]=20);
+			if (GetChild(0)) GetChild(0)->MoveX(child_dx[0]=20);
 			if (type==ET_REPETIR) t_dy=-c1h;
 			else if (type==ET_PARA) { // acomodar las etiquetas "desde .. hasta .. con paso .."
-				child[1]->y=child[1]->fy=fy;
-				child[1]->x=child[1]->fx=fx+t_w/2+t_dx+child[1]->t_w/2;
-				child[3]->y=child[3]->fy=fy;
-				child[3]->x=child[3]->fx=child[1]->fx+child[1]->t_w/2+child[1]->t_dx+child[3]->t_w/2;
-				child[2]->y=child[2]->fy=fy;
-				child[2]->x=child[2]->fx=child[3]->fx+child[3]->t_w/2+child[3]->t_dx+child[2]->t_w/2;
+				GetChild(1)->y=GetChild(1)->fy=fy;
+				GetChild(1)->x=GetChild(1)->fx=fx+t_w/2+t_dx+GetChild(1)->t_w/2;
+				GetChild(3)->y=GetChild(3)->fy=fy;
+				GetChild(3)->x=GetChild(3)->fx=GetChild(1)->fx+GetChild(1)->t_w/2+GetChild(1)->t_dx+GetChild(3)->t_w/2;
+				GetChild(2)->y=GetChild(2)->fy=fy;
+				GetChild(2)->x=GetChild(2)->fx=GetChild(3)->fx+GetChild(3)->t_w/2+GetChild(3)->t_dx+GetChild(2)->t_w/2;
 			}
 		} 
 	}
-	if (!next && prev) {
+	if (!GetNext() && GetPrev()) {
 		int max=bwl+bwr;
-		Entity *et=prev;
+		Entity *et=GetPrev();
 		while (et) {
 			if (et->bwl+et->bwr>max)
 				max=et->bwl+et->bwr;
-			et=et->prev;
+			et=et->GetPrev();
 		}
 		ResizeW(max,true);
 	}

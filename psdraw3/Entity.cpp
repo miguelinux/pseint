@@ -39,47 +39,22 @@ void Entity::GetTextSize(int &w, int &h) {
 }
 
 Entity::Entity(ETYPE _type, string _label, bool _variante) 
-	: type(_type), variante(_variante), label(_label), parent(NULL), prev(NULL), next(NULL),
-	  child_id(-1), child(NULL), child_dx(NULL), child_bh(NULL), n_child(0), nolink(NULL)
+	: type(_type), variante(_variante), label(_label), nolink(NULL)
 {
-	if (!all_any) {
-		all_any=this; 
-		all_next=all_prev=this;
-	} else { 
-		all_next=all_any->all_next; 
-		if (all_next) all_next->all_prev=this;
-		all_any->all_next=this; 
-		all_prev=all_any;
-	}
 	t_dx=t_dy=0; fx=x=0; fy=y=0; flecha_in=0;
 	d_fx=d_fy=d_y=d_x=100;
 	d_w=d_bh=d_h=d_bwl=d_bwr=bwl=bwr=bh=0;
 	SetLabel(label);
 	if (type==ET_SI) { // dos hijos
-		n_child=2;
-		child_bh=(int*)malloc(sizeof(int)*2);
-		child_dx=(int*)malloc(sizeof(int)*2);
-		child=(Entity**)malloc(sizeof(Entity*)*2);
-		child[0]=child[1]=NULL;
-		child_bh[0]=child_bh[1]=0;
-		child_dx[0]=child_dx[1]=0;
+		SetChildCount(2);
 	} else if (type==ET_PARA) { // cuatro hijos
-		n_child=4; flecha_in=flecha_h;
-		child_bh=(int*)malloc(sizeof(int)*4);
-		child_dx=(int*)malloc(sizeof(int)*4);
-		child=(Entity**)malloc(sizeof(Entity*)*4);
-		child[0]=child[1]=child[2]=child[3]=NULL;
-		child_bh[0]=child_bh[1]=child_bh[2]=child_bh[3]=0;
-		child_dx[0]=child_dx[1]=child_dx[2]=child_dx[3]=0;
-		LinkChild(1,new Entity(ET_AUX_PARA,"")); child[1]->SetLabels();
-		LinkChild(2,new Entity(ET_AUX_PARA,"")); child[2]->SetLabels();
-		LinkChild(3,new Entity(ET_AUX_PARA,"")); child[3]->SetLabels();
+		SetChildCount(4);
+		flecha_in=flecha_h;
+		LinkChild(1,new Entity(ET_AUX_PARA,"")); GetChild(1)->SetLabels();
+		LinkChild(2,new Entity(ET_AUX_PARA,"")); GetChild(2)->SetLabels();
+		LinkChild(3,new Entity(ET_AUX_PARA,"")); GetChild(3)->SetLabels();
 	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
-		n_child=1;
-		child_bh=(int*)malloc(sizeof(int)*1);
-		child_dx=(int*)malloc(sizeof(int)*1);
-		child=(Entity**)malloc(sizeof(Entity*)*1);
-		child[0]=NULL; child_dx[0]=child_bh[0]=0;
+		SetChildCount(1);
 		if (type!=ET_OPCION && type!=ET_SEGUN) flecha_in=flecha_h; 
 		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo",true));
 	}
@@ -90,24 +65,6 @@ Entity::Entity(ETYPE _type, string _label, bool _variante)
 Entity::~Entity() {
 	if (this==edit) UnsetEdit();
 	if (entity_to_del==this) entity_to_del=NULL;
-	for (int i=0;i<n_child;i++) {
-		Entity *aux=child[i],*aux2;
-		while (aux) {
-			aux2=aux->next;
-			delete aux;
-			aux=aux2;
-		}
-	}
-	UnLink();
-	if (n_child) {
-		free(child);
-		free(child_dx);
-		free(child_bh);
-	}
-	if (all_prev) all_prev->all_next=all_next;
-	if (all_next) all_next->all_prev=all_prev;
-	if (this==all_any) all_any=all_next; // busca otra...
-	if (this==all_any) all_any=NULL; // ...si no hay otra esta era la ultima
 	if (this==mouse) UnSetMouse();
 }
 
@@ -129,7 +86,7 @@ void Entity::SetMouse() {
 void Entity::UnSetMouse() {
 	mouse=NULL;
 	SetNolink(NULL,false);
-	if (!parent && !prev) {
+	if (!GetParent() && !GetPrev()) {
 		if (entity_to_del) delete entity_to_del;
 		entity_to_del=this;
 	}
@@ -137,9 +94,9 @@ void Entity::UnSetMouse() {
 
 void Entity::SetNolink(Entity *m,bool n) {
 	nolink=m;
-	for (int i=0;i<n_child;i++)
-		if (child[i]) child[i]->SetNolink(m,true);
-	if (n && next) next->SetNolink(m,true);
+	for (int i=0;i<GetChildCount();i++)
+		if (GetChild(i)) GetChild(i)->SetNolink(m,true);
+	if (n && GetNext()) GetNext()->SetNolink(m,true);
 	
 }
 
@@ -217,30 +174,30 @@ void Entity::SetLabel(string _label, bool recalc) {
 			if (start) Entity::CalculateAll(); // todo: recalcula demas, parche hasta que analice bien donde esta el problema con el otro metodo
 		} else {
 			Calculate();
-			if (parent) parent->Calculate(true);
+			if (GetParent()) GetParent()->Calculate(true);
 		}
 	}
 }
 
 int Entity::CheckLinkChild(int x, int y) {
-	if (nolink||!n_child||type==ET_SEGUN) return -1;
+	if (nolink||!GetChildCount()||type==ET_SEGUN) return -1;
 	if (type==ET_PARA||type==ET_REPETIR) { // h no tiene sentido porque la forma esta al final
-		if (child[0]!=mouse && d_x+child_dx[0]+selection_tolerance_x>x && d_x+child_dx[0]-selection_tolerance_x<x && y>d_y-flecha_in-2*flecha_h/3-selection_tolerance_y && y<d_y-flecha_in-2*flecha_h/3+selection_tolerance_y)
+		if (GetChild(0)!=mouse && d_x+child_dx[0]+selection_tolerance_x>x && d_x+child_dx[0]-selection_tolerance_x<x && y>d_y-flecha_in-2*flecha_h/3-selection_tolerance_y && y<d_y-flecha_in-2*flecha_h/3+selection_tolerance_y)
 			return 0; else return -1;
 	}
-	for (int i=0;i<n_child;i++) {
-		if (child[i]!=mouse && d_x+child_dx[i]+selection_tolerance_x>x && d_x+child_dx[i]-selection_tolerance_x<x && y>d_y-d_h-flecha_h-selection_tolerance_y && y<d_y-d_h-flecha_h+selection_tolerance_y)
+	for (int i=0;i<GetChildCount();i++) {
+		if (GetChild(i)!=mouse && d_x+child_dx[i]+selection_tolerance_x>x && d_x+child_dx[i]-selection_tolerance_x<x && y>d_y-d_h-flecha_h-selection_tolerance_y && y<d_y-d_h-flecha_h+selection_tolerance_y)
 			return i;
 	}
 	return -1;
 }
 
 int Entity::CheckLinkOpcion(int x, int y) {
-	if (y<d_dy+child[0]->y-child[0]->h || y>d_dy+child[0]->y+2*child[0]->h) return -1;
-	if (x<d_dx+child[0]->x-child[0]->w || x>d_dx+child[n_child-1]->x+child[n_child-1]->w) return -1;
-	for (int i=0;i<n_child-1;i++) {
-		if (x<d_dx+child[i]->x) {
-			if (i==mouse->child_id) return -1; else return i;
+	if (y<d_dy+GetChild(0)->y-GetChild(0)->h || y>d_dy+GetChild(0)->y+2*GetChild(0)->h) return -1;
+	if (x<d_dx+GetChild(0)->x-GetChild(0)->w || x>d_dx+GetChild(GetChildCount()-1)->x+GetChild(GetChildCount()-1)->w) return -1;
+	for (int i=0;i<GetChildCount()-1;i++) {
+		if (x<d_dx+GetChild(i)->x) {
+			if (i==mouse->GetChildId()) return -1; else return i;
 		}
 	}
 	return -1;
@@ -249,111 +206,10 @@ int Entity::CheckLinkOpcion(int x, int y) {
 
 bool Entity::CheckLinkNext(int x, int y) {
 	if (type==ET_COMENTARIO && mouse->type!=ET_COMENTARIO && IsOutOfProcess()) return false;
-	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO&&variante) || mouse==next || nolink) return false;
+	if (type==ET_OPCION || type==ET_AUX_PARA || (type==ET_PROCESO&&variante) || mouse==GetNext() || nolink) return false;
 	return (x>d_x-d_w/2 && x<d_x+d_w/2 && y>d_y-d_bh-selection_tolerance_y && y<d_y-d_bh+selection_tolerance_y);
 }
 
-void Entity::UnLink() {
-	SetModified();
-	if (next) next->prev=prev;
-	if (prev) prev->next=next;
-	if (parent) {
-		if (type==ET_OPCION) {
-			parent->RemoveChild(child_id);
-		} else {
-			if (parent->child[child_id]==this) {
-				parent->child[child_id]=next;
-				if (next) next->child_id = child_id;
-			}
-		}
-	}
-	child_id = -1;
-	parent=next=prev=NULL;
-}
-
-void Entity::LinkNext(Entity *e) {
-	SetModified();
-	Entity *old_next = next;
-	e->prev = this;
-	next=e;
-	e->parent = parent;
-	if (old_next) {
-		while (e->next) {
-			e = e->next;
-			e->parent = parent;
-		}
-		e->next = old_next;
-		old_next->prev = e;
-	}
-}
-
-void Entity::RemoveChild(int j) { // elimina un hijo de la lista, reduciendo n_child
-	SetModified();
-	for (int i=j;i<n_child-1;i++) {
-		child[i]=child[i+1];
-		child_dx[i]=child_dx[i+1];
-		child_bh[i]=child_bh[i+1];
-		if (child[i]) child[i]->child_id=i;
-	}
-	n_child--;
-}
-
-void Entity::InsertChild(int i, Entity *e) { // similar a LinkChild, pero agrega un hijo, no reemplaza a uno que ya estaba
-	SetModified();
-	LinkChild(n_child,e); // agrega al final
-	MoveChild(n_child-1,i);
-}
-void Entity::MoveChild(int i0, int i1) {
-	if (i0==i1) return;
-	SetModified();
-	Entity *e0=child[i0];
-	if (i0>i1) {
-		for (int j=i0;j>i1;j--)
-			child[j]=child[j-1];
-	} else {
-		for (int j=i0;j<i1;j++)
-			child[j]=child[j+1];
-	}
-	child[i1]=e0;
-	for (int j=0;j<n_child;j++) { // avisa a los hijos del movimiento
-		Entity *aux=child[j];
-		while (aux) {
-			aux->child_id=j;
-			aux=aux->next;
-		}
-	}
-}
-
-void Entity::LinkChild(int i, Entity *e) { // i esta en base 0 y no puede ser negativo ni mayor a n_child
-	SetModified();
-	if (!n_child) { // si no tenia hijos, inicializar los arreglos child y child_dx
-		n_child=1;
-		child=(Entity**)malloc(sizeof(Entity*));
-		child_dx=(int*)malloc(sizeof(int));
-		child_bh=(int*)malloc(sizeof(int));
-		child_dx[i]=child_bh[i]=0;
-		child[i]=NULL;
-	} else if (i==n_child) { // si tenia hijos, pero no tantos, agregar al final
-		++n_child;
-		child=(Entity**)realloc(child,sizeof(Entity*)*n_child);
-		child_dx=(int*)realloc(child_dx,sizeof(int)*n_child);
-		child_bh=(int*)realloc(child_bh,sizeof(int)*n_child);
-		child_dx[i]=child_bh[i]=0;
-		child[i]=NULL;
-	}
-	if (e) {
-		e->prev=NULL; if (child[i]) child[i]->prev=e; 
-		Entity *old_child = child[i];
-		child[i] = e; 
-		e->child_id=i; e->parent=this;	
-		while (e->next) {
-			e = e->next; 
-			e->parent = this;
-		}
-		e->next = old_child; 
-		if (old_child) old_child->child_id = -1;
-	}
-}
 
 void Entity::Tick() {
 	// actualiza las variables que dicen como dibujar
@@ -434,14 +290,14 @@ void Entity::Draw(bool force) {
 void Entity::Calculate(bool also_parent) { // devuelve el tamaño total del bloque
 	int awl,awr,ah;
 	Calculate(awl,awr,ah);
-	if (also_parent && parent) parent->Calculate(true);
+	if (also_parent && GetParent()) GetParent()->Calculate(true);
 }
 
 void Entity::MoveX(int dx) { // mueve al item y todos sus hijos en x
 	x+=dx; fx+=dx;
-	for (int i=0;i<n_child;i++)
-		if (child[i]) child[i]->MoveX(dx);
-	if (next) next->MoveX(dx);
+	for (int i=0;i<GetChildCount();i++)
+		if (GetChild(i)) GetChild(i)->MoveX(dx);
+	if (GetNext()) GetNext()->MoveX(dx);
 }
 
 void Entity:: ResizeW(int aw, bool up) {
@@ -449,37 +305,37 @@ void Entity:: ResizeW(int aw, bool up) {
 		int old=bwl+bwr;
 		bwl+=(aw-old)/2;
 		bwr+=(aw-old)/2;
-		int nc=n_child; if (type==ET_PARA) nc=1;
+		int nc=GetChildCount(); if (type==ET_PARA) nc=1;
 		for (int i=0;i<nc;i++)
-			if (child[i]) 
-				child[i]->ResizeW(child[i]->bwl+child[i]->bwr+(aw-old)/nc,false);
+			if (GetChild(i)) 
+				GetChild(i)->ResizeW(GetChild(i)->bwl+GetChild(i)->bwr+(aw-old)/nc,false);
 		if (type==ET_SI) {
 			int dx=(aw-old)/4;
-			if (child[0]) child[0]->MoveX(dx);
-			if (child[1]) child[1]->MoveX(-dx);
+			if (GetChild(0)) GetChild(0)->MoveX(dx);
+			if (GetChild(1)) GetChild(1)->MoveX(-dx);
 			child_dx[0]+=dx; child_dx[1]-=dx;
 		} else if (type==ET_SEGUN) {
 			int dx=(aw-old)/2;
 			int dx0=dx-dx/nc;
-			for(int i=0;i<n_child;i++) { 
+			for(int i=0;i<GetChildCount();i++) { 
 				int dd=-dx0+2*dx*(i)/nc;
-				child[i]->MoveX(dd);
+				GetChild(i)->MoveX(dd);
 				child_dx[i]+=dd;
 			}
 		}
 	}
-	if (up && prev) prev->ResizeW(aw,true);
-	if (!up && next) next->ResizeW(aw,false);
+	if (up && GetPrev()) GetPrev()->ResizeW(aw,true);
+	if (!up && GetNext()) GetNext()->ResizeW(aw,false);
 }
 
 void Entity::Calculate(int &gwl, int &gwr, int &gh) { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
 	if (nassi_shneiderman) CalculateNassiShne();
 	else CalculateClasico();
 	// pasar a la siguiente entidad
-	if (next) {
-		next->x=x;
-		next->y=y-bh;
-		next->Calculate(gwl,gwr,gh);
+	if (GetNext()) {
+		GetNext()->x=x;
+		GetNext()->y=y-bh;
+		GetNext()->Calculate(gwl,gwr,gh);
 	} else {
 		gwl=gwr=gh=0;
 	}
@@ -500,12 +356,12 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 	if (!edit_on || (!showbase&&type==ET_COMENTARIO)) return false;
 	if (click && type==ET_OPCION) {
 		if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
-			parent->InsertChild(child_id,new Entity(ET_OPCION,""));
-			parent->child[child_id-1]->SetEdit();
-			parent->child[child_id-1]->CopyPos(this);
+			GetParent()->InsertChild(GetChildId(),new Entity(ET_OPCION,""));
+			GetParent()->GetChild(GetChildId()-1)->SetEdit();
+			GetParent()->GetChild(GetChildId()-1)->CopyPos(this);
 			return false;
 		}
-		if (child_id==parent->n_child-1) return false;
+		if (GetChildId()==GetParent()->GetChildCount()-1) return false;
 	}
 	if (x>=d_fx+t_dx-d_w/2 && x<=d_fx+t_dx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
 		m_x=x-d_fx;
@@ -533,9 +389,9 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	bool add_tab=false;
 	if (type==ET_PROCESO) {
 		add_tab=true;
-		if (next) {
+		if (GetNext()) {
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
-			if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
+			if (GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
 			return;
 		}
@@ -547,39 +403,39 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		out<<tab<<"Leer "<<_fix(label,"{lista_de_variables}")<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this;
 	} else if (type==ET_MIENTRAS) {
 		out<<tab<<"Mientras "<<_fix(label,"{condicion}")<<" Hacer"<<_endl_this;
-		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
 		out<<tab<<"FinMientras"<<_endl_prev;
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<_endl_prev;
-		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
 		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<_fix(label,"{condicion}")<<_endl_this;
 	} else if (type==ET_PARA) {
 		if (variante) {
-			out<<tab<<"Para Cada"<<_fix(label,"{variable}")<<" de "<<_fix(child[2]->label,"{arreglo}")<<" Hacer"<<_endl_this;
+			out<<tab<<"Para Cada"<<_fix(label,"{variable}")<<" de "<<_fix(GetChild(2)->label,"{arreglo}")<<" Hacer"<<_endl_this;
 		} else {
-			bool has_paso=child[2]->label!="1"&&child[2]->label!="+1"&&child[2]->label!="";
-			out<<tab<<"Para "<<_fix(label,"{variable}")<<"<-"<<_fix(child[1]->label,"{valor_inicial}")<<" Hasta "<<_fix(child[3]->label,"{valor_final}")
-				<<(has_paso?" Con Paso ":"")<<(has_paso?_fix(child[2]->label,"{paso}"):"") <<" Hacer"<<_endl_this;
+			bool has_paso=GetChild(2)->label!="1"&&GetChild(2)->label!="+1"&&GetChild(2)->label!="";
+			out<<tab<<"Para "<<_fix(label,"{variable}")<<"<-"<<_fix(GetChild(1)->label,"{valor_inicial}")<<" Hasta "<<_fix(GetChild(3)->label,"{valor_final}")
+				<<(has_paso?" Con Paso ":"")<<(has_paso?_fix(GetChild(2)->label,"{paso}"):"") <<" Hacer"<<_endl_this;
 		}
-		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
 		out<<tab<<"FinPara"<<_endl_prev;
 	} else if (type==ET_SEGUN) {
 		out<<tab<<"Segun "<<_fix(label,"{expresion}")<<" Hacer"<<_endl_this;
-		for(int i=0;i<n_child-1;i++) { 
-			child[i]->Print(out,tab+_tabs,process,line_num);
+		for(int i=0;i<GetChildCount()-1;i++) { 
+			GetChild(i)->Print(out,tab+_tabs,process,line_num);
 		}
-		if (child[n_child-1]->child[0]) // de otro modo
-			child[n_child-1]->Print(out,tab+_tabs,process,line_num);
+		if (GetChild(GetChildCount()-1)->GetChild(0)) // de otro modo
+			GetChild(GetChildCount()-1)->Print(out,tab+_tabs,process,line_num);
 		out<<tab<<"FinSegun"<<_endl_prev;
 	} else if (type==ET_OPCION) {
 		add_tab=true;
 		out<<tab<<_fix(label,"{expresion}")<<":"<<_endl_this;
-		if (child[0]) child[0]->Print(out,tab+_tabs,process,line_num);
+		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<_fix(label,"{condicion}")<<" Entonces"<<_endl_this;
-		if (child[1]) { child[1]->Print(out,tab+_tabs,process,line_num); }
-		if (child[0]) { out<<tab<<"Sino"<<_endl_prev; }
-		if (child[0]) { child[0]->Print(out,tab+_tabs,process,line_num); }
+		if (GetChild(1)) { GetChild(1)->Print(out,tab+_tabs,process,line_num); }
+		if (GetChild(0)) { out<<tab<<"Sino"<<_endl_prev; }
+		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
@@ -596,10 +452,8 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 			inline_comments = prev_ilc;
 		}
 	}
-	if (next) next->Print(out,add_tab?tab+_tabs:tab,process,line_num);
+	if (GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }
-
-Entity *Entity::all_any=NULL;
 
 void Entity::SetPosition (int x0, int y0) {
 	d_fx=d_x=x0; 
@@ -619,24 +473,24 @@ void Entity::UnsetEdit ( ) {
 
 Entity * Entity::GetTopEntity ( ) {
 	Entity *top=this; 
-	while(top->prev) top=top->prev;
+	while(top->GetPrev()) top = top->GetPrev();
 	return top;
 }
 
 void Entity::CalculateAll (bool also_text_size) {
 	if (also_text_size) {
-		Entity *aux=Entity::all_any;
-		do {
-			aux->SetLabels();
-			aux=aux->all_next;
-		} while (aux && aux!=Entity::all_any);
+		Entity::AllIterator it = Entity::AllBegin();
+		while (it!=Entity::AllEnd()) {
+			it->SetLabels();
+			++it;
+		}
 	}
 	start->GetTopEntity()->Calculate();
 }
 
 Entity *Entity::GetNextNoComment() {
-	Entity *e_aux = next;
-	while (e_aux && e_aux->type==ET_COMENTARIO) e_aux = e_aux->next;
+	Entity *e_aux = GetNext();
+	while (e_aux && e_aux->type==ET_COMENTARIO) e_aux = e_aux->GetNext();
 	return e_aux;
 }
 
@@ -650,28 +504,29 @@ bool Entity::IsOutOfProcess() {
 	return IsOutOfProcess(GetNextNoComment());
 }
 
+// habria que sacar esto y reemplazarlo por recursión en el cliente
 Entity *Entity::NextEntity(Entity *aux) {
 	static vector<int> pila_nc;
 	static vector<Entity*> pila_e;
 	// si tiene hijos, se empieza por los hijos
-	if (aux->n_child) {
-		for(int i=0;i<aux->n_child;i++) { 
-			if (aux->child[i]) {
+	if (aux->GetChildCount()) {
+		for(int i=0;i<aux->GetChildCount();i++) { 
+			if (aux->GetChild(i)) {
 				pila_nc.push_back(i);
 				pila_e.push_back(aux);
-				return aux->child[i];
+				return aux->GetChild(i);
 			}
 		}
 	}
 	while(true) {
 		// si no tiene hijos se pasa a la siguiente
-		if (aux->next) return aux->next;
+		if (aux->GetNext()) return aux->GetNext();
 		// si no hay siguiente, se sube
-		if (pila_e.empty()) return start->GetTopEntity(); // si no se puede subir estamos en "Fin Proceso"
+		if (pila_e.empty()) return NULL; // si no se puede subir estamos en "Fin Proceso"
 		int last=++pila_nc.back();
 		aux=pila_e.back();
-		if (aux->n_child!=last) {
-			if (aux->child[last]) return aux->child[last];
+		if (aux->GetChildCount()!=last) {
+			if (aux->GetChild(last)) return aux->GetChild(last);
 			else pila_nc.back()=last;
 		} else {
 			pila_nc.pop_back();
@@ -710,11 +565,11 @@ void Entity::SetLabels() {
 			lpre=nassi_shneiderman?(variante?"Mientras Que ":"Hasta Que "):"";
 			break;
 		case ET_AUX_PARA:
-			if (!parent) return; // en el ctor todavía no está linkeado al padre, y el lpre depende de la posicion en el padre
+			if (!GetParent()) return; // en el ctor todavía no está linkeado al padre, y el lpre depende de la posicion en el padre
 			if (nassi_shneiderman) {
-				if (parent->child[1]==this) lpre=" Desde ";
-				else if (parent->child[2]==this) lpre=" Con Paso ";
-				else if (parent->child[3]==this) lpre=" Hasta ";
+				if (GetParent()->GetChild(1)==this) lpre=" Desde ";
+				else if (GetParent()->GetChild(2)==this) lpre=" Con Paso ";
+				else if (GetParent()->GetChild(3)==this) lpre=" Hasta ";
 			} else {
 				lpre="";
 			}
@@ -727,5 +582,22 @@ void Entity::SetLabels() {
 void Entity::SetEditPos (int pos) {
 	edit_pos=pos;
 	EnsureCaretVisible();
+}
+
+void Entity::OnLinkingEvent (LnkEvtType t, int i) {
+	switch(t) {
+	case EntityLinkingBase::EVT_UNLINK:
+		if (type==ET_OPCION) RemoveChild(i);
+		break;
+	case EntityLinkingBase::EVT_SETCHILDCOUNT:
+		child_bh.Resize(i,0); child_dx.Resize(i,0);
+		break;
+	case EntityLinkingBase::EVT_INSERTCHILD:
+		child_bh.Insert(i,0); child_dx.Insert(i,0);
+		break;
+	case EntityLinkingBase::EVT_REMOVECHILD:
+		child_bh.Remove(i); child_dx.Remove(i);
+		break;
+	}
 }
 

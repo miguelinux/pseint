@@ -10,7 +10,6 @@
 #include "Textures.h"
 #include "MainWindow.h"
 #include "Canvas.h"
-#include "EntityVerifier.h"
 using namespace std;
 
 #define mouse_setted_delta 1000
@@ -25,12 +24,12 @@ static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 	nueva->fx=orig->fx; nueva->fy=orig->fy;
 	nueva->d_x=orig->d_x; nueva->d_y=orig->d_y;
 	nueva->d_fx=orig->d_fx; nueva->d_fy=orig->d_fy;
-	for(int i=0;i<orig->n_child;i++) {
-		if (orig->child[i]) nueva->LinkChild(i,DuplicateEntity(orig->child[i],true));
+	for(int i=0;i<orig->GetChildCount();i++) {
+		if (orig->GetChild(i)) nueva->LinkChild(i,DuplicateEntity(orig->GetChild(i),true));
 		else nueva->LinkChild(i,NULL);
 	}
-	if (and_next_one_too && orig->next) {
-		nueva->LinkNext(DuplicateEntity(orig->next,true));
+	if (and_next_one_too && orig->GetNext()) {
+		nueva->LinkNext(DuplicateEntity(orig->GetNext(),true));
 	}
 	return nueva;
 }
@@ -77,11 +76,11 @@ void idle_func() {
 		last=now;
 	}
 	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
-	Entity *aux=start;
-	do {
-		aux->Tick();
-		aux=aux->all_next;
-	} while (aux!=start);
+	Entity::AllIterator it = Entity::AllBegin();
+	while (it!=Entity::AllEnd()) {
+		it->Tick();
+		++it;
+	}
 	if (mouse || choose_process_state==3) { 
 		interpolate(shapebar_size,0);
 		if (trash) interpolate(trash_size,trash_size_max);
@@ -141,7 +140,7 @@ void motion_cb(int x, int y) {
 		mouse->d_fy=y-mouse->m_y;
 	}
 	if (trash && mouse) {
-		if (mouse->type!=ET_OPCION && (mouse->parent||mouse->prev)) {
+		if (mouse->type!=ET_OPCION && (mouse->GetParent()||mouse->GetPrev())) {
 			mouse->UnLink();
 			Entity::CalculateAll();
 		}
@@ -204,15 +203,16 @@ static void fix_mouse_coords(int &x, int &y) {
 
 void mouse_dcb(int x, int y) {
 	fix_mouse_coords(x,y);
-	Entity *aux=start;
-	do {
-		if (aux->CheckMouse(x,y)) {
-			if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
-			aux->SetEdit();
+	
+	Entity::AllIterator it = Entity::AllBegin();
+	while (it!=Entity::AllEnd()) {
+		if (it->CheckMouse(x,y)) {
+			if (it->type==ET_PROCESO && it!=start) break; // para no editar el "FinProceso"
+			it->SetEdit();
 			return;
 		}
-		aux=aux->all_next;
-	} while (aux!=start);
+		++it;
+	}
 }
 
 void mouse_cb(int button, int state, int x, int y) {
@@ -284,36 +284,35 @@ void mouse_cb(int button, int state, int x, int y) {
 			return;
 		}
 		// click en una entidad? izquierdo=mover, derecho=editar label
-		Entity *aux=start;
 		if (mouse) mouse->UnSetMouse();
-		do {
-			if (aux->CheckMouse(x,y)) {
-				if (aux->type==ET_PROCESO && aux!=start) break; // para no editar el "FinProceso"
+		Entity::AllIterator it = Entity::AllBegin();
+		while (it!=Entity::AllEnd()) {
+			if (it->CheckMouse(x,y)) {
+				if (it->type==ET_PROCESO && it!=start) break; // para no editar el "FinProceso"
 				if (button==ZMB_RIGHT) {
-					aux->SetEdit(); return;
+					it->SetEdit(); return;
 				} else {
-					if (aux->type!=ET_PROCESO && canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
-						mouse=aux=DuplicateEntity(aux);
-//						aux->UnLink();
-						aux->SetEdit();
+					if (it->type!=ET_PROCESO && canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
+						mouse = DuplicateEntity(it.GetPtr());
+						it.SetPtr(mouse); it->SetEdit();
 					} 
-					if (edit!=aux) {
+					if (it.GetPtr()!=edit) {
 						if (edit) edit->UnsetEdit();
 					}
-					to_set_mouse=aux; mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
-					if (aux->type==ET_AUX_PARA) to_set_mouse=aux->parent; // para que no haga drag del hijo del para, sino de todo el para completo
+					to_set_mouse = it.GetPtr(); mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
+					if (it->type==ET_AUX_PARA) to_set_mouse=it->GetParent(); // para que no haga drag del hijo del para, sino de todo el para completo
 					return;
 				}
 				break;
 			}
-			aux=aux->all_next;
-		} while (aux!=start);
+			++it;
+		}
 		m_x0=x; m_y0=y; panning=true;
 	} else {
 		if (button==ZMB_LEFT) {
 			if (mouse) {
 				if (trash && mouse->type==ET_OPCION) {
-					Entity *p=mouse->parent;
+					Entity *p=mouse->GetParent();
 					mouse->UnLink(); 
 					p->Calculate();
 				} 

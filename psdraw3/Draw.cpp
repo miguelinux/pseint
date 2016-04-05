@@ -381,7 +381,7 @@ void display_cb() {
 				aux->LinkNext(mouse);
 				Entity::CalculateAll();
 				found=true;
-			} else if (aux->child) {
+			} else if (aux->GetChildCount()) {
 				int i=aux->CheckLinkChild(cur_x,cur_y);
 				if (i!=-1) {
 					mouse_link_x=cur_x; mouse_link_y=cur_y;
@@ -416,13 +416,12 @@ void display_cb() {
 		}
 		if (!aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
 		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
-		aux=Entity::NextEntity(aux);
-	} while (aux!=my_start);
+		aux = Entity::NextEntity(aux);
+	} while (aux);
 	if (mouse && mouse->type==ET_OPCION) {
-		int i=mouse->parent->CheckLinkOpcion(cur_x,cur_y);
+		int i=mouse->GetParent()->CheckLinkOpcion(cur_x,cur_y);
 		if (i!=-1) {
-			mouse->parent->MoveChild(mouse->child_id,i);
-			mouse->parent->Calculate();
+			mouse->GetParent()->Calculate();
 		}
 	}
 	
@@ -456,8 +455,13 @@ void display_cb() {
 		case ET_REPETIR: SetStatus(color_selection,"? Expresion de control (logica)."); break;
 		case ET_ASIGNAR: SetStatus(color_selection,"? Asignacion o instruccion secuencial."); break;
 		case ET_AUX_PARA: 
-			if (edit->parent->variante)	SetStatus(color_selection,"? Identificador del vector/matriz a recorrer.");
-			else SetStatus(color_selection,edit->parent->child[1]==edit?"? Valor inicial para el contador.":(edit->parent->child[2]==edit?"? Paso, incremento del contador por cada iteracion.":"? Valor final para el contador.")); 
+			if (edit->GetParent()->variante)	SetStatus(color_selection,"? Identificador del vector/matriz a recorrer.");
+			else SetStatus(color_selection,
+						   edit->GetParent()->GetChild(1)==edit
+								? "? Valor inicial para el contador."
+								: ( edit->GetParent()->GetChild(2)==edit
+									? "? Paso, incremento del contador por cada iteracion."
+								    : "? Valor final para el contador." ) ); 
 			break;
 		default:;
 		}

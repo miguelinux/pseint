@@ -20,20 +20,16 @@ static Entity *Add(stack<int> &ids, Entity *vieja, Entity *nueva, int id=-1) {
 	if (nueva->type==ET_OPCION) ids.push(mid+(nueva->label=="De Otro Modo"?0:1)); 
 	ids.push(-1);
 	if (mid==-1) {
-//cerr<<"LinkNext( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 		vieja->LinkNext(nueva);
 	} else { 
 		if (nueva->type==ET_OPCION) {
 			if (nueva->label=="De Otro Modo") {
-//cerr<<"ChildExists( "<<vieja->n_child-1<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
-				delete nueva; nueva=vieja->child[vieja->n_child-1]; // porque el child para dom se crea ya en el ctor del segun
+				delete nueva; nueva=vieja->GetChild(vieja->GetChildCount()-1); // porque el child para dom se crea ya en el ctor del segun
 			} else {
-//cerr<<"InsertChild( "<<mid<<" , "<<vieja->label<<" , "<<nueva->label<<" )\n";
 				vieja->InsertChild(mid,nueva);
 			}
 		} else {
 			vieja->LinkChild(mid,nueva);
-//cerr<<"LinkChild( "<<vieja->label<<" , "<<nueva->label<<" )\n";
 		}
 	}
 	if (id!=-1) 
@@ -46,7 +42,7 @@ static Entity *Up(stack<int> &ids, Entity *vieja) {
 	int oid=ids.top();
 	ids.pop(); 
 	if (oid==-1) {
-		return vieja->parent;
+		return vieja->GetParent();
 	} else { // si esperaba un hijo pero no vino nada (bucle vacio)
 		if (vieja->type!=ET_OPCION && vieja->type!=ET_SEGUN) ids.push(-1); 
 		return vieja;
@@ -201,9 +197,9 @@ void LoadProc(vector<string> &vproc) {
 			}
 			RemoveParentesis(ini);
 			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
-			aux->child[1]->SetLabel(ini);
-			aux->child[2]->SetLabel(paso);
-			aux->child[3]->SetLabel(fin);
+			aux->GetChild(1)->SetLabel(ini);
+			aux->GetChild(2)->SetLabel(paso);
+			aux->GetChild(3)->SetLabel(fin);
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"PARACADA ")) {
@@ -217,7 +213,7 @@ void LoadProc(vector<string> &vproc) {
 			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
 			aux->variante=true;
 //			aux->child[1]->SetLabel("");
-			aux->child[2]->SetLabel(str);
+			aux->GetChild(2)->SetLabel(str);
 //			aux->child[3]->SetLabel("");
 			_new_this(aux);
 		}
@@ -226,7 +222,7 @@ void LoadProc(vector<string> &vproc) {
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"SINO")) {
-			aux=aux->parent; ids.pop(); ids.push(0);
+			aux=aux->GetParent(); ids.pop(); ids.push(0);
 			_new_prev();
 		}
 		else if (StartsWith(str,"SEGUN ")) {
@@ -303,7 +299,7 @@ bool Load(const char *filename) {
 		string &str=vfile[i];
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
 			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
-			Entity::all_any=start=NULL;
+			Entity::AllSet(start=NULL);
 			vector<string> vproc;
 			for(int j=i0;;j++) {
 				string &str=vfile[j];
@@ -337,7 +333,7 @@ bool Save(const char *filename) {
 
 // inicializa las estructuras de datos con un algoritmo en blanco
 void CreateEmptyProc(string type) {
-	Entity::all_any=NULL;
+	Entity::AllSet(NULL);
 	start = new Entity(ET_PROCESO,"");
 	Entity *aux = new Entity(ET_PROCESO,"");
 	aux->variante=true;
@@ -356,13 +352,12 @@ void New() {
 }
 
 void SetProc(Entity *proc) {
-	Entity::all_any=start=proc;
+	Entity::AllSet(start=proc);
 	Entity::CalculateAll(true);
 	ProcessMenu(MO_ZOOM_EXTEND);
-//	pname=proc->prototipo;
-	Entity *ent=start;
-	do {
-		ent->d_h=ent->d_w=ent->d_bh=ent->d_bwl=ent->d_bwr=ent->d_fx=ent->d_fy=ent->d_x=ent->d_y=0;
-		ent=ent->all_next;
-	} while(ent!=start);
+	Entity::AllIterator it = Entity::AllBegin();
+	while (it!=Entity::AllEnd()) {
+		it->d_h=it->d_w=it->d_bh=it->d_bwl=it->d_bwr=it->d_fx=it->d_fy=it->d_x=it->d_y=0;
+		++it;
+	}
 }

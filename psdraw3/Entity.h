@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 #include <string>
+#include "EntityLinking.h"
 using namespace std;
 
 #ifdef DrawText
@@ -26,15 +27,13 @@ Tipos de entidades:
 */
 enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_COUNT };
 
-struct Entity {
+struct Entity : public EntityLinking<Entity> {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
 	static bool nassi_shneiderman; ///< usar diagramas de Nassi-Shneiderman en lugar de "clásico"
 	static bool shape_colors; ///< mostrar los bloques de diferentes colores
 	static bool enable_partial_text; ///< acortar labels largos
 	static bool show_comments; ///< mostrar entidades de tipo ET_COMENTARIO
 	static int max_label_len[ET_COUNT];
-	Entity *all_next, *all_prev;
-	static Entity *all_any;
 	ETYPE type;
 	// cosas definidas por el constructor al setear la etiqueta
 	int w,h; // tamaño real
@@ -50,12 +49,8 @@ struct Entity {
 	int d_bwl, d_bwr,d_bh; // tamaño del bloque completo en el dibujo, incluyendo hijos
 	// otras
 	int m_x,m_y; // coordenadas del mouse relativas a x,y, para cuando se arrastra
-	Entity *next,*prev,*parent;
-	int child_id; // indice de this en el arreglo child del parent (-1 si no es el hijo directo o no tiene parent)
-	Entity **child; // arreglo de hijos (primer entidad de los sub-bloques, 1 para repetitivas, 2 para si, n para segun)
-	int *child_dx; // posicion de los hijos relativa al x del padre(this)
-	int *child_bh; // arreglo con el alto que tiene cada hijo para que el padre sepa desde donde cerrar las flechas
-	int n_child; // cantidad de hijos
+	Vector<int> child_dx; // posicion de los hijos relativa al x del padre(this)
+	Vector<int> child_bh; // arreglo con el alto que tiene cada hijo para que el padre sepa desde donde cerrar las flechas
 	int flecha_in; // si las flechas de entrada son mas largas que lo normal (ej, entrada en un repetitivo), se pone aca la diferencia (esto se podria sacar, no?)
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
@@ -78,12 +73,6 @@ struct Entity {
 	int CheckLinkChild(int x, int y);
 	int CheckLinkOpcion(int x, int y);
 	bool CheckLinkNext(int x, int y);
-	void UnLink();
-	void LinkNext(Entity *e);
-	void RemoveChild(int j);
-	void InsertChild(int i, Entity *e);
-	void MoveChild(int i0, int i1);
-	void LinkChild(int i, Entity *e);
 	void Tick();
 	void DrawShapeSolid(const float *color,int x, int y, int w, int h);
 	void DrawShapeBorder(const float *color,int x, int y, int w, int h);
@@ -109,6 +98,8 @@ struct Entity {
 	bool IsOutOfProcess();
 	static bool IsOutOfProcess(Entity *next_no_commnet);
 	static Entity *NextEntity(Entity *aux);
+	
+	void OnLinkingEvent(LnkEvtType t, int i);
 };
 
 static const int flecha_h=25; // separacion entre bloques consecutivos
