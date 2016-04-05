@@ -90,6 +90,9 @@ mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
 	pass1_sizer->Add(password1,wxSizerFlags().Proportion(1).Border(wxRIGHT|wxTOP|wxBOTTOM,5));
 	main_sizer->Add(pass1_sizer,wxSizerFlags().Proportion(0).Expand());
 	
+	chk_new_cypher = new wxCheckBox(this,mxID_SHOW_ERRORS,"Cifrado mejorado (requiere PSeInt v20160401 o superior)");
+	main_sizer->Add(chk_new_cypher,wxSizerFlags().Border(wxBOTTOM|wxLEFT|wxRIGHT,5));
+	
 //	main_sizer->Add(new wxStaticText(this,wxID_ANY,"Archivo de salida:"),wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT,5));
 //	wxBoxSizer *output_sizer = new wxBoxSizer(wxHORIZONTAL);
 //	output_path = new wxTextCtrl(this,wxID_ANY,"");
@@ -158,7 +161,7 @@ void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 						"Error",wxOK|wxICON_ERROR,this);
 			return;
 		}
-		if (!pack.Save(file.GetFullPath(),chk_pass->GetValue()?password1->GetValue():"")) {
+		if (!pack.Save(file.GetFullPath(),chk_pass->GetValue()?password1->GetValue():"",!chk_new_cypher->GetValue())) {
 			wxMessageBox(wxString("Error al guardar el archivo \"")+file.GetFullPath()+"\".","Error",wxOK|wxICON_ERROR,this);
 		} else {
 			wxMessageBox("Ejercicio generado correctamente","PSeInt",wxOK|wxICON_INFORMATION,this);
@@ -190,6 +193,7 @@ void mxCreatorWindow::OnGenerateSolutions (wxCommandEvent & event) {
 }
 
 void mxCreatorWindow::OnCheckPass (wxCommandEvent & event) {
+	chk_new_cypher->SetValue(chk_pass->GetValue());
 	EnableDisable();
 }
 
@@ -201,6 +205,7 @@ void mxCreatorWindow::EnableDisable ( ) {
 	msg_bad->Enable(is_ok);
 	chk_pass->Enable(is_ok);
 	password1->Enable(is_ok&&chk_pass->GetValue());
+	chk_new_cypher->Enable(is_ok&&chk_pass->GetValue());
 	show_errors->Enable(is_ok);
 	show_solutions->Enable(is_ok&&show_errors->GetValue());
 	stop_on_first_error->Enable(is_ok&&show_errors->GetValue());

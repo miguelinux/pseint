@@ -13,11 +13,11 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=../bin/help/cambios.html
+current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=102:27
+cursor=0:0
 open=true
 [source]
 path=GLtoWX.cpp

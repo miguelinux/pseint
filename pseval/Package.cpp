@@ -45,10 +45,12 @@ protected:
 };
 
 class mxFilterOutputStream : public wxFilterOutputStream {
-	wxString m_key; int pos, len, base_pos, base_delta;
+	wxString m_key;
+	bool m_old_cypher;
+	int pos, len, base_pos, base_delta;
 public:
-	mxFilterOutputStream(wxOutputStream &stream, const wxString &key) 
-		: wxFilterOutputStream(stream), m_key(key), len(key.Len())
+	mxFilterOutputStream(wxOutputStream &stream, const wxString &key, bool old_cypher) 
+		: wxFilterOutputStream(stream), m_key(key), m_old_cypher(old_cypher), len(key.Len())
 	{ 
 		pos=0; for(int i=0;i<len;i++) pos+=_C(m_key[i]);
 		if (len) base_delta=base_pos=pos=(pos%len); 
@@ -67,7 +69,7 @@ protected:
 		unsigned char *uaux = reinterpret_cast<unsigned char*>(auxbuf);
 		for(unsigned int i=0;i<size;i++) { 
 			int x = ubuf[i]; 
-			base_delta = (base_delta+_C(m_key[pos]))%256;
+			base_delta = ((m_old_cypher?0:base_delta)+_C(m_key[pos]))%256;
 			x = ( x + base_delta ) % 256;
 			pos=(pos+1)%len;
 			uaux[i] = x;
@@ -277,10 +279,10 @@ wxString Package::GetFullConfig() {
 	return ret;
 }
 
-bool Package::Save (const wxString & fname, const wxString & passkey) {
+bool Package::Save (const wxString & fname, const wxString & passkey, bool old_cypher) {
 	wxFFileOutputStream out(fname);
 	out.Write(cypher_version_str,12);
-	mxFilterOutputStream fout(out,passkey);
+	mxFilterOutputStream fout(out,passkey,old_cypher);
 	wxZipOutputStream zip(fout);
 	{
 		zip.PutNextEntry("config.ini");

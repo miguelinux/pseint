@@ -27,7 +27,7 @@ public:
 	void Reset();
 	bool Load(const wxString &fname, const wxString &passkey); ///< carga todos los datos del ejercicio a partir del archivo que recibe como argumento
 	bool Load(const wxString &dir); ///< carga desde un directorio, para el generador de packages
-	bool Save(const wxString &fname, const wxString &passkey); ///< genera el zip
+	bool Save(const wxString &fname, const wxString &passkey, bool old_cypher); ///< genera el zip
 	TestCase &GetTest(const wxString &name); ///< obtiene los datos de un caso a partir de su nombre (se asume que el nombre existe)
 	int GetNames(wxArrayString &names); ///< colocar en el arreglo los nombres de todos los casos de prueba, y retorna la cantidad
 	bool IsInConfig(const wxString &key); 

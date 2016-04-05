@@ -19,6 +19,7 @@ class mxCreatorWindow : public wxFrame {
 	wxTextCtrl *msg_ok;
 	wxTextCtrl *msg_bad;
 	wxCheckBox *chk_pass;
+	wxCheckBox *chk_new_cypher;
 	wxTextCtrl *password1;
 	wxTextCtrl *num_tests;
 	wxCheckBox *show_errors;

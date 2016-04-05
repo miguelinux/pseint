@@ -395,6 +395,7 @@
   El identificador de variable de la asignación no es correcto. Los identificadores válidos están formados solamente por números y letras, comenzando siempre con una letra.
   * Compruebe que sea un identificador y no una expresión.
   * Verifique que no contenga caracteres no permitidos, espacios u operadores, y que comiencen con una letra.
+  * Verifique que no coincida con una palabra reservada, o con el identificador de un proceso/algoritmo o una funcion/subproceso.
 
 87
   Luego de la expresión a asignar se encontró alguna palabra o expresión adicional.
@@ -726,6 +727,11 @@
   Los argumentos de un subproceso serán dimensionados por el proceso/subproceso que realice la llamada, y por lo tanto el subproceso los recibirá con un tipo ya dimensionados. Es por esto que no debe volver a dimensionar el tipo de una variable que es argumento otra vez dentro del subproceso.
   * Elimine la instrucción de dimensión del parámetro formal del interior del subproceso.
   * Verifique que el arreglo que actúe como parámetro actual (en la llamada) se encuentre definida dimensionado.
+
+252
+  El cuerpo de un proceso/algoritmo se introduce con la palabra Proceso (o Algoritmo) seguida solamente del nombre del mismo. Este error se debe a que luego del nombre del proceso/algoritmo hay algo más.
+  * Compruebe que el nombre del proceso/algoritmo esté correctamente escrito.
+  * El nombre es un identificador que cumple las misma reglas que los identificadores de variables (por ejemplo, no puede contener espacios).
 
 255
   Uno de los argumentos para la acción de lectura es el nombre de un arreglo (está declarado con la directiva DIMENSION en algún punto anterior de su algoritmo), pero la acción de lectura no puede leer todo un arreglo. Los arreglos se deben leer posición por posición (esto es, una acción de lectura para cada posición). 
