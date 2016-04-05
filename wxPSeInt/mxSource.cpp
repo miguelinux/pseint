@@ -28,6 +28,10 @@
 #define RT_DELAY 1000
 #define RELOAD_DELAY 3500
 
+#ifdef _AUTOINDENT
+#	warning _AUTOINDENT no se lleva bien con Undo/Redo
+#endif
+
 int mxSource::last_id=0;
 
 //const wxChar* mxSourceWords3 = 
@@ -46,6 +50,9 @@ static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
+#ifdef _AUTOINDENT
+	EVT_STC_MODIFIED(wxID_ANY,mxSource::OnModified)
+#endif
 	EVT_STC_UPDATEUI (wxID_ANY, mxSource::OnUpdateUI)
 	EVT_STC_CHARADDED (wxID_ANY, mxSource::OnCharAdded)
 	EVT_KEY_DOWN(mxSource::OnKeyDown)
@@ -171,6 +178,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	
 	SetDropTarget(new mxDropTarget(this));
 	
+#ifdef _AUTOINDENT
+	to_indent_first_line = 99999999;
+	indent_timer = new wxTimer(GetEventHandler());
+#endif
 	rt_timer = new wxTimer(GetEventHandler());
 	flow_timer = new wxTimer(GetEventHandler());
 	reload_timer = new wxTimer(GetEventHandler());
@@ -817,20 +828,16 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 	}
 }
 
-void mxSource::IndentLine(int l, bool goup) {
-	int btype/*,ignore_next=false*/;
+bool mxSource::IndentLine(int l, bool goup) {
+	int btype;
 	int cur=GetIndentLevel(l,goup,&btype);
 	wxString line=GetLine(l);
-//	if (line.StartsWith("//")) return;
 	line<<" "; int i=0,n=line.Len();
 	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
 	int ws=i;
 	if (i<n && !(line[i]=='/'&&line[i+1]=='/')) {
 		bool incluir_nrs=false;
 		while (i<n && EsLetra(line[i],incluir_nrs)) { i++; incluir_nrs=true; }
-//		if (ignore_next)
-//			ignore_next=false;
-//		else {
 		wxString word=line.SubString(ws,i-1);
 		word.MakeUpper();
 		if (word=="SINO") cur-=4;
@@ -848,7 +855,7 @@ void mxSource::IndentLine(int l, bool goup) {
 			}
 		}
 		else if (word=="FINSI") cur-=4;
-		else if (word=="FINPROCESO"||word=="FINALGORITMO") cur-=4;
+		else if (word=="FINPROCESO"||word=="FINALGORITMO") cur=0;
 		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word=="FINSUBALGORITMO"||word==_Z("FINFUNCIÓN")) cur-=4;
 		else {
 			bool comillas=false;
@@ -863,24 +870,17 @@ void mxSource::IndentLine(int l, bool goup) {
 				i++;
 			}
 		}
-	//		else if (word=="FIN") cur-=4;
-//		}
 	}
 	if (btype==BT_SEGUN && GetLineEndPosition(l)==GetLineIndentPosition(l)) cur-=4;
 	if (cur<0) cur=0;
-//	int cp=GetCurrentPos();
+	if (GetLineIndentation(l)==cur) return false;
 	if (GetCurrentPos()==GetLineIndentPosition(l)) {
 		SetLineIndentation(l,cur);
 		SetSelection(GetLineIndentPosition(l),GetLineIndentPosition(l));
 	} else
 		SetLineIndentation(l,cur);
-	
+	return true;
 }
-
-//void mxSource::OnEditBeautifyCode(wxCommandEvent &evt) {
-//	for (int i=0;i<GetLineCount();i++)
-//		IndentLine(i);
-//}
 
 // si diff_proc_sub_func==false, proceso, subproceso y funcion devuelven BT_PROCESO (para el indentado es lo mismo, cambia para el autoclose)
 int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_func) {
@@ -1329,6 +1329,32 @@ void mxSource::StopRTSyntaxChecking ( ) {
 void mxSource::OnTimer (wxTimerEvent & te) {
 //	_LOG("mxSource::OnTimer in");
 	wxObject *obj = _wxEvtTimer_to_wxTimerPtr(te);
+#ifdef _AUTOINDENT
+	if (obj==indent_timer) {
+		BeginUndoAction();
+		int cl = GetCurrentLine(), p0, p1;
+		for(int i = to_indent_first_line; i<int(to_indent.size()); i++) {
+			cerr << "IndentLine: " << i << endl;
+			if (!to_indent[i]) continue;
+			if (i==cl) {
+				int ip = GetLineIndentPosition(cl);
+				p0 = GetSelectionStart()-ip;
+				p1 = GetSelectionEnd()-ip;
+			}
+			if (IndentLine(i)) to_indent[i+1] = true;
+			if (i==cl) {
+				int ip = GetLineIndentPosition(cl);
+				p0+=ip; p1+=ip;
+				int pb = PositionFromLine(cl);
+				if (p0<pb) p0=pb; if (p1<pb) p1=pb;
+				SetSelection(p0,p1);
+			}
+		}
+		to_indent.clear();
+		to_indent_first_line = 99999999;
+		EndUndoAction();
+	} else 
+#endif
 	if (obj==flow_timer) {
 		_LOG("mxSource::OnTimes(flow) "<<this);
 		UpdateFromFlow();
@@ -1528,6 +1554,23 @@ void mxSource::OnChange (wxStyledTextEvent & event) {
 		reload_timer->Start(RELOAD_DELAY,true);
 	}
 }
+#ifdef _AUTOINDENT
+void mxSource::OnModified (wxStyledTextEvent & event) {
+	event.Skip();
+	if (indent_timer) {
+		if (event.GetModificationType()&(wxSTC_MOD_INSERTTEXT|wxSTC_MOD_DELETETEXT)) {
+			int el1 = LineFromPosition(event.GetPosition());
+			int el2 = el1+event.GetLinesAdded()+2;
+			for (int el = el1; el<el2; ++el) {
+				if (to_indent.size()<=el+1) to_indent.resize(el+1,false);
+				to_indent[el] = to_indent[el+1] = true;
+				if (el<to_indent_first_line) to_indent_first_line = el;
+				indent_timer->Start(200,true);
+			}
+		}
+	}
+}
+#endif
 
 int mxSource::GetId ( ) {
 	return id;
@@ -1951,6 +1994,7 @@ bool mxSource::SaveFile (const wxString & fname) {
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
 	if (evt.GetKeyCode()==WXK_ESCAPE) {
 		if (CallTipActive()) HideCalltip();
+		else if (AutoCompActive()) AutoCompCancel();
 		else main_window->QuickHelp().Hide();
 	} else evt.Skip();
 }

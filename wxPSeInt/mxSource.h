@@ -4,6 +4,7 @@
 #include <vector>
 #include <wx/timer.h>
 #include "RTSyntaxManager.h"
+#include <set>
 using namespace std;
 class mxInputDialog;
 class mxProcess;
@@ -27,7 +28,11 @@ private:
 	wxTimer *rt_timer; // se activa al cargar el pseudocodigo y al modificarlo, para llamar al rt_syntax
 	wxTimer *reload_timer; // se activa al modificar el algoritmo si se estaba ejecutando en psterm, para mandar a reejecutar
 	wxTimer *flow_timer; // se activa al recibir el foco con el editor de diagramas abierto para pedir el pseudocódigo actualizado
-	
+#ifdef _AUTOINDENT
+	vector<bool> to_indent;
+	int to_indent_first_line;
+	wxTimer *indent_timer; // se activa al recibir el foco con el editor de diagramas abierto para pedir el pseudocódigo actualizado
+#endif
 	int comp_from, comp_to;
 	int last_s1,last_s2;
 	bool is_example;
@@ -99,7 +104,7 @@ public:
 	int GetIndent(int line);
 	int GetIndentLevel(int l, bool goup, int *btype=NULL, bool diff_proc_sub_func=false);
 	void Indent(int l1, int l2);
-	void IndentLine(int l, bool goup=true);
+	bool IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);
 //	void OnEditBeautifyCode(wxCommandEvent &evt);
 
@@ -146,6 +151,9 @@ public:
 	
 	void OnTimer(wxTimerEvent &te); // event dispatcher para los timers, mira que timer es e invoca al metodo que le corresponda
 	void OnChange(wxStyledTextEvent &event);
+#ifdef _AUTOINDENT
+	void OnModified(wxStyledTextEvent &event);
+#endif
 	
 	wxString GetCurrentKeyword (int pos=-1); // auxiliar para OnPopupMenu y otros
 	void OnPopupMenu(wxMouseEvent &evt);
