@@ -60,8 +60,8 @@ int win_h=400,win_w=600; // tamaño de la ventana
 // colores
 float color_border[ET_COUNT+1][3]={0}; // borde de la forma de una entidad
 const float color_comment[3]={.4,.4,.4}; // borde de la forma de una entidad
-const float color_label[3]={0,0,.8}; // texto de la etiqueta de una entidad
-const float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entidad
+/*const */float color_label[3]={0,0,.8}; // texto de la etiqueta de una entidad
+/*const */float color_label_fix[3]={0.4,0,.4}; // texto de la etiqueta de una entidad
 float color_arrow[3]={.8,0,0}; // flechas que guian el flujo y unen entidades
 const float color_selection[3]={0,.4,0}; // texto o borde de forma seleccionada
 float color_shape[ET_COUNT+1][3]; // fondo de la forma

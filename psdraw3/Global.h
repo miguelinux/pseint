@@ -82,8 +82,8 @@ extern Entity *all_any;
 // colores
 extern float color_border[ET_COUNT+1][3]; // borde de la forma de una entidad
 extern const float color_comment[3]; // para borde y fuente de las entidades con comentarios
-extern const float color_label[3]; // texto de la etiqueta de una entidad
-extern const float color_label_fix[3]; // texto de la parte (pre)fija de la etiqueta de una entidad
+extern /*const */float color_label[3]; // texto de la etiqueta de una entidad
+extern /*const */float color_label_fix[3]; // texto de la parte (pre)fija de la etiqueta de una entidad
 extern float color_arrow[3]; // flechas que guian el flujo y unen entidades
 extern const float color_selection[3]; // texto o borde de forma seleccionada
 extern float color_shape[ET_COUNT+1][3]; // fondo de la forma

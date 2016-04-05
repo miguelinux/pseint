@@ -41,6 +41,8 @@ IMPLEMENT_APP(mxApplication)
 	
 LangSettings lang(LS_DO_NOT_INIT);
 
+void SetModified() {}
+
 bool mxApplication::OnInit() {
 	
 	_handle_version_query("psDrawE");
@@ -88,6 +90,21 @@ bool mxApplication::OnInit() {
 //	draw_shadow=false;
 	if ((new mxConfig())->ShowModal()==wxID_CANCEL) return 0; // opciones del usuairo
 	
+	if (!Entity::shape_colors) {
+		color_shape[ET_COUNT][0] = .97f;
+		color_shape[ET_COUNT][1] = .97f;
+		color_shape[ET_COUNT][2] = .97f;
+		color_arrow[0] = .15f;
+		color_arrow[1] = .15f;
+		color_arrow[2] = .15f;
+		color_label[0] = 0.0f;
+		color_label[1] = 0.0f;
+		color_label[2] = 0.0f;
+		color_label_fix[0] = 0.15f;
+		color_label_fix[1] = 0.15f;
+		color_label_fix[2] = 0.15f;
+	}
+	
 	// calcular tamaño total
 	int h=0,wl=0,wr=0, margin=10;
 	Entity *real_start = start->GetTopEntity();
@@ -96,11 +113,11 @@ bool mxApplication::OnInit() {
 	real_start->Calculate();
 	
 	// hacer que las entidades tomen sus tamaños ideales
-	Entity *e=Entity::all_any;
-	do {
-		e->Tick();
-		e=e->all_next;
-	} while (e!=Entity::all_any);
+	Entity::AllIterator it = Entity::AllBegin();
+	while (it!=Entity::AllEnd()) {
+		it->Tick();
+		++it;
+	}
 
 	// generar el bitmap
 //	int margin=10;
@@ -123,7 +140,7 @@ bool mxApplication::OnInit() {
 	do {
 		aux->Draw();
 		aux=Entity::NextEntity(aux);
-	} while (aux!=real_start);
+	} while (aux);
 	
 	// guardar
 	if (!force) {
@@ -146,5 +163,3 @@ bool mxApplication::OnInit() {
 	
 	return false;
 }
-
-

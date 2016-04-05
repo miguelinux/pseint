@@ -3,6 +3,13 @@
 #include <cstddef>
 #include "Vector.h"
 
+// Esta clase encapsula todo lo que tenga que ver con el manejo de enlaces entre las
+// entidades... es decir, el mantenimiento del grafo/árbol
+// Entity va a heredar (aunque no directamente, ver EntityLinking). Algunos pocas 
+// modificaciones que puede generar algún método del grafo y requieren cambios en
+// Entity (por ejemplo, al agregar/quitar un hijo, hay que sincronizar los
+// auxiliares que tiene el dibujo de cada hijo). Esas cosas se las notifica con 
+// el método virtual OnLinkingEvent
 struct EntityLinkingBase {
 public:
 	// todas las entidades del algoritmo/función actual forman una gran lista enlazada usando los atributos all_*,
@@ -31,6 +38,10 @@ public:
 	virtual void OnLinkingEvent(LnkEvtType t, int i) {}
 };
 
+// Para evitar casteos a cada rato, esta interfase los hace... para hacerlos sin
+// depender de Entity tiene que ser genérica, y lo haga acá separado de EntityLinkingBase
+// para que no sea tooodo template... Entonces, el trabajo sucio está en EntityLinkingBase,
+// y acá solo la parte genérica de la interfaz.
 template<typename Entity> 
 struct EntityLinking : public EntityLinkingBase {
 	Entity *GetParent() { return reinterpret_cast<Entity*>(m_parent); }

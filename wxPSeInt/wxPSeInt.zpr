@@ -12,7 +12,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=/src/manual/wx/3.1.0-dbg-u/src/stc/scintilla/src
-current_source=mxProcess.cpp
+current_source=RTSyntaxManager.cpp
 path_char=/
 [source]
 path=DebugManager.cpp
@@ -44,7 +44,6 @@ cursor=84:8
 marker=39
 marker=69
 marker=88
-open=true
 [source]
 path=mxSource.cpp
 cursor=1988:0
@@ -57,7 +56,6 @@ path=mxProcess.cpp
 cursor=297:78
 marker=188
 marker=222
-open=true
 [source]
 path=HelpManager.cpp
 cursor=63:0
@@ -112,7 +110,8 @@ path=mxInputDialog.cpp
 cursor=20:65
 [source]
 path=RTSyntaxManager.cpp
-cursor=106:11
+cursor=77:0
+open=true
 [source]
 path=mxIconInstaller.cpp
 cursor=22:5
@@ -239,7 +238,8 @@ path=mxInputDialog.h
 cursor=-1:292
 [header]
 path=RTSyntaxManager.h
-cursor=31:32
+cursor=0:0
+open=true
 [header]
 path=mxIconInstaller.h
 cursor=0:46

@@ -171,7 +171,7 @@ void mxConfig::OnProc (wxCommandEvent & evt) {
 
 void mxConfig::OnColors (wxCommandEvent & evt) {
 	evt.Skip();
-	Entity::shape_colors=ch_colors->GetValue();
+	Entity::shape_colors = ch_colors->GetValue();
 }
 
 void mxConfig::OnStyle (wxCommandEvent & evt) {

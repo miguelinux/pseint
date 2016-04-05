@@ -1,29 +1,32 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/GLtoWX.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxConfig.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/GLtoWX.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/EntityLinking.o 
 
-${OBJS_DIR}/Application.o: Application.cpp ../psdraw3/Load.h ../psdraw3/Global.h ../psdraw3/Entity.h ../pseint/LangSettings.h ../wxPSeInt/mac-stuff.h GLtoWX.h Version.h ../pseint/version_common.h mxConfig.h
+${OBJS_DIR}/Application.o: Application.cpp ../psdraw3/Load.h ../psdraw3/Global.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../wxPSeInt/mac-stuff.h GLtoWX.h Version.h ../pseint/version_common.h mxConfig.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
 ${OBJS_DIR}/GLtoWX.o: GLtoWX.cpp GLtoWX.h
 	${GPP} ${CXXFLAGS} -c GLtoWX.cpp -o $@
 
-${OBJS_DIR}/DClasico.o: ../psdraw3/DClasico.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/Global.h ../pseint/LangSettings.h ../psdraw3/Draw.h
+${OBJS_DIR}/DClasico.o: ../psdraw3/DClasico.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../psdraw3/Global.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../psdraw3/Draw.h
 	${GPP} ${CXXFLAGS} -c ../psdraw3/DClasico.cpp -o $@
 
-${OBJS_DIR}/DNassiSchne.o: ../psdraw3/DNassiSchne.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/Global.h ../pseint/LangSettings.h ../psdraw3/Draw.h ../psdraw3/Text.h
+${OBJS_DIR}/DNassiSchne.o: ../psdraw3/DNassiSchne.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../psdraw3/Global.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../psdraw3/Draw.h ../psdraw3/Text.h
 	${GPP} ${CXXFLAGS} -c ../psdraw3/DNassiSchne.cpp -o $@
 
-${OBJS_DIR}/Entity.o: ../psdraw3/Entity.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/Global.h ../pseint/LangSettings.h ../psdraw3/Draw.h ../psdraw3/Events.h ../psdraw3/Text.h
+${OBJS_DIR}/Entity.o: ../psdraw3/Entity.cpp ../psdraw3/GLstuff.h GLtoWX.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../psdraw3/Global.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../psdraw3/Draw.h ../psdraw3/Events.h ../psdraw3/Text.h
 	${GPP} ${CXXFLAGS} -c ../psdraw3/Entity.cpp -o $@
 
-${OBJS_DIR}/Global.o: ../psdraw3/Global.cpp ../psdraw3/Global.h ../psdraw3/Entity.h ../pseint/LangSettings.h
+${OBJS_DIR}/Global.o: ../psdraw3/Global.cpp ../psdraw3/Global.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h
 	${GPP} ${CXXFLAGS} -c ../psdraw3/Global.cpp -o $@
 
-${OBJS_DIR}/Load.o: ../psdraw3/Load.cpp ../psdraw3/Load.h ../psdraw3/Global.h ../psdraw3/Entity.h ../pseint/LangSettings.h ../psdraw3/Events.h
+${OBJS_DIR}/Load.o: ../psdraw3/Load.cpp ../psdraw3/Load.h ../psdraw3/Global.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../psdraw3/Events.h
 	${GPP} ${CXXFLAGS} -c ../psdraw3/Load.cpp -o $@
 
-${OBJS_DIR}/LangSettings.o: ../pseint/LangSettings.cpp ../pseint/LangSettings.h ../wxPSeInt/Logger.h ../wxPSeInt/version.h ../pseint/version_common.h
+${OBJS_DIR}/LangSettings.o: ../pseint/LangSettings.cpp ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../wxPSeInt/Logger.h ../wxPSeInt/version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c ../pseint/LangSettings.cpp -o $@
 
-${OBJS_DIR}/mxConfig.o: mxConfig.cpp mxConfig.h ../psdraw3/Global.h ../psdraw3/Entity.h ../pseint/LangSettings.h ../psdraw3/Load.h
+${OBJS_DIR}/mxConfig.o: mxConfig.cpp mxConfig.h ../psdraw3/Global.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../psdraw3/Load.h
 	${GPP} ${CXXFLAGS} -c mxConfig.cpp -o $@
+
+${OBJS_DIR}/EntityLinking.o: ../psdraw3/EntityLinking.cpp ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../psdraw3/Events.h ../psdraw3/Entity.h
+	${GPP} ${CXXFLAGS} -c ../psdraw3/EntityLinking.cpp -o $@
 

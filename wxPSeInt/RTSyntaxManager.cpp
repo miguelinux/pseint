@@ -55,7 +55,6 @@ bool RTSyntaxManager::Process (mxSource * src, Info *args) {
 	if (!the_one) Start(); else if (the_one->processing || the_one->restart) return false;
 	_LOG("RTSyntaxManager::Process in src="<<src);
 	if (args) extra_args=*args; else extra_args.action=RTA_NULL;
-//	int mid=the_one->id; // ¿para que era esto?
 	the_one->src=src;
 	wxTextOutputStream output(*(the_one->GetOutputStream())
 #ifdef UNICODE

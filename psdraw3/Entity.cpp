@@ -600,4 +600,3 @@ void Entity::OnLinkingEvent (LnkEvtType t, int i) {
 		break;
 	}
 }
-
