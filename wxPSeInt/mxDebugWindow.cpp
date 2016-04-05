@@ -89,6 +89,7 @@ void mxDebugWindow::SetSpeed(int speed) {
 void mxDebugWindow::SetState(ds_enum state) {
 	switch (state) {
 	case DS_STARTING:
+		main_window->EnableDebugButton(false);
 		dp_button_run->SetBitmapLabel(dp_bmps[BMP_FINALIZAR]);
 		dp_button_run->SetToolTip(utils->FixTooltip("Utilice este botón para detener definitivamente la ejecución del algoritmo y abandonar el modo de ejecución paso a paso."));
 		subtitles->text->SetValue("Haga click en \"Continuar\" para leer en este panel los detalles las próximas acciones que realize el intérprete.");
@@ -101,7 +102,8 @@ void mxDebugWindow::SetState(ds_enum state) {
 		dp_check_desktop_test->Disable();
 		desktop_test_panel->SetEditable(false);
 		break;
-	case DS_STOPPED: 
+	case DS_STOPPED:
+		if (main_window) main_window->EnableDebugButton(true);
 		subtitles->button_next->SetLabel(_T("Comenzar"));
 		subtitles->text->SetValue("Haga click en \"Comenzar\" para iniciar la ejecución paso a paso y leer en este panel los detalles de cada acción que realiza el intérprete.");
 		subtitles->button_next->Enable();

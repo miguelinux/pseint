@@ -48,6 +48,8 @@ public:
 	} m_quick_help;
 	QuickHelpPanelPolicy &QuickHelp() { return m_quick_help; }
 	
+	void EnableDebugButton(bool enable);
+	
 private:
 	friend class DebugManager;
 	mxFindDialog *find_replace_dialog;

@@ -13,7 +13,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=Version.h
+current_source=Entity.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -47,7 +47,7 @@ marker=402
 marker=405
 [source]
 path=Entity.cpp
-cursor=241:21
+cursor=259:6
 marker=223
 marker=310
 marker=337

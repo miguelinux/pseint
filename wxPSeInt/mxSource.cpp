@@ -743,7 +743,10 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 void mxSource::MessageReadOnly() {
 	static wxDateTime last_msg=wxDateTime((time_t)0);
 	if (wxDateTime::Now().Subtract(last_msg).GetSeconds()>0) {
-		if (flow_socket) wxMessageBox("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo.");
+		if (flow_socket) {
+			wxMessageBox("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo.");
+			flow_socket->Write("raise\n",6); 
+		}
 		else if (!is_example) wxMessageBox("No se puede modificar el pseudocódigo mientras está siendo ejecutado paso a paso.");
 		else wxMessageBox("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo.");
 	}

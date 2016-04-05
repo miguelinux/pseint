@@ -2124,3 +2124,8 @@ void mxMainWindow::QuickHelpPanelPolicy::ShowRTError (int code, wxString msg, bo
 	msg = wxString("Error ")<<code<<": "<<(msg.Contains("\n")?msg.BeforeFirst('\n'):msg);
 	m_ctrl->SetPage(help->GetErrorText(msg,code)); EnsureVisible();
 }
+
+void mxMainWindow::EnableDebugButton (bool enable) {
+	toolbar->EnableTool(mxID_RUN_STEP_STEP,enable);
+}
+
