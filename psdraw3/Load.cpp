@@ -307,6 +307,11 @@ bool Load(const char *filename) {
 				if (str=="FINPROCESO"||str=="FINSUBPROCESO"||str=="FINFUNCION"||str=="FINFUNCIÓN") { i0=j+1; break; }
 			}
 			LoadProc(vproc);
+			Entity::AllIterator it = Entity::AllBegin();
+			while (it!=Entity::AllEnd()) {
+				it->EditLabel(0);
+				++it;
+			}
 			procesos.push_back(start);
 		}
 	}

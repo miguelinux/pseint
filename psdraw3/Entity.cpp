@@ -12,6 +12,7 @@
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
+static unsigned char flechita = 27;
 
 bool Entity::nassi_shneiderman=false;
 bool Entity::alternative_io=false; 
@@ -116,6 +117,165 @@ void Entity::EditSpecialLabel(int key) {
 	}
 }
 
+
+
+static bool is_sep(char c) {
+	if (c==' '||c==',') return true;
+	if (c>='a'&&c<='z') return false;
+	if (c>='A'&&c<='Z') return false;
+	if (c>='0'&&c<='9') return false;
+	if (c=='_'||c=='.') return false;
+	if (c=='á'||c=='Á') return false;
+	if (c=='é'||c=='É') return false;
+	if (c=='í'||c=='Í') return false;
+	if (c=='ó'||c=='Ó') return false;
+	if (c=='ú'||c=='Ú') return false;
+	if (c=='ü'||c=='Ü') return false;
+	if (c=='ñ'||c=='Ñ') return false;
+	return true;
+}
+
+// a nada
+// b numero
+// c cadena
+// d keyword
+
+static set<string> keywords;
+
+void load_keywords() {
+	string ks = lang.GetFunctions()+" "+lang.GetKeywords()+" ";
+	for(int i=0,lp=0,l=ks.size();i<l;i++) {
+		if (ks[i]==' ') {
+			if (i!=lp) keywords.insert(ks.substr(lp,i-lp));
+			lp=i+1;
+		}
+	}
+}
+
+void to_lower(string &s){
+	for(size_t i=0;i<s.size();i++) { 
+		if (s[i]>='A'&&s[i]<='Z') s[i] = tolower(s[i]); 
+		else if (s[i]=='Á') s[i] = 'á';
+		else if (s[i]=='É') s[i] = 'é';
+		else if (s[i]=='Í') s[i] = 'í';
+		else if (s[i]=='Ó') s[i] = 'ó';
+		else if (s[i]=='Ú') s[i] = 'ú';
+		else if (s[i]=='Ü') s[i] = 'ü';
+		else if (s[i]=='Ñ') s[i] = 'ñ';
+	}
+}
+
+static char get_color(string s) {
+	if (s[0]=='.'||(s[0]>='0'&&s[0]<='9')) return 'b';
+	to_lower(s);
+	if (keywords.count(s)) return 'd';
+	return 'a';
+}
+
+void Entity::Colourize ( ) {
+	static bool keywords_loaded = false;
+	if (!keywords_loaded) { load_keywords(); keywords_loaded = true; }
+	colourized.replace(0,colourized.size(),label.size(),'e');
+	if (type==ET_COMENTARIO) return;
+	bool first_word = type==ET_ASIGNAR||type==ET_PROCESO;
+	int par_level = 0;
+	for (int i = 0, l = label.size(), lp=0; i<=l; i++) {
+		// cadenas
+		if (i<l && (label[i]=='\''||label[i]=='\"')) {
+			do {
+				colourized[i++] = 'c';
+			} while (i<l && label[i]!='\'' && label[i]!='\"');
+			colourized[i] = 'c';
+			lp=i+1; first_word = false;
+		} else 
+			// numeros y palabras claves	
+			if (i==l || is_sep(label[i])) {
+			if (i!=lp) {
+				char c = get_color(label.substr(lp,i-lp));
+				for(int j=lp;j<i;j++) 
+					colourized[j] = c;
+			}
+			colourized[i] = 'f';
+			// caso especial del op de asignacion
+			static char flechita_s[] = {' ',flechita,' ','\0'};
+			if (first_word && i<l) {
+				if (label[i]=='['||label[i]=='(') {
+					par_level++;
+				} else if (label[i]==']'||label[i]==')') {
+					par_level--;
+				} else if (par_level==0) {
+					if (label[i]==flechita||label[i]=='=') {
+						colourized[i] = 'd';
+					} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
+						colourized[i] = colourized[i+1] = 'd'; ++i;
+					} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
+						colourized[i] = colourized[i+1] = 'd'; ++i;
+					}
+					if (i==l||label[i]!=' ') first_word = false;
+				}
+			} else if (i<l && label[i]==';') {
+				first_word = type==ET_ASIGNAR||type==ET_PROCESO;
+			}
+			lp = i+1;
+		}
+	}
+}
+
+static void beautify_label(ETYPE type, string &label, int &edit_pos) {
+//	if (type==ET_COMENTARIO) return;
+	if (type!=ET_ASIGNAR&&type!=ET_PROCESO) return;
+	bool first_word = true;
+	int par_level = 0;
+	for (int i = 0, l = label.size(); i<l; i++) {
+		// cadenas
+		if (i<l && (label[i]=='\''||label[i]=='\"')) {
+			do { i++; } while (i<l && label[i]!='\'' && label[i]!='\"');
+		} else if (label[i]=='('||label[i]=='[') {
+			par_level++;
+		} else if (label[i]==']'||label[i]==')') {
+			par_level--;
+		} else if (label[i]==';') {
+			if (i+1<l && label[i+1]!=' ') {
+				label.insert(i+1," "); ++l;
+				if (edit_pos>=i+1) ++edit_pos;
+			}
+			first_word = true;
+		} else if (first_word && is_sep(label[i])) {
+			if (label[i]==flechita||label[i]=='=') {
+				if (i+1==l||label[i+1]!=' ') {
+					label.insert(i+1," "); ++l;
+					if (edit_pos>=i+1) ++edit_pos;
+				}
+				if (i&&label[i-1]!=' ') {
+					label.insert(i," "); ++l;
+					if (edit_pos>=i-1) ++edit_pos;
+				}
+			} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
+				label.replace(i,2,1,flechita); --l;
+				if (edit_pos>i) --edit_pos;
+				if (i+1==l||label[i+1]!=' ') {
+					label.insert(i+1," "); ++l;
+					if (edit_pos>=i+1) ++edit_pos;
+				}
+				if (i&&label[i-1]!=' ') {
+					label.insert(i," "); ++l;
+					if (edit_pos>=i-1) ++edit_pos;
+				}
+			} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
+				if (i+2==l||label[i+2]!=' ') {
+					label.insert(i+2," "); ++l;
+					if (edit_pos>=i+2) ++edit_pos;
+				}
+				if (i&&label[i-1]!=' ') {
+					label.insert(i," "); ++l;
+					if (edit_pos>=i-1) ++edit_pos;
+				}
+			}
+			if (label[i]!=' ') first_word = false;
+		}
+	}
+}
+
 void Entity::EditLabel(unsigned char key) {
 	static bool acento=false; // para emular el acento como dead key
 	if (acento) {
@@ -131,18 +291,23 @@ void Entity::EditLabel(unsigned char key) {
 		else if (key=='U') key='Ú';
 		acento=false;
 	}
-	if (key==0) return;
+	if (key==0) { int aux=0; beautify_label(type,label,aux); return; }
 	if (key==180) { acento=true; return; }
 	if (key=='\b') {
 		if (edit_pos>0) {
 			label.erase(edit_pos-1,1);
-			SetEditPos(edit_pos-1);
+			int new_edit_pos = edit_pos-1;
+			beautify_label(type,label,new_edit_pos);
+			SetEditPos(new_edit_pos);
 			SetLabel(label,true);
 		}
 		SetModified();
 	} else if (key==127) {
 		if (edit_pos<int(label.size())) {
 			label.erase(edit_pos,1);
+			int new_edit_pos = edit_pos;
+			beautify_label(type,label,new_edit_pos);
+			SetEditPos(new_edit_pos);
 			SetLabel(label,true);
 		}
 	} else if (key==13 || key==27) {
@@ -150,7 +315,9 @@ void Entity::EditLabel(unsigned char key) {
 		if (enable_partial_text) SetLabel(label,true);
 	} else {
 		label.insert(edit_pos,string(1,key));
-		SetEditPos(edit_pos+1);
+		int new_edit_pos = edit_pos+1;
+		beautify_label(type,label,new_edit_pos);
+		SetEditPos(new_edit_pos);
 		SetLabel(label,true);
 		SetModified();
 	}
@@ -394,6 +561,7 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	static string inline_comments; 
 	bool add_tab=false;
+	string old_label = label;
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (GetNext()) {
@@ -445,6 +613,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
+		if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
 		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
 	} else if (type==ET_COMENTARIO) {
@@ -459,6 +628,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 			inline_comments = prev_ilc;
 		}
 	}
+	label=old_label;
 	if (GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 }
 
@@ -608,96 +778,4 @@ void Entity::OnLinkingEvent (LnkEvtType t, int i) {
 	}
 }
 
-
-static bool is_sep(char c) {
-	if (c==' '||c==',') return true;
-	if (c>='a'&&c<='z') return false;
-	if (c>='A'&&c<='Z') return false;
-	if (c>='0'&&c<='9') return false;
-	if (c=='_'||c=='.') return false;
-	if (c=='á'||c=='Á') return false;
-	if (c=='é'||c=='É') return false;
-	if (c=='í'||c=='Í') return false;
-	if (c=='ó'||c=='Ó') return false;
-	if (c=='ú'||c=='Ú') return false;
-	if (c=='ü'||c=='Ü') return false;
-	if (c=='ñ'||c=='Ñ') return false;
-	return true;
-}
-
-// a nada
-// b numero
-// c cadena
-// d keyword
-
-static set<string> keywords;
-
-void load_keywords() {
-	string ks = lang.GetFunctions()+" "+lang.GetKeywords()+" ";
-	for(int i=0,lp=0,l=ks.size();i<l;i++) {
-		if (ks[i]==' ') {
-			if (i!=lp) keywords.insert(ks.substr(lp,i-lp));
-			lp=i+1;
-		}
-	}
-}
-
-void to_lower(string &s){
-	for(size_t i=0;i<s.size();i++) { 
-		if (s[i]>='A'&&s[i]<='Z') s[i] = tolower(s[i]); 
-		else if (s[i]=='Á') s[i] = 'á';
-		else if (s[i]=='É') s[i] = 'é';
-		else if (s[i]=='Í') s[i] = 'í';
-		else if (s[i]=='Ó') s[i] = 'ó';
-		else if (s[i]=='Ú') s[i] = 'ú';
-		else if (s[i]=='Ü') s[i] = 'ü';
-		else if (s[i]=='Ñ') s[i] = 'ñ';
-	}
-}
-
-static char get_color(string s) {
-	if (s[0]=='.'||(s[0]>='0'&&s[0]<='9')) return 'b';
-	to_lower(s);
-	if (keywords.count(s)) return 'd';
-	return 'a';
-}
-
-void Entity::Colourize ( ) {
-	static bool keywords_loaded = false;
-	if (!keywords_loaded) { load_keywords(); keywords_loaded = true; }
-	colourized.replace(0,colourized.size(),label.size(),'e');
-	if (type==ET_COMENTARIO) return;
-	bool first_word = type==ET_ASIGNAR||ET_PROCESO;
-	for (int i = 0, l = label.size(), lp=0; i<=l; i++) {
-		// cadenas
-		if (i<l && (label[i]=='\''||label[i]=='\"')) {
-			do {
-				colourized[i++] = 'c';
-			} while (i<l && label[i]!='\'' && label[i]!='\"');
-			colourized[i] = 'c';
-			lp=i+1; first_word = false;
-		} else 
-		// numeros y palabras claves	
-		if (i==l || is_sep(label[i])) {
-			if (i!=lp) {
-				char c = get_color(label.substr(lp,i-lp));
-				for(int j=lp;j<i;j++) 
-					colourized[j] = c;
-			}
-			lp = i+1;
-			colourized[i] = 'f';
-			// caso especial del op de asignacion
-			if (first_word) {
-				if (i+1<l && label[i]=='<' && label[i+1]=='-') {
-					colourized[i] = colourized[i+1] = 'd'; ++i;
-				} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
-					colourized[i] = colourized[i+1] = 'd'; ++i;
-				} else if (i<l && label[i]=='=') {
-					colourized[i] = 'd';
-				}
-				if (i==l||label[i]!=' ') first_word = false;
-			}
-		}
-	}
-}
 

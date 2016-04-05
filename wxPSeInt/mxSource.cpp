@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <wx/clipbrd.h>
 #include <wx/process.h>
 #include <wx/socket.h>
-#include <algorithm>
 #include <wx/msgdlg.h>
 #include <wx/menu.h>
 #include <wx/choicdlg.h>
@@ -72,7 +72,6 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_DOWN, mxSource::OnEditToggleLinesDown)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_UP, mxSource::OnEditToggleLinesUp)
 	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
-//	EVT_MENU (mxID_EDIT_BEAUTIFY_CODE, mxSource::OnEditBeautifyCode)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
 	EVT_MENU (mxID_VARS_DEFINIR, mxSource::OnDefineVar)
 	EVT_MENU (mxID_VARS_ADD_ONE_TO_DESKTOP_TEST, mxSource::AddOneToDesktopTest)
@@ -80,7 +79,11 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
 	EVT_STC_MARGINCLICK (wxID_ANY, mxSource::OnMarginClick)
-#define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
+#ifdef WX3
+#	define Z_EVT_STC_CALLTIP_CLICK EVT_STC_CALLTIP_CLICK
+#else
+#	define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
+#endif
 	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
 	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
@@ -1291,10 +1294,8 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	// ver que no sea culpa de una plantilla sin completar
 	for(int p=0;p<len;p++) { 
 		int indics = _if_wx3_else(IndicatorAllOnFor(pos+p),GetStyleAt(pos+p));
-		cout << char(GetCharAt(pos+p)) << indics << " ";
 		if (indics&indic_to_mask[INDIC_FIELD]) return;
 	}
-	cout << endl;
 	// ok, entonces agregarlo como error
 	while (l>=int(rt_errors.size())) rt_errors.push_back(rt_err()); // hacer lugar en el arreglo de errores por linea si no hay
 	rt_errors[l].Add(i,n,str); // guardarlo en el vector de errores
@@ -1334,7 +1335,6 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 		BeginUndoAction();
 		int cl = GetCurrentLine(), p0, p1;
 		for(int i = to_indent_first_line; i<int(to_indent.size()); i++) {
-			cerr << "IndentLine: " << i << endl;
 			if (!to_indent[i]) continue;
 			if (i==cl) {
 				int ip = GetLineIndentPosition(cl);
