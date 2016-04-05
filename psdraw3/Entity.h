@@ -55,6 +55,8 @@ struct Entity : public EntityLinking<Entity> {
 	Entity *nolink; // elemento seleccionado, para que los hijos se escondan atras del padre mientras se mueve al padre
 	bool variante; // true convierte repetir-hastaque en repetir-mientrasque o para en paracada
 	string lpre, label; // rotulo(editable) y prefijo(no editable)
+	string colourized; // tiene letras que indican el color utilizado para syntax-highlighting ('a' es 0 en el arreglo de colores)
+	void Colourize();
 	string error; // mensaje de error si es que la estructura tiene un error de sintaxis
 	Entity(ETYPE _type, string _label, bool _variante=false);
 	~Entity();

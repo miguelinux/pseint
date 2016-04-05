@@ -118,6 +118,9 @@ struct LangSettings {
 		return ProcessConfigLine(line.substr(0,pos),line.substr(pos+1));
 	}
 	void Fix();
+	
+	std::string GetKeywords();
+	std::string GetFunctions();
 };
 
 #endif

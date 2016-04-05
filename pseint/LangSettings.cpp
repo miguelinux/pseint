@@ -206,3 +206,52 @@ bool LangSettings::SetFromSingleString (const std::string & str) {
 	return true;
 }
 
+
+// IMPORTANTE, todos los char* de abajo con las keywords tienen que terminar con un espacio por si se concatenan entre si
+
+static const char *mxSourceWords1 =
+	"leer proceso definir como dimension si entonces sino segun hacer hasta que para con paso "
+	"repetir mientras de otro modo escribir finpara "
+	"fin finproceso finsi finmientras finsegun "
+	"verdadero falso algoritmo finalgoritmo "
+	"numero número numeros números numerico numérico numerica numérica numericas numéricas numericos numéricos "
+	"entero entera enteros enteras real reales "
+	"caracter carácter caracteres texto cadena cadenas "
+	"logico lógico logica lógica logicos lógicos logicas lógicas "
+	"borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar "
+	"según finsegún dimensión "; // scintilla no funciona con los acentos
+
+static const char *mxSourceWords1_op =
+	"y no o mod ";
+
+static const char *mxSourceWords1_extra =
+	"es sies opcion caso desde imprimir cada mostrar opción son ";
+
+static const char *mxSourceWords1_conds =
+	"es par impar igual divisible multiplo distinto distinta de por cero positivo negativo negativa positiva entero mayor menor ";
+
+static const char *mxSourceWords1_funcs =
+	"subproceso finsubproceso función funcion finfunción finfuncion por referencia valor copia subalgoritmo finsubalgoritmo ";
+
+static const char* mxSourceWords2_math =
+	"cos sen tan acos asen atan raiz rc ln abs exp aleatorio azar trunc redon pi ";
+
+static const char* mxSourceWords2_string =
+	"concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ";
+
+
+std::string LangSettings::GetKeywords ( ) {
+	std::string ks = mxSourceWords1;
+	if (settings[LS_ENABLE_USER_FUNCTIONS]) ks += mxSourceWords1_funcs;
+	if (settings[LS_WORD_OPERATORS]) ks += mxSourceWords1_op;
+	if (settings[LS_LAZY_SYNTAX]) ks += mxSourceWords1_extra;
+	if (settings[LS_COLOQUIAL_CONDITIONS]) ks += mxSourceWords1_conds;
+	return ks;
+}
+
+std::string LangSettings::GetFunctions ( ) {
+	std::string ks = mxSourceWords2_math;
+	if (settings[LS_ENABLE_STRING_FUNCTIONS]) ks += mxSourceWords2_string;
+	return ks;
+}
+

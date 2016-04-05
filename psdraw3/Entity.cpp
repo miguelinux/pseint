@@ -8,6 +8,7 @@
 #include "Events.h"
 #include <wx/wx.h>
 #include "Text.h"
+#include <set>
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -167,6 +168,7 @@ void Entity::SetLabel(string _label, bool recalc) {
 	if (_label!=label) SetModified();
 	for (unsigned int i=0;i<label.size();i++) if (label[i]=='\'') label[i]='\"';
 	label=_label; 
+	Colourize();
 	GetTextSize(t_w,t_h); w=t_w; h=t_h;
 	int aux; GetTextSize(lpre,t_prew,aux); t_w+=t_prew;
 	if (recalc) {
@@ -244,14 +246,18 @@ void Entity::DrawText() {
 	if (this==edit) { glScaled(.105,.15,1); } // el escalado molesta visualmente al editar el texto
 	else glScaled((.105*d_w)/w,(.15*d_h)/h,1);
 	begin_texto();
-	glColor3fv(color_label_fix);
+	glColor3fv(color_label_high[3]);
 	for (unsigned int i=0;i<lpre.size();i++) {
 		dibujar_caracter(lpre[i]);
 	}
-	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:(type==ET_COMENTARIO?color_comment:color_label)));
-	int llen=label.size(), crop_len = IsLabelCropped();
+//	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:(type==ET_COMENTARIO?color_comment:color_label)));
+	int llen = label.size(), crop_len = IsLabelCropped();
 	if (crop_len) llen=crop_len-3;
+	int last_color = 'a'; bool syntax = type!=ET_COMENTARIO; 
+	if (syntax) glColor3fv(color_label_high[last_color-'a']);
 	for (int i=0;i<llen;i++) {
+		if (syntax && colourized[i]!=last_color) 
+			glColor3fv(color_label_high[(last_color=colourized[i])-'a']);
 		dibujar_caracter(label[i]);
 	}
 	if (llen!=int(label.size()))
@@ -259,6 +265,7 @@ void Entity::DrawText() {
 			dibujar_caracter('.');
 	end_texto();
 	glPopMatrix();
+	// dibuja el cursor de edición si estamos editando justo este texto
 	if (edit==this && mouse!=this && w>0) {
 		blink++; if (blink==20) blink=0;
 		if (blink<10) {
@@ -600,3 +607,97 @@ void Entity::OnLinkingEvent (LnkEvtType t, int i) {
 		break;
 	}
 }
+
+
+static bool is_sep(char c) {
+	if (c==' '||c==',') return true;
+	if (c>='a'&&c<='z') return false;
+	if (c>='A'&&c<='Z') return false;
+	if (c>='0'&&c<='9') return false;
+	if (c=='_'||c=='.') return false;
+	if (c=='á'||c=='Á') return false;
+	if (c=='é'||c=='É') return false;
+	if (c=='í'||c=='Í') return false;
+	if (c=='ó'||c=='Ó') return false;
+	if (c=='ú'||c=='Ú') return false;
+	if (c=='ü'||c=='Ü') return false;
+	if (c=='ñ'||c=='Ñ') return false;
+	return true;
+}
+
+// a nada
+// b numero
+// c cadena
+// d keyword
+
+static set<string> keywords;
+
+void load_keywords() {
+	string ks = lang.GetFunctions()+" "+lang.GetKeywords()+" ";
+	for(int i=0,lp=0,l=ks.size();i<l;i++) {
+		if (ks[i]==' ') {
+			if (i!=lp) keywords.insert(ks.substr(lp,i-lp));
+			lp=i+1;
+		}
+	}
+}
+
+void to_lower(string &s){
+	for(size_t i=0;i<s.size();i++) { 
+		if (s[i]>='A'&&s[i]<='Z') s[i] = tolower(s[i]); 
+		else if (s[i]=='Á') s[i] = 'á';
+		else if (s[i]=='É') s[i] = 'é';
+		else if (s[i]=='Í') s[i] = 'í';
+		else if (s[i]=='Ó') s[i] = 'ó';
+		else if (s[i]=='Ú') s[i] = 'ú';
+		else if (s[i]=='Ü') s[i] = 'ü';
+		else if (s[i]=='Ñ') s[i] = 'ñ';
+	}
+}
+
+static char get_color(string s) {
+	if (s[0]=='.'||(s[0]>='0'&&s[0]<='9')) return 'b';
+	to_lower(s);
+	if (keywords.count(s)) return 'd';
+	return 'a';
+}
+
+void Entity::Colourize ( ) {
+	static bool keywords_loaded = false;
+	if (!keywords_loaded) { load_keywords(); keywords_loaded = true; }
+	colourized.replace(0,colourized.size(),label.size(),'e');
+	if (type==ET_COMENTARIO) return;
+	bool first_word = type==ET_ASIGNAR||ET_PROCESO;
+	for (int i = 0, l = label.size(), lp=0; i<=l; i++) {
+		// cadenas
+		if (i<l && (label[i]=='\''||label[i]=='\"')) {
+			do {
+				colourized[i++] = 'c';
+			} while (i<l && label[i]!='\'' && label[i]!='\"');
+			colourized[i] = 'c';
+			lp=i+1; first_word = false;
+		} else 
+		// numeros y palabras claves	
+		if (i==l || is_sep(label[i])) {
+			if (i!=lp) {
+				char c = get_color(label.substr(lp,i-lp));
+				for(int j=lp;j<i;j++) 
+					colourized[j] = c;
+			}
+			lp = i+1;
+			colourized[i] = 'f';
+			// caso especial del op de asignacion
+			if (first_word) {
+				if (i+1<l && label[i]=='<' && label[i+1]=='-') {
+					colourized[i] = colourized[i+1] = 'd'; ++i;
+				} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
+					colourized[i] = colourized[i+1] = 'd'; ++i;
+				} else if (i<l && label[i]=='=') {
+					colourized[i] = 'd';
+				}
+				if (i==l||label[i]!=' ') first_word = false;
+			}
+		}
+	}
+}
+

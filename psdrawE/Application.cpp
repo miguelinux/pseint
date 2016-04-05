@@ -71,7 +71,7 @@ bool mxApplication::OnInit() {
 		} else if (arg=="--shapecolors") {
 			Entity::shape_colors=true;
 		} else if (arg=="--nocroplabels") {
-//			Entity::enable_partial_text=false;
+			; // siempre es asi, parsear esto es solo para que no genere error
 		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
 			; // procesado en lang.ProcessConfigLine
 		} else if (arg.Len()) {
@@ -87,22 +87,23 @@ bool mxApplication::OnInit() {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}
 	edit_on=false;
-//	draw_shadow=false;
 	if ((new mxConfig())->ShowModal()==wxID_CANCEL) return 0; // opciones del usuairo
 	
 	if (!Entity::shape_colors) {
+		// fondo
 		color_shape[ET_COUNT][0] = .97f;
 		color_shape[ET_COUNT][1] = .97f;
 		color_shape[ET_COUNT][2] = .97f;
+		// flechas
 		color_arrow[0] = .15f;
 		color_arrow[1] = .15f;
 		color_arrow[2] = .15f;
-		color_label[0] = 0.0f;
-		color_label[1] = 0.0f;
-		color_label[2] = 0.0f;
-		color_label_fix[0] = 0.15f;
-		color_label_fix[1] = 0.15f;
-		color_label_fix[2] = 0.15f;
+		// texto
+		for(int j=0;j<6;j++) {
+			color_label_high[j][0] = 0.0f;
+			color_label_high[j][1] = 0.0f;
+			color_label_high[j][2] = 0.0f;
+		}
 	}
 	
 	// calcular tamaño total

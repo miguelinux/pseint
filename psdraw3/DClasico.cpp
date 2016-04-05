@@ -344,7 +344,7 @@ void Entity::DrawClasico(bool force) {
 	if (type==ET_OPCION) { // + para agregar opciones
 		if (edit_on && mouse!=this) {
 			glBegin(GL_LINES);
-			glColor3fv(color_label);
+			glColor3fv(color_label_high[3]);
 			DrawLineaHorizontalTo(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2,d_x-d_bwl+1*flecha_w/4);
 			DrawLineaVerticalTo(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3,d_y-2*d_h/3);
 			glEnd();
@@ -352,7 +352,7 @@ void Entity::DrawClasico(bool force) {
 	} else 
 		if (!nolink && (type==ET_ESCRIBIR||type==ET_LEER) ) { // flecha en la esquina
 			glBegin(GL_LINES);
-			glColor3fv(color_label);
+			glColor3fv(color_label_high[3]);
 			int axl = d_x+d_w/2-margin, axe = d_x+d_w/2+margin;
 			if (Entity::alternative_io&&type==ET_ESCRIBIR) { axl-=h; axe-=h; }
 			DrawLinea(axl,d_y-margin,axe,d_y+margin);
