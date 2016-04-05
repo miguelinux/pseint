@@ -167,7 +167,8 @@ void mxDebugWindow::OnDebugButton(wxCommandEvent &evt) {
 }
 
 void mxDebugWindow::DebugStartFromGui(bool from_psdraw) {
-	mxSource *src=main_window->GetCurrentSource();
+	if (debug->debugging) { main_window->ShowDebugPanel(true,true); return; }
+	mxSource *src = main_window->GetCurrentSource();
 	if (!src) return;
 	main_window->ReorganizeForDebugging();
 	if (!from_psdraw && src->GetFlowSocket()) {

@@ -52,6 +52,10 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	code_ctrl = new wxStyledTextCtrl(this,wxID_ANY);
 	code_ctrl->SetMarginType (0, wxSTC_MARGIN_NUMBER);
 	code_ctrl->SetMarginWidth (0, code_ctrl->TextWidth (wxSTC_STYLE_LINENUMBER, " XXXXX"));
+	
+	wxFont font (config->font_size, wxMODERN, wxNORMAL, wxNORMAL);
+	code_ctrl->StyleSetFont (wxSTC_STYLE_DEFAULT, font);
+	
 	main_sizer->Add(code_ctrl,wxSizerFlags().Proportion(1).Expand());
 	
 	SetSizer(main_sizer);
@@ -90,21 +94,21 @@ command<<" --draw \""<<temp_filename<<".psd"<<"\"";
 
 _LOG("mxExportPreview, command="<<command);
 pid = wxExecute(command,wxEXEC_ASYNC,the_process);
-if (pid<=0) { SetMessage(_Z("Error al intentar exportar")); return; }
+if (pid<=0) { SetMessage(_Z("Error al intentar exportar.")); return; }
 SetMessage("Actualizando...");
 state=mxEP_CHECK;
 }
 
 mxExportPreview::~mxExportPreview ( ) {
-if (wxFileName::FileExists(temp_filename+".psd")) wxRemoveFile(temp_filename+".psd");
-if (wxFileName::FileExists(temp_filename+".exp")) wxRemoveFile(temp_filename+".exp");
+	if (wxFileName::FileExists(temp_filename+".psd")) wxRemoveFile(temp_filename+".psd");
+	if (wxFileName::FileExists(temp_filename+".exp")) wxRemoveFile(temp_filename+".exp");
 }
 
 void mxExportPreview::OnProcTerminate (wxProcessEvent & event) {
 _LOG("mxExportPreview::OnProcessTerminate");
 	if (pid<=0||!the_process||event.GetPid()!=pid) return;
 	int exit_code = event.GetExitCode(); delete the_process; the_process=NULL;
-	if (exit_code!=0) { SetMessage(_Z("Error al intentar exportar")); state=mxEP_NONE; return; }
+	if (exit_code!=0) { SetMessage(_Z("Error al intentar exportar.\nSi el pseudocódigo es correcto, intente nuevamente\nhaciendo click en el botón \"Actualizar\".")); state=mxEP_NONE; return; }
 	
 	switch(state) {
 		

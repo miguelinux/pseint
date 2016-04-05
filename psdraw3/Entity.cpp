@@ -26,7 +26,7 @@ int Entity::max_label_len[ET_COUNT];
 #define char_h 18
 
 #ifdef _FOR_EXPORT
-#define SetModified()
+#	define SetModified()
 #endif
 
 void Entity::GetTextSize(const string &label, int &w, int &h) {
@@ -251,12 +251,12 @@ static void beautify_label(ETYPE type, string &label, int &edit_pos) {
 					if (edit_pos>=i-1) ++edit_pos;
 				}
 			} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
+				if (i+2==l||label[i+2]!=' ') {
+					label.insert(i+2," "); ++l;
+					if (edit_pos>=i+2) ++edit_pos;
+				}
 				label.replace(i,2,1,flechita); --l;
 				if (edit_pos>i) --edit_pos;
-				if (i+1==l||label[i+1]!=' ') {
-					label.insert(i+1," "); ++l;
-					if (edit_pos>=i+1) ++edit_pos;
-				}
 				if (i&&label[i-1]!=' ') {
 					label.insert(i," "); ++l;
 					if (edit_pos>=i-1) ++edit_pos;

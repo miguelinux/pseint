@@ -702,6 +702,10 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		SetTargetEnd(PositionFromLine(min));
 		ReplaceTarget("");
 		EndUndoAction();
+		if (config->smart_indent) {
+			OnEditIndentSelection(event);
+			IndentLine(max);
+		}
 	}
 }
 
@@ -725,7 +729,11 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 		if (ss==-1) SetSelectionStart(PositionFromLine(min+1));
 		if (se==-1) SetSelectionStart(PositionFromLine(min+1));
 		EndUndoAction();
-	}	
+		if (config->smart_indent) {
+			IndentLine(min);
+			OnEditIndentSelection(event);
+		}
+	}
 }
 
 void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
@@ -859,7 +867,7 @@ bool mxSource::IndentLine(int l, bool goup) {
 		}
 		else if (word=="FINSI") cur-=4;
 		else if (word=="FINPROCESO"||word=="FINALGORITMO") cur=0;
-		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word=="FINSUBALGORITMO"||word==_Z("FINFUNCIÓN")) cur-=4;
+		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word=="FINSUBALGORITMO"||word==_Z("FINFUNCIÓN")) cur=0;
 		else {
 			bool comillas=false;
 			while (i<n) {

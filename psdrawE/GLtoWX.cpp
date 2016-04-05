@@ -131,6 +131,20 @@ void glLineWidth(float w) {
 }
 
 void dibujar_caracter(char _c) {
+	if (_c==(unsigned char)(27)) {
+		// asignacion... el char 27 lo pone el beautify_label... siempre rodeado por espacios
+		// asi que distribuyo "<---" entre los tres chars, con espacios entre chars reducidos
+		m.tx -= 20*m.sx*8/7;
+		dibujar_caracter('<');
+		m.tx -= 80*m.sx*8/7;
+		dibujar_caracter('-');
+		m.tx -= 70*m.sx*8/7;
+		dibujar_caracter('-');
+		m.tx -= 70*m.sx*8/7;
+		dibujar_caracter('-');
+		m.tx -= 50*m.sx*8/7;
+		return;
+	}
 	dc->SetFont(wxFont(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL));
 	dc->SetTextForeground(c);
 	wxString s(" "); s[0]=_c;
@@ -139,6 +153,7 @@ void dibujar_caracter(char _c) {
 	dc->DrawText(s,m.x(0)+(w-tw)/2,m.y(0)-3*th/4);
 	m.tx+=100*m.sx*8/7;
 }
+
 void begin_texto( ) {
 }
 
