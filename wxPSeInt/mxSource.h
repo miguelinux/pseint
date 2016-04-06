@@ -159,15 +159,15 @@ public:
 	void OnPopupMenu(wxMouseEvent &evt);
 	
 	void AddOneToDesktopTest(wxCommandEvent &evt);
-//	void AddAllToDesktopTest(wxCommandEvent &evt);
+	void OnRenameVar(wxCommandEvent &evt);
 	void OnDefineVar(wxCommandEvent &evt);
-	void OnAddVarDefinition(int line, const wxString &vname);
+	void RenameVar(int where, wxString var_name, int line_from=-1, int line_to=-1);
+	void DefineVar(int where, wxString var_name, int line_from=-1, int type=-1);
 	
 	bool IsEmptyLine(int line); // auxiliar para DefineVar
 	bool IsDimOrDef(int line); // auxiliar para DefineVar
 	bool IsProcOrSub(int line); // auxiliar para OnPopupMenu
 		
-	void DefineVar(int where, wxString var_name, int type=-1);
 	
 	void OnMarginClick(wxStyledTextEvent &event);
 	

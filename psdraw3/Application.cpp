@@ -1,6 +1,6 @@
 #include <wx/image.h>
-#include "GLstuff.h"
 #include "Application.h"
+#include "GLstuff.h" // poner este depues de Application, sino genera errores de enlazado en un metodo de wxapp por alguna macro de algun #include
 #include "MainWindow.h"
 #include "Version.h"
 #include "Global.h"

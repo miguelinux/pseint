@@ -104,13 +104,14 @@ void RTSyntaxManager::ContinueProcessing() {
 				processing=false;
 				_LOG("RTSyntaxManager::ContinueProcessing out end src="<<src);
 				src->RTOuputEnds();
-				if (extra_args.action==RTA_DEFINE_VAR) src->OnAddVarDefinition(extra_args.iarg,extra_args.sarg);
+				if (extra_args.action==RTA_DEFINE_VAR) src->DefineVar(extra_args.iarg,extra_args.sarg);
+				else if (extra_args.action==RTA_RENAME_VAR) src->RenameVar(extra_args.iarg,extra_args.sarg);
 				return;
 			} else if (fase_num==0 && config->rt_syntax) {
 				src->MarkError(line);
 			} else if (fase_num==1) {
 				wxString what=line.BeforeFirst(' ');
-				if (config->show_vars || extra_args.action==RTA_DEFINE_VAR) {
+				if (config->show_vars || extra_args.action!=RTA_NULL) {
 					if (what=="PROCESO"||what=="SUBPROCESO")
 						vars_window->AddProc(line.AfterFirst(' '),what=="PROCESO");
 					else

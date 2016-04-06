@@ -19,7 +19,8 @@ BEGIN_EVENT_TABLE(mxVarWindow,wxPanel)
 	EVT_TREE_ITEM_MIDDLE_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
-	EVT_MENU(mxID_VARS_DEFINIR,mxVarWindow::OnDefinir)
+	EVT_MENU(mxID_VARS_DEFINE,mxVarWindow::OnDefinir)
+	EVT_MENU(mxID_VARS_RENAME,mxVarWindow::OnRenombrar)
 	EVT_MENU(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,mxVarWindow::OnAgregarUnaAPruebaDeEscritorio)
 	EVT_MENU(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,mxVarWindow::OnAgregarTodasAPruebaDeEscritorio)
 END_EVENT_TABLE()
@@ -31,14 +32,29 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	tree = new wxTreeCtrl(this,wxID_ANY,wxDefaultPosition,wxSize(150,50),wxTR_FULL_ROW_HIGHLIGHT|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_NO_BUTTONS/*|wxTR_ROW_LINES*/);
 	
 	wxArrayString img_files(LV_MAX+2,""); // +2 por proc y sub
-	img_files[LV_DEFINIDA                                   ] = img_files[0                                ] = "vt_desc.png";
-	img_files[LV_DEFINIDA| LV_LOGICA                        ] = img_files[LV_LOGICA                        ] = "vt_log.png";
-	img_files[LV_DEFINIDA|           LV_NUMERICA            ] = img_files[          LV_NUMERICA            ] = "vt_num.png";
-	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA            ] = img_files[LV_LOGICA|LV_NUMERICA            ] = "vt_log_num.png";
-	img_files[LV_DEFINIDA|                       LV_CARACTER] = img_files[                      LV_CARACTER] = "vt_car.png";
-	img_files[LV_DEFINIDA| LV_LOGICA            |LV_CARACTER] = img_files[LV_LOGICA|            LV_CARACTER] = "vt_log_car.png";
-	img_files[LV_DEFINIDA|           LV_NUMERICA|LV_CARACTER] = img_files[          LV_NUMERICA|LV_CARACTER] = "vt_car_num.png";
-	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA|LV_CARACTER] = img_files[LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "vt_desc.png";
+	// tipos conocidos
+	img_files[             LV_LOGICA                        ] = "vt_log.png";
+	img_files[LV_DEFINIDA| LV_LOGICA                        ] = "vt_log_def.png";
+	img_files[                       LV_NUMERICA            ] = "vt_num.png";
+	img_files[LV_DEFINIDA|           LV_NUMERICA            ] = "vt_num_def.png";
+	img_files[                                   LV_CARACTER] = "vt_car.png";
+	img_files[LV_DEFINIDA|                       LV_CARACTER] = "vt_car_def.png";
+	
+	// tipos desconocidos, pero factibles
+	img_files[0                                             ] = "vt_desc.png";
+	img_files[             LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "vt_desc.png";
+	img_files[             LV_LOGICA|LV_NUMERICA            ] = "vt_log_num.png";
+	img_files[             LV_LOGICA|            LV_CARACTER] = "vt_log_car.png";
+	img_files[                       LV_NUMERICA|LV_CARACTER] = "vt_car_num.png";
+	
+	// tipos imposibles (error del intérprete)
+	img_files[LV_DEFINIDA                                   ] = "vt_error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA            ] = "vt_error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA            |LV_CARACTER] = "vt_error.png";
+	img_files[LV_DEFINIDA|           LV_NUMERICA|LV_CARACTER] = "vt_error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "vt_error.png";
+	
+	// proceso y subproceso
 	img_files[LV_MAX] = "vt_proc.png";
 	img_files[LV_MAX+1] = "vt_sub.png";
 	
@@ -77,7 +93,7 @@ void mxVarWindow::AddProc(wxString vname, bool main_process) {
 		vname.AfterLast(':').ToLong(&r->to);
 		vname=vname.BeforeFirst(':');
 	}
-	tree_current=tree->AppendItem(tree_root,vname,main_process?8:9,-1,r);
+	tree_current=tree->AppendItem(tree_root,vname,LV_MAX+(main_process?0:1),-1,r);
 	if (vname==last_sel && !last_parent.Len()) tree->SelectItem(tree_current);
 }
 
@@ -120,10 +136,11 @@ void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
 	} else { // cuando no se depura muestra un menu contextual
 		wxMenu menu;
 		if (tree->GetItemParent(evt.GetItem())==tree_root) {
-			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_Z("Agregar todas las variable a la Prueba de Escritorio")); // para mostrar en el dialogo
+			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_Z("Agregar todas las variable a la Prueba de Escritorio"));
 		} else {
-			menu.Append(mxID_VARS_DEFINIR,_Z("Definir variable...")); // para mostrar en el dialogo
-			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_Z("Agregar la variable a la Prueba de Escritorio")); // para mostrar en el dialogo
+			menu.Append(mxID_VARS_DEFINE,_Z("Definir variable..."));
+			menu.Append(mxID_VARS_RENAME,_Z("Renombrar variable..."));
+			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_Z("Agregar la variable a la Prueba de Escritorio"));
 		}
 		PopupMenu(&menu);
 	}
@@ -142,45 +159,65 @@ wxTreeItemId mxVarWindow::GetSelection ( ) {
 void mxVarWindow::OnDefinir (wxCommandEvent & evt) {
 	wxTreeItemId it=GetSelection();
 	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
+	mxSource *src = main_window->GetCurrentSource();
+	if (!src) return; // ver que tengamos un fuente abierto
+	wxTreeItemId parent = tree->GetItemParent(it);
+	if (parent == tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
+	range *r = (range*)tree->GetItemData(parent);
+	if (!r) return; // ver que tengamos la informacion del scope del item
+	src->DefineVar(r->from,tree->GetItemText(it),r->from,GetVarType(it));
+}
+
+void mxVarWindow::OnRenombrar (wxCommandEvent & evt) {
+	wxTreeItemId it=GetSelection();
+	if (!it.IsOk()) return; // ver que se seleccione un item del arbol
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return; // ver que tengamos un fuente abierto
 	wxTreeItemId parent=tree->GetItemParent(it);
 	if (parent==tree_root) return; // ver que el item no sea el nombre de un proceso o subproceso
 	range *r=(range*)tree->GetItemData(parent);
 	if (!r) return; // ver que tengamos la informacion del scope del item
-	src->DefineVar(r->from-1,tree->GetItemText(it),GetVarType(it));
+	src->RenameVar(r->from,tree->GetItemText(it),r->from,r->to);
+}
+
+bool mxVarWindow::FindVar(int line, wxString var_name, wxTreeItemId &it_parent, wxTreeItemId &it_child) {
+	// normalizar identificador
+	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('[');
+	var_name.MakeUpper();
+	// buscar el scope
+	wxTreeItemIdValue cookie;
+	it_parent = tree->GetFirstChild(tree->GetRootItem(),cookie);
+	while (it_parent.IsOk()) {
+		range *r=(range*)tree->GetItemData(it_parent);
+		if (line>=r->from && line<=r->to) break;
+		it_parent = tree->GetNextSibling(it_parent);
+	}
+	if (!it_parent.IsOk()) return false;
+	// buscar la variable
+	it_child = tree->GetFirstChild(it_parent,cookie);
+	while (it_child.IsOk()) {
+		wxString it_text = tree->GetItemText(it_child);
+		if (it_text.Contains("[")) it_text = it_text.BeforeFirst('[').Upper();
+		else it_text.MakeUpper();
+		if (it_text==var_name) return true;
+		it_child = tree->GetNextSibling(it_child);
+	}
+	return false;	
 }
 
 int mxVarWindow::GetVarType (int &line, wxString var_name) {
+	wxTreeItemId it_parent, it_child;
+	if (!FindVar(line,var_name,it_parent,it_child)) return -1;
+	line = ((range*)tree->GetItemData(it_parent))->from;
+	return GetVarType(it_child);
+}
 
-	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('[');
-	var_name.MakeUpper();
-	
-	wxTreeItemIdValue cookie;
-	wxTreeItemId it = tree->GetFirstChild(tree->GetRootItem(),cookie);
-	while (it.IsOk()) {
-		range *r=(range*)tree->GetItemData(it);
-		if (/*r && */line>=r->from && line<=r->to) {
-			line = r->from;
-			break;
-		}
-		it = tree->GetNextSibling(it);
-	}
-	if (!it.IsOk()) return -1;
-	it = tree->GetFirstChild(it,cookie);
-	while (it.IsOk()) {
-		wxString it_text = tree->GetItemText(it);
-		if (it_text.Contains("[")) {
-			if (it_text.BeforeFirst('[').Upper()==var_name) 
-				return GetVarType(it);
-		} else {
-			if (it_text.Upper()==var_name) 
-				return GetVarType(it);
-		}
-		it = tree->GetNextSibling(it);
-	}
-	return -1;
-	
+bool mxVarWindow::GetVarScope (int line, wxString var_name, int &line_from, int &line_to) {
+	wxTreeItemId it_parent, it_child;
+	if (!FindVar(line,var_name,it_parent,it_child)) return false;
+	line_from = ((range*)tree->GetItemData(it_parent))->from;
+	line_to = ((range*)tree->GetItemData(it_parent))->to;
+	return true;
 }
 
 int mxVarWindow::GetVarType (const wxTreeItemId & it) {

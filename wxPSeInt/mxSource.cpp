@@ -73,7 +73,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_UP, mxSource::OnEditToggleLinesUp)
 	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
 	EVT_MENU (mxID_EDIT_INDENT_SELECTION, mxSource::OnEditIndentSelection)
-	EVT_MENU (mxID_VARS_DEFINIR, mxSource::OnDefineVar)
+	EVT_MENU (mxID_VARS_DEFINE, mxSource::OnDefineVar)
+	EVT_MENU (mxID_VARS_RENAME, mxSource::OnRenameVar)
 	EVT_MENU (mxID_VARS_ADD_ONE_TO_DESKTOP_TEST, mxSource::AddOneToDesktopTest)
 //	EVT_MENU (mxID_VARS_ADD_ALL_TO_DESKTOP_TEST, mxSource::AddAllToDesktopTest)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
@@ -1511,7 +1512,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 }
 
 void mxSource::HighLight(wxString words, int from, int to) {
-	if (to!=-1) words<<" 0"<<(from-1)<<" 1"<<(to-1); // el 0 y 1 son porque scintilla los va a ordernar alfabeticamente, para que queden simpre primero y segundo
+	if (to!=-1) words<<" 0"<<from<<" 1"<<to; // el 0 y 1 son porque scintilla los va a ordernar alfabeticamente, para que queden simpre primero y segundo
 	SetKeyWords(3,words.Lower());
 	Colourise(0,GetLength());
 }
@@ -1790,7 +1791,8 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 		if (IsProcOrSub(GetCurrentLine())) {
 //			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_ZZ("Agregar todas las variables a la prueba de escritorio"));
 		} else {
-			menu.Append(mxID_VARS_DEFINIR,_ZZ("Definir variable \"")+key+_Z("\""));
+			menu.Append(mxID_VARS_DEFINE,_ZZ("Definir variable \"")+key+_Z("\""));
+			menu.Append(mxID_VARS_RENAME,_ZZ("Renombrar variable \"")+key+_Z("\""));
 			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_ZZ("Agregar variable \"")+key+_Z("\" a la prueba de escritorio"));
 		}
 	}
@@ -1872,8 +1874,15 @@ bool mxSource::IsProcOrSub(int line) {
 * @param type     tipo de la variable, si es -1 lo consulta en el panel de variables
 **/
 
-void mxSource::DefineVar(int where, wxString var_name, int type) {
-	int n=GetLineCount(), empty_lines=0;
+void mxSource::DefineVar(int where, wxString var_name, int line_from, int type) {
+	int n = GetLineCount(), empty_lines=0;
+	
+	// ver si se conoce la variable, y donde empieza el proceso
+	if (type==-1||line_from==-1) {
+		type = vars_window->GetVarType(where, var_name);
+	} else where = line_from;
+	if (type==-1) type = 0; 
+	else if (type&LV_DEFINIDA) return;
 	
 	// ver si hay lineas en blanco al principio del proceso
 	while (where+1<n && IsEmptyLine(where+1)) { where++; empty_lines++; } 
@@ -1882,20 +1891,20 @@ void mxSource::DefineVar(int where, wxString var_name, int type) {
 	
 	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('['); // cortar las dimensiones si fuera un arreglo
 	
-	if (type==-1) { int line=where+1; type = vars_window->GetVarType(line, var_name); }
-	if (type==-1) type = 0; else if (type&LV_DEFINIDA) return;
 	wxString var_type;
 	
 	if (type==LV_LOGICA) var_type="Logica";
 	else if (type==LV_NUMERICA) var_type="Numerica";
 	else if (type==LV_CARACTER) var_type="Caracter";
 	else { // si el tipo es ambiguo o desconocido, preguntar
-		wxArrayString types;
-		if (type==0 || (type&LV_LOGICA)) types.Add("Logica");
-		if (type==0 || (type&LV_NUMERICA)) types.Add("Numerica");
-		if (type==0 || (type&LV_CARACTER)) types.Add("Caracter");
+		wxArrayString types, real_types;
+		if (type==0 || (type&LV_LOGICA)) { types.Add("Logica"); real_types.Add("Logica"); }
+		if (type==0 || (type&LV_NUMERICA)) { types.Add("Numérica (real)"); real_types.Add("Numerica"); }
+		if (type==0 || (type&LV_NUMERICA)) { types.Add("Numérica Entera"); real_types.Add("Entera"); }
+		if (type==0 || (type&LV_CARACTER)) { types.Add("Caracter/Cadena"); real_types.Add("Caracter"); }
 		var_type=wxGetSingleChoice("Tipo de variable:",var_name,types);
 		if (!var_type.Len()) return;
+		else var_type = real_types[types.Index(var_type)];
 	}
 	// agregar la definicion
 	int x=GetLineEndPosition(where);
@@ -1905,7 +1914,7 @@ void mxSource::DefineVar(int where, wxString var_name, int type) {
 
 void mxSource::OnDefineVar (wxCommandEvent & evt) {
 	if (config->show_vars) {
-		OnAddVarDefinition(GetCurrentLine(),GetCurrentKeyword());
+		DefineVar(GetCurrentLine(),GetCurrentKeyword());
 	} else {
 		RTSyntaxManager::Info info;
 		info.SetForVarDef(GetCurrentLine(),GetCurrentKeyword());
@@ -1913,9 +1922,43 @@ void mxSource::OnDefineVar (wxCommandEvent & evt) {
 	}
 }
 
-void mxSource::OnAddVarDefinition (int line, const wxString &vname) {
-	int type = vars_window->GetVarType(line,vname);
-	DefineVar(line-1,vname,type);
+void mxSource::OnRenameVar (wxCommandEvent & evt) {
+	if (config->show_vars) {
+		RenameVar(GetCurrentLine(),GetCurrentKeyword());
+	} else {
+		RTSyntaxManager::Info info;
+		info.SetForVarRename(GetCurrentLine(),GetCurrentKeyword());
+		DoRealTimeSyntax(&info);
+	}
+}
+
+
+void mxSource::RenameVar(int where, wxString var_name, int line_from, int line_to) {
+	
+	if (var_name.Contains("[")) var_name=var_name.BeforeFirst('['); // cortar las dimensiones si fuera un arreglo
+	if (var_name.IsEmpty()) return;
+	
+	if (line_from==-1||line_to==-1) {
+		if (!vars_window->GetVarScope(where,var_name, line_from,line_to)) return;
+	}
+	
+	wxString new_name = wxGetTextFromUser("Nuevo identificador:",var_name,var_name,this);
+	if (new_name.IsEmpty()) return;
+	
+	int p0 = PositionFromLine(line_from);
+	int p = FindText(p0,GetLength(),var_name,wxSTC_FIND_WHOLEWORD);
+	HighLight(new_name,line_from,line_to);
+	while (p!=wxSTC_INVALID_POSITION && LineFromPosition(p)<=line_to) {
+		if (GetStyleAt(p)==wxSTC_C_IDENTIFIER) {
+			SetTargetStart(p);
+			SetTargetEnd(p+var_name.Len());
+			ReplaceTarget(new_name);
+			p0 = p+new_name.Len();
+		} else {
+			p0 = p+var_name.Len();
+		}
+		p = FindText(p0,GetLength(),var_name,wxSTC_FIND_WHOLEWORD);
+	}
 }
 
 void mxSource::AddOneToDesktopTest (wxCommandEvent & evt) {

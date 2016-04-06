@@ -12,6 +12,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=/src/manual/wx/3.1.0-dbg-u/src/stc/scintilla/src
+current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=DebugManager.cpp
@@ -298,7 +299,8 @@ path=error_recovery.h
 cursor=0:0
 [other]
 path=../bin/help/cambios.html
-cursor=296:103
+cursor=19:161
+open=true
 [other]
 path=../bin/help/errores.hlp
 cursor=-1:0

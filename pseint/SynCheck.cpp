@@ -846,9 +846,9 @@ int SynCheck(int linea_from, int linea_to) {
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
 						if (!ignore_logic_errors) { SynError (46,"Falta tipo de dato o tipo no válido."); errores++;}
 					} else {
-						int largotipo=0; tipo_var tipo_def=vt_desconocido;;
+						int largotipo=0; tipo_var tipo_def=vt_desconocido;; bool rounded = false;
 						if (RightCompare(cadena," COMO REAL;")) { largotipo=11; tipo_def=vt_numerica; }
-						if (RightCompare(cadena," COMO ENTERO;")) { largotipo=13; tipo_def=vt_numerica; }
+						else if (RightCompare(cadena," COMO ENTERO;")) { largotipo=13; tipo_def=vt_numerica; rounded = true; }
 						else if (RightCompare(cadena," COMO LOGICO;")) { largotipo=13; tipo_def=vt_logica; }
 						else if (RightCompare(cadena," COMO CARACTER;")) { largotipo=15; tipo_def=vt_caracter; }
 						cadena[cadena.size()-largotipo]=',';
@@ -868,7 +868,7 @@ int SynCheck(int linea_from, int linea_to) {
 									if (!CheckVariable(str,48)) errores++;
 									else {
 										if (memoria->EsArgumento(str) && !ignore_logic_errors) { SynError (222,"No debe redefinir el tipo de un argumento."); errores++; }
-										memoria->DefinirTipo(str,tipo_def);
+										memoria->DefinirTipo(str,tipo_def,rounded);
 									}
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));

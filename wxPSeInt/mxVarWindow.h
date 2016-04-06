@@ -23,14 +23,17 @@ public:
 	void OnTreeClick(wxTreeEvent &evt);
 	void OnTreeTooltip(wxTreeEvent &evt);
 	void OnDefinir(wxCommandEvent &evt);
+	void OnRenombrar(wxCommandEvent &evt);
 	void OnAgregarUnaAPruebaDeEscritorio(wxCommandEvent &evt);
 	void OnAgregarTodasAPruebaDeEscritorio(wxCommandEvent &evt);
 	wxTreeItemId GetSelection();
 	mxVarWindow(wxWindow *parent);
 	~mxVarWindow();
 	
+	bool FindVar(int line, wxString var_name, wxTreeItemId &it_parent, wxTreeItemId &it_child);
 	int GetVarType(int &line, wxString var_name);
 	int GetVarType(const wxTreeItemId &it);
+	bool GetVarScope(int line, wxString var_name, int &line_from, int &line_to);
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -217,7 +217,7 @@ int main(int argc, char* argv[]) {
 				cout<<"PROCESO ";
 				if (case_map) cout<<(*case_map)[it1->first];
 				else cout<<it1->first;
-				cout<<":"<<func->userline_start<<':'<<func->userline_end<<endl;
+				cout<<":"<<func->userline_start-1<<':'<<func->userline_end-1<<endl;
 				func->memoria->ListVars(case_map);
 				++it1;
 			}

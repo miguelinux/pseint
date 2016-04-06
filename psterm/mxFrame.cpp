@@ -147,7 +147,7 @@ void mxFrame::OnSocketEvent (wxSocketEvent & event) {
 
 void mxFrame::ProcessCommand ( ) {
 	if (buffer=="reload") console->Reload();
-	else if (buffer=="raise") Raise();
+	else if (buffer=="raise") { Hide(); wxYield(); Show(); } // Hide+Show es más efectivo que Raise
 	else if (buffer=="quit") Close();
 	else if (buffer=="dimm") { SetButton(false,false); console->Dimm(); }
 }

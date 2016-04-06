@@ -24,7 +24,7 @@ class wxTimer;
 * cosa en medio (como el mismísimo algoritmo en la terminal).
 **/
 
-enum RTArgs { RTA_NULL, RTA_DEFINE_VAR };
+enum RTArgs { RTA_NULL, RTA_DEFINE_VAR, RTA_RENAME_VAR };
 
 class RTSyntaxManager:public wxProcess {
 	wxCSConv conv;
@@ -46,6 +46,9 @@ public:
 		Info() : action(RTA_NULL) {}
 		void SetForVarDef(int line, const wxString &vname) {
 			action=RTA_DEFINE_VAR; sarg=vname; iarg=line;
+		}
+		void SetForVarRename(int line, const wxString &vname) {
+			action=RTA_RENAME_VAR; sarg=vname; iarg=line;
 		}
 	};
 	static Info extra_args;
