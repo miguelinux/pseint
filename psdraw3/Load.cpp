@@ -6,6 +6,7 @@
 #include "Global.h"
 #include "Entity.h"
 #include "Events.h"
+#include "ProcessSelector.h"
 using namespace std;
 
 
@@ -315,9 +316,11 @@ bool Load(const char *filename) {
 			procesos.push_back(start);
 		}
 	}
-	SetProc(procesos[choose_process_sel=imain]);
-	choose_process_state=procesos.size()>1?2:0;
+	SetProc(procesos[imain]);
 	loading=false; modified=false;
+#ifndef _FOR_EXPORT
+	if (procesos.size()>1?2:0) process_selector->Show();
+#endif
 	return true;
 }
 

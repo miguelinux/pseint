@@ -38,6 +38,11 @@ void mouse_dcb(int x, int y); // doble-click del izquierdo
 void keyboard_cb(unsigned char key/*, int x, int y*/);
 void keyboard_esp_cb(int key/*, int x, int y*/);
 	
+
+void fix_mouse_coords(int &x, int &y);
+
+class Entity;
+extern Entity *to_set_mouse;
 	
 #endif
 

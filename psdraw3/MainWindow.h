@@ -6,7 +6,6 @@ class Canvas;
 class wxToolBar;
 
 class MainWindow : public wxFrame {
-	wxToolBar *toolbar;
 public:
 	MainWindow(wxString title);
 //	void SetAccelerators();

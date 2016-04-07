@@ -9,6 +9,10 @@
 #include "Load.h"
 #include "../pseint/LangSettings.h"
 #include "../wxPSeInt/mac-stuff.h"
+#include "ShapesBar.h"
+#include "ToolBar.h"
+#include "Trash.h"
+#include "ProcessSelector.h"
 using namespace std;
 
 LangSettings lang(LS_DO_NOT_INIT);
@@ -21,6 +25,7 @@ bool mxApplication::OnInit() {
 	
 	lang.Reset();
 	GlobalInit();
+	
 	int id=-1, port=-1;
 	string fname;
 	for(int i=1;i<argc;i++) { 
@@ -39,14 +44,21 @@ bool mxApplication::OnInit() {
 	lang.Fix();
 	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
+
+	glutInit (&argc, argv);
+	wxImage::AddHandler(new wxPNGHandler);
+	Trash::Initialize();
+	ToolBar::Initialize();
+	ShapesBar::Initialize();
+	ProcessSelector::Initialize();
+	
 	if (port!=-1 && id!=-1) {
 		if (!::Connect(port,id)) edit_on=false;
 	}
 	if (fname.length()) Load(fname.c_str());
 	else Load();
-	glutInit (&argc, argv);
-	wxImage::AddHandler(new wxPNGHandler);
-	new MainWindow(wxString("PSDraw v2 - ")<<start->label.c_str());
+	
+	new MainWindow(wxString("PSDraw - ")<<start->label.c_str());
 	return true;
 	
 }

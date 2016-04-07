@@ -10,11 +10,14 @@
 #include "Textures.h"
 #include "MainWindow.h"
 #include "Canvas.h"
+#include "ShapesBar.h"
+#include "Trash.h"
+#include "ProcessSelector.h"
 using namespace std;
 
 #define mouse_setted_delta 1000
 static int mouse_setted_x,mouse_setted_y; // posicion del click que va a setear el mouse en una entidad cuando se mueva, con correccion de y y zoom aplicados
-static Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
+Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
 
 static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 	Entity *nueva=new Entity(orig->type,orig->label);
@@ -81,71 +84,71 @@ void idle_func() {
 		it->Tick();
 		++it;
 	}
-	if (mouse || choose_process_state==3) { 
-		interpolate(shapebar_size,0);
-		if (trash) interpolate(trash_size,trash_size_max);
-		else interpolate(trash_size,trash_size_min);
-		shapebar=false;
+	
+	if (process_selector->IsActive()) {
+		process_selector->ProcessIddle();
 	} else {
-		if (shapebar) interpolate(shapebar_size,shapebar_size_max);
-		else interpolate(shapebar_size,shapebar_size_min);
-		interpolate(trash_size,0); trash=false;
+		if (mouse) { 
+			trash->Show();
+			shapes_bar->Hide();
+		} else {
+			trash->Hide();
+			shapes_bar->Show();
+		}
+		shapes_bar->ProcessIdle();
 	}
+	trash->ProcessIdle();
+	
 	canvas->Refresh();
 }
 
 void passive_motion_cb(int x, int y) {
-	if (choose_process_state) {
-		if (choose_process_state<3 && choose_process_d_delta) {
-			choose_process_sel=(y-choose_process_d_base)/choose_process_d_delta;
-			if (choose_process_sel<0||choose_process_sel>int(procesos.size()-(edit_on?0:1))) choose_process_sel=-1;
+	if (process_selector->IsActive()) {	
+		process_selector->ProcessMotion(x,y); return; 
+	} else {
+		if (!win_h || !edit_on) return;
+		if (mouse) {
+			shapes_bar->Hide();
+			return;
 		}
-		return;
-	}
-	if (!win_h || !edit_on) return;
-	if (mouse) {
-		shapebar=false;
-		return;
-	}
-	if (edit_on) {
-		shapebar=x>win_w-shapebar_size;
-		if (shapebar) {
-			shapebar_sel=y/(win_h/cant_shapes_in_bar)+1;
-			if (y>cant_shapes_in_bar) y=0;
+		if (edit_on) {
+			shapes_bar->ProcessMotion(x,y);
 		}
 	}
 	cur_x=x; cur_y=win_h-y; canvas->Refresh();
 }
 void motion_cb(int x, int y) {
-	y=win_h-y; 
-	trash=x<trash_size && y<trash_size;
-	y/=zoom; x/=zoom;
-	if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
-		if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
-		to_set_mouse->SetMouse(); Entity::CalculateAll();
-	}
-	if (selecting_zoom || choose_process_state) {
-		cur_x=x; cur_y=y;
-		return;
-	}
-	if (panning) { 
-		d_dx+=x-m_x0; m_x0=x;
-		d_dy+=y-m_y0; m_y0=y;
-	} 
-	if (mouse) { 
-		cur_y=y; cur_x=mouse->d_x;
-		mouse->d_x=x-mouse->m_x;
-		mouse->d_y=y-mouse->m_y;
-		mouse->d_fx=x-mouse->m_x;
-		mouse->d_fy=y-mouse->m_y;
-	}
-	if (trash && mouse) {
-		if (mouse->type!=ET_OPCION && (mouse->GetParent()||mouse->GetPrev())) {
-			mouse->UnLink();
-			Entity::CalculateAll();
+	trash->ProcessMotion(x,y);
+	if (process_selector->IsActive()) {
+		process_selector->ProcessMotion(x,y); return; 
+	} else {
+		fix_mouse_coords(x,y);
+		if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
+			if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
+			to_set_mouse->SetMouse(); Entity::CalculateAll();
+		}
+		if (selecting_zoom) {
+			cur_x=x; cur_y=y;
+			return;
+		}
+		if (panning) { 
+			d_dx+=x-m_x0; m_x0=x;
+			d_dy+=y-m_y0; m_y0=y;
+		} 
+		if (mouse) { 
+			cur_y=y; cur_x=mouse->d_x;
+			mouse->d_x=x-mouse->m_x;
+			mouse->d_y=y-mouse->m_y;
+			mouse->d_fx=x-mouse->m_x;
+			mouse->d_fy=y-mouse->m_y;
+		}
+		if (trash->IsSelected() && mouse) {
+			if (mouse->type!=ET_OPCION && (mouse->GetParent()||mouse->GetPrev())) {
+				mouse->UnLink();
+				Entity::CalculateAll();
+			}
 		}
 	}
-	
 }
 
 void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
@@ -154,7 +157,7 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 	if (x1-x0<10||y0-y1<10) return;
 	int h=y0-y1, w=x1-x0;
 	double zh=float(win_h-40)/h; // zoom para ajustar alto
-	double zw=float(win_w-shapebar_size_min-40)/w; // zoom para ajustar ancho
+	double zw=float(win_w-shapes_bar->GetWidth()-40)/w; // zoom para ajustar ancho
 	if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
 	if (zoom>max) zoom=max;
 	d_dx=win_w/zoom/2-(x1+x0)/2;
@@ -171,9 +174,9 @@ void ProcessMenu(int op) {
 	} else if (op==MO_TOGGLE_FULLSCREEN) {
 		main_window->ToggleFullScreen();
 	} else if (op==MO_FUNCTIONS) {
-		choose_process_d_base=choose_process_d_delta=0;
-		choose_process_state=1; if (edit) edit->UnsetEdit();
+		if (edit) edit->UnsetEdit();
 		if (mouse) mouse->UnSetMouse();
+		process_selector->Show();
 	} else if (op==MO_SAVE||op==MO_RUN||op==MO_EXPORT||op==MO_DEBUG) {
 		SendUpdate(op);
 //	} else if (op==MO_SAVE_CLOSE) {
@@ -197,7 +200,7 @@ void ProcessMenu(int op) {
 	}
 }	
 
-static void fix_mouse_coords(int &x, int &y) {
+void fix_mouse_coords(int &x, int &y) {
 	y=win_h-y; y/=zoom; x/=zoom;
 }
 
@@ -217,25 +220,8 @@ void mouse_dcb(int x, int y) {
 
 void mouse_cb(int button, int state, int x, int y) {
 	to_set_mouse=NULL;
-	if (choose_process_state) {
-		if (choose_process_sel==int(procesos.size())) {
-			CreateEmptyProc(lang[LS_PREFER_FUNCION]?"Funcion":(lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso"));
-		}
-		if (choose_process_sel!=-1) {
-			if (state==ZMB_DOWN) {
-				choose_process_state=3;
-				cur_x=m_x0=x; cur_y=m_y0=win_h-y;
-			} else if (trash) {
-				if (edit_on && (procesos[choose_process_sel]->lpre!="Proceso "&&procesos[choose_process_sel]->lpre!="Algoritmo "))
-					procesos.erase(procesos.begin()+choose_process_sel); // no lo quita de la memoria, solo del arreglo, con eso alcanza, algun día corregiré el memory leak
-				choose_process_state=2;
-			} else {
-				SetProc(procesos[choose_process_sel]);
-				choose_process_state=0;
-				if (button==ZMB_RIGHT) start->SetEdit();
-			}
-		}
-	}
+	if (shapes_bar->ProcessMouse(button,state,x,y)) return;
+	if (process_selector->IsActive()) { process_selector->ProcessClick(button,state,x,y); return; }
 	fix_mouse_coords(x,y);
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
 		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
@@ -245,42 +231,6 @@ void mouse_cb(int button, int state, int x, int y) {
 	} else if (state==ZMB_DOWN) {
 		if (button==ZMB_MIDDLE) { // click en el menu
 			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
-			return;
-		}
-		if (shapebar && button==ZMB_LEFT) { // click en la barra de entidades
-			if (!shapebar_sel) return;
-			shapebar=false;
-			Entity*aux=NULL;
-			switch (shapebar_sel) {
-			case 1: 
-				if (!Entity::show_comments) ProcessMenu(MO_TOGGLE_COMMENTS);
-				aux = new Entity(ET_COMENTARIO,"");
-				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
-				break;
-			case 2: 
-				aux = new Entity(ET_ASIGNAR,""); 
-				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
-				break;
-			case 3: aux = new Entity(ET_ESCRIBIR,""); break;
-			case 4: aux = new Entity(ET_LEER,""); break;
-			case 5: aux = new Entity(ET_SI,""); break;
-			case 6: aux = new Entity(ET_SEGUN,""); break;
-			case 7: aux = new Entity(ET_MIENTRAS,""); break;
-			case 8: 
-				aux = new Entity(ET_REPETIR,""); 
-				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
-				break;
-			case 9: 
-				aux = new Entity(ET_PARA,""); 
-				if (canvas->GetModifiers()&MODIFIER_SHIFT) aux->variante=true;
-				break;
-			}
-			if (!aux) return;
-			aux->m_x=0; aux->m_y=0;
-			to_set_mouse=aux;
-			aux->SetMouse();
-			aux->SetEdit();
-			aux->SetPosition(x,y);
 			return;
 		}
 		// click en una entidad? izquierdo=mover, derecho=editar label
@@ -311,7 +261,7 @@ void mouse_cb(int button, int state, int x, int y) {
 	} else {
 		if (button==ZMB_LEFT) {
 			if (mouse) {
-				if (trash && mouse->type==ET_OPCION) {
+				if (trash->IsSelected() && mouse->type==ET_OPCION) {
 					Entity *p=mouse->GetParent();
 					mouse->UnLink(); 
 					p->Calculate();

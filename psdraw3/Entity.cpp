@@ -1,14 +1,17 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <set>
+#include <wx/wx.h>
 #include "GLstuff.h"
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
 #include "Events.h"
-#include <wx/wx.h>
 #include "Text.h"
-#include <set>
+#ifndef _FOR_EXPORT
+#	include "ShapesBar.h"
+#endif
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
@@ -447,12 +450,14 @@ void Entity::DrawText() {
 }
 
 void Entity::EnsureCaretVisible() {
+#ifndef _FOR_EXPORT
 	if (!w) return;
 	int lz=label.size(); if (!lz) lz=1; // ojo estas dos lineas deben coincidir con las dos de DrawText
 	lz= d_fx+t_dx-t_w/2+t_prew+(t_w-t_prew)*edit_pos*d_w/lz/w+(type==ET_OPCION?flecha_w/2:0);
 	// asegurarse de que el cursor se vea
-	int max_x = (win_w-2*shapebar_size_min)/zoom, min_x=2*shapebar_size_min;;
+	int max_x = (win_w-2*shapes_bar->GetWidth())/zoom, min_x=2*shapes_bar->GetWidth();
 	if (lz>max_x) d_dx-=(lz-max_x); else if (lz<min_x) d_dx+=(min_x-lz);
+#endif
 }
 
 void Entity::Draw(bool force) {

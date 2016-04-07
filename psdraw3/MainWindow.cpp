@@ -1,14 +1,15 @@
-#include "Canvas.h"
-#include "MainWindow.h"
+#include <iostream>
 #include <wx/sizer.h>
-#include "Global.h"
+#include <wx/toolbar.h>
 #include <wx/msgdlg.h>
+#include <wx/settings.h>
+#include "MainWindow.h"
+#include "ToolBar.h"
+#include "Canvas.h"
+#include "Global.h"
 #include "Load.h"
 #include "Events.h"
 #include "Comm.h"
-#include <wx/toolbar.h>
-#include <iostream>
-#include <wx/settings.h>
 
 MainWindow *main_window=NULL;
 
@@ -28,7 +29,7 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
-	toolbar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT);
+	wxToolBar *toolbar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT);
 	color_menu_back[0] = toolbar->GetBackgroundColour().Red()/255.f;
 	color_menu_back[1] = toolbar->GetBackgroundColour().Green()/255.f;
 	color_menu_back[2] = toolbar->GetBackgroundColour().Blue()/255.f;
@@ -85,7 +86,6 @@ void MainWindow::OnMouseWheel (wxMouseEvent & event) {
 
 void MainWindow::ToggleFullScreen ( ) {
 	bool fs = !main_window->IsFullScreen();
-//	toolbar->Show(!fs);
 	main_window->ShowFullScreen(fs);
 }
 
@@ -101,7 +101,7 @@ void MainWindow::AskForExit ( ) {
 }
 
 void MainWindow::OnToolOver (wxCommandEvent & event) {
-	menu_sel = MIDtoMO(event.GetSelection()); 
+	toolbar->SetSelection( MIDtoMO(event.GetSelection()) ); 
 	canvas->Refresh();
 }
 

@@ -1,6 +1,6 @@
 // comunicacion con wxPseInt
-#include "Global.h"
 #include <cmath>
+#include "Global.h"
 
 //LangSettings lang; // no definir aca, ver comentario en el global.cpp de pseint
 
@@ -11,12 +11,6 @@ string pname; // nombre original del proceso
 
 bool modified=false; // para saber si hay que preguntar antes de salir sin guardar
 
-// lista de procesos/subprocesos
-int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-int choose_process_sel=0; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-int choose_process_d_base=0;
-int choose_process_d_delta=0;
-
 // estado para pasar entre eventos para la edicion
 Entity *edit=NULL; // entidad seleccionado para editar su texto
 Entity *mouse=NULL; // entidad seleccionado por el mouse
@@ -26,20 +20,6 @@ int m_y0=0; // click del mouse, para referencia en el motion, se setea en el mou
 int blink=0; // cuando se esta editando texto, indica si se muestra o no el cursor, para que parpadee
 int cur_x=0, cur_y=0; // ubicacion del raton (durante el passive_motion_cb esta sin aplicar zoom (coord del viewport), durante el motion y click, tiene la correccion del zoom (coord del dibujo))
 
-// barra de entidades
-int shapebar_size=0; // ancho para dibujo de la shapebar
-bool shapebar=false; // indica si el mouse esta sobre la barra de formas
-int shapebar_sel=0; // indica cual tipo de entidad esta seleccionada (1...n, 0 es ninguna) si shapebar==true
-
-// menu
-int menu_size_h=0; // ancho para dibujo de la shapebar
-int menu_size_w=0; // ancho para dibujo de la shapebar
-bool menu=false; // indica si el mouse esta sobre la papelera
-int menu_sel=0; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
-
-// papelera
-bool trash=false; // indica si el mouse esta sobre la papelera
-int trash_size=0; // ancho y alto de dibujo de la papelera
 
 // zoom y panning
 bool panning=false; // indica si se esta moviendo el dibujo, para el motion

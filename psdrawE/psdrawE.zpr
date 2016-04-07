@@ -6,17 +6,16 @@ macros_file=
 default_fext_source=cpp
 default_fext_header=h
 autocomp_extra=wxWidgets
-active_configuration=Linux_Release
+active_configuration=Linux_Debug
 version_saved=20160331
 version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=Application.cpp
-cursor=0:0
+cursor=116:0
 [source]
 path=GLtoWX.cpp
 cursor=135:87
@@ -30,13 +29,13 @@ path=../psdraw3/DNassiSchne.cpp
 cursor=45:18
 [source]
 path=../psdraw3/Entity.cpp
-cursor=16:25
+cursor=459:6
 [source]
 path=../psdraw3/Global.cpp
 cursor=63:10
 [source]
 path=../psdraw3/Load.cpp
-cursor=310:13
+cursor=322:6
 [source]
 path=../pseint/LangSettings.cpp
 cursor=7:0
@@ -51,7 +50,7 @@ path=GLtoWX.h
 cursor=0:6
 [header]
 path=../psdraw3/Entity.h
-cursor=34:36
+cursor=78:16
 [header]
 path=../psdraw3/Global.h
 cursor=83:7
@@ -76,7 +75,6 @@ cursor=0:0
 [other]
 path=../bin/help/cambios.html
 cursor=6:216
-open=true
 [config]
 name=Linux_Debug
 toolchain=
@@ -142,7 +140,7 @@ std_cpp=
 debug_level=0
 optimization_level=2
 enable_lto=0
-headers_dirs=
+headers_dirs=.
 linking_extra=`wx-config --libs --version=2.8 --unicode=no` 
 libraries_dirs=
 libraries=

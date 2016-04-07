@@ -3,18 +3,26 @@
 
 #ifdef _USE_TEXTURES
 #include "GLstuff.h"
+#include <set>
+#include <string>
+using namespace std;
+
 extern bool use_textures;
-bool LoadTextures();
-struct Texture {
-	GLuint id; 
-	int w,h; float r, max_s, max_t;
-	bool smooth;
-	bool Load(const char *fname);
-	void Select();
+class Texture {
+	static set<Texture*> m_to_load; // delayed loading, requires a GL context to properly load a texture
+	bool Load();
+	string m_fname;
+	GLuint m_id;
+public:
+	Texture() : m_id(-1) { }
+	void SetTexture(string fname) { m_fname = fname; m_to_load.insert(this); }
+	Texture(string fname) : m_fname(fname), m_id(-1) { m_to_load.insert(this); }
+	~Texture() { m_to_load.erase(this); }
+	int w,h; 
+	float r, max_s, max_t;
+	void Select() { glBindTexture(GL_TEXTURE_2D,m_id); }
+	static bool LoadTextures();
 };
-extern Texture texture_shapes;
-extern Texture texture_commands;
-extern Texture texture_trash;
 #ifdef _USE_FONT
 extern Texture texture_font;
 #endif

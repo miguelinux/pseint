@@ -16,14 +16,6 @@ extern string fname; // archivo que recibe como argumento
 
 extern bool modified; // para saber si hay que preguntar antes de salir sin guardar
 
-// lista de procesos/subprocesos
-extern int choose_process_state; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-extern int choose_process_sel; // indica si mostrando la lista de procesos/subprocesos para elegir cual editar
-extern int choose_process_d_base;
-extern int choose_process_d_delta;
-#define choose_process_base 40
-#define choose_process_delta 30
-
 // estado para pasar entre eventos para la edicion
 extern Entity *edit; // entidad seleccionado para editar su texto
 extern Entity *mouse; // entidad seleccionado por el mouse
@@ -33,37 +25,8 @@ extern int m_y0; // click del mouse, para referencia en el motion, se setea en e
 extern int blink; // cuando se esta editando texto, indica si se muestra o no el cursor, para que parpadee
 extern int cur_x, cur_y; // ubicacion del raton (en coord del dibujo)
 
-// barra de entidades
-extern int shapebar_size; // ancho para dibujo de la shapebar
-#define shapebar_size_min 25
-#define shapebar_size_max 150
-extern bool shapebar; // indica si el mouse esta sobre la barra de formas
-extern int shapebar_sel; // indica cual tipo de entidad esta seleccionada (1...n, 0 es ninguna) si shapebar==true
-
-// menu
-//extern int menu_size_h; // ancho para dibujo de la shapebar
-//extern int menu_size_w; // ancho para dibujo de la shapebar
-//extern bool menu; // indica si el mouse esta sobre la papelera
-extern int menu_sel; // indica cual elemento del menu esta seleccionado (1...n, 0 es ninguno) si menu==true
-#define menu_w_max_base 240
-#define menu_w_min_base 70
-#ifdef _USE_TEXTURES
-#define menu_w_max (menu_w_max_base+(use_textures?20:0))
-#define menu_w_min (menu_w_min_base+(use_textures?10:0))
-#else
-#define menu_w_max menu_w_max_base
-#define menu_w_min menu_w_min_base
-#endif
-#define menu_h_min 30
 #define menu_line_width 1
-#define menu_option_height 25
 
-
-// papelera
-extern bool trash; // indica si el mouse esta sobre la papelera
-extern int trash_size; // ancho y alto de dibujo de la papelera
-#define trash_size_max 100
-#define trash_size_min 30
 
 // zoom y panning
 extern int win_h,win_w; // tamaño de la ventana

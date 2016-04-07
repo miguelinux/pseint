@@ -6,6 +6,7 @@
 #include "Textures.h"
 #include "Entity.h"
 #include "Text.h"
+#include <iostream>
 using namespace std;
 
 // función basada en código tomado de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
@@ -160,40 +161,38 @@ static bool loadImage(GLuint &ID, wxString path, int* imageWidth, int* imageHeig
 
 bool use_textures=true;
 
-bool Texture::Load (const char * fname) {
+bool Texture::Load () {
 	int tex_w=0, tex_h=0; w=h=0;
-	if (!loadImage(id,fname, &w, &h, &tex_w, &tex_h)) return false;
-	if (w==0||h==0) return false;
+	if (!loadImage(m_id,m_fname.c_str(), &w, &h, &tex_w, &tex_h)) {
+		cerr << "ERROR: LOADING TEXTURE: " << m_fname << endl;
+		return false;
+	}
+	if (w==0||h==0) {
+		cerr << "ERROR: EMPTY TEXTURE: " << m_fname << endl;
+		return false;
+	}
 	r=float(w)/h;
 	max_s=float(w)/tex_w;
 	max_t=float(h)/tex_h;
 	return true;
 }
 
-void Texture::Select ( ) {
-	glBindTexture(GL_TEXTURE_2D,id);
-}
-
-
-Texture texture_shapes;
-Texture texture_commands;
-Texture texture_trash;
 #ifdef _USE_FONT
 Texture texture_font;
 #endif
 
-bool LoadTextures() {
-	const char *shapes="imgs/flow/shapes.png";
-	if (Entity::nassi_shneiderman) shapes="imgs/flow/shapes_ns.png";
-	else if (Entity::alternative_io) shapes="imgs/flow/shapes_alt.png";
-	if (!texture_shapes.Load(shapes)) return use_textures=false;
-	texture_shapes.r/=8;
-	if (!texture_commands.Load("imgs/flow/commands.png")) return use_textures=false;
-	if (!texture_trash.Load("imgs/flow/trash.png")) return use_textures=false;
+set<Texture*> Texture::m_to_load;
+bool Texture::LoadTextures() {
 #ifdef _USE_FONT
-	if (use_textures_font && !texture_font.Load("imgs/flow/font.png")) use_textures_font=false;
+	texture_font.SetTexture("imgs/flow/font.png");
 #endif
-	return true;
+	
+	bool all_ok = true;
+	for( set<Texture*>::iterator it=m_to_load.begin(); it!=m_to_load.end(); ++it ) { 
+		if (!(*it)->Load()) all_ok = false;
+	}
+	m_to_load.clear();
+	return all_ok;
 }
 
 #endif

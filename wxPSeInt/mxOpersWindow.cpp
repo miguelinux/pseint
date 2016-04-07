@@ -24,7 +24,7 @@ mxOpersWindow::mxOpersWindow(wxWindow *parent):wxScrolledWindow(parent,wxID_ANY,
 	AddCaterory("Op. Algebraicos");
 	Add("+","+","suma","Ej: A+B");
 	Add("-","-","resta","Ej: A-B");
-	Add("*","*","multipliación","Ej: A*B");
+	Add("*","*","multiplicación","Ej: A*B");
 	Add("/","/","división","Ej: A/B");
 	Add("^","^","potencia","Ej: A^N (A elevado a la N-esima potencia)");
 	Add("%","%","resto/modulo","A%B (resto de dividir A por B)");
