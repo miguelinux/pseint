@@ -21,13 +21,13 @@ ShapesBar::ShapesBar()
 							: ( Entity::alternative_io 
 								  ? "imgs/flow/shapes_alt.png"
 								  : "imgs/flow/shapes.png" ) ),
-	  m_visible(true), m_extended(false), m_width(0),
+	  m_visible(true), m_extended(false), m_fixed(false), m_width(0),
 	  m_has_mouse(false), m_current_selection(no_selection)
 {
 }
 
 void ShapesBar::ProcessMotion (int x, int y) {
-	if (!m_visible) { m_current_selection=no_selection; return; }
+	if (!m_visible) { m_current_selection = no_selection; return; }
 	m_extended = x > win_w-m_width;
 	if (m_extended) {
 		m_current_selection = y/(win_h/cant_shapes_in_bar)+1;
@@ -73,7 +73,7 @@ bool ShapesBar::ProcessMouse (int button, int state, int x, int y) {
 		new_entity->m_x = 0; new_entity->m_y = 0;
 		to_set_mouse = new_entity;
 		new_entity->SetMouse();					
-		new_entity->SetEdit();
+		new_entity->SetEdit(false);
 		new_entity->SetPosition(x,y);
 	}
 	return true;
@@ -96,7 +96,7 @@ void ShapesBar::Draw() {
 	glVertex2i(win_w-m_width,0);
 	glVertex2i(win_w-m_width,win_h);
 	glEnd();
-	if (m_extended) {
+	if (m_extended||m_fixed) {
 		mouse_cursor = Z_CURSOR_INHERIT;
 		float sh=float(win_h)/cant_shapes_in_bar;
 		// resaltado(fondo) de la entidad seleccionada
@@ -113,7 +113,8 @@ void ShapesBar::Draw() {
 		// imagenes de cada entidad
 		glEnable(GL_TEXTURE_2D);
 		m_texture_extended.Select();
-		glColor3f(1,1,1);
+		if (m_visible) glColor3f(1,1,1); 
+		else glColor4f(1,1,1,.5); // dimm when fixed but not enabled
 		glBegin(GL_QUADS);
 		float dy=sh, th0=0, th1=1.0/float(cant_shapes_in_bar), dth=1.0/float(cant_shapes_in_bar);
 		float x0=win_w-m_width, x1=win_w, y0=0, y1=float(win_h)/float(cant_shapes_in_bar); 
@@ -195,10 +196,10 @@ void ShapesBar::Initialize ( ) {
 
 
 void ShapesBar::ProcessIdle ( ) {
-	int dest = m_visible ? (m_extended ? shapebar_size_max : shapebar_size_min) : 0;
+	int dest = (m_visible||m_fixed) ? ((m_fixed||m_extended) ? shapebar_size_max : shapebar_size_min ) : 0;
 	interpolate(m_width, dest);
 }
 
 int ShapesBar::GetWidth() const {
-	return m_visible ? (m_extended ? shapebar_size_max : shapebar_size_min ) : 0;
+	return (m_visible||m_fixed) ? ((m_fixed||m_extended) ? shapebar_size_max : shapebar_size_min ) : 0;
 };

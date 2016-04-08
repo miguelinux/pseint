@@ -93,7 +93,8 @@ void idle_func() {
 			shapes_bar->Hide();
 		} else {
 			trash->Hide();
-			shapes_bar->Show();
+			if (edit_on) shapes_bar->Show();
+			else         shapes_bar->Hide();
 		}
 		shapes_bar->ProcessIdle();
 	}
@@ -156,11 +157,12 @@ void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
 	if (y0<y1) { int aux=y1; y1=y0; y0=aux; }
 	if (x1-x0<10||y0-y1<10) return;
 	int h=y0-y1, w=x1-x0;
-	double zh=float(win_h-40)/h; // zoom para ajustar alto
-	double zw=float(win_w-shapes_bar->GetWidth()-40)/w; // zoom para ajustar ancho
+	const int margin = 40;
+	double zh=float(win_h-margin)/h; // zoom para ajustar alto
+	double zw=float(win_w-shapes_bar->GetWidth()-margin)/w; // zoom para ajustar ancho
 	if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
 	if (zoom>max) zoom=max;
-	d_dx=win_w/zoom/2-(x1+x0)/2;
+	d_dx=(win_w-shapes_bar->GetWidth())/zoom/2-(x1+x0)/2;
 	d_dy=win_h/zoom/2-(y1+y0)/2/*+h/2/zoom*/;
 }
 
@@ -291,6 +293,7 @@ void mouse_cb(int button, int state, int x, int y) {
 }
 
 void keyboard_cb(unsigned char key/*, int x, int y*/) {
+	if (key=='\t') shapes_bar->ToggleFixed();
 	if (!edit) {
 		if (key==27) Salir();
 		return;

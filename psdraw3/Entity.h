@@ -60,7 +60,7 @@ struct Entity : public EntityLinking<Entity> {
 	string error; // mensaje de error si es que la estructura tiene un error de sintaxis
 	Entity(ETYPE _type, string _label, bool _variante=false);
 	~Entity();
-	void SetEdit();
+	void SetEdit(bool ensure_caret_visibility = true);
 	void UnsetEdit();
 	void SetMouse();
 	void UnSetMouse();
@@ -89,7 +89,7 @@ struct Entity : public EntityLinking<Entity> {
 	void CalculateNassiShne();
 	void CalculateClasico();
 	void CopyPos(Entity *o);
-	void SetEditPos(int pos);
+	void SetEditPos(int pos, bool ensure_caret_visibility = true);
 	void EnsureCaretVisible();
 	bool CheckMouse(int x, int y, bool click=true);
 	void Print(ostream &out, string tab, Entity *process, int &line_num);

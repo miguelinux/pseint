@@ -122,7 +122,7 @@ void ProcessSelector::ProcessClick (int button, int state, int x, int y) {
 	if (m_selection!=no_selection) {
 		if (state==ZMB_DOWN) {
 			m_state=3;
-			trash->Show();
+			if (edit_on) trash->Show();
 			cur_x=m_x0=x; cur_y=m_y0=win_h-y;
 		} else if (trash->IsSelected()) {
 			if (edit_on && (procesos[m_selection]->lpre!="Proceso "&&procesos[m_selection]->lpre!="Algoritmo "))
