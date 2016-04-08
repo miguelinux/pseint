@@ -13,14 +13,14 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=mxCreatorWindow.h
+current_source=Package.cpp
 path_char=/
 [source]
 path=Application.cpp
 cursor=33:30
 [source]
 path=Package.cpp
-cursor=284:49
+cursor=66:3
 open=true
 [source]
 path=mxSingleCaseWindow.cpp

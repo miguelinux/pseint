@@ -281,7 +281,7 @@ wxString Package::GetFullConfig() {
 
 bool Package::Save (const wxString & fname, const wxString & passkey, bool old_cypher) {
 	wxFFileOutputStream out(fname);
-	out.Write(cypher_version_str,12);
+	if (!old_cypher) out.Write(cypher_version_str,12);
 	mxFilterOutputStream fout(out,passkey,old_cypher);
 	wxZipOutputStream zip(fout);
 	{
