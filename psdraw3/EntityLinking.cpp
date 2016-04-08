@@ -124,9 +124,12 @@ void EntityLinkingBase::VerifyAll( ) {
 	} while(e0!=e1);
 }
 
-void EntityLinkingBase::RemoveChild (int id) {
+void EntityLinkingBase::RemoveChild (int id, bool also_delete) {
 	SetModified();
-	if (m_childs[id]) delete m_childs[id];
+	if (m_childs[id]) {
+		if (also_delete) delete m_childs[id];
+		else { m_childs[id]->m_parent = NULL; m_childs[id]->m_child_id = -1; }
+	}
 	m_childs.Remove(id);
 	for (int i=0;i<m_childs.Count();i++)
 		if (m_childs[i]) m_childs[i]->m_child_id = i;

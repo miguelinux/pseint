@@ -24,6 +24,7 @@ int cur_x=0, cur_y=0; // ubicacion del raton (durante el passive_motion_cb esta 
 // zoom y panning
 bool panning=false; // indica si se esta moviendo el dibujo, para el motion
 bool selecting_zoom=false; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
+bool selecting_entities=false; // para selecciones múltiples (rectangulares, shift+drag derecho)
 float d_dx=0; // "paning" del dibujo
 float d_dy=0; // "paning" del dibujo
 float d_zoom=0.1; // zoom del dibujo

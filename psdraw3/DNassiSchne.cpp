@@ -125,11 +125,34 @@ void Entity::DrawNassiShne(bool force) {
 			glEnd();
 		}
 	}
+	
+	if (type==ET_SELECTION) { // + para agregar opciones
+		int w = margin, x = d_fx+d_w/2-margin-margin/2, y = d_fy-margin-margin/2;
+		glLineWidth(line_width_bordes);
+		w /= 2;
+		glBegin(GL_LINES);
+		glColor3fv(color_arrow);
+		glVertex2i(x-w,y-w); glVertex2i(x+w,y+w);
+		glVertex2i(x+w,y-w); glVertex2i(x-w,y+w);
+		glEnd();
+		glLineWidth(line_width_flechas);
+	}
 //	// texto;
 	DrawText();
 }
 
 void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
+	
+	if (type==ET_SELECTION) {
+		if (!GetChild(0)) return;
+		GetChild(0)->x = x; GetChild(0)->y = y - 3*margin;
+		bwl = bwr = bh = 0;
+		GetChild(0)->Calculate(bwl,bwr,bh);
+		bwl+=margin; bwr+=margin; bh+=margin*5;
+		h = bh; w = bwl+bwr; t_dy=t_dx=0; fx=x+(bwr-bwl)/2; fy=y;
+		child_dx[0] = 0; child_bh[0] = bh;
+		return;
+	}
 	
 	// calcular tamaños de la forma segun el texto
 	if (type==ET_COMENTARIO && !show_comments) { 

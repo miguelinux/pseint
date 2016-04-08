@@ -144,34 +144,34 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 }
 
 inline void DrawTrue(int x, int y) {
-//	// V
-//	glVertex2i(x,y); glVertex2i(x-margin/2,y+2*vf_size);
-//	glVertex2i(x,y); glVertex2i(x+margin/2,y+2*vf_size);
-	//S
-	glVertex2i(x,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+2*vf_size-margin/4);
-	glVertex2i(x-vf_size,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+vf_size);
-	glVertex2i(x-vf_size,y+vf_size); glVertex2i(x,y+vf_size);
-	glVertex2i(x,y+vf_size); glVertex2i(x,y+margin/4);
-	glVertex2i(x,y+margin/4); glVertex2i(x-vf_size,y+margin/4);
-	//I
-	glVertex2i(x+vf_size/2+margin/3,y);
-	glVertex2i(x+vf_size/2+margin/3,y+2*vf_size);
+	// V
+	glVertex2i(x,y); glVertex2i(x-margin/2,y+2*vf_size);
+	glVertex2i(x,y); glVertex2i(x+margin/2,y+2*vf_size);
+//	//S
+//	glVertex2i(x,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+2*vf_size-margin/4);
+//	glVertex2i(x-vf_size,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+vf_size);
+//	glVertex2i(x-vf_size,y+vf_size); glVertex2i(x,y+vf_size);
+//	glVertex2i(x,y+vf_size); glVertex2i(x,y+margin/4);
+//	glVertex2i(x,y+margin/4); glVertex2i(x-vf_size,y+margin/4);
+//	//I
+//	glVertex2i(x+vf_size/2+margin/3,y);
+//	glVertex2i(x+vf_size/2+margin/3,y+2*vf_size);
 }
 
 inline void DrawFalse(int x, int y) {
-//	// F
-//	glVertex2i(x-vf_size/2,y); glVertex2i(x-vf_size/2,y+2*vf_size);
-//	glVertex2i(x-vf_size/2,y+2*vf_size); glVertex2i(x+vf_size/2,y+2*vf_size);
-//	glVertex2i(x-vf_size/2,y+vf_size); glVertex2i(x+vf_size/2,y+vf_size);
-	//N
-	glVertex2i(x-vf_size-margin/3,y); glVertex2i(x-vf_size-margin/3,y+2*vf_size);
-	glVertex2i(x-vf_size-margin/3,y+2*vf_size);glVertex2i(x-margin/3,y);
-	glVertex2i(x-margin/3,y);glVertex2i(x-margin/3,y+2*vf_size);
-	//O
-	glVertex2i(x+margin/3,y+margin/4);glVertex2i(x+margin/3,y+2*vf_size-margin/4);
-	glVertex2i(x+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);
-	glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+margin/4);
-	glVertex2i(x+vf_size+margin/3,y+margin/4);glVertex2i(x+margin/3,y+margin/4);
+	// F
+	glVertex2i(x-vf_size/2,y); glVertex2i(x-vf_size/2,y+2*vf_size);
+	glVertex2i(x-vf_size/2,y+2*vf_size); glVertex2i(x+vf_size/2,y+2*vf_size);
+	glVertex2i(x-vf_size/2,y+vf_size); glVertex2i(x+vf_size/2,y+vf_size);
+//	//N
+//	glVertex2i(x-vf_size-margin/3,y); glVertex2i(x-vf_size-margin/3,y+2*vf_size);
+//	glVertex2i(x-vf_size-margin/3,y+2*vf_size);glVertex2i(x-margin/3,y);
+//	glVertex2i(x-margin/3,y);glVertex2i(x-margin/3,y+2*vf_size);
+//	//O
+//	glVertex2i(x+margin/3,y+margin/4);glVertex2i(x+margin/3,y+2*vf_size-margin/4);
+//	glVertex2i(x+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);
+//	glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+margin/4);
+//	glVertex2i(x+vf_size+margin/3,y+margin/4);glVertex2i(x+margin/3,y+margin/4);
 }
 
 inline void DrawFlechaDown(int x, int y1, int y2) {
@@ -207,9 +207,6 @@ void Entity::DrawClasico(bool force) {
 	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
 	if (this==mouse && (GetPrev()||GetParent())) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
 		DrawShapeBorder(color_ghost,d_dx+x,d_dy+y,bwr+bwl,h);
-//	else if (type!=ET_COMENTARIO && draw_shadow) /*if (type!=ET_OPCION && type!=ET_SEGUN)*/ // sombra
-//		DrawShapeSolid(color_shadow,d_fx+shadow_delta_x,d_fy-shadow_delta_y,d_w,d_h);
-	// flechas
 	glBegin(GL_LINES); 
 	glColor3fv(color_arrow);
 	if (!nolink) {
@@ -305,7 +302,7 @@ void Entity::DrawClasico(bool force) {
 				}
 			}
 		}
-		if (type!=ET_OPCION && type!=ET_COMENTARIO) {
+		if (type!=ET_OPCION && type!=ET_COMENTARIO && type!=ET_SELECTION) {
 			// punta de flecha que viene del anterior
 			if (!(type==ET_PROCESO&&!variante)) DrawFlechaDownHead(d_x,d_y-flecha_in); // no en inicio
 			// linea de flecha que va al siguiente
@@ -317,7 +314,7 @@ void Entity::DrawClasico(bool force) {
 		if (type!=ET_OPCION) DrawFlechaDownHead(d_dx+x,d_dy+y); // no en inicio
 	}
 	glEnd();
-	if (type==ET_COMENTARIO) {
+	if (type==ET_COMENTARIO||type==ET_SELECTION) {
 #ifndef _FOR_EXPORT
 		glEnable(GL_LINE_STIPPLE);
 #endif
@@ -350,7 +347,33 @@ void Entity::DrawClasico(bool force) {
 			glEnd();
 		}
 	} else 
-		if (!nolink && (type==ET_ESCRIBIR||type==ET_LEER) ) { // flecha en la esquina
+	if (!nolink) {
+		if (type==ET_SELECTION && !nolink) {
+			glColor3fv(color_back);
+			int w = margin, x = d_fx+d_w/2, y = d_fy/*-d_h*/;
+			glBegin(GL_QUADS);
+				glVertex2d(x-w,y-w);
+				glVertex2d(x-w,y+w);
+				glVertex2d(x+w,y+w);
+				glVertex2d(x+w,y-w);
+			glEnd();
+			glLineWidth(line_width_bordes);
+			glColor3fv(color_menu);
+			glBegin(GL_LINE_LOOP);
+				glVertex2d(x-w,y-w);
+				glVertex2d(x-w,y+w);
+				glVertex2d(x+w,y+w);
+				glVertex2d(x+w,y-w);
+			glEnd();
+			w /= 2;
+			glBegin(GL_LINES);
+			glColor3fv(color_arrow);
+			DrawLinea(x-w,y-w,x+w,y+w);
+			DrawLinea(x+w,y-w,x-w,y+w);
+			glEnd();
+			glLineWidth(line_width_flechas);
+		} else
+		if (type==ET_ESCRIBIR||type==ET_LEER) { // flecha en la esquina
 			glBegin(GL_LINES);
 			glColor3fv(color_label_high[3]);
 			int axl = d_x+d_w/2-margin, axe = d_x+d_w/2+margin;
@@ -366,6 +389,7 @@ void Entity::DrawClasico(bool force) {
 			
 			glEnd();
 		}
+	}
 	// texto;
 	DrawText();
 	if (!nolink) {
@@ -403,6 +427,17 @@ void Entity::DrawClasico(bool force) {
 }
 
 void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
+	
+	if (type==ET_SELECTION) {
+		if (!GetChild(0)) return;
+		GetChild(0)->x = x; GetChild(0)->y = y;
+		bwl = bwr = bh = 0;
+		GetChild(0)->Calculate(bwl,bwr,bh);
+		bwl+=2*margin; bwr+=2*margin;
+		h = bh; w = bwl+bwr; t_dy=t_dx=0; fx=x+(bwr-bwl)/2; fy=y+flecha_h/2;
+		child_dx[0] = 0; child_bh[0] = bh;
+		return;
+	}
 	
 	// calcular tamaños de la forma segun el texto
 	h=t_h+2*margin; if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; else w+=2*(h-margin); }

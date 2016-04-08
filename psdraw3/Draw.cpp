@@ -13,6 +13,7 @@
 #include "ShapesBar.h"
 #include "ToolBar.h"
 #include "Trash.h"
+#include <iostream>
 using namespace std;
 
 class RaiiColorChanger {
@@ -110,6 +111,26 @@ void draw_debug_arrow(Entity *e, float delta) {
 	glEnd();
 }
 
+void MoveToNext(Entity *mouse, Entity *aux, bool calculate = true){
+	Entity *mouse_next = mouse->GetNext();
+	mouse->UnLink();
+	aux->LinkNext(mouse);
+	if (mouse_next && mouse_next->nolink) {
+		MoveToNext(mouse_next,mouse,false);
+	}
+	if (calculate) Entity::CalculateAll();
+}
+
+void MoveToChild(Entity *mouse, Entity *aux, int i){
+	Entity *mouse_next = mouse->GetNext();
+	mouse->UnLink();
+	aux->LinkChild(i,mouse);
+	if (mouse_next && mouse_next->nolink==mouse) {
+		MoveToNext(mouse,mouse_next,false);
+	}
+	Entity::CalculateAll();
+}
+
 void display_cb() {
 	mouse_cursor=Z_CURSOR_CROSSHAIR;
 	status_color=NULL;
@@ -120,7 +141,7 @@ void display_cb() {
 	
 	// dibujar el diagrama
 	float mx=cur_x/zoom, my=cur_y/zoom;
-	Entity *aux=start->GetTopEntity();
+	Entity *aux = start->GetTopEntity();
 	Entity *my_start=aux;
 	bool found=false;
 	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
@@ -131,23 +152,19 @@ void display_cb() {
 	do {
 		if (!found && mouse && mouse->type!=ET_OPCION && (cur_x-mouse_link_x)*(cur_x-mouse_link_x)+(cur_y-mouse_link_y)*(cur_y-mouse_link_y)>mouse_link_delta) {
 			if (aux!=mouse && aux->CheckLinkNext(cur_x,cur_y)) {
-				mouse_link_x=cur_x; mouse_link_y=cur_y;
-				mouse->UnLink();
-				aux->LinkNext(mouse);
-				Entity::CalculateAll();
+				mouse_link_x = cur_x; mouse_link_y = cur_y;
+				MoveToNext(mouse,aux);
 				found=true;
 			} else if (aux->GetChildCount()) {
 				int i=aux->CheckLinkChild(cur_x,cur_y);
 				if (i!=-1) {
-					mouse_link_x=cur_x; mouse_link_y=cur_y;
-					mouse->UnLink();
-					aux->LinkChild(i,mouse);
-					Entity::CalculateAll();
+					mouse_link_x = cur_x; mouse_link_y = cur_y;
+					MoveToChild(mouse,aux,i);
 					found=true;
 				}
 			}
 		}
-		if (/*!Entity::nassi_shneiderman &&*/ edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+		if (edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
 			RaiiColorChanger rcc;
 			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
 			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
@@ -173,14 +190,21 @@ void display_cb() {
 		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
 		aux = Entity::NextEntity(aux);
 	} while (aux);
+	if (mouse && !mouse->GetPrev() && !mouse->GetParent()) 
+		mouse->Draw(); // cuando recien salen de la shapebar no esta linkeadas al algoritmo, no los toma la recorrida anterior
 	if (mouse && mouse->type==ET_OPCION) {
-		int i=mouse->GetParent()->CheckLinkOpcion(cur_x,cur_y);
-		if (i!=-1) {
-			mouse->GetParent()->Calculate();
+		int new_id = mouse->GetParent()->CheckLinkOpcion(cur_x,cur_y);
+		if (new_id!=-1) {
+			int old_id = mouse->GetChildId();
+			Entity *segun = mouse->GetParent();
+			segun->RemoveChild(old_id,false);
+			if (old_id<new_id) --new_id;
+			segun->InsertChild(new_id,mouse);
+			segun->Calculate();
 		}
 	}
 	
-	if (selecting_zoom) {
+	if (selecting_zoom||selecting_entities) {
 		glColor3fv(color_menu);
 		glBegin(GL_LINE_LOOP);
 			glVertex2i(m_x0,m_y0);

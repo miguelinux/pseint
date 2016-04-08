@@ -25,7 +25,7 @@ Tipos de entidades:
 	ET_PARA: para, 4 hijos, el 0 es el contenido del bucle, el 1,2,3 son val inicial, paso y final, estan fijos, los crea el ctor, la variante es para cada, donde hijo 2 tiene el arreglo
 	ET_AUX_PARA: hijos 1,2,3 y de para
 */
-enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_COUNT };
+enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_SELECTION, ET_COUNT };
 
 struct Entity : public EntityLinking<Entity> {
 	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
@@ -92,6 +92,7 @@ struct Entity : public EntityLinking<Entity> {
 	void SetEditPos(int pos, bool ensure_caret_visibility = true);
 	void EnsureCaretVisible();
 	bool CheckMouse(int x, int y, bool click=true);
+	bool IsInside(int x0, int y0, int x1, int y1);
 	void Print(ostream &out, string tab, Entity *process, int &line_num);
 	void SetPosition(int x0, int y0); // para moverla por la fuerza, para ubicarla en la shapebar cuando se crea
 	Entity *GetTopEntity(); ///< sigue por prev hasta llegar a null

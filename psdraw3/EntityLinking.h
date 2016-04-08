@@ -30,7 +30,7 @@ public:
 	void LinkChild(int id, EntityLinkingBase *e);
 	void SetChildCount(int new_count);
 	void VerifyLinks(bool recursive);
-	void RemoveChild(int id);
+	void RemoveChild(int id, bool also_delete = true);
 	void InsertChild(int id, EntityLinkingBase *e);
 	static void VerifyAll();
 	

@@ -58,7 +58,7 @@ Entity::Entity(ETYPE _type, string _label, bool _variante)
 		LinkChild(1,new Entity(ET_AUX_PARA,"")); GetChild(1)->SetLabels();
 		LinkChild(2,new Entity(ET_AUX_PARA,"")); GetChild(2)->SetLabels();
 		LinkChild(3,new Entity(ET_AUX_PARA,"")); GetChild(3)->SetLabels();
-	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN) { // un hijo
+	} else if (type==ET_MIENTRAS||type==ET_REPETIR||type==ET_OPCION||type==ET_SEGUN||type==ET_SELECTION) { // un hijo
 		SetChildCount(1);
 		if (type!=ET_OPCION && type!=ET_SEGUN) flecha_in=flecha_h; 
 		else if (type==ET_SEGUN) LinkChild(0,new Entity(ET_OPCION,"De Otro Modo",true));
@@ -90,15 +90,15 @@ void Entity::SetMouse() {
 
 void Entity::UnSetMouse() {
 	mouse=NULL;
-	SetNolink(NULL,false);
+	SetNolink(NULL,true);
 	if (!GetParent() && !GetPrev()) {
 		if (entity_to_del) delete entity_to_del;
 		entity_to_del=this;
 	}
 }
 
-void Entity::SetNolink(Entity *m,bool n) {
-	nolink=m;
+void Entity::SetNolink(Entity *m, bool n) {
+	nolink = m;
 	for (int i=0;i<GetChildCount();i++)
 		if (GetChild(i)) GetChild(i)->SetNolink(m,true);
 	if (n && GetNext()) GetNext()->SetNolink(m,true);
@@ -138,10 +138,14 @@ static bool is_sep(char c) {
 	return true;
 }
 
-// a nada
-// b numero
-// c cadena
-// d keyword
+
+// estilos para colourized (ver def de color_label_high en Global.cpp)
+// 'a' identificadors
+// 'b' numeros
+// 'c' cadenas
+// 'd' keywords
+// 'e' comentarios
+// 'f' operadores y otros
 
 static set<string> keywords;
 
@@ -245,7 +249,7 @@ static void beautify_label(ETYPE type, string &label, int &edit_pos) {
 			first_word = true;
 		} else if (first_word && is_sep(label[i])) {
 			if (label[i]==flechita||label[i]=='=') {
-				if (i+1==l||label[i+1]!=' ') {
+				if (i+1<l&&label[i+1]!=' ') {
 					label.insert(i+1," "); ++l;
 					if (edit_pos>=i+1) ++edit_pos;
 				}
@@ -254,7 +258,7 @@ static void beautify_label(ETYPE type, string &label, int &edit_pos) {
 					if (edit_pos>=i-1) ++edit_pos;
 				}
 			} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
-				if (i+2==l||label[i+2]!=' ') {
+				if (i+2<l&&label[i+2]!=' ') {
 					label.insert(i+2," "); ++l;
 					if (edit_pos>=i+2) ++edit_pos;
 				}
@@ -265,7 +269,7 @@ static void beautify_label(ETYPE type, string &label, int &edit_pos) {
 					if (edit_pos>=i-1) ++edit_pos;
 				}
 			} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
-				if (i+2==l||label[i+2]!=' ') {
+				if (i+2<l&&label[i+2]!=' ') {
 					label.insert(i+2," "); ++l;
 					if (edit_pos>=i+2) ++edit_pos;
 				}
@@ -367,9 +371,10 @@ int Entity::CheckLinkChild(int x, int y) {
 int Entity::CheckLinkOpcion(int x, int y) {
 	if (y<d_dy+GetChild(0)->y-GetChild(0)->h || y>d_dy+GetChild(0)->y+2*GetChild(0)->h) return -1;
 	if (x<d_dx+GetChild(0)->x-GetChild(0)->w || x>d_dx+GetChild(GetChildCount()-1)->x+GetChild(GetChildCount()-1)->w) return -1;
-	for (int i=0;i<GetChildCount()-1;i++) {
+	for (int i=0;i<GetChildCount();i++) {
 		if (x<d_dx+GetChild(i)->x) {
-			if (i==mouse->GetChildId()) return -1; else return i;
+			if (i==mouse->GetChildId()) return -1; 
+			else return i;
 		}
 	}
 	return -1;
@@ -393,7 +398,7 @@ void Entity::Tick() {
 		interpolate(d_w,w);
 		return; // si se esta moviendo con el mouse, el mouse manda, asi que aca no se hace nada
 	}
-	if (nolink) { // si se esta moviendo como parte de un bloque, se esconde detras de ese bloque
+	if (nolink && mouse==nolink) { // si se esta moviendo como parte de un bloque, se esconde detras de ese bloque
 		interpolate(d_x,nolink->d_x);
 		interpolate(d_y,nolink->d_y-nolink->h/2);
 		interpolate(d_fx,nolink->d_fx);
@@ -485,6 +490,7 @@ void Entity:: ResizeW(int aw, bool up) {
 		int old=bwl+bwr;
 		bwl+=(aw-old)/2;
 		bwr+=(aw-old)/2;
+		w+=(aw-old);
 		int nc=GetChildCount(); if (type==ET_PARA) nc=1;
 		for (int i=0;i<nc;i++)
 			if (GetChild(i)) 
@@ -534,14 +540,30 @@ void Entity::CopyPos(Entity *o) {
 
 bool Entity::CheckMouse(int x, int y, bool click) {
 	if (!edit_on || (!showbase&&type==ET_COMENTARIO)) return false;
-	if (click && type==ET_OPCION) {
-		if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
-			GetParent()->InsertChild(GetChildId(),new Entity(ET_OPCION,""));
-			GetParent()->GetChild(GetChildId()-1)->SetEdit();
-			GetParent()->GetChild(GetChildId()-1)->CopyPos(this);
-			return false;
+	if (click) {
+		if (type==ET_OPCION) {
+			if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
+				GetParent()->InsertChild(GetChildId(),new Entity(ET_OPCION,""));
+				GetParent()->GetChild(GetChildId()-1)->SetEdit();
+				GetParent()->GetChild(GetChildId()-1)->CopyPos(this);
+				return false;
+			}
+			if (GetChildId()==GetParent()->GetChildCount()-1) return false;
+		} else if (type==ET_SELECTION) {
+			int w = margin, xc = d_fx+d_w/2-(nassi_shneiderman?2*margin:0), yc = d_fy-(nassi_shneiderman?2*margin:0);
+			if (x>xc-w&&x<xc+w&&y>yc-w&&y<yc+w) {
+				Entity *aux = this;
+				while(GetChild(0)) {
+					Entity *child = this->GetChild(0);
+					child->UnLink();
+					aux->LinkNext(child);
+					aux = child;
+				}
+				this->UnLink();
+				entity_to_del = this;
+				return false;
+			}
 		}
-		if (GetChildId()==GetParent()->GetChildCount()-1) return false;
 	}
 	if (x>=d_fx+t_dx-d_w/2 && x<=d_fx+t_dx+d_w/2 && y<=d_fy && y>=d_fy-d_h) {
 		m_x=x-d_fx;
@@ -554,6 +576,11 @@ bool Entity::CheckMouse(int x, int y, bool click) {
 		return true;
 	}
 	return false;
+}
+
+bool Entity::IsInside(int x0, int y0, int x1, int y1) {
+	if (!edit_on || type==ET_PROCESO || type==ET_PROCESO) return false;
+	return x0<d_fx+t_dx-d_w/2 && x1>d_fx+t_dx+d_w/2 && y0>d_fy && y1<d_fy-d_h;
 }
 
 #define _tabs "\t"
@@ -600,6 +627,8 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		}
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
 		out<<tab<<"FinPara"<<_endl_prev;
+	} else if (type==ET_SELECTION) {
+		GetChild(0)->Print(out,_tabs,process,line_num);
 	} else if (type==ET_SEGUN) {
 		out<<tab<<"Segun "<<_fix(label,"{expresion}")<<" Hacer"<<_endl_this;
 		for(int i=0;i<GetChildCount()-1;i++) { 

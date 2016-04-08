@@ -128,7 +128,7 @@ void motion_cb(int x, int y) {
 			if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
 			to_set_mouse->SetMouse(); Entity::CalculateAll();
 		}
-		if (selecting_zoom) {
+		if (selecting_zoom||selecting_entities) {
 			cur_x=x; cur_y=y;
 			return;
 		}
@@ -208,7 +208,6 @@ void fix_mouse_coords(int &x, int &y) {
 
 void mouse_dcb(int x, int y) {
 	fix_mouse_coords(x,y);
-	
 	Entity::AllIterator it = Entity::AllBegin();
 	while (it!=Entity::AllEnd()) {
 		if (it->CheckMouse(x,y)) {
@@ -220,10 +219,43 @@ void mouse_dcb(int x, int y) {
 	}
 }
 
+void FinishMultipleSelection(int x0, int y0, int x1, int y1) {
+	if (x0>x1) { int aux = x0; x0 = x1; x1 = aux; }
+	if (y0<y1) { int aux = y0; y0 = y1; y1 = aux; }
+	selecting_entities = false;
+	// encontrar la primera que entra en la selección
+	Entity *aux = start;
+	do {
+		if (aux->IsInside(x0,y0,x1,y1))
+			break;
+		aux = Entity::NextEntity(aux);
+	} while (aux);
+	if (!aux) return;
+	// crear la entidad de seleccion y poner la primera como primer hija
+	Entity *selection = new Entity(ET_SELECTION,""), 
+		   *aux_prev = aux->GetPrev(), *aux_parent = aux->GetParent();
+	
+	selection->d_fx = (x0+x1)/2; selection->d_fy = y0;
+	selection->d_h = (y0-y1); selection->d_w = x1-x0;
+	
+	int aux_chid = aux->GetChildId(); aux->UnLink(); 
+	if (aux_prev) aux_prev->LinkNext(selection);
+	else aux_parent->LinkChild(aux_chid,selection);
+	selection->LinkChild(0,aux);
+	// ver cuantas "next" también entran en la selección
+	while (selection->GetNext() && selection->GetNext()->IsInside(x0,y0,x1,y1)) {
+		Entity *sel_next = selection->GetNext();
+		sel_next->UnLink();
+		aux->LinkNext(sel_next);
+		aux = sel_next;
+	}
+}
+
 void mouse_cb(int button, int state, int x, int y) {
-	to_set_mouse=NULL;
-	if (shapes_bar->ProcessMouse(button,state,x,y)) return;
 	if (process_selector->IsActive()) { process_selector->ProcessClick(button,state,x,y); return; }
+	to_set_mouse=NULL;
+	if (!panning && !selecting_zoom && !selecting_entities)
+		if (shapes_bar->ProcessMouse(button,state,x,y)) return;
 	fix_mouse_coords(x,y);
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
 		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
@@ -259,7 +291,11 @@ void mouse_cb(int button, int state, int x, int y) {
 			}
 			++it;
 		}
-		m_x0=x; m_y0=y; panning=true;
+		if (button==ZMB_LEFT && canvas->GetModifiers()==MODIFIER_SHIFT) {
+			cur_x=m_x0=x; cur_y=m_y0=y; selecting_entities=true;
+		} else {
+			m_x0=x; m_y0=y; panning=true;
+		}
 	} else {
 		if (button==ZMB_LEFT) {
 			if (mouse) {
@@ -270,6 +306,9 @@ void mouse_cb(int button, int state, int x, int y) {
 				} 
 			}
 			if (mouse) mouse->UnSetMouse();
+			if (selecting_entities) {
+				FinishMultipleSelection(m_x0,m_y0,cur_x,cur_y);
+			}
 //			// doble click (por alguna extraña razon en mi wx un doble click genera un evento de down y dos de up)
 //			Entity *aux=start;
 //			do {

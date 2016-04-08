@@ -31,6 +31,7 @@ extern int cur_x, cur_y; // ubicacion del raton (en coord del dibujo)
 // zoom y panning
 extern int win_h,win_w; // tamaño de la ventana
 extern bool panning; // indica si se esta moviendo el dibujo, para el motion
+extern bool selecting_entities; // para selecciones múltiples (rectangulares, shift+drag derecho)
 extern bool selecting_zoom; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
 extern float d_dx; // "paning" del dibujo
 extern float d_dy; // "paning" del dibujo
