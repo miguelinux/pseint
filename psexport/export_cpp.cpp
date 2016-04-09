@@ -306,7 +306,7 @@ void CppExporter::header(t_output &out) {
 	if (include_cstdlib) out.push_back("#include<cstdlib>");
 	if (use_func_esperar) out.push_back("#include<ctime>");
 	if (use_func_mayusculas||use_func_minusculas) out.push_back("#include<cctype>");
-	if (use_func_convertiratexto) out.push_back("#include<stringstream>");
+	if (use_func_convertiratexto) out.push_back("#include<sstream>");
 	out.push_back("using namespace std;");
 	if (!for_test) out.push_back("");
 	if (use_func_esperar) {
