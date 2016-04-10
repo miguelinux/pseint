@@ -174,7 +174,7 @@ bool LangSettings::Save (const string &fname) {
 	fil << "desc=" << tmp << endl;
 	fil << "version=" <<LS_VERSION << endl;
 	for(int i=0;i<LS_COUNT;i++) 
-		fil << GetConfigLine(i);
+		fil << GetConfigLine(i) << endl;
 	fil.close();
 	return true;
 }

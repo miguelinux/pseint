@@ -81,11 +81,12 @@ void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 }
 
 void mxConfig::OnSaveButton (wxCommandEvent & evt) {
-	wxFileDialog dlg (this, "Guardar perfil en archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg (this, "Guardar perfil en archivo", config->last_dir, "", "Cualquier Archivo (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
 		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 		LangSettings l(LS_INIT);
-		l.descripcion=wxGetTextFromUser("Ingrese una descripción breve del perfil.","Guardar Perfil","",this);
+		l.descripcion = wxGetTextFromUser("Ingrese una descripción breve del perfil.","Guardar Perfil","",this);
+		if (l.descripcion.empty()) return;
 		CopyToStruct(l);
 		l.Save(dlg.GetPath());
 	}
