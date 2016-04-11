@@ -1,31 +1,61 @@
 #include "case_map.h"
 #include "utils.h"
+#include "new_funciones.h"
 
 map<string,string> *case_map=NULL;
 
-void CaseMapAux(string &s, bool fill) {
-	int l=s.size(),p;
+//----------------from wxPSeInt/CommonParsinsFunctions------
+// tengo que unificar las mil implementaciones de estos auxiliares
+template<typename TString> 
+int SkipString(const TString &line, int i, int len) {
+	do {
+		++i;
+	} while(i<len && line[i]!='\'' && line[i]=='\"');
+	return i;
+}
+
+template<typename TString> 
+int SkipParentesis(const TString &line, int i, int len) {
+	int par_level = 1;
+	while (par_level && i<len) {
+		++i;
+		if (line[i]=='(' || line[i]=='[') ++par_level;
+		else if (line[i]==']' || line[i]==')') --par_level;
+		else if (line[i]=='\'' || line[i]=='\"') i = SkipString(line,i,len);
+	}
+	return i;
+}
+//----------------
+
+void CaseMapAux(string &s, bool fill, bool fix_parentesis) {
+	int len=s.size(),p;
 	int comillas=false;
 	int word=false;
-	for(int i=0;i<=l;i++) { 
-		char c=i=='l'?' ':ToUpper(s[i]);
+	for(int i=0;i<=len;i++) { 
+		char c = i==len?' ':ToUpper(s[i]);
 		if (c=='\''||c=='\"') comillas=!comillas;
 		else if (!comillas) {
 			if (i&&c=='/'&&s[i-1]=='/') return;
 			if (word) {
-				if (!EsLetra(c)&&!(c>='0'&&c<='9')) {
+				if (!EsLetra(c,true)) {
 					string s1=s.substr(p,i-p);
-					unsigned int l=s1.size(); 
+					unsigned int keylen=s1.size(); 
 					if (fill) {
 						string s2=s1;
-						for(unsigned int i=0;i<l;i++) 
+						for(unsigned int i=0;i<keylen;i++) 
 							s1[i]=ToUpper(s2[i]);
 						(*case_map)[s1]=s2;
 					} else {
 						string s2=(*case_map)[s1];
-						if (s2.size()==l) 
-							for(unsigned int j=0;j<l;j++) 
+						if (s2.size()==keylen) {
+							for(unsigned int j=0;j<keylen;j++) 
 								s[p+j]=s2[j];
+							if (fix_parentesis && s[i]=='(' && !EsFuncion(s1,true)) {
+								s[i]='['; 
+								int i2 = SkipParentesis(s,i,len);
+								if (i2<len && s[i2]==')') s[i2]=']';
+							}
+						}
 					}
 					word=false;
 				}
@@ -37,10 +67,11 @@ void CaseMapAux(string &s, bool fill) {
 }
 
 void CaseMapFill(string &s) {
-	CaseMapAux(s,true);
+	CaseMapAux(s,true,false);
 }
-void CaseMapApply(string &s) {
-	CaseMapAux(s,false);
+
+void CaseMapApply(string &s, bool and_fix_parentesis) {
+	CaseMapAux(s,false,and_fix_parentesis);
 }
 
 

@@ -90,7 +90,7 @@ void mxExportPreview::UpdatePrev ( ) {
 	wxString command;
 command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
 command<<mxProcess::GetProfileArgs();
-command<<" --draw \""<<temp_filename<<".psd"<<"\"";
+command<<" --export \""<<temp_filename<<".psd"<<"\"";
 
 _LOG("mxExportPreview, command="<<command);
 pid = wxExecute(command,wxEXEC_ASYNC,the_process);

@@ -11,7 +11,7 @@ extern map<string,string> *case_map;
 
 void CaseMapFill(string &s);
 void CaseMapPurge();
-void CaseMapApply(string &s);
+void CaseMapApply(string &s, bool and_fix_parentesis);
 
 #endif
 

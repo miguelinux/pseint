@@ -249,15 +249,6 @@ void LoadProc(vector<string> &vproc) {
 			_new_prev();
 		}
 		else { // asignacion, dimension, definicion
-			int i = 0, l = str.size();
-			i = SkipWord(str,i,l);
-			if (str[i]=='(' || str[i]=='[') i = SkipParentesis(str,i,l);
-			if (i+2<l && str.substr(i,2)=="<-") {
-				string s1=str.substr(0,i+2);
-				string s2=str.substr(i+2);
-				RemoveParentesis(s2);
-				str=s1+s2;
-			}
 			if (str=="ESPERARTECLA") str="Esperar Tecla";
 			else if (str=="BORRARPANTALLA") str="Borrar Pantalla";
 			else if (str.find(' ')!=string::npos) {

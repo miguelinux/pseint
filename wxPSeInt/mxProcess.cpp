@@ -255,7 +255,7 @@ bool mxProcess::SaveDraw(wxString file, bool check_first) {
 
 bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_EXPORT:mxPW_EXPORT; export_lang=lang;
-	if (check_first) return CheckSyntax(file,wxString("--draw --preservecomments \"")<<source->GetTempFilenamePSD()<<"\"");
+	if (check_first) return CheckSyntax(file,wxString("--export --preservecomments \"")<<source->GetTempFilenamePSD()<<"\"");
 	wxString extension=export_lang; while(extension.Last()>='0'&&extension.Last()<='9') extension.RemoveLast();
 	wxFileDialog dlg (main_window, _T("Guardar Cpp"),source->GetPathForExport(),source->GetNameForExport()+"."+extension, wxString("Archivo ")+extension+"|*."+extension, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() != wxID_OK) return false;
@@ -305,7 +305,7 @@ wxString mxProcess::GetDrawPostArgs ( ) {
 
 wxString mxProcess::GetDrawPreArgs ( ) {
 	wxString command;
-	command<<"--preservecomments --draw --usecasemap --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
+	command << "--preservecomments --draw --lazy_syntax=1 --force_semicolon=0 --allow_dinamyc_dimensions=1";
 	return command;
 }
 

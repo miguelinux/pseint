@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 		log_file=false, // guardar errores en un archivo de log
 		error=false, 
 		for_draw=false, // generar entrada para psdraw
+		for_export=false, // generar entrada para psexport
 		write_positions=false,
 		real_time_syntax=false; // indica que espera eternamente codigo desde std, para usar de fondo para el checkeo de sintaxis en tiempo real en la gui
 	int 
@@ -114,10 +115,12 @@ int main(int argc, char* argv[]) {
 				noinput=true;
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
-			else if (str=="--usecasemap")
-				case_map=new map<string,string>();
 			else if (str=="--draw") {
-				ignore_logic_errors=for_draw=true;
+				case_map=new map<string,string>();
+				ignore_logic_errors = for_draw = true;
+				run=false;
+			} else if (str=="--export") {
+				for_export = for_draw = true;
 				run=false;
 			} else if (str=="--easteregg") {
 				cerr<<"Bazinga!"<<endl;
@@ -295,8 +298,26 @@ int main(int argc, char* argv[]) {
 			if (case_map) CaseMapPurge();
 			ofstream dibujo(fil_args[1]);
 			for (int i=0;i<programa.GetSize();i++) {
+				if (!for_export && programa[i].type==IT_ASIGNAR) { 
+					// sacar los parentesis adicionales
+					int p = programa[i].instruccion.find("<-");
+					programa[i].instruccion.erase(p+2,1);
+					programa[i].instruccion.erase(programa[i].instruccion.size()-2,1);
+					// unir varias asignaciones en una sola linea si asi estaban originalmente y esto va para psdraw
+					while (i+1<programa.GetSize() && programa[i].type==IT_ASIGNAR && programa[i].num_linea==programa[i+1].num_linea) 
+					{
+						++i;
+						// sacar los parentesis adicionales
+						int p = programa[i].instruccion.find("<-");
+						programa[i].instruccion.erase(p+2,1);
+						programa[i].instruccion.erase(programa[i].instruccion.size()-2,1);
+						// unir
+						programa[i].instruccion = 
+							programa[i-1].instruccion +" "+ programa[i].instruccion;
+					}
+				}
 				if (case_map && (!preserve_comments || !LeftCompare(programa[i].instruccion,"#")))
-					CaseMapApply(programa[i].instruccion);
+					CaseMapApply(programa[i].instruccion,!for_export);
 				if (write_positions) 
 					dibujo<<"#pos "<<programa[i].num_linea<<":"<<programa[i].num_instruccion<<endl;
 #ifdef _DEBUG
