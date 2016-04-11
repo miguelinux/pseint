@@ -23,6 +23,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_TOOL_ENTER(wxID_ANY,MainWindow::OnToolOver)
 	EVT_TOOL(wxID_ANY,MainWindow::OnTool)
 	EVT_CLOSE(MainWindow::OnClose)
+	EVT_ACTIVATE(MainWindow::OnActivated)
 END_EVENT_TABLE()
 
 MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(win_w,win_h),wxDEFAULT_FRAME_STYLE) {
@@ -125,5 +126,9 @@ int MainWindow::MIDtoMO (int mid) {
 	case MID_HELP:return MO_HELP;
 	default: return MO_NONE;
 	}
+}
+
+void MainWindow::OnActivated(wxActivateEvent &event) {
+	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
 }
 

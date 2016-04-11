@@ -799,7 +799,7 @@ void Entity::SetEditPos (int pos, bool ensure_caret_visibility) {
 void Entity::OnLinkingEvent (LnkEvtType t, int i) {
 	switch(t) {
 	case EntityLinkingBase::EVT_UNLINK:
-		if (type==ET_OPCION) RemoveChild(i);
+		if (type==ET_SEGUN) RemoveChild(i);
 		break;
 	case EntityLinkingBase::EVT_SETCHILDCOUNT:
 		child_bh.Resize(i,0); child_dx.Resize(i,0);

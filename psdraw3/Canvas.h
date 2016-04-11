@@ -34,13 +34,11 @@ public:
 	void OnMouseMiddleUp(wxMouseEvent& event);
 	void OnMouseMiddleDown(wxMouseEvent& event);
 	void OnMouseDClick(wxMouseEvent& event);
-#ifdef __WIN32__
-	void OnMouseLeave(wxMouseEvent& event);
-#endif
 	void OnIdle(wxIdleEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnKeyUp(wxKeyEvent &event);
 	void OnChar(wxKeyEvent &event);
+	void SetModifiers(unsigned int mods);
 	int GetModifiers() { return modifiers; }
 	DECLARE_EVENT_TABLE();
 };

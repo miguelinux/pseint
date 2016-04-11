@@ -14,6 +14,7 @@ public:
 	void OnMouseWheel(wxMouseEvent &event);
 	void OnToolOver(wxCommandEvent &event);
 	void OnTool(wxCommandEvent &event);
+	void OnActivated(wxActivateEvent &event);
 	void ToggleFullScreen();
 	void AskForExit();
 	int MIDtoMO(int mid);

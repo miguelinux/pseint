@@ -193,10 +193,10 @@ void display_cb() {
 	if (mouse && !mouse->GetPrev() && !mouse->GetParent()) 
 		mouse->Draw(); // cuando recien salen de la shapebar no esta linkeadas al algoritmo, no los toma la recorrida anterior
 	if (mouse && mouse->type==ET_OPCION) {
-		int new_id = mouse->GetParent()->CheckLinkOpcion(cur_x,cur_y);
+		Entity *segun = mouse->GetParent();
+		int new_id = segun->CheckLinkOpcion(cur_x,cur_y);
 		if (new_id!=-1) {
 			int old_id = mouse->GetChildId();
-			Entity *segun = mouse->GetParent();
 			segun->RemoveChild(old_id,false);
 			if (old_id<new_id) --new_id;
 			segun->InsertChild(new_id,mouse);

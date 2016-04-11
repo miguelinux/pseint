@@ -51,17 +51,20 @@ EntityLinkingBase::~EntityLinkingBase() {
 
 void EntityLinkingBase::UnLink() {
 	SetModified();
+	EntityLinkingBase *old_parent = m_parent;
+	int old_id = m_child_id;
 	if (m_next) m_next->m_prev = m_prev;
 	if (m_prev) m_prev->m_next = m_next;
-	if (m_parent) {
+	if (m_parent && m_child_id!=-1) {
 		if (m_parent->m_childs[m_child_id]==this) {
 			m_parent->m_childs[m_child_id] = m_next;
 			if (m_next) m_next->m_child_id = m_child_id;
 		}
-		m_parent->OnLinkingEvent(EVT_UNLINK,m_child_id);
 	}
 	m_child_id = -1;
 	m_parent = m_next = m_prev = NULL;
+	if (old_parent && old_id!=-1) 
+		old_parent->OnLinkingEvent(EVT_UNLINK,old_id);
 }
 
 void EntityLinkingBase::LinkNext(EntityLinkingBase *e) {
@@ -125,24 +128,29 @@ void EntityLinkingBase::VerifyAll( ) {
 }
 
 void EntityLinkingBase::RemoveChild (int id, bool also_delete) {
+	_verify_links_;
 	SetModified();
 	if (m_childs[id]) {
+		EntityLinkingBase *the_child = m_childs[id];
+		the_child->UnLink();
 		if (also_delete) delete m_childs[id];
-		else { m_childs[id]->m_parent = NULL; m_childs[id]->m_child_id = -1; }
 	}
 	m_childs.Remove(id);
 	for (int i=0;i<m_childs.Count();i++)
 		if (m_childs[i]) m_childs[i]->m_child_id = i;
 	OnLinkingEvent(EVT_REMOVECHILD,id);
+	_verify_links_;
 }
 
 void EntityLinkingBase::InsertChild (int id, EntityLinkingBase * e) {
+	_verify_links_;
 	SetModified();
 	m_childs.Insert(id,NULL);
 	for (int i=0;i<m_childs.Count();i++)
 		if (m_childs[i]) m_childs[i]->m_child_id = i;
 	if (e) LinkChild(id,e); // agrega al final
 	OnLinkingEvent(EVT_INSERTCHILD,id);
+	_verify_links_;
 }
 
 void EntityLinkingBase::LinkChild (int id, EntityLinkingBase * e) {

@@ -3,6 +3,13 @@
 #include <cstddef>
 #include "Vector.h"
 
+
+#ifdef _VERIFY_LINKS
+#	define _verify_links_ EntityLinkingBase::VerifyAll()
+#else
+#	define _verify_links_
+#endif
+
 // Esta clase encapsula todo lo que tenga que ver con el manejo de enlaces entre las
 // entidades... es decir, el mantenimiento del grafo/árbol
 // Entity va a heredar (aunque no directamente, ver EntityLinking). Algunos pocas 

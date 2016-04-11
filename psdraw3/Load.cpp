@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Events.h"
 #include "ProcessSelector.h"
+#include "../wxPSeInt/CommonParsingFunctions.h"
 using namespace std;
 
 
@@ -248,8 +249,9 @@ void LoadProc(vector<string> &vproc) {
 			_new_prev();
 		}
 		else { // asignacion, dimension, definicion
-			int i=0,l=str.size();
-			while (i<l && ((str[i]>='a'&&str[i]<='z')||(str[i]>='A'&&str[i]<='Z')||(str[i]>='0'&&str[i]<='9')||str[i]=='_')) i++;
+			int i = 0, l = str.size();
+			i = SkipWord(str,i,l);
+			if (str[i]=='(' || str[i]=='[') i = SkipParentesis(str,i,l);
 			if (i+2<l && str.substr(i,2)=="<-") {
 				string s1=str.substr(0,i+2);
 				string s2=str.substr(i+2);

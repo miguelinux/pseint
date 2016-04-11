@@ -31,6 +31,7 @@
 #ifdef _AUTOINDENT
 #	warning _AUTOINDENT no se lleva bien con Undo/Redo
 #endif
+#include "CommonParsingFunctions.h"
 
 int mxSource::last_id=0;
 
@@ -105,16 +106,6 @@ struct comp_list_item {
 #define MAX_COMP_SIZE 256
 static comp_list_item comp_list[MAX_COMP_SIZE];
 static int comp_count=-1;
-
-static bool EsLetra(const char &c, bool incluir_nros) {
-	return 
-		c=='_'||
-		((c|32)>='a'&&(c|32)<='z')||
-		c=='á'||c=='Á'||c=='é'||c=='É'||
-		c=='ó'||c=='Ó'||c=='í'||c=='Í'||
-		c=='ú'||c=='Ú'||c=='ñ'||c=='Ñ'||
-		(incluir_nros&&c>='0'&&c<='9');
-}
 
 #define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
 #define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
@@ -845,40 +836,39 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 
 bool mxSource::IndentLine(int l, bool goup) {
 	int btype;
-	int cur=GetIndentLevel(l,goup,&btype);
-	wxString line=GetLine(l);
-	line<<" "; int i=0,n=line.Len();
-	while (i<n&&(line[i]==' '||line[i]=='\t')) i++;
-	int ws=i;
-	if (i<n && !(line[i]=='/'&&line[i+1]=='/')) {
-		bool incluir_nrs=false;
-		while (i<n && EsLetra(line[i],incluir_nrs)) { i++; incluir_nrs=true; }
-		wxString word=line.SubString(ws,i-1);
-		word.MakeUpper();
-		if (word=="SINO") cur-=4;
-		else if (word=="DE" && i+10<n && line.SubString(ws,i+10).Upper()=="DE OTRO MODO:") cur-=4;
-		else if (word=="HASTA" && i+4<n && line.SubString(ws,i+4).Upper()=="HASTA QUE ") cur-=4;
-		else if (word=="MIENTRAS" && i+4<n && line.SubString(ws,i+4).Upper()=="MIENTRAS QUE ") cur-=4;
-		else if (word=="FINSEGUN"||word==_Z("FINSEGÚN")) cur-=8;
-		else if (word=="FINMIENTRAS") cur-=4;
-		else if (word=="FINPARA") cur-=4;
-		else if (word=="FIN") { 
+	int cur = GetIndentLevel(l,goup,&btype);
+	wxString line = GetLine(l);
+	int len = line.Len();
+	int i = SkipWhite(line,0,len);
+	if (i<len && !(line[i]=='/'&&line[i+1]=='/')) {
+		int ws = SkipWord(line,i,len);
+		wxString fword = line.Mid(i,ws-i);
+		MakeUpper(fword);
+		ws = SkipString(line,ws,len);
+		if (fword=="SINO") cur-=4;
+		else if (fword=="DE" && i+10<len && line.SubString(ws,i+10).Upper()=="DE OTRO MODO:") cur-=4;
+		else if (fword=="HASTA" && i+4<len && line.SubString(ws,i+4).Upper()=="HASTA QUE ") cur-=4;
+		else if (fword=="MIENTRAS" && i+4<len && line.SubString(ws,i+4).Upper()=="MIENTRAS QUE ") cur-=4;
+		else if (fword=="FINSEGUN"||fword==_Z("FINSEGÚN")) cur-=8;
+		else if (fword=="FINMIENTRAS") cur-=4;
+		else if (fword=="FINPARA") cur-=4;
+		else if (fword=="FIN") { 
 			cur-=4; 
-			if (i+6<n) { 
+			if (i+6<len) { 
 				wxString aux = line.SubString(ws+4,i+5).Upper();
 				if (aux=="SEGUN"||aux==_Z("SEGÚN")) cur-=4;
 			}
 		}
-		else if (word=="FINSI") cur-=4;
-		else if (word=="FINPROCESO"||word=="FINALGORITMO") cur=0;
-		else if (word=="FINSUBPROCESO"||word=="FINFUNCION"||word=="FINSUBALGORITMO"||word==_Z("FINFUNCIÓN")) cur=0;
+		else if (fword=="FINSI") cur-=4;
+		else if (fword=="FINPROCESO"||fword=="FINALGORITMO") cur=0;
+		else if (fword=="FINSUBPROCESO"||fword=="FINFUNCION"||fword=="FINSUBALGORITMO"||fword==_Z("FINFUNCIÓN")) cur=0;
 		else {
 			bool comillas=false;
-			while (i<n) {
-				if (i+1<n && line[i]=='/' && line[i+1]=='/') break;
-				if (line[i]=='\''||line[i]=='\"')
-					comillas=!comillas;
-				else if (!comillas) {
+			while (i<len) {
+				if (i+1<len && line[i]=='/' && line[i+1]=='/') break; // comentarios
+				if (line[i]=='\''||line[i]=='\"') { // comillas
+					i = SkipString(line,i,len);
+				} else {
 					if (line[i]==';') break;
 					else if (line[i]==':' && line[i+1]!=':') {cur-=4; break;}
 				}
@@ -897,7 +887,6 @@ bool mxSource::IndentLine(int l, bool goup) {
 	return true;
 }
 
-// si diff_proc_sub_func==false, proceso, subproceso y funcion devuelven BT_PROCESO (para el indentado es lo mismo, cambia para el autoclose)
 int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_func) {
 	int btype=BT_NONE;
 	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
@@ -922,8 +911,8 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 					if (ignore_next) {
 						ignore_next=false;
 					} else {
-						wxString word=line.SubString(wstart,i-1);
-						word.MakeUpper();
+						wxString word = line.SubString(wstart,i-1);
+						MakeUpper(word);
 						if (word=="SI") { 
 							if (config->lang[LS_LAZY_SYNTAX]) {
 								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
@@ -960,10 +949,10 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 
 void mxSource::Indent(int l1, int l2) {
 	BeginUndoAction();
-	bool goup=true;
+	bool goup = true;
 	for (int i=l1;i<=l2;i++) {
 		IndentLine(i,goup);
-		if (goup && LineHasSomething(i)) goup=false;
+		goup = !LineHasSomething(i);
 	}
 	EndUndoAction();
 }
@@ -1433,7 +1422,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	int i1=GetIndent(l-1), i2=GetIndent(l2);
 	if (l2<ln && i1<i2) return; // si estaba dentro no se hace nada
 	// ver que dice la siguiente para que no coincida con lo que vamos a agregar
-	wxString sl2=i2<i1?"":GetLine(l2); sl2.MakeUpper(); 
+	wxString sl2=i2<i1?"":GetLine(l2); MakeUpper(sl2); 
 	int i=0, sl=sl2.Len(); 
 	while (i<sl && (sl2[i]==' '||sl2[i]=='\t'))i++;
 	if (i) sl2.Remove(0,i);
@@ -1787,7 +1776,7 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
 	
-	if (key.Len()!=0 && s==wxSTC_C_IDENTIFIER) {
+	if (key.Len()!=0 && (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS)) {
 		if (IsProcOrSub(GetCurrentLine())) {
 //			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_ZZ("Agregar todas las variables a la prueba de escritorio"));
 		} else {
@@ -1835,33 +1824,31 @@ bool mxSource::IsEmptyLine(int line/*, bool comments*/) {
 }
 
 
+
 bool mxSource::IsDimOrDef(int line) {
-	wxString s=GetLine(line);
-	int l=s.Len(), i=0;
-	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
-	if (i+8<l && s.Mid(i,8).Upper()=="DEFINIR ") return true;
-	if (i+10<l && s.Mid(i,10).Upper()=="DIMENSION ") return true;
+	wxString fword = GetFirstWord(GetLine(line));
+	if (fword=="DEFINIR ") return true;
+	if (fword=="DIMENSION ") return true;
+	if (fword=="DIMENSIÓN ") return true;
 	return false;
 }
 
 bool mxSource::IsProcOrSub(int line) {
-	wxString s = GetLine(line);
-	int l = s.Len(), i=0;
-	while (i<l && (s[i]==' '||s[i]=='\t')) i++;
-	if (i+8<l && s.Mid(i,8).Upper()=="PROCESO ") return true;
-	if (i+8<l && s.Mid(i,10).Upper()=="ALGORITMO ") return true;
+	wxString fword = GetFirstWord(GetLine(line));
+	if (fword=="PROCESO") return true;
+	if (fword=="ALGORITMO") return true;
 	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
-		if (i+11<l && s.Mid(i,11).Upper()=="SUBPROCESO ") return true;
-		if (i+8<l && s.Mid(i,8).Upper()=="FUNCION ") return true;
-		if (i+8<l && s.Mid(i,8).Upper()=="FUNCIÓN ") return true;
-		if (i+8<l && s.Mid(i,13).Upper()=="SUBALGORITMO ") return true;
-		while (i<l) {
-			if (i+12<l && s.Mid(i,12).Upper()==" SUBPROCESO ") return true;
-			if (i+9<l && s.Mid(i,9).Upper()==" FUNCION ") return true;
-			if (i+9<l && s.Mid(i,9).Upper()==" FUNCIÓN ") return true;
-			if (i+9<l && s.Mid(i,14).Upper()==" SUBALGORITMO ") return true;
-			i++;
-		}
+		if (fword=="SUBPROCESO") return true;
+		if (fword=="FUNCION") return true;
+		if (fword=="FUNCIÓN") return true;
+		if (fword=="SUBALGORITMO") return true;
+//		while (i<l) {
+//			if (i+12<l && s.Mid(i,12).Upper()==" SUBPROCESO ") return true;
+//			if (i+9<l && s.Mid(i,9).Upper()==" FUNCION ") return true;
+//			if (i+9<l && s.Mid(i,9).Upper()==" FUNCIÓN ") return true;
+//			if (i+9<l && s.Mid(i,14).Upper()==" SUBALGORITMO ") return true;
+//			i++;
+//		}
 	}
 	return false;
 }

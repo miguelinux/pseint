@@ -728,7 +728,7 @@ int SynCheck(int linea_from, int linea_to) {
 //					}
 					if (instruction_type!=IT_ASIGNAR && instruction_type!=IT_DEFINIR) {
 						int p=0, l=cadena.length();
-						while (p<l&&((cadena[p]>='A'&&cadena[p]<='Z')||cadena[p]=='_'||(cadena[p]>='0'&&cadena[p]<='9'))) p++;
+						while (p<l&&EsLetra(cadena[p],true)) p++;
 						const Funcion *func=EsFuncion(cadena.substr(0,p));
 						if (func) 
 							instruction_type=IT_INVOCAR;
@@ -846,9 +846,9 @@ int SynCheck(int linea_from, int linea_to) {
 					if (!RightCompare(cadena," COMO REAL;") && !RightCompare(cadena," COMO ENTERO;") && !RightCompare(cadena," COMO CARACTER;") && !RightCompare(cadena," COMO LOGICO;") ) {
 						if (!ignore_logic_errors) { SynError (46,"Falta tipo de dato o tipo no válido."); errores++;}
 					} else {
-						int largotipo=0; tipo_var tipo_def=vt_desconocido;; bool rounded = false;
+						int largotipo=0; tipo_var tipo_def=vt_desconocido;
 						if (RightCompare(cadena," COMO REAL;")) { largotipo=11; tipo_def=vt_numerica; }
-						else if (RightCompare(cadena," COMO ENTERO;")) { largotipo=13; tipo_def=vt_numerica; rounded = true; }
+						else if (RightCompare(cadena," COMO ENTERO;")) { largotipo=13; tipo_def=vt_numerica; tipo_def.rounded = true; }
 						else if (RightCompare(cadena," COMO LOGICO;")) { largotipo=13; tipo_def=vt_logica; }
 						else if (RightCompare(cadena," COMO CARACTER;")) { largotipo=15; tipo_def=vt_caracter; }
 						cadena[cadena.size()-largotipo]=',';
@@ -868,7 +868,7 @@ int SynCheck(int linea_from, int linea_to) {
 									if (!CheckVariable(str,48)) errores++;
 									else {
 										if (memoria->EsArgumento(str) && !ignore_logic_errors) { SynError (222,"No debe redefinir el tipo de un argumento."); errores++; }
-										memoria->DefinirTipo(str,tipo_def,rounded);
+										memoria->DefinirTipo(str,tipo_def);
 									}
 								} else {
 									str.erase(str.find("(",0),str.size()-str.find("(",0));
@@ -1209,12 +1209,16 @@ int SynCheck(int linea_from, int linea_to) {
 					else {
 						str.erase(str.size()-1,1);
 						tipo_var tipo_left = memoria->LeerTipo(vname);
+						tipo_left.rounded = false; // no transferir a la expresion
 						if (Lerrores==errores) EvaluarSC(str,tipo,tipo_left.is_ok()?tipo_left:vt_desconocido);
 						if (!tipo_left.can_be(tipo)) {
 							SynError(125,"No coinciden los tipos."); errores++; 
 							if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 						}
-						else memoria->DefinirTipo(vname,tipo);
+						else {
+							tipo.rounded = false; // no forzar a entero la variable asignada
+							memoria->DefinirTipo(vname,tipo);
+						}
 					}
 				}
 			}

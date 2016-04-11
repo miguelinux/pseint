@@ -170,3 +170,7 @@ void Canvas::OnMouseDClick (wxMouseEvent & event) {
 	mouse_dcb(event.GetX(),event.GetY());
 }
 
+void Canvas::SetModifiers (unsigned int mods) {
+	modifiers = mods;
+}
+

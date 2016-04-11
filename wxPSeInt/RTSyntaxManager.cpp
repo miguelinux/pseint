@@ -46,7 +46,7 @@ void RTSyntaxManager::Restart ( ) {
 	else { the_one->restart=true; Stop(); }
 }
 
-bool RTSyntaxManager::Process (mxSource * src, Info *args) {
+bool RTSyntaxManager::Process (mxSource *src, Info *args) {
 	if (!src) { 
 		if (the_one && the_one->processing) { the_one->ContinueProcessing(); return true; }
 		_LOG("RTSyntaxManager::Process ERROR: the_one->Process(NULL) && (!the_one || !the_one->processing): the_one="<<the_one);
