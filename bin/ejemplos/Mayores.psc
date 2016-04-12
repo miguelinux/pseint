@@ -2,7 +2,7 @@
 
 // Busca los dos mayores de una lista de N datos
 
-Proceso Mayores
+{Proceso} Mayores
 
 	{Definir datos,n,may1,may2,i Como Numeros}{;}
 	// primero se declara un arreglo de 200 elementos
@@ -44,4 +44,4 @@ Proceso Mayores
 	Escribir "El mayor es: ",may1{;}
 	Escribir "El segundo mayor es: ",may2{;}
 	
-FinProceso
+{FinProceso}

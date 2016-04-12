@@ -170,7 +170,7 @@ path=manifest.xml
 cursor=-1:0
 [other]
 path=../bin/help/cambios.html
-cursor=27:29
+cursor=0:0
 open=true
 [config]
 name=Linux_Debug

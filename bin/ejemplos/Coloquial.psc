@@ -7,7 +7,7 @@
 // syntaxis flexible, instrucciones adicionales, y expresiones en lenguaje
 // coloquial para las condiciones.
 
-Proceso sin_titulo
+Algoritmo sin_titulo
 	
 	Definir a, b Como Entero
 	
@@ -49,4 +49,4 @@ Proceso sin_titulo
 		Mostrar C " es real"
 	FinSi
 	
-FinProceso
+FinAlgoritmo

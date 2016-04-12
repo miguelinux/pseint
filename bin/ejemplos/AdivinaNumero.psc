@@ -2,7 +2,7 @@
 
 // Juego simple que pide al usuario que adivine un numero en 10 intentos
 
-Proceso Adivina_Numero
+{Proceso} Adivina_Numero
 
 	{Definir intentos,num_secreto,num_ingresado Como Entero}{;}
 	intentos<-10{;}
@@ -27,4 +27,4 @@ Proceso Adivina_Numero
 		Escribir "El numero era: ",num_secreto{;}
 	FinSi
 	
-FinProceso
+{FinProceso}

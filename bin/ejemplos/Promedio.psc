@@ -2,7 +2,7 @@
 
 // Calcula el promedio de una lista de N datos
 
-Proceso Promedio
+{Proceso} Promedio
 
 	{Definir i,N como Entero}{;}
 	{Definir acum,dato,prom como Reales}{;}
@@ -21,4 +21,4 @@ Proceso Promedio
 	
 	Escribir "El promedio es: ",prom{;}
 	
-FinProceso
+{FinProceso}

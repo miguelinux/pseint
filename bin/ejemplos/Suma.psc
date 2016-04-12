@@ -3,9 +3,9 @@
 // este es el ejemplo más simple de esta ayuda, 
 // toma dos numeros, los suma y muestra el resultado
 
-Proceso Suma
+{Proceso} Suma
 
-	{Definir A,B,C como Reales}{;}
+    {Definir A,B,C como Reales}{;}
 
     // para cargar un dato, se le muestra un mensaje al usuario
     // con la instrucción Escribir, y luego se lee el dato en 
@@ -31,4 +31,4 @@ Proceso Suma
     
     Escribir "El resultado es: ",C{;}
 
-FinProceso
+{FinProceso}

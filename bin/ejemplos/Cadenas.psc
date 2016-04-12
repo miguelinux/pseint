@@ -5,7 +5,7 @@
 // habilite estas funciones. Si al intentar ejecutar obtiene
 // errores en las funciones, revise su configuración en el
 // item "Opciones del lenguaje" del menú "Configurar".
-Proceso sin_titulo
+{Proceso} sin_titulo
 	
 	{Definir frase,vocales Como Caracter}{;}
 	{Definir i,j,cantVocales Como Entero}{;}
@@ -32,4 +32,4 @@ Proceso sin_titulo
 	Escribir "La frase contiene ",cantVocales," vocales."{;}
 	
 	
-FinProceso
+{FinProceso}

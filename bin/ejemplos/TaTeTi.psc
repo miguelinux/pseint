@@ -1,6 +1,6 @@
 "ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
-Proceso TaTeTi
+{Proceso} TaTeTi
 	
 	// incializa dos matrices de 3x3, una para guardar la ficha que se ve, 
 	// y otra para un valor asociado a la ficha, para un jugador sera 1, para
@@ -116,4 +116,4 @@ Proceso TaTeTi
 		
 	FinMientras
 	
-FinProceso
+{FinProceso}

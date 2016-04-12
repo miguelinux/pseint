@@ -2,7 +2,7 @@
 
 // Encuentra los primeros N numeros primos
 
-Proceso Primos
+{Proceso} Primos
 	
 	{Definir cant_a_mostrar,n,cant_mostrados,i Como Entero}{;}
 	{Definir es_primo Como Logico}{;}
@@ -32,4 +32,4 @@ Proceso Primos
 		
 	FinMientras
 	
-FinProceso
+{FinProceso}

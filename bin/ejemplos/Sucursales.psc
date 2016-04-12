@@ -11,7 +11,7 @@
 //    * La recaudacion total de la empresa.
 //    * La sucursal de mayor recaudacion.
    
-Proceso Sucursales
+{Proceso} Sucursales
    
    {Definir Prec,Cant,I,J,Suma,NumMayor,Suc2,MayorRec,TotSuc,TotEmp Como Numeros}{;}
    
@@ -67,5 +67,5 @@ Proceso Sucursales
    Escribir 'Recaudacion total de la empresa:',TotEmp{;}
    Escribir 'Sucursal de Mayor Recaudacion:',NumMayor{;}
 
-FinProceso
+{FinProceso}
 

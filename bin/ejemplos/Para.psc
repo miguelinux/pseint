@@ -3,7 +3,7 @@
 // Para poder ejecutar correctamente este ejemplo debe tener
 // habilitada la sintaxis flexible en su perfil de lenguaje
 
-Proceso sin_titulo	
+{Proceso} sin_titulo	
 
 
 	{Definir A,i,elemento Como Enteros;}
@@ -31,4 +31,4 @@ Proceso sin_titulo
 		escribir sin bajar A[i] " "{;}
 	FinPara
 	
-FinProceso
+{FinProceso}

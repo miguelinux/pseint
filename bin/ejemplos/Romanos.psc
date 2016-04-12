@@ -1,6 +1,6 @@
 "ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
-Proceso Romanos
+{Proceso} Romanos
 	
 	// leer el número
 	{Definir Numero como Numerico}{;}
@@ -45,4 +45,4 @@ Proceso Romanos
 		FinSi
 	FinSi
 	
-FinProceso
+{FinProceso}

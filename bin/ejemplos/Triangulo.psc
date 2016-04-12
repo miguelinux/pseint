@@ -4,7 +4,7 @@
 // si corresponden (por Pitargoras) y en caso afirmativo 
 // calcula el area
 
-Proceso TrianguloRectangulo
+{Proceso} TrianguloRectangulo
 	
 
 	// cargar datos
@@ -48,4 +48,4 @@ Proceso TrianguloRectangulo
 		Escribir "No es un triangulo rectangulo."{;}
 	FinSi
 	
-FinProceso
+{FinProceso}

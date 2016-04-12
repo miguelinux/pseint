@@ -2,7 +2,7 @@
 
 // Calcula el promedio de una lista de N datos utilizando un SubProceso
 
-SubProceso prom <- Promedio ( arreglo, cantidad )
+{SubProceso} prom <- Promedio ( arreglo, cantidad )
 	{Definir i como Entero}{;}
 	{Definir suma como Real}{;}
 	{Definir prom como Real}{;}
@@ -11,9 +11,9 @@ SubProceso prom <- Promedio ( arreglo, cantidad )
 		suma <- suma + arreglo[i]{;}
 	FinPara
 	prom <- suma/cantidad{;}
-FinSubProceso
+{FinSubProceso}
 
-Proceso Principal
+{Proceso} Principal
 
 	{Definir i,N como Entero}{;}
 	{Definir acum,datos,prom como Reales}{;}
@@ -28,4 +28,4 @@ Proceso Principal
 	
 	Escribir "El promedio es: ",Promedio(datos,n){;}
 	
-FinProceso
+{FinProceso}

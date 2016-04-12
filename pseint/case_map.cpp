@@ -120,3 +120,7 @@ void CaseMapPurge() {
 	(*case_map)["LOGICO"]="";
 	
 }
+
+void InitCaseMap() {
+	if (!case_map) case_map = new map<string,string>();
+}

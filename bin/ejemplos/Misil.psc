@@ -1,6 +1,6 @@
 "ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
-Proceso Misil
+{Proceso} Misil
 
 	Escribir "Presione una tecla para iniciar el lanzamiento!"{;}
 	Esperar Tecla{;}
@@ -71,4 +71,4 @@ Proceso Misil
 		Esperar .2 Segundos{;}
 	FinPara
 	
-FinProceso
+{FinProceso}

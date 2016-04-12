@@ -1,6 +1,6 @@
 "ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
-Proceso Factorizacion
+{Proceso} Factorizacion
 	
 	{Definir num,div como Enteros}{;}
 	{Definir factorizar,factor_primo como Logicos}{;}
@@ -35,4 +35,4 @@ Proceso Factorizacion
 		FinSi
 	FinMientras
 	
-FinProceso
+{FinProceso}

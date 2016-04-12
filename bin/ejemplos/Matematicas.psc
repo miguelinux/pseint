@@ -2,7 +2,7 @@
 
 // Este ejemplo muestra el uso de expresiones, operadores y funciones matematicas
 
-Proceso Matematicas
+{Proceso} Matematicas
 
    {Definir EligeSalir,EsPrimo Como Logico}{;}
    {Definir N,Nu,Op,f,r Como Numeros}{;}
@@ -105,4 +105,4 @@ Proceso Matematicas
             Escribir 'Opcion No Valida!'{;}
       FinSegun
    Hasta que EligeSalir
-FinProceso
+{FinProceso}

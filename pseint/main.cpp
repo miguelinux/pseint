@@ -116,16 +116,18 @@ int main(int argc, char* argv[]) {
 			else if (str=="--fixwincharset")
 				fix_win_charset=true;
 			else if (str=="--draw") {
-				case_map=new map<string,string>();
+				InitCaseMap();
 				ignore_logic_errors = for_draw = true;
 				run=false;
 			} else if (str=="--export") {
+				InitCaseMap();
 				for_export = for_draw = true;
 				run=false;
 			} else if (str=="--easteregg") {
 				cerr<<"Bazinga!"<<endl;
 				return 0;
 			} else if (str=="--forrealtimesyntax") {
+				InitCaseMap();
 				real_time_syntax=true;
 			} else if (str=="--forpseintterminal") {
 				for_pseint_terminal=true;

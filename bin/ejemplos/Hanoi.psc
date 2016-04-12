@@ -9,7 +9,7 @@
 //  interesan los valores hasta la cantidad de discos de esa torre).
 //  Cuantos discos tiene cada torre lo dice el vector cant_discos. 
 
-Proceso Hanoi
+{Proceso} Hanoi
 	
 	{Definir torres,cant_discos,discos,i Como Enteros}{;}
 	Dimension torres[3,10], cant_discos[3]{;}
@@ -100,4 +100,4 @@ Proceso Hanoi
 	Limpiar Pantalla{;}
 	Escribir "Juego finalizado en ",cant_movs," movimientos!"{;}
 	
-FinProceso
+{FinProceso}

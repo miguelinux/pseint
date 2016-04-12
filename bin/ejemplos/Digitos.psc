@@ -2,7 +2,7 @@
 
 // Separa un numero entero en sus digitos
 
-Proceso Digitos
+{Proceso} Digitos
 	
 	{Definir i,digito,pot,n,aux,cont Como Enteros}{;}
 	Escribir "Ingrese un numero entero postivo:"{;}
@@ -26,4 +26,4 @@ Proceso Digitos
 		Escribir "El digito ",i," es ",digito{;}
 	FinPara
 	
-FinProceso
+{FinProceso}

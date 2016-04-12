@@ -2,7 +2,7 @@
 
 // calcula las raices de una ecuacion de segundo grado
 
-Proceso Resolvente
+{Proceso} Resolvente
 	
 	{Definir a,b,c,disc,preal,pimag,r1,r2 Como Reales}{;}
 	// cargar datos
@@ -33,4 +33,4 @@ Proceso Resolvente
 		FinSi
 	FinSi
 	
-FinProceso
+{FinProceso}

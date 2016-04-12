@@ -1,6 +1,6 @@
 "ABRA ESTOS EJEMPLOS DESDE LA AYUDA ( MENU AYUDA -> EJEMPLOS ) de otra forma no podrá ejecutarlos"
 
-Proceso Modulo
+{Proceso} Modulo
 	{Definir N,M Como Enteros}{;}
 	Escribir "Ingrese el numero: "{;}
 	Leer N{;}
@@ -11,4 +11,4 @@ Proceso Modulo
 	Sino
 		Escribir "El resto de dividir ",N," por ",M," es: ",N {%} M{;}
 	FinSi
-FinProceso
+{FinProceso}

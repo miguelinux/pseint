@@ -2,7 +2,7 @@
 
 // Muestra como hacer un menú simple con las estructuras Repetir-Hasta Que y Según
 
-Proceso sin_titulo
+{Proceso} sin_titulo
 	{Definir OP Como Entero}{;}
 	Repetir
 		// mostrar menu
@@ -46,4 +46,4 @@ Proceso sin_titulo
 		Escribir "Presione enter para continuar"{;}
 		Esperar Tecla{;}
 	Hasta Que OP=5
-FinProceso
+{FinProceso}

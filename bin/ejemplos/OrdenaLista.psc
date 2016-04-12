@@ -4,7 +4,7 @@
 // cuando se ingresa un nombre en blanco) no permitiendo
 // ingresar repetidos y luego se ordena y muestra
 
-Proceso OrdenaLista
+{Proceso} OrdenaLista
 	
 	{Definir nombre,lista,aux Como Cadenas}{;}
 	{Definir se_repite Como Logico}{;}
@@ -51,4 +51,4 @@ Proceso OrdenaLista
 		Escribir "   ",lista[i]{;}
 	FinPara
 	
-FinProceso
+{FinProceso}

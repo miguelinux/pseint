@@ -747,6 +747,10 @@ void mxSource::MessageReadOnly() {
 
 void mxSource::SetExample() {
 	wxString total;
+	wxString proceso = config->lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso";
+	wxString finproceso = config->lang[LS_PREFER_ALGORITMO]?"FinAlgoritmo":"FinProceso";
+	wxString subproceso = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
+	wxString finsubproceso = config->lang[LS_PREFER_FUNCION]?"FinFuncion":(config->lang[LS_PREFER_ALGORITMO]?"FinSubAlgoritmo":"FinSubProceso");
 	for (int i=2;i<GetLineCount();i++) {
 		wxString str=GetLine(i);
 		int p0=str.Index('{');
@@ -790,8 +794,17 @@ void mxSource::SetExample() {
 						str=str.Mid(0,p0)+"MOD"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"%"+aux.Mid(p2+1);
+					
+				} else if (p2==8&&aux.Mid(1,7).Upper()=="PROCESO") {
+					str=str.Mid(0,p0)+proceso+aux.Mid(p2+1);
+				} else if (p2==11&&aux.Mid(1,10).Upper()=="FINPROCESO") {
+					str=str.Mid(0,p0)+finproceso+aux.Mid(p2+1);
+				} else if (p2==11&&aux.Mid(1,10).Upper()=="SUBPROCESO") {
+					str=str.Mid(0,p0)+subproceso+aux.Mid(p2+1);
+				} else if (p2==14&&aux.Mid(1,13).Upper()=="FINSUBPROCESO") {
+					str=str.Mid(0,p0)+finsubproceso+aux.Mid(p2+1);
 				
-				} else if (p2>8 && ( aux.Mid(1,8)=="DEFINIR "|| aux.Mid(1,8)=="Definir "|| aux.Mid(1,8)=="definir " ) ) {
+				} else if (p2>8 && aux.Mid(1,8).Upper()=="DEFINIR " ) {
 					if (config->lang[LS_FORCE_DEFINE_VARS])
 						str=str.Mid(0,p0)+str.Mid(p0+1,p2-1)+aux.Mid(p2+1);
 					else
