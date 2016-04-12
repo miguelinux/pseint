@@ -1592,7 +1592,8 @@ void mxMainWindow::CreateButtonSubProceso(wxPanel *panel, wxSizer *sizer){
 }
 
 void mxMainWindow::ProfileChanged ( ) {
-	mxSource::SetAutocompletion();
+//	mxSource::SetAutocompletion(); // no aca para no hacerlo una vez por fuente... si total los arreglos que llenan son static
+//	mxSource::SetCalltips();       // no aca para no hacerlo una vez por fuente... si total los arreglos que llenan son static
 	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
 		((mxSource*)(notebook->GetPage(i)))->ProfileChanged();
 		((mxSource*)(notebook->GetPage(i)))->SetWords();

@@ -174,6 +174,8 @@ public:
 	void RTOuputStarts();
 	void RTOuputEnds();
 
+	static void SetCalltips();
+	
 	struct current_calltip_info {
 		int pos;
 		bool is_error;
