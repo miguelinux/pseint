@@ -489,7 +489,7 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 	if (config->lang[LS_PREFER_ALGORITMO]) {
 		source->SetText("Algoritmo sin_titulo\n\t\nFinAlgoritmo\n");
 		source->SetFieldIndicator(10,20);
-		source->SetSelection(20,20);
+		source->SetSelection(22,22);
 	} else {
 		source->SetText("Proceso sin_titulo\n\t\nFinProceso\n");
 		source->SetFieldIndicator(8,18);

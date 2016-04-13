@@ -84,12 +84,11 @@ void EntityLinkingBase::LinkNext(EntityLinkingBase *e) {
 }
 
 void EntityLinkingBase::SetChildCount(int new_count) {
-	Ensure(m_childs.Count()==0);
 	m_childs.Resize(new_count,NULL);
 	OnLinkingEvent(EVT_SETCHILDCOUNT,new_count);
 }
 
-
+#ifdef _VERIFY_LINKS
 void EntityLinkingBase::VerifyLinks(bool recursive) {
 	if (this->m_prev) {
 		Ensure( this->m_prev->m_next == this );
@@ -126,6 +125,7 @@ void EntityLinkingBase::VerifyAll( ) {
 		e0 = e0->m_all_next;
 	} while(e0!=e1);
 }
+#endif
 
 void EntityLinkingBase::RemoveChild (int id, bool also_delete) {
 	_verify_links_;

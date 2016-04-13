@@ -129,6 +129,7 @@ int MainWindow::MIDtoMO (int mid) {
 }
 
 void MainWindow::OnActivated(wxActivateEvent &event) {
+	event.Skip();
 	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
 }
 
