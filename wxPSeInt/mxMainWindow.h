@@ -29,9 +29,9 @@ public:
 			QHM_OUTPUT, // error list, or runtime error
 			QHM_NULL 
 		} m_mode;
-		int m_last_code;
 		mxHtmlWindow *m_ctrl;
 		bool m_visible;
+		int m_last_code;
 	public:
 		QuickHelpPanelPolicy() : m_mode(QHM_NULL), m_visible(false), m_ctrl(NULL), m_last_code(-1) {}
 		void ShowRTResult(bool errors, bool force=false);

@@ -472,7 +472,7 @@ void mxMainWindow::CreateDebugControlsPanel() {
 }
 
 void mxMainWindow::CreateNotebook() {
-	wxSize client_size = GetClientSize();
+//	wxSize client_size = GetClientSize();
 	notebook = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition,wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxNO_BORDER | wxAUI_NB_WINDOWLIST_BUTTON);
 //	wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
 	aui_manager.AddPane(notebook, wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));

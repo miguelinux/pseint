@@ -12,7 +12,7 @@ END_EVENT_TABLE()
 	
 mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, wxString label)
 	: wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize),
-	 font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))
+	  font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))
 {
 	this->label=label;
 	mid=id; selected=false;
@@ -24,7 +24,12 @@ mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, w
 	wxSize text_size = dc.GetTextExtent(label);
 	
 	wxSize size ( bmp.GetWidth()+6, bmp.GetHeight()+8+text_size.GetWidth()+10 );
-	text_x = (size.GetWidth()+text_size.GetWidth())/2;
+	text_x = (size.GetWidth()+text_size.GetHeight())/2;
+#ifdef __WIN32__
+	text_x+=2;
+#else
+	text_x-=2;
+#endif
 	
 	SetMinSize(size);
 	SetSize(size);
@@ -52,5 +57,5 @@ void mxPanelHelper::OnPaint(wxPaintEvent &evt) {
 	
 	dc.SetFont(font);
 	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-	dc.DrawRotatedText(label,15,bmp.GetHeight()+10,270);
+	dc.DrawRotatedText(label,text_x,bmp.GetHeight()+10,270);
 }

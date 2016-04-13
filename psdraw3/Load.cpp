@@ -108,8 +108,13 @@ void LoadProc(vector<string> &vproc) {
 		else if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")) {
 			string s1=str.substr(0,str.find(' '));
 			string s2=str.substr(str.find(' ')+1);
-			if (s1=="PROCESO") { start->lpre="Proceso "; start->SetLabel(s2); }
-			else if (s1=="SUBPROCESO") { start->lpre="SubProceso "; start->SetLabel(s2); }
+			if (s1=="PROCESO") { 
+				start->lpre=lang[LS_PREFER_ALGORITMO]?"Algoritmo ":"Proceso "; 
+				start->SetLabel(s2); 
+			} else if (s1=="SUBPROCESO") { 
+				start->lpre=lang[LS_PREFER_FUNCION]?"Funcion ":(lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo ":"SubProceso "); 
+				start->SetLabel(s2); 
+			}
 			_new_this(start); /*cur_proc=start;*/ start_done=true;
 			continue;
 		}

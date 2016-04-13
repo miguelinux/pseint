@@ -60,7 +60,7 @@ template<typename TString>
 int SkipString(const TString &line, int i, int len) {
 	do {
 		++i;
-	} while(i<len && line[i]!='\'' && line[i]=='\"');
+	} while(i<len && line[i]!='\'' && line[i]!='\"');
 	return i;
 }
 
