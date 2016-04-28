@@ -23,11 +23,11 @@ int main() {
 	printf("%f\n",asin(x));
 	printf("%f\n",acos(x));
 	printf("%f\n",atan(x));
-	printf("%f\n",floor((x)+.5));
-	printf("%f\n",floor(x));
-	printf("%f\n",(rand()%15));
+	printf("%i\n",int((x)+.5));
+	printf("%i\n",int(x));
+	printf("%i\n",(rand()%15));
 	s = "Hola";
-	printf("%f\n",strlen(s));
+	printf("%i\n",strlen(s));
 	printf("%s\n",minusculas(s));
 	printf("%s\n",mayusculas(s));
 	printf("%s\n",subcadena(s,1,3-1));

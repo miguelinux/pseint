@@ -169,7 +169,7 @@ bool fixArrayIndex(string &str) {
 static void ReplaceOper(string &exp, unsigned int &i, string oper) {
 	// evaluar el segundo operando para ver si es string (algunos operadores son iguales para numeros y cadenas en pseudocódigo pero diferentes en otros lenguajes)
 	string oper2=buscarOperando(exp,i+oper.size(),+1);
-	tipo_var t; Evaluar(oper2,t); 
+	tipo_var t = Evaluar(oper2).type; 
 	// obtener el operador/funcion que lo reemplaza
 	string rep=exporter->get_operator(oper,t==vt_caracter);
 	if (rep.size()>5 && rep.substr(0,5)=="func ") { // si el operador es reemplazado por una función, colocar los argumentos y reemplazar todo (operador y operandos)
@@ -209,7 +209,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
 		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
 	}
-	Evaluar(string(" ")+exp+" ",tipo); // ¿para qué eran los espacios??? 
+	tipo = Evaluar(string(" ")+exp+" ").type; // ¿para qué eran los espacios??? 
 	
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	exp+=",";

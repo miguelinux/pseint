@@ -2,7 +2,7 @@
 #include<cmath>
 #include<cstdlib>
 #include<cctype>
-#include<stringstream>
+#include<sstream>
 using namespace std;
 string convertiratexto(float f);
 string mayusculas(string s);
@@ -21,8 +21,8 @@ int main() {
 	cout << asin(x) << endl;
 	cout << acos(x) << endl;
 	cout << atan(x) << endl;
-	cout << floor((x)+.5) << endl;
-	cout << floor(x) << endl;
+	cout << int((x)+.5) << endl;
+	cout << int(x) << endl;
 	cout << (rand()%15) << endl;
 	s = "Hola";
 	cout << s.size() << endl;

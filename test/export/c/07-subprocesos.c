@@ -24,14 +24,14 @@ float funciondoble(float b) {
 	return a;
 }
 void noretornanada(SIN_TIPO a, SIN_TIPO b) {
-	printf("%s\n",a+b);
+	printf("%f\n",a+b);
 }
 void porreferencia(float *b) {
 	(*b) = 7;
 }
 void recibevector(SIN_TIPO v[]) {
-	scanf("%s",v[0]);
+	scanf("%f",v[0]);
 }
 void recibematriz(SIN_TIPO m[][]) {
-	scanf("%s",m[0][0]);
+	scanf("%f",m[0][0]);
 }

@@ -236,7 +236,7 @@ void ExporterBase::dimension(t_output &prog, t_arglist &args, string tabs) {
 				pars++;
 			else if (arr[p]==',' && pars==0) {
 				tipo_var ch=vt_numerica_entera;
-				dims[c++]=atoi(Evaluar(arr.substr(f,p-f),ch).c_str());
+				dims[c++] = Evaluar(arr.substr(f,p-f),ch).GetAsInt();
 				f=p+1;
 			}
 			p++;

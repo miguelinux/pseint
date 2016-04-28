@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
 				ignore_logic_errors = for_draw = true;
 				run=false;
 			} else if (str=="--export") {
-				InitCaseMap();
+//				InitCaseMap();
 				for_export = for_draw = true;
 				run=false;
 			} else if (str=="--easteregg") {

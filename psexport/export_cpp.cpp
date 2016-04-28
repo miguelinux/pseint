@@ -228,10 +228,10 @@ string CppExporter::function(string name, string args) {
 		return string("atan")+args;
 	} else if (name=="TRUNC") {
 		include_cmath=true;
-		return string("floor")+args;
+		return string("int")+args;
 	} else if (name=="REDON") {
 		include_cmath=true;
-		return string("floor(")+colocarParentesis(get_arg(args,1))+"+.5)";
+		return string("int(")+colocarParentesis(get_arg(args,1))+"+.5)";
 	} else if (name=="CONCATENAR") {
 		return string("(")+convertirAString(get_arg(args,1))+"+"+get_arg(args,2)+")";
 	} else if (name=="LONGITUD") {
