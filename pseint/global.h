@@ -30,6 +30,4 @@ extern bool ignore_logic_errors; // para que al generar el diagrama de flujo no 
 #define COLOR_INPUT COLOR_YELLOW
 #define COLOR_OUTPUT COLOR_LGREEN
 
-#define FALSO "FALSO"
-#define VERDADERO "VERDADERO"
 #endif

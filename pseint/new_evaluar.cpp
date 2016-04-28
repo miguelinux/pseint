@@ -12,10 +12,8 @@
 using namespace std;
 
 void WriteError(int num, string s) { 
-	if (Inter.Running())
-		ExeError(num,s);
-	else
-		SynError(num,s);
+	if (Inter.Running()) ExeError(num,s);
+	else                 SynError(num,s);
 }
 
 bool PalabraReservada(const string &str) {
@@ -36,13 +34,14 @@ bool PalabraReservada(const string &str) {
 }
 
 int BuscarComa(const string &expresion, int p1, int p2, char coma) {
-	bool comillas = false;
 	int parentesis = 0;
 	while (p1<=p2) {
 		char c = expresion[p1];
-		if (c=='\'' || c=='\"')
-			comillas = !comillas;
-		else if (!comillas) {
+		if (c=='\'' || c=='\"') {
+			do {
+				c = expresion[++p1];
+			} while(p1<p2 && c!='\'' && c!='\"');
+		} else {
 			if (c=='(' || c=='[')
 				parentesis++;
 			else if (parentesis && (c==')' || c==']'))
@@ -64,7 +63,7 @@ struct InfoOperador {
 
 static const InfoOperador operadores[] = {
 	{',',0,true},{'|',1,true},{'&',2,true},{'~',3,false},{'!',4,true},{'=',5,true},{'<',6,true},{'>',7,true},
-	{'+',8,true},{'-',8,true},{'*',10,true},{'/',10,true},{'^',12,true},{'%',13,true},{' ',14,true} };
+	{'+',8,true},{'-',8,true},{'*',10,true},{'/',10,true},{'%',10,true},{'^',12,true},{' ',14,true} };
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	bool parentesis_externos=true;
@@ -205,28 +204,25 @@ bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 }
 
 #ifdef LOG_EVALUAR
-static int tabs=0;
-string ev_aux(string a,int &tabs)
-{ cerr<<setw(tabs)<<""<<"RET: *"<<(a)<<"*\n"; tabs-=2; return a;}
-#define ev_return(a) return ev_aux(a,tabs)
+	static int tabs=0;
+	string ev_aux(string a,int &tabs)
+	{ cerr<<setw(tabs)<<""<<"RET: *"<<(a)<<"*\n"; tabs-=2; return a;}
+#	define ev_return(a) return ev_aux(a,tabs)
 #else
-#define ev_return(a) return a
+#	define ev_return(a) return a
 #endif
 
 // estructura auxiliar para la funcion EvaluarFuncion, para que el destructor del objeto libere la memoria si la función aborta de forma temprana, entre otras cosas
 // cppcheck-suppress noCopyConstructor
-struct info_de_llamada { 
-	string *values;
-	tipo_var *tipos;
+struct ActualArgs { 
+	DataValue *values;
 	PASAJE *pasajes;
-	info_de_llamada(int n) {
-		values=new string[n];
-		tipos=new tipo_var[n];
+	ActualArgs(int n) {
+		values=new DataValue[n];
 		pasajes=new PASAJE[n];
 	}
-	~info_de_llamada() {
+	~ActualArgs() {
 		delete []values;
-		delete []tipos;
 		delete []pasajes;
 	}
 };
@@ -235,21 +231,20 @@ static bool EsArreglo(const string &nombre) {
 	return nombre.find('(')==string::npos && memoria->Existe(nombre) && memoria->LeerDims(nombre);
 }
 
-string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &tipo, bool for_expresion) {
+DataValue EvaluarFuncion(const Funcion *func, const string &argumentos, const tipo_var &forced_tipo, bool for_expresion) {
 	if (for_expresion && func->GetTipo(0)==vt_error) {
 		WriteError(278,string("El subproceso (")+GetNombreFuncion(func)+(") no devuelve ningún valor."));
-		tipo=vt_error; return "";
+		return DataValue::DVError();
 	}
 	// controlar cantidad de argumentos
 	int b=0,ca=argumentos[1]==')'?0:1, l=argumentos.length()-1;
 	if (ca==1) while ((b=BuscarComa(argumentos,b+1,l))>0) ca++;
 	if (func->cant_arg!=ca) {
-		tipo=vt_error;
 		WriteError(279,string("Cantidad de argumentos incorrecta para el subproceso (")+GetNombreFuncion(func)+(")"));
-		return("");
+		return DataValue(func->GetTipo(0));
 	}
 	// parsear argumentos
-	info_de_llamada args(ca);
+	ActualArgs args(ca);
 	b=0;
 	for (int i=0;i<ca;i++) {
 		int b2=BuscarComa(argumentos,b+1,l,',');
@@ -259,41 +254,42 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 			stringstream ss;
 			ss<<"Tipo de dato incorrecto en el argumento "<<i+1<<" ("<<argumentos.substr(p1,p2-p1+1)<<")";
 			WriteError(280,ss.str());
-			return("");
+			return DataValue(forced_tipo); // deberiamos retorar error?
 		} else {
 			string arg_actual = argumentos.substr(p1,p2-p1+1);
 			if (EsArreglo(arg_actual)) { // los arreglos siempre pasan por referencia
 				if (func->pasajes[i+1]==PP_VALOR) { // si la funcion explicita por valor, error
 					WriteError(281,string("Los arreglos solo pueden pasarse a subprocesos/funciones por referencia (")+arg_actual+(")"));
-					return "";
+					return DataValue(forced_tipo);
 				}
-				args.pasajes[i]=PP_REFERENCIA;
-				args.values[i]=arg_actual;
+				args.pasajes[i] = PP_REFERENCIA;
+				args.values[i] = DataValue::MakeString(arg_actual);
 			} else if (func->pasajes[i+1]==PP_REFERENCIA) {
-				args.pasajes[i]=PP_REFERENCIA;
+				args.pasajes[i] = PP_REFERENCIA;
 				if (arg_actual.find('(')!=string::npos) CheckDims(arg_actual); // evalua las expresiones de los indices
-				args.values[i]=arg_actual;
+				args.values[i] = DataValue::MakeString(arg_actual); /// @todo: definirlo aqui como alias cuando datavalue se lo banque
 			} else {
 				args.pasajes[i]=PP_VALOR;
-				args.values[i]=Evaluar(argumentos,p1,p2,args.tipos[i]);
+				DataValue res = Evaluar(argumentos,p1,p2,func->tipos[i+1]);
+				args.values[i] = res;
 			}
 		}
 	}
-	if (tipo==vt_error) {
-		ev_return("");
-	}
+//	if (forced_tipo==vt_error) { 
+//		ev_return("");
+//	}
 	// obtener salida
-	string ret; tipo_var rettipo;
-	if (func->func) {
+	DataValue ret;
+	if (func->func) { // funcion predefinida
 		for(int i=0;i<func->cant_arg;i++)
-			if (EsArreglo(args.values[i])) {
-				WriteError(282,string("La función espera un único valor, pero recibe un arreglo (")+args.values[i]+(")"));
-				return "";
+			if (args.values[i].CanBeString() && EsArreglo(args.values[i].GetAsString())) {
+				/// @todo: mejorar esto, podria querer funciones predefinidas que reciban arreglos, tipo sizeof
+				WriteError(282,string("La función espera un único valor, pero recibe un arreglo (")+args.values[i].GetAsString()+(")"));
+				return DataValue(forced_tipo);
 			}
-		ret=func->func(args.values);
-		rettipo=func->tipos[0];
+		ret = func->func(args.values);
 #ifndef _FOR_PSEXPORT
-	} else {
+	} else { // subprocesos del usuario
 		if (Inter.Running()) {
 			Memoria *caller_memoria=memoria;
 			memoria=new Memoria(func);
@@ -301,31 +297,30 @@ string EvaluarFuncion(const Funcion *func, const string &argumentos, tipo_var &t
 			for(int i=0;i<func->cant_arg;i++) { 
 				if (args.pasajes[i]==PP_VALOR) { // por valor
 					memoria->EscribirValor(func->nombres[i+1],args.values[i]);
-					memoria->DefinirTipo(func->nombres[i+1],args.tipos[i]);
-					if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running()) memoria->DefinirTipo(func->nombres[i+1],args.tipos[i],args.tipos[i].rounded); // para que no genere error con force_var_definition, porque no se deja redefinir argumentos dentro del subproceso
+					memoria->DefinirTipo(func->nombres[i+1],args.values[i].type);
+					if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running()) memoria->DefinirTipo(func->nombres[i+1],args.values[i].type,args.values[i].type.rounded); // para que no genere error con force_var_definition, porque no se deja redefinir argumentos dentro del subproceso
 				} else { // por referencia
-					memoria->AgregarAlias(func->nombres[i+1],args.values[i],caller_memoria);
+					memoria->AgregarAlias(func->nombres[i+1],args.values[i].GetAsString(),caller_memoria);
 				}
 			}
-//			Inter.OnFunctionIn(); // ahora se encarga Ejecutarº
+//			Inter.OnFunctionIn(); // ahora se encarga Ejecutar
 			Ejecutar(func->line_start);
 //			Inter.OnFunctionOut(); // ahora se encarga Ejecutar
 			if (func->nombres[0].size()) {
-				ret=memoria->LeerValor(func->nombres[0]);
-				rettipo=memoria->LeerTipo(func->nombres[0]);
+				ret = memoria->LeerValor(func->nombres[0]);
+				ret.type = memoria->LeerTipo(func->nombres[0]);
 			}
 			delete memoria;
 			memoria=caller_memoria;
 		} 
 #endif
 	}
-	if (!tipo.can_be(rettipo)) 
+	if (!ret.type.set(forced_tipo)) 
 		WriteError(283,"No coinciden los tipos.");
-	tipo=rettipo;
 	return ret;
 }
 
-string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
+DataValue Evaluar(const string &expresion, int &p1, int &p2, const tipo_var &forced_tipo) {
 	// es probable que estos 2 whiles ya no sean necesarios
 	while (p1<p2&&expresion[p1]==' ') p1++;
 	while (p1<p2&&expresion[p2]==' ') p2--;
@@ -335,365 +330,328 @@ string Evaluar(const string &expresion, int &p1, int &p2, tipo_var &tipo) {
 #endif
 	int pos_op = BuscarOperador(expresion,p1,p2);
 	if (pos_op!=-1 && expresion[pos_op]==',') 
-		{ WriteError(284,string("Se esperaba solo una expresión")); tipo=vt_error; return ""; }
+		{ WriteError(284,string("Se esperaba solo una expresión")); return DataValue::DVError(); }
 	if (pos_op==-1/* || pos_op==p1*/) { // si no hay operador, es constante o variable
-		if (p2<p1) ev_return("");
+		if (p2<p1) ev_return(DataValue(forced_tipo)); //operandos vacios... como el primero en (-3)
 		char c = expresion[p1];
 		if ( c=='\''||c=='\"') { // si empieza con comillas, es cadena de caracteres
-			tipo = vt_caracter;
-			ev_return(expresion.substr(p1+1,p2-p1-1));
+			ev_return( DataValue::MakeString(expresion.substr(p1+1,p2-p1-1)) );
 		} else if ( (c>='0'&&c<='9') || c=='.' || c=='-' || c=='+') { // si empieza con un numero o un punto, es nro
-			tipo = vt_numerica;
-			ev_return(expresion.substr(p1,p2-p1+1));
+			ev_return( DataValue::MakeReal(expresion.substr(p1,p2-p1+1)) );
 		} else if (expresion.substr(p1,p2-p1+1)==VERDADERO || expresion.substr(p1,p2-p1+1)==FALSO) { // veradero o falso, logica
-			tipo = vt_logica;
-			ev_return(expresion.substr(p1,p2-p1+1));
+			ev_return( DataValue::MakeLogic(expresion.substr(p1,p2-p1+1)) );
 		} else { // sino es variable... ver si es comun o arreglo
 			size_t pm = expresion.find('(',p1);
 			if (int(pm)>p2) pm=string::npos;
-//			size_t pp=expresion.find('(',p1);
-//			if (int(pp)>p2) pp=string::npos;
-//			size_t pc=expresion.find('[',p1);
-//			if (int(pc)>p2) pc=string::npos;
-//			size_t pm=string::npos;
-//			if (pp!=string::npos) {
-//				if (pc!=string::npos && pc<pp)
-//					pm=pc;
-//				else
-//					pm=pp;
-//			} if (pc!=string::npos)
-//				pm=pc;
 			if (pm==string::npos) { // si es una variable comun
 				string nombre = expresion.substr(p1,p2-p1+1);
-				if (PalabraReservada(nombre) || nombre==main_process_name) {
+				if (!Inter.Running() && (PalabraReservada(nombre) || nombre==main_process_name)) {
 					WriteError(285,string("Identificador no válido (")+nombre+")");
-					tipo=vt_error;
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
-				const Funcion *func=EsFuncion(nombre);
+				const Funcion *func = EsFuncion(nombre);
 				if (func) {
 					if (func->cant_arg!=0) {
 						WriteError(286,string("Faltan parámetros para la función (")+nombre+")");
-						tipo=vt_error;
-						ev_return("");
+						ev_return(DataValue::DVError());
 					} else {
-						ev_return(EvaluarFuncion(func,"()",tipo));
+						DataValue res = EvaluarFuncion(func,"()",forced_tipo);
+						ev_return(res);
 					}
 				}
 				if (memoria->LeerDims(nombre)) { // usar leertipo trae problemas cuando la variable es un alias a un elemento de un arreglo
 					WriteError(220,string("Faltan subindices para el arreglo (")+nombre+")");
-					tipo=vt_error;
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
-				tipo = memoria->LeerTipo(nombre);
+				DataValue res;
 				if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running() && !memoria->EstaDefinida(nombre)) {
 					WriteError(210,string("Variable no definida (")+nombre+")");
-					tipo=vt_error;
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
 				if ((lang[LS_FORCE_INIT_VARS] || Inter.EvaluatingForDebug()) && Inter.Running() && !memoria->EstaInicializada(nombre)) {
 					WriteError(215,string("Variable no inicializada (")+nombre+")");
-					tipo=vt_error;
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
-				ev_return(memoria->LeerValor(nombre));
+				res = memoria->Leer(nombre);
+				ev_return(res);
 			} else { // si es un arreglo o funcion
 				string nombre=expresion.substr(p1,pm-p1);
 				const Funcion *func=EsFuncion(nombre);
 				if (func) { //si es funcion
-					ev_return(EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),tipo));
+					DataValue res = EvaluarFuncion(func,expresion.substr(pm,p2-pm+1),forced_tipo);
+					ev_return(res);
 				} else {
 					if (PalabraReservada(nombre)) {
 						WriteError(287,string("Identificador no válido (")+nombre+")");
-						tipo=vt_error;
-						ev_return("");
+						ev_return(DataValue::DVError());
 					}
 					if (lang[LS_FORCE_DEFINE_VARS] && Inter.Running() && !memoria->EstaDefinida(nombre)) {
 						WriteError(209,string("Variable no definida (")+nombre+")");
-						tipo=vt_error;
-						ev_return("");
+						ev_return(DataValue::DVError());
 					}
 					string aux=expresion.substr(p1,p2-p1+1);
 					if (CheckDims(aux)) {
 						if (lang[LS_FORCE_INIT_VARS] && Inter.Running() && !memoria->EstaInicializada(aux)) {
 							WriteError(288,string("Posición no inicializada (")+aux+")");
-							tipo=vt_error;
-							ev_return("");
+							ev_return(DataValue::DVError());
 						}
-						tipo=memoria->LeerTipo(aux); // correccion 20130213
-						ev_return(memoria->LeerValor(aux));
+						DataValue res = memoria->Leer(aux);
+						ev_return(res);
 					} else {
-						tipo=vt_error;
-						ev_return("");
+						ev_return(DataValue::DVError());
 					}
 				}
 			}
 		}
 	} else { // si habia operador, ver cual...
 		// cortar operandos y ver sus tipos
-		string s1,s2;
-		tipo_var t1,t2;
 		char op = expresion[pos_op], next=expresion[pos_op+1];
-		int p1b=pos_op-1, p2a=pos_op+1;
+		int p1a = p1, p2a = pos_op+1, p1b = pos_op-1, p2b = p2;
 		if (next=='='||next=='&'||next=='|'||next=='>') p2a++;
-		int p1a=p1, p2b=p2;
-		t1=DeterminarTipo(expresion,p1a,p1b);
-		t2=DeterminarTipo(expresion,p2a,p2b);
-		if ((op!='~'&&!t1.is_ok()) || !t2.is_ok()) { 
+		tipo_var td1 = DeterminarTipo(expresion,p1a,p1b);
+		tipo_var td2 = DeterminarTipo(expresion,p2a,p2b);
+		if ((op!='~'&&!td1.is_ok()) || !td2.is_ok()) { 
 			// DeterminarTipo no informa el error (ni al usuario ni impide la ejecucion)
 			// los evaluar que siguen están para que ese error se manifieste
-			tipo_var t1; if (op!='~') Evaluar(expresion,p1a,p1b,t1);
-			tipo_var t2; Evaluar(expresion,p2a,p2b,t2);
-			tipo=vt_error; ev_return("");
+			if (op!='~') Evaluar(expresion,p1a,p1b);
+			Evaluar(expresion,p2a,p2b);
+			ev_return(DataValue::DVError());
 		}
 		// analizar segun operador
 		switch (op) {
 			
-		case '|': case '&': 
-			tipo=vt_logica; // el resultado es logico
+		case '|': case '&': {
 			// los operandos deben ser logicos
-			if (!t1.is_known()) AplicarTipo(expresion,p1a,p1b,vt_logica);
-			if (!t2.is_known()) AplicarTipo(expresion,p2a,p2b,vt_logica);
-			if (!t1.is_ok() || !t2.is_ok()) { 
-				WriteError(289,"No coinciden los tipos (|, O, & o Y). Los operandos deben ser logicos.");
-				tipo=vt_error; 
-				ev_return("");
+			if ( (td1!=vt_logica && !AplicarTipo(expresion,p1a,p1b,vt_logica)) ||
+			     (td2!=vt_logica && !AplicarTipo(expresion,p2a,p2b,vt_logica)) ) 
+			{
+				WriteError(289,"No coinciden los tipos (|/O, &/Y). Los operandos deben ser logicos.");
+				ev_return(DataValue::DVError());
 			}
-			s1 = Evaluar(expresion,p1a,p1b,t1);
+			DataValue s1 = Evaluar(expresion,p1a,p1b,vt_logica);
 			if (Inter.Running()) {
-				if (op=='|' && s1==VERDADERO) ev_return(VERDADERO);
-				if (op=='&' && s1==FALSO) ev_return(FALSO);
+				if (op=='|' && s1.GetAsBool()) ev_return(DataValue::MakeLogic(true));
+				if (op=='&' && !s1.GetAsBool()) ev_return(DataValue::MakeLogic(false));
 			}
-			s2 = Evaluar(expresion,p2a,p2b,t2);
-			if (!t1.cb_log || !t2.cb_log) { tipo=vt_error; ev_return(""); }
-			if (op=='|')
-				ev_return((s1==VERDADERO || s2==VERDADERO)?VERDADERO:FALSO);
-			else
-				ev_return((s1==VERDADERO && s2==VERDADERO)?VERDADERO:FALSO);
-			
+			DataValue s2 = Evaluar(expresion,p2a,p2b,vt_logica);
+			if (!s1.CanBeLogic() || !s2.CanBeLogic()) { ev_return(DataValue::DVError()); }
+			if (op=='|') ev_return(DataValue::MakeLogic(s1.GetAsBool() || s2.GetAsBool()));
+			else         ev_return(DataValue::MakeLogic(s1.GetAsBool() && s2.GetAsBool()));
+		}
 		case '~': case '!':
 			if (op!='!'||next!='=') {
-				tipo=vt_logica; // el resultado es logico
 				// el operando debe ser logico
 				if (p2a>p2) // tal vez nunca se llegue a este error, porque lo detecta en otro lado
 					WriteError(290,"Falta operando para la negacion (~/NO).");
-				if (t2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
+				if (td2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
 					WriteError(291,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
-					tipo=vt_error; 
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
-				s2 = Evaluar(expresion,p2a,p2b,t2);
-				ev_return(s2==VERDADERO?FALSO:VERDADERO);
+				DataValue s2 = Evaluar(expresion,p2a,p2b,vt_logica);
+				ev_return(DataValue::MakeLogic(!s2.GetAsBool()));
 			} else {
 				next='>'; op='<';
 			}
 		case '<': case '>': {
 			// los operandos no pueden ser logicos para <, >, <= o >=
 			if ((op=='<' || op=='>')&& next!='>') {
-				if (t1.cb_log) {
-					t1.set(vt_caracter_o_numerica);
+				if (td1.cb_log) {
+					td1.set(vt_caracter_o_numerica);
 					AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica);
 				}
-				if (t2.cb_log) {
-					t2.set(vt_caracter_o_numerica);
+				if (td2.cb_log) {
+					td2.set(vt_caracter_o_numerica);
 					AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica);
 				}
-				if (!t1.is_ok() || !t2.is_ok()) { 
+				if (!td1.is_ok() || !td2.is_ok()) { 
 					WriteError(292,"No coinciden los tipos (<, >, <= o >=). Los operandos no deben ser logicos.");
-					tipo=vt_error; 
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
 			}
-		case '=': 
-			tipo=vt_logica; // el resultado es logico
+		case '=': {
 			// los operandos deben tener igual tipo
-			tipo_var t=vt_desconocido;
-			if (!t1.is_known()) { // no se conoce t1...
-				if (t2.is_known()) { // ...pero si t2
-					t=t2;
-					if (!AplicarTipo(expresion,p1a,p1b,t2))
-					{ tipo=vt_error; ev_return(""); }
+			tipo_var t = vt_desconocido;
+			if (!td1.is_known()) { // no se conoce t1...
+				if (td2.is_known()) { // ...pero si t2
+					t=td2;
+					if (!AplicarTipo(expresion,p1a,p1b,td2)) { ev_return( DataValue::DVError() ); }
 				}
 			} else { // se conoce t1
-				if (!t2.is_known()) { // t2 no
-					t=t1; /*int p2b=p2;*/ // ¿por que se redefinia p2b???
-					if (!AplicarTipo(expresion,p2a,p2b,t1))
-					{ tipo=vt_error; ev_return(""); }
-				} else if (t1!=t2) {// t2 no coincide
+				if (!td2.is_known()) { // t2 no
+					t=td1; /*int p2b=p2;*/ // ¿por que se redefinia p2b???
+					if (!AplicarTipo(expresion,p2a,p2b,td1)) { ev_return(DataValue::DVError()); }
+				} else if (td1!=td2) {// t2 no coincide
 					WriteError(207,"No coinciden los tipos (<, >, <=, >=, <> o =). No se puede comparar variables o expresiones de distinto tipo.");
-					tipo=vt_error; 
-					ev_return(""); 
+					ev_return(DataValue::DVError()); 
 				}
 			}
 			// evaluar operandos y aplicar operador
-			s1 = Evaluar(expresion,p1a,p1b,t1);
-			s2 = Evaluar(expresion,p2a,p2b,t2);
-			if (!t1.is_ok() || !t2.is_ok()) {
-				tipo = vt_error;
-				ev_return("");
+			DataValue s1 = Evaluar(expresion,p1a,p1b,t);
+			DataValue s2 = Evaluar(expresion,p2a,p2b,t);
+			if (!s1.type.is_ok() || !s2.type.is_ok()) {
+				ev_return(DataValue::DVError());
 			} else {
-				t.set(t1); t.set(t2);
-				tipo = vt_logica;
+				t.set(s1.type); t.set(s2.type); // esto deberia ser redundante si DeterminarTipo funciona siempre
 				if (t.cb_num) { // comparaciones de numeros
 #define _epsilon (1e-11)
 					if (op=='<') {
 						if (next=='>') {
-							double diff=StrToDbl(s1)-StrToDbl(s2); if (diff<0) diff=-diff;
-							ev_return(diff<_epsilon?FALSO:VERDADERO); // comparacion "difusa" para evitar problemas numericos
+							double diff=s1.GetAsReal()-s2.GetAsReal(); if (diff<0) diff=-diff;
+							ev_return(DataValue::MakeLogic(diff>=_epsilon)); // comparacion "difusa" para evitar problemas numericos
 						}
 						else if (next=='=')
-							ev_return((StrToDbl(s1)-_epsilon)<=StrToDbl(s2)?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic((s1.GetAsReal()-_epsilon)<=s2.GetAsReal()));
 						else
-							ev_return((StrToDbl(s1)+_epsilon)<StrToDbl(s2)?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic((s1.GetAsReal()+_epsilon)<s2.GetAsReal()));
 					} else if (op=='>') {
 						if (next=='=')
-							ev_return((StrToDbl(s1)+_epsilon)>=StrToDbl(s2)?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic((s1.GetAsReal()+_epsilon)>=s2.GetAsReal()));
 						else
-							ev_return((StrToDbl(s1)-_epsilon)>StrToDbl(s2)?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic((s1.GetAsReal()-_epsilon)>s2.GetAsReal()));
 					} else {
-						double diff=StrToDbl(s1)-StrToDbl(s2); if (diff<0) diff=-diff;
-						ev_return(diff<_epsilon?VERDADERO:FALSO); // comparacion "difusa" para evitar problemas numericos
+						double diff=s1.GetAsReal()-s2.GetAsReal(); if (diff<0) diff=-diff;
+						ev_return(DataValue::MakeLogic(diff<_epsilon)); // comparacion "difusa" para evitar problemas numericos
 					}
 				} else if (t==vt_logica) { // comparaciones de logicos
 					if (op=='<' && next=='>') {
-						ev_return((s1==VERDADERO)!=(s2==VERDADERO)?VERDADERO:FALSO);
+						ev_return(DataValue::MakeLogic((s1.GetAsBool())!=(s2.GetAsBool())));
 					} else if (op=='=') {
-						ev_return((s1==VERDADERO)==(s2==VERDADERO)?VERDADERO:FALSO);
+						ev_return(DataValue::MakeLogic((s1.GetAsBool())==(s2.GetAsBool())));
 					} else {
-						tipo=vt_error;
-						ev_return(FALSO);
+						/// @todo: ver si todavía es útil que devuelva tipo error pero valor valido
+						DataValue res = DataValue::MakeLogic(false);
+						res.type = vt_error;
+						ev_return(res);
 					}
 				} else { // comparaciones de cadenas
 					if (op=='<') {
 						if (next=='>')
-							ev_return(s1!=s2?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic(s1.GetAsString()!=s2.GetAsString()));
 						else if (next=='=')
-							ev_return(s1<=s2?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic(s1.GetAsString()<=s2.GetAsString()));
 						else
-							ev_return(s1<s2?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic(s1.GetAsString()<s2.GetAsString()));
 					} else if (op=='>') {
 						if (next=='=')
-							ev_return(s1>=s2?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic(s1.GetAsString()>=s2.GetAsString()));
 						else
-							ev_return(s1>s2?VERDADERO:FALSO);
+							ev_return(DataValue::MakeLogic(s1.GetAsString()>s2.GetAsString()));
 					} else
-						ev_return(s1==s2?VERDADERO:FALSO);
+						ev_return(DataValue::MakeLogic(s1.GetAsString()==s2.GetAsString()));
 				}
 			}
-		}
-			
+		} // case '='
+		} // case '<': case '>'
 		case '+':
 			if (lang[LS_ALLOW_CONCATENATION]) {
-				if (t1.can_be(vt_logica) && !AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica)) {
+				if (td1.can_be(vt_logica) && !AplicarTipo(expresion,p1a,p1b,vt_caracter_o_numerica)) {
 					WriteError(293,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
-					tipo = vt_error;
-					ev_return("");
-				} else t1.set(vt_caracter_o_numerica);
-				if (t2.can_be(vt_logica) && !AplicarTipo(expresion,p2a,p2b,vt_caracter_o_numerica)) {
+					ev_return(DataValue::DVError());
+				} else td1.set(vt_caracter_o_numerica);
+				if (td2.can_be(vt_logica) && !AplicarTipo(expresion,p2a,p2b,vt_caracter_o_numerica)) {
 					WriteError(294,"No coinciden los tipos (+). Los operandos deben ser numericos o caracter.");
-					tipo = vt_error;
-					ev_return("");
-				} else t2.set(vt_caracter_o_numerica);
-				if (t1!=t2) {
-					tipo_var ot1=t1, ot2=t2;
-					t1.set(t2);
-					t2.set(t1);
-					if (!t1.is_ok() || !t2.is_ok() || (ot1!=t1 && !AplicarTipo(expresion,p1a,p1b,t1)) || (ot2!=t2 && !AplicarTipo(expresion,p2a,p2b,t2)) || t1!=t2) {
-						tipo = vt_error;
+					ev_return(DataValue::DVError());
+				} else td2.set(vt_caracter_o_numerica);
+				if (td1!=td2) {
+					tipo_var ot1=td1, ot2=td2;
+					td1.set(td2);
+					td2.set(td1);
+					if (!td1.is_ok() || !td2.is_ok() || (ot1!=td1 && !AplicarTipo(expresion,p1a,p1b,td1)) || (ot2!=td2 && !AplicarTipo(expresion,p2a,p2b,td2)) || td1!=td2) {
 						WriteError(295,"No coinciden los tipos (+). Los operandos deben ser de igual tipo.");
-						ev_return("");
+						ev_return(DataValue::DVError());
 					}
 				}
-				if (t1==vt_numerica||t2==vt_numerica) tipo=vt_numerica;
-				else if (t1==vt_caracter||t2==vt_caracter) tipo=vt_caracter;
+				tipo_var tipo;
+				if (td1==vt_numerica||td2==vt_numerica) tipo=vt_numerica;
+				else if (td1==vt_caracter||td2==vt_caracter) tipo=vt_caracter;
 				else tipo=vt_caracter_o_numerica;
-				s1 = Evaluar(expresion,p1a,p1b,t1);
-				s2 = Evaluar(expresion,p2a,p2b,t2);
-				if (tipo==vt_caracter) 
-					ev_return(s1+s2);
-				else 
-					ev_return(DblToStr(StrToDbl(s1)+StrToDbl(s2)));
+				DataValue s1 = Evaluar(expresion,p1a,p1b,tipo);
+				DataValue s2 = Evaluar(expresion,p2a,p2b,tipo);
+				// esta comprobacion parece redundante segun los tests... si no le paso el tipo a los evaluar
+				// anteriores, se torna util... hay algun caso en que todavía sirva???
+				if (!s1.type.set(s2.type) || !s2.type.set(s1.type)) {
+					WriteError(295,"No coinciden los tipos (+). Los operandos deben ser de igual tipo.");
+					ev_return(DataValue::DVError());
+				}
+				if (tipo==vt_caracter) { ev_return( DataValue::MakeString(s1.GetAsString()+s2.GetAsString()) ); }
+				else { ev_return( DataValue::MakeReal(s1.GetAsReal()+s2.GetAsReal()) ); }
 			}
 			
 		case '-':case '*':case '/':case '^':case '%': {
-			tipo=vt_numerica; // el resultado es numerico
 			// los operandos deben ser numericos
-			if ((t1!=vt_numerica && !AplicarTipo(expresion,p1a,p1b,vt_numerica)) ||
-				(t2!=vt_numerica && !AplicarTipo(expresion,p2a,p2b,vt_numerica))) {
+			if ((td1!=vt_numerica && !AplicarTipo(expresion,p1a,p1b,vt_numerica)) ||
+				(td2!=vt_numerica && !AplicarTipo(expresion,p2a,p2b,vt_numerica))) {
 					WriteError(213,"No coinciden los tipos (+, -, *, /, ^, % o MOD). Los operandos deben ser numericos.");
-					tipo=vt_error;
-					ev_return("");
+					ev_return(DataValue::DVError());
 				}
 			// evaluar operandos
-			s1 = Evaluar(expresion,p1a,p1b,t1);
-			s2 = Evaluar(expresion,p2a,p2b,t2);
-			if (!t1.cb_num || !t2.cb_num) { tipo=vt_error; ev_return(""); }
+			DataValue s1 = Evaluar(expresion,p1a,p1b,vt_numerica);
+			DataValue s2 = Evaluar(expresion,p2a,p2b,vt_numerica);
+			if (!s1.CanBeReal() || !s2.CanBeReal()) { ev_return(DataValue::DVError()); }
 			// operar
-			double res=0, o1=StrToDbl(s1), o2=StrToDbl(s2);
+			double res=0, o1=s1.GetAsReal(), o2=s2.GetAsReal();
 			if (op=='+') {
 				res=o1+o2;
 			} else if (op=='-') { 
 				res=o1-o2;
 			} else if (op=='/') {
 				if (o2==0) {
+					/// @todo: ver si tiene sentido.... lo mismo que arriba
+					DataValue retval = DataValue::MakeReal(0);
 					if (Inter.Running()) {
 						WriteError(296,"Division por cero");
-						tipo=vt_error;
+						retval.type=vt_error;
 					}
-					ev_return("0");
+					ev_return(retval);
 				} else
 					res=o1/o2;
 			} else if (op=='*') {
 				res=o1*o2;
 			} else if (op=='%') {
-				if (o2==0) {
+				if (floor(o2)==0) {
+					/// @todo: ver.... lo mismo que antes
+					DataValue retval = DataValue::MakeReal(0);
 					if (Inter.Running()) {
-						WriteError(297,"Division por cero");
-						tipo=vt_error;
+						WriteError(316,"El segundo operando para el operador MOD no puede ser cero");
+						retval.type = vt_error;
 					}
-					ev_return("0");
+					ev_return(retval);
 				} else {
 					if (o1!=floor(o1)||o2!=floor(o2)) {
 						WriteError(298,"Los operandos para el operador MOD deben ser enteros");
-					} else if (o2==0) {
-						WriteError(316,"El segundo operando para el operador MOD no puede ser cero");
 					} else 
 						res=(long long)(o1)%(long long)(o2);
 				}
 			} else if (op=='^') {
 				res=pow(o1,o2);
 			}
-			ev_return(DblToStr(res));
+			ev_return(DataValue::MakeReal(res));
 		}
 		}
 	}
-	tipo=vt_error;
-	ev_return("");
+	ev_return(DataValue::DVError());
 }
 
 // wrapper para llamar al Evaluar que sigue desde SynCheck, para que verifique que no falten operandos al principio o al final, y aplique los tipos solo si la evaluación es correcta
-string EvaluarSC(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
-	if (ignore_logic_errors) { tipo=forced_tipo; return ""; }
-	// <<<el comentario que sigue ya no aplica porque eso ahora se verifica en SynCheckAux3>>
-	// el evaluar comun admite operandos nulos en los extremos, porque pueden ser variables 
-	// sin inicializar que han sido reemplazadas, esta version no 
-//	if (expresion.size()) { ... }
+DataValue EvaluarSC(string expresion, const tipo_var &forced_tipo) {
+	if (ignore_logic_errors) { return DataValue(forced_tipo); }
 	// primero evalua sin importar de que tipo deberia ser (para que el error de tipo lo dé afuera, mejor contextualizado)
-	tipo=vt_desconocido; int p1=0, p2=expresion.size()-1;
-	string retval=Evaluar(expresion,p1,p2,tipo);
+	int p1=0, p2=expresion.size()-1;
+	DataValue retval = Evaluar(expresion,p1,p2,forced_tipo);
 	// si no habia nada raro, aplica el tipo a las variables
-	if (forced_tipo!=vt_desconocido && tipo!=vt_error) AplicarTipo(expresion,p1,p2,forced_tipo);
+	if (forced_tipo!=vt_desconocido && retval.type!=vt_error) AplicarTipo(expresion,p1,p2,forced_tipo);
 	return retval;
 }
 
 // recibe la expresion a evaluar y el tipo con la info de que puede llegar a ser
 // devuelve el resultado si se pudo evaluar y el tipo en tipo, sino "" y vt_error
-string Evaluar(string expresion, tipo_var &tipo, tipo_var forced_tipo) {
-	tipo=forced_tipo;
+DataValue Evaluar(string expresion, const tipo_var &forced_tipo) {
+	DataValue d;
+	d.type = forced_tipo;
 	int p1=0, p2=expresion.size()-1;
-	if (forced_tipo!=vt_desconocido && !AplicarTipo(expresion,p1,p2,forced_tipo)) {tipo=vt_error; return "";}; // TODO: APLICAR EL TIPO QUE VIENE
+	if (forced_tipo!=vt_desconocido && !AplicarTipo(expresion,p1,p2,forced_tipo)) return DataValue::DVError(); // TODO: APLICAR EL TIPO QUE VIENE
 //	tipo_var rt = DeterminarTipo(expresion,p1,p2);
-	return Evaluar(expresion,p1,p2,tipo);
+	return Evaluar(expresion,p1,p2,forced_tipo);
 }
 
 bool CheckDims(string &str) {
@@ -723,9 +681,8 @@ bool CheckDims(string &str) {
 		int b=pp+1,ca=1; while ((b=BuscarComa(str,b+1,p2))>0) ca++;
 		str[str.size()-1]=','; /*pp;*/
 		for (int i=0;i<ca;i++) {
-			int np=BuscarComa(str,++pp,p2)-1;
-			tipo_var t=vt_numerica;
-			Evaluar(str,pp,np,t);
+			int np = BuscarComa(str,++pp,p2)-1; // deberia tratar de forzar tipo entero?
+			tipo_var t = Evaluar(str,pp,np).type;
 			pp=np+1;
 			if (!t.is_ok()) return false;
 		}
@@ -769,26 +726,25 @@ bool CheckDims(string &str) {
 	str[str.size()-1]=',';
 	for (int i=0;i<ca;i++) {
 		int np=BuscarComa(str,++pp,p2)-1;
-		tipo_var t=vt_numerica;
-		string ret = Evaluar(str,pp,np,t);
-		if (!t.is_ok()) return false;
-		if (ret.find(".",0)!=string::npos) {
-			WriteError(301,string("Subindice no entero ("+ret+")"));
+		DataValue ret = Evaluar(str,pp,np,vt_numerica);
+		if (!ret.IsOk()) return false;
+		int idx = ret.GetAsInt();
+		if (int(ret.GetAsReal())!=idx) {
+			WriteError(301,string("Subindice no entero ("+ret.GetForUser()+")"));
 			return false;
 		}
-		int idx=atoi(ret.c_str());
 		if (lang[LS_BASE_ZERO_ARRAYS]) {
 			if (idx<0||idx>adims[i+1]-1) {
-				WriteError(302,string("Subindice (")+ret+") fuera de rango (0..."+IntToStr(adims[i+1]-1)+")");
+				WriteError(302,string("Subindice (")+ret.GetForUser()+") fuera de rango (0..."+IntToStr(adims[i+1]-1)+")");
 				return false;
 			}
 		} else {
 			if (idx<1||idx>adims[i+1]) {
-				WriteError(303,string("Subindice (")+ret+") fuera de rango (1..."+IntToStr(adims[i+1])+")");
+				WriteError(303,string("Subindice (")+ret.GetForUser()+") fuera de rango (1..."+IntToStr(adims[i+1])+")");
 				return false;
 			}
 		}
-		nombre+=ret+",";
+		nombre+=ret.GetForUser()+","; // en nombre vamos armando la referencia a la pos con los indices ya evaluados, se devuelve por str
 		pp=np+1;
 	}
 	str=nombre;

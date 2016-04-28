@@ -418,7 +418,7 @@ static void FixAcentos(string &s) {
 		else if (c=='Í') c='I';
 		else if (c=='Ó') c='O';
 		else if (c=='Ú') c='U';
-		else if (c=='Ú') c='U';
+		else if (c=='Ü') c='U';
 	}
 }
 
@@ -470,9 +470,8 @@ int SynCheck(int linea_from, int linea_to) {
 	int errores=0; // Total de errores , y cant hasta la instruccion anterior
 	int flag_pyc=0, tmp;
 	bool in_process=false;
-	tipo_var tipo;
 	string cadena, str;
-	Funcion *current_func; // funcion actual, necesito el puntero para setear line_end cuando encuentre el FinProceso/FinSubProceso
+	Funcion *current_func = NULL; // funcion actual, necesito el puntero para setear line_end cuando encuentre el FinProceso/FinSubProceso
 	
 	// Checkear sintaxis y reorganizar el codigo
 	for (int x=linea_from;x<programa.GetRefPoint();x++){
@@ -902,7 +901,7 @@ int SynCheck(int linea_from, int linea_to) {
 						}
 						if (parentesis==0 && cadena[i]==',') { // comprobar validez
 							str=cadena.substr(last_i,i-last_i);
-							if (Lerrores==errores) EvaluarSC(str,tipo);
+							if (Lerrores==errores) EvaluarSC(str);
 							last_i=i+1;
 						}
 					}
@@ -918,8 +917,8 @@ int SynCheck(int linea_from, int linea_to) {
 					else if (RightCompare(args," MILISEGUNDOS;")) args.erase(args.size()-14);
 					else if (RightCompare(args," MILISEGUNDO;")) args.erase(args.size()-13);
 					else if (!ignore_logic_errors) {SynError (218,"Falta unidad o unidad desconocida."); errores++;}
-					EvaluarSC(args,tipo,vt_numerica);
-					if (!tipo.cb_num) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
+					DataValue res = EvaluarSC(args,vt_numerica);
+					if (!res.CanBeReal()) {SynError (219,"La longitud del intervalo debe ser numérica."); errores++;} else {
 						for (int tmp1=0;tmp1<(int)args.size();tmp1++) if (args[tmp1]==' ') {SynError (240,"Se esperaba una sola expresión."); errores++;}
 					}
 				}
@@ -972,14 +971,15 @@ int SynCheck(int linea_from, int linea_to) {
 								int *dims=new int[ndims+1], idims=1; dims[0]=ndims;
 								
 								// comprobar los indices
-								string str2,res_eval;
+								DataValue res;
+								string str2;
 								while (str.find(",",0)!=string::npos){
 									str2=str;
 									str2.erase(str.find(",",0),str.size()-str.find(",",0));
 									if (str2=="")
 										{SynError (61,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) res_eval=EvaluarSC(str2,tipo,vt_numerica);
-									if (tipo!=vt_error&&!tipo.cb_num) {
+									if (Lerrores==errores) res = EvaluarSC(str2,vt_numerica);
+									if (res.IsOk()&&!res.CanBeReal()) {
 										{SynError (62,"No coinciden los tipos."); errores++;}
 										dims[idims]=-1;
 									} else {
@@ -988,7 +988,7 @@ int SynCheck(int linea_from, int linea_to) {
 											if (!lang[LS_ALLOW_DINAMYC_DIMENSIONS])
 												{SynError (153,"Las dimensiones deben ser constantes."); errores++;}
 										} else {
-											dims[idims]=(int)StrToDbl(res_eval);
+											dims[idims]=res.GetAsInt();
 										}
 									}
 									str.erase(0,str2.size()+1);
@@ -1027,7 +1027,7 @@ int SynCheck(int linea_from, int linea_to) {
 									if (!memoria->EstaDefinida(var_name)) memoria->DefinirTipo(var_name,vt_desconocido); // para que aparezca en la lista de variables
 									if (memoria->LeerDims(var_name) && !ignore_logic_errors) SynError(255,"Faltan subindices para el arreglo ("+var_name+").");
 								}
-							} else if (!memoria->EsArgumento(var_name.substr(0,var_name.find("(",0)))) {
+							} else if (!memoria->EsArgumento(var_name.substr(0,var_name.find('(',0)))) {
 								bool name_ok=true;
 								string aname=var_name.substr(0,var_name.find("(",0));
 								if (!CheckVariable(aname,66)) { errores++; name_ok=false; }
@@ -1050,8 +1050,9 @@ int SynCheck(int linea_from, int linea_to) {
 									str2=var_name;
 									str2.erase(var_name.find(",",0),var_name.size()-var_name.find(",",0));
 									// if (str2=="") {SynError (67,"Parametro nulo."); errores++;}
-									if (Lerrores==errores) EvaluarSC(str2,tipo,vt_numerica);
-									if (tipo!=vt_error&&!tipo.cb_num)
+									DataValue res;
+									if (Lerrores==errores) res = EvaluarSC(str2,vt_numerica);
+									if (res.IsOk()&&!res.CanBeReal())
 										{SynError (154,"No coinciden los tipos."); errores++;}
 									var_name.erase(0,str2.size()+1);
 									ca++;
@@ -1085,14 +1086,15 @@ int SynCheck(int linea_from, int linea_to) {
 							str.erase(str.find("<-",0),str.size()-str.find("<-",0));
 							if (!CheckVariable(str,74)) errores++; else {
 								memoria->DefinirTipo(str,vt_numerica); // para que aparezca en la lista de variables
-								if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-								if (!tipo.cb_num)
+								DataValue res;
+								if (Lerrores==errores) DataValue res = EvaluarSC(str,vt_numerica);
+								if (res.IsOk()&&!res.CanBeReal())
 									{SynError (76,"No coinciden los tipos."); errores++;}
 								str=cadena;
 								str.erase(0,str.find("<-")+2);
 								str.erase(str.find(" "),str.size()-str.find(" ",0));
-								if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-								if (!tipo.cb_num)
+								if (Lerrores==errores) res = EvaluarSC(str,vt_numerica);
+								if (res.IsOk()&&!res.CanBeReal())
 									{SynError (77,"No coinciden los tipos."); errores++;}
 								else { // comprobar hasta y variable final
 									str=cadena;
@@ -1119,12 +1121,14 @@ int SynCheck(int linea_from, int linea_to) {
 									else {
 										str.erase(0,7); str.erase(str.size()-6,6);
 										if (str.find(" ",0)==string::npos) {
-											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-											if (!tipo.cb_num) {SynError (80,"No coinciden los tipos."); errores++;}
+											DataValue res;
+											if (Lerrores==errores) res = EvaluarSC(str,vt_numerica);
+											if (res.IsOk()&&!res.CanBeReal()) {SynError (80,"No coinciden los tipos."); errores++;}
 										} else {
 											str.erase(str.find(" ",0),str.size()-str.find(" ",0));
-											if (Lerrores==errores) EvaluarSC(str,tipo,vt_numerica);
-											if (!tipo.cb_num) {SynError (81,"No coinciden los tipos."); errores++;}
+											DataValue res;
+											if (Lerrores==errores) res = EvaluarSC(str,vt_numerica);
+											if (res.IsOk()&&!res.CanBeReal()) {SynError (81,"No coinciden los tipos."); errores++;}
 											str=cadena; // comprobar con paso
 											str.erase(0,str.find("HASTA",6)+6);
 											str.erase(0,str.find(" ",0)+1);
@@ -1136,8 +1140,8 @@ int SynCheck(int linea_from, int linea_to) {
 													{SynError (82,"Se esparaba CON PASO o fin de instrucción."); errores++;}
 											} else {
 												str.erase(0,9);
-												EvaluarSC(str,tipo,vt_numerica);
-												if (!tipo.cb_num) {SynError (84,"No coinciden los tipos."); errores++;}
+												DataValue res = EvaluarSC(str,vt_numerica);
+												if (res.IsOk()&&!res.CanBeReal()) {SynError (84,"No coinciden los tipos."); errores++;}
 											}
 										}
 									}
@@ -1174,9 +1178,8 @@ int SynCheck(int linea_from, int linea_to) {
 				cadena[cadena.size()-1]=',';
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',i))!=-1) {
-					tipo=vt_caracter_o_numerica;
-					EvaluarSC(cadena.substr(i,p-i),tipo,lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
-					if (!tipo.cb_num&&!lang[LS_LAZY_SYNTAX]&&tipo!=vt_error)
+					DataValue res = EvaluarSC(cadena.substr(i,p-i),lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
+					if (res.IsOk() && !res.CanBeReal()&&!lang[LS_LAZY_SYNTAX])
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
 				}
@@ -1210,14 +1213,15 @@ int SynCheck(int linea_from, int linea_to) {
 						str.erase(str.size()-1,1);
 						tipo_var tipo_left = memoria->LeerTipo(vname);
 						tipo_left.rounded = false; // no transferir a la expresion
-						if (Lerrores==errores) EvaluarSC(str,tipo,tipo_left.is_ok()?tipo_left:vt_desconocido);
-						if (!tipo_left.can_be(tipo)) {
+						DataValue res;
+						if (Lerrores==errores) res = EvaluarSC(str,tipo_left.is_ok()?tipo_left:vt_desconocido);
+						if (res.IsOk()&&!res.type.can_be(tipo_left)) {
 							SynError(125,"No coinciden los tipos."); errores++; 
 							if (!memoria->EstaDefinida(str)) memoria->DefinirTipo(str,vt_desconocido); // para que aparezca en la lista de variables
 						}
 						else {
-							tipo.rounded = false; // no forzar a entero la variable asignada
-							memoria->DefinirTipo(vname,tipo);
+							res.type.rounded = false; // no forzar a entero la variable asignada
+							memoria->DefinirTipo(vname,res.type);
 						}
 					}
 				}
@@ -1243,12 +1247,12 @@ int SynCheck(int linea_from, int linea_to) {
 						}
 					}
 				}
-				tipo=vt_logica;
-				if (Lerrores==errores) EvaluarSC(str,tipo,vt_logica);
-				if (!tipo.cb_log) { SynError (92,"No coinciden los tipos."); errores++; }
+				DataValue res;
+				if (Lerrores==errores) res = EvaluarSC(str,vt_logica);
+				if (res.IsOk()&&!res.CanBeLogic()) { SynError (92,"No coinciden los tipos."); errores++; }
 			}
 			if (instruction_type==IT_HASTAQUE||instruction_type==IT_MIENTRASQUE){  // ------------ HASTA QUE -----------//
-				if (cadena==""||cadena=="")
+				if (cadena==""||cadena==";") // cual era la segunda cadena??? (decir cadena==""||cadena=="", puse el ; por instinto)
 				{ SynError (93,"Falta la condicion en la estructura Repetir."); errores++; cadena+=" "; }
 				else {
 					str=cadena; // Comprobar la condicion
@@ -1264,8 +1268,9 @@ int SynCheck(int linea_from, int linea_to) {
 						str=str.substr(0,str.size()-1);
 						cadena=cadena.substr(0,cadena.size()-1);
 					}
-					if (Lerrores==errores) EvaluarSC(str,tipo,vt_logica);
-					if (!tipo.cb_log) { SynError (95,"No coinciden los tipos."); errores++; }
+					DataValue res;
+					if (Lerrores==errores) res = EvaluarSC(str,vt_logica);
+					if (res.IsOk()&&!res.CanBeLogic()) { SynError (95,"No coinciden los tipos."); errores++; }
 				}
 			}
 			if (instruction_type==IT_SEGUN){  // ------------ SEGUN -----------//
@@ -1288,8 +1293,9 @@ int SynCheck(int linea_from, int linea_to) {
 								if (comillas<0 && str[tmp1]==' ' && str[tmp1-1]!='&' && str[tmp1-1]!='|'  && str[tmp1+1]!='&'  && str[tmp1+1]!='|')
 								{SynError (98,"Se esperaba fin de expresion."); errores++;}
 						}
-						if (Lerrores==errores) EvaluarSC(str,tipo,lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
-						if (!tipo.cb_num&&lang[LS_INTEGER_ONLY_SWITCH]) { SynError (100,"No coinciden los tipos."); errores++; }
+						DataValue res;
+						if (Lerrores==errores) res = EvaluarSC(str,lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
+						if (res.IsOk()&&!res.CanBeReal()&&lang[LS_INTEGER_ONLY_SWITCH]) { SynError (100,"No coinciden los tipos."); errores++; }
 					}
 			}
 			if (instruction_type==IT_MIENTRAS) { // ------------ MIENTRAS -----------//
@@ -1322,8 +1328,8 @@ int SynCheck(int linea_from, int linea_to) {
 								}
 						}
 						if (Lerrores==errores) {
-							EvaluarSC(str,tipo,vt_logica);
-							if (tipo!=vt_error && !tipo.cb_log) { SynError (104,"No coinciden los tipos."); errores++; }
+							DataValue res = EvaluarSC(str,vt_logica);
+							if (res.IsOk()&&!res.CanBeLogic()) { SynError (104,"No coinciden los tipos."); errores++; }
 						}
 					}
 			}
@@ -1358,14 +1364,14 @@ int SynCheck(int linea_from, int linea_to) {
 				else { // entonces tiene argumentos, y requiere argumentos, ver que la cantidad esté bien
 					int args_last_pos=BuscarComa(args,1,args.length()-1,')');
 					if (args_last_pos!=-1) { // si faltaban cerrar parentesis, el error salto antes
-						int pos_coma=0, last_pos_coma=0, cant_args=0; tipo_var tipo;
+						int pos_coma=0, last_pos_coma=0, cant_args=0;
 						do {
 							pos_coma=BuscarComa(args,pos_coma+1,args_last_pos,',');
 							if (pos_coma==-1) pos_coma=args_last_pos;
 							string arg_actual=args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1);
 							if (!SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
 								if (func->pasajes[cant_args+1]==PP_REFERENCIA && !ignore_logic_errors) { SynError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
-								else EvaluarSC(arg_actual,tipo,func->tipos[cant_args+1]);
+								else EvaluarSC(arg_actual,func->tipos[cant_args+1]);
 							}
 							cant_args++; last_pos_coma=pos_coma;
 						} while (pos_coma!=args_last_pos);

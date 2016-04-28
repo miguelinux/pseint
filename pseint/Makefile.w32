@@ -1,6 +1,6 @@
 include ..\mingw.conf
 OBJS_DIR=..\temp\int_w32_rls
-CXXFLAGS= -O3 -DUSE_ZOCKETS -ffloat-store
+CXXFLAGS= -O3 -DUSE_ZOCKETS -ffloat-store -DNDEBUG
 LIBS= -s -lwsock32 -static-libgcc -static-libstdc++
 
 all: ${OBJS_DIR} ..\bin\pseint.exe

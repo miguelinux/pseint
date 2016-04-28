@@ -28,7 +28,7 @@ int SkipParentesis(const TString &line, int i, int len) {
 //----------------
 
 void CaseMapAux(string &s, bool fill, bool fix_parentesis) {
-	int len=s.size(),p;
+	int len=s.size(),p = 0;
 	int comillas=false;
 	int word=false;
 	for(int i=0;i<=len;i++) { 

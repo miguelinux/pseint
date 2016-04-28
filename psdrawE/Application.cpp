@@ -122,8 +122,8 @@ bool mxApplication::OnInit() {
 
 	// generar el bitmap
 //	int margin=10;
-	int bw=(x1-x0)*zoom+2*margin;
-	int bh=(y0-y1)*zoom+2*margin;
+	int bw=((x1-x0)+2*margin)*zoom;
+	int bh=((y0-y1)+2*margin)*zoom;
 //	cerr<<bw<<","<<bh<<endl;
 	wxBitmap bmp(bw,bh);
 	dc=new wxMemoryDC(bmp);

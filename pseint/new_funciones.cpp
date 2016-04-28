@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdlib>
 #include "global.h"
+#include "DataValue.h"
 using namespace std;
 
 map<string,Funcion*> funciones;
@@ -31,103 +32,97 @@ const Funcion* EsFuncion(const string &nombre, bool include_main_process) {
 	return ret;
 }
 
-string func_rc(string *arg) {
-	if (StrToDbl(*arg)<0) {
+DataValue func_rc(DataValue *arg) {
+	double x = arg[0].GetAsReal();
+	if (x<0) {
 		ExeError(147,"Raiz cuadrada de número negativo.",false);
-		return "0";
-	} else
-		return DblToStr((double)(sqrt(double(StrToDbl(*arg)))));
+		return DataValue::MakeEmpty(vt_numerica);
+	} 
+	return DataValue::MakeReal(sqrt(x));
 }
-string func_abs(string *arg) {
-	string str=*arg;
-	if (str[0]=='-') str.erase(0,1);
-	return str;
+DataValue func_abs(DataValue *arg) {
+	double d = arg[0].GetAsReal();
+	return DataValue::MakeReal( d<0 ? -d : d );
 }
 
-string func_ln(string *arg) {
-	if (StrToDbl(*arg)<=0) {
+DataValue func_ln(DataValue *arg) {
+	double x = arg[0].GetAsReal();
+	if (x<=0) {
 		ExeError(148,"Logaritmo de 0 o negativo.",false);
-		return "";
-	} else
-		return DblToStr((double)(log((double)(StrToDbl(*arg)))));
+		return DataValue::MakeEmpty(vt_numerica);
+	}
+	return DataValue::MakeReal(log(x));
 }
-string func_exp(string *arg) {
-	return DblToStr((double)(exp((double)(StrToDbl(*arg)))));
+DataValue func_exp(DataValue *arg) {
+	return DataValue::MakeReal(exp(arg[0].GetAsReal()));
 }
-string func_sen(string *arg) {
-	return DblToStr((double)(sin((double)(StrToDbl(*arg)))));
+
+DataValue func_sen(DataValue *arg) {
+	return DataValue::MakeReal(sin(arg[0].GetAsReal()));
 }
-string func_asen(string *arg) {
-	if (StrToDbl(*arg)<-1||StrToDbl(*arg)>+1) {
+
+DataValue func_asen(DataValue *arg) {
+	double x = arg[0].GetAsReal();
+	if (x<-1||x>+1) {
 		ExeError(312,"Argumento inválido para la función ASEN (debe estar en [-1;+1]).",false);
-		return "";
+		return DataValue::MakeEmpty(vt_numerica);
 	}
-	return DblToStr((double)(asin((double)(StrToDbl(*arg)))));
+	return DataValue::MakeReal(asin(x));
 }
-string func_acos(string *arg) {
-	if (StrToDbl(*arg)<-1||StrToDbl(*arg)>+1) {
+
+DataValue func_acos(DataValue *arg) {
+	double x = arg[0].GetAsReal();
+	if (x<-1||x>+1) {
 		ExeError(312,"Argumento inválido para la función ACOS (debe estar en [-1;+1]).",false);
-		return "";
+		return DataValue::MakeEmpty(vt_numerica);
 	}
-	return DblToStr((double)(acos((double)(StrToDbl(*arg)))));
+	return DataValue::MakeReal(acos(x));
 }
-string func_cos(string *arg) {
-	return DblToStr((double)(cos((double)(StrToDbl(*arg)))));
+
+DataValue func_cos(DataValue *arg) {
+	return DataValue::MakeReal(cos(arg[0].GetAsReal()));
 }
-string func_tan(string *arg) {
-	return DblToStr((double)(tan((double)(StrToDbl(*arg)))));
+
+DataValue func_tan(DataValue *arg) {
+	return DataValue::MakeReal(tan(arg[0].GetAsReal()));
 }
-string func_atan(string *arg) {
-	return DblToStr((double)(atan((double)(StrToDbl(*arg)))));
+
+DataValue func_atan(DataValue *arg) {
+	return DataValue::MakeReal(atan(arg[0].GetAsReal()));
 }
-string func_azar(string *arg) {
-	if (int(StrToDbl(*arg))<=0) {
+
+DataValue func_azar(DataValue *arg) {
+	int x = arg[0].GetAsInt();
+	if (x<=0) {
 		ExeError(306,"Azar de 0 o negativo.",false);
-		return "";
+		return DataValue::MakeEmpty(vt_numerica_entera);
 	} else
-		return IntToStr(rand() % (int)StrToDbl(*arg));
+		return DataValue::MakeInt(rand()%x);
 }
 
-string func_aleatorio(string *arg) {
-	int a = StrToDbl(*arg);
-	int b = StrToDbl(*(++arg));
+DataValue func_aleatorio(DataValue *arg) {
+	int a = arg[0].GetAsInt();
+	int b = arg[1].GetAsInt();
 	if (b<a) { int x=a; a=b; b=x; }
-	return IntToStr(a+rand() % (b-a+1));
+	return DataValue::MakeInt(a+rand() % (b-a+1));
 }
 
-string func_trunc(string *arg) {
-	string str=*arg;
-	size_t pos_pt=str.find(".",0);
-	if (pos_pt!=string::npos)
-		str.erase(pos_pt,str.size()-pos_pt);
-	if (str=="") str="0";
-	else if (str=="-0") str="0";
-	return str;
-}
-string func_redon(string *arg) {
-	string str=*arg;
-	size_t pos_pt=str.find(".",0);
-	if (pos_pt!=string::npos)
-		str.erase(pos_pt,str.size()-pos_pt);
-	if (str=="") str="0";
-	double a,b;
-	a=(StrToDbl(*arg));
-	b=(StrToDbl(str));
-	if (a<0) {a=-a;b=-b;}
-	if ((a-b)>=.5) b=b+1;
-	if ((*arg)[0]=='-') b=-b;
-	str=DblToStr(b);
-	return str;
+DataValue func_trunc(DataValue *arg) {
+	return DataValue::MakeInt(int(arg[0].GetAsReal()));
 }
 
-
-string func_longitud(string *arg) {
-	return IntToStr(arg[0].length());
+DataValue func_redon(DataValue *arg) {
+	double x = arg[0].GetAsReal();
+	return DataValue::MakeInt(int(x+(x<0?-.5:+.5)));
 }
 
-string func_mayusculas(string *arg) {
-	string &s=arg[0]; int l=s.length();
-	for(int i=0;i<l;i++) { 
+DataValue func_longitud(DataValue *arg) {
+	return DataValue::MakeInt(arg[0].GetAsString().size());
+}
+
+DataValue func_mayusculas(DataValue *arg) {
+	string s = arg[0].GetAsString(); size_t l = s.size();
+	for(size_t i=0;i<l;i++) { 
 		if (s[i]>='a'&&s[i]<='z') s[i]+='A'-'a';
 		else if (s[i]=='ñ') s[i]='Ñ';
 		else if (s[i]=='á') s[i]='Á';
@@ -137,12 +132,12 @@ string func_mayusculas(string *arg) {
 		else if (s[i]=='ú') s[i]='Ú';
 		else if (s[i]=='ü') s[i]='Ü';
 	}
-	return s;
+	return DataValue::MakeString(s);
 }
 
-string func_minusculas(string *arg) {
-	string &s=arg[0]; int l=s.length();
-	for(int i=0;i<l;i++) { 
+DataValue func_minusculas(DataValue *arg) {
+	string s = arg[0].GetAsString(); size_t l = s.length();
+	for(size_t i=0;i<l;i++) { 
 		if (s[i]>='A'&&s[i]<='Z') s[i]+='a'-'A';
 		else if (s[i]=='Ñ') s[i]='ñ';
 		else if (s[i]=='Á') s[i]='á';
@@ -152,24 +147,24 @@ string func_minusculas(string *arg) {
 		else if (s[i]=='Ú') s[i]='ú';
 		else if (s[i]=='Ü') s[i]='ü';
 	}
-	return s;
+	return DataValue::MakeString(s);
 }
 
-string func_subcadena(string *arg) {
-	string &s=arg[0]; int l=s.length(), f=(int)StrToDbl(arg[1]), t=(int)StrToDbl(arg[2]);
+DataValue func_subcadena(DataValue *arg) {
+	string s = arg[0].GetAsString(); int l=s.length(), f=arg[1].GetAsInt(), t=arg[2].GetAsInt();
 	if (!lang[LS_BASE_ZERO_ARRAYS]) { f--; t--; }
 	if (t>l-1) t=l-1; if (f<0) f=0;
-	if (t<f) return "";
-	return s.substr(f,t-f+1);
+	if (t<f) return DataValue::MakeEmpty(vt_caracter);
+	return DataValue::MakeString(s.substr(f,t-f+1));
 }
 
-string func_concatenar(string *arg) {
-	return (arg[0])+(arg[1]);
+DataValue func_concatenar(DataValue *arg) {
+	return DataValue::MakeString(arg[0].GetAsString()+arg[1].GetAsString());
 }
 
-string func_atof(string *arg) {
+DataValue func_atof(DataValue *arg) {
 	// verificar formato
-	string &s=arg[0];
+	string s = arg[0].GetAsString();
 	bool punto=false; int j=0;
 	if (s.size() && (s[0]=='+'||s[0]=='-')) j++;
 	for(unsigned int i=j;i<s.size();i++) {
@@ -177,19 +172,19 @@ string func_atof(string *arg) {
 			punto=true;
 		else if (s[i]<'0'||s[i]>'9') {
 			ExeError(311,string("La cadena (\"")+s+"\") no representa un número.",true);
-			return "0";
+			return DataValue::MakeEmpty(vt_numerica);
 		}
 	}
 	// convertir
-	return DblToStr(StrToDbl(arg[0]));
+	return DataValue::MakeReal(s);
 }
 
-string func_ftoa(string *arg) {
-	return DblToStr(StrToDbl(arg[0]),true); // la conversión es para que redondee
+DataValue func_ftoa(DataValue *arg) {
+	return DataValue::MakeString(arg[0].GetForUser()); // la conversión es para que redondee
 }
 
-string func_pi(string *arg) {
-	return "3.141592653589793238462643383279502884197169399375105820974944592";
+DataValue func_pi(DataValue *arg) {
+	return DataValue::MakeReal("3.141592653589793238462643383279502884197169399375105820974944592");
 }
 
 void LoadFunciones() {

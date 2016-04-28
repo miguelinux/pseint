@@ -8,6 +8,7 @@
 #include <sstream>
 #include <set>
 #include "new_memoria_inter.h"
+#include "DataValue.h"
 using namespace std;
 
 class Memoria;
@@ -19,76 +20,6 @@ struct alias {
 	alias(string n, Memoria *m):nom(n),mem(m){}
 };
 
-struct tipo_var {
-	friend class Memoria;
-//private: // el cliente pseint debe acceder a travez de memoria->LeerDims para que si es alias lo corrija (pero psexport si necesita acceder directo)
-	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
-public:
-	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran
-	bool cb_log,cb_num,cb_car; // si puede ser logica, numerica o caracter
-	bool rounded; // para cuando se definen como enteras
-	bool defined; // para saber si fueron definidas explicitamente (definir...)
-	bool used; // para saber si fue usada, asignada, leida, algo que no sea dimensionada o definida explicitamente, lo setean Escribir y LeerValor
-	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false),defined(false),used(false) {}
-	tipo_var(bool l, bool n, bool c, bool r=false):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(r),defined(false),used(false) {}
-	bool set(const tipo_var &v) {
-		enabled=true;
-		cb_log=cb_log&&v.cb_log;
-		cb_num=cb_num&&v.cb_num;
-		cb_car=cb_car&&v.cb_car;
-		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)!=0;
-	}
-	bool set(const tipo_var &v, bool) {
-		enabled=true;
-		bool error = ((cb_log&&v.cb_log)?1:0)+((cb_num&&v.cb_num)?1:0)+((cb_car&&v.cb_car)?1:0)==0;
-		if (v.rounded) rounded=true;
-		if (!error) {
-			cb_log=cb_log&&v.cb_log;
-			cb_num=cb_num&&v.cb_num;
-			cb_car=cb_car&&v.cb_car;
-			return true;
-		} else
-			return false;
-	}
-	bool is_known() const {
-		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)==1;
-	}
-	bool is_ok() const {
-		return (cb_car?1:0)+(cb_log?1:0)+(cb_num?1:0)!=0;
-	}
-	bool operator==(const tipo_var &t) const {
-		return cb_car==t.cb_car&&cb_num==t.cb_num&&cb_log==t.cb_log;
-	}
-	bool operator!=(const tipo_var &t) const {
-		return cb_car!=t.cb_car||cb_num!=t.cb_num||cb_log!=t.cb_log;
-	}
-	bool can_be(const tipo_var &t) const {
-		return (cb_car&&t.cb_car) || (cb_num&&t.cb_num) || (cb_log&&t.cb_log);
-	}
-	// cppcheck-suppress operatorEqVarError
-	tipo_var &operator=(const tipo_var &t) {
-		cb_log=t.cb_log;
-		cb_num=t.cb_num;
-		cb_car=t.cb_car;
-		rounded=t.rounded;
-		dims=t.dims;
-		return *this;
-	}
-	void reset() { // para borrar la información que genera el analisis sintáctico antes de la ejecución y que no debe pasar a la ejecución
-		defined=used=enabled=false;
-		if (dims) { delete [] dims; dims=NULL; }
-	}
-};
-
-extern tipo_var vt_error;
-extern tipo_var vt_desconocido;
-extern tipo_var vt_logica;
-extern tipo_var vt_numerica;
-extern tipo_var vt_caracter;
-extern tipo_var vt_caracter_o_numerica;
-extern tipo_var vt_caracter_o_logica;
-extern tipo_var vt_numerica_entera;
-
 // cppcheck-suppress noConstructor
 class Funcion;
 
@@ -98,7 +29,7 @@ class Memoria {
 	string alias_nom; Memoria *alias_mem;
 	
 	map<string,tipo_var> var_info;
-	map<string,string> var_value;
+	map<string,DataValue> var_value;
 	void QuitarIndices(string &str) {
 		int sz=str.size();
 		for (int i=0;i<sz;i++)
@@ -183,17 +114,17 @@ public:
 		vi.cb_log=tipo.cb_log;
 		vi.cb_num=tipo.cb_num;
 	}
-	void EscribirValor(const string &nombre, string valor) {
+	void EscribirValor(const string &nombre, const DataValue &valor) {
 		if (EsAlias(nombre,true)) return alias_mem->EscribirValor(alias_nom,valor);
 		string nom=nombre; QuitarIndices(nom);
 		tipo_var &vi = var_info[nom];
 		vi.enabled=true;
-		if (vi.rounded) { 
-			size_t p=valor.find(".");
-			if (p!=string::npos) valor.erase(p);
-		}
 		vi.used=true;
-		var_value[nombre]=valor;
+		if (vi.rounded) {
+			/// @todo: ver si esto puede pasar, deberia controlarse antes y dar un error
+			var_value[nombre].SetFromInt(valor.GetAsInt());
+		}
+		var_value[nombre].SetValue(valor);
 	}
 	const int *LeerDims(string nombre) {
 		QuitarIndices(nombre);
@@ -233,8 +164,7 @@ public:
 		map<string,tipo_var>::iterator it_info = var_info.find(nom);
 		if (it_info==var_info.end()) return false;
 //		tipo_var &vi=it_info->second;
-		map<string,string>::iterator it_value = var_value.find(nombre);
-		return it_value!=var_value.end();
+		return var_value.count(nombre);
 	}
 	bool EstaDefinida(string nombre) {
 		QuitarIndices(nombre);
@@ -244,21 +174,20 @@ public:
 //		tipo_var &vi=it_info->second;
 		return  var_info[nombre].defined;
 	}
-	string LeerValor(const string &nombre) {
+	DataValue LeerValor(const string &nombre) {
 		if (EsAlias(nombre,true)) return alias_mem->LeerValor(alias_nom);
-		string ret=var_value[nombre];
-		if (ret.size()==0) {
-			string nom=nombre; QuitarIndices(nom);
+		DataValue ret = var_value[nombre];
+		if (ret.IsEmpty()) {
+			string nom = nombre; QuitarIndices(nom);
 			tipo_var &vi = var_info[nom];
 			vi.used=true; // fuera del if no hace falta porque si ret!=0 es porque paso por EscribirValor, y entonces ya esta used=true
-			if (vi==vt_numerica)
-				return "0";
-			else if (vi==vt_logica)
-				return "FALSO";
-			else
-				return "";
 		}
 		return ret;
+	}
+	DataValue Leer(const string &nombre) {
+		DataValue res = LeerValor(nombre);
+		res.type = LeerTipo(nombre);
+		return res;
 	}
 	void ListVars(map<string,string> *case_map) { // para que el proceso de rt_syntax le pase a la gui la lista de variables
 		map<string,tipo_var>::iterator it=var_info.begin(), it2=var_info.end();

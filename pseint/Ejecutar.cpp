@@ -89,16 +89,11 @@ void Ejecutar(int LineStart, int LineEnd) {
 					
 					if (colored_output) setForeColor(COLOR_OUTPUT);
 					if (with_io_references) Inter.SendPositionToTerminal();
-					tipo_var x;
 					_sub(line,string("Se evalúa la expresion: ")+aux1);
-					aux1=Evaluar(aux1,x);
-					if (x!=vt_error) {
-						if (x==vt_numerica)
-							aux1=DblToStr(StrToDbl(aux1),true);
-						else
-							fixwincharset(aux1);
-						cout<<aux1<<flush; // Si es variable, muestra el contenido
-						_sub(line,string("Se muestra en pantalla el resultado: ")+aux1);
+					DataValue res = Evaluar(aux1);
+					if (res.IsOk()) {
+						cout<< res.GetForUser() <<flush; // Si es variable, muestra el contenido
+						_sub(line,string("Se muestra en pantalla el resultado: ")+res.GetForUser());
 					}
 				}
 				if (saltar) cout<<endl; else cout<<flush;
@@ -168,23 +163,20 @@ void Ejecutar(int LineStart, int LineEnd) {
 						ExeError(313,string("No coinciden los tipos (")+aux2+"), el valor ingresado debe ser un entero.");
 					_sub(line,string("El valor ingresado se almacena en ")+aux2); // tipo?
 					memoria->DefinirTipo(aux2,tipo);
-					memoria->EscribirValor(aux2,aux1);
-//						EscribirVar(aux2,tipo,aux1); // Escribir el Dato en Memoria
+					memoria->EscribirValor(aux2,DataValue(tipo,aux1));
 				}
 			} else 
 					// ------------- DIMENSION --------------- //
 			if (instruction_type==IT_DIMENSION) {
-				int tmp1, tmp2, tmp3; tipo_var tipo;
 				do {
 					string otro=""; // por si hay mas de un arreglo
 					cadena.erase(0,10);
-					tmp1=cadena.find("(",0);  // Cortar nombre del arreglo
-					string aux1=cadena; aux1.erase(tmp1,aux1.size()-tmp1);
+					int pos_par = cadena.find("(",0);  // Cortar nombre del arreglo
+					string aux1=cadena; aux1.erase(pos_par,aux1.size()-pos_par);
 					string aux2=cadena; // cortar indices
 					aux2.erase(0,aux1.size()+1); aux2.erase(aux2.size()-2,2);
 					// Separar indices
-					tmp2=0; tmp1=0;
-					int *dim; tmp3=0; // arreglo para las dimensiones
+					int tmp2=0, tmp1=0, tmp3=0;
 					while (tmp1<(int)aux2.size()) {
 						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
 							tmp1++;
@@ -203,7 +195,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						}
 						tmp1++; tmp3++;
 					}
-					dim=new int[tmp3+1]; dim[0]=tmp3;
+					int *dim = new int[tmp3+1]; dim[0]=tmp3; // arreglo para las dimensiones
 					int last=0;tmp3=1; tmp1=0; tmp2=0;
 					if (lang[LS_ALLOW_DINAMYC_DIMENSIONS]) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
 					while (tmp1<(int)aux2.size()) {
@@ -214,9 +206,9 @@ void Ejecutar(int LineStart, int LineEnd) {
 						}
 						cadena=aux2; // Cortar la expresion indice
 						cadena.erase(tmp1,cadena.size()-tmp1); cadena.erase(0,last);
-						cadena=Evaluar(cadena,tipo);
-						if (!tipo.cb_num) ExeError(122,"No coinciden los tipos.");
-						dim[tmp3]=(int)StrToDbl(cadena);
+						DataValue index = Evaluar(cadena);
+						if (!index.CanBeReal()) ExeError(122,"No coinciden los tipos.");
+						dim[tmp3] = index.GetAsInt();
 						if (dim[tmp3]<=0) {
 							ExeError(274,"Las dimensiones deben ser mayores a 0.");
 						}
@@ -278,12 +270,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 				if (RightCompare(aux2," MILISEGUNDO;")) { factor=1; aux2.erase(aux2.size()-13); }
 				else if (RightCompare(aux2," MILISEGUNDOS;")) { factor=1; aux2.erase(aux2.size()-14); }
 				_sub(line,string("Se evalúa la cantidad de tiempo: ")+aux2);
-				tipo_var tipo; aux2=Evaluar(aux2,tipo);
-				if (!tipo.cb_num) ExeError(219,string("La longitud del intervalo debe ser numérica."));
+				DataValue time = Evaluar(aux2);
+				if (!time.CanBeReal()) ExeError(219,string("La longitud del intervalo debe ser numérica."));
 				else {
-					_sub(line,string("Se esperan ")+aux2+(factor==1?" milisengudos":" segundos"));
-					if (for_test) cout<<"***Esperar"<<int(StrToDbl(aux2)*factor)<<"***"<<endl;
-					else if (!Inter.subtitles_on) Sleep(int(StrToDbl(aux2)*factor));
+					_sub(line,string("Se esperan ")+time.GetForUser()+(factor==1?" milisengudos":" segundos"));
+					if (for_test) cout<<"***Esperar"<<time.GetAsInt()*factor<<"***"<<endl;
+					else if (!Inter.subtitles_on) Sleep(time.GetAsInt()*factor);
 				}
 			} else 
 			// ------------- ASIGNACION --------------- //
@@ -306,19 +298,19 @@ void Ejecutar(int LineStart, int LineEnd) {
 				}
 				// evaluar expresion
 				_sub(line,string("Se evalúa la expresion a asignar: ")+aux2);
-				tipo_var tipo; aux2=Evaluar(aux2,tipo);
+				DataValue result = Evaluar(aux2);
 				// comprobar tipos
 				tipo_var tipo_aux1 = memoria->LeerTipo(aux1);
-				if (!tipo_aux1.can_be(tipo))
+				if (!tipo_aux1.can_be(result.type))
 					ExeError(125,"No coinciden los tipos.");
-				else if (tipo_aux1==vt_numerica_entera && tipo_aux1.rounded && aux2.find(".")!=string::npos)
+				else if (tipo_aux1==vt_numerica_entera && tipo_aux1.rounded && result.GetAsInt()!=result.GetAsReal())
 					ExeError(314,"No coinciden los tipos, el valor a asignar debe ser un entero.");
-				_sub(line,string("El resultado es: ")+aux2);
+				_sub(line,string("El resultado es: ")+result.GetForUser());
 				// escribir en memoria
 				_sub(line,string("El resultado se guarda en ")+aux1);
-				tipo.rounded=false; // no forzar a entera la variable en la que se asigna
-				memoria->DefinirTipo(aux1,tipo);
-				memoria->EscribirValor(aux1,aux2);
+				result.type.rounded=false; // no forzar a entera la variable en la que se asigna
+				memoria->DefinirTipo(aux1,result.type);
+				memoria->EscribirValor(aux1,result);
 			} // ya deberíamos haber cubierto todas las opciones
 			else {
 				ExeError(0,"Ha ocurrido un error interno en PSeInt.");
@@ -330,7 +322,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_pos(line);
 				_sub(line,string("Se evalúa la condición para Si-Entonces: ")+cadena);
 				tipo_var tipo;
-				bool condition_is_true = Evaluar(cadena,tipo,vt_logica)=="VERDADERO";
+				bool condition_is_true = Evaluar(cadena,vt_logica).GetAsBool();
 				if (tipo!=vt_error) {
 					// Buscar hasta donde llega el bucle
 					int anidamiento=0, line_sino=-1,line_finsi=line+1; 
@@ -371,7 +363,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				_pos(line);
 				_sub(line,string("Se evalúa la condición para Mientras: ")+cadena);
 				tipo_var tipo;
-				bool condition_is_true = Evaluar(cadena,tipo)=="VERDADERO";
+				bool condition_is_true = Evaluar(cadena,vt_logica).GetAsBool();
 				if (tipo!=vt_error) {
 					int line_finmientras = line+1, anidamiento=0; // Buscar hasta donde llega el bucle
 					while (!(anidamiento==0 && programa[line_finmientras]==IT_FINMIENTRAS)) {
@@ -385,7 +377,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						Ejecutar(line+1,line_finmientras-1);
 						_pos(line);
 						_sub(line,string("Se evalúa nuevamente la condición: ")+cadena);
-						condition_is_true = Evaluar(cadena,tipo)=="VERDADERO";
+						condition_is_true = Evaluar(cadena,vt_logica).GetAsBool();
 					}
 					line=line_finmientras;
 					_pos(line);
@@ -405,13 +397,13 @@ void Ejecutar(int LineStart, int LineEnd) {
 				// cortar condicion de cierre
 				cadena=programa[line_hastaque];
 				instruction_type=programa[line_hastaque].type;
-				string valor_verdad;
+				bool valor_verdad;
 				if (instruction_type==IT_HASTAQUE){
 					cadena.erase(0,10);
-					valor_verdad="FALSO";
+					valor_verdad=false;
 				} else {
 					cadena.erase(0,13);
-					valor_verdad="VERDADERO";
+					valor_verdad=true;
 				}
 				_sub(line,"Se ejecutarán las acciones contenidas en la estructura Repetir");
 				tipo_var tipo;
@@ -421,12 +413,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 					// evaluar condicion y seguir
 					_pos(line_hastaque);
 					_sub(line_hastaque,string("Se evalúa la condición: ")+cadena);
-					should_continue_iterating = Evaluar(cadena,tipo)==valor_verdad;
+					should_continue_iterating = Evaluar(cadena,vt_logica).GetAsBool()==valor_verdad;
 					if (should_continue_iterating)
-						_sub(line_hastaque,string("La condición es ")+Evaluar(cadena,tipo)+", se contiúa iterando.");
+						_sub(line_hastaque,string("La condición es ")+(valor_verdad?VERDADERO:FALSO)+", se contiúa iterando.");
 				} while (should_continue_iterating);
 				line=line_hastaque;
-				_sub(line_hastaque,string("La condición es ")+Evaluar(cadena,tipo)+", se sale de la estructura Repetir.");
+				_sub(line_hastaque,string("La condición es ")+(valor_verdad?FALSO:VERDADERO)+", se sale de la estructura Repetir.");
 			} else 
 			// ------------------- PARA --------------------- //
 			if (instruction_type==IT_PARA) {
@@ -439,31 +431,32 @@ void Ejecutar(int LineStart, int LineEnd) {
 				string aux1=cadena.substr(0,tmp1);
 				cadena.erase(0,tmp1+7); // saca la asignacion inicial
 				tmp1=aux1.find("<-",0);
-				string contador=aux1.substr(0,tmp1); // variable del para
+				string contador = aux1.substr(0,tmp1); // variable del para
 				memoria->DefinirTipo(aux1,vt_numerica);
-				string val_ini=aux1.substr(tmp1+2); // valor inicial
-				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+val_ini);
-				tipo_var tipo; val_ini=Evaluar(val_ini,tipo);
-				if (!memoria->LeerTipo(aux1).cb_num || !tipo.cb_num)
-					ExeError(126,"No coinciden los tipos.");
+				string expr_ini = aux1.substr(tmp1+2); // valor inicial
+				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+expr_ini);
 				
-				string val_fin,val_paso;
+				DataValue res_ini = Evaluar(expr_ini,vt_numerica), res_paso(vt_numerica,"1"), res_fin;
+				if (!res_ini.CanBeReal()) ExeError(126,"No coinciden los tipos."); /// @todo: parece que esto no es posible, salta antes adentro del evaluar
+				
 				size_t pos_paso=cadena.find(" CON PASO ",0); // busca el paso
 				if (pos_paso!=string::npos) { // si hay paso tomar ese
-					val_fin=cadena.substr(0,pos_paso);
-					if (RightCompare(val_fin," HACER")) // por si ponen "...HASTA 5 HACER CON PASO 3 HACER" (2 HACER)
-						val_fin=val_fin.substr(0,val_fin.size()-6);
-					val_paso=cadena.substr(pos_paso+10);
-					_sub(line,string("Se evalúa la expresion para el paso: ")+val_ini);
-					positivo=(Evaluar(val_paso+">=0",tipo)=="VERDADERO");
+					string expr_fin = cadena.substr(0,pos_paso);
+					if (RightCompare(expr_fin," HACER")) // por si ponen "...HASTA 5 HACER CON PASO 3 HACER" (2 HACER)
+						expr_fin = expr_fin.substr(0,expr_fin.size()-6);
+					res_fin = Evaluar(expr_fin,vt_numerica);
+					string expr_paso = cadena.substr(pos_paso+10);
+					_sub(line,string("Se evalúa la expresion para el paso: ")+expr_paso);
+					res_paso = Evaluar(expr_paso,vt_numerica);
+					positivo = res_paso.GetAsReal()>=0;
 				} else { // si no hay paso adivinar
-					val_fin=cadena;
-					if (lang[LS_DEDUCE_NEGATIVE_FOR_STEP] && Evaluar(val_fin+"<"+val_ini,tipo)=="VERDADERO") {
+					res_fin = Evaluar(cadena,vt_numerica);
+					if (lang[LS_DEDUCE_NEGATIVE_FOR_STEP] && res_ini.GetAsReal()>res_fin.GetAsReal()) {
 						_sub(line,"Se determina que el paso será -1.");
-						positivo=false; val_paso="-1";
+						positivo=false; res_paso.SetFromInt(-1);
 					} else {
 						_sub(line,"Se determina que el paso será +1.");
-						positivo=true; val_paso="1";
+						positivo=true; res_paso.SetFromInt(1);
 					}
 				}
 				
@@ -476,18 +469,20 @@ void Ejecutar(int LineStart, int LineEnd) {
 					line_finpara++;
 				}
 				
-				_sub(line,string("Se inicializar el contador ")+contador+" en "+val_ini);
-				memoria->EscribirValor(contador,val_ini); // inicializa el contador
+				_sub(line,string("Se inicializar el contador ")+contador+" en "+res_ini.GetForUser());
+				memoria->EscribirValor(contador,res_ini); // inicializa el contador
 				string comp=positivo?"<=":">=";
-				_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+val_fin);
-				while (Evaluar(contador+comp+val_fin,tipo)=="VERDADERO") {
+				do {
+					/// @todo: cuando memoria maneje DataValues usar el valor del contador directamente desde ahi en lugar de evaluar
+					_sub(line,string("Se compara el contador con el valor final: ")+contador+"<="+res_fin.GetForUser());
+					DataValue res_cont = Evaluar(contador,vt_numerica);
+					if ( positivo ? (res_cont.GetAsReal()>res_fin.GetAsReal()) : (res_cont.GetAsReal()<res_fin.GetAsReal()) ) break;
 					_sub(line,"La expresión fue Verdadera, se iniciará una iteración.");
 					Ejecutar(line+1,line_finpara-1);
 					_pos(line);
-					memoria->EscribirValor(contador,aux1=Evaluar(contador+"+("+val_paso+")",tipo));
+					memoria->EscribirValor(contador,DataValue::MakeReal(res_cont.GetAsReal()+res_paso.GetAsReal()));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
-					_sub(line,string("Se compara el contador con el valor final: ")+contador+comp+val_fin);
-				}
+				} while(true);
 				line=line_finpara;
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para.");
@@ -535,7 +530,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					// ejecutar la iteracion
 					Ejecutar(line+1,line_finpara-1);
 					// asignar la variable del bucle en el elemento
-					memoria->DefinirTipo(aux1,memoria->LeerTipo(elemento));
+					memoria->DefinirTipo(elemento,memoria->LeerTipo(aux1));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
 				line=line_finpara; // linea del finpara
@@ -549,14 +544,14 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tipo_var tipo_master=vt_caracter_o_numerica;
 				_pos(line);
 				_sub(line,string("Se evalúa la expresion: ")+expr_control);
-				tipo_var tipo; string val_control = Evaluar(expr_control,tipo,tipo_master); // evaluar para verificar el tipo
-				if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) {
+				DataValue val_control = Evaluar(expr_control,tipo_master); // evaluar para verificar el tipo
+				if (!val_control.CanBeReal()&&(lang[LS_INTEGER_ONLY_SWITCH]||!val_control.CanBeString())) {
 					if (!lang[LS_INTEGER_ONLY_SWITCH]) 
 						ExeError(205,"La expresión del SEGUN debe ser de tipo numerica o caracter.");
 					else
 						ExeError(206,"La expresión del SEGUN debe ser numerica.");
 				}
-				_sub(line,string("El resultado es: ")+Evaluar(expr_control,tipo,tipo_master));
+				_sub(line,string("El resultado es: ")+val_control.GetForUser());
 				int line_finsegun=line+1, anidamiento=0; // Buscar hasta donde llega el bucle
 				while (!(anidamiento==0 && LeftCompare(programa[line_finsegun],"FINSEGUN"))) {
 					// Saltear bucles anidados
@@ -585,14 +580,14 @@ void Ejecutar(int LineStart, int LineEnd) {
 								posibles_valores.erase(0,expr_opcion.size()+1);
 								_pos(line_opcion);
 								_sub(line_opcion,string("Se evalúa la opcion: ")+expr_opcion);
-								string val_opcion = Evaluar(expr_opcion,tipo,tipo_master);
-								if (!tipo.cb_num&&(lang[LS_INTEGER_ONLY_SWITCH]||!tipo.cb_car)) ExeError(127,"No coinciden los tipos.");
+								DataValue val_opcion = Evaluar(expr_opcion,tipo_master);
+								if (!val_opcion.CanBeReal()&&(lang[LS_INTEGER_ONLY_SWITCH]||!val_opcion.CanBeString())) ExeError(127,"No coinciden los tipos.");
 								// evaluar la condicion (se pone como estaban y no los resultados de la evaluaciones de antes porque sino las variables indefinida pueden no tomar el valor que corresponde
-								if (Evaluar(string("(")+expr_control+")=("+expr_opcion+")",tipo)==VERDADERO) {
+								if (Evaluar(string("(")+expr_control+")=("+expr_opcion+")").GetAsBool()) {
 									_sub(line_opcion,"El resultado coincide, se ingresará en esta opción.");
 									encontrado=true; break;
 								} else {
-									_sub(line_opcion,string("El resultado no coincide: ")+val_opcion);
+									_sub(line_opcion,string("El resultado no coincide: ")+val_opcion.GetForUser());
 								}
 //								if (tipo==vt_error) ExeError(127,"No coinciden los tipos."); // no parece hacer falta
 								pos_fin_valor=posibles_valores.find(",",0);
