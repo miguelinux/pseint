@@ -71,8 +71,8 @@ static void ReemplazarOperadores(string &str) {
 	for(unsigned int i=0;i<str.size();i++) { 
 		if (str[i]=='\'' || str[i]=='\"') comillas=!comillas;
 		else if (!comillas) {
-			if (str[i]=='&') str.replace(i,1," Y ");
-			else if (str[i]=='|') str.replace(i,1," O ");
+			if (str[i]=='&') str.replace(i,str[i+1]=='&'?2:1," Y ");
+			else if (str[i]=='|') str.replace(i,str[i+1]=='|'?2:1," O ");
 			else if (str[i]=='~') str.replace(i,1," NO ");
 			else if (str[i]=='%') str.replace(i,1," MOD ");
 		}

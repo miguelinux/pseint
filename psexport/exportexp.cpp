@@ -300,7 +300,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='<' && exp[i+1]=='>') { ReplaceOper(exp,i,"<>"); id_start=i+1; }
 		else if (exp[i]=='>' && exp[i+1]=='=') { ReplaceOper(exp,i,">="); id_start=i+1; }
 		else if (exp[i]=='<' && exp[i+1]=='=') { ReplaceOper(exp,i,"<="); id_start=i+1; }
-		else if (exp[i]=='=') { ReplaceOper(exp,i,"="); id_start=i+1; }
+		else if (exp[i]=='=' && i>0 && exp[i-1]!='!' && exp[i-1]!='=') { ReplaceOper(exp,i,"="); id_start=i+1; }
 		else if (exp[i]=='&') { ReplaceOper(exp,i,"&"); id_start=i+1; }
 		else if (exp[i]=='|') { ReplaceOper(exp,i,"|"); id_start=i+1; }
 		else if (exp[i]=='+') { ReplaceOper(exp,i,"+"); id_start=i+1; }
