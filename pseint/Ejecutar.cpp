@@ -172,57 +172,56 @@ void Ejecutar(int LineStart, int LineEnd) {
 					string otro=""; // por si hay mas de un arreglo
 					cadena.erase(0,10);
 					int pos_par = cadena.find("(",0);  // Cortar nombre del arreglo
-					string aux1=cadena; aux1.erase(pos_par,aux1.size()-pos_par);
+					string name=cadena; name.erase(pos_par,name.size()-pos_par);
 					string aux2=cadena; // cortar indices
-					aux2.erase(0,aux1.size()+1); aux2.erase(aux2.size()-2,2);
+					aux2.erase(0,name.size()+1); aux2.erase(aux2.size()-2,2);
 					// Separar indices
-					int tmp2=0, tmp1=0, tmp3=0;
-					while (tmp1<(int)aux2.size()) {
-						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
-							tmp1++;
-							if (aux2[tmp1]=='(') tmp2++;
-							if (aux2[tmp1]==')') tmp2--;
-							if (tmp2<0) break;
+					int anid_parent=0, cant_dims=0;
+					for(size_t i=0;i<aux2.size();i++) {
+						while (i<aux2.size() && !(anid_parent==0 && (aux2[i]==','||aux2[i]==')'))) {
+							if (aux2[i]=='(') anid_parent++;
+							else if (aux2[i]==')') anid_parent--;
+							i++;
 						}
-						if (tmp2<0) {
+						if (aux2[i]==')') {
 							otro=aux2;
-							otro.erase(0,tmp1+2);
+							otro.erase(0,i+2);
 							otro="DIMENSION "+otro+");";
-							aux2.erase(tmp1,aux2.size()-tmp1);
+							aux2.erase(i,aux2.size()-i);
 							aux2=aux2+",";
-							tmp3++;
+							cant_dims++;
 							break;
 						}
-						tmp1++; tmp3++;
+						cant_dims++;
 					}
-					int *dim = new int[tmp3+1]; dim[0]=tmp3; // arreglo para las dimensiones
-					int last=0;tmp3=1; tmp1=0; tmp2=0;
-					if (lang[LS_ALLOW_DINAMYC_DIMENSIONS]) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+aux1); }
-					while (tmp1<(int)aux2.size()) {
-						while (tmp1<(int)aux2.size() && !(tmp2==0 && aux2[tmp1]==',')) {
-							tmp1++;
-							if (aux2[tmp1]=='(') tmp2++;
-							if (aux2[tmp1]==')') tmp2--;
+					int *dim = new int[cant_dims+1]; dim[0]=cant_dims; // arreglo para las dimensiones
+					int last=0, num_idx=0; anid_parent = 0;
+					if (lang[LS_ALLOW_DINAMYC_DIMENSIONS]) { _sub(line,string("Se evalúan las expresiones para cada dimensión del arreglo ")+name); }
+					for(size_t i=0;i<aux2.size();i++) {
+						while (i<aux2.size() && !(anid_parent==0 && aux2[i]==',')) {
+							if (aux2[i]=='(') anid_parent++;
+							else if (aux2[i]==')') anid_parent--;
+							i++;
 						}
 						cadena=aux2; // Cortar la expresion indice
-						cadena.erase(tmp1,cadena.size()-tmp1); cadena.erase(0,last);
+						cadena.erase(i,cadena.size()-i); cadena.erase(0,last);
 						DataValue index = Evaluar(cadena);
 						if (!index.CanBeReal()) ExeError(122,"No coinciden los tipos.");
-						dim[tmp3] = index.GetAsInt();
-						if (dim[tmp3]<=0) {
+						dim[++num_idx] = index.GetAsInt();
+						if (dim[num_idx]<=0) {
 							ExeError(274,"Las dimensiones deben ser mayores a 0.");
 						}
-						tmp3++; last=tmp1+1; tmp1++;
+						last=i+1;
 					}
 					if (Inter.subtitles_on) {
 						string tamanio;
 						for(int i=1;i<=dim[0];i++) tamanio+="x"+IntToStr(dim[i]);
 						tamanio[0]=' ';
-						_sub(line,string("Se crea el arreglo ")+aux1+" de"+tamanio+" elementos");
+						_sub(line,string("Se crea el arreglo ")+name+" de"+tamanio+" elementos");
 					}
-					if (memoria->HaSidoUsada(aux1)||memoria->LeerDims(aux1))
+					if (memoria->HaSidoUsada(name)||memoria->LeerDims(name))
 						ExeError(123,"Identificador en uso.");
-					if (dim!=0) memoria->AgregarArreglo(aux1, dim);
+					if (dim!=0) memoria->AgregarArreglo(name, dim);
 					if (otro!="") cadena=otro; else cadena="";
 				} while (cadena.size());
 			} else
