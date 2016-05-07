@@ -209,7 +209,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
 		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
 	}
-	tipo = Evaluar(string(" ")+exp+" ").type; // ¿para qué eran los espacios??? 
+	tipo = Evaluar(exp).type;
 	
 	// reemplazar operadores y funciones matematicas, arreglar indices de arreglos
 	exp+=",";
@@ -297,6 +297,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]=='|' && exp[i+1]=='|') exp.erase(i--,1);
 		else if (exp[i]=='=' && exp[i+1]=='=') exp.erase(i--,1);
 		// operadores
+		else if (exp[i]=='!' && exp[i+1]=='=') { ReplaceOper(exp,i,"<>"); id_start=i+1; }
 		else if (exp[i]=='<' && exp[i+1]=='>') { ReplaceOper(exp,i,"<>"); id_start=i+1; }
 		else if (exp[i]=='>' && exp[i+1]=='=') { ReplaceOper(exp,i,">="); id_start=i+1; }
 		else if (exp[i]=='<' && exp[i+1]=='=') { ReplaceOper(exp,i,"<="); id_start=i+1; }

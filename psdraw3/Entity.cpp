@@ -598,6 +598,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (GetNext()) {
+			if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
 			if (GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;

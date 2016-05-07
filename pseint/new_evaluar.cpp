@@ -71,9 +71,6 @@ int BuscarOperador(const string &expresion, int &p1, int &p2) {
 	int j, indice_operador=max_ind, posicion_operador=-1;
 	while (parentesis_externos) {
 		char c=expresion[p1]; int i=p1;
-		// comentado el 19-2-2013, creo que ya no es necesario
-//		while (i<=p2 && (c==' '||c=='\t'))
-//			c=expresion[++i];
 		parentesis_externos = i<=p2&&c=='(';
 		bool comillas=false;
 		int parentesis=0;
@@ -205,8 +202,8 @@ bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 
 #ifdef LOG_EVALUAR
 	static int tabs=0;
-	string ev_aux(string a,int &tabs)
-	{ cerr<<setw(tabs)<<""<<"RET: *"<<(a)<<"*\n"; tabs-=2; return a;}
+	DataValue ev_aux(const DataValue &a,int &tabs)
+	{ cerr<<setw(tabs)<<""<<"RET: *"<<(a.GetForUser())<<"*\n"; tabs-=2; return a;}
 #	define ev_return(a) return ev_aux(a,tabs)
 #else
 #	define ev_return(a) return a
@@ -275,9 +272,6 @@ DataValue EvaluarFuncion(const Funcion *func, const string &argumentos, const ti
 			}
 		}
 	}
-//	if (forced_tipo==vt_error) { 
-//		ev_return("");
-//	}
 	// obtener salida
 	DataValue ret;
 	if (func->func) { // funcion predefinida
@@ -321,9 +315,6 @@ DataValue EvaluarFuncion(const Funcion *func, const string &argumentos, const ti
 }
 
 DataValue Evaluar(const string &expresion, int &p1, int &p2, const tipo_var &forced_tipo) {
-	// es probable que estos 2 whiles ya no sean necesarios
-	while (p1<p2&&expresion[p1]==' ') p1++;
-	while (p1<p2&&expresion[p2]==' ') p2--;
 #ifdef LOG_EVALUAR
 	tabs+=2;
 	cerr<<setw(tabs)<<""<<"EVALUAR: {"<<expresion.substr(p1,p2-p1+1)<<"}\n";
