@@ -1,6 +1,7 @@
 all: 
 	${MAKE} -C pseint -f Makefile.ppc
 	${MAKE} -C psexport -f Makefile.ppc
+	${MAKE} -C hoewrap -f Makefile.ppc
 	${MAKE} -C wxPSeInt -f Makefile.ppc
 	${MAKE} -C pseval -f Makefile.ppc
 	${MAKE} -C updatem -f Makefile.ppc
@@ -11,6 +12,7 @@ all:
 clean: 
 	${MAKE} -C pseint -f Makefile.ppc clean
 	${MAKE} -C psexport -f Makefile.ppc clean
+	${MAKE} -C hoewrap -f Makefile.ppc
 	${MAKE} -C wxPSeInt -f Makefile.ppc clean
 	${MAKE} -C pseval -f Makefile.ppc clean
 	${MAKE} -C updatem -f Makefile.ppc clean

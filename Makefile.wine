@@ -3,6 +3,7 @@ all: exes
 exes:
 	${MAKE} -C pseint -f Makefile.wine
 	${MAKE} -C psexport -f Makefile.wine
+	${MAKE} -C hoewrap -f Makefile.wine
 	${MAKE} -C wxPSeInt -f Makefile.wine
 	${MAKE} -C pseval -f Makefile.wine
 	${MAKE} -C updatem -f Makefile.wine
@@ -13,6 +14,7 @@ exes:
 clean: 
 	${MAKE} -C pseint -f Makefile.wine clean
 	${MAKE} -C psexport -f Makefile.wine clean
+	${MAKE} -C hoewrap -f Makefile.wine clean
 	${MAKE} -C wxPSeInt -f Makefile.wine clean
 	${MAKE} -C pseval -f Makefile.wine clean
 	${MAKE} -C updatem -f Makefile.wine clean

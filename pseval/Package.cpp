@@ -1,4 +1,3 @@
-#include "Package.h"
 #include <wx/filename.h>
 #include <wx/zipstrm.h>
 #include <cstddef>
@@ -13,8 +12,12 @@
 #include <wx/fs_mem.h>
 #include <wx/image.h>
 #include <wx/filesys.h>
-#include "../wxPSeInt/string_conversions.h"
 #include <wx/msgdlg.h>
+#include "Package.h"
+#include "../wxPSeInt/string_conversions.h"
+#ifdef ALLOW_MARKDOWN
+#	include "../hoewrap/hoewrap.h"
+#endif
 
 class mxFilterInputStream : public wxFilterInputStream {
 	wxString m_key; 
@@ -180,6 +183,10 @@ void Package::ProcessFile (wxString name, wxString &content) {
 		base_psc = content;
 	} else if (name=="help.html") {
 		help_text = content;
+#ifdef ALLOW_MARKDOWN
+	} else if (name=="help.md") {
+		help_text = markdown2html(content.c_str(),content.Len());
+#endif
 	} else if (name=="config.ini") {
 		content.Replace("\r","",true);
 		content+="\n";

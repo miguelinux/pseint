@@ -10,7 +10,7 @@ using namespace std;
 const char *binname="wxPSeInt.bin";
 
 const char *my_getenv(const char *varname) {
-	char empty[]="";
+	static char empty[]="";
 	const char *res = getenv(varname);
 	return res?res:empty;
 }

@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/eval_m32_rls
 GPP=i686-apple-darwin8-g++
-CXXFLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=i686-apple-darwin8`
-LIBS= -s `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8` -lwx_mac_stc-2.8-i686-apple-darwin8
+CXXFLAGS= -O2 `/opt/mac/wx/bin/wx-config --cppflags --host=i686-apple-darwin8` -DALLOW_MARKDOWN
+LIBS= -s `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8` -lwx_mac_stc-2.8-i686-apple-darwin8 -L../temp/hoew_m32_rls -lhoewrap
 
 all: ${OBJS_DIR} ../bin/pseval
 
