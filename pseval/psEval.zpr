@@ -71,7 +71,7 @@ path=formato_paquete.txt
 cursor=0:0
 [other]
 path=../bin/help/cambios.html
-cursor=4:123
+cursor=13:78
 open=true
 [config]
 name=Linux_Debug
