@@ -11,7 +11,12 @@ ASIGNAR
   <LI>{variable}: complete aquí el nombre de la variable cuyo contenido desea modificar.</LI>
   <LI>{expresion}: complete aquí la expresión cuyo resultado desea asignar a {variable}.</LI>
   </UL>
-SI
+SI - ENTONCES
+  <UL>
+  <LI>{expresion_logica}: complete aquí la condición a evaluar para decidir que grupo de acciones se deben ejecutar.</LI>
+  <LI>{acciones_por_verdadero}: complete aquí las acciones que se deben ejecutar si la condición ({expresion_logica}) resulta verdadera.</LI>
+  </UL>
+SI - ENTONCES - SINO
   <UL>
   <LI>{expresion_logica}: complete aquí la condición a evaluar para decidir que grupo de acciones se deben ejecutar.</LI>
   <LI>{acciones_por_verdadero}: complete aquí las acciones que se deben ejecutar si la condición ({expresion_logica}) resulta verdadera.</LI>
@@ -28,10 +33,20 @@ MIENTRAS
   <LI>{expresion_logica}: complete aquí la condición que se debe evaluar para realizar una iteración.</LI>
   <LI>{secuencia_de_acciones}: complete aqui la lista de instrucciones que desea repetir mientras la condicion {expresion_logica} sea verdadera. Recuerde que debe incluir aquí alguna acción que pueda modificar dicha condición.</LI>
   </UL>
-REPETIR
+REPETIR - MIENTRAS QUE
   <UL>
   <LI>{secuencia_de_acciones}: complete aqui la lista de instrucciones que desea repetir hasta que la condicion {expresion_logica} sea verdadera. Recuerde que debe incluir aquí alguna acción que pueda modificar dicha condición.</LI>
-  <LI>{expresion_logica}: complete aquí la condición que se debe evaluar para realizar la siguiente iteración.</LI>
+  <LI>{expresion_logica}: complete aquí la condición que se debe evaluar para determinar si se continúa iterando.</LI>
+  </UL>
+REPETIR - HASTA QUE
+  <UL>
+  <LI>{secuencia_de_acciones}: complete aqui la lista de instrucciones que desea repetir hasta que la condicion {expresion_logica} sea verdadera. Recuerde que debe incluir aquí alguna acción que pueda modificar dicha condición.</LI>
+  <LI>{expresion_logica}: complete aquí la condición que se debe evaluar para determinar si se continúa iterando.</LI>
+  </UL>
+PARA CADA
+  <UL>
+  <LI>{id_elemento}: ingrese aquí un nuevo identificador/nombre de variable, que representará en cada iteración un elemento del arreglo.</LI>
+  <LI>{id_arreglo}: introduzca aquí el identificador/nombre del arreglo a recorrer.</LI>
   </UL>
 PARA
   <UL>
@@ -42,6 +57,18 @@ PARA
   <LI>{secuencia_de_acciones}: complete aqui la lista de instrucciones que desea repetir en cada iteración.</LI>
   </UL>
 SUBPROCESO
+  <UL>
+  <LI>{variable_de_retorno}: si su función/subproceso calcula y devuelve algún valor, complete aquí el nombre de la variable que utilizará para almacenar ese valor; si su función/subproceso no devuelve nada puede eliminar la variable y la flecha de asignación.</LI>
+  <LI>{nombre}: introduzca aquí el nombre que recibirá la función/subproceso.</LI>
+  <LI>{argumentos}: introduzca aquí la lista de argumentos que requiere su función, utlizando comas para separarlos, e ingresando el identificador para cada uno y opcionalmente las palabras clave "por valor" o "por referencia" para indicar el tipo de pasaje; si la función/subproceso no requiere argumentos puede dejar este campo en blanco, y opcionalmente omitir los paréntesis.</LI>
+  </UL>
+SUBALGORITMO
+  <UL>
+  <LI>{variable_de_retorno}: si su función/subproceso calcula y devuelve algún valor, complete aquí el nombre de la variable que utilizará para almacenar ese valor; si su función/subproceso no devuelve nada puede eliminar la variable y la flecha de asignación.</LI>
+  <LI>{nombre}: introduzca aquí el nombre que recibirá la función/subproceso.</LI>
+  <LI>{argumentos}: introduzca aquí la lista de argumentos que requiere su función, utlizando comas para separarlos, e ingresando el identificador para cada uno y opcionalmente las palabras clave "por valor" o "por referencia" para indicar el tipo de pasaje; si la función/subproceso no requiere argumentos puede dejar este campo en blanco, y opcionalmente omitir los paréntesis.</LI>
+  </UL>
+FUNCION
   <UL>
   <LI>{variable_de_retorno}: si su función/subproceso calcula y devuelve algún valor, complete aquí el nombre de la variable que utilizará para almacenar ese valor; si su función/subproceso no devuelve nada puede eliminar la variable y la flecha de asignación.</LI>
   <LI>{nombre}: introduzca aquí el nombre que recibirá la función/subproceso.</LI>

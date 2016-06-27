@@ -401,7 +401,13 @@ void mxMainWindow::CreateCommandsPanel() {
 	wxPanel *panel = commands = new wxPanel(this);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	wxString tt=utils->FixTooltip(_Z("Con estos botones puede insertar instrucciones o estructuras de control en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha instrucción o estructura, se marcan con recuadros los argumentos que debe completar, y se presenta en la parte inferior de la ventana una ayuda rápida acerca de la misma."));
+	wxString tt = utils->FixTooltip(
+		_Z("Con estos botones puede insertar instrucciones o estructuras de control "
+		   "en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha "
+		   "instrucción o estructura, se marcan con recuadros los argumentos que debe "
+		   "completar, y se presenta en la parte inferior de la ventana una ayuda "
+		   "rápida acerca de la misma. Puede mantener presionada la tecla shift para "
+		   "insertar versiones alternativas o variantes de estos comandos y estructuras."));
 	
 	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,"escribir.png",_Z("Escribir"))->SetToolTip(tt);
 	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,"leer.png",_Z("Leer"))->SetToolTip(tt);
@@ -929,13 +935,14 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
+	bool alternative = wxGetKeyState(WXK_SHIFT);
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText("ESCRIBIR"));
 	wxArrayString toins;
-	if (config->lang[LS_FORCE_SEMICOLON])
-		toins.Add("Escribir {lista_de_expresiones};");
-	else
-		toins.Add("Escribir {lista_de_expresiones}");
+	wxString line = "Escribir {lista_de_expresiones}";
+	if (alternative) line<<" sin saltar";
+	if (config->lang[LS_FORCE_SEMICOLON]) line<<";";
+	toins.Add(line);
 	InsertCode(toins);
 }
 
@@ -950,41 +957,44 @@ void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
+	bool alternative = config->lang[LS_PREFER_REPEAT_WHILE]!=wxGetKeyState(WXK_SHIFT);
 	if (config->auto_quickhelp) 
-		QuickHelp().ShowHelpText(help->GetCommandText("REPETIR"));
+		QuickHelp().ShowHelpText(help->GetCommandText(alternative?"REPETIR - MIENTRAS QUE":"REPETIR - HASTA QUE"));
 	wxArrayString toins;
 	toins.Add("Repetir");
 	toins.Add("\t{secuencia_de_acciones}");
-	toins.Add("Hasta Que {expresion_logica}");
+	if (alternative)
+		toins.Add("Mientras Que {expresion_logica}");
+	else
+		toins.Add("Hasta Que {expresion_logica}");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
+	bool alternative = wxGetKeyState(WXK_SHIFT);
 	if (config->auto_quickhelp) 
-		QuickHelp().ShowHelpText(help->GetCommandText("PARA"));
+		QuickHelp().ShowHelpText(help->GetCommandText(alternative?"PARA CADA":"PARA"));
 	wxArrayString toins;
-	toins.Add("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer");
+	if (alternative) {
+		toins.Add("Para Cada {id_elemento} de {id_arreglo} Hacer");
+	} else {
+		toins.Add("Para {variable_numerica}<-{valor_inicial} Hasta {valor_final} Con Paso {paso} Hacer");
+	}
 	toins.Add("\t{secuencia_de_acciones}");
 	toins.Add("FinPara");
 	InsertCode(toins);
 }
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
+	bool alternative = wxGetKeyState(WXK_SHIFT);
+	wxString funcion = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso");
 	if (config->auto_quickhelp) 
-		QuickHelp().ShowHelpText(help->GetCommandText("SUBPROCESO"));
+		QuickHelp().ShowHelpText(help->GetCommandText(funcion.Upper()));
 	wxArrayString toins;
 	if (config->lang[LS_PREFER_FUNCION]) {
-		toins.Add("Funcion {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
+		toins.Add(funcion+(alternative?"":" {variable_de_retorno} <-")+" {Nombre} ( {Argumentos} )");
 		toins.Add("\t");
-		toins.Add("FinFuncion");
-	} else if (config->lang[LS_PREFER_ALGORITMO]) {
-		toins.Add("SubAlgoritmo {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
-		toins.Add("\t");
-		toins.Add("FinSubAlgoritmo");
-	} else {
-		toins.Add("SubProceso {variable_de_retorno} <- {Nombre} ( {Argumentos} )");
-		toins.Add("\t");
-		toins.Add("FinSubProceso");
+		toins.Add(wxString("Fin")+funcion);
 	}
 	toins.Add("");
 	IF_THERE_IS_SOURCE {
@@ -996,13 +1006,16 @@ void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
+	bool alternative = wxGetKeyState(WXK_SHIFT);
 	if (config->auto_quickhelp) 
-		QuickHelp().ShowHelpText(help->GetCommandText("SI"));
+		QuickHelp().ShowHelpText(help->GetCommandText(alternative?"SI - ENTONCES":"SI - ENTONCES - SINO"));
 	wxArrayString toins;
 	toins.Add("Si {expresion_logica} Entonces");
 	toins.Add("\t{acciones_por_verdadero}");
-	toins.Add("Sino");
-	toins.Add("\t{acciones_por_falso}");
+	if (!alternative) {
+		toins.Add("Sino");
+		toins.Add("\t{acciones_por_falso}");
+	}
 	toins.Add("FinSi");
 	InsertCode(toins);
 }

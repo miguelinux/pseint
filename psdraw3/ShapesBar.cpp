@@ -61,7 +61,7 @@ bool ShapesBar::ProcessMouse (int button, int state, int x, int y) {
 	case 7: new_entity = new Entity(ET_MIENTRAS,""); break;
 	case 8: 
 		new_entity = new Entity(ET_REPETIR,""); 
-		if (canvas->GetModifiers()&MODIFIER_SHIFT) new_entity->variante=true;
+		if ( (canvas->GetModifiers()&MODIFIER_SHIFT)!=lang[LS_PREFER_REPEAT_WHILE] ) new_entity->variante=true;
 		break;
 	case 9:
 		new_entity = new Entity(ET_PARA,""); 
@@ -174,7 +174,7 @@ void ShapesBar::Draw() {
 		case 6: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
 		case 7: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
 		case 8: 
-			if (canvas->GetModifiers()&MODIFIER_SHIFT)
+			if ((canvas->GetModifiers()&MODIFIER_SHIFT)!=lang[LS_PREFER_REPEAT_WHILE])
 				SetStatus(color_selection,"Repetir-Mientras que (estructura repetitiva)"); 
 			else
 				SetStatus(color_selection,"Repetir-Hasta que (estructura repetitiva)");

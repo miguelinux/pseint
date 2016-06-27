@@ -32,6 +32,12 @@
 #	warning _AUTOINDENT no se lleva bien con Undo/Redo
 #endif
 #include "CommonParsingFunctions.h"
+#include <wx/textdlg.h>
+
+#ifdef UNICODE
+bool EsLetra(const wxUniCharRef &k, bool incluir_nros=true) { return EsLetra(_C(k),incluir_nros); }
+bool EsLetra(const wxUniChar &k, bool incluir_nros=true) { return EsLetra(_C(k),incluir_nros); }
+#endif
 
 int mxSource::last_id=0;
 
@@ -1325,7 +1331,7 @@ vector<int> &mxSource::FillAuxInstr(int _l) {
 			if (!comillas) {
 				if (starting) { v.push_back(i); starting=false; }
 				if (s[i]==';'||s[i]==':'||s[i]=='\n') { v.push_back(last_ns); starting=true; }
-				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(s[i+8],true)) {
+				else if (wxTolower(s[i])=='e' && i+8<len && s.Mid(i,8).Upper()=="ENTONCES" && !EsLetra(_C(s[i+8]),true)) {
 					if (v.back()!=i) { v.push_back(last_ns); v.push_back(i); } v.push_back(i+8); 
 					i+=7; starting=true;
 				}
@@ -2030,7 +2036,7 @@ void mxSource::RenameVar(int where, wxString var_name, int line_from, int line_t
 		if (!vars_window->GetVarScope(where,var_name, line_from,line_to)) return;
 	}
 	
-	wxString new_name = wxGetTextFromUser("Nuevo identificador:",var_name,var_name,this);
+	wxString new_name = wxGetTextFromUser(_Z("Nuevo identificador:"),var_name,var_name,this);
 	if (new_name.IsEmpty()) return;
 	
 	int p0 = PositionFromLine(line_from);

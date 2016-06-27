@@ -118,6 +118,14 @@ void LangSettings::init() {
 			"se priorizará el uso de las palabras claves \"Función\" y \"FinFunción\" frente a "
 			"\"Proceso\" y \"FinProceso\" (o \"Algoritmo\" y \"FinAlgoritmo\") respectivamente."
 		);
+	data[LS_PREFER_REPEAT_WHILE].Set("prefer_repeat_while",					false,
+		"Preferir \"Repetir ... Mietras Que...\" en lugar de \"Repetir ... Hasta Que...\"",
+			"Con esta opción activada, al seleccionar la estructura de control \"Repetir\" desde "
+			"el panel de comandos (tanto del editor de pseudocódigo como del editor de diagramas "
+			"de flujo) se insertará la versión \"Repetir ... Mientras que\" (que itera por "
+			"verdadero); mientras que si está desactivada se inserta la versión \"Repetir ... "
+			"Hasta que\" (que itera por falso)."
+		);
 #ifdef DEBUG
 	for(int i=0;i<LS_COUNT;i++) { 
 		if (!data[i].nombre) cerr<<"ERROR!!! campo no inicializado en LangSettings::data["<<i<<"]"<<endl;
