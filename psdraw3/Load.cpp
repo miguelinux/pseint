@@ -16,38 +16,49 @@ static bool StartsWith(const string &s1, string s2) {
 	else return s1.substr(0,s2.length())==s2;
 }
 
-static Entity *Add(stack<int> &ids, Entity *vieja, Entity *nueva, int id=-1) {
-	int mid=ids.top(); 
-	ids.pop(); 
-	if (nueva->type==ET_OPCION) ids.push(mid+(nueva->label=="De Otro Modo"?0:1)); 
-	ids.push(-1);
-	if (mid==-1) {
-		vieja->LinkNext(nueva);
+// Agrega una nueva entidad donde corresponda. El "donde corresponda" sería
+// o bien como hijo de la previa, o bien como siguiente de la previa.
+// Para decidir cual corresponde está children_stack, que tiene en su top
+// -1 si va como siguiente, o el indice de hijo si va como hija.
+// El id que recibe es para indicar a dónde debería ir la próxima... es decir
+// si recibo -1 (escribir, leer, dimension,... la próxima) irá como siguiente
+// mientras que si recibo otra cosa la próxima irá como hija en ese lugar (0
+// para Para, Repetir, Mientras; 1 para Si; 0 a X para Segun; etc).
+
+static Entity *Add(stack<int> &children_stack, Entity *previa, Entity *nueva, int child_id_for_next=-1) {
+	int where = children_stack.top(); 
+	children_stack.pop(); 
+	if (nueva->type==ET_OPCION) { assert(previa->type==ET_SEGUN); children_stack.push(where+(nueva->label=="De Otro Modo"?0:1)); }
+	children_stack.push(-1);
+	if (where==-1) {
+		previa->LinkNext(nueva);
 	} else { 
 		if (nueva->type==ET_OPCION) {
 			if (nueva->label=="De Otro Modo") {
-				delete nueva; nueva=vieja->GetChild(vieja->GetChildCount()-1); // porque el child para dom se crea ya en el ctor del segun
+				delete nueva; nueva=previa->GetChild(previa->GetChildCount()-1); // porque el child para dom se crea ya en el ctor del segun
 			} else {
-				vieja->InsertChild(mid,nueva);
+				previa->InsertChild(where,nueva);
 			}
 		} else {
-			vieja->LinkChild(mid,nueva);
+			previa->LinkChild(where,nueva);
 		}
 	}
-	if (id!=-1) 
-		ids.push(id);
+	if (child_id_for_next!=-1) 
+		children_stack.push(child_id_for_next);
 	return nueva;
 }
 
-static Entity *Up(stack<int> &ids, Entity *vieja) {
-//cerr<<"Up: "<<vieja->label<<endl;
-	int oid=ids.top();
-	ids.pop(); 
-	if (oid==-1) {
-		return vieja->GetParent();
+
+// Sube un nivel en el children_stack. Se usa por ej cuando se cierra 
+// alguna estructura de control
+static Entity *Up(stack<int> &children_stack, Entity *previa) {
+	int where = children_stack.top();
+	children_stack.pop(); 
+	if (where==-1) {
+		return previa->GetParent();
 	} else { // si esperaba un hijo pero no vino nada (bucle vacio)
-		if (vieja->type!=ET_OPCION && vieja->type!=ET_SEGUN) ids.push(-1); 
-		return vieja;
+//		if (previa->type!=ET_OPCION && previa->type!=ET_SEGUN) children_stack.push(-1); 
+		return previa;
 	}
 }
 
@@ -89,7 +100,9 @@ void LoadProc(vector<string> &vproc) {
 	bool start_done=false;
 	cur_proc = start = new Entity(ET_PROCESO,"SinTitulo");
 	Entity *aux=start, *aux_end=start;
-	stack<int> ids; ids.push(-1);
+	// child_id guarda en qué lugar de los hijos de la entidad anterior hay que
+	// enlazar la próxima, o -1 si la próxima va como next y no como hijo
+	stack<int> children_stack; children_stack.push(-1);
 	for(size_t iv=0;iv<vproc.size();iv++) { 
 		string str = vproc[iv];
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
@@ -129,7 +142,7 @@ void LoadProc(vector<string> &vproc) {
 			continue;
 		}
 		else if (StartsWith(str,"INVOCAR ")) {
-			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str.substr(8)));
+			aux=Add(children_stack,aux,new Entity(ET_ASIGNAR,str.substr(8)));
 			aux->variante=true;
 			_new_this(aux);
 		}
@@ -146,43 +159,43 @@ void LoadProc(vector<string> &vproc) {
 			--iv; continue;
 		}
 		else if (StartsWith(str,"#comment ")) {
-			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(9)));
+			aux=Add(children_stack,aux,new Entity(ET_COMENTARIO,str.substr(9)));
 			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
 		}
 		else if (StartsWith(str,"#comment-inline ")) {
 			if (aux && aux->type==ET_SEGUN) continue;
-			aux=Add(ids,aux,new Entity(ET_COMENTARIO,str.substr(16)));
+			aux=Add(children_stack,aux,new Entity(ET_COMENTARIO,str.substr(16)));
 			aux->variante=true;
 			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
-			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
+			aux=Add(children_stack,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"ESCRIBNL ")) {
-			aux=Add(ids,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
+			aux=Add(children_stack,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
 			aux->variante=true;
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"LEER ")) {
-			aux=Add(ids,aux,new Entity(ET_LEER,str.substr(5)));
+			aux=Add(children_stack,aux,new Entity(ET_LEER,str.substr(5)));
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"HASTA QUE ")) {
-			aux=Up(ids,aux); aux->SetLabel(str.substr(10),false);
+			aux=Up(children_stack,aux); aux->SetLabel(str.substr(10),false);
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"MIENTRAS QUE ")) {
-			aux=Up(ids,aux); aux->SetLabel(str.substr(13),false);
+			aux=Up(children_stack,aux); aux->SetLabel(str.substr(13),false);
 			aux->variante=true;
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"MIENTRAS ")) {
-			aux=Add(ids,aux,new Entity(ET_MIENTRAS,str.substr(9,str.size()-15)),0);
+			aux=Add(children_stack,aux,new Entity(ET_MIENTRAS,str.substr(9,str.size()-15)),0);
 			_new_this(aux);
 		}
 		else if (str=="REPETIR") {
-			aux=Add(ids,aux,new Entity(ET_REPETIR,""),0);
+			aux=Add(children_stack,aux,new Entity(ET_REPETIR,""),0);
 			_new_prev();
 		}
 		else if (StartsWith(str,"PARA ")) {
@@ -203,7 +216,7 @@ void LoadProc(vector<string> &vproc) {
 				if (paso.size()&&paso[0]==' ') paso=paso.substr(1); // a veces viene con doble espacio
 			}
 			RemoveParentesis(ini);
-			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
+			aux=Add(children_stack,aux,new Entity(ET_PARA,var),0);
 			aux->GetChild(1)->SetLabel(ini);
 			aux->GetChild(2)->SetLabel(paso);
 			aux->GetChild(3)->SetLabel(fin);
@@ -217,7 +230,7 @@ void LoadProc(vector<string> &vproc) {
 			i=str.find(" ");
 //			string ini=str.substr(0,i);
 			str=str.substr(i+1);
-			aux=Add(ids,aux,new Entity(ET_PARA,var),0);
+			aux=Add(children_stack,aux,new Entity(ET_PARA,var),0);
 			aux->variante=true;
 //			aux->child[1]->SetLabel("");
 			aux->GetChild(2)->SetLabel(str);
@@ -225,32 +238,32 @@ void LoadProc(vector<string> &vproc) {
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"SI ")) {
-			aux=Add(ids,aux,new Entity(ET_SI,str.substr(3)),1);
+			aux=Add(children_stack,aux,new Entity(ET_SI,str.substr(3)),1);
 			_new_this(aux);
 		}
 		else if (StartsWith(str,"SINO")) {
-			aux=aux->GetParent(); ids.pop(); ids.push(0);
+			aux=aux->GetParent(); children_stack.pop(); children_stack.push(0);
 			_new_prev();
 		}
 		else if (StartsWith(str,"SEGUN ")) {
-			aux=Add(ids,aux,new Entity(ET_SEGUN,str.substr(6,str.size()-6-5)),0);
+			aux=Add(children_stack,aux,new Entity(ET_SEGUN,str.substr(6,str.size()-6-5)),0);
 			_new_this(aux);
 		}
 		else if (str.size() && str[str.size()-1]==':') {
 			str.erase(str.size()-1,1);
-			if (aux->type==ET_SEGUN && ids.top()!=-1) { // si esta despues del segun, es el primer hijo
-				aux=Add(ids,aux,new Entity(ET_OPCION,str),0);
+			if (aux->type==ET_SEGUN && children_stack.top()!=-1) { // si esta despues del segun, es el primer hijo
+				aux=Add(children_stack,aux,new Entity(ET_OPCION,str),0);
 			} else {
-				aux=Up(ids,aux); // sube a la opcion
-				aux=Up(ids,aux); // sube al segun
+				aux=Up(children_stack,aux); // sube a la opcion
+				aux=Up(children_stack,aux); // sube al segun
 				if (str=="DE OTRO MODO") str="De Otro Modo";
-				aux=Add(ids,aux,new Entity(ET_OPCION,str),0);
+				aux=Add(children_stack,aux,new Entity(ET_OPCION,str),0);
 			}
 			_new_this(aux);
 		}
 		else if (str=="FINPARA"||str=="FINSI"||str=="FINMIENTRAS"||str=="FINSEGUN") {
-			if (str=="FINSEGUN" && aux->type!=ET_SEGUN) { aux=Up(ids,aux); aux=Up(ids,aux); }
-			aux=Up(ids,aux);
+			if (str=="FINSEGUN" && aux->type!=ET_SEGUN) { aux=Up(children_stack,aux); aux=Up(children_stack,aux); }
+			aux=Up(children_stack,aux);
 			_new_prev();
 		}
 		else { // asignacion, dimension, definicion
@@ -269,7 +282,7 @@ void LoadProc(vector<string> &vproc) {
 				}
 				else if (aux=="DIMENSION") str=string("Dimension ")+str.substr(p+1);
 			}
-			aux=Add(ids,aux,new Entity(ET_ASIGNAR,str));
+			aux=Add(children_stack,aux,new Entity(ET_ASIGNAR,str));
 			_new_this(aux);
 		}
 	}
