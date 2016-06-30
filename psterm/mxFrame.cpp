@@ -23,68 +23,68 @@ BEGIN_EVENT_TABLE(mxFrame,wxFrame)
 END_EVENT_TABLE()
 
 mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props)
-	:wxFrame(NULL,wxID_ANY,_Z("PSeInt - Ejecutando..."),
-	wxDefaultPosition, wxSize(props.width,props.height),
-	wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) {
+	: wxFrame(NULL,wxID_ANY,_Z("PSeInt - Ejecutando..."),
+			  wxDefaultPosition, wxSize(props.width,props.height),
+			  wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) 
+{
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	
-		this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
-		
-		debug_mode=debug;
-		terminated=already_connected=false;
-		src_id=id;
-		scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
-		console=new mxConsole(this,scroll,props.dark_theme);
-		do_not_close = new wxCheckBox(this,wxID_ANY,_Z("No cerrar esta ventana  ")); 
-		do_not_close->SetValue(false); do_not_close->Hide();
-		stay_on_top = new wxCheckBox(this,wxID_REPLACE,_Z("Siempre visible   ")); 
-		stay_on_top->SetValue(props.always_on_top); stay_on_top->Hide();
-		play_from_here = new wxButton(this,FRAME_ID_PLAY,_Z(" Ejecutar desde este punto "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-		run_again = new wxButton(this,FRAME_ID_RUN_AGAIN,_Z(" Reiniciar "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-		is_present=true; play_from_here->Hide(); run_again->Hide();
-		
-		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-		wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
-		wxBoxSizer *sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
-		sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
-		sizer_buttons->Add(do_not_close,wxSizerFlags().Center());
-		sizer_buttons->Add(stay_on_top,wxSizerFlags().Center());
-		sizer_buttons->AddStretchSpacer();
-		sizer_buttons->Add(play_from_here);
-		sizer_buttons->Add(run_again);
-		sizer_in->Add(sizer_buttons,wxSizerFlags().Proportion(0).Expand());
-		sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
-		sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
-		SetSizer(sizer);
-		Show();
-		if (port!=-1) InitSocket(port); else socket=NULL;
+	debug_mode=debug;
+	terminated=already_connected=false;
+	src_id=id;
+	scroll = new wxScrollBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
+	console=new mxConsole(this,scroll,props.dark_theme,props.font_name,props.font_size);
+	do_not_close = new wxCheckBox(this,wxID_ANY,_Z("No cerrar esta ventana  ")); 
+	do_not_close->SetValue(false); do_not_close->Hide();
+	stay_on_top = new wxCheckBox(this,wxID_REPLACE,_Z("Siempre visible   ")); 
+	stay_on_top->SetValue(props.always_on_top); stay_on_top->Hide();
+	play_from_here = new wxButton(this,FRAME_ID_PLAY,_Z(" Ejecutar desde este punto "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	run_again = new wxButton(this,FRAME_ID_RUN_AGAIN,_Z(" Reiniciar "),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	is_present=true; play_from_here->Hide(); run_again->Hide();
+	
+	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizer_in = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
+	sizer_in->Add(console,wxSizerFlags().Proportion(1).Expand());
+	sizer_buttons->Add(do_not_close,wxSizerFlags().Center());
+	sizer_buttons->Add(stay_on_top,wxSizerFlags().Center());
+	sizer_buttons->AddStretchSpacer();
+	sizer_buttons->Add(play_from_here);
+	sizer_buttons->Add(run_again);
+	sizer_in->Add(sizer_buttons,wxSizerFlags().Proportion(0).Expand());
+	sizer->Add(sizer_in,wxSizerFlags().Proportion(1).Expand());
+	sizer->Add(scroll,wxSizerFlags().Proportion(0).Expand());
+	SetSizer(sizer);
+	Show();
+	if (port!=-1) InitSocket(port); else socket=NULL;
 #ifdef __APPLE__
-		// en wx para mac, si no abro un puerto no funciona la redireccion de entrada/salida del proceso
-		// depurando dentro de wxWidgets-2.8.12, veo que la linea que hace la diferencia (a la cual se llega
-		// gracias al connect del socket) es la 198 de src/mac/corefoundation/gsockosx.cpp:
-		//     CFRunLoopAddSource(s_mainRunLoop, data->source, kCFRunLoopCommonModes);
-		// como no se que argumentos pasarle para llamarla "a mano" sin crear un socket, creo aca
-		// un socket que no se usa, pero obliga a hacer esa llamada
-		if (port==-1) {
-			wxSocketClient *socket=new wxSocketClient(wxSOCKET_NOWAIT);
-			socket->SetEventHandler(*(this->GetEventHandler()),wxID_ANY);
-			wxIPV4address address;
-			address.Hostname("localhost");
-			address.Service(80);
-			socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG|wxSOCKET_CONNECTION_FLAG);
-			socket->Notify(true);
-			socket->Connect(address,false);
-		}
+	// en wx para mac, si no abro un puerto no funciona la redireccion de entrada/salida del proceso
+	// depurando dentro de wxWidgets-2.8.12, veo que la linea que hace la diferencia (a la cual se llega
+	// gracias al connect del socket) es la 198 de src/mac/corefoundation/gsockosx.cpp:
+	//     CFRunLoopAddSource(s_mainRunLoop, data->source, kCFRunLoopCommonModes);
+	// como no se que argumentos pasarle para llamarla "a mano" sin crear un socket, creo aca
+	// un socket que no se usa, pero obliga a hacer esa llamada
+	if (port==-1) {
+		wxSocketClient *socket=new wxSocketClient(wxSOCKET_NOWAIT);
+		socket->SetEventHandler(*(this->GetEventHandler()),wxID_ANY);
+		wxIPV4address address;
+		address.Hostname("localhost");
+		address.Service(80);
+		socket->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG|wxSOCKET_CONNECTION_FLAG);
+		socket->Notify(true);
+		socket->Connect(address,false);
+	}
 #endif
-		console->Run(command);
-		console->SetFocus();
-		if (props.set_left||props.set_right||props.set_bottom||props.set_top) {
-			wxYield();
-			int x,y,w,h;
-			GetScreenPosition(&x,&y); GetSize(&w,&h);
-			if (props.set_left||props.set_right) x= props.set_left?props.left:(props.right-w);
-			if (props.set_bottom||props.set_top) y= props.set_top?props.top:(props.bottom-h);
-			Move(x,y);
-		}
+	console->Run(command);
+	console->SetFocus();
+	if (props.set_left||props.set_right||props.set_bottom||props.set_top) {
+		wxYield();
+		int x,y,w,h;
+		GetScreenPosition(&x,&y); GetSize(&w,&h);
+		if (props.set_left||props.set_right) x= props.set_left?props.left:(props.right-w);
+		if (props.set_bottom||props.set_top) y= props.set_top?props.top:(props.bottom-h);
+		Move(x,y);
+	}
 }
 
 void mxFrame::OnButtonPlay (wxCommandEvent & evt) {

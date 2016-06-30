@@ -65,7 +65,6 @@ void ConfigManager::LoadDefaults() {
 	auto_quickhelp = true;
 	size_x = size_y = 0;
 	images_path = "imgs";
-	font_size = 10;
 	tabw = 4;
 	stepstep_tspeed=50;
 	debug_port=55374;
@@ -95,6 +94,11 @@ void ConfigManager::LoadDefaults() {
 	pseval_command = "./pseval";
 	tty_command = _no_tty;
 #endif
+	wx_font_name = wxFont(10,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
+	term_font_name = wxFont(11,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
+	wx_font_size = 10;
+	term_font_size = 11;
+	
 	help_dir = "help";
 	proxy = "";
 	profiles_dir = "perfiles";
@@ -144,7 +148,10 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("reorganize_for_debug=")<<(reorganize_for_debug?1:0));
 	for(int i=0;i<LS_COUNT;i++) fil.AddLine(lang.GetConfigLine(i).c_str());
 	fil.AddLine(wxString("maximized=")<<(maximized?1:0));
-	fil.AddLine(wxString("font_size=")<<font_size);
+	fil.AddLine(wxString("wx_font_size=")<<wx_font_size);
+	fil.AddLine(wxString("term_font_size=")<<term_font_size);
+	fil.AddLine(wxString("wx_font_name=")<<wx_font_name);
+	fil.AddLine(wxString("term_font_name=")<<term_font_name);
 	fil.AddLine(wxString("tabw=")<<tabw);
 	fil.AddLine(wxString("stepstep_tspeed=")<<stepstep_tspeed);
 	fil.AddLine(wxString("size_x=")<<size_x);
@@ -182,7 +189,10 @@ void ConfigManager::Read() {
 			key=str.BeforeFirst('=');
 			value=str.AfterFirst('=');
 			if (key=="version") { value.ToLong(&l); version=l; lang.Reset(version); }
-			else if (key=="font_size") { value.ToLong(&l); font_size=l; }
+			else if (key=="wx_font_size") { value.ToLong(&l); wx_font_size=l; }
+			else if (key=="term_font_size") { value.ToLong(&l); term_font_size=l; }
+			else if (key=="wx_font_name") { wx_font_name=value; }
+			else if (key=="term_font_name") { term_font_name=value; }
 			else if (key=="tabWidth") { value.ToLong(&l); tabw=l; }
 			else if (key=="size_x") { value.ToLong(&l); size_x=l; }
 			else if (key=="size_y") { value.ToLong(&l); size_y=l; }
@@ -261,7 +271,10 @@ int ConfigManager::GetDebugPort ( ) {
 }
 
 wxString ConfigManager::GetTTYCommand ( ) {
-	if (use_psterm) return psterm_command+(config->use_dark_psterm?" --darktheme":"");
+	if (use_psterm) {
+		return psterm_command + (config->use_dark_psterm?" --darktheme":"")
+			+ " \"--font="<<config->term_font_name<<":"<<config->term_font_size<<"\"";
+	}
 	if (tty_command==_no_tty) { // tratar de detectar automaticamente un terminal adecuado
 		if (utils->GetOutput("xterm -version").Len()) {
 			tty_command = "xterm -T \"$name\" -e";

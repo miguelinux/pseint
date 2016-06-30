@@ -62,7 +62,8 @@ public:
 	bool rt_syntax;
 	bool rt_annotate;
 	bool smart_indent;
-	int font_size;
+	long wx_font_size, term_font_size;
+	wxString wx_font_name, term_font_name;
 	int tabw;
 	int size_x, size_y;
 	int pos_x, pos_y;

@@ -18,6 +18,9 @@ public:
 	int fixed_rand_seed; ///< seed argument to add to command in order to obtain same results in every run
 	wxString command; ///< the last command runned in this console
 	
+	wxString m_font_name;
+	int m_font_size;
+	
 	wxString history; ///< todo el texto procesado desde el inicio del proceso
 	
 	struct history_event {
@@ -120,14 +123,14 @@ public:
 	int dimmed; /// puede valer 0 o 1, 0 es lo normal, 1 muestra el texto "apagado", se usa para indicar que la salida ya está desactualizada (es int y no bool para poder usarlo de indice para elegir el color)
 	bool selection_is_input; /// si es true, la selección actual es una entrada, que eventualmente el usuario podría querer editar (se muestra un mensaje indicando esta situación)
 	
-	mxConsole(mxFrame *parent, wxScrollBar *scroll=NULL, bool dark_theme=false);
+	mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme, const wxString &font_name, int font_size);
 	
 	void Run(wxString command);
 	
 	void Reload(); ///< recarga el proceso, reejecutandolo completo y volviendo a darle las mismas entradas
 	void PlayFromCurrentEvent(); ///< recarga el proceso, reejecutandolo hasta el evento actual, y siguiendo desde ahi en vivo (si historial)
 	
-	void SetFontSize(int size);
+	void SetFont();
 	void Process(wxString input, bool record=true/*, bool do_print=true*/);
 	void Print(wxString text, bool record/*, bool do_print*/);
 	void ClearBuffer();

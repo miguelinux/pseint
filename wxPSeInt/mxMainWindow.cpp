@@ -53,6 +53,7 @@
 #include "mxTestPanel.h"
 #include "mxHtmlWindow.h"
 #include "error_recovery.h"
+#include "mxFontsConfig.h"
 using namespace std;
 
 mxMainWindow *main_window;
@@ -129,6 +130,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
+	EVT_MENU(mxID_CONFIG_SELECT_FONTS, mxMainWindow::OnConfigSelectFonts)
 	EVT_MENU(mxID_CONFIG_SHAPE_COLORS, mxMainWindow::OnConfigShowShapeColors)
 	EVT_MENU(mxID_CONFIG_HIGHLIGHT_BLOCKS, mxMainWindow::OnConfigHighlightBlocks)
 	EVT_MENU(mxID_CONFIG_AUTOCLOSE, mxMainWindow::OnConfigAutoClose)
@@ -322,6 +324,7 @@ void mxMainWindow::CreateMenus() {
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
+	utils->AddItemToMenu(cfg_pres,mxID_CONFIG_SELECT_FONTS, _Z("Seleccionar fuentes..."),"","fuentes.png");
 	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
@@ -330,7 +333,7 @@ void mxMainWindow::CreateMenus() {
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos..."),"","");
 #endif	
-	menu->Append(cfg, "&Configurar");
+	menu->Append(cfg, _Z("&Configurar"));
 	
 	wxMenu *run = new wxMenu;
 	utils->AddItemToMenu(run,mxID_RUN_RUN, _Z("Ejecutar\tF9"),"","ejecutar.png");
@@ -1325,6 +1328,14 @@ void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
 		mi_use_psterm->Check(true);
 		mi_use_dark_psterm->Enable(false);
 		config->use_psterm=false;
+	}
+}
+
+void mxMainWindow::OnConfigSelectFonts(wxCommandEvent &evt) {
+	if (mxFontsConfig().ShowModal()) {
+		for(unsigned int i=0;i<notebook->GetPageCount();i++) { 
+			((mxSource*)notebook->GetPage(i))->SetStyling(true);
+		}
 	}
 }
 

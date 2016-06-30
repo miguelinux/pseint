@@ -66,6 +66,10 @@ bool mxApplication::OnInit() {
 					arg.AfterFirst('=').ToLong(&props.height);
 				} else if (arg.StartsWith("--port=")) {
 					arg.AfterFirst('=').ToLong(&port);
+				} else if (arg.StartsWith("--font=")) {
+					wxString fontspec = arg.AfterFirst('=');
+					props.font_name = fontspec.BeforeLast(':');
+					fontspec.AfterLast(':').ToLong(&props.font_size);
 				}
 			} else {
 				command=EscapeString(argv[i]);

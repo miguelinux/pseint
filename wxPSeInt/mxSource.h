@@ -12,10 +12,11 @@ class wxTimer;
 class wxSocketBase;
 class er_source_register;
 
-#define mxSOURCE_BOLD 1
-#define mxSOURCE_ITALIC 2
-#define mxSOURCE_UNDERL 4
-#define mxSOURCE_HIDDEN 8
+#define mxSOURCE_BOLD 1<<0
+#define mxSOURCE_ITALIC 1<<1
+#define mxSOURCE_UNDERL 1<<2
+#define mxSOURCE_HIDDEN 1<<3
+#define mxSOURCE_SMALLER 1<<4
 
 enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_PROCESO,BT_SUBPROCESO,BT_FUNCION,BT_ALGORITMO,BT_SUBALGORITMO};
 
@@ -67,7 +68,7 @@ public:
 	void SetStyling(bool colour=true);
 	void SetWords();
 	static void SetAutocompletion();
-	void SetStyle(int idx, const char *fontName, int fontSize, const char *foreground, const char *background, int fontStyle);
+	void SetStyle(int idx, const char *foreground, const char *background, int fontStyle);
 	void SetIndics(int from, int len, int indic, bool on);
 	void SetFieldIndicator(int p1, int p2, bool select=true); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();

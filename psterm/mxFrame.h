@@ -16,7 +16,11 @@ struct win_props {
 	bool set_bottom; long bottom;
 	long width, height;
 	bool dark_theme;
+	wxString font_name;
+	long font_size;
 	win_props() {
+		font_size = 11;
+		font_name = wxFont(11,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
 		dark_theme=false;
 		always_on_top=false;
 		set_left=set_right=set_top=set_bottom=false;

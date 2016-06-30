@@ -133,6 +133,7 @@ public:
 	void OnConfigReorganizeForDebug(wxCommandEvent &evt);
 	void OnConfigUseColors(wxCommandEvent &evt);
 	void OnConfigUsePSTerm(wxCommandEvent &evt);
+	void OnConfigSelectFonts(wxCommandEvent &evt);
 	void OnConfigUseDarkPSTerm(wxCommandEvent &evt);
 	void OnConfigPSDrawNoCrop(wxCommandEvent &evt);
 	void OnConfigShowShapeColors(wxCommandEvent &evt);

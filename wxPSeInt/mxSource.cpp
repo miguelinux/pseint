@@ -154,7 +154,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	SetTabWidth(config->tabw);
 	SetUseTabs (true);
 	
-	wxFont font (config->font_size, wxMODERN, wxNORMAL, wxNORMAL);
+	wxFont font (config->wx_font_size, wxMODERN, wxNORMAL, wxNORMAL);
 	StyleSetFont (wxSTC_STYLE_DEFAULT, font);
 	
 	AutoCompSetSeparator('|');
@@ -235,8 +235,9 @@ mxSource::~mxSource() {
 	}
 }
 
-void mxSource::SetStyle(int idx, const char *fontName, int fontSize, const char *foreground, const char *background, int fontStyle){
-	wxFont font (fontSize, wxMODERN, wxNORMAL, wxNORMAL, false, fontName);
+void mxSource::SetStyle(int idx, const char *foreground, const char *background, int fontStyle){
+	wxFont font (config->wx_font_size- ((fontStyle&mxSOURCE_SMALLER)?1:0),
+				 wxMODERN, wxNORMAL, wxNORMAL, false, config->wx_font_name);
 	StyleSetFont (idx, font);
 	if (foreground) StyleSetForeground (idx, wxColour (foreground));
 	if (background)  StyleSetBackground (idx, wxColour (background));
@@ -250,30 +251,30 @@ void mxSource::SetStyle(int idx, const char *fontName, int fontSize, const char 
 void mxSource::SetStyling(bool colour) {
 	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
 	SetWords();
-	SetStyle(wxSTC_C_DEFAULT,"",config->font_size,"BLACK","WHITE",0); // default
-	SetStyle(wxSTC_C_COMMENT,"",config->font_size,"BLACK","WHITE",0); // comment
-	SetStyle(wxSTC_C_COMMENTLINE,"",config->font_size,"Z DARK GRAY","WHITE",mxSOURCE_ITALIC); // comment line
-	SetStyle(wxSTC_C_COMMENTDOC,"",config->font_size,"BLUE","WHITE",mxSOURCE_ITALIC); // comment doc
-	SetStyle(wxSTC_C_NUMBER,"",config->font_size,"SIENNA","WHITE",0); // number
-	SetStyle(wxSTC_C_WORD,"",config->font_size,"DARK BLUE","WHITE",mxSOURCE_BOLD); // keywords
-	SetStyle(wxSTC_C_STRING,"",config->font_size,"RED","WHITE",0); // string
-	SetStyle(wxSTC_C_CHARACTER,"",config->font_size,"RED","WHITE",0); // character
-	SetStyle(wxSTC_C_UUID,"",config->font_size,"ORCHID","WHITE",0); // uuid
-	SetStyle(wxSTC_C_PREPROCESSOR,"",config->font_size,"FOREST GREEN","WHITE",0); // preprocessor
-	SetStyle(wxSTC_C_OPERATOR,"",config->font_size,"BLACK","WHITE",mxSOURCE_BOLD); // operator 
-	SetStyle(wxSTC_C_IDENTIFIER,"",config->font_size,"BLACK","WHITE",0); // identifier 
-	SetStyle(wxSTC_C_STRINGEOL,"",config->font_size,"RED","Z LIGHT GRAY",0); // string eol
-	SetStyle(wxSTC_C_VERBATIM,"",config->font_size,"BLACK","WHITE",0); // default verbatim
-	SetStyle(wxSTC_C_REGEX,"",config->font_size,"ORCHID","WHITE",0); // regexp  
-	SetStyle(wxSTC_C_COMMENTLINEDOC,"",config->font_size,"FOREST GREEN","WHITE",0); // special comment 
-	SetStyle(wxSTC_C_WORD2,"",config->font_size,"DARK BLUE","WHITE",0); // extra words
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,"",config->font_size,"CORNFLOWER BLUE","WHITE",0); // doxy keywords
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,"",config->font_size,"RED","WHITE",0); // keywords errors
-	SetStyle(wxSTC_C_GLOBALCLASS,"",config->font_size,"BLACK","LIGHT BLUE",0); // keywords errors
-	SetStyle(wxSTC_STYLE_BRACELIGHT,"",config->font_size,"RED","Z LIGHT BLUE",mxSOURCE_BOLD); 
-	SetStyle(wxSTC_STYLE_BRACEBAD,"",config->font_size,"DARK RED","WHITE",mxSOURCE_BOLD); 
+	SetStyle(wxSTC_C_DEFAULT,"BLACK","WHITE",0); // default
+	SetStyle(wxSTC_C_COMMENT,"BLACK","WHITE",0); // comment
+	SetStyle(wxSTC_C_COMMENTLINE,"Z DARK GRAY","WHITE",mxSOURCE_ITALIC); // comment line
+	SetStyle(wxSTC_C_COMMENTDOC,"BLUE","WHITE",mxSOURCE_ITALIC); // comment doc
+	SetStyle(wxSTC_C_NUMBER,"SIENNA","WHITE",0); // number
+	SetStyle(wxSTC_C_WORD,"DARK BLUE","WHITE",mxSOURCE_BOLD); // keywords
+	SetStyle(wxSTC_C_STRING,"RED","WHITE",0); // string
+	SetStyle(wxSTC_C_CHARACTER,"RED","WHITE",0); // character
+	SetStyle(wxSTC_C_UUID,"ORCHID","WHITE",0); // uuid
+	SetStyle(wxSTC_C_PREPROCESSOR,"FOREST GREEN","WHITE",0); // preprocessor
+	SetStyle(wxSTC_C_OPERATOR,"BLACK","WHITE",mxSOURCE_BOLD); // operator 
+	SetStyle(wxSTC_C_IDENTIFIER,"BLACK","WHITE",0); // identifier 
+	SetStyle(wxSTC_C_STRINGEOL,"RED","Z LIGHT GRAY",0); // string eol
+	SetStyle(wxSTC_C_VERBATIM,"BLACK","WHITE",0); // default verbatim
+	SetStyle(wxSTC_C_REGEX,"ORCHID","WHITE",0); // regexp  
+	SetStyle(wxSTC_C_COMMENTLINEDOC,"FOREST GREEN","WHITE",0); // special comment 
+	SetStyle(wxSTC_C_WORD2,"DARK BLUE","WHITE",0); // extra words
+	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,"CORNFLOWER BLUE","WHITE",0); // doxy keywords
+	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,"RED","WHITE",0); // keywords errors
+	SetStyle(wxSTC_C_GLOBALCLASS,"BLACK","LIGHT BLUE",0); // keywords errors
+	SetStyle(wxSTC_STYLE_BRACELIGHT,"RED","Z LIGHT BLUE",mxSOURCE_BOLD); 
+	SetStyle(wxSTC_STYLE_BRACEBAD,"DARK RED","WHITE",mxSOURCE_BOLD); 
 #ifdef WX3
-	SetStyle(ANNOTATION_STYLE,"",config->font_size-1,"DARK RED","LIGHT YELLOW",mxSOURCE_ITALIC); 
+	SetStyle(ANNOTATION_STYLE,"DARK RED","LIGHT YELLOW",mxSOURCE_ITALIC|mxSOURCE_SMALLER); 
 	AnnotationSetVisible(wxSTC_ANNOTATION_INDENTED);
 #endif
 }

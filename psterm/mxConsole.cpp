@@ -91,7 +91,9 @@ static wxColour colors_white[18][2] = {
 
 static wxColour (*colors)[2]=colors_white;
 	
-mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) {
+mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme, const wxString &font_name, int font_size)
+	: wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,0) 
+{
 	
 	SetRandSeed();
 	
@@ -116,7 +118,9 @@ mxConsole::mxConsole(mxFrame *parent, wxScrollBar *scroll, bool dark_theme):wxPa
 	timer_process=new wxTimer(this,CONSOLE_ID_TIMER_PROCESS);
 	buffer_h=buffer_w=0; buffer=NULL;
 	Reset(true);
-	SetFontSize(11);
+	m_font_size = font_size;
+	m_font_name = font_name;
+	SetFont();
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM); // para evitar el flickering en windows
 }
 
@@ -252,8 +256,8 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 	} else parent->ShouldClose();
 }
 
-void mxConsole::SetFontSize (int size) {
-	font = wxFont(size,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+void mxConsole::SetFont() {
+	font = wxFont(m_font_size,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,m_font_name);
 	wxClientDC dc(this); dc.SetFont(font);
 	char_h=dc.GetCharHeight(); char_w=dc.GetCharWidth();
 }
@@ -518,11 +522,12 @@ void mxConsole::RecordInput (wxString input) {
 
 void mxConsole::OnMouseWheel (wxMouseEvent & evt) {
 	if (evt.ControlDown()) {
-		int fsize=font.GetPointSize();
 		if (evt.m_wheelRotation>0) {
-			fsize++;
-		} else if (fsize>4) fsize--;
-		SetFontSize(fsize);
+			m_font_size++;
+		} else if (m_font_size>4) {
+			m_font_size--;
+		}
+		SetFont();
 		timer_size->Start(_SIZE_TIME,true);
 		Refresh();
 	} else {

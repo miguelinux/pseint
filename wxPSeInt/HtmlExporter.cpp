@@ -69,7 +69,7 @@ bool HtmlExporter::Export(mxSource *src, wxString title, wxString fname) {
 }
 
 void HtmlExporter::DefineStyles() {
-	int font_size=config->font_size;
+	int font_size = config->wx_font_size;
 	SetStyle(wxSTC_C_DEFAULT,font_size,_T("BLACK"),_T("WHITE"),0); // default
 	SetStyle(wxSTC_C_COMMENT,font_size,_T("BLACK"),_T("WHITE"),0); // comment
 	SetStyle(wxSTC_C_COMMENTLINE,font_size,_T("Z DARK GRAY"),_T("WHITE"),mxSOURCE_ITALIC); // comment line
