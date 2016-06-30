@@ -114,7 +114,7 @@ public:
 	void OnTimerSize(wxTimerEvent &event); ///< calls resize when in timer_tize event
 	void OnSize( wxSizeEvent &event ); ///< starts timer_size for regenerating buffer after a resize event
 	void RebuildBuffer(); ///< recalcula buffer, se usa luego de un resize o de un settime
-	
+
 	
 	bool blinking_caret_aux; ///< aux flag for caret blinking animation
 	wxTimer *timer_caret; ///< timer to blink caret if caret_visible

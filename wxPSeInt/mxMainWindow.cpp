@@ -1835,22 +1835,27 @@ void mxMainWindow::OnRTSyntaxAuxTimer (wxTimerEvent & event) {
 //	_LOG("mxMainWindow::OnRTSyntaxAuxTimer out");
 }
 
-#define _time_ms 200
+#define _time_ms 250
 #define _min_size 1
 
 void mxMainWindow::ShowPanel (wxString helper, wxWindow * panel, bool anim) {
 //	IF_THERE_IS_SOURCE CURRENT_SOURCE->Freeze();
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (pi.IsShown()) return;
-	int final_w=panel->GetSizer()->Fit(panel).GetWidth();
+	int final_w = panel->GetSizer()->Fit(panel).GetWidth();
 	pi.Show(); 
 	if (anim && config->animate_gui) {
-		long w=5; wxStopWatch sw;
+		long w = 5; wxStopWatch sw;
 		pi.Fixed(); 
 		do {
-			int d=sw.Time();
-			w=(d*final_w)/_time_ms;
-			if (w<5) w=5; else if (w>final_w) w=final_w;
+			long d = sw.Time();
+			if (d<_time_ms) {
+				float x= 1-float(d)/_time_ms;
+				w = long((1-x*x)*final_w);
+				if (w<5) w=5;
+			} else {
+				w = final_w;
+			}
 			pi.MinSize(w,-1);
 			pi.MaxSize(w,-1);
 			pi.BestSize(w,-1);
@@ -1878,8 +1883,9 @@ void mxMainWindow::HidePanel(wxString helper, wxWindow * panel, bool anim) {
 		pi.Fixed(); 
 		long w=5; wxStopWatch sw;
 		do {
-			int d=sw.Time();
-			w=start_w-(d*start_w)/_time_ms;
+			long d = sw.Time();
+			float x = float(d)/_time_ms;
+			w = long(start_w*(1-x*x));
 			if (w<5) w=5;
 			pi.MinSize(w,_min_size);
 			pi.MaxSize(w,-1);
