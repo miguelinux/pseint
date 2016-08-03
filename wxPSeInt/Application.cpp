@@ -66,7 +66,11 @@ bool mxApplication::OnInit() {
 	wxImage::AddHandler(new wxXPMHandler);
 	
 	config = new ConfigManager(zpath);
-	if (logger) logger->DumpVersions();
+	if (logger) {
+		logger->DumpVersions();
+		config->Log();
+	}
+	
 	
 	wxSocketBase::Initialize();
 	

@@ -80,6 +80,8 @@ public:
 	int GetCommPort();
 	int GetDebugPort();
 	
+	void Log() const;
+	
 };
 
 extern ConfigManager *config;

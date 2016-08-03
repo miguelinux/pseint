@@ -296,3 +296,19 @@ wxString ConfigManager::GetTTYCommand ( ) {
 	return tty_command;
 }
 
+void ConfigManager::Log ( ) const {
+	_LOG("ConfigManager");
+	_LOG("   filename="<<filename);
+	_LOG("   profile="<<profile);
+	_LOG("   pseint_dir="<<pseint_dir);
+	_LOG("   home_dir="<<home_dir);
+	_LOG("   psdraw3_command="<<psdraw3_command);
+	_LOG("   psdrawe_command="<<psdrawe_command);
+	_LOG("   pseint_command="<<pseint_command);
+	_LOG("   pseval_command="<<pseval_command);
+	_LOG("   psexport_command="<<psexport_command);
+	_LOG("   psterm_command="<<psterm_command);
+	_LOG("   tty_command="<<tty_command);
+	_LOG("   temp_dir="<<temp_dir);
+}
+
