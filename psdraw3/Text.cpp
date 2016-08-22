@@ -19,8 +19,58 @@ void GetTextSize(const string &label, int &w, int &h) {
 void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	glColor3fv(color);
 	glRasterPos2f(x,y);
-	int i=0;
-	while (t[i]!='\0') glutBitmapCharacter(GLUT_BITMAP_9_BY_15,t[i++]);
+	
+	struct char_info { 
+		char c; bool acento, mayusculas, enie; 
+		void set_char(char c) { acento = mayusculas = enie = false; this->c = c; }
+		void set_acento(char x) { c = x; acento = true; mayusculas = x>='A'&&x<='Z'; }
+		void set_enie(char x) { c = x; enie = true; mayusculas = x>='A'&&x<='Z'; }
+	};
+	static char_info char_map[256];
+	static bool map_inicializado = false;
+	if (!map_inicializado) {
+		for(int i=0;i<256;i++)
+			char_map[i].set_char((char)i);
+		char_map['á'].set_acento('a');
+		char_map['é'].set_acento('e');
+		char_map['í'].set_acento('i');
+		char_map['ó'].set_acento('o');
+		char_map['ú'].set_acento('u');
+		char_map['Á'].set_acento('A');
+		char_map['É'].set_acento('E');
+		char_map['Í'].set_acento('I');
+		char_map['Ó'].set_acento('O');
+		char_map['Ú'].set_acento('U');
+		char_map['ñ'].set_enie('n');
+		char_map['Ñ'].set_enie('N');
+	}
+	for(int i=0;t[i]!='\0';++i) {
+		char_info &ci = char_map[t[i]];
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,ci.c);
+		if (ci.acento) {
+			glLineWidth(1);
+			glBegin(GL_LINES);
+			if (ci.mayusculas) {
+				glVertex2i(x+i*9+4,y+11);
+				glVertex2i(x+i*9+6,y+14);
+			} else {
+				glVertex2i(x+i*9+4,y+9);
+				glVertex2i(x+i*9+6,y+12);
+			}
+			glEnd();
+		} else if (ci.enie) {
+			glLineWidth(1);
+			glBegin(GL_LINES);
+			if (ci.mayusculas) {
+				glVertex2i(x+i*9+2,y+11);
+				glVertex2i(x+i*9+7,y+11);
+			} else {
+				glVertex2i(x+i*9+3,y+8);
+				glVertex2i(x+i*9+6,y+8);
+			}
+			glEnd();
+		}
+	}
 //	glPushMatrix();
 //	glTranslatef(x,y,0);
 //	glScalef(.08,.12,1);

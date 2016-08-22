@@ -223,25 +223,25 @@ void display_cb() {
 		switch (edit->type) {
 		case ET_LEER: SetStatus(color_selection,"? Lista de variables a leer, separadas por coma."); break;
 		case ET_PROCESO: SetStatus(color_selection,(edit->lpre=="Proceso "||edit->lpre=="Algoritmo ")?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
-		case ET_COMENTARIO: SetStatus(color_selection,"? Texto libre, sera ignorado por el interprete."); break;
+		case ET_COMENTARIO: SetStatus(color_selection,"? Texto libre, será ignorado por el interprete."); break;
 		case ET_ESCRIBIR: SetStatus(color_selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
-		case ET_SI: SetStatus(color_selection,"? Expresion logica."); break;
-		case ET_SEGUN: SetStatus(color_selection,"? Expresion de control para la estructura."); break;
-		case ET_OPCION: SetStatus(color_selection,"? Posible valor para la expresion de control."); break;
+		case ET_SI: SetStatus(color_selection,"? Expresión lógica."); break;
+		case ET_SEGUN: SetStatus(color_selection,"? Expresión de control para la estructura."); break;
+		case ET_OPCION: SetStatus(color_selection,"? Posible valor para la expresión de control."); break;
 		case ET_PARA: 
 			if (edit->variante)	SetStatus(color_selection,"? Identificador temporal para el elemento del vector/matriz.");
 			else SetStatus(color_selection,"? Identificador de la variable de control (contador)."); 
 			break;
-		case ET_MIENTRAS: SetStatus(color_selection,"? Expresion de control (logica)."); break;
-		case ET_REPETIR: SetStatus(color_selection,"? Expresion de control (logica)."); break;
-		case ET_ASIGNAR: SetStatus(color_selection,"? Asignacion o instruccion secuencial."); break;
+		case ET_MIENTRAS: SetStatus(color_selection,"? Expresión de control (lógica)."); break;
+		case ET_REPETIR: SetStatus(color_selection,"? Expresión de control (lógica)."); break;
+		case ET_ASIGNAR: SetStatus(color_selection,"? Asignación o instruccion secuencial."); break;
 		case ET_AUX_PARA: 
 			if (edit->GetParent()->variante)	SetStatus(color_selection,"? Identificador del vector/matriz a recorrer.");
 			else SetStatus(color_selection,
 						   edit->GetParent()->GetChild(1)==edit
 								? "? Valor inicial para el contador."
 								: ( edit->GetParent()->GetChild(2)==edit
-									? "? Paso, incremento del contador por cada iteracion."
+									? "? Paso, incremento del contador por cada iteración."
 								    : "? Valor final para el contador." ) ); 
 			break;
 		default:;
