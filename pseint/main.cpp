@@ -306,7 +306,7 @@ int main(int argc, char* argv[]) {
 					programa[i].instruccion.erase(p+2,1);
 					programa[i].instruccion.erase(programa[i].instruccion.size()-2,1);
 					// unir varias asignaciones en una sola linea si asi estaban originalmente y esto va para psdraw
-					while (i+1<programa.GetSize() && programa[i].type==IT_ASIGNAR && programa[i].num_linea==programa[i+1].num_linea) 
+					while (i+1<programa.GetSize() && programa[i+1].type==IT_ASIGNAR && programa[i].num_linea==programa[i+1].num_linea) 
 					{
 						++i;
 						// sacar los parentesis adicionales

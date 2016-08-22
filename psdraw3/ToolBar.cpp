@@ -16,7 +16,7 @@ void ToolBar::Draw ( ) {
 	switch(m_selection) {
 		case MO_ZOOM_EXTEND: SetStatus(color_selection,"Ajustar el zoom para visualizar todo el diagrama."); break;
 		case MO_TOGGLE_FULLSCREEN: SetStatus(color_selection,"Alternar entre modo ventana y pantalla completa."); break;
-		case MO_TOGGLE_COLORS: SetStatus(color_selection,"Alternar entre modo ventana y pantalla completa."); break;
+		case MO_TOGGLE_COLORS: SetStatus(color_selection,"Alternar entre modo color y escala de grises."); break;
 		case MO_CROP_LABELS: SetStatus(color_selection,"Acortar textos muy largos en etiquetas."); break;
 		case MO_TOGGLE_COMMENTS: SetStatus(color_selection,"Mostrar/Ocultar comentarios."); break;
 		case MO_CHANGE_STYLE: SetStatus(color_selection,"Cambiar el tipo de diagrama (clásico, o Nassi-Shneiderman)."); break;

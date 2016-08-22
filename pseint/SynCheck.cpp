@@ -67,7 +67,7 @@ static string SynCheckAux1(string &cadena) {
 						{ is_inline=true; break; }
 				retval = cadena.substr(i+1); 
 				while (retval.size() && (retval[0]==' '||retval[0]=='\t')) retval.erase(0,1);
-				retval.insert(0,is_inline?string("#comment-inline "):string("#comment "));
+				if (retval.size()) retval.insert(0,is_inline?string("#comment-inline "):string("#comment "));
 			}
 			cadena=cadena.substr(0,i-1); len=i-1; break; 
 		}
