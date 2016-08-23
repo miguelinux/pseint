@@ -1,7 +1,7 @@
 all: 
 	${MAKE} -C pseint -f Makefile.m32
 	${MAKE} -C psexport -f Makefile.m32
-	${MAKE} -C hoewrap -f Makefile.m32 clean
+	${MAKE} -C hoewrap -f Makefile.m32
 	${MAKE} -C wxPSeInt -f Makefile.m32
 	${MAKE} -C pseval -f Makefile.m32
 	${MAKE} -C updatem -f Makefile.m32

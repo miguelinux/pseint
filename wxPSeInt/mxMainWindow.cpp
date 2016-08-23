@@ -649,7 +649,15 @@ void mxMainWindow::RegenFileMenu(wxString path) {
 
 mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	
-	if (!wxFileName::FileExists(path)) {
+	bool file_exists = wxFileName(path).FileExists();
+#ifndef __WIN32__
+	if (!file_exists) { // problems due to ansi-wx on utf8-linux
+		wxFileName new_filename(path.ToUTF8().data());
+		if (new_filename.FileExists()) { path = new_filename.GetFullPath(); file_exists=true; }
+	}
+#endif
+	
+	if (!file_exists) {
 		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
 		return NULL;
 	}
@@ -683,7 +691,18 @@ void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
 		wxFileDialog dlg (this, _Z("Guardar"),source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->filename).GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 		if (dlg.ShowModal() == wxID_OK) {
-			wxFileName file(dlg.GetPath());
+			wxFileName file = dlg.GetPath();
+#ifndef __WIN32__
+			if (file.GetFullPath().IsEmpty()) { // problems due to ansi-wx on utf8-linux
+				wxMessageBox("El nombre del archivo o de alguna carpeta en su ruta\n"
+							 "contiene acentos u otro caracteres especiales. En este\n"
+							 "sistema ZinjaI no puede guardar correctamente los\n"
+							 "cambios del archivo a menos que modifique su nombre o ruta.",
+							 "Error",wxOK|wxICON_ERROR,this);
+				OnFileSaveAs(evt);
+				return;
+			}
+#endif
 			if (file.GetExt().Len()==0) file.SetExt("psc");
 			source->UnExample();
 			config->last_dir=file.GetPath();

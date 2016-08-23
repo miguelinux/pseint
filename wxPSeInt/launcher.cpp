@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 	FixMissingLibPNG12(argv[0]);
 	setenv("UBUNTU_MENUPROXY","",1);
 	setenv("LIBOVERLAY_SCROLLBAR","0",1);
-	setenv("LANG","",1); // for fixing the problem with utf8 locale and ansi wx build
-	setenv("LC_CTYPE","",1); // for fixing the problem with utf8 locale and ansi wx build
+	setenv("LANG","C",1); // for fixing the problem with utf8 locale and ansi wx build
+	setenv("LC_CTYPE","C",1); // for fixing the problem with utf8 locale and ansi wx build
 	fix_argv(argv);
 	pid_t pid=fork();
 	if (pid==0) {

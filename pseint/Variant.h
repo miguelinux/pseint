@@ -4,7 +4,7 @@
 #include <cassert>
 #include <iostream>
 
-#ifdef NDEBUG
+#if defined(NDEBUG) || defined(__APPLE__)
 #	define Assert(x) 
 #else
     /// para usar como el assert de c, pero "int3" da paso al depurador

@@ -1,7 +1,7 @@
 include ../mingw.conf
 OBJS_DIR=../temp/hoew_w32_rls
-CFLAGS= -fshow-column -fno-diagnostics-show-caret   -O2   
-CXXFLAGS= -fshow-column -fno-diagnostics-show-caret   -O2   
+CFLAGS= -fshow-column -fno-diagnostics-show-caret   -O3
+CXXFLAGS= -fshow-column -fno-diagnostics-show-caret   -O3
 LDFLAGS=  -s  
 
 all: ${OBJS_DIR}/libhoewrap.a
