@@ -153,7 +153,7 @@ path=DataValue.h
 cursor=174:2
 [header]
 path=Variant.h
-cursor=6:31
+cursor=21:24
 open=true
 [other]
 path=../bin/help/cambios.html
@@ -171,7 +171,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=../bin
 always_ask_args=0
-args=/home/zaskar/.pseint/temp_1.psc --preservecomments --draw /mnt/rm/foo
+args=/home/zaskar/.pseint/temp_1.psc 
 exec_method=0
 exec_script=
 env_vars=

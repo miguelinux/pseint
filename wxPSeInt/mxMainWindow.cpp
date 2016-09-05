@@ -1009,15 +1009,13 @@ void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	bool alternative = wxGetKeyState(WXK_SHIFT);
-	wxString funcion = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso");
+	wxString funcion = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText(funcion.Upper()));
 	wxArrayString toins;
-	if (config->lang[LS_PREFER_FUNCION]) {
-		toins.Add(funcion+(alternative?"":" {variable_de_retorno} <-")+" {Nombre} ( {Argumentos} )");
-		toins.Add("\t");
-		toins.Add(wxString("Fin")+funcion);
-	}
+	toins.Add(funcion+(alternative?"":" {variable_de_retorno} <-")+" {Nombre} ( {Argumentos} )");
+	toins.Add("\t");
+	toins.Add(wxString("Fin")+funcion);
 	toins.Add("");
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
