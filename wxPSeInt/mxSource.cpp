@@ -897,7 +897,7 @@ bool mxSource::IndentLine(int l, bool goup) {
 				if (line[ws]=='\''||line[ws]=='\"') ws = SkipString(line,ws,len); // comillas
 				else {
 					if (line[ws]==';') break;
-					else if (line[ws]==':' && line[ws+1]!=':') {cur-=4; break;}
+					else if (line[ws]==':' && line[ws+1]!='=') {cur-=4; break;}
 				}
 				ws++;
 			}
