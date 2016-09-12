@@ -3,8 +3,17 @@
 #include <wx/string.h>
 
 #if wxABI_VERSION<30000
-#	define _Z(x) x
-#	define _ZZ(x) wxString(x)
+#	ifdef __APPLE__
+static wxCSConv cscUTF8("utf8");
+static wxCSConv cscMAC("MAC");
+#		define _Z(x)   cscMAC.cWC2MB(cscUTF8.cMB2WC(x))
+#		define _ZZ(x)  wxString(cscUTF8.cMB2WC(x),cscMAC)
+#		define _FixW(x) cscMAC.cWC2MB(x.wchar_str())
+#	else
+#		define _ZZ(x) wxString(x)
+#		define _Z(x) x
+#		define _FixW(x) x
+#	endif
 #	define _W2S(wxs) wxs.c_str()
 #	define _W2S_Len(wxs) wxs.Len()
 #	define _C(wxchar) wxchar
@@ -14,6 +23,7 @@
 #	define _if_wx3_else(a,b) b 
 #	define _if_unicode(x)
 #else	
+#	define _FixW(x) cscMAC.cWC2MB(x.wchar_str())
 #	define WX3
 #	define _Z(x) wxString::From8BitData(x)
 #	define _ZZ(x) wxString::From8BitData(x)

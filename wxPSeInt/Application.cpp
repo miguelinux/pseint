@@ -56,7 +56,6 @@ bool mxApplication::OnInit() {
 		else 
 			zpath = cmd_path;
 	}
-	
 	if (!flag && !wxFileName::FileExists(_T("pseint.dir")) && !wxFileName::FileExists(_T("PSeInt.dir")))
 		wxMessageBox(_Z("PSeInt no pudo determinar el directorio donde fue instalado. Compruebe que el directorio de trabajo actual sea el correcto."),_T("Error"));
 	
@@ -99,9 +98,9 @@ bool mxApplication::OnInit() {
 		new mxIconInstaller(true);
 #endif
 	
-//#ifdef __APPLE__
-//	wxMessageBox(_T("Bienvenido a PSeInt para Mac OS X. Esta una de las primeras versiones beta en este sistema operativo y por lo tanto algunas funcionalidades todavia no se encuentran disponibles: La ejecucion paso a paso no funcionara correctamente y la visualizacion de diagramas de flujo solo sera posible si cuenta con las bibliotecas del servidor X."),_T("Advertencia"));
-//#endif
+#if defined(__APPLE__) && defined(__STC_ZASKAR)
+	wxSTC_SetZaskarsFlags(ZF_FIXDEADKEYS_ESISO);
+#endif
 	
 	if (config->profile==NO_PROFILE) {
 		_LOG("mxApplication::OnInit NO_PROFILE");

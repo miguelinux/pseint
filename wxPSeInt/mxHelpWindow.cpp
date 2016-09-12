@@ -3,14 +3,15 @@
 #include <wx/sashwin.h>
 #include <wx/laywin.h>
 #include <wx/textfile.h>
+#include <wx/msgdlg.h>
 #include "mxHelpWindow.h"
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "mxUtils.h"
 #include "ConfigManager.h"
+#include "string_conversions.h"
 
 #define ERROR_PAGE(page) wxString("<I>ERROR</I>: La pagina \"")<<page<<"\" no se encuentra. <br><br> La ayuda de <I>PSeInt</I> aun esta en contruccion."
-#include <wx/msgdlg.h>
 
 mxHelpWindow *helpw;
 
@@ -59,14 +60,16 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (main_window,mxID_HELPW, "Ayud
 			while (i<str.Len() && str[i]=='\t') 
 				i++;
 			if (i!=0 && str.Len()>i+3) {
+				wxString name = _FixW( str.Mid(i+2).AfterFirst(' ') );
+				int icon = str[i]-'0';
 				if (i==tabs) {
-					node=tree->AppendItem(tree->GetItemParent(node),str.Mid(i+2).AfterFirst(' '),str[i]-'0');
+					node=tree->AppendItem(tree->GetItemParent(node),name,icon);
 				} else if (i>tabs) {
-					node=tree->AppendItem(node,str.Mid(i+2).AfterFirst(' '),str[i]-'0');
+					node=tree->AppendItem(node,name,icon);
 				} else {
 					for (unsigned int j=0;j<tabs-i;j++)
 						node=tree->GetItemParent(node);
-					node=tree->AppendItem(tree->GetItemParent(node),str.Mid(i+2).AfterFirst(' '),str[i]-'0');
+					node=tree->AppendItem(tree->GetItemParent(node),name,icon);
 				}
 				items[str.Mid(i+2).BeforeFirst(' ')]=node;
 				tabs=i;
