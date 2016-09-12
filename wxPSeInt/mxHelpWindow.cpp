@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxHelpWindow::OnLink)
 	EVT_CHAR_HOOK(mxHelpWindow::OnCharHook)
 	EVT_TEXT(wxID_ANY,mxHelpWindow::OnText)
+	EVT_SIZE(mxHelpWindow::OnMaximize)
 END_EVENT_TABLE();
 
 
@@ -298,7 +299,7 @@ static void ButtonSetEnabled(wxButton *button, bool value) {
 }
 
 void mxHelpWindow::RepaintButtons ( ) {
-	ButtonSetToggled(m_button_tree, bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10);
+	ButtonSetToggled(m_button_tree, bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()>10);
 	ButtonSetToggled(m_button_atop, GetWindowStyleFlag()&wxSTAY_ON_TOP);
 	ButtonSetToggled(m_button_index, html->GetOpenedPageTitle()=="Ayuda de PSeInt - Índice");
 	ButtonSetEnabled(m_button_prev, html->HistoryCanBack());
@@ -308,5 +309,12 @@ void mxHelpWindow::RepaintButtons ( ) {
 
 void mxHelpWindow::OnText (wxCommandEvent & evt) {
 	RepaintButtons();
+}
+
+void mxHelpWindow::OnMaximize (wxSizeEvent & evt) {
+	evt.Skip();
+	if (!IsMaximized() || !(GetWindowStyleFlag()&wxSTAY_ON_TOP)) return;
+	wxCommandEvent e2;
+	OnAlwaysOnTop(e2);
 }
 

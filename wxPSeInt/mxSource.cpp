@@ -864,7 +864,7 @@ void mxSource::OnEditIndentSelection(wxCommandEvent &evt) {
 
 bool mxSource::IndentLine(int l, bool goup) {
 	int btype;
-	int cur = GetIndentLevel(l,goup,&btype);
+	int cur = GetIndentLevel(l,goup,btype);
 	wxString line = GetLine(l);
 	int len = line.Len();
 	int ws = SkipWhite(line,0,len); // ws = word start
@@ -914,8 +914,8 @@ bool mxSource::IndentLine(int l, bool goup) {
 	return true;
 }
 
-int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_func) {
-	int btype=BT_NONE;
+int mxSource::GetIndentLevel(int l, bool goup, int &e_btype, bool diff_proc_sub_func) {
+	e_btype = BT_NONE;
 	if (goup) while (l>=1 && !LineHasSomething(l-1)) l--;
 	if (l<1) return 0;
 	wxString line=GetLine(l-1);
@@ -932,7 +932,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 			comillas=!comillas;
 		} else if (!comillas) {
 			if (c=='/' && i+1<n && line[i+1]=='/')  return cur;
-			if (c==':' && line[i+1]!='=') { cur+=4; btype=BT_CASO; }
+			if (c==':' && line[i+1]!='=') { cur+=4; e_btype=BT_CASO; }
 			else if (!EsLetra(c,true)) {
 				if (wstart+1<i) {
 					if (ignore_next) {
@@ -944,23 +944,23 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 							if (config->lang[LS_LAZY_SYNTAX]) {
 								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
 								if (toupper(line[y])!='E' || toupper(line[y+1])!='S' || (line[y+2]!=' '&&line[y+2]!='\t'))
-									{ cur+=4; btype=BT_SI; }
-							} else 	{ cur+=4; btype=BT_SI; }
+									{ cur+=4; e_btype=BT_SI; }
+							} else 	{ cur+=4; e_btype=BT_SI; }
 						}
-						else if (word=="SINO") { cur+=4; btype=BT_SINO; }
-						else if (word=="PROCESO") { cur+=4; btype=BT_PROCESO; }
-						else if (word=="ALGORITMO") { cur+=4; btype=diff_proc_sub_func?BT_ALGORITMO:BT_PROCESO; }
-						else if (word=="FUNCION"||word==_Z("FUNCIÓN")) { cur+=4; btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
-						else if (word=="SUBPROCESO") { cur+=4; btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
-						else if (word=="SUBALGORITMO") { cur+=4; btype=diff_proc_sub_func?BT_SUBALGORITMO:BT_PROCESO; }
-						else if (word=="MIENTRAS" && !(i+4<n && line.SubString(wstart,i+4).Upper()=="MIENTRAS QUE ")) { cur+=4; btype=BT_MIENTRAS; }
-						else if (word=="SEGUN"||word==_Z("SEGÚN")) { cur+=8; btype=BT_SEGUN; }
-						else if (word=="PARA") { cur+=4; btype=BT_PARA;	}
-						else if (word=="REPETIR"||(first_word && word=="HACER")) { cur+=4; btype=BT_REPETIR; }
-						else if (word=="FIN") { ignore_next=true; btype=BT_NONE; }
-						else if (btype!=BT_NONE && (word=="FINSEGUN"||word==_Z("FINSEGÚN")||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINALGORITMO"||word=="FINSUBALGORITMO"||word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN"))) {
-							if (btype==BT_SEGUN) cur-=4;
-							btype=BT_NONE; cur-=4;
+						else if (word=="SINO") { cur+=4; e_btype=BT_SINO; }
+						else if (word=="PROCESO") { cur+=4; e_btype=BT_PROCESO; }
+						else if (word=="ALGORITMO") { cur+=4; e_btype=diff_proc_sub_func?BT_ALGORITMO:BT_PROCESO; }
+						else if (word=="FUNCION"||word==_Z("FUNCIÓN")) { cur+=4; e_btype=diff_proc_sub_func?BT_FUNCION:BT_PROCESO; }
+						else if (word=="SUBPROCESO") { cur+=4; e_btype=diff_proc_sub_func?BT_SUBPROCESO:BT_PROCESO; }
+						else if (word=="SUBALGORITMO") { cur+=4; e_btype=diff_proc_sub_func?BT_SUBALGORITMO:BT_PROCESO; }
+						else if (word=="MIENTRAS" && !(i+4<n && line.SubString(wstart,i+4).Upper()=="MIENTRAS QUE ")) { cur+=4; e_btype=BT_MIENTRAS; }
+						else if (word=="SEGUN"||word==_Z("SEGÚN")) { cur+=8; e_btype=BT_SEGUN; }
+						else if (word=="PARA") { cur+=4; e_btype=BT_PARA;	}
+						else if (word=="REPETIR"||(first_word && word=="HACER")) { cur+=4; e_btype=BT_REPETIR; }
+						else if (word=="FIN") { ignore_next=true; e_btype=BT_NONE; }
+						else if (e_btype!=BT_NONE && (word=="FINSEGUN"||word==_Z("FINSEGÚN")||word=="FINPARA"||word=="FINMIENTRAS"||word=="FINSI"||word=="MIENTRAS"||word=="FINPROCESO"||word=="FINALGORITMO"||word=="FINSUBALGORITMO"||word=="FINSUBPROCESO"||word=="FINFUNCION"||word==_Z("FINFUNCIÓN"))) {
+							if (e_btype==BT_SEGUN) cur-=4;
+							e_btype=BT_NONE; cur-=4;
 						}
 						first_word=false;
 					}
@@ -970,7 +970,6 @@ int mxSource::GetIndentLevel(int l, bool goup, int *e_btype, bool diff_proc_sub_
 			}
 		}
 	}
-	if (e_btype) *e_btype=btype;
 	return cur;
 }
 
@@ -1519,7 +1518,7 @@ int mxSource::GetIndent(int line) {
 void mxSource::TryToAutoCloseSomething (int l) {
 	// ver si se abre una estructura
 	int btype;
-	GetIndentLevel(l,false,&btype,true); 
+	GetIndentLevel(l,false,btype,true); 
 	// buscar la siguiente linea no nula
 	int l2=l+1,ln=GetLineCount();
 	if (btype==BT_NONE||btype==BT_SINO||btype==BT_CASO) return;

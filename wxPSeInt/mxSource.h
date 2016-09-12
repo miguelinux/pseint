@@ -103,7 +103,7 @@ public:
 	void MessageReadOnly();
 	
 	int GetIndent(int line);
-	int GetIndentLevel(int l, bool goup, int *btype=NULL, bool diff_proc_sub_func=false);
+	int GetIndentLevel(int l, bool goup, int &btype, bool diff_proc_sub_func=false);
 	void Indent(int l1, int l2);
 	bool IndentLine(int l, bool goup=true);
 	void OnEditIndentSelection(wxCommandEvent &evt);

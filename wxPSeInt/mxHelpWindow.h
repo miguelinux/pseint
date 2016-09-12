@@ -40,6 +40,7 @@ public:
 	void OnSashDrag (wxSashEvent& event);
 	void OnCharHook(wxKeyEvent &evt);
 	void OnText(wxCommandEvent &evt);
+	void OnMaximize(wxSizeEvent &evt);
 	mxHelpWindow(wxString file=_T("index.html"));
 };
 
