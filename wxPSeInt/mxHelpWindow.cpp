@@ -17,7 +17,8 @@ mxHelpWindow *helpw;
 
 BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 	EVT_CLOSE(mxHelpWindow::OnClose)
-	EVT_BUTTON(mxID_HELPW_HIDETREE, mxHelpWindow::OnHideTree)
+	EVT_BUTTON(mxID_HELPW_SHOWTREE, mxHelpWindow::OnShowTree)
+	EVT_BUTTON(mxID_HELPW_ALWAYSONTOP, mxHelpWindow::OnAlwaysOnTop)
 	EVT_BUTTON(mxID_HELPW_HOME, mxHelpWindow::OnHome)
 	EVT_BUTTON(mxID_HELPW_PREV, mxHelpWindow::OnPrev)
 	EVT_BUTTON(mxID_HELPW_NEXT, mxHelpWindow::OnNext)
@@ -28,10 +29,14 @@ BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxHelpWindow::OnTree)
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxHelpWindow::OnLink)
 	EVT_CHAR_HOOK(mxHelpWindow::OnCharHook)
+	EVT_TEXT(wxID_ANY,mxHelpWindow::OnText)
 END_EVENT_TABLE();
 
 
-mxHelpWindow::mxHelpWindow(wxString file):wxFrame (main_window,mxID_HELPW, "Ayuda de PSeInt", wxDefaultPosition, wxSize(700,400),wxDEFAULT_FRAME_STYLE|wxSTAY_ON_TOP) {
+mxHelpWindow::mxHelpWindow(wxString file)
+	: wxFrame (main_window,mxID_HELPW, "Ayuda de PSeInt", 
+			   wxDefaultPosition, wxSize(700,400),wxDEFAULT_FRAME_STYLE) 
+{
 
 	wxPanel *panel= new wxPanel(this);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -87,27 +92,30 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (main_window,mxID_HELPW, "Ayud
 	
 	bottomSizer->Add(index_sash,wxSizerFlags().Proportion(0).Expand());
 	
-	wxBitmapButton *button_hide = new wxBitmapButton(panel, mxID_HELPW_HIDETREE, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_tree.png"),wxBITMAP_TYPE_PNG));
-	wxBitmapButton *button_home = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_indice.png"),wxBITMAP_TYPE_PNG));
-	button_hide->SetToolTip("Mostrar/Ocultar Indice");
-	button_home->SetToolTip("Ir al indice");
-	wxBitmapButton *button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_anterior.png"),wxBITMAP_TYPE_PNG));
-	button_prev->SetToolTip("Ir a la pagina anterior");
-	wxBitmapButton *button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_siguiente.png"),wxBITMAP_TYPE_PNG));
-	button_next->SetToolTip("Ir a la pagina siguiente");
+	m_button_tree = new wxBitmapButton(panel, mxID_HELPW_SHOWTREE, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_tree.png"),wxBITMAP_TYPE_PNG));
+	m_button_index = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_indice.png"),wxBITMAP_TYPE_PNG));
+	m_button_tree->SetToolTip("Mostrar/Ocultar Indice");
+	m_button_index->SetToolTip("Ir al indice");
+	m_button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_anterior.png"),wxBITMAP_TYPE_PNG));
+	m_button_prev->SetToolTip("Ir a la pagina anterior");
+	m_button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_siguiente.png"),wxBITMAP_TYPE_PNG));
+	m_button_next->SetToolTip("Ir a la pagina siguiente");
+	m_button_atop = new wxBitmapButton(panel, mxID_HELPW_ALWAYSONTOP, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_atop.png"),wxBITMAP_TYPE_PNG));
+	m_button_atop->SetToolTip("Hacer que la ventana de ayuda permanezca siempre visible (siempre sobre las demás ventanas)");
 	wxBitmapButton *button_copy = new wxBitmapButton(panel, mxID_HELPW_COPY, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_copiar.png"),wxBITMAP_TYPE_PNG));
 	button_copy->SetToolTip("Copiar seleccion");
-	topSizer->Add(button_hide,wxSizerFlags().Border(wxALL,2));
-	topSizer->Add(button_home,wxSizerFlags().Border(wxALL,2));
-	topSizer->Add(button_prev,wxSizerFlags().Border(wxALL,2));
-	topSizer->Add(button_next,wxSizerFlags().Border(wxALL,2));
+	topSizer->Add(m_button_tree,wxSizerFlags().Border(wxALL,2));
+	topSizer->Add(m_button_index,wxSizerFlags().Border(wxALL,2));
+	topSizer->Add(m_button_prev,wxSizerFlags().Border(wxALL,2));
+	topSizer->Add(m_button_next,wxSizerFlags().Border(wxALL,2));
+	topSizer->Add(m_button_atop,wxSizerFlags().Border(wxALL,2));
 	topSizer->Add(button_copy,wxSizerFlags().Border(wxALL,2));
 	search_text = new wxTextCtrl(panel,wxID_ANY);
 	topSizer->Add(search_text,wxSizerFlags().Border(wxALL,2).Proportion(1).Expand());
 
-	wxBitmapButton *search_button = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_buscar.png"),wxBITMAP_TYPE_PNG));
-	search_button->SetToolTip("Buscar...");
-	topSizer->Add(search_button,wxSizerFlags().Border(wxALL,2));
+	m_button_search = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_buscar.png"),wxBITMAP_TYPE_PNG));
+	m_button_search->SetToolTip("Buscar...");
+	topSizer->Add(m_button_search,wxSizerFlags().Border(wxALL,2));
 	panel->SetSizer(topSizer);
 	html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
 	bottomSizer->Add(html,wxSizerFlags().Proportion(1).Expand());
@@ -116,7 +124,7 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (main_window,mxID_HELPW, "Ayud
 	SetSizer(sizer);
 	bottomSizer->SetItemMinSize(index_sash,200, 10);
 	bottomSizer->Layout();
-	search_button->SetDefault();
+	m_button_search->SetDefault();
 	ShowHelp(file);
 }
 
@@ -127,8 +135,8 @@ void mxHelpWindow::ShowIndex() {
 void mxHelpWindow::ShowHelp(wxString file) {
 	html->LoadPage(DIR_PLUS_FILE(config->help_dir,file));
 	HashStringTreeItem::iterator it = items.find(file);
-	if (it!=items.end())
-		tree->SelectItem(it->second);
+	if (it!=items.end()) tree->SelectItem(it->second);
+	RepaintButtons();
 	Show();
 	Raise();
 }
@@ -137,35 +145,45 @@ void mxHelpWindow::OnClose(wxCloseEvent &evt) {
 	Hide();
 }
 
-mxHelpWindow::~mxHelpWindow() {
+void mxHelpWindow::OnShowTree(wxCommandEvent &event) {
+	if (bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10) {
+		bottomSizer->SetItemMinSize(index_sash,200, 10);	
+	} else {
+		bottomSizer->SetItemMinSize(index_sash,0, 10);
+	}
+	bottomSizer->Layout(); 
+	RepaintButtons();
 }
 
-void mxHelpWindow::OnHideTree(wxCommandEvent &event) {
-	if (bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10)
-		bottomSizer->SetItemMinSize(index_sash,200, 10);	
+void mxHelpWindow::OnAlwaysOnTop(wxCommandEvent &event) {
+	if (GetWindowStyleFlag()&wxSTAY_ON_TOP)
+		SetWindowStyleFlag(GetWindowStyleFlag()&(~wxSTAY_ON_TOP));
 	else
-		bottomSizer->SetItemMinSize(index_sash,0, 10);
-	bottomSizer->Layout();
+		SetWindowStyleFlag(GetWindowStyleFlag()|wxSTAY_ON_TOP);
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnHome(wxCommandEvent &event) {
 	html->LoadPage(DIR_PLUS_FILE(config->help_dir,"index.html"));
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnPrev(wxCommandEvent &event) {
 	html->HistoryBack();
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnNext(wxCommandEvent &event) {
 	html->HistoryForward();
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnCopy(wxCommandEvent &event) {
-	if (html->SelectionToText()=="") 
-		return;
-	wxTheClipboard->Open();
-	wxTheClipboard->SetData(new wxTextDataObject(html->SelectionToText()));
-	wxTheClipboard->Close();
+	wxString text = html->SelectionToText()=="" ? html->ToText() : html->SelectionToText() ;
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(text));
+		wxTheClipboard->Close();
+	}
 }
 
 void mxHelpWindow::OnSearch(wxCommandEvent &event) {
@@ -210,6 +228,7 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 		html->SetPage(result);
 	else
 		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>No se encontraron coincidencias para \"")<<search_text->GetValue()<<"\".</B></BODY></HTML>");
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnSearchAll(wxCommandEvent &event) {
@@ -237,6 +256,7 @@ void mxHelpWindow::OnTree(wxTreeEvent &event) {
 		else
 			html->SetPage(ERROR_PAGE(it->first));
 	}
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
@@ -259,6 +279,7 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		} else
 			event.Skip();
 	}
+	RepaintButtons();
 }
 
 void mxHelpWindow::OnCharHook(wxKeyEvent &evt) {
@@ -267,3 +288,25 @@ void mxHelpWindow::OnCharHook(wxKeyEvent &evt) {
 	else
 		evt.Skip();
 }
+
+static void ButtonSetToggled(wxButton *button, bool value) {
+	button->SetBackgroundColour(wxSystemSettings::GetColour(value?wxSYS_COLOUR_3DSHADOW:wxSYS_COLOUR_BTNFACE));
+}
+
+static void ButtonSetEnabled(wxButton *button, bool value) {
+	button->Enable(value);
+}
+
+void mxHelpWindow::RepaintButtons ( ) {
+	ButtonSetToggled(m_button_tree, bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10);
+	ButtonSetToggled(m_button_atop, GetWindowStyleFlag()&wxSTAY_ON_TOP);
+	ButtonSetToggled(m_button_index, html->GetOpenedPageTitle()=="Ayuda de PSeInt - Índice");
+	ButtonSetEnabled(m_button_prev, html->HistoryCanBack());
+	ButtonSetEnabled(m_button_next, html->HistoryCanForward());
+	ButtonSetEnabled(m_button_search, !search_text->GetValue().IsEmpty());
+}
+
+void mxHelpWindow::OnText (wxCommandEvent & evt) {
+	RepaintButtons();
+}
+

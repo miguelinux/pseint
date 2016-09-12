@@ -122,7 +122,7 @@ void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
 #endif
 	wxLaunchDefaultBrowser("http://pseint.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE);
 	Close();
-	if (do_exit) main_window->OnClose(evt);
+	if (do_exit) main_window->OnFileClose(evt);
 }
 
 void mxUpdatesChecker::BackgroundCheck() {

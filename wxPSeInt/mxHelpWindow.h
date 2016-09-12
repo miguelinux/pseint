@@ -19,14 +19,17 @@ private:
 	wxHtmlWindow *html;
 	wxTextCtrl *search_text;
 	wxTreeCtrl *tree;
+	wxButton *m_button_tree, *m_button_atop, *m_button_index, *m_button_prev, *m_button_next, *m_button_search;
 	wxSashLayoutWindow *index_sash;
 	HashStringTreeItem items;
 	void OnTree(wxTreeEvent &event);
 	void OnLink (wxHtmlLinkEvent &event);
+	void RepaintButtons();
 public:
 	void ShowIndex();
 	void ShowHelp(wxString file);
-	void OnHideTree(wxCommandEvent &evt);
+	void OnShowTree(wxCommandEvent &evt);
+	void OnAlwaysOnTop(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	void OnHome(wxCommandEvent &event);
 	void OnPrev(wxCommandEvent &event);
@@ -36,8 +39,8 @@ public:
 	void OnSearchAll(wxCommandEvent &event);
 	void OnSashDrag (wxSashEvent& event);
 	void OnCharHook(wxKeyEvent &evt);
+	void OnText(wxCommandEvent &evt);
 	mxHelpWindow(wxString file=_T("index.html"));
-	~mxHelpWindow();
 };
 
 extern mxHelpWindow *helpw;
