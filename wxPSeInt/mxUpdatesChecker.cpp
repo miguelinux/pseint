@@ -113,8 +113,16 @@ void mxUpdatesChecker::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
+#ifdef __WIN3__
+	bool do_exit = wxMessageBox(_Z("Si decide actualizar PSeInt ahora, deberá cerrar \n"
+								   "esta instancia antes de ejecutar el nuevo instalador.\n\n"
+								   "¿Desea cerrar PSeInt ahora?"),_Z("Actualización"),wxYES_NO|wxICON_QUESTION,this)==wxYES;
+#else
+	bool do_exit = false;
+#endif
 	wxLaunchDefaultBrowser("http://pseint.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE);
 	Close();
+	if (do_exit) main_window->OnClose(evt);
 }
 
 void mxUpdatesChecker::BackgroundCheck() {
