@@ -152,8 +152,14 @@ struct DataValue {
 	bool IsString() const { return !type.cb_log && !type.cb_num &&  type.cb_car; }
 	
 	bool GetAsBool() const {
-		Assert(!value.IsDefined()||value.Is<bool>());
+//		Assert(!value.IsDefined()||value.Is<bool>());
 		if (value.Is<bool>()) return value.As<bool>();
+		else if (value.Is<std::string>()) {
+			const std::string &str = value.As<std::string>();
+			return !str.empty() && (str[0]=='1'||toupper(str[0]=='V'));
+		}
+		else if (value.Is<double>()) return value.As<double>()==1;
+		else if (value.Is<int>()) return value.As<int>()==1;
 		else return false;
 	}
 	
