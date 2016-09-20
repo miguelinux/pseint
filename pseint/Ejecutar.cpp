@@ -92,7 +92,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 					_sub(line,string("Se evalúa la expresion: ")+aux1);
 					DataValue res = Evaluar(aux1);
 					if (res.IsOk()) {
-						cout<< res.GetForUser() <<flush; // Si es variable, muestra el contenido
+						string ans = res.GetForUser(); fixwincharset(ans);
+						cout<< ans <<flush; // Si es variable, muestra el contenido
 						_sub(line,string("Se muestra en pantalla el resultado: ")+res.GetForUser());
 					}
 				}
