@@ -649,7 +649,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
-		if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
+		while (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
 		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
 	} else if (type==ET_COMENTARIO) {
