@@ -116,7 +116,7 @@ wxString HtmlExporter::ToHtml(wxString text) {
 	text.Replace(_T("\t"),tabs);
 	text.Replace(_T("<"),_T("&lt;"));
 	text.Replace(_T(">"),_T("&gt;"));
-//	text.Replace(_T("\n"),_T("<BR>\n"));
+	text.Replace(_T("\r"),_T(""));
 //	text.Replace(_T(" "),_T("&nbsp;"));
 	return text;
 }

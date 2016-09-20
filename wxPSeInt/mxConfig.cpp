@@ -69,7 +69,6 @@ void mxConfig::OnCancelButton(wxCommandEvent &evt) {
 	Close();
 }
 
-
 void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, "Cargar perfil desde archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 	if (dlg.ShowModal() == wxID_OK) {
@@ -80,15 +79,32 @@ void mxConfig::OnOpenButton (wxCommandEvent & evt) {
 	}
 }
 
+bool TodoMayusculas(const wxString &desc) {
+	return desc.Len()>10 && desc == desc.Upper();
+}
+
+bool TodoMayusculas(const std::string &desc) {
+	std::string copy = desc;
+	for(size_t i=0;i<copy.size();i++) copy[i]=toupper(copy[i]);
+	return desc.size()>10 && desc==copy;
+}
+
 void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, "Guardar perfil en archivo", config->last_dir, "", "Cualquier Archivo (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
 		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 		LangSettings l(LS_INIT);
-		l.descripcion = wxGetTextFromUser("Ingrese una descripción breve del perfil.","Guardar Perfil","",this);
-		if (l.descripcion.empty()) return;
+		while(true) {
+			l.descripcion = wxGetTextFromUser(_Z("Ingrese una descripción del perfil (por\n"
+											  "favor incluya materia, carrera, institución\n"
+											  "y nombre del docente)."),_Z("Guardar Perfil"),"",this);
+			if (l.descripcion.empty()) return;
+			if (!TodoMayusculas(l.descripcion)) break;
+			wxMessageBox(_Z("¡NO ME GRITE!"),_Z("Por favor"),wxOK|wxICON_ERROR);
+		}
 		CopyToStruct(l);
 		l.Save(dlg.GetPath());
+		wxMessageBox(_ZZ("Perfil guardado en \"")+dlg.GetPath()+_Z("\""));
 	}
 }
 
