@@ -188,7 +188,7 @@ void mxCreatorWindow::OnShowErrors (wxCommandEvent & event) {
 
 void mxCreatorWindow::OnGenerateSolutions (wxCommandEvent & event) {
 	wxString cmd = pseint_command; 
-	cmd.Replace("--create_new_test_package=1",GetFilePath("solution.psc"),false);
+	cmd.Replace("--create_new_test_package=1",wxString("\"")+GetFilePath("solution.psc")+"\"",false);
 	(new mxMainWindow())->RunAllTests(cmd,true);
 }
 
