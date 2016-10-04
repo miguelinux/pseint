@@ -294,7 +294,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,InstructionT
 				if (w==w_operator) {
 					// solo puede seguir un operando (id, cte, o expresion)
 					if (next_es_letra) {
-						int j=i+2; while (EsLetra(cadena[j])) j++;
+						int j=i+2; while (EsLetra(cadena[j],true)) j++;
 						const string word=cadena.substr(i+1,j-i-1);
 						if (PalabraReservada(word) && word!=VERDADERO && word!=FALSO) 
 							{SynError (237,"Falta operando (antes de "+cadena.substr(i+1,j-i-1)+")."); errores++; } // hola+ ;
