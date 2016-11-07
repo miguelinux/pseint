@@ -480,6 +480,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					_sub(line,"La expresión fue Verdadera, se iniciará una iteración.");
 					Ejecutar(line+1,line_finpara-1);
 					_pos(line);
+					res_cont = Evaluar(contador,vt_numerica); // pueden haber cambiado a para el contador!!!
 					memoria->EscribirValor(contador,DataValue::MakeReal(res_cont.GetAsReal()+res_paso.GetAsReal()));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
 				} while(true);

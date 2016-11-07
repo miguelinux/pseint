@@ -1,2 +1,2 @@
-#define VERSION 20161003
+#define VERSION 20161107
 #include "version_common.h"
