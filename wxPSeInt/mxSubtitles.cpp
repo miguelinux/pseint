@@ -39,7 +39,7 @@ void mxSubtitles::AddMessage (int linea, int inst, wxString msg) {
 void mxSubtitles::OnButtonNext (wxCommandEvent & evt) {
 	if (debug_panel->GetState()==DS_FINALIZED) {
 		debug_panel->SetSubtitles(false);
-		debug_panel->DebugStartFromGui();
+		debug_panel->OnDebugButton(evt);
 	}
 	else debug_panel->OnDebugStep(evt);
 }

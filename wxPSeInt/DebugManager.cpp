@@ -9,6 +9,7 @@
 #include "mxDebugWindow.h"
 #include "mxSubtitles.h"
 #include "string_conversions.h"
+#include "Logger.h"
 using namespace std;
 
 DebugManager *debug;
@@ -179,11 +180,12 @@ void DebugManager::SetSubtitles(bool b) {
 }
 
 void DebugManager::SetSocket (wxSocketBase * s) {
+	_LOG("DebugManager::SetSocket socket="<<s);
 	socket=s;
 }
 
 void DebugManager::ProcessSocketLost() {
-	debugging=false;
+	_LOG("DebugManager::SocketLost socket=nullptr");
 	socket=NULL;
 }
 

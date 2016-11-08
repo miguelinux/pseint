@@ -31,7 +31,7 @@ mxSocketClient::~mxSocketClient() {
 }
 
 void mxSocketClient::ProcessLost() {
-	if (type==MXS_TYPE_DEBUG) debug->ProcSocketData(buffer);
+	if (type==MXS_TYPE_DEBUG) debug->ProcessSocketLost();
 	else if (type==MXS_TYPE_FLOW) ProcessLostFlow();
 	else if (type==MXS_TYPE_RUN) ProcessLostRun();
 	else _LOG("mxSocketClient::ProcessLost error");
@@ -155,13 +155,14 @@ CommunicationsManager::CommunicationsManager() {
 		server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 		server->Notify(true);
 	} while (!server->IsOk());
-	_LOG("CommunicationsManager::CommunicationsManager out "<<server_port);
+	_LOG("CommunicationsManager::CommunicationsManager out port="<<server_port<<"  server="<<server);
 }
 
 void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 	wxSocketBase *s=event.GetSocket();
 	if (s==server) { // si se pedia una nueva conexion, se crea un socket en sockets
 		clients.push_back(new mxSocketClient(server->Accept(false)));
+		_LOG("CommunicationsManager::SocketEvent::NewClient s="<<clients.back());
 	} else if (event.GetSocketEvent()==wxSOCKET_INPUT) { // si son datos de entrada...
 		list<mxSocketClient*>::iterator it1=clients.begin(), it2=clients.end();
 		while (it1!=it2) {
@@ -175,6 +176,7 @@ void CommunicationsManager::SocketEvent(wxSocketEvent &event) {
 		}
 		_LOG("CommunicationsManager::SocketEvent::Input error");
 	} else if (event.GetSocketEvent()==wxSOCKET_LOST) { // si por algo anormal se corto una conexion pendiente, liberar en sockets
+		_LOG("CommunicationsManager::SocketEvent::Lost s="<<s);
 		list<mxSocketClient*>::iterator it1=clients.begin(), it2=clients.end();
 		while (it1!=it2) {
 			if ((**it1)==s) {
