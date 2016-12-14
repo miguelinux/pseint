@@ -1,6 +1,12 @@
 #!/bin/bash
 
-cat version > "$HOME/pseint-log.txt"
+echo -n uname: > "$HOME/pseint-log.txt"
+uname -a >> "$HOME/pseint-log.txt"
+
+echo -n version: >> "$HOME/pseint-log.txt"
+cat version >> "$HOME/pseint-log.txt"
+
+echo "" >> "$HOME/pseint-log.txt"
 
 echo "ldd wxPSeInt" >> "$HOME/pseint-log.txt"
 ldd wxPSeInt >> "$HOME/pseint-log.txt"
