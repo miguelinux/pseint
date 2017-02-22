@@ -129,6 +129,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_PSDRAW_NO_CROP, mxMainWindow::OnConfigPSDrawNoCrop)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
+	EVT_MENU(mxID_CONFIG_USE_DARK_THEME, mxMainWindow::OnConfigUseDarkTheme)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
 	EVT_MENU(mxID_CONFIG_SELECT_FONTS, mxMainWindow::OnConfigSelectFonts)
 	EVT_MENU(mxID_CONFIG_SHAPE_COLORS, mxMainWindow::OnConfigShowShapeColors)
@@ -322,6 +323,7 @@ void mxMainWindow::CreateMenus() {
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
 	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
+	mi_use_dark_theme = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_THEME, _Z("Utilizar fondo negro en este editor"),"",config->use_dark_theme);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
 	utils->AddItemToMenu(cfg_pres,mxID_CONFIG_SELECT_FONTS, _Z("Seleccionar fuentes..."),"","fuentes.png");
@@ -1363,6 +1365,19 @@ void mxMainWindow::OnConfigUseDarkPSTerm(wxCommandEvent &evt) {
 	} else {
 		mi_use_dark_psterm->Check(true);
 		config->use_dark_psterm=true;
+	}
+}
+
+void mxMainWindow::OnConfigUseDarkTheme(wxCommandEvent &evt) {
+	if (!mi_use_dark_theme->IsChecked()) {
+		mi_use_dark_theme->Check(false);
+		config->use_dark_theme=false;
+	} else {
+		mi_use_dark_theme->Check(true);
+		config->use_dark_theme=true;
+	}
+	for(unsigned int i=0;i<notebook->GetPageCount();i++) { 
+		((mxSource*)notebook->GetPage(i))->SetStyling(true);
 	}
 }
 

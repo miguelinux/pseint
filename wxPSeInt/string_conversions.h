@@ -23,7 +23,8 @@ static wxCSConv cscMAC("MAC");
 #	define _if_wx3_else(a,b) b 
 #	define _if_unicode(x)
 #else	
-#	define _FixW(x) cscMAC.cWC2MB(x.wchar_str())
+//#	define _FixW(x) cscMAC.cWC2MB(x.wchar_str())
+#	define _FixW(x) x
 #	define WX3
 #	define _Z(x) wxString::From8BitData(x)
 #	define _ZZ(x) wxString::From8BitData(x)

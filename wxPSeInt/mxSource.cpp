@@ -169,8 +169,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	SetMarginType (0, wxSTC_MARGIN_NUMBER);
 	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
 	SetMarginSensitive (1, true);
-	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
-	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
+//	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
+//	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
 	IndicatorSetStyle(INDIC_FIELD,wxSTC_INDIC_BOX);
 	IndicatorSetStyle(INDIC_ERROR_1,wxSTC_INDIC_SQUIGGLE);
@@ -249,32 +249,53 @@ void mxSource::SetStyle(int idx, const char *foreground, const char *background,
 }
 
 void mxSource::SetStyling(bool colour) {
+	const char *CL_REG_BACK  = config->use_dark_theme ? "#333333" : "#FFFFFF" ;
+	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
+	const char *CL_KEYWORD   = config->use_dark_theme ? "#9999FA" : "#000080" ;
+	const char *CL_STRING    = config->use_dark_theme ? "#FA9999" : "#FF0000" ;
+	const char *CL_NUMBER    = config->use_dark_theme ? "#FAFA99" : "#A0522D" ;
+	const char *CL_COMMENT_1 = config->use_dark_theme ? "#999999" : "#969696" ;
+	const char *CL_COMMENT_2 = config->use_dark_theme ? "#33FA33" : "#5050FF" ;
+	const char *CL_ALT_FORE  = config->use_dark_theme ? "#999999" : "#969696" ;
+	const char *CL_ALT_BACK  = config->use_dark_theme ? "#606060" : "#D3D3D3" ;
+	const char *CL_HLG_BACK  = config->use_dark_theme ? "#335050" : "#AACCFF" ;
+	const char *CL_ANOT_FORE = config->use_dark_theme ? "#FA9999" : "#800000" ;
+	const char *CL_ANOT_BACK = config->use_dark_theme ? "#454545" : "#FAFAD7" ;
+	
+	StyleSetForeground (wxSTC_STYLE_LINENUMBER, CL_ALT_FORE);
+	StyleSetBackground (wxSTC_STYLE_LINENUMBER, CL_REG_BACK);
+	SetCaretForeground (CL_REG_FORE);
+	SetSelBackground(true,CL_ALT_BACK);
+	
 	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
 	SetWords();
-	SetStyle(wxSTC_C_DEFAULT,"BLACK","WHITE",0); // default
-	SetStyle(wxSTC_C_COMMENT,"BLACK","WHITE",0); // comment
-	SetStyle(wxSTC_C_COMMENTLINE,"Z DARK GRAY","WHITE",mxSOURCE_ITALIC); // comment line
-	SetStyle(wxSTC_C_COMMENTDOC,"BLUE","WHITE",mxSOURCE_ITALIC); // comment doc
-	SetStyle(wxSTC_C_NUMBER,"SIENNA","WHITE",0); // number
-	SetStyle(wxSTC_C_WORD,"DARK BLUE","WHITE",mxSOURCE_BOLD); // keywords
-	SetStyle(wxSTC_C_STRING,"RED","WHITE",0); // string
-	SetStyle(wxSTC_C_CHARACTER,"RED","WHITE",0); // character
-	SetStyle(wxSTC_C_UUID,"ORCHID","WHITE",0); // uuid
-	SetStyle(wxSTC_C_PREPROCESSOR,"FOREST GREEN","WHITE",0); // preprocessor
-	SetStyle(wxSTC_C_OPERATOR,"BLACK","WHITE",mxSOURCE_BOLD); // operator 
-	SetStyle(wxSTC_C_IDENTIFIER,"BLACK","WHITE",0); // identifier 
-	SetStyle(wxSTC_C_STRINGEOL,"RED","Z LIGHT GRAY",0); // string eol
-	SetStyle(wxSTC_C_VERBATIM,"BLACK","WHITE",0); // default verbatim
-	SetStyle(wxSTC_C_REGEX,"ORCHID","WHITE",0); // regexp  
-	SetStyle(wxSTC_C_COMMENTLINEDOC,"FOREST GREEN","WHITE",0); // special comment 
-	SetStyle(wxSTC_C_WORD2,"DARK BLUE","WHITE",0); // extra words
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORD,"CORNFLOWER BLUE","WHITE",0); // doxy keywords
-	SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR,"RED","WHITE",0); // keywords errors
-	SetStyle(wxSTC_C_GLOBALCLASS,"BLACK","LIGHT BLUE",0); // keywords errors
-	SetStyle(wxSTC_STYLE_BRACELIGHT,"RED","Z LIGHT BLUE",mxSOURCE_BOLD); 
-	SetStyle(wxSTC_STYLE_BRACEBAD,"DARK RED","WHITE",mxSOURCE_BOLD); 
+	SetStyle(wxSTC_STYLE_DEFAULT,            CL_REG_FORE,       CL_REG_BACK,        0);               // default
+	SetStyle(wxSTC_C_DEFAULT,                CL_REG_FORE,       CL_REG_BACK,        0);               // default
+	SetStyle(wxSTC_C_COMMENT,                CL_COMMENT_1,      CL_REG_BACK,        0);               // comment
+	SetStyle(wxSTC_C_COMMENTLINE,            CL_COMMENT_1,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment line
+	SetStyle(wxSTC_C_COMMENTDOC,             CL_COMMENT_2,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment doc
+	SetStyle(wxSTC_C_COMMENTLINEDOC,         CL_COMMENT_2,      CL_REG_BACK,        0);               // special comment 
+	SetStyle(wxSTC_C_NUMBER,                 CL_NUMBER,         CL_REG_BACK,        0);               // number
+	SetStyle(wxSTC_C_WORD,                   CL_KEYWORD,        CL_REG_BACK,        mxSOURCE_BOLD);   // keywords
+	SetStyle(wxSTC_C_IDENTIFIER,             CL_REG_FORE,       CL_REG_BACK,        0);               // identifier 
+	SetStyle(wxSTC_C_CHARACTER,              CL_STRING,         CL_REG_BACK,        0);               // character
+	SetStyle(wxSTC_C_STRINGEOL,              CL_STRING,         CL_ALT_BACK,        0);               // string eol
+	SetStyle(wxSTC_C_STRING,                 CL_STRING,         CL_REG_BACK,        0);               // character
+	SetStyle(wxSTC_C_OPERATOR,               CL_REG_FORE,       CL_REG_BACK,        mxSOURCE_BOLD);   // operator 
+	SetStyle(wxSTC_C_VERBATIM,               CL_REG_FORE,       CL_REG_BACK,        0);               // default verbatim
+	SetStyle(wxSTC_C_WORD2,                  CL_KEYWORD,        CL_REG_BACK,        0);               // extra words
+	SetStyle(wxSTC_C_GLOBALCLASS,            CL_REG_FORE,       CL_HLG_BACK,        0);               // keywords errors
 #ifdef WX3
-	SetStyle(ANNOTATION_STYLE,"DARK RED","LIGHT YELLOW",mxSOURCE_ITALIC|mxSOURCE_SMALLER); 
+	SetStyle(ANNOTATION_STYLE,               CL_ANOT_FORE,      CL_ANOT_BACK,       mxSOURCE_ITALIC|mxSOURCE_SMALLER); 
+#endif
+//		SetStyle(wxSTC_C_UUID,                   "ORCHID",          "WHITE",        0);               // uuid
+//		SetStyle(wxSTC_C_PREPROCESSOR,           "FOREST GREEN",    "WHITE",        0);               // preprocessor
+//		SetStyle(wxSTC_C_REGEX,                  "ORCHID",          "WHITE",        0);               // regexp  
+//		SetStyle(wxSTC_C_COMMENTDOCKEYWORD,      "CORNFLOWER BLUE", "WHITE",        0);               // doxy keywords
+//		SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR, "RED",             "WHITE",        0);               // keywords errors
+//		SetStyle(wxSTC_STYLE_BRACELIGHT,         "RED",             "Z LIGHT BLUE", mxSOURCE_BOLD); 
+//		SetStyle(wxSTC_STYLE_BRACEBAD,           "DARK RED",        "WHITE",        mxSOURCE_BOLD); 
+#ifdef WX3
 	AnnotationSetVisible(wxSTC_ANNOTATION_INDENTED);
 #endif
 }

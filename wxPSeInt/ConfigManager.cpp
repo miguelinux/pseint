@@ -69,6 +69,7 @@ void ConfigManager::LoadDefaults() {
 	stepstep_tspeed=50;
 	debug_port=55374;
 	comm_port=55375;
+	use_dark_theme = false;
 	use_dark_psterm = false;
 	use_psterm = true;
 	check_for_updates = true;
@@ -164,6 +165,7 @@ void ConfigManager::Save() {
 		fil.AddLine(wxString("comm_port=")<<comm_port);	
 	}
 	fil.AddLine(wxString("use_psterm=")<<(use_psterm?1:0));	
+	fil.AddLine(wxString("use_dark_theme=")<<(use_dark_theme?1:0));	
 	fil.AddLine(wxString("use_dark_psterm=")<<(use_dark_psterm?1:0));	
 	fil.AddLine(wxString("check_for_updates=")<<(check_for_updates?1:0));	
 	fil.AddLine(wxString("fixed_port=")<<(fixed_port?1:0));	
@@ -201,6 +203,7 @@ void ConfigManager::Read() {
 			else if (key=="debug_port") { value.ToLong(&l); debug_port=l; }
 			else if (key=="comm_port") { value.ToLong(&l); comm_port=l; }
 			else if (key=="use_psterm") use_psterm=utils->IsTrue(value);
+			else if (key=="use_dark_theme") use_dark_theme=utils->IsTrue(value);
 			else if (key=="use_dark_psterm") use_dark_psterm=utils->IsTrue(value);
 			else if (key=="check_for_updates") check_for_updates=utils->IsTrue(value);
 			else if (key=="fixed_port") fixed_port=utils->IsTrue(value);

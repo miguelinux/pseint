@@ -12,6 +12,7 @@
 #include "string_conversions.h"
 
 #define ERROR_PAGE(page) wxString("<I>ERROR</I>: La pagina \"")<<page<<"\" no se encuentra. <br><br> La ayuda de <I>PSeInt</I> aun esta en contruccion."
+#include <wx/settings.h>
 
 mxHelpWindow *helpw;
 
