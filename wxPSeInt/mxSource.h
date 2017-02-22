@@ -99,6 +99,11 @@ public:
 	void OnKeyDown(wxKeyEvent &evt);
 	void OnUserListSelection (wxStyledTextEvent &event);
 	void OnUpdateUI(wxStyledTextEvent &event);
+private: 
+	int brace_1, brace_2; //< auxiliares para OnPainted
+	void MyBraceHighLight (int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);  //< auxiliares para OnPainted
+public:
+	void OnPainted (wxStyledTextEvent & event);
 	void SetModify(bool);
 	void MessageReadOnly();
 	

@@ -97,6 +97,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
 	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
 	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
+	EVT_STC_PAINTED(wxID_ANY, mxSource::OnPainted)
 END_EVENT_TABLE()
 
 // para el autocompletado de palabras clave
@@ -285,6 +286,8 @@ void mxSource::SetStyling(bool colour) {
 	SetStyle(wxSTC_C_VERBATIM,               CL_REG_FORE,       CL_REG_BACK,        0);               // default verbatim
 	SetStyle(wxSTC_C_WORD2,                  CL_KEYWORD,        CL_REG_BACK,        0);               // extra words
 	SetStyle(wxSTC_C_GLOBALCLASS,            CL_REG_FORE,       CL_HLG_BACK,        0);               // keywords errors
+	SetStyle(wxSTC_STYLE_BRACELIGHT,         CL_REG_FORE,       CL_ALT_BACK,        mxSOURCE_BOLD); 
+	SetStyle(wxSTC_STYLE_BRACEBAD,           CL_STRING,         CL_ALT_BACK,        mxSOURCE_BOLD); 
 #ifdef WX3
 	SetStyle(ANNOTATION_STYLE,               CL_ANOT_FORE,      CL_ANOT_BACK,       mxSOURCE_ITALIC|mxSOURCE_SMALLER); 
 #endif
@@ -294,7 +297,6 @@ void mxSource::SetStyling(bool colour) {
 //		SetStyle(wxSTC_C_COMMENTDOCKEYWORD,      "CORNFLOWER BLUE", "WHITE",        0);               // doxy keywords
 //		SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR, "RED",             "WHITE",        0);               // keywords errors
 //		SetStyle(wxSTC_STYLE_BRACELIGHT,         "RED",             "Z LIGHT BLUE", mxSOURCE_BOLD); 
-//		SetStyle(wxSTC_STYLE_BRACEBAD,           "DARK RED",        "WHITE",        mxSOURCE_BOLD); 
 #ifdef WX3
 	AnnotationSetVisible(wxSTC_ANNOTATION_INDENTED);
 #endif
@@ -2181,3 +2183,33 @@ void mxSource::ShowUserList (wxArrayString &arr, int p1, int p2) {
 	SetCurrentPos(p2);
 }
 
+
+/**
+* Esta funcion esta para evitar el flickering que produce usar el bracehighlight
+* del stc cuando se llama desde el evento de udateui. A cambio, para que igual sea
+* instantaneo se llama desde el evento painted, y para evitar que reentre mil veces
+* se guardan las ultimas posiciones y no se vuelve a llamar si son las mismas.
+* El problema es que está recalculando el BraceMatch en cada paint.
+**/
+void mxSource::MyBraceHighLight (int b1, int b2) {
+	if (b1==brace_1&&b2==brace_2) return;
+	brace_1=b1; brace_2=b2;
+	if (b2==wxSTC_INVALID_POSITION || LineFromPosition(b1)!=LineFromPosition(b2)) BraceBadLight (b1);
+	else BraceHighlight (b1,b2);
+	Refresh(false);
+}
+
+void mxSource::OnPainted (wxStyledTextEvent & event) {
+	char c; int p=GetCurrentPos();
+	if ((c=GetCharAt(p))=='(' || c==')' /*|| c=='{' || c=='}'*/ || c=='[' || c==']') {
+		MyBraceHighLight(p,BraceMatch(p));
+	} else if ((c=GetCharAt(p-1))=='(' || c==')' || a c=='[' || c==']') {
+		int m=BraceMatch(p-1);
+		if (m!=wxSTC_INVALID_POSITION)
+			MyBraceHighLight(p-1,m);
+		else
+			MyBraceHighLight();
+	} else
+		MyBraceHighLight();
+	event.Skip();
+}
