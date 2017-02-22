@@ -2203,7 +2203,7 @@ void mxSource::OnPainted (wxStyledTextEvent & event) {
 	char c; int p=GetCurrentPos();
 	if ((c=GetCharAt(p))=='(' || c==')' /*|| c=='{' || c=='}'*/ || c=='[' || c==']') {
 		MyBraceHighLight(p,BraceMatch(p));
-	} else if ((c=GetCharAt(p-1))=='(' || c==')' || c=='[' || c==']') {
+	} else if ((c=GetCharAt(p-1))=='(' || c==')' || /*c=='{' || c=='}' ||*/ c=='[' || c==']') {
 		int m=BraceMatch(p-1);
 		if (m!=wxSTC_INVALID_POSITION)
 			MyBraceHighLight(p-1,m);
