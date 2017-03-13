@@ -520,7 +520,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (cadena.size()) { programa.Insert(x+1,cadena); flag_pyc+=1; }
 				instruction_type=IT_ENTONCES; cadena="";
 			} else if (first_word=="SINO") {
-				if (bucles.back()!=IT_SI)  {SynError (2,"SINO mal colocado."); errores++;}
+				if (!bucles.empty() && bucles.back()!=IT_SI)  {SynError (2,"SINO mal colocado."); errores++;}
 				else { bucles.pop_back(); bucles.push_back(programa.GetLoc(x,IT_SINO)); }
 				if (cadena.size()) { programa.Insert(x+1,cadena); flag_pyc+=1; }
 				instruction_type=IT_SINO; cadena="";
@@ -802,7 +802,9 @@ int SynCheck(int linea_from, int linea_to) {
 				current_func->userline_start=Inter.GetLineNumber();
 				memoria=current_func->memoria=new Memoria(current_func);
 			}
-			if (!in_process && instruction_type!=IT_NULL&&cadena!="") {SynError (43,lang[LS_ENABLE_USER_FUNCTIONS]?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;}
+			if (!in_process && instruction_type!=IT_NULL&&cadena!="") {
+				SynError (43,lang[LS_ENABLE_USER_FUNCTIONS]?"Instrucción fuera de proceso/subproceso.":"Instrucción fuera de proceso."); errores++;
+			}
 			if ((instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO)) {
 				bool sub=instruction_type==IT_FINSUBPROCESO; in_process=false;
 				if (!bucles.empty() && ( (!sub&&bucles.back()==IT_PROCESO)||(sub&&bucles.back()==IT_SUBPROCESO) ) ) {

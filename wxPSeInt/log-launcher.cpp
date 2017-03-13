@@ -1,17 +1,20 @@
-#include <iostream>
+#include <string>
 #include <shlobj.h>
-using namespace std;
 
-int main(int argc, char *argv[]) {
+std::string GetDesktopPath() {
 	LPITEMIDLIST pidl;
-	if (SHGetSpecialFolderLocation(NULL,CSIDL_DESKTOP,&pidl)!=NOERROR) return 1;
+	if (SHGetSpecialFolderLocation(NULL,CSIDL_DESKTOP,&pidl)!=NOERROR) return "";
 	char buf[MAX_PATH];
 	SHGetPathFromIDList(pidl,buf);
-	string s(buf);
-	if (!s.size()) return 2;
-	if (s[s.size()-1]!='\\') s+="\\";
-	s+="pseint-log.txt";
-	system((string("wxPSeint --logger \"")+s+"\"").c_str());
-	return 0;
+	return buf;
+}
+
+std::string CatPaths(const std::string &p1, const std::string &p2) {
+	return p1 + ((!p1.empty() && p1[p1.size()-1]!='\\') ? "\\" : "" ) + p2;
+}
+
+int main() {
+	std::string cmd = "wxPSeInt --logger \"" + CatPaths(GetDesktopPath(),"pseint-log.txt") + "\"";
+	return WinExec(cmd.c_str(),SW_SHOW);
 }
 
