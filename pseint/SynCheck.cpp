@@ -1526,7 +1526,8 @@ int SynCheck() {
 	}
 	errores=SynCheck(0,programa.GetSize());
 	
-	if (!have_proceso) { Inter.SetLineAndInstructionNumber(0); SynError (273,"Debe haber un Proceso."); errores++;}
+	if (!have_proceso) { Inter.SetLineAndInstructionNumber(0); SynError (273,"Debe haber un Proceso."); errores++;}  
+	else Inter.SetLineAndInstructionNumber(EsFuncion(main_process_name,true)->line_start);
 	
 	return errores;
 }
