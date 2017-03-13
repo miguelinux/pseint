@@ -124,10 +124,10 @@ tipo_var DeterminarTipo(const string &expresion, int p1, int p2) {
 			return vt_logica;
 		else {
 			size_t pp=expresion.find('(',p1);
-			if (pp!=string::npos) {
+//			if (pp!=string::npos) {
 				const Funcion *func=EsFuncion(expresion.substr(p1,pp-p1));
 				if (func) return func->tipos[0];
-			}
+//			}
 			return memoria->LeerTipo(expresion.substr(p1,p2-p1+1));
 		}
 	} else {

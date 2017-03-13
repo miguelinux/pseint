@@ -114,7 +114,7 @@ DataValue func_trunc(DataValue *arg) {
 	// número que se ve al escribir, el cual se redondea a 10 decimales... 
 	// por eso uso un epsilon un poquito más chico que eso
 	if ((i+1)-dbl<1e-12) i++;      //  ((+56)+1)-(+56.999999) = +0.00001,   
-	else if ((i-1)-dbl>-1e-15) i--; // ((-56)-1)-(-56.999999) = -0.00001
+	else if ((i-1)-dbl>-1e-12) i--; // ((-56)-1)-(-56.999999) = -0.00001
 	return DataValue::MakeInt(i);
 }
 

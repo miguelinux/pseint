@@ -520,7 +520,7 @@ int SynCheck(int linea_from, int linea_to) {
 				if (cadena.size()) { programa.Insert(x+1,cadena); flag_pyc+=1; }
 				instruction_type=IT_ENTONCES; cadena="";
 			} else if (first_word=="SINO") {
-				if (!bucles.empty() && bucles.back()!=IT_SI)  {SynError (2,"SINO mal colocado."); errores++;}
+				if (bucles.empty() || bucles.back()!=IT_SI)  {SynError (2,"SINO mal colocado."); errores++;}
 				else { bucles.pop_back(); bucles.push_back(programa.GetLoc(x,IT_SINO)); }
 				if (cadena.size()) { programa.Insert(x+1,cadena); flag_pyc+=1; }
 				instruction_type=IT_SINO; cadena="";
@@ -808,7 +808,13 @@ int SynCheck(int linea_from, int linea_to) {
 			if ((instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO)) {
 				bool sub=instruction_type==IT_FINSUBPROCESO; in_process=false;
 				if (!bucles.empty() && ( (!sub&&bucles.back()==IT_PROCESO)||(sub&&bucles.back()==IT_SUBPROCESO) ) ) {
-					if (current_func) { current_func->userline_end=Inter.GetLineNumber(); current_func=NULL; }
+					if (current_func) { 
+						if (!current_func->nombres[0].empty()) {
+							tipo_var ret_t = memoria->LeerTipo(current_func->nombres[0]);
+							current_func->tipos[0].set(ret_t);
+						}
+						current_func->userline_end=Inter.GetLineNumber(); current_func=NULL; 
+					}
 					bucles.pop_back();
 				} else {
 					if (!bucles.empty() && ( (!sub&&bucles.front()==IT_PROCESO)||(sub&&bucles.front()==IT_SUBPROCESO) ) ) {
