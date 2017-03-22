@@ -1824,6 +1824,7 @@ void mxSource::ProfileChanged ( ) {
 		SetExample();
 	}
 	Colourise(0,GetLength());
+	SetStatus(STATUS_PROFILE);
 }
 
 void mxSource::RTOuputStarts ( ) {

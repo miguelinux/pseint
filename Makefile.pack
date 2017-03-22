@@ -64,7 +64,7 @@ m32: dist/mnt
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
 	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=51
+	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=52
 	mkfs.hfsplus -v PSeInt dist/pseint-m32-`cat bin/version`.dmg
 	sudo mount -o loop dist/pseint-m32-`cat bin/version`.dmg dist/mnt
 	sudo cp -r dist/pseint.app dist/mnt

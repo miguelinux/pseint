@@ -366,7 +366,7 @@ void keyboard_esp_cb(int key/*, int x, int y*/) {
 }
 
 void FocusEntity(LineInfo *li) {
-	if (li) { 
+	if (li) {
 		if (li->proceso) {
 			if (start!=li->proceso) SetProc(li->proceso);
 			debug_current=li->entidad;
