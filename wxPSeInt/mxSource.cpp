@@ -173,20 +173,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 //	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
 //	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
 
-	IndicatorSetStyle(INDIC_FIELD,wxSTC_INDIC_BOX);
-	IndicatorSetStyle(INDIC_ERROR_1,wxSTC_INDIC_SQUIGGLE);
-	IndicatorSetStyle(INDIC_ERROR_2,wxSTC_INDIC_SQUIGGLE);
-//	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
-	IndicatorSetForeground (INDIC_FIELD, 0x005555);
-	IndicatorSetForeground (INDIC_ERROR_1, 0x0000FF);
-	IndicatorSetForeground (INDIC_ERROR_2, 0x004499);
-	
-	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, "WHITE", "RED");
-	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
-	MarkerDefine(MARKER_DEBUG_RUNNING_BACK,wxSTC_MARK_BACKGROUND, wxColour(200,255,200), wxColour(200,255,200));
-	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "YELLOW");
-	MarkerDefine(MARKER_DEBUG_PAUSE_BACK,wxSTC_MARK_BACKGROUND, wxColour(255,255,200), wxColour(255,255,170));
-	MarkerDefine(MARKER_BLOCK_HIGHLIGHT,wxSTC_MARK_BACKGROUND, wxColour(0,0,0), wxColour(255,255,175));
 	debug_line=-1;
 	
 	SetDropTarget(new mxDropTarget(this));
@@ -250,6 +236,27 @@ void mxSource::SetStyle(int idx, const char *foreground, const char *background,
 }
 
 void mxSource::SetStyling(bool colour) {
+	
+	const char *CL_BLOCK_BACK = config->use_dark_theme ? "#222211" : "#FFFFAA" ;
+	const char *CL_DEBUG_PAUSE_BACK = config->use_dark_theme ? "#444422" : "#FFFFAA" ;
+	const char *CL_DEBUG_RUN_BACK = config->use_dark_theme ? "#224422" : "#C8FFC8" ;
+	
+	IndicatorSetStyle(INDIC_FIELD,wxSTC_INDIC_BOX);
+	IndicatorSetStyle(INDIC_ERROR_1,wxSTC_INDIC_SQUIGGLE);
+	IndicatorSetStyle(INDIC_ERROR_2,wxSTC_INDIC_SQUIGGLE);
+	//	IndicatorSetStyle(2,wxSTC_INDIC_SQUIGGLE);
+	IndicatorSetForeground (INDIC_FIELD, 0x005555);
+	IndicatorSetForeground (INDIC_ERROR_1, 0x0000FF);
+	IndicatorSetForeground (INDIC_ERROR_2, 0x004499);
+	
+	MarkerDefine(MARKER_ERROR_LINE,wxSTC_MARK_PLUS, "WHITE", "RED");
+	MarkerDefine(MARKER_DEBUG_RUNNING_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
+	MarkerDefine(MARKER_DEBUG_RUNNING_BACK,wxSTC_MARK_BACKGROUND, CL_DEBUG_RUN_BACK, CL_DEBUG_RUN_BACK);
+	MarkerDefine(MARKER_DEBUG_PAUSE_ARROW,wxSTC_MARK_SHORTARROW, "BLACK", "YELLOW");
+	MarkerDefine(MARKER_DEBUG_PAUSE_BACK,wxSTC_MARK_BACKGROUND, CL_DEBUG_PAUSE_BACK, CL_DEBUG_PAUSE_BACK);
+	MarkerDefine(MARKER_BLOCK_HIGHLIGHT,wxSTC_MARK_BACKGROUND, CL_BLOCK_BACK, CL_BLOCK_BACK);
+
+	
 	const char *CL_REG_BACK  = config->use_dark_theme ? "#333333" : "#FFFFFF" ;
 	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
 	const char *CL_KEYWORD   = config->use_dark_theme ? "#9999FA" : "#000080" ;

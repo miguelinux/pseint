@@ -6,13 +6,13 @@ macros_file=
 default_fext_source=cpp
 default_fext_header=h
 autocomp_extra=wxWidgets
-active_configuration=Linux_Debug
+active_configuration=prueba_wx3_ansi
 version_saved=20170306
 version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../../pseint
-current_source=mac-stuff.h
+current_source=mxAboutWindow.cpp
 path_char=/
 [source]
 path=DebugManager.cpp
@@ -63,8 +63,9 @@ path=mxFindDialog.cpp
 cursor=18:0
 [source]
 path=mxAboutWindow.cpp
-cursor=112:27
+cursor=87:14
 marker=71
+open=true
 [source]
 path=mxHelpWindow.cpp
 cursor=294:1

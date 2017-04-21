@@ -129,8 +129,8 @@ struct coloquial_aux {
 vector<coloquial_aux> &GetColoquialConditions() {
 	static vector<coloquial_aux> v;
 	if (v.empty()) {
-		v.push_back(coloquial_aux("ES ENTERO ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
-		v.push_back(coloquial_aux("ES ENTERA ",			"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux("ES ENTERO ",				"(",	")=TRUNC(",		"<PRE>)"	,false));
+		v.push_back(coloquial_aux("ES ENTERA ",				"(",	")=TRUNC(",		"<PRE>)"	,false));
 		v.push_back(coloquial_aux("ES MENOR A ",			"(",	")<(",			")"			));
 		v.push_back(coloquial_aux("ES MENOR QUE ",			"(",	")<(",			")"			));
 		v.push_back(coloquial_aux("ES MAYOR A ",			"(",	")>(",			")"			));
@@ -145,9 +145,9 @@ vector<coloquial_aux> &GetColoquialConditions() {
 		v.push_back(coloquial_aux("ES MENOR | IGUAL QUE ",	"(",	")<=(",			")"			));
 		v.push_back(coloquial_aux("ES IGUAL A ",			"(",	")=(",			")"			));
 		v.push_back(coloquial_aux("ES IGUAL QUE ",			"(",	")=(",			")"			));
-		v.push_back(coloquial_aux("ES DISTINTO A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTO A ",			"(",	")<>(",			")"			));
 		v.push_back(coloquial_aux("ES DISTINTO DE ",		"(",	")<>(",			")"			));
-		v.push_back(coloquial_aux("ES DISTINTA A ",		"(",	")<>(",			")"			));
+		v.push_back(coloquial_aux("ES DISTINTA A ",			"(",	")<>(",			")"			));
 		v.push_back(coloquial_aux("ES DISTINTA DE ",		"(",	")<>(",			")"			));
 		v.push_back(coloquial_aux("ES PAR ",				"(",	")%2=0 ",		""			));
 		v.push_back(coloquial_aux("ES IMPAR ",				"(",	")%2=1 ",		""			));
