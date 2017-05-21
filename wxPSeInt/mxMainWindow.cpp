@@ -452,17 +452,24 @@ void mxMainWindow::CreateVarsPanel() {
 }
 
 void mxMainWindow::CreateOpersPanel() {
-	opers_window=new mxOpersWindow(this);
-	wxAuiPaneInfo info_helper,info_win;
-	info_win.Name("opers_panel").Caption(_Z("Operadores y Funciones")).Left().Layer(popr[0]).Row(popr[1]).Position(popr[2]);
-	info_helper.Name("helper_opers").CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hopr[0]).Row(hopr[1]).Position(hopr[2]);
-	if (config->show_opers) {
-		info_win.Show(); info_helper.Hide();
-	} else {
-		info_win.Hide(); info_helper.Show();
+	static bool built = false;
+	if (built) { 
+		wxAuiPaneInfo &pi = aui_manager.GetPane(opers_window);
+		config->show_opers = pi.IsShown();
+		aui_manager.DetachPane(opers_window); opers_window->Destroy(); 
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png"),"Operadores y Funciones"), info_helper);
+	opers_window = new mxOpersWindow(this);
+	wxAuiPaneInfo info_win;
+	info_win.Name("opers_panel").Caption(_Z("Operadores y Funciones")).Left().Layer(popr[0]).Row(popr[1]).Position(popr[2]);
+	if (!built) {
+		wxAuiPaneInfo info_helper;
+		info_helper.Name("helper_opers").CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hopr[0]).Row(hopr[1]).Position(hopr[2]);
+		if (config->show_opers) info_helper.Hide(); else info_helper.Show();
+		aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png"),"Operadores y Funciones"), info_helper);
+	}
+	if (config->show_opers) info_win.Show(); else info_win.Hide();
 	aui_manager.AddPane(opers_window, info_win);
+	built = true;
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
@@ -1661,7 +1668,9 @@ void mxMainWindow::ProfileChanged ( ) {
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	CreateButtonSubProceso(commands,commands->GetSizer());
 	commands->Layout();
-	opers_window->SetWordOperators();
+	CreateOpersPanel(); //	opers_window->SetWordOperators();
+	aui_manager.Update();
+
 }
 
 mxSource * mxMainWindow::GetCurrentSource ( ) {

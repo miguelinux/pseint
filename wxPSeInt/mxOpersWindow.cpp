@@ -11,7 +11,7 @@
 #include <wx/statline.h>
 #include <wx/settings.h>
 
-mxOpersWindow *opers_window=NULL;
+mxOpersWindow *opers_window = NULL;
 
 BEGIN_EVENT_TABLE(mxOpersWindow,wxScrolledWindow)
 	EVT_COMMAND_RANGE(mxID_LAST,mxID_LAST+200,wxEVT_COMMAND_BUTTON_CLICKED,mxOpersWindow::OnItem)
@@ -54,14 +54,16 @@ mxOpersWindow::mxOpersWindow(wxWindow *parent):wxScrolledWindow(parent,wxID_ANY,
 	Add("ln({expr_numerica_positiva})","ln","logaritmo natural","ln(X) calcula el logaritmo natural (base e) de X");
 	Add("exp({expresion_numerica})","exp","func. exponencial","exp(X) calcula la función exponencial e^X");
 	Add("azar({expr_num_entera_positiva})","azar","numero aleatorio","Ej: Azar(N) retorna un numero aleatorio entre 0 y N-1");
-	AddCaterory("Func. p/Cadenas");
-	Add("Longitud({cadena})","Longitud","","Longutid(S) retorna la cantidad de caracteres de la cadena S");
-	Add("SubCadena({cadena},{desde},{hasta})","SubCadena","","R<-Subcadena(S,I,J) retorna en R la cadena formada por los caracteres de la cadena S desde la posición I a la J inclusive");
-	Add("Concatenar({cadena},{cadena})","Concatenar","","R<-Concatenar(S1,S2) retorna en R una sola cadena con los contenidos unidos de S1 y S2");
-	Add("ConvertirANumero({cadena})","ConvertirANumero","","S<-ConvertirANumero(N) recibe un valor/expresión numérico N, y retorna su equivalente de tipo cadena de caracteres en S");
-	Add("ConvertirATexto({numero})","ConvertirATexto","","N<-ConvertirATexto(S) recibe una variable o expresión S de tipo cadena de caracteres que contiene un valor numérico, y obtiene ne N su equivalente de tipo numérico");
-	Add("Mayusculas({cadena})","Mayusculas","","MAY<-Mayusculas(S) retorna en MAY el contenido de la cadena S con sus letras minusculas reemplazadas por mayusculas");
-	Add("Minusculas({cadena})","Minusculas","","MIN<-Minusculas(S) retorna en MIN el contenido de la cadena S con sus letras mayusculas reemplazadas por minusculas");
+	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) {
+		AddCaterory("Func. p/Cadenas");
+		Add("Longitud({cadena})","Longitud","","Longutid(S) retorna la cantidad de caracteres de la cadena S");
+		Add("SubCadena({cadena},{desde},{hasta})","SubCadena","","R<-Subcadena(S,I,J) retorna en R la cadena formada por los caracteres de la cadena S desde la posición I a la J inclusive");
+		Add("Concatenar({cadena},{cadena})","Concatenar","","R<-Concatenar(S1,S2) retorna en R una sola cadena con los contenidos unidos de S1 y S2");
+		Add("ConvertirANumero({cadena})","ConvertirANumero","","S<-ConvertirANumero(N) recibe un valor/expresión numérico N, y retorna su equivalente de tipo cadena de caracteres en S");
+		Add("ConvertirATexto({numero})","ConvertirATexto","","N<-ConvertirATexto(S) recibe una variable o expresión S de tipo cadena de caracteres que contiene un valor numérico, y obtiene ne N su equivalente de tipo numérico");
+		Add("Mayusculas({cadena})","Mayusculas","","MAY<-Mayusculas(S) retorna en MAY el contenido de la cadena S con sus letras minusculas reemplazadas por mayusculas");
+		Add("Minusculas({cadena})","Minusculas","","MIN<-Minusculas(S) retorna en MIN el contenido de la cadena S con sus letras mayusculas reemplazadas por minusculas");
+	}
 	AddCaterory("Constantes");
 	Add("PI","PI","","Equivale al valor de la constante (3.1415926...)");
 	Finish();
