@@ -39,7 +39,7 @@ Proceso sin_titulo
 	FinSi
 	Si x 
 		a<-b
-	Sino
+	SiNo
 		d<-e
 	FinSi
 	Si x Entonces
@@ -51,9 +51,9 @@ Proceso sin_titulo
 	// prueba sino: bad
 	Si x Entonces
 		a<-b
-	Sino
+	SiNo
 		d<-e
-	Sino
+	SiNo
 		d<-e
 	FinSi
 	Si x Entonces

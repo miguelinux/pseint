@@ -74,7 +74,7 @@
 			Si cant_discos[t1{#-1}]=0 Entonces // controlar que la torre 1 tengo al menos un disco
 				Escribir "Movimiento invalido"{;}
 				Esperar Tecla{;}
-			Sino
+			SiNo
 				disco_a_mover <- torres[t1{#-1},cant_discos[t1{#-1}]{#-1}]{;} // obtener tamanio del disco que se quiere mover
 				puede_mover<-verdadero{;}
 				Si cant_discos[t2{#-1}]<>0 entonces // controlar que la torre dos no tenga discos o tenga solo discos mas grandes
@@ -87,7 +87,7 @@
 					cant_discos[t2{#-1}]<-cant_discos[t2{#-1}]+1{;}
 					torres[t2{#-1},cant_discos[t2{#-1}]{#-1}] <- disco_a_mover{;}
 					cant_discos[t1{#-1}]<-cant_discos[t1{#-1}]-1{;}
-				Sino
+				SiNo
 					Escribir "Movimiento invalido"{;}
 					Esperar Tecla{;}
 				FinSi

@@ -1,7 +1,7 @@
 Proceso A
   Si(3<2)entonces
     Escribir "SI";
-  Sino
+  SiNo
     Escribir "NO";
   FinSi
 FinProceso

@@ -13,7 +13,7 @@
 	Mientras num_secreto<>num_ingresado {&} intentos>1 Hacer
 		Si num_secreto>num_ingresado Entonces
 			Escribir "Muy bajo"{;}
-		Sino 
+		SiNo 
 			Escribir "Muy alto"{;}
 		FinSi
 		intentos <- intentos-1{;}
@@ -23,7 +23,7 @@
 	
 	Si num_secreto=num_ingresado Entonces
 		Escribir "Exacto! Usted adivino en ",11-intentos," intentos."{;}
-	Sino
+	SiNo
 		Escribir "El numero era: ",num_secreto{;}
 	FinSi
 	

@@ -51,7 +51,7 @@
 			Si TurnoJugador1 Entonces
 				Ficha<-'O'; Valor<- 1; Objetivo<-1{;}
 				Escribir "Turno del jugador 1 (X)"{;}
-			Sino
+			SiNo
 				Ficha<-'X'; Valor<- 2; Objetivo<-8{;}
 				Escribir "Turno del jugador 2 (O)"{;}
 			FinSi
@@ -64,7 +64,7 @@
 				Si Pos<1 o Pos>9 Entonces
 					Escribir "Posición incorrecta, ingrese nuevamente: "{;}
 					Pos<-99;
-				Sino
+				SiNo
 					i<-trunc((Pos-1)/3){+1#}{;}
 					j<-((Pos-1) {%} 3){+1#}{;}
 					Si Tab1[i,j]<>0 Entonces
@@ -94,20 +94,20 @@
 			FinPara
 			Si aux_d1=Objetivo o aux_d2=Objetivo Entonces
 				Ganador<-Verdadero{;}
-			Sino
+			SiNo
 				TurnoJugador1 <- ~ TurnoJugador1{;}
 			FinSi
 			
-		Sino
+		SiNo
 			
 			Si Ganador Entonces
 				Escribir "Ganador: "{;}
 				Si TurnoJugador1 Entonces
 					Escribir "Jugador 1!"{;}
-				Sino
+				SiNo
 					Escribir "Jugador 2!"{;}
 				FinSi
-			Sino
+			SiNo
 				Escribir "Empate!"{;}
 			FinSi
 			Terminado<-Verdadero{;}

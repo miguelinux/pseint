@@ -8,7 +8,7 @@
 	Leer M{;}
 	Si N {%} M = 0 Entonces
 		Escribir M," es divisor exacto de ",N,"."{;}
-	Sino
+	SiNo
 		Escribir "El resto de dividir ",N," por ",M," es: ",N {%} M{;}
 	FinSi
 {FinProceso}

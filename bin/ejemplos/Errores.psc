@@ -12,7 +12,7 @@ FinSegun                    //
 Fin Para                    //  FinPara
 Si a=1
   Escribir 'si';            //   entonces Escribir 'si';
-  sino Escribir 'no'        //   sino Escribir 'no';
+  SiNo Escribir 'no'        //   sino Escribir 'no';
 b<-c+'2';                   //  b<-c+2;
 Escribir a*(2+(5/6);        //  Escribir a*(2+(5/6))
 Escribir 'Texto;            //  Escribir 'Texto';

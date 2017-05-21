@@ -645,7 +645,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<_fix(label,"{condicion}")<<" Entonces"<<_endl_this;
 		if (GetChild(1)) { GetChild(1)->Print(out,tab+_tabs,process,line_num); }
-		if (GetChild(0)) { out<<tab<<"Sino"<<_endl_prev; }
+		if (GetChild(0)) { out<<tab<<"SiNo"<<_endl_prev; }
 		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {

@@ -1042,7 +1042,7 @@ void mxMainWindow::OnCmdSi(wxCommandEvent &evt) {
 	toins.Add("Si {expresion_logica} Entonces");
 	toins.Add("\t{acciones_por_verdadero}");
 	if (!alternative) {
-		toins.Add("Sino");
+		toins.Add("SiNo");
 		toins.Add("\t{acciones_por_falso}");
 	}
 	toins.Add("FinSi");

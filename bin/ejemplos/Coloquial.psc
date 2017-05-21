@@ -16,10 +16,10 @@ Algoritmo sin_titulo
 	
 	Si a Es Mayor Que b Y a Es Mayor Que c Entonces
 		Escribir a " es el mayor"
-	sino 
+	SiNo 
 		Si b Es Mayor Que c Entonces
 			Escribir b " es el mayor"
-		Sino
+		SiNo
 			Escribir c " es el mayor"
 		FinSi
 	FinSi
@@ -31,7 +31,7 @@ Algoritmo sin_titulo
 	
 	Si a Es Par
 		Escribir a " es par"
-	Sino
+	SiNo
 		Escribir a " es impar"
 	FinSi
 	
@@ -45,7 +45,7 @@ Algoritmo sin_titulo
 	
 	Si c Es Entero 
 		Mostrar C " es entero"
-	Sino
+	SiNo
 		Mostrar C " es real"
 	FinSi
 	

@@ -342,7 +342,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 						if (line_sino!=-1) {
 							line = line_sino;
 							_pos(line);
-							_sub(line,"El resultado es Falso, se sigue por la rama del Sino");
+							_sub(line,"El resultado es Falso, se sigue por la rama del SiNo");
 							Ejecutar(line+1,line_finsi-1); // ejecutar salida por falso
 						} else {
 							_sub(line,"El resultado es Falso, no se hace nada");

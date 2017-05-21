@@ -16,7 +16,7 @@
 		Si num/2 = trunc(num/2) Entonces
 			Escribir 2{;}
 			num<-num/2{;}
-		Sino
+		SiNo
 			div<-1; factor_primo<-Verdadero{;}
 			Mientras div<=rc(num) {&} factor_primo Hacer
 				div <- div+2{;}

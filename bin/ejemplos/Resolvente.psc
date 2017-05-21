@@ -21,11 +21,11 @@
 		pimag<- rc(-disc)/(2*a){;}
 		Escribir "Raiz 1: ",preal,"+",pimag,"i"{;}
 		Escribir "Raiz 2: ",preal,"-",pimag,"i"{;}
-	Sino
+	SiNo
 		Si disc=0 Entonces // ver si son iguales o distintas
 			r <- (-b)/(2*a){;}
 			Escribir "Raiz 1 = Raiz 2: ",r{;}
-		Sino
+		SiNo
 			r1 <- ((-b)+rc(disc))/(2*a){;}
 			r2 <- ((-b)-rc(disc))/(2*a){;}
 			Escribir "Raiz 1: ",r1{;}

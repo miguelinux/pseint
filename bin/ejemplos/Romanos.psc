@@ -31,7 +31,7 @@
 	Si SePuedeConvertir Entonces		
 		Si Numero=1000 Entonces
 			Escribir "M"{;}
-		Sino
+		SiNo
 			Dimension nu[10], nd[10], nc[10]{;} // notación para unidades, decenas y centenas
 			{Definir nu,nd,nc Como Caracter}{;}
 			nu[{1#0}]<-''; nu[{2#1}]<-'I'; nu[{3#2}]<-'II'; nu[{4#3}]<-'III'; nu[{5#4}]<-'IV'; nu[{6#5}]<-'V'; nu[{7#6}]<-'VI'; nu[{8#7}]<-'VII'; nu[{9#8}]<-'VIII'; nu[{10#9}]<-'IX'{;}

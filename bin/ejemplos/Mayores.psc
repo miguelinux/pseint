@@ -24,7 +24,7 @@
 	Si datos[{1#0}]>datos[{2#1}] Entonces
 		may1<-datos[{1#0}]{;}
 		may2<-datos[{2#1}]{;}
-	Sino
+	SiNo
 		may1<-datos[{2#1}]{;}
 		may2<-datos[{1#0}]{;}
 	FinSi
@@ -33,7 +33,7 @@
 		Si datos[i]>may1 Entonces // si hay un valor mayor que may1
 			may2<-may1{;} // como may1 era el más grande, pasa a estar en segundo lugar
 			may1<-datos[i]{;} // y el nuevo dato toma el primer puesto (mayor de todos)
-		Sino // si no era mas grande que may1, todavia puede ser mas grande que may2
+		SiNo // si no era mas grande que may1, todavia puede ser mas grande que may2
 			Si datos[i]>may2 Entonces // si supera al segundo mayor que teniamos
 				may2<-datos[i]{;} // se lo guarda como segundo mayor
 			FinSi

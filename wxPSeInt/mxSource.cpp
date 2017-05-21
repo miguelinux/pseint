@@ -633,7 +633,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		last_char = text.Last();
 		SetSelection(comp_from+text.Len(),comp_from+text.Len());
 		int lfp=LineFromPosition(comp_from);
-		if (text.Mid(0,3)=="Fin" || text=="Hasta Que " || text=="Mientras Que " || text.Mid(0,4)=="Sino"||text.Last()=='\n')
+		if (text.Mid(0,3)=="Fin" || text=="Hasta Que " || text=="Mientras Que " || text.Mid(0,4)=="SiNo"||text.Last()=='\n')
 			IndentLine(lfp);
 		if (text.Last()=='\n') {
 			IndentLine(lfp+1);
@@ -1142,7 +1142,7 @@ void mxSource::SetAutocompletion() {
 	
 	comp_list.push_back(comp_list_item("Entonces","Entonces\n",""));
 	comp_list.push_back(comp_list_item("Entonces","Entonces\n","Si"));
-	comp_list.push_back(comp_list_item("Sino","Sino\n",""));
+	comp_list.push_back(comp_list_item("SiNo","SiNo\n",""));
 	comp_list.push_back(comp_list_item("Fin Si","Fin Si\n",""));
 	comp_list.push_back(comp_list_item("FinSi","FinSi\n",""));
 	

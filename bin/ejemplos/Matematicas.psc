@@ -36,9 +36,9 @@
          2: 
             Si N<=0
                Entonces Escribir 'El numero debe ser mayor a cero!'{;}
-               Sino
-                  Escribir 'Log Nat.:',ln(N){;}
-                  Escribir 'Func Expon.:',exp(N){;}
+            SiNo
+               Escribir 'Log Nat.:',ln(N){;}
+               Escribir 'Func Expon.:',exp(N){;}
             FinSi
          3: 
             Escribir 'Turncar:',trunc(N){;}
@@ -52,15 +52,16 @@
             Si N<>Trunc(N)
                Entonces
                   Escribir 'El numero debe ser entero!'{;}
-               Sino
+               SiNo
                   Si abs(N)>50
                      Entonces Escribir 'Resultado muy grande!'{;}
-                     Sino
+                     SiNo
                         r<-1; f<-1{;}
                         Mientras f<=abs(N) Hacer
                            Si N<0 
                               Entonces r<-(-f)*r{;}
-                                    Sino r<-f*r{;}
+                           SiNo
+                              r<-f*r{;}
                            FinSi
                            f<-f+1{;}
                         FinMientras
@@ -70,10 +71,10 @@
          8: 
             Si N<>Trunc(N) Entonces
                Escribir 'El numero debe ser entero!'{;}
-            Sino
+            SiNo
                Si N<0  entonces 
                   Nu<-N*(-1){;}
-               sino
+               SiNo
                   Nu<-N{;}
                FinSi
                Si N/2=trunc(Nu/2) Entonces 
@@ -81,7 +82,7 @@
                   Si Nu<>2 Entonces
                      Escribir N,'=2x',N/2{;}
                   FinSi
-               Sino
+               SiNo
                   EsPrimo<-Nu<>1{;} 
                   Nu<-RC(Nu){;}
                   f<-3{;}

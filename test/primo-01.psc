@@ -2,7 +2,7 @@ Proceso sin_titulo
 	leer N
 	Si N<0  entonces 
 		Nu<-N*(-1)
-	sino
+	SiNo
 		Nu<-N
 	FinSi
 	Si N mod 2 = 0 Entonces 

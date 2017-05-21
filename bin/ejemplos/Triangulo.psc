@@ -23,16 +23,16 @@
 		Si l1>l3 Entonces
 			hip<-l1{;}
 			cat2<-l3{;}
-		Sino
+		SiNo
 			hip<-l3{;}
 			cat2<-l1{;}
 		FinSi
-	Sino
+	SiNo
 		cat1<-l1{;}
 		Si l2>l3 Entonces
 			hip<-l2{;}
 			cat2<-l3{;}
-		Sino
+		SiNo
 			hip<-l3{;}
 			cat2<-l2{;}
 		FinSi
@@ -44,7 +44,7 @@
 		{Definir area como real;}
 		area<-(cat1*cat2)/2{;}
 		Escribir "El area es: ",area{;}
-	Sino
+	SiNo
 		Escribir "No es un triangulo rectangulo."{;}
 	FinSi
 	
