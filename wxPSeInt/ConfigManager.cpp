@@ -117,7 +117,7 @@ void ConfigManager::Save() {
 		fil.Create();
 	fil.Clear();
 	
-	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-"ARCHITECTURE);
+	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-" ARCHITECTURE);
 	fil.AddLine(wxString("version=")<<VERSION);
 	fil.AddLine(wxString("images_path=")<<images_path);
 	if (tty_command!=_no_tty) fil.AddLine(wxString("terminal=")<<tty_command);
@@ -159,7 +159,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("size_y=")<<size_y);
 	fil.AddLine(wxString("pos_x=")<<pos_x);
 	fil.AddLine(wxString("pos_y=")<<pos_y);
-	fil.AddLine(wxString("maximized=")<<maximized);	
 	if (fixed_port) {
 		fil.AddLine(wxString("debug_port=")<<debug_port);	
 		fil.AddLine(wxString("comm_port=")<<comm_port);	
@@ -200,6 +199,7 @@ void ConfigManager::Read() {
 			else if (key=="size_y") { value.ToLong(&l); size_y=l; }
 			else if (key=="pos_x") { value.ToLong(&l); pos_x=l; }
 			else if (key=="pos_y") { value.ToLong(&l); pos_y=l; }
+			else if (key=="maximized") { maximized = utils->IsTrue(value); }
 			else if (key=="debug_port") { value.ToLong(&l); debug_port=l; }
 			else if (key=="comm_port") { value.ToLong(&l); comm_port=l; }
 			else if (key=="use_psterm") use_psterm=utils->IsTrue(value);
@@ -250,6 +250,7 @@ void ConfigManager::Read() {
 	if (version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
+	
 }
 
 ConfigManager::~ConfigManager() {

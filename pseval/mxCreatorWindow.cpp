@@ -13,7 +13,7 @@
 #include <wx/filedlg.h>
 #include <wx/settings.h>
 
-enum { mxSTART=wxID_HIGHEST, mxID_INPUT_PATH_TEXT, mxID_INPUT_RELOAD, mxID_INPUT_PATH_BUTTON, mxID_OUTPUT_PATH_BUTTON, mxID_SHOW_ERRORS, mxID_CREATE_BUTTON, mxID_GENERATE_SOLUTIONS, mxID_USE_PASSWORD };
+enum { mxSTART=wxID_HIGHEST, mxID_INPUT_PATH_TEXT, mxID_INPUT_RELOAD, mxID_INPUT_PATH_BUTTON, mxID_OUTPUT_PATH_BUTTON, mxID_SHOW_ERRORS, mxID_CREATE_BUTTON, mxID_GENERATE_SOLUTIONS, mxID_USE_PASSWORD, mxID_REQUIRE_PROFILE };
 
 BEGIN_EVENT_TABLE(mxCreatorWindow,wxFrame)
 	EVT_BUTTON(mxID_INPUT_PATH_BUTTON,mxCreatorWindow::OnInputPath)
@@ -24,7 +24,8 @@ BEGIN_EVENT_TABLE(mxCreatorWindow,wxFrame)
 	EVT_BUTTON(mxID_INPUT_RELOAD,mxCreatorWindow::OnInputReload)
 	EVT_TIMER(wxID_ANY,mxCreatorWindow::OnTimer)
 	EVT_CHECKBOX(mxID_SHOW_ERRORS,mxCreatorWindow::OnShowErrors)
-	EVT_CHECKBOX(mxID_USE_PASSWORD,mxCreatorWindow::OnCheckPass)
+	EVT_CHECKBOX(mxID_USE_PASSWORD,mxCreatorWindow::OnCheckPassword)
+	EVT_CHECKBOX(mxID_REQUIRE_PROFILE,mxCreatorWindow::OnCheckProfile)
 END_EVENT_TABLE()
 
 mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
@@ -76,19 +77,25 @@ mxCreatorWindow::mxCreatorWindow(const wxString &cmdline)
 	base_psc = new wxCheckBox(this,wxID_ANY,"Incluir pseudocódigo base");
 	main_sizer->Add(base_psc,wxSizerFlags().Border(wxALL,5));
 	
-	help_html = new wxCheckBox(this,wxID_ANY,"Incluir ayuda/enunciado html");
+	help_html = new wxCheckBox(this,wxID_ANY,"Incluir ayuda/enunciado html/markdown");
 	main_sizer->Add(help_html,wxSizerFlags().Border(wxALL,5));
 	
 	solutions_button = new wxButton(this,mxID_GENERATE_SOLUTIONS," Generar soluciones... ");
 	main_sizer->Add(solutions_button,wxSizerFlags().Border(wxALL,5));
 	
-	chk_pass = new wxCheckBox(this,mxID_USE_PASSWORD,"Contraseña: ");
-	
 	wxBoxSizer *pass1_sizer = new wxBoxSizer(wxHORIZONTAL);
+	chk_password = new wxCheckBox(this,mxID_USE_PASSWORD,"Contraseña: ");
+	pass1_sizer->Add(chk_password,wxSizerFlags().Center().Border(wxLEFT,5));
 	password1 = new wxTextCtrl(this,wxID_ANY,"");
-	pass1_sizer->Add(chk_pass,wxSizerFlags().Center().Border(wxLEFT,5));
 	pass1_sizer->Add(password1,wxSizerFlags().Proportion(1).Border(wxRIGHT|wxTOP|wxBOTTOM,5));
 	main_sizer->Add(pass1_sizer,wxSizerFlags().Proportion(0).Expand());
+	
+	wxBoxSizer *profile_sizer = new wxBoxSizer(wxHORIZONTAL);
+	chk_profile = new wxCheckBox(this,mxID_REQUIRE_PROFILE,"Requerir perfil: ");
+	profile_sizer->Add(chk_profile,wxSizerFlags().Center().Border(wxLEFT,5));
+	profile = new wxTextCtrl(this,wxID_ANY,"");
+	profile_sizer->Add(profile,wxSizerFlags().Proportion(1).Border(wxRIGHT|wxTOP|wxBOTTOM,5));
+	main_sizer->Add(profile_sizer,wxSizerFlags().Proportion(0).Expand());
 	
 	chk_new_cypher = new wxCheckBox(this,mxID_SHOW_ERRORS,"Cifrado mejorado (requiere PSeInt v20160401 o superior)");
 	main_sizer->Add(chk_new_cypher,wxSizerFlags().Border(wxBOTTOM|wxLEFT|wxRIGHT,5));
@@ -115,8 +122,13 @@ void mxCreatorWindow::OnTimer (wxTimerEvent & event) {
 
 void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 	
-	if (chk_pass->GetValue() && password1->GetValue().IsEmpty()) {
+	if (chk_password->GetValue() && password1->GetValue().IsEmpty()) {
 		wxMessageBox("Debe completar la constraseña","Error",wxOK|wxICON_ERROR,this);
+		return;
+	}
+	
+	if (chk_profile->GetValue() && profile->GetValue().IsEmpty()) {
+		wxMessageBox("Debe completar el nombre del perfil requerido","Error",wxOK|wxICON_ERROR,this);
 		return;
 	}
 	
@@ -144,24 +156,25 @@ void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 												?(stop_on_first_error->GetValue()?"primero":"todos")
 												:"ninguno" );
 	pack.SetConfigBool ( "mezclar casos", shuffle_tests->GetValue() );
-	pack.SetConfigInt  ( "version requerida" , PACKAGE_VERSION );
+	if (chk_profile->GetValue()) pack.SetConfigStr("perfil requerido",profile->GetValue());
+	pack.SetConfigInt  ( "version requerida" , chk_profile->GetValue()?PACKAGE_VERSION:PACKAGE_VERSION_NO_PROFILE );
 	
 	static wxString fdir;
 	static wxString fname;
-	wxString fext = chk_pass->GetValue()?"psx":"psz";
+	wxString fext = chk_password->GetValue()?"psx":"psz";
 	wxFileDialog dlg (this, "Guardar",fdir,fname+"."+fext,"Ejercicio|*.psz;*.PSZ;*.psx;*.PSX", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
 		wxFileName file(dlg.GetPath());
 		fdir=file.GetPath(); fname=file.GetName();
 		wxString ext = file.GetExt().Lower();
-		if (ext=="") { file.SetExt(chk_pass->GetValue()?"psx":"psz"); }
-		else if ( (ext=="psx") != chk_pass->GetValue() ) {
+		if (ext=="") { file.SetExt(chk_password->GetValue()?"psx":"psz"); }
+		else if ( (ext=="psx") != chk_password->GetValue() ) {
 			wxMessageBox("Nombre de archivo incorrecto. La extensión debe ser \".psz\" para\n"
 						"ejercicios sin contraseña, y \".psx\" para ejercicios con contraseña.",
 						"Error",wxOK|wxICON_ERROR,this);
 			return;
 		}
-		if (!pack.Save(file.GetFullPath(),chk_pass->GetValue()?password1->GetValue():"",!chk_new_cypher->GetValue())) {
+		if (!pack.Save(file.GetFullPath(),chk_password->GetValue()?password1->GetValue():"",!chk_new_cypher->GetValue())) {
 			wxMessageBox(wxString("Error al guardar el archivo \"")+file.GetFullPath()+"\".","Error",wxOK|wxICON_ERROR,this);
 		} else {
 			wxMessageBox("Ejercicio generado correctamente","PSeInt",wxOK|wxICON_INFORMATION,this);
@@ -192,8 +205,12 @@ void mxCreatorWindow::OnGenerateSolutions (wxCommandEvent & event) {
 	(new mxMainWindow())->RunAllTests(cmd,true);
 }
 
-void mxCreatorWindow::OnCheckPass (wxCommandEvent & event) {
-	chk_new_cypher->SetValue(chk_pass->GetValue());
+void mxCreatorWindow::OnCheckPassword (wxCommandEvent & event) {
+	chk_new_cypher->SetValue(chk_password->GetValue());
+	EnableDisable();
+}
+
+void mxCreatorWindow::OnCheckProfile (wxCommandEvent & event) {
 	EnableDisable();
 }
 
@@ -203,9 +220,11 @@ void mxCreatorWindow::EnableDisable ( ) {
 	
 	msg_ok->Enable(is_ok);
 	msg_bad->Enable(is_ok);
-	chk_pass->Enable(is_ok);
-	password1->Enable(is_ok&&chk_pass->GetValue());
-	chk_new_cypher->Enable(is_ok&&chk_pass->GetValue());
+	chk_password->Enable(is_ok);
+	password1->Enable(is_ok&&chk_password->GetValue());
+	chk_profile->Enable(is_ok);
+	profile->Enable(is_ok&&chk_profile->GetValue());
+	chk_new_cypher->Enable(is_ok&&chk_password->GetValue());
 	show_errors->Enable(is_ok);
 	show_solutions->Enable(is_ok&&show_errors->GetValue());
 	stop_on_first_error->Enable(is_ok&&show_errors->GetValue());

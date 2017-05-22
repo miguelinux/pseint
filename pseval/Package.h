@@ -5,7 +5,8 @@
 #include <wx/arrstr.h>
 #include <map>
 
-#define PACKAGE_VERSION 1 // version del formato de paquete, incrementar cada vez que cambie
+#define PACKAGE_VERSION_NO_PROFILE 1 // version del formato de paquete, incrementar cada vez que cambie
+#define PACKAGE_VERSION 2 // version del formato de paquete, incrementar cada vez que cambie
 
 /// struct para guardar datos de un caso de prueba
 struct TestCase { 
@@ -15,13 +16,14 @@ struct TestCase {
 /// carga y gestiona todos los datos de un ejercicio (todo lo que contiene el archivo de ejercicio)
 class Package {
 private:
-	bool is_ok; ///< si se cargo correctamente
-	std::map<wxString,TestCase> tests; ///< mapea los nombres de los tests a sus entradas/salidas (de los pares de archivos input??.txt/output??.txt, donde ?? es el nombre)
-	std::map<wxString,wxString> config; ///< palabras claves de config.txt, indican opciones de configuracion de como probar y mostrar los resultados
-	wxString base_psc; ///< codigo inicial a mostrar en el editor
-	wxString help_text; ///< texto de ayuda para el problema, opcional
+	bool m_is_ok; ///< si se cargo correctamente
+	std::map<wxString,TestCase> m_tests; ///< mapea los nombres de los tests a sus entradas/salidas (de los pares de archivos input??.txt/output??.txt, donde ?? es el nombre)
+	std::map<wxString,wxString> m_config; ///< palabras claves de config.txt, indican opciones de configuracion de como probar y mostrar los resultados
+	wxString m_base_psc; ///< codigo inicial a mostrar en el editor
+	wxString m_help_text; ///< texto de ayuda para el problema, opcional
+	wxString m_profile; ///< perfil obligatorio para el ejercicio (o en blanco si no requiere ninguno en particular)
 	void ProcessFile(wxString name, wxString &content);
-	wxArrayString images;
+	wxArrayString m_images;
 public:
 	Package();
 	void Reset();
@@ -37,9 +39,9 @@ public:
 	void SetConfigStr(const wxString &key, const wxString &value); 
 	void SetConfigBool(const wxString &key, bool value); 
 	void SetConfigInt(const wxString &key, long value); 
-	const wxString &GetBaseSrc() const { return base_psc; }
-	const wxString &GetHelp() const { return help_text; }
-	bool IsOk() { return is_ok; }
+	const wxString &GetBaseSrc() const { return m_base_psc; }
+	const wxString &GetHelp() const { return m_help_text; }
+	bool IsOk() { return m_is_ok; }
 	bool SaveConfig (const wxString &fname);
 	void UnloadImages();
 	wxString GetFullConfig();

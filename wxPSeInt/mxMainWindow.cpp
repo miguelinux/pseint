@@ -528,7 +528,6 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 	aui_manager.Update(); wxYield();
 	wxString key = path.Lower().EndsWith(".psx")?wxGetTextFromUser(_Z("Ingrese la clave:"),_Z("PSeInt"),"",this):"";
 	if (!test_panel->Load(path,key,src)) {
-		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxOK|wxICON_ERROR,this);
 		CloseTestPackage();
 		aui_manager.Update(); 
 	} else {

@@ -129,7 +129,7 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 			wxMemoryOutputStream os;
 			zip.Read(os);
 #ifdef FOR_WXPSEINT
-			images.Add(name);
+			m_images.Add(name);
 			wxMemoryInputStream is(os);
 			wxImage img(is,wxBITMAP_TYPE_PNG);
 			wxMemoryFSHandler::AddFile(name,img,wxBITMAP_TYPE_PNG);
@@ -141,7 +141,7 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 			ProcessFile(name,content);
 		}
 	}
-	return is_ok=read_something;
+	return m_is_ok=read_something;
 }
 
 bool Package::Load (const wxString &dir) {
@@ -153,7 +153,7 @@ bool Package::Load (const wxString &dir) {
 		bool cont = wxdir.GetFirst(&filename, "*" , wxDIR_FILES);
 		while ( cont ) {
 			if(filename.Lower().EndsWith(".png")) {
-				images.Add(mdir+wxFileName::GetPathSeparator()+filename);
+				m_images.Add(mdir+wxFileName::GetPathSeparator()+filename);
 			} else {
 				wxFile file(mdir+wxFileName::GetPathSeparator()+filename);
 				wxString content; wxStringOutputStream sos(&content);
@@ -163,16 +163,16 @@ bool Package::Load (const wxString &dir) {
 			cont = wxdir.GetNext(&filename);
 		}
 	}
-	return is_ok=true;
+	return m_is_ok=true;
 }
 
 TestCase & Package::GetTest (const wxString &name) {
-	return tests.find(name)->second;
+	return m_tests.find(name)->second;
 }
 
 int Package::GetNames (wxArrayString & names) {
 	names.Clear();
-	for(std::map<wxString,TestCase>::iterator it = tests.begin();it!=tests.end();++it)
+	for(std::map<wxString,TestCase>::iterator it = m_tests.begin();it!=m_tests.end();++it)
 		names.Add(it->first);
 	return names.GetCount();
 }
@@ -180,12 +180,12 @@ int Package::GetNames (wxArrayString & names) {
 void Package::ProcessFile (wxString name, wxString &content) {
 	name.MakeLower();
 	if (name=="base.psc") {
-		base_psc = content;
+		m_base_psc = content;
 	} else if (name=="help.html") {
-		help_text = content;
+		m_help_text = content;
 #ifdef ALLOW_MARKDOWN
 	} else if (name=="help.md") {
-		help_text = markdown2html(content.c_str(),content.Len());
+		m_help_text = markdown2html(content.c_str(),content.Len());
 #endif
 	} else if (name=="config.ini") {
 		content.Replace("\r","",true);
@@ -194,27 +194,27 @@ void Package::ProcessFile (wxString name, wxString &content) {
 			wxString key=content.BeforeFirst('\n');
 			content=content.AfterFirst('\n');
 			if (!key.IsEmpty() && !key.StartsWith("#") && key.Contains("=")) 
-				config[key.BeforeFirst('=').Trim(true).Trim(false).Lower()]=key.AfterFirst('=').Trim(true).Trim(false);
+				m_config[key.BeforeFirst('=').Trim(true).Trim(false).Lower()]=key.AfterFirst('=').Trim(true).Trim(false);
 		}
 	} else if (name.StartsWith("input") && name.EndsWith(".txt")) {
 		wxString test_name = name.Mid(5,name.Len()-9);
 		if (test_name.StartsWith("_")||test_name.StartsWith("-")) test_name=test_name.Mid(1);
-		tests[test_name].input=content;
+		m_tests[test_name].input=content;
 	} else if (name.StartsWith("output") && name.EndsWith(".txt")) {
 		wxString test_name = name.Mid(6,name.Len()-10);
 		if (test_name.StartsWith("_")||test_name.StartsWith("-")) test_name=test_name.Mid(1);
-		tests[test_name].solution=content;
+		m_tests[test_name].solution=content;
 	} else if (name!="solution.psc") {
 		std::cerr<<"Error in Package::ProcessFile: Unknown filename "<<name<<std::endl;
 	}
 }
 
 bool Package::IsInConfig (const wxString & key) {
-	return config.find(key.Lower())!=config.end();
+	return m_config.find(key.Lower())!=m_config.end();
 }
 
 wxString &Package::GetConfigStr(const wxString &key) {
-	return config[key.Lower()];
+	return m_config[key.Lower()];
 }
 
 long Package::GetConfigInt(const wxString & key) {
@@ -233,12 +233,12 @@ Package::Package ( ) {
 }
 
 void Package::Reset ( ) {
-	is_ok=false;
-	help_text.Clear();
-	tests.clear();
-	base_psc.Clear();
-	config.clear();
-	images.Clear();
+	m_is_ok=false;
+	m_help_text.Clear();
+	m_tests.clear();
+	m_base_psc.Clear();
+	m_config.clear();
+	m_images.Clear();
 	SetConfigStr  ( "mensaje exito" , "El algoritmo es correcto" );
 	SetConfigStr  ( "mensaje error" , "El algoritmo no es correcto" );
 	SetConfigBool ( "mostrar soluciones" , true );
@@ -248,15 +248,15 @@ void Package::Reset ( ) {
 }
 
 void Package::SetConfigStr (const wxString & key, const wxString & value) {
-	config[key] = value;
+	m_config[key] = value;
 }
 
 void Package::SetConfigBool (const wxString & key, bool value) {
-	config[key] = (value?"si":"no");
+	m_config[key] = (value?"si":"no");
 }
 
 void Package::SetConfigInt (const wxString & key, long value) {
-	config[key] = (wxString()<<value);
+	m_config[key] = (wxString()<<value);
 }
 
 bool Package::SaveConfig (const wxString & fname) {
@@ -264,9 +264,9 @@ bool Package::SaveConfig (const wxString & fname) {
 	if (fil.Exists()) fil.Open();
 	else fil.Create();
 	fil.Clear();
-	std::map<wxString,wxString>::iterator it = config.begin();
-	fil.AddLine(wxString("# generado por psEval ")<<VERSION<<"-"ARCHITECTURE);
-	while (it!=config.end()) {
+	std::map<wxString,wxString>::iterator it = m_config.begin();
+	fil.AddLine(wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE);
+	while (it!=m_config.end()) {
 		fil.AddLine(wxString()+it->first+" = "+it->second);
 		++it;
 	}
@@ -277,9 +277,9 @@ bool Package::SaveConfig (const wxString & fname) {
 
 wxString Package::GetFullConfig() {
 	SetConfigInt  ( "version requerida" , PACKAGE_VERSION );
-	wxString ret = wxString("# generado por psEval ")<<VERSION<<"-"ARCHITECTURE<<"\n";
-	std::map<wxString,wxString>::iterator it = config.begin();
-	while (it!=config.end()) {
+	wxString ret = wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE<<"\n";
+	std::map<wxString,wxString>::iterator it = m_config.begin();
+	while (it!=m_config.end()) {
 		ret<<wxString()<<it->first<<" = "<<it->second<<"\n";
 		++it;
 	}
@@ -297,18 +297,18 @@ bool Package::Save (const wxString & fname, const wxString & passkey, bool old_c
 		wxStringInputStream is(conf);
 		zip<<is;
 	}
-	if (!base_psc.IsEmpty()) {
+	if (!m_base_psc.IsEmpty()) {
 		zip.PutNextEntry("base.psc");
 		wxString conf=GetFullConfig();
-		wxStringInputStream is(base_psc);
+		wxStringInputStream is(m_base_psc);
 		zip<<is;
 	}
-	if (!base_psc.IsEmpty()) {
+	if (!m_base_psc.IsEmpty()) {
 		zip.PutNextEntry("help.html");
-		wxStringInputStream is(help_text);
+		wxStringInputStream is(m_help_text);
 		zip<<is;
 	}
-	for(std::map<wxString,TestCase>::iterator it = tests.begin();it!=tests.end();++it) {
+	for(std::map<wxString,TestCase>::iterator it = m_tests.begin();it!=m_tests.end();++it) {
 		zip.PutNextEntry(wxString("input-")+it->first+".txt");
 		wxStringInputStream is1(it->second.input);
 		zip<<is1;
@@ -316,17 +316,17 @@ bool Package::Save (const wxString & fname, const wxString & passkey, bool old_c
 		wxStringInputStream is2(it->second.solution);
 		zip<<is2;
 	}
-	for(unsigned int i=0;i<images.GetCount();i++) {
-		wxFileInputStream is(images[i]);
-		zip.PutNextEntry(images[i].AfterLast(wxFileName::GetPathSeparator()));
+	for(unsigned int i=0;i<m_images.GetCount();i++) {
+		wxFileInputStream is(m_images[i]);
+		zip.PutNextEntry(m_images[i].AfterLast(wxFileName::GetPathSeparator()));
 		zip<<is;
 	}
 	return true;
 }
 
 void Package::UnloadImages( ) {
-	for(unsigned int i=0;i<images.GetCount();i++)
-		wxMemoryFSHandler::RemoveFile(images[i]);
-	images.Clear();
+	for(unsigned int i=0;i<m_images.GetCount();i++)
+		wxMemoryFSHandler::RemoveFile(m_images[i]);
+	m_images.Clear();
 }
 

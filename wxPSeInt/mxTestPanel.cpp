@@ -38,13 +38,21 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 
 bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *src) {
 	this->path=path; this->key=key; this->src=src;
-	if (!pack.Load(path,key)) return false;
+	if (!pack.Load(path,key)) {
+		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxOK|wxICON_ERROR,this);
+		return false;
+	}
 	if (pack.GetConfigInt("version requerida")>PACKAGE_VERSION) {
 		wxMessageBox(_Z("Debe actualizar PSeInt para poder abrir este ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 		return false;
 	}
 	if (pack.GetConfigBool("creator")) {
 		Run("--create_new_test_package=1");
+		return false;
+	}
+	wxString req_profile = pack.GetConfigStr("perfil requerido");
+	if (!req_profile.IsEmpty() && req_profile.Upper()!=config->profile.Upper()) {
+		wxMessageBox(_ZZ("Debe utilizar el perfil \"")+req_profile+_Z("\" para este ejercicio.\n\nVaya al menú \"Configurar\" y seleccione \"Opciones\ndel lenguaje\" para cambiar su perfil."),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 		return false;
 	}
 	label->SetLabel(_Z(" <- click aquí para evaluar su respuesta"));

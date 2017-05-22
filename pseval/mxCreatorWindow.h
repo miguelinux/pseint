@@ -18,9 +18,11 @@ class mxCreatorWindow : public wxFrame {
 //	wxTextCtrl *output_path;
 	wxTextCtrl *msg_ok;
 	wxTextCtrl *msg_bad;
-	wxCheckBox *chk_pass;
+	wxCheckBox *chk_profile;
+	wxCheckBox *chk_password;
 	wxCheckBox *chk_new_cypher;
 	wxTextCtrl *password1;
+	wxTextCtrl *profile;
 	wxTextCtrl *num_tests;
 	wxCheckBox *show_errors;
 	wxCheckBox *show_solutions;
@@ -40,7 +42,8 @@ public:
 	void OnInputChange(wxCommandEvent &event);
 	void OnShowErrors(wxCommandEvent &event);
 	void OnGenerateSolutions(wxCommandEvent &event);
-	void OnCheckPass(wxCommandEvent &event);
+	void OnCheckPassword(wxCommandEvent &event);
+	void OnCheckProfile(wxCommandEvent &event);
 	void EnableDisable();
 	void LoadDirectory();
 	wxString GetFilePath(const wxString &name);

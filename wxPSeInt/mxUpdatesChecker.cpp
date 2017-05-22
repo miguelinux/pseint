@@ -120,7 +120,7 @@ void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
 #else
 	bool do_exit = false;
 #endif
-	wxLaunchDefaultBrowser("http://pseint.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE);
+	wxLaunchDefaultBrowser("http://pseint.sourceforge.net?page=actualizacion.php&os=" ARCHITECTURE);
 	Close();
 	if (do_exit) main_window->OnFileClose(evt);
 }
