@@ -1,9 +1,10 @@
-#include "ConfigManager.h"
 #include <wx/filename.h>
-#include "mxUtils.h"
+#include <wx/settings.h>
 #include <wx/textfile.h>
-#include "version.h"
 #include <wx/msgdlg.h>
+#include "ConfigManager.h"
+#include "mxUtils.h"
+#include "version.h"
 #include "Logger.h"
 #include "string_conversions.h"
 #include "error_recovery.h"
@@ -250,7 +251,18 @@ void ConfigManager::Read() {
 	if (version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
-	
+	// asegurarse de que tamaños y posiciones de la ventana estén en el rango de 
+	// la pantalla actual (por si se guardaron cuando había un segundo monitor que
+	// ya no está)
+	if (pos_x<0) pos_x = 0; if (pos_y<0) pos_y = 0;
+	int screen_w = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+	int screen_h = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+	if (screen_h>0 && screen_w>0) {
+		if (size_x>screen_w) size_x = screen_w;
+		if (size_y>screen_h) size_y = screen_h;
+		if (pos_x+size_x>screen_w) pos_x = screen_w-size_x;
+		if (pos_y+size_y>screen_h) pos_y = screen_h-size_y;
+	}
 }
 
 ConfigManager::~ConfigManager() {
