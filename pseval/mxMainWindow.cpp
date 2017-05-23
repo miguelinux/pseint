@@ -84,15 +84,17 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 		if ((!ok)||for_create) {
 			results_win->AddCaso(tests[i]);
 			if (!for_create && pack.GetConfigStr("mostrar casos fallidos")=="primero") {
-				if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
-					+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
-				{
+				wxMessageBox(pack.GetConfigStr("mensaje error")
+					+"\n\nA continuación se mostrará un caso de prueba en el que falla.","Resultado",wxOK|wxICON_ERROR,NULL);
+//				if (wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
+//					+"\n\n¿Desea ver el primer caso en el que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
+//				{
 					results_win->Show();
 					return true;
-				} else {
-					results_win->Destroy();
-					return false;
-				}
+//				} else {
+//					results_win->Destroy();
+//					return false;
+//				}
 			}
 		}
 	}
@@ -100,12 +102,14 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 		Hide();
 		if (for_create||results_wrong) {
 			if (for_create||pack.GetConfigStr("mostrar casos fallidos")=="todos") {
-				if (for_create||wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
-					+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxYES_NO|wxICON_ERROR,NULL)) 
-				{
+				wxMessageBox(pack.GetConfigStr("mensaje error")
+				  +"\n\nA continuación se mostrarán los casos de prueba en los que falla.","Resultado",wxOK|wxICON_ERROR,NULL);
+//				if (for_create||wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
+//					+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxOK|wxICON_ERROR,NULL)) 
+//				{
 					results_win->Show();
 					return true;
-				}
+//				}
 			} else {
 				wxMessageBox(pack.GetConfigStr("mensaje error"),"Resultado",wxOK|wxICON_ERROR,this);
 			}
@@ -140,14 +144,14 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	the_process  = new wxProcess(this->GetEventHandler());
 	the_process->Redirect();
 	std::cerr<<"pseval runs: "<<command<<std::endl;
+	process_finished=false;
 	process_pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 	if (!process_pid) return false;
 	wxString &input=test.input, &output=test.output, &solution=test.solution;
 	wxTextOutputStream in(*the_process->GetOutputStream());
 	wxTextInputStream out(*the_process->GetInputStream());
 	input.Replace("\r","",true);
-	in<<input;
-	process_finished=false;
+	wxYield(); if (!process_finished) in<<input; // the yield and the if for mac, if the process doesn't wait for a input an finishes inmediatly at the time of sending the input it might be already terminate and so the input is closed an it causes a segfault
 	while(!process_finished) {
 		while (the_process->IsInputAvailable()) 
 			{ char aux; aux=out.GetChar(); if (aux) output<<aux; }
