@@ -157,6 +157,7 @@ void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 												:"ninguno" );
 	pack.SetConfigBool ( "mezclar casos", shuffle_tests->GetValue() );
 	if (chk_profile->GetValue()) pack.SetConfigStr("perfil requerido",profile->GetValue());
+	else                         pack.SetConfigStr("perfil requerido","");
 	pack.SetConfigInt  ( "version requerida" , chk_profile->GetValue()?PACKAGE_VERSION:PACKAGE_VERSION_NO_PROFILE );
 	
 	static wxString fdir;
@@ -265,6 +266,8 @@ void mxCreatorWindow::LoadDirectory ( ) {
 			msg_ok->SetValue(pack.GetConfigStr("mensaje exito"));
 			base_psc->SetValue(!pack.GetBaseSrc().IsEmpty());
 			help_html->SetValue(!pack.GetHelp().IsEmpty());
+			profile->SetValue(pack.GetConfigStr("perfil requerido"));
+			chk_profile->SetValue(!pack.GetConfigStr("perfil requerido").IsEmpty());
 		}
 	} else pack.Reset();
 	EnableDisable();

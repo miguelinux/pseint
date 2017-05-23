@@ -12,7 +12,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=mxMainWindow.cpp
+current_source=../bin/help/cambios.html
 path_char=/
 [source]
 path=Application.cpp
@@ -25,7 +25,7 @@ path=mxSingleCaseWindow.cpp
 cursor=92:1
 [source]
 path=mxMainWindow.cpp
-cursor=148:16
+cursor=105:77
 open=true
 [source]
 path=mxCreatorWindow.cpp
@@ -66,7 +66,8 @@ path=formato_paquete.txt
 cursor=0:0
 [other]
 path=../bin/help/cambios.html
-cursor=0:68
+cursor=17:9
+open=true
 [config]
 name=Linux_Debug
 toolchain=
