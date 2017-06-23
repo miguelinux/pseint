@@ -102,7 +102,7 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 		Hide();
 		if (for_create||results_wrong) {
 			if (for_create||pack.GetConfigStr("mostrar casos fallidos")=="todos") {
-				wxMessageBox(pack.GetConfigStr("mensaje error")
+				if (!for_create) wxMessageBox(pack.GetConfigStr("mensaje error")
 				  +"\n\nA continuación se mostrarán los casos de prueba en los que falla.","Resultado",wxOK|wxICON_ERROR,NULL);
 //				if (for_create||wxYES == wxMessageBox(pack.GetConfigStr("mensaje error")
 //					+"\n\n¿Desea ver los casos en los que falla?","Resultado",wxOK|wxICON_ERROR,NULL)) 
