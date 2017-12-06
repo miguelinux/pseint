@@ -88,7 +88,10 @@ void idle_func() {
 	if (process_selector->IsActive()) {
 		process_selector->ProcessIddle();
 	} else {
-		if (mouse) { 
+		if (mouse) {
+			// la corrección de m_x es para que cuando la estructura se colapse, el punto
+			// de agarre no quede fuera de la misma (ej, un segun con muchas opciones)
+			mouse->m_x -= std::max(mouse->m_x-mouse->d_bwr,0);
 			trash->Show();
 			shapes_bar->Hide();
 		} else {
