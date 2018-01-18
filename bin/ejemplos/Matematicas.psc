@@ -41,7 +41,7 @@
                Escribir 'Func Expon.:',exp(N){;}
             FinSi
          3: 
-            Escribir 'Turncar:',trunc(N){;}
+            Escribir 'Truncar:',trunc(N){;}
             Escribir 'Redondear:',redon(N){;}
          4: Escribir 'Raiz Cuad.:',rc(N){;}
          5: Escribir 'Valor Abs.:',abs(N){;}
