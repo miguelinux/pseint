@@ -669,8 +669,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
 		return NULL;
 	}
-	
-	
+		
 	if (!is_example) RegenFileMenu(path); // por esta linea no recibo path como const wxString &, porque si es del historial me lo modifica
 	if (path.Lower().EndsWith(".psz")||path.Lower().EndsWith(".psx")) return OpenTestPackage(path);
 	
