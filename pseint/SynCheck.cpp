@@ -10,6 +10,8 @@
 #include "case_map.h"
 using namespace std;
 
+// NROS DE ERRORES RESERVADOS PARA FUTUROS USOS: 320
+
 static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 	if (to==-1) to=s.size();
 	if (x=='\"') x='\'';
@@ -311,7 +313,7 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,InstructionT
 					// si lo que sigue es otro operador, puede haber problemas a menos que se trate de "escribir" con sintaxis flexible
 					if (next==')' || next==':' || next==';') {
 						cadena.erase(i,1); i--;
-					} else if (next_es_letra || (next>='0'&&next<='9') || next=='.' || next=='\'' || (next=='(' && allow_multiple_expresions)) {
+					} else if (next_es_letra || (next>='0'&&next<='9') || next=='.' || next=='\'' || ((next=='('||next=='~') && allow_multiple_expresions)) {
 						if (allow_multiple_expresions) {
 							w=w_null;
 //							cadena.erase(i,1); i--;
@@ -866,7 +868,7 @@ int SynCheck(int linea_from, int linea_to) {
 							if (cadena[tmp1]==')') tmp2--;
 							if (tmp1>0 && tmp1<(int)cadena.size()-1)
 								if (comillas<0 && cadena[tmp1]==' ' && cadena[tmp1-1]!='&' && cadena[tmp1-1]!='|'  && cadena[tmp1+1]!='&'  && cadena[tmp1+1]!='|')
-								{SynError (47,"Se esperaba fin de expresion."); errores++;}
+								{SynError (47,"Se esperaba fin de expresion (fin de la instrucción, o coma para separar)."); errores++;}
 							if (tmp2==0 && cadena[tmp1]==',') { // comprobar validez
 								str=cadena;
 								str.erase(tmp1,str.size()-tmp1);

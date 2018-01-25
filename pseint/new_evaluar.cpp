@@ -62,7 +62,7 @@ struct InfoOperador {
 };
 
 static const InfoOperador operadores[] = {
-	{',',0,true},{'|',1,true},{'&',2,true},{'~',3,false},{'!',4,true},{'=',5,true},{'<',6,true},{'>',7,true},
+	{',',0,true},{'|',1,true},{'&',2,true},{'~',2,false},{'!',2,true},{'=',3,true},{'<',4,true},{'>',4,true},
 	{'+',8,true},{'-',8,true},{'*',10,true},{'/',10,true},{'%',10,true},{'^',12,true},{' ',14,true} };
 
 int BuscarOperador(const string &expresion, int &p1, int &p2) {
@@ -432,10 +432,18 @@ DataValue Evaluar(const string &expresion, int &p1, int &p2, const tipo_var &for
 		case '~': case '!':
 			if (op!='!'||next!='=') {
 				// el operando debe ser logico
+				if (p1a!=pos_op) // tal vez nunca se llegue a este error, porque lo detecta en otro lado
+				{
+					string aux_exp = expresion.substr(0,pos_op)+"("+expresion.substr(pos_op,p2-pos_op+1)+")";
+					int aux_p2 = p2+2;
+					DataValue ret = Evaluar(aux_exp,p1,aux_p2,forced_tipo);
+					p2 = aux_p2-2; 
+					return ret;
+				}
 				if (p2a>p2) // tal vez nunca se llegue a este error, porque lo detecta en otro lado
-					WriteError(290,"Falta operando para la negacion (~/NO).");
+					WriteError(290,"Falta operando para la negación (~/NO).");
 				if (td2!=vt_logica && !AplicarTipo(expresion,p2a,p2,vt_logica)) { 
-					WriteError(291,"No coinciden los tipos (~ o NO). El operando deben ser logicos.");
+					WriteError(291,"No coinciden los tipos (~ o NO). El operando deben ser lógico.");
 					ev_return(DataValue::DVError());
 				}
 				DataValue s2 = Evaluar(expresion,p2a,p2b,vt_logica);

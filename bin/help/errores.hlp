@@ -778,3 +778,10 @@
   * ejecute nuevamente el algoritmo ingresando un dato del tipo apropiado,
   * o modifique su algoritmo, verificando todas las expresiones y definiciones en las que interviene esta variable.
 
+320
+  Una de las expresiones de esta linea que utiliza el operador de negación (NO/~) tiene un operando a su izquierda. Pero el operador de negación es unario y su único operando debe estar a la derecha.
+  Por ejemplo, en "No 5==x", el resultador "5==x" será su operando; pero en una expresión como "a no b" hay un error, ya que o bien no debe ir "a" ("no b" es correcto), o bien falta un operando ("a y no b" también es correcto).
+  * Verifique si en la expresión hay un operando previo a la negación.
+  * Elimine el operando o agregue el operador que falte.
+  También puede ocurrir que el problema se deba a una malinterpretación de la precedencia de operadores.
+  * Si la expresión es compleja, agregue paréntesis en las subexpresiones para alterar/explicitar la precedencia deseada.
