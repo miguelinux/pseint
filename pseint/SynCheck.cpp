@@ -1187,7 +1187,7 @@ int SynCheck(int linea_from, int linea_to) {
 				int i=0;
 				while ((p=PSeudoFind(cadena,',',i))!=-1) {
 					DataValue res = EvaluarSC(cadena.substr(i,p-i),lang[LS_INTEGER_ONLY_SWITCH]?vt_numerica:vt_caracter_o_numerica);
-					if (res.IsOk() && !res.CanBeReal()&&!lang[LS_LAZY_SYNTAX])
+					if (res.IsOk() && !res.CanBeReal()&&lang[LS_INTEGER_ONLY_SWITCH])
 						SynError (203,"Las opciones deben ser de tipo numerico."); errores++;
 					i=p+1;
 				}
