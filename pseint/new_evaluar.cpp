@@ -194,7 +194,7 @@ bool AplicarTipo(const string &expresion, int &p1, int &p2, tipo_var tipo) {
 		if (t1!=tipo && !AplicarTipo(expresion,p1a,p1b,tipo)) return false;
 		tipo_var t2 = DeterminarTipo(expresion,p2a,p2);
 		int p2b=p2;
-		if (t2==vt_desconocido && !AplicarTipo(expresion,p2a,p2b,tipo)) return false;
+		if (t2!=tipo && !AplicarTipo(expresion,p2a,p2b,tipo)) return false;
 		return true;
 	}
 	return false;  // nunca llega aca
