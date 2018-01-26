@@ -31,13 +31,16 @@ void JavaExporter::esperar_tecla(t_output &prog, string param, string tabs) {
 }
 
 void JavaExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
+	tipo_var t; tiempo=expresion(tiempo,t); // para que arregle los nombres de las variables
 	use_esperar_tiempo=true;
 	stringstream inst;
 	inst<<"Thread.sleep(";
+	string pre,post;
+	if (!es_numerica_entera_constante(tiempo)) { pre="(long)("; post=")"; }
 	if (mili) {
-		inst<<tiempo; 
+		inst<<pre<<tiempo<<post; 
 	} else {
-		inst<<colocarParentesis(tiempo)<<"*1000";
+		inst<<pre<<colocarParentesis(tiempo)<<"*1000"<<post;
 	}
 	inst<<");";
 	insertar(prog,tabs+inst.str());

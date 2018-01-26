@@ -23,7 +23,7 @@ int main() {
 	printf("%f\n",asin(x));
 	printf("%f\n",acos(x));
 	printf("%f\n",atan(x));
-	printf("%i\n",int((x)+.5));
+	printf("%i\n",int(x+.5));
 	printf("%i\n",int(x));
 	printf("%i\n",(rand()%15));
 	s = "Hola";

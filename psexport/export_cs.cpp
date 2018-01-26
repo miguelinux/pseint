@@ -23,6 +23,7 @@ void CSharpExporter::esperar_tecla(t_output &prog, string param, string tabs) {
 }
 
 void CSharpExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
+	tipo_var t; tiempo=expresion(tiempo,t); // para que arregle los nombres de las variables
 	use_threading=true;
 	stringstream inst;
 	inst<<"Thread.Sleep(";

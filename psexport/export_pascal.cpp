@@ -37,6 +37,7 @@ void PascalExporter::esperar_tecla(t_output &prog, string param, string tabs){
 }
 
 void PascalExporter::esperar_tiempo(t_output &prog, string tiempo, bool mili, string tabs) {
+	tipo_var t; tiempo=expresion(tiempo,t); // para que arregle los nombres de las variables
 	uses_crt=true;
 	stringstream inst;
 	inst<<"Delay(";

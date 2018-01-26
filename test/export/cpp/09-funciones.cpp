@@ -21,7 +21,7 @@ int main() {
 	cout << asin(x) << endl;
 	cout << acos(x) << endl;
 	cout << atan(x) << endl;
-	cout << int((x)+.5) << endl;
+	cout << int(x+.5) << endl;
 	cout << int(x) << endl;
 	cout << (rand()%15) << endl;
 	s = "Hola";

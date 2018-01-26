@@ -118,7 +118,7 @@ string colocarParentesis(const string &exp) {
 	for (i=0;i<=ifinal;i++) {
 		if (exp[i]=='[' || exp[i]=='(') parentesis++;
 		else if (exp[i]==']' || exp[i]==')') parentesis++;
-		else if (!parentesis && exp[i]!='.' && exp[i]!='+' && exp[i]!='-' && !(exp[i]>='A' && exp[i]<='Z') && !(exp[i]>='0' && exp[i]<='9') && exp[i]!=' ') break;
+		else if (!parentesis && exp[i]!='.' && exp[i]!='+' && exp[i]!='-' && !(exp[i]>='A' && exp[i]<='Z') && !(exp[i]>='a' && exp[i]<='z') && !(exp[i]>='0' && exp[i]<='9') && exp[i]!=' ') break;
 	}
 	if (i>ifinal) return exp;
 	return string("(")+exp+")";

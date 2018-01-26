@@ -21,6 +21,7 @@ void VbExporter::esperar_tecla(t_output &prog, string param, string tabs){
 }
 
 void VbExporter::esperar_tiempo(t_output &prog, string tiempo, bool milis, string tabs){
+	tipo_var t; tiempo=expresion(tiempo,t); // para que arregle los nombres de las variables
 	stringstream inst;
 	inst<<"Thread.Sleep(";
 	if (milis) inst<<tiempo; 

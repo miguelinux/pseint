@@ -38,7 +38,9 @@ protected:
 	string get_arg(string args, int cual);
 	string make_dims(const int *tdims, string c1="[", string c2=",", string c3="]", bool numbers=true);
 	void crop_name_and_dims(string decl, string &name, string &dims, string c1="[", string c2=",", string c3="]");
-	bool es_cadena_constante(string s);
+	bool es_cadena_constante(const string &s);
+	bool es_numerica_constante(const string &s);
+	bool es_numerica_entera_constante(const string &s);
 	void sep_args(const string &args, t_arglist &out);
 	bool replace_all(string &str, string from, string to);
 	

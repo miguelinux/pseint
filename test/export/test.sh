@@ -1,5 +1,4 @@
 #!/bin/sh
-
 if [ "$1" = "" ]; then 
   echo "Use: $0 langcode"
 else
@@ -16,6 +15,7 @@ else
   cd psc
   
   ibin=../../../bin/pseint
+  mkdir -p ../temp
   
   for A in *.psc; do
   

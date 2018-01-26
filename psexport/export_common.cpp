@@ -264,7 +264,7 @@ string ExporterBase::get_arg(string args, int cual) {
 	return "";
 }
 
-bool ExporterBase::es_cadena_constante(string s) {
+bool ExporterBase::es_cadena_constante(const string &s) {
 	if (s[0]!='\'' && s[0]!='\"') return false;
 	int l=s.size()-1;
 	if (s[l]!='\'' && s[l]!='\"') return false;
@@ -272,6 +272,21 @@ bool ExporterBase::es_cadena_constante(string s) {
 		if (s[i]=='\'' || s[i]=='\"') return false;
 	}
 	return true;
+}
+
+bool ExporterBase::es_numerica_constante(const string &s) {
+	int l=s.size();
+	for(int i=0;i<l;i++) { 
+		if ( (s[i]>='a' && s[i]<='z') || 
+			 (s[i]>='A' && s[i]<='Z') || 
+			 s[i]=='\'' || s[i]=='\"' || s[i]=='_'
+		   ) return false;
+	}
+	return true;
+}
+
+bool ExporterBase::es_numerica_entera_constante(const string &s) {
+	return es_numerica_constante(s) && s.find('.')==string::npos;
 }
 
 void ExporterBase::init_header(t_output &out, string comment_pre, string comment_post) {
