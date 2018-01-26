@@ -1343,11 +1343,13 @@ int SynCheck(int linea_from, int linea_to) {
 						}
 					}
 			}
-			if (instruction_type==IT_FINSI || instruction_type==IT_FINPARA || instruction_type==IT_FINMIENTRAS ||
-				instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO || instruction_type==IT_FINSEGUN ||
-				instruction_type==IT_REPETIR || instruction_type==IT_BORRARPANTALLA || instruction_type==IT_ESPERARTECLA)
+			bool fin_algo = 
+				instruction_type==IT_FINSI || instruction_type==IT_FINPARA || instruction_type==IT_FINMIENTRAS ||
+				instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO || instruction_type==IT_FINSEGUN;
+			if (fin_algo || instruction_type==IT_REPETIR || instruction_type==IT_BORRARPANTALLA || instruction_type==IT_ESPERARTECLA)
 			{
-				if (!cadena.empty() && cadena!=";") {
+				if (fin_algo && cadena==";") cadena="";
+				else if (!cadena.empty() && cadena!=";") {
 					SynError (105,"La instrucción no debe tener parámetros."); errores++;
 					cadena="";
 				}

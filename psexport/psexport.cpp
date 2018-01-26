@@ -137,7 +137,7 @@ bool cargar(list<t_proceso> &algs, string archivo){
 		} else if (LeftCompare(s,"LEER ")) {
 			i.nombre="LEER"; i.par1=CutString(s,5,1);
 			p.insert(p.end(),i);
-		} else if (s[s.size()-1]==':') {
+		} else if (!s.empty() && s[s.size()-1]==':') {
 			i.nombre="OPCION"; i.par1=CutString(s,0,1);
 			p.insert(p.end(),i);
 		} else if (s!="") {
