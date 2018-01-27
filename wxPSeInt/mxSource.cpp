@@ -148,6 +148,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	
 	last_s1=last_s2=0;
 	is_example=false;
+	just_created=true;
 	
 	filename = afilename;
 	sin_titulo = filename==wxEmptyString;
@@ -186,7 +187,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	reload_timer = new wxTimer(GetEventHandler());
 	Connect(wxEVT_TIMER,wxTimerEventHandler(mxSource::OnTimer),NULL,this);
 	
-	SetStatus(STATUS_NEW_SOURCE);
+	status = STATUS_NEW_SOURCE;
+//	SetStatus(STATUS_NEW_SOURCE);
 	
 	SetMouseDwellTime(500);
 	
@@ -1499,7 +1501,9 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 //			_LOG("mxSource::OnTimer out");
 			return; // solo si tiene el foco
 		}
-		DoRealTimeSyntax(); HighLightBlock();
+		if (!just_created) 
+			DoRealTimeSyntax(); 
+		HighLightBlock();
 	} else if (obj==reload_timer) {
 		_LOG("mxSource::OnTimes(reload) "<<this);
 		if (run_socket && rt_errors.empty()) UpdateRunningTerminal();
@@ -1663,13 +1667,14 @@ void mxSource::SetStatus (int cual) {
 	if (cual!=-1) {
 		status_should_change=false;
 		status_bar->SetStatus(status=cual);
-	}
-	
-	// no pasa nada, edicion normal...
-	if (!status_should_change) { // si se habia definido un estado externo (por main window, o por debug panel por ejemplo), se mantiene hasta que alguien modifique el pseudocodigo
-		status_bar->SetStatus(status);
 		return;
 	}
+	
+//	// no pasa nada, edicion normal...
+//	if (!status_should_change) { // si se habia definido un estado externo (por main window, o por debug panel por ejemplo), se mantiene hasta que alguien modifique el pseudocodigo
+//		status_bar->SetStatus(status);
+//		return;
+//	}
 	if (config->rt_syntax) { // ...con verificacion de sintaxis en tiempo real
 		if (!rt_errors.empty()) status_bar->SetStatus(status=STATUS_SYNTAX_ERROR);
 		else if (run_socket) status_bar->SetStatus(status=STATUS_RUNNING_CHANGED);
@@ -1680,7 +1685,7 @@ void mxSource::SetStatus (int cual) {
 }
 
 void mxSource::OnChange (wxStyledTextEvent & event) {
-	status_should_change=true; event.Skip();
+	just_created=false; status_should_change=true; event.Skip();
 	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) {
 		run_socket->Write("dimm\n",5);
 		SetStatus(STATUS_RUNNING_CHANGED);
@@ -1831,7 +1836,7 @@ void mxSource::ProfileChanged ( ) {
 		SetExample();
 	}
 	Colourise(0,GetLength());
-	SetStatus(STATUS_PROFILE);
+//	SetStatus(STATUS_PROFILE);
 }
 
 void mxSource::RTOuputStarts ( ) {
@@ -2221,3 +2226,9 @@ void mxSource::OnPainted (wxStyledTextEvent & event) {
 		MyBraceHighLight();
 	event.Skip();
 }
+
+void mxSource::SetJustCreated ( ) {
+	SetModify(false);
+	just_created = true;
+}
+

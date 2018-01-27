@@ -513,9 +513,8 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 		source->SetFieldIndicator(8,18);
 		source->SetSelection(20,20);
 	}
-	source->SetModify(false);
-	source->SetFocus();
-	source->SetStatus(STATUS_NEW_SOURCE);
+	source->SetJustCreated();
+	status_bar->SetStatus(STATUS_NEW_SOURCE);
 	return source;
 }
 
@@ -1667,8 +1666,8 @@ void mxMainWindow::ProfileChanged ( ) {
 	CreateButtonSubProceso(commands,commands->GetSizer());
 	commands->Layout();
 	CreateOpersPanel(); //	opers_window->SetWordOperators();
+	status_bar->SetStatus(STATUS_PROFILE);
 	aui_manager.Update();
-
 }
 
 mxSource * mxMainWindow::GetCurrentSource ( ) {
@@ -1681,7 +1680,7 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 	// para que se actualice la lista de variables
 	if (notebook->GetPageCount()) {
 		mxSource *src=CURRENT_SOURCE;
-		if (config->rt_syntax) {
+		if (config->rt_syntax && src->IsJustCreated()) {
 			src->SetStatus();
 			src->StartRTSyntaxChecking();
 		}
@@ -1695,8 +1694,7 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 			aui_manager.Update();
 		}
 		main_window->QuickHelp().HideOutput();
-	} else
-		status_bar->SetStatus(STATUS_WELCOME);
+	}
 }
 
 void mxMainWindow::OnHelperVars (wxCommandEvent & evt) {

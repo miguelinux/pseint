@@ -21,6 +21,7 @@
 #include "error_recovery.h"
 #include <wx/textfile.h>
 #include "mxWelcome.h"
+#include "mxStatusBar.h"
 using namespace std;
 
 IMPLEMENT_APP(mxApplication)
@@ -103,6 +104,8 @@ bool mxApplication::OnInit() {
 	wxSTC_SetZaskarsFlags(ZF_FIXDEADKEYS_ESISO);
 #endif
 	
+	status_bar->SetStatus(STATUS_WELCOME);
+	
 	if (!config->version) {
 		_LOG("mxApplication::OnInit NO_PROFILE");
 //		wxMessageBox(_Z(
@@ -113,6 +116,7 @@ bool mxApplication::OnInit() {
 //			),_Z("Bienvenido a PSeInt"),wxOK,main_window);
 		mxWelcome(main_window).ShowModal();
 		main_window->NewProgram();
+		main_window->ProfileChanged();
 	} else {
 		if (config->check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();

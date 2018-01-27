@@ -37,6 +37,7 @@ private:
 	int comp_from, comp_to;
 	int last_s1,last_s2;
 	bool is_example;
+	bool just_created;
 	
 	static int last_id;
 	int id; // id unico e irrepetible para cada source, se usa para pasarle a los procesos externos y que digan al llamar al socket a que 
@@ -73,6 +74,8 @@ public:
 	void SetFieldIndicator(int p1, int p2, bool select=true); // para los campos a completar en las plantillas de instrucciones/estructuras
 	void UnExample();
 	void SetExample();
+	void SetJustCreated();
+	bool IsJustCreated() const { return just_created; }
 	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString);
 	~mxSource();
 	

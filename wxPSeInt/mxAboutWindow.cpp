@@ -115,12 +115,12 @@ void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
 		wxLaunchDefaultBrowser("http://pseint.sourceforge.net");
 	} else if (event.GetLinkInfo().GetHref()=="about") {
 		if (!helpw) helpw = new mxHelpWindow();
+		Close(); wxYield();
 		helpw->ShowHelp("about.html");
-		Close();
 	} else if (event.GetLinkInfo().GetHref()=="gpl") {
 		if (!helpw) helpw = new mxHelpWindow();
+		Close(); wxYield();
 		helpw->ShowHelp("gpl.html");
-		Close();
 	} else if (event.GetLinkInfo().GetHref()=="lala") {
 		static int clicks=0;
 		if (++clicks==42) {

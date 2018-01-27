@@ -166,7 +166,7 @@ void mxProfile::UpdateDetails() {
 	if (!text) return;
 	if (lang.source==LS_FILE) {
 		text->SetValue(wxString()
-					   <<_Z("Su personalización actual ha sido cargada desde el archivo ") << lang.name); 
+					   <<_Z("Su personalización actual ha sido cargada desde el archivo: ") << lang.name); 
 	} else if (lang.source==LS_LIST) {
 		int p = perfiles.Index(GetListSelection());
 		text->SetValue(p==wxNOT_FOUND 

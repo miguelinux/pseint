@@ -71,7 +71,7 @@ void mxStatusBar::OnPaint (wxPaintEvent & event) {
 	dc.SetTextForeground(texts[status].col);
 	dc.Clear();
 	dc.SetFont(font);
-	wxString text;
+//	wxString text;
 	dc.DrawText(texts[status].text,5,3);
 }
 
@@ -93,9 +93,10 @@ void mxStatusBar::OnClick (wxMouseEvent & event) {
 }
 
 void mxStatusBar::SetStatus (int what) {
-	if (what==STATUS_NEW_SOURCE && status<STATUS_NEW_SOURCE) return;
-	else if (what==STATUS_SYNTAX_ERROR && main_window->QuickHelp().IsVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
-	else if (status==STATUS_PROFILE) {
+//	if ((what==STATUS_NEW_SOURCE || what==STATUS_SYNTAX_OK) && (status<STATUS_NEW_SOURCE)) return;
+//	else 
+		if (what==STATUS_SYNTAX_ERROR && main_window->QuickHelp().IsVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
+	else if (what==STATUS_PROFILE) {
 		texts[STATUS_PROFILE].text =
 			texts[STATUS_PROFILE].text.BeforeFirst(':') + _Z(": ") + cfg_lang.name ;
 	}
