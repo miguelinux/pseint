@@ -330,7 +330,7 @@ void mxMainWindow::CreateMenus() {
 	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
 	utils->AddItemToMenu(cfg,mxID_CONFIG_LANGUAGE, _Z("Opciones del Lenguaje (perfiles)..."),"","lenguaje.png");
-	mi_nassi_shne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SHNEIDERMAN, _Z("Utilizar diagramas Nassi-Shneiderman"),"",config->lang[LS_USE_NASSI_SHNEIDERMAN]);
+	mi_nassi_shne = utils->AddCheckToMenu(cfg,mxID_CONFIG_NASSI_SHNEIDERMAN, _Z("Utilizar diagramas Nassi-Shneiderman"),"",cfg_lang[LS_USE_NASSI_SHNEIDERMAN]);
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	cfg->AppendSeparator();
 	utils->AddItemToMenu(cfg,mxID_CONFIG_ICON_INSTALLER, _Z("Actualizar accesos directos..."),"","");
@@ -504,7 +504,7 @@ void mxMainWindow::CreateStatusBar() {
 mxSource *mxMainWindow::NewProgram(const wxString &title) {
 	mxSource *source = new mxSource(notebook,title);
 	notebook->AddPage(source,title,true);
-	if (config->lang[LS_PREFER_ALGORITMO]) {
+	if (cfg_lang[LS_PREFER_ALGORITMO]) {
 		source->SetText("Algoritmo sin_titulo\n\t\nFinAlgoritmo\n");
 		source->SetFieldIndicator(10,20);
 		source->SetSelection(22,22);
@@ -945,7 +945,7 @@ void mxMainWindow::OnCmdAsignar(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText("ASIGNAR"));
 	wxArrayString toins;
-	if (config->lang[LS_FORCE_SEMICOLON])
+	if (cfg_lang[LS_FORCE_SEMICOLON])
 		toins.Add("{variable}<-{expresion};");
 	else
 		toins.Add("{variable}<-{expresion}");
@@ -956,7 +956,7 @@ void mxMainWindow::OnCmdLeer(wxCommandEvent &evt) {
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText("LEER"));
 	wxArrayString toins;
-	if (config->lang[LS_FORCE_SEMICOLON])
+	if (cfg_lang[LS_FORCE_SEMICOLON])
 		toins.Add("Leer {lista_de_variables};");
 	else
 		toins.Add("Leer {lista_de_variables}");
@@ -970,7 +970,7 @@ void mxMainWindow::OnCmdEscribir(wxCommandEvent &evt) {
 	wxArrayString toins;
 	wxString line = "Escribir {lista_de_expresiones}";
 	if (alternative) line<<" sin saltar";
-	if (config->lang[LS_FORCE_SEMICOLON]) line<<";";
+	if (cfg_lang[LS_FORCE_SEMICOLON]) line<<";";
 	toins.Add(line);
 	InsertCode(toins);
 }
@@ -986,7 +986,7 @@ void mxMainWindow::OnCmdMientras(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnCmdRepetir(wxCommandEvent &evt) {
-	bool alternative = config->lang[LS_PREFER_REPEAT_WHILE]!=wxGetKeyState(WXK_SHIFT);
+	bool alternative = cfg_lang[LS_PREFER_REPEAT_WHILE]!=wxGetKeyState(WXK_SHIFT);
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText(alternative?"REPETIR - MIENTRAS QUE":"REPETIR - HASTA QUE"));
 	wxArrayString toins;
@@ -1016,7 +1016,7 @@ void mxMainWindow::OnCmdPara(wxCommandEvent &evt) {
 
 void mxMainWindow::OnCmdSubProceso(wxCommandEvent &evt) {
 	bool alternative = wxGetKeyState(WXK_SHIFT);
-	wxString funcion = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
+	wxString funcion = cfg_lang[LS_PREFER_FUNCION]?"Funcion":(cfg_lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
 	if (config->auto_quickhelp) 
 		QuickHelp().ShowHelpText(help->GetCommandText(funcion.Upper()));
 	wxArrayString toins;
@@ -1127,7 +1127,7 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 		// insertar el código con su correspondiente formato (en la linea dada por line, que está en blanco)
 		int oline=line;
 		for (unsigned int i=0;i<toins.GetCount();i++) {
-			if (config->lang[LS_LAZY_SYNTAX] && toins[i].StartsWith("Fin"))
+			if (cfg_lang[LS_LAZY_SYNTAX] && toins[i].StartsWith("Fin"))
 				toins[i].Replace("Fin","Fin ",false);
 			if (i) source->InsertText(source->PositionFromLine(line),"\n");
 			int pos = source->GetLineIndentPosition(line);
@@ -1502,7 +1502,8 @@ void mxMainWindow::OnHelpUpdates(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnConfigLanguage(wxCommandEvent &evt) {
-	new mxProfile(this);
+	if (mxProfile(this).ShowModal()) 
+		ProfileChanged();
 }
 
 void mxMainWindow::SetAccelerators() {
@@ -1534,10 +1535,9 @@ void mxMainWindow::OnViewNotebookPrev(wxCommandEvent &evt){
 }
 
 void mxMainWindow::OnDoThat (wxCommandEvent &event) {
-	LangSettings old=config->lang;
-	new mxConfig(this);
-	if (config->lang!=old) {
-		config->profile="<personalizado>";
+	LangSettings custom_lang = cfg_lang;
+	if (mxConfig(this,custom_lang).ShowModal() && custom_lang!=cfg_lang) {
+		config->SetProfile(custom_lang);
 		ProfileChanged();
 	}
 }
@@ -1636,17 +1636,17 @@ void mxMainWindow::UpdateRealTimeSyntax() {
 void mxMainWindow::OnConfigNassiScheiderman (wxCommandEvent & evt) {
 	if (!mi_nassi_shne->IsChecked()) {
 		mi_nassi_shne->Check(false);
-		config->lang[LS_USE_NASSI_SHNEIDERMAN]=false;
+		config->GetWritableLang()[LS_USE_NASSI_SHNEIDERMAN]=false;
 	} else {
 		mi_nassi_shne->Check(true);
-		config->lang[LS_USE_NASSI_SHNEIDERMAN]=true;
+		config->GetWritableLang()[LS_USE_NASSI_SHNEIDERMAN]=true;
 	}
 }
 
 void mxMainWindow::CreateButtonSubProceso(wxPanel *panel, wxSizer *sizer){
 	if (button_subproc) { sizer->Detach(button_subproc); button_subproc->Destroy(); }
-	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
-		wxString but_label = config->lang[LS_PREFER_FUNCION]?_Z("Función"):(config->lang[LS_PREFER_ALGORITMO]?_Z("SubAlgoritmo"):_Z("SubProceso"));
+	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
+		wxString but_label = cfg_lang[LS_PREFER_FUNCION]?_Z("Función"):(cfg_lang[LS_PREFER_ALGORITMO]?_Z("SubAlgoritmo"):_Z("SubProceso"));
 		button_subproc = utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",but_label);
 	} else 
 		button_subproc = NULL;
@@ -1662,7 +1662,7 @@ void mxMainWindow::ProfileChanged ( ) {
 		((mxSource*)(notebook->GetPage(i)))->KillRunningTerminal();
 	}
 	debug_panel->ProfileChanged();
-	mi_nassi_shne->Check(config->lang[LS_USE_NASSI_SHNEIDERMAN]);
+	mi_nassi_shne->Check(cfg_lang[LS_USE_NASSI_SHNEIDERMAN]);
 	if (RTSyntaxManager::IsLoaded()) RTSyntaxManager::Restart();
 	CreateButtonSubProceso(commands,commands->GetSizer());
 	commands->Layout();

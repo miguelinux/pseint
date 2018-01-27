@@ -32,8 +32,7 @@ mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 		fil.Open();
 		texts[STATUS_WELCOME]=st_aux(verde,
 			wxString(_Z("Bienvenido a PSeInt v"))<<fil.GetFirstLine()<<
-			(config->profile==NO_PROFILE?"":(wxString(_Z(" (su perfil actual es: "))<<config->profile<<_Z(")")))
-			);
+			wxString(_Z(" (su perfil actual es: "))<< cfg_lang.name <<_Z(")"));
 		fil.Close();
 	} else {
 		texts[STATUS_WELCOME]=st_aux(rojo,_Z("A ocurrido un error al iniciar el editor."));
@@ -98,7 +97,7 @@ void mxStatusBar::SetStatus (int what) {
 	else if (what==STATUS_SYNTAX_ERROR && main_window->QuickHelp().IsVisible()) what=STATUS_SYNTAX_ERROR_DETAIL;
 	else if (status==STATUS_PROFILE) {
 		texts[STATUS_PROFILE].text =
-			texts[STATUS_PROFILE].text.BeforeFirst(':') + _Z(": ") + config->profile ;
+			texts[STATUS_PROFILE].text.BeforeFirst(':') + _Z(": ") + cfg_lang.name ;
 	}
 	status=what;
 	Refresh();

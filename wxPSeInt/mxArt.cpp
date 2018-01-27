@@ -28,6 +28,8 @@ mxArt::mxArt(wxString img_dir) {
 	buttons.next = new wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_next.png")),wxBITMAP_TYPE_PNG);
 	buttons.prev = new wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_prev.png")),wxBITMAP_TYPE_PNG);
 	buttons.stop = new wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_stop.png")),wxBITMAP_TYPE_PNG);
+	buttons.load = new wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_abrir.png")),wxBITMAP_TYPE_PNG);
+	buttons.save = new wxBitmap(DIR_PLUS_FILE(config->images_path,_T("boton_guardar.png")),wxBITMAP_TYPE_PNG);
 	
 }
 

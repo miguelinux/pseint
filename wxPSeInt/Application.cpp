@@ -20,6 +20,7 @@
 #include "mac-stuff.h"
 #include "error_recovery.h"
 #include <wx/textfile.h>
+#include "mxWelcome.h"
 using namespace std;
 
 IMPLEMENT_APP(mxApplication)
@@ -84,7 +85,7 @@ bool mxApplication::OnInit() {
 	main_window->Maximize(config->maximized);
 	main_window->Show(true);
 	if (logger || argc==1) {
-		if (config->profile!=NO_PROFILE) main_window->NewProgram();
+		if (config->version) main_window->NewProgram();
 	} else {
 		for (int i=1;i<argc;i++)
 			main_window->OpenProgram(DIR_PLUS_FILE(cmd_path,argv[i]));
@@ -102,16 +103,15 @@ bool mxApplication::OnInit() {
 	wxSTC_SetZaskarsFlags(ZF_FIXDEADKEYS_ESISO);
 #endif
 	
-	if (config->profile==NO_PROFILE) {
+	if (!config->version) {
 		_LOG("mxApplication::OnInit NO_PROFILE");
-		wxMessageBox(_Z(
-			"Bienvenido a PSeInt. Antes de comenzar debes seleccionar un perfil "
-			"para ajustar el pseudolenguaje a tus necesidades. Si tu universidad "
-			"o institución no aparece en la lista, notifica a tu profesor para "
-			"que envíe sus datos a través del sitio web. "
-			),_Z("Bienvenido a PSeInt"),wxOK,main_window);
-		config->profile=_Z("Flexible");
-		new mxProfile(main_window);
+//		wxMessageBox(_Z(
+//			"Bienvenido a PSeInt. Antes de comenzar debes seleccionar un perfil "
+//			"para ajustar el pseudolenguaje a tus necesidades. Si tu universidad "
+//			"o institución no aparece en la lista, notifica a tu profesor para "
+//			"que envíe sus datos a través del sitio web. "
+//			),_Z("Bienvenido a PSeInt"),wxOK,main_window);
+		mxWelcome(main_window).ShowModal();
 		main_window->NewProgram();
 	} else {
 		if (config->check_for_updates) 

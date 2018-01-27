@@ -203,7 +203,7 @@ int main(int argc, char* argv[]) {
 			UnloadSubprocesos();
 			string line;
 			int lcount=0;
-			while (true) {
+			while (cin) {
 				getline(cin,line); lcount++;
 				if (line=="<!{[EXIT]}!>") { UnloadFunciones(); return 0; }
 				if (line=="<!{[END_OF_INPUT]}!>") break;

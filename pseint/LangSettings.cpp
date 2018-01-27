@@ -138,26 +138,38 @@ void LangSettings::init() {
 #ifdef FOR_WXPSEINT
 #include <wx/string.h>
 #include <wx/textfile.h>
+#include <wx/filename.h>
 #include "../wxPSeInt/string_conversions.h"
 #include "../wxPSeInt/Logger.h"
 #include "../wxPSeInt/version.h"
 
 
-bool LangSettings::Load (const wxString &fname) {
+//static std::string get_filename(const std::string &fname) {
+//	for(int i=fname.size()-1;i>0;i--) {
+//		if (fname[i]=='\\'||fname[i]=='/') return fname.substr(i+1);
+//	}
+//	return fname;
+//}
+
+bool LangSettings::Load (const wxString &fname, bool from_list) {
 	_LOG("LangSettings::Load "<<fname);
-	return Load(std::string(_W2S(fname)));
+	if (!Load(std::string(_W2S(fname)))) return false;
+	source = from_list ? LS_LIST : LS_FILE;
+	name = wxFileName(fname).GetName();
+	return true;
 }
 
-bool LangSettings::Save (const wxString &fname) {
+bool LangSettings::Save (const wxString &fname)  const {
 	return Save(std::string(_W2S(fname)));
 }
 
-void LangSettings::Log ( ) {
+void LangSettings::Log ( ) const {
 	_LOG("Profile: "<<VERSION<<" "<<GetAsSingleString().c_str());
 }
 #endif // FOR_WXPSEINT
 #include <fstream>
 bool LangSettings::Load(const std::string &fname) {
+//	name = get_filename(fname);
 	ifstream fil(fname.c_str());
 	if (!fil.is_open()) return false; 
 	Reset(0); string str; // reset va despues de los "return false" para evitar resetear el perfil personalizado cuando se llama desde el ConfigManager
@@ -174,9 +186,15 @@ static void replace(string  &s, string from, string to) {
 	}
 }
 
-bool LangSettings::Save (const string &fname) {
+bool LangSettings::Save (const string &fname) const {
 	ofstream fil(fname.c_str(),ios::trunc);
 	if (!fil.is_open()) return false;
+	
+//	fil << "name=" << name << endl;
+//	if (source==LS_DEFAULT)   fil << "source=defaul" << endl;
+//	else if (source==LS_FILE) fil << "source=file" << endl;
+//	else if (source==LS_LIST) fil << "source=list" << endl;
+//	else                      fil << "source=custom" << endl;
 	string tmp = descripcion.c_str(); 
 	replace(tmp,"\r",""); replace(tmp,"\n","\ndesc=");
 	fil << "desc=" << tmp << endl;
@@ -187,7 +205,7 @@ bool LangSettings::Save (const string &fname) {
 	return true;
 }
 
-std::string LangSettings::GetAsSingleString() {
+std::string LangSettings::GetAsSingleString() const {
 	std::string retval(LS_COUNT,'?');
 	for(int i=0;i<LS_COUNT;i++) retval[i]=settings[i]?'1':'0';
 	return retval;
@@ -248,7 +266,7 @@ static const char* mxSourceWords2_string =
 	"concatenar longitud mayusculas minusculas subcadena mayúsculas minúsculas convertiranumero convertiratexto ";
 
 
-std::string LangSettings::GetKeywords ( ) {
+std::string LangSettings::GetKeywords ( ) const {
 	std::string ks = mxSourceWords1;
 	if (settings[LS_ENABLE_USER_FUNCTIONS]) ks += mxSourceWords1_funcs;
 	if (settings[LS_WORD_OPERATORS]) ks += mxSourceWords1_op;
@@ -257,7 +275,7 @@ std::string LangSettings::GetKeywords ( ) {
 	return ks;
 }
 
-std::string LangSettings::GetFunctions ( ) {
+std::string LangSettings::GetFunctions ( ) const {
 	std::string ks = mxSourceWords2_math;
 	if (settings[LS_ENABLE_STRING_FUNCTIONS]) ks += mxSourceWords2_string;
 	return ks;

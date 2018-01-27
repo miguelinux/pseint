@@ -54,7 +54,7 @@ mxOpersWindow::mxOpersWindow(wxWindow *parent):wxScrolledWindow(parent,wxID_ANY,
 	Add("ln({expr_numerica_positiva})","ln","logaritmo natural","ln(X) calcula el logaritmo natural (base e) de X");
 	Add("exp({expresion_numerica})","exp","func. exponencial","exp(X) calcula la función exponencial e^X");
 	Add("azar({expr_num_entera_positiva})","azar","numero aleatorio","Ej: Azar(N) retorna un numero aleatorio entre 0 y N-1");
-	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_STRING_FUNCTIONS]) {
 		AddCaterory("Func. p/Cadenas");
 		Add("Longitud({cadena})","Longitud","","Longutid(S) retorna la cantidad de caracteres de la cadena S");
 		Add("SubCadena({cadena},{desde},{hasta})","SubCadena","","R<-Subcadena(S,I,J) retorna en R la cadena formada por los caracteres de la cadena S desde la posición I a la J inclusive");
@@ -99,10 +99,10 @@ void mxOpersWindow::Replace(oper_item &o, wxString f1, wxString t1, wxString f2,
 
 void mxOpersWindow::SetWordOperators ( ) {
 	for(unsigned int i=0;i<lista.size();i++) {  
-		Replace(lista[i],"&","Y"," & "," Y ",config->lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"|","O"," | "," O ",config->lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"~","NO","~ ","NO ",config->lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"%","MOD","%"," MOD ",config->lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"&","Y"," & "," Y ",cfg_lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"|","O"," | "," O ",cfg_lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"~","NO","~ ","NO ",cfg_lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"%","MOD","%"," MOD ",cfg_lang[LS_WORD_OPERATORS]);
 	}
 }
 

@@ -262,7 +262,7 @@ bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
 	config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 	wxString command;
 	command<<config->psexport_command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\" \"")<<dlg.GetPath()<<_T("\"");
-	if (config->lang[LS_BASE_ZERO_ARRAYS]) command<<_T(" --base_zero_arrays=1");
+	if (cfg_lang[LS_BASE_ZERO_ARRAYS]) command<<_T(" --base_zero_arrays=1");
 	if (lang.size()) command<<" --lang="<<lang;
 	_LOG("mxProcess::ExportCpp this="<<this);
 	_LOG("    "<<command);
@@ -270,7 +270,7 @@ bool mxProcess::ExportLang(wxString file, wxString lang, bool check_first) {
 }
 
 wxString mxProcess::GetProfileArgs() {
-	return wxString("--binprofile=")+config->lang.GetAsSingleString().c_str();
+	return wxString("--binprofile=")+cfg_lang.GetAsSingleString().c_str();
 }
 
 wxString mxProcess::GetInputArgs() {

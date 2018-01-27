@@ -15,6 +15,13 @@ enum LS_INIT_ENUM {
 	LS_DO_NOT_INIT
 };
 
+enum LS_SOURCE_ENUM {
+	LS_DEFAULT,
+	LS_FILE,
+	LS_LIST,
+	LS_CUSTOM
+};
+
 enum LS_ENUM {
 	LS_FORCE_INIT_VARS,
 	LS_FORCE_DEFINE_VARS,
@@ -59,10 +66,13 @@ struct LangSettings {
 	static void init();
 	
 	int version;
+	std::string name;
 	std::string descripcion;
+	LS_SOURCE_ENUM source;
 	bool settings[LS_COUNT];
 	
 	bool &operator[](LS_ENUM x) { return settings[x]; }
+	bool operator[](LS_ENUM x) const { return settings[x]; }
 	bool operator!=(const LangSettings &o) const {
 		for(int i=0;i<LS_COUNT;i++)
 			if (settings[i]!=o.settings[i]) return true;
@@ -70,8 +80,10 @@ struct LangSettings {
 	}
 	void Reset(int init_version = LS_VERSION) {
 		if (!init_done) init();
-		version=init_version;
+		name = "<predeterminado>";
+		source = LS_DEFAULT;
 		descripcion.clear();
+		version=init_version;
 		for(int i=0;i<LS_COUNT;i++) 
 			settings[i]=data[i].default_value;
 	}
@@ -79,29 +91,40 @@ struct LangSettings {
 		if (init_mode==LS_DO_NOT_INIT) return; 
 		Reset();
 	}
-	std::string GetAsSingleString();
+	std::string GetAsSingleString() const;
 	bool SetFromSingleString(const std::string &str);
 	
 #ifdef FOR_WXPSEINT
-	bool Load(const wxString &fname);
-	bool Save(const wxString &fname);
-	void Log();
+	bool Load(const wxString &fname, bool from_list);
+	bool Save(const wxString &fname) const;
+	void Log() const;
+private:
 #endif
-	bool Save(const std::string &fname);
 	bool Load(const std::string &fname);
+	bool Save(const std::string &fname)  const;
+#ifdef FOR_WXPSEINT
+public:
+#endif
 
 	bool IsTrue(const std::string &value) const {
 		return (value.size() && (value[0]=='1' || value[0]=='V' || value[0]=='v' || value[0]=='s' || value[0]=='S' || value[0]=='T' || value[0]=='t'));
 	}
 	
-	std::string GetConfigLine(int i) {
+	std::string GetConfigLine(int i) const {
 		std::string ret(data[i].nombre); ret+="="; ret+=settings[i]?"1":"0"; return ret;
 	}
 	bool ProcessConfigLine(const std::string &key, const std::string &value) {
-		if (key=="desc") { descripcion+=value+"\n"; return true; }
-		else if (key=="profile") { Load(value); return true; } // el .c_str es por si usa el Load(wxString)
+		if (key=="name") { name = value; return true; }
+		else if (key=="desc") { descripcion+=value+"\n"; return true; }
 		else if (key=="binprofile") { SetFromSingleString(value); return true; }
 		else if (key=="version") { version=atoi(value.c_str()); return true; }
+		else if (key=="source") { 
+			if (value=="default")   source = LS_DEFAULT;
+			else if (value=="list") source = LS_LIST;
+			else if (value=="file") source = LS_FILE;
+			else source = LS_CUSTOM;
+			return true; 
+		}
 		else if (key=="use_nassi_schneiderman") return ProcessConfigLine("use_nassi_shneiderman",value); // estaba mal deletreado... sChneiderman
 		else {
 			for(int i=0;i<LS_COUNT;i++) { 
@@ -120,8 +143,8 @@ struct LangSettings {
 	}
 	void Fix();
 	
-	std::string GetKeywords();
-	std::string GetFunctions();
+	std::string GetKeywords() const;
+	std::string GetFunctions() const;
 };
 
 #endif

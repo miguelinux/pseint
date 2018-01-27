@@ -18,6 +18,8 @@ public:
 		wxBitmap *prev;
 		wxBitmap *find;
 		wxBitmap *replace;
+		wxBitmap *load;
+		wxBitmap *save;
 	} buttons;
 //	struct {
 //		wxBitmap *question;

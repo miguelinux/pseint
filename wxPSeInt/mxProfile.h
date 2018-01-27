@@ -7,27 +7,26 @@
 #include <wx/imaglist.h>
 #include <wx/arrstr.h>
 
-class mxProfile:wxDialog {
+class mxProfile: public wxDialog {
 private:
 	wxListCtrl *list;
 	wxTextCtrl *text;
 	wxTextCtrl *search;
 	wxArrayString perfiles;
 	wxArrayString descripciones;
-	wxString old_profile; // nombre del perfil que estaba al ingresar a este cuadro (para restaurar si se cancela)
-	LangSettings old_config; // detalles de la configuración que estaba al ingresar a este cuadro (para restaurar si se cancela)
+	LangSettings lang;
 public:
 	mxProfile(wxWindow *parent);
-	~mxProfile();
 	void OnClose(wxCloseEvent &evt);
 	void OnListSelect(wxListEvent &evt);
 	void OnListActivate(wxListEvent &evt);
 	wxString GetListSelection();
 	void SetListSelection(int i);
 	void OnOptionsButton(wxCommandEvent &evt);
+	void OnLoadButton(wxCommandEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
-	void LoadProfile();
+	void UpdateDetails();
 	void OnSearchText(wxCommandEvent &evt);
 	void Search();
 	DECLARE_EVENT_TABLE();

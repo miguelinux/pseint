@@ -6,7 +6,8 @@
 
 #define _no_tty "<<sin configurar>>"
 
-#define NO_PROFILE "..."
+#define DEFAULT_PROFILE "Flexible"
+#define CUSTOM_PROFILE "<Personalizado>"
 
 class ConfigManager {
 private:
@@ -41,8 +42,18 @@ public:
 	wxString profiles_dir;
 	wxString proxy;
 	
-	wxString profile;
+private:
+//	wxString profile;
 	LangSettings lang;
+public:
+	bool LoadListedProfile(wxString name);
+	bool LoadProfileFromFile(wxString path);
+//	bool SetCustomProfile(LangSettings custom_lang);
+	bool SetProfile(LangSettings a_lang);
+//	wxString GetProfileName() const;
+//	bool IsProfileListed() const;
+	const LangSettings &GetLang() { return lang; }
+	LangSettings &GetWritableLang() { return lang; }
 	
 	bool reorganize_for_debug; ///< si reacomoda o no las ventanas al lanzar la ejecución paso a paso
 	bool animate_gui; ///< si al mostrar u ocultar los paneles laterales lo hace con una animación (true) o de forma instantanea (false)
@@ -73,7 +84,6 @@ public:
 	
 	ConfigManager(wxString apath);
 	void LoadDefaults();
-	wxString LoadProfile(wxString pname);
 	void Read();
 	void Save();
 	~ConfigManager();
@@ -86,6 +96,7 @@ public:
 };
 
 extern ConfigManager *config;
+#define cfg_lang config->GetLang()
 
 // para probar como seria la interfaz sin el result tree (usando el marcado de errores sobre el código y el panel de ayuda rápida para la información adicional)
 #define _avoid_results_tree config->rt_syntax

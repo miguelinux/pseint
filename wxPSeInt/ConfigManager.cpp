@@ -12,7 +12,7 @@
 ConfigManager *config;
 
 
-ConfigManager::ConfigManager(wxString apath):lang(LS_INIT) {
+ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 	
 	pseint_dir = apath;
 	version=0; 
@@ -46,7 +46,7 @@ ConfigManager::ConfigManager(wxString apath):lang(LS_INIT) {
 }
 
 void ConfigManager::LoadDefaults() {
-	profile=NO_PROFILE;
+//	profile=DEFAULT_PROFILE;
 	animate_gui=true;
 	reorganize_for_debug=true;
 	use_colors=true;
@@ -127,7 +127,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("help_dir=")<<help_dir);
 	fil.AddLine(wxString("proxy=")<<proxy);
 	fil.AddLine(wxString("profiles_dir=")<<profiles_dir);
-	fil.AddLine(wxString("profile=")<<profile);
 	fil.AddLine(wxString("examples_dir=")<<examples_dir);
 	fil.AddLine(wxString("rt_syntax=")<<(rt_syntax?1:0));
 	fil.AddLine(wxString("rt_annotate=")<<(rt_annotate?1:0));
@@ -148,7 +147,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("use_colors=")<<(use_colors?1:0));
 	fil.AddLine(wxString("animate_gui=")<<(animate_gui?1:0));
 	fil.AddLine(wxString("reorganize_for_debug=")<<(reorganize_for_debug?1:0));
-	for(int i=0;i<LS_COUNT;i++) fil.AddLine(lang.GetConfigLine(i).c_str());
 	fil.AddLine(wxString("maximized=")<<(maximized?1:0));
 	fil.AddLine(wxString("wx_font_size=")<<wx_font_size);
 	fil.AddLine(wxString("term_font_size=")<<term_font_size);
@@ -171,6 +169,12 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("fixed_port=")<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
 		fil.AddLine(wxString("history=")<<last_files[i]);
+	fil.AddLine("");
+	fil.AddLine(wxString("profile=")<<lang.name);
+	if (lang.source==LS_FILE)      fil.AddLine(wxString("profile:source=file"));
+	else if (lang.source==LS_LIST) fil.AddLine(wxString("profile:source=list"));
+	else                           fil.AddLine(wxString("profile:source=custom"));
+	for(int i=0;i<LS_COUNT;i++) fil.AddLine(wxString("profile:")+lang.GetConfigLine(i).c_str());
 	fil.AddLine("");
 	
 	fil.Write();
@@ -232,22 +236,28 @@ void ConfigManager::Read() {
 			else if (key=="help_dir") help_dir=value;
 			else if (key=="proxy") proxy=value;
 			else if (key=="profiles_dir") profiles_dir=value;
-			else if (key=="profile") profile=value;
+			else if (key=="profile") lang.name=value;
 			else if (key=="examples_dir") examples_dir=value;
 			else if (key=="last_dir") last_dir=value;
 			else if (key=="temp_dir") temp_dir=value;
-//			else if (key=="pseint_command") pseint_command=value;
-//			else if (key=="psterm_command") psterm_command=value;
-//			else if (key=="psexport_command") psexport_command=value;
-//			else if (key=="psdrawe_command") psdrawe_command=value;
-//			else if (key=="psdraw3_command") psdraw3_command=value;
 			else if (key=="terminal") { tty_command=value; }
 			else if (key=="history") last_files.Add(value);
-			else lang.ProcessConfigLine(_W2S(key),_W2S(value));
+			
+			// new method
+			else if (key.StartsWith("profile:")) lang.ProcessConfigLine(_W2S(key.AfterFirst(':')),_W2S(value));
+			// old method
+			else if (version<20180126) lang.ProcessConfigLine(_W2S(key),_W2S(value));
 		}
 	}
 	fil.Close();
-	if (!LoadProfile(profile)) lang.Fix();
+	if (version<20180126) {
+		lang.source = lang.name=="<personalizado>" ? LS_CUSTOM : LS_LIST;
+	}
+	if (lang.source==LS_LIST) {
+		// si era de la lista, luego de una actualización el perfil
+		// puede haber cambiado... o la interpretación del mismo
+		if (!LoadListedProfile(lang.name)) lang.Fix();
+	}
 	if (version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
@@ -269,14 +279,32 @@ ConfigManager::~ConfigManager() {
 	config=NULL;
 }
 
-wxString ConfigManager::LoadProfile(wxString pname) {
-	profile=pname;
-	if (lang.Load(DIR_PLUS_FILE(profiles_dir,profile))) {
-		return lang.descripcion.c_str();
-	} else {
-		return _Z("Esta opcion le permite definir su propia configuracion. Utilice el boton \"Personalizar...\" para definirla.");
-	}
+bool ConfigManager::LoadProfileFromFile(wxString path) {
+	if (!lang.Load(path,false)) return false;
+	return true;
 }
+
+bool ConfigManager::LoadListedProfile(wxString name) {
+	if (!lang.Load(DIR_PLUS_FILE(profiles_dir,name),true)) return false;
+	return true;
+}
+
+bool ConfigManager::SetProfile(LangSettings custom_lang) {
+	lang = custom_lang;
+	return true;
+}
+
+//bool ConfigManager::SetCustomProfile(LangSettings custom_lang) {
+//	lang = custom_lang;
+//	profile = PROFNAME_CUSTOM;
+//	return true;
+//}
+
+//wxString ConfigManager::GetProfileName() const {
+//	if (profile==PROFNAME_CUSTOM) return CUSTOM_PROFILE;
+//	if (profile.IsEmpty()) return DEFAULT_PROFILE;
+//	return profile.AfterFirst(':');
+//}
 
 int ConfigManager::GetCommPort () {
 	if (fixed_port) return comm_port; else return comm_port+rand()%150+150;
@@ -315,7 +343,7 @@ wxString ConfigManager::GetTTYCommand ( ) {
 void ConfigManager::Log ( ) const {
 	_LOG("ConfigManager");
 	_LOG("   filename="<<filename);
-	_LOG("   profile="<<profile);
+	_LOG("   profile="<<lang.name);
 	_LOG("   pseint_dir="<<pseint_dir);
 	_LOG("   home_dir="<<home_dir);
 	_LOG("   psdraw3_command="<<psdraw3_command);
@@ -327,4 +355,8 @@ void ConfigManager::Log ( ) const {
 	_LOG("   tty_command="<<tty_command);
 	_LOG("   temp_dir="<<temp_dir);
 }
+
+//bool ConfigManager::IsProfileListed ( ) const {
+//	return profile.StartsWith(PROFNAME_LIST);
+//}
 

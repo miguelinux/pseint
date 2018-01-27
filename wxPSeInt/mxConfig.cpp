@@ -8,6 +8,7 @@
 #include <wx/textdlg.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
+#include <wx/bmpbuttn.h>
 
 BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_BUTTON(wxID_OK,mxConfig::OnOkButton)
@@ -17,7 +18,12 @@ BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 	EVT_CLOSE(mxConfig::OnClose)
 END_EVENT_TABLE()
 
-mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,"Opciones del Lenguaje",wxDefaultPosition,wxDefaultSize) {
+mxConfig::mxConfig(wxWindow *parent, LangSettings &settings )
+	: wxDialog(parent,wxID_ANY,"Opciones del Lenguaje",wxDefaultPosition,wxDefaultSize),
+	  lang(settings)
+{
+	lang.source = LS_CUSTOM; lang.name = CUSTOM_PROFILE;
+	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *opts_sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -27,8 +33,8 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,"Opciones del Leng
 		chk[i]->SetToolTip(utils->FixTooltip(LangSettings::data[i].long_desc));
 	}
 	
-	wxButton *load_button = new wxBitmapButton (this, wxID_OPEN, wxBitmap(DIR_PLUS_FILE(config->images_path,"boton_abrir.png"),wxBITMAP_TYPE_PNG));
-	wxButton *save_button = new wxBitmapButton (this, wxID_SAVE, wxBitmap(DIR_PLUS_FILE(config->images_path,"boton_guardar.png"),wxBITMAP_TYPE_PNG));
+	wxButton *load_button = new mxBitmapButton (this, wxID_OPEN, bitmaps->buttons.load, "Cargar...");
+	wxButton *save_button = new mxBitmapButton (this, wxID_SAVE, bitmaps->buttons.save, "Guardar...");
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "Aceptar");
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, "Cancelar");
 	button_sizer->Add(load_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
@@ -43,40 +49,41 @@ mxConfig::mxConfig(wxWindow *parent):wxDialog(parent,wxID_ANY,"Opciones del Leng
 	ok_button->SetDefault();
 	SetEscapeId(wxID_CANCEL);
 	
-	ReadFromStruct(config->lang);
+	ReadFromStruct(lang);
 	
 	SetSizerAndFit(sizer);
 //	CentreOnParent();
-	ShowModal();	
 }
 
-mxConfig::~mxConfig() {
-	
-
-}
 void mxConfig::OnClose(wxCloseEvent &evt) {
-	Destroy();
+	wxCommandEvent e;
+	OnCancelButton(e);
 }
 
 void mxConfig::OnOkButton(wxCommandEvent &evt) {
 	if (!chk[LS_WORD_OPERATORS]->GetValue()&&chk[LS_COLOQUIAL_CONDITIONS]->GetValue())
 		wxMessageBox("No se puede desactivar la opción \"Permitir las palabras Y, O, NO y MOD para los operadores &&, |, ~ y %\" sin desactivar también \"Permitir condiciones en lenguaje coloquial\", por lo que la primera permanecerá activa.");
-	CopyToStruct(config->lang);
-	Close();
+	CopyToStruct(lang);
+	EndModal(1);
 }
 
 void mxConfig::OnCancelButton(wxCommandEvent &evt) {
-	Close();
+	EndModal(0);
+}
+
+wxString mxConfig::LoadFromFile (wxWindow *parent) {
+	wxFileDialog dlg (parent, "Cargar perfil desde archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+	if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
+	config->last_dir = wxFileName(dlg.GetPath()).GetPath();
+	return dlg.GetPath();
 }
 
 void mxConfig::OnOpenButton (wxCommandEvent & evt) {
-	wxFileDialog dlg (this, "Cargar perfil desde archivo", config->last_dir, " ", "Cualquier Archivo (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
-	if (dlg.ShowModal() == wxID_OK) {
-		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
-		LangSettings l(LS_INIT);
-		l.Load(dlg.GetPath());
-		ReadFromStruct(l);
-	}
+	wxString file = LoadFromFile(this);
+	if (file.IsEmpty()) return;
+	LangSettings l(LS_INIT);
+	l.Load(file,false);
+	ReadFromStruct(l);
 }
 
 bool TodoMayusculas(const wxString &desc) {
@@ -99,7 +106,7 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 											  "favor incluya materia, carrera, institución\n"
 											  "y nombre del docente)."),_Z("Guardar Perfil"),"",this);
 			if (l.descripcion.empty()) return;
-			if (!TodoMayusculas(l.descripcion)) break;
+			if (l.descripcion.size()<10 || !TodoMayusculas(l.descripcion)) break;
 			wxMessageBox(_Z("¡NO ME GRITE!"),_Z("Por favor"),wxOK|wxICON_ERROR);
 		}
 		CopyToStruct(l);

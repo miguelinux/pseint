@@ -626,7 +626,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		while (i<comp_list.size() && comp_list[i]!=what) i++;
 	if (config->smart_indent && i!=comp_list.size()) {
 		wxString text(comp_list[i].text);
-		if (!config->lang[LS_FORCE_SEMICOLON] && text.Last()==';') text.RemoveLast();
+		if (!cfg_lang[LS_FORCE_SEMICOLON] && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
 			text.Last()='\n';
 		ReplaceTarget(text);
@@ -792,10 +792,10 @@ void mxSource::MessageReadOnly() {
 
 void mxSource::SetExample() {
 	wxString total;
-	wxString proceso = config->lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso";
-	wxString finproceso = config->lang[LS_PREFER_ALGORITMO]?"FinAlgoritmo":"FinProceso";
-	wxString subproceso = config->lang[LS_PREFER_FUNCION]?"Funcion":(config->lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
-	wxString finsubproceso = config->lang[LS_PREFER_FUNCION]?"FinFuncion":(config->lang[LS_PREFER_ALGORITMO]?"FinSubAlgoritmo":"FinSubProceso");
+	wxString proceso = cfg_lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso";
+	wxString finproceso = cfg_lang[LS_PREFER_ALGORITMO]?"FinAlgoritmo":"FinProceso";
+	wxString subproceso = cfg_lang[LS_PREFER_FUNCION]?"Funcion":(cfg_lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso");
+	wxString finsubproceso = cfg_lang[LS_PREFER_FUNCION]?"FinFuncion":(cfg_lang[LS_PREFER_ALGORITMO]?"FinSubAlgoritmo":"FinSubProceso");
 	for (int i=2;i<GetLineCount();i++) {
 		wxString str=GetLine(i);
 		int p0=str.Index('{');
@@ -811,31 +811,31 @@ void mxSource::SetExample() {
 			if (p1==wxNOT_FOUND||p1>p2) {
 				
 				if (p2==2&&aux[1]==';') {
-					if (config->lang[LS_FORCE_SEMICOLON])
+					if (cfg_lang[LS_FORCE_SEMICOLON])
 						str=str.Mid(0,p0)+";"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='&') {
-					if (config->lang[LS_WORD_OPERATORS])
+					if (cfg_lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"Y"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"&"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='|') {
-					if (config->lang[LS_WORD_OPERATORS])
+					if (cfg_lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"O"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"|"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='~') {
-					if (config->lang[LS_WORD_OPERATORS])
+					if (cfg_lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"NO"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"~"+aux.Mid(p2+1);
 				
 				} else if (p2==2&&aux[1]=='%') {
-					if (config->lang[LS_WORD_OPERATORS])
+					if (cfg_lang[LS_WORD_OPERATORS])
 						str=str.Mid(0,p0)+"MOD"+aux.Mid(p2+1);
 					else
 						str=str.Mid(0,p0)+"%"+aux.Mid(p2+1);
@@ -850,7 +850,7 @@ void mxSource::SetExample() {
 					str=str.Mid(0,p0)+finsubproceso+aux.Mid(p2+1);
 				
 				} else if (p2>8 && aux.Mid(1,8).Upper()=="DEFINIR " ) {
-					if (config->lang[LS_FORCE_DEFINE_VARS])
+					if (cfg_lang[LS_FORCE_DEFINE_VARS])
 						str=str.Mid(0,p0)+str.Mid(p0+1,p2-1)+aux.Mid(p2+1);
 					else
 						str="";
@@ -863,7 +863,7 @@ void mxSource::SetExample() {
 			} else {
 				
 				p1+=p0; p2+=p0;
-				if (config->lang[LS_BASE_ZERO_ARRAYS])
+				if (cfg_lang[LS_BASE_ZERO_ARRAYS])
 					str=str.Mid(0,p0)+str.Mid(p1+1,p2-p1-1)+str.Mid(p2+1);
 				else
 					str=str.Mid(0,p0)+str.Mid(p0+1,p1-p0-1)+str.Mid(p2+1);
@@ -971,7 +971,7 @@ int mxSource::GetIndentLevel(int l, bool goup, int &e_btype, bool diff_proc_sub_
 						wxString word = line.SubString(wstart,i-1);
 						MakeUpper(word);
 						if (word=="SI") { 
-							if (config->lang[LS_LAZY_SYNTAX]) {
+							if (cfg_lang[LS_LAZY_SYNTAX]) {
 								int y=i+1; while (line[y]==' '||line[y]=='\t') y++; 
 								if (toupper(line[y])!='E' || toupper(line[y+1])!='S' || (line[y+2]!=' '&&line[y+2]!='\t'))
 									{ cur+=4; e_btype=BT_SI; }
@@ -1019,8 +1019,8 @@ void mxSource::UnExample() {
 
 void mxSource::SetWords() {
 	// setear palabras claves para el coloreado
-	SetKeyWords (0,_Z(config->lang.GetKeywords().c_str()));
-	SetKeyWords (1,_Z(config->lang.GetFunctions().c_str()));
+	SetKeyWords (0,_Z(cfg_lang.GetKeywords().c_str()));
+	SetKeyWords (1,_Z(cfg_lang.GetFunctions().c_str()));
 	SetKeyWords (3, ""); // para resaltar las variables
 }
 
@@ -1035,7 +1035,7 @@ void mxSource::SetCalltips() {
 	calltips_instructions.push_back(calltip_text(_Z("DEFINIR"),_Z("{una o mas variables, separadas por comas}")));
 	calltips_instructions.push_back(calltip_text(_Z("ESPERAR"),_Z("{\"Tecla\" o intervalo de tiempo}")));
 	calltips_instructions.push_back(calltip_text(_Z("ESCRIBIR"),    _Z("{una o mas expresiones, separadas por comas}")));
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		calltips_instructions.push_back(calltip_text(_Z("MOSTRAR"), _Z("{una o mas expresiones, separadas por comas}")));
 		calltips_instructions.push_back(calltip_text(_Z("IMPRIMIR"),_Z("{una o mas expresiones, separadas por comas}")));
 	}
@@ -1048,9 +1048,9 @@ void mxSource::SetCalltips() {
 	calltips_instructions.push_back(calltip_text(_Z("SI"),_Z("{condicion, expresión lógica}")));
 	calltips_instructions.push_back(calltip_text(_Z("ENTONCES"),_Z("{acciones por verdadero}")));
 	calltips_instructions.push_back(calltip_text(_Z("SINO"),_Z("{acciones por falso}")));
-	calltips_instructions.push_back(calltip_text(_Z("SEGUN"),_Z(config->lang[LS_INTEGER_ONLY_SWITCH]?"{variable o expresión numérica entera}":"{variable o expresión de control}")));
-	calltips_instructions.push_back(calltip_text(_Z("SEGÚN"),_Z(config->lang[LS_INTEGER_ONLY_SWITCH]?"{variable o expresión numérica entera}":"{variable o expresión de control}")));
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	calltips_instructions.push_back(calltip_text(_Z("SEGUN"),_Z(cfg_lang[LS_INTEGER_ONLY_SWITCH]?"{variable o expresión numérica entera}":"{variable o expresión de control}")));
+	calltips_instructions.push_back(calltip_text(_Z("SEGÚN"),_Z(cfg_lang[LS_INTEGER_ONLY_SWITCH]?"{variable o expresión numérica entera}":"{variable o expresión de control}")));
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		calltips_instructions.push_back(calltip_text(_Z("OPCION"),_Z("{posible valor para la expresión de control}")));
 		calltips_instructions.push_back(calltip_text(_Z("OPCIÓN"),_Z("{posible valor para la expresión de control}")));
 		calltips_instructions.push_back(calltip_text(_Z("SIES"),  _Z("{posible valor para la expresión de control}")));
@@ -1072,7 +1072,7 @@ void mxSource::SetCalltips() {
 	calltips_functions.push_back(calltip_text(_Z("ACOS"),_Z("{expresión numérica (en el intervalo [-1;+1])}")));
 	calltips_functions.push_back(calltip_text(_Z("ASIN"),_Z("{expresión numérica (en el intervalo [-1;+1])}")));
 	calltips_functions.push_back(calltip_text(_Z("ATAN"),_Z("{expresión numérica}")));
-	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_STRING_FUNCTIONS]) {
 		calltips_functions.push_back(calltip_text(_Z("CONVERTIRANÚMERO"),_Z("{cadena}")));
 		calltips_functions.push_back(calltip_text(_Z("CONVERTIRANUMERO"),_Z("{cadena}")));
 		calltips_functions.push_back(calltip_text(_Z("MAYUSCULAS"),_Z("{cadena}")));
@@ -1091,7 +1091,7 @@ void mxSource::SetAutocompletion() {
 	comp_list.clear();
 	
 	comp_list.push_back(comp_list_item("Proceso","Proceso ",""));
-	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
 		comp_list.push_back(comp_list_item("Algoritmo","Algoritmo ",""));
 		comp_list.push_back(comp_list_item("Funcion","Funcion ",""));
 		comp_list.push_back(comp_list_item("SubAlgoritmo","SubAlgoritmo ",""));
@@ -1107,7 +1107,7 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("FinProceso","FinProceso\n",""));
 	comp_list.push_back(comp_list_item("Fin Algoritmo","Fin Algoritmo\n",""));
 	comp_list.push_back(comp_list_item("FinAlgoritmo","FinAlgoritmo\n",""));
-	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
 		comp_list.push_back(comp_list_item("Fin SubProceso","Fin SubProceso\n",""));
 		comp_list.push_back(comp_list_item("FinSubProceso","FinSubProceso\n",""));
 		comp_list.push_back(comp_list_item("FinFuncion","FinFuncion\n",""));
@@ -1115,7 +1115,7 @@ void mxSource::SetAutocompletion() {
 	}
 	
 	comp_list.push_back(comp_list_item("Escribir","Escribir ",""));
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		comp_list.push_back(comp_list_item("Imprimir","Imprimir ",""));
 		comp_list.push_back(comp_list_item("Mostrar","Mostrar ",""));
 	}
@@ -1152,24 +1152,24 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("FinMientras","FinMientras\n",""));
 	
 	comp_list.push_back(comp_list_item("Para","Para ",""));
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		comp_list.push_back(comp_list_item("Para Cada","Para Cada ",""));
 		comp_list.push_back(comp_list_item("Desde","Desde ","Para"));
 		comp_list.push_back(comp_list_item("Hasta","Hasta ","Para"));
 	}
 	comp_list.push_back(comp_list_item("Con Paso","Con Paso ","Para"));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n","Para"));
-	if (config->lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
 	comp_list.push_back(comp_list_item("Fin Para","Fin Para\n",""));
 	comp_list.push_back(comp_list_item("FinPara","FinPara\n",""));
 	
 	comp_list.push_back(comp_list_item("Repetir","Repetir\n",""));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n",""));
 	comp_list.push_back(comp_list_item("Hasta Que","Hasta Que ",""));
-	if (config->lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Mientras Que","Mientras Que ",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Mientras Que","Mientras Que ",""));
 	
 	comp_list.push_back(comp_list_item("Segun","Segun ",""));
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		comp_list.push_back(comp_list_item("Opcion","Opcion ",""));
 		comp_list.push_back(comp_list_item("Caso","Caso ",""));
 	}
@@ -1178,7 +1178,7 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("Fin Segun","Fin Segun\n",""));
 
 	comp_list.push_back(comp_list_item("Aleatorio","Aleatorio(","*"));
-	if (config->lang[LS_ENABLE_STRING_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_STRING_FUNCTIONS]) {
 		comp_list.push_back(comp_list_item("ConvertirATexto","ConvertirATexto(","*"));
 		comp_list.push_back(comp_list_item("ConvertirANumero","ConvertirANumero(","*"));
 		comp_list.push_back(comp_list_item("Concatenar","Concatenar(","*"));
@@ -1191,7 +1191,7 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("Verdadero","Verdadero","*"));
 	comp_list.push_back(comp_list_item("Falso","Falso","*"));
 	
-	if (config->lang[LS_COLOQUIAL_CONDITIONS]) {
+	if (cfg_lang[LS_COLOQUIAL_CONDITIONS]) {
 		comp_list.push_back(comp_list_item("Es Cero","Es Cero","*"));
 		comp_list.push_back(comp_list_item("Es Distinto De","Es Distinto De ","*"));
 		comp_list.push_back(comp_list_item("Es Divisible Por","Es Divisible Por ","*"));
@@ -1208,10 +1208,10 @@ void mxSource::SetAutocompletion() {
 		comp_list.push_back(comp_list_item("Es Positivo","Es Positivo","*"));
 		
 	}
-	if (config->lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		comp_list.push_back(comp_list_item("Es Real","Es Real;","Es"));
 		comp_list.push_back(comp_list_item("Es Caracter","Es Caracter;","Es"));
-		if (!config->lang[LS_COLOQUIAL_CONDITIONS]) comp_list.push_back(comp_list_item("Es Entero","Es Entero;","Es"));
+		if (!cfg_lang[LS_COLOQUIAL_CONDITIONS]) comp_list.push_back(comp_list_item("Es Entero","Es Entero;","Es"));
 		comp_list.push_back(comp_list_item("Es Logico","Es Logico;","Es"));
 		comp_list.push_back(comp_list_item("Son Reales","Son Reales;","Son"));
 		comp_list.push_back(comp_list_item("Son Caracteres","Son Caracteres;","Son"));
@@ -1821,7 +1821,7 @@ void mxSource::OnCalltipClick (wxStyledTextEvent & event) {
 
 void mxSource::ProfileChanged ( ) {
 	KillRunningTerminal();
-	config->lang.Log();
+	cfg_lang.Log();
 	SetWords();
 	SetAutocompletion();
 	SetCalltips();
@@ -1975,7 +1975,7 @@ bool mxSource::IsProcOrSub(int line) {
 	wxString fword = GetFirstWord(GetLine(line));
 	if (fword=="PROCESO") return true;
 	if (fword=="ALGORITMO") return true;
-	if (config->lang[LS_ENABLE_USER_FUNCTIONS]) {
+	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
 		if (fword=="SUBPROCESO") return true;
 		if (fword=="FUNCION") return true;
 		if (fword=="FUNCIÓN") return true;
@@ -2034,7 +2034,7 @@ void mxSource::DefineVar(int where, wxString var_name, int line_from, int type) 
 	// agregar la definicion
 	int x=GetLineEndPosition(where);
 	SetTargetStart(x); SetTargetEnd(x);
-	ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(config->lang[LS_FORCE_SEMICOLON]?";":"")<<(add_line?"\n\t":""));
+	ReplaceTarget(wxString("\n")<<"\tDefinir "<<var_name<<" Como "<<var_type<<(cfg_lang[LS_FORCE_SEMICOLON]?";":"")<<(add_line?"\n\t":""));
 }
 
 void mxSource::OnDefineVar (wxCommandEvent & evt) {
