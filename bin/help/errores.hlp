@@ -785,3 +785,8 @@
   * Elimine el operando o agregue el operador que falte.
   También puede ocurrir que el problema se deba a una malinterpretación de la precedencia de operadores.
   * Si la expresión es compleja, agregue paréntesis en las subexpresiones para alterar/explicitar la precedencia deseada.
+
+321
+  La expresión "De Otro Modo" se utiliza solamente dentro de una estructura de selección múltiple (<A href="segun.html">Según</A>). Está utilizando "De Otro Modo" dentro de otro tipo de estructura, o fuera de cualquier estructura.
+  * Verifique el anidamiento de sus estructuras de datos y la correcta colocación de sus terminadores FinXXX
+  Nota: Esta expresión debe colocarse luego de las diferentes opciones para la variable de control, e indica el camino a seguir cuando el valor de la misma no coincide con ninguna de las opciones. 

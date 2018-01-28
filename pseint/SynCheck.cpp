@@ -562,6 +562,7 @@ int SynCheck(int linea_from, int linea_to) {
 				instruction_type=IT_SEGUN;
 				bucles.push_back(programa.GetLoc(x,IT_SEGUN));
 			} else if (first_word=="DE" && (LeftCompare(cadena,"OTRO MODO:") || LeftCompare(cadena,"OTRO MODO "))) {
+				if (bucles.empty() || bucles.back()!=IT_SEGUN)  {SynError (321,"DE OTRO MODO mal colocado."); errores++;}
 				cadena.erase(0,10); programa.Insert(x+1,cadena); flag_pyc+=1;
 				instruction_type=IT_DEOTROMODO; cadena="";
 			} else if (first_word=="DIMENSION") {
