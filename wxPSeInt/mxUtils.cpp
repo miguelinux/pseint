@@ -13,7 +13,7 @@ mxUtils *utils;
 
 wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename) {
 	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);
-	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,"menu"),filename);
+	filename = JoinDirAndFile(DIR_PLUS_FILE_2(config->images_path,"menu",config->big_icons?"24":"16"),filename);
 	if (wxFileName::FileExists(filename))
 		item->SetBitmap(wxBitmap(filename,wxBITMAP_TYPE_PNG));
 	menu->Append (item);
@@ -30,7 +30,7 @@ wxString mxUtils::JoinDirAndFile(wxString dir, wxString fil) {
 }
 
 void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text) {
-	filename=JoinDirAndFile(JoinDirAndFile(config->images_path,"tools"),filename);
+	filename = DIR_PLUS_FILE_3(config->images_path,"tools",config->big_icons?"32":"24",filename);
 	if (wxFileName::FileExists(filename)) {
 		toolbar->AddTool(id, caption, wxBitmap(filename,wxBITMAP_TYPE_PNG),caption);
 		toolbar->SetToolLongHelp(id,status_text);

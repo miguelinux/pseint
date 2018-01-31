@@ -1,10 +1,9 @@
 #include <wx/msgdlg.h>
 #include <iostream>
-using namespace std;
+#include "../wxPSeInt/osdep.h"
 #include "Application.h"
 #include "mxFrame.h"
 #include "version.h"
-#include "../wxPSeInt/mac-stuff.h"
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -27,7 +26,7 @@ bool mxApplication::OnInit() {
 	
 	_handle_version_query("psTerm");
 	
-	fix_mac_focus_problem();
+	OSDep::AppInit();
 	
 	srand(time(0));
 	

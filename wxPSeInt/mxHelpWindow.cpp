@@ -94,17 +94,18 @@ mxHelpWindow::mxHelpWindow(wxString file)
 	
 	bottomSizer->Add(index_sash,wxSizerFlags().Proportion(0).Expand());
 	
-	m_button_tree = new wxBitmapButton(panel, mxID_HELPW_SHOWTREE, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_tree.png"),wxBITMAP_TYPE_PNG));
-	m_button_index = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_indice.png"),wxBITMAP_TYPE_PNG));
+	wxString ipath = DIR_PLUS_FILE_2(config->images_path,"ayuda",config->big_icons?"30":"20");
+	m_button_tree = new wxBitmapButton(panel, mxID_HELPW_SHOWTREE, wxBitmap(DIR_PLUS_FILE(ipath,"tree.png"),wxBITMAP_TYPE_PNG));
+	m_button_index = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(DIR_PLUS_FILE(ipath,"indice.png"),wxBITMAP_TYPE_PNG));
 	m_button_tree->SetToolTip("Mostrar/Ocultar Indice");
 	m_button_index->SetToolTip("Ir al indice");
-	m_button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_anterior.png"),wxBITMAP_TYPE_PNG));
+	m_button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(DIR_PLUS_FILE(ipath,"anterior.png"),wxBITMAP_TYPE_PNG));
 	m_button_prev->SetToolTip("Ir a la pagina anterior");
-	m_button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_siguiente.png"),wxBITMAP_TYPE_PNG));
+	m_button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(DIR_PLUS_FILE(ipath,"siguiente.png"),wxBITMAP_TYPE_PNG));
 	m_button_next->SetToolTip("Ir a la pagina siguiente");
-	m_button_atop = new wxBitmapButton(panel, mxID_HELPW_ALWAYSONTOP, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_atop.png"),wxBITMAP_TYPE_PNG));
+	m_button_atop = new wxBitmapButton(panel, mxID_HELPW_ALWAYSONTOP, wxBitmap(DIR_PLUS_FILE(ipath,"atop.png"),wxBITMAP_TYPE_PNG));
 	m_button_atop->SetToolTip("Hacer que la ventana de ayuda permanezca siempre visible (siempre sobre las demás ventanas)");
-	wxBitmapButton *button_copy = new wxBitmapButton(panel, mxID_HELPW_COPY, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_copiar.png"),wxBITMAP_TYPE_PNG));
+	wxBitmapButton *button_copy = new wxBitmapButton(panel, mxID_HELPW_COPY, wxBitmap(DIR_PLUS_FILE(ipath,"copiar.png"),wxBITMAP_TYPE_PNG));
 	button_copy->SetToolTip("Copiar seleccion");
 	topSizer->Add(m_button_tree,wxSizerFlags().Border(wxALL,2));
 	topSizer->Add(m_button_index,wxSizerFlags().Border(wxALL,2));
@@ -115,7 +116,7 @@ mxHelpWindow::mxHelpWindow(wxString file)
 	search_text = new wxTextCtrl(panel,wxID_ANY);
 	topSizer->Add(search_text,wxSizerFlags().Border(wxALL,2).Proportion(1).Expand());
 
-	m_button_search = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(DIR_PLUS_FILE(config->images_path,"ayuda_buscar.png"),wxBITMAP_TYPE_PNG));
+	m_button_search = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(DIR_PLUS_FILE(ipath,"buscar.png"),wxBITMAP_TYPE_PNG));
 	m_button_search->SetToolTip("Buscar...");
 	topSizer->Add(m_button_search,wxSizerFlags().Border(wxALL,2));
 	panel->SetSizer(topSizer);

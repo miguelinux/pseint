@@ -130,6 +130,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
 	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_THEME, mxMainWindow::OnConfigUseDarkTheme)
+	EVT_MENU(mxID_CONFIG_BIG_ICONS, mxMainWindow::OnConfigBigIcons)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
 	EVT_MENU(mxID_CONFIG_SELECT_FONTS, mxMainWindow::OnConfigSelectFonts)
 	EVT_MENU(mxID_CONFIG_SHAPE_COLORS, mxMainWindow::OnConfigShowShapeColors)
@@ -252,9 +253,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_OPEN, _Z("&Abrir...\tCtrl+O"),"","abrir.png");
 	utils->AddItemToMenu(file,mxID_FILE_SAVE, _Z("&Guardar\tCtrl+S"),"","guardar.png");
 	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _Z("Guardar &Como...\tCtrl+Shift+S"),"","guardar_como.png");
-//#ifndef __APPLE__
-	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _Z("Editar Diagrama de Flujo...\tF7"),"","edit_flow.png");
-//#endif
+	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _Z("Editar Diagrama de Flujo...\tF7"),"","flujo.png");
 	utils->AddItemToMenu(file,mxID_FILE_PRINT, _Z("Imprimir..."),"","imprimir.png");
 	
 	wxMenu *export_menu=new wxMenu;
@@ -266,7 +265,7 @@ void mxMainWindow::CreateMenus() {
 	
 	export_menu->AppendSeparator();
 	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_HTML, _Z("Pseudocódigo coloreado (html)..."),"","html.png");
-	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PNG, _Z("Diagrama de flujo (png, bmp o jpg)..."),"","edit_flow.png");
+	utils->AddItemToMenu(export_menu,mxID_FILE_EXPORT_PNG, _Z("Diagrama de flujo (png, bmp o jpg)..."),"","flujo.png");
 	file->AppendSubMenu(export_menu,_Z("Exportar"),"");
 	
 	utils->AddItemToMenu(file,mxID_FILE_CLOSE, _Z("&Cerrar...\tCtrl+W"),"","cerrar.png");
@@ -283,8 +282,8 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(edit,mxID_EDIT_CUT, _Z("C&ortar\tCtrl+X"),"","cortar.png");
 	utils->AddItemToMenu(edit,mxID_EDIT_COPY, _Z("&Copiar\tCtrl+C"),"","copiar.png");
 	utils->AddItemToMenu(edit,mxID_EDIT_PASTE, _Z("&Pegar\tCtrl+V"),"","pegar.png");
-	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_UP, _Z("Mover Hacia Arriba\tCtrl+T"),_Z("Mueve la o las lineas seleccionadas hacia arriba"),"toggleLinesUp.png");
-	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_DOWN, _Z("Mover Hacia Abajo\tCtrl+Shift+T"),_Z("Mueve la o las lineas seleccionadas hacia abajo"),"toggleLinesDown.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_UP, _Z("Mover Hacia Arriba\tCtrl+T"),_Z("Mueve la o las lineas seleccionadas hacia arriba"),"arriba.png");
+	utils->AddItemToMenu(edit,mxID_EDIT_TOGGLE_LINES_DOWN, _Z("Mover Hacia Abajo\tCtrl+Shift+T"),_Z("Mueve la o las lineas seleccionadas hacia abajo"),"abajo.png");
 	edit->AppendSeparator();
 	utils->AddItemToMenu(edit,mxID_EDIT_FIND, _Z("Buscar...\tCtrl+F"),"","buscar.png");
 	utils->AddItemToMenu(edit,mxID_EDIT_FIND_PREV, _Z("Buscar Anterior\tShift+F3"),"","anterior.png");
@@ -326,6 +325,7 @@ void mxMainWindow::CreateMenus() {
 	mi_use_dark_theme = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_THEME, _Z("Utilizar fondo negro en este editor"),"",config->use_dark_theme);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
+	mi_big_icons = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_BIG_ICONS, _Z("Íconos más grandes (p/pantallas HiDPI)"),"",config->big_icons);
 	utils->AddItemToMenu(cfg_pres,mxID_CONFIG_SELECT_FONTS, _Z("Seleccionar fuentes..."),"","fuentes.png");
 	cfg->AppendSubMenu(cfg_pres,_Z("Presentación"));
 	
@@ -346,10 +346,6 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(run,mxID_RUN_SET_INPUT, _Z("Predefinir Entrada...\tCtrl+F9"),"","input.png");
 	menu->Append(run, _Z("E&jecutar"));
 	
-//	wxMenu *config = new wxMenu;
-//	utils->AddItemToMenu(config,mxID_CONFIG_, "","",".png");
-//	menu->Append(config, "&Configuar");
-//	
 	wxMenu *help = new wxMenu;
 	utils->AddItemToMenu(help,mxID_HELP_INDEX, _Z("Indice...\tF1"),"","ayuda.png");
 //	utils->AddItemToMenu(help,mxID_HELP_REFERENCE, _Z("Referencia...","","referencia.png");
@@ -367,7 +363,8 @@ void mxMainWindow::CreateMenus() {
 void mxMainWindow::CreateToolbars() {
 	
 	toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
-	toolbar->SetToolBitmapSize(wxSize(24,24));
+	int isize = config->big_icons ? 32 : 24;
+	toolbar->SetToolBitmapSize(wxSize(isize,isize));
 	utils->AddTool(toolbar,mxID_FILE_NEW,_Z("Nuevo"),"nuevo.png","");
 	utils->AddTool(toolbar,mxID_FILE_OPEN,_Z("Abrir..."),"abrir.png","");
 	utils->AddTool(toolbar,mxID_FILE_SAVE,_Z("Guardar"),"guardar.png","");
@@ -386,7 +383,7 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_EDIT_REPLACE,_Z("Reemplazar"),"reemplazar.png","");
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_RUN_RUN,_Z("Ejecutar..."),"ejecutar.png","");
-	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_Z("Ejecutar paso a paso..."),"pasos.png","");
+	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_Z("Ejecutar paso a paso..."),"paso.png","");
 //#ifdef __APPLE__
 //	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_Z("Dibujar Diagrama de Flujo..."),"flujo.png","");
 //#else
@@ -414,14 +411,14 @@ void mxMainWindow::CreateCommandsPanel() {
 		   "rápida acerca de la misma. Puede mantener presionada la tecla shift para "
 		   "insertar versiones alternativas o variantes de estos comandos y estructuras."));
 	
-	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,"escribir.png",_Z("Escribir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,"leer.png",_Z("Leer"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR,"asignar.png",_Z("Asignar"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SI,"si.png",_Z("Si-Entonces"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,"segun.png",_Z("Según"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,"mientras.png",_Z("Mientras"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR,"repetir.png",_Z("Repetir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,"para.png",_Z("Para"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","escribir.png"),_Z("Escribir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,    DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","leer.png"),    _Z("Leer"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR, DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","asignar.png"), _Z("Asignar"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SI,      DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","si.png"),      _Z("Si-Entonces"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,   DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","segun.png"),   _Z("Según"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","mientras.png"),_Z("Mientras"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR, DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","repetir.png"), _Z("Repetir"))->SetToolTip(tt);
+	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,    DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","para.png"),    _Z("Para"))->SetToolTip(tt);
 	button_subproc=NULL; CreateButtonSubProceso(panel,sizer);
 	panel->SetSizerAndFit(sizer);
 	
@@ -434,7 +431,7 @@ void mxMainWindow::CreateCommandsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(commands, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,utils->JoinDirAndFile("imgs","tb_commands.png"),"Comandos y Estructuras"), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_COMMANDS,DIR_PLUS_FILE_3(config->images_path,"panels",config->big_icons?"24":"16","commands.png"),"Comandos y Estructuras"), info_helper);
 }
 
 void mxMainWindow::CreateVarsPanel() {
@@ -447,7 +444,7 @@ void mxMainWindow::CreateVarsPanel() {
 	} else {
 		info_win.Hide(); info_helper.Show();
 	}
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,utils->JoinDirAndFile("imgs","tb_vars.png"),"Lista de Variables"), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_VARS,DIR_PLUS_FILE_3(config->images_path,"panels",config->big_icons?"24":"16","vars.png"),"Lista de Variables"), info_helper);
 	aui_manager.AddPane(vars_window, info_win);
 }
 
@@ -465,7 +462,7 @@ void mxMainWindow::CreateOpersPanel() {
 		wxAuiPaneInfo info_helper;
 		info_helper.Name("helper_opers").CaptionVisible(false).PaneBorder(false).Resizable(false).Left().Layer(hopr[0]).Row(hopr[1]).Position(hopr[2]);
 		if (config->show_opers) info_helper.Hide(); else info_helper.Show();
-		aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,utils->JoinDirAndFile("imgs","tb_opers.png"),"Operadores y Funciones"), info_helper);
+		aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_OPERS,DIR_PLUS_FILE_3(config->images_path,"panels",config->big_icons?"24":"16","opers.png"),"Operadores y Funciones"), info_helper);
 	}
 	if (config->show_opers) info_win.Show(); else info_win.Hide();
 	aui_manager.AddPane(opers_window, info_win);
@@ -486,7 +483,7 @@ void mxMainWindow::CreateDebugControlsPanel() {
 		info_win.Hide(); info_helper.Show();
 	}
 	aui_manager.AddPane(debug_panel, info_win);
-	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,utils->JoinDirAndFile("imgs","tb_debug.png"),_Z("Ejecución Paso a Paso")), info_helper);
+	aui_manager.AddPane(new mxPanelHelper(this,mxID_HELPER_DEBUG,DIR_PLUS_FILE_3(config->images_path,"panels",config->big_icons?"24":"16","debug.png"),_Z("Ejecución Paso a Paso")), info_helper);
 }
 
 void mxMainWindow::CreateNotebook() {
@@ -498,7 +495,7 @@ void mxMainWindow::CreateNotebook() {
 
 void mxMainWindow::CreateStatusBar() {
 	status_bar=new mxStatusBar(this);
-	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(23,23).PaneBorder(false)	);
+	aui_manager.AddPane(status_bar, wxAuiPaneInfo().Name("status_bar").Resizable(false).Bottom().Layer(5).CaptionVisible(false).Show().MinSize(50,config->big_icons?31:23).PaneBorder(false)	);
 }
 
 mxSource *mxMainWindow::NewProgram(const wxString &title) {
@@ -859,11 +856,12 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 }
 
 void mxMainWindow::CreateResultsTree() {
-
 	results_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxPoint(0,0), wxSize(160,250), wxTR_DEFAULT_STYLE | wxNO_BORDER );
-	wxImageList* imglist = new wxImageList(16, 16, true, 2);
-	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,"tree.png"),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(DIR_PLUS_FILE(config->images_path,"error.png"),wxBITMAP_TYPE_PNG));
+	int isize = config->big_icons?24:16;
+	wxImageList* imglist = new wxImageList(isize,isize, true, 2);
+	wxString ipath = DIR_PLUS_FILE_2(config->images_path,"res",config->big_icons?"24":"16");
+	imglist->Add(wxBitmap(DIR_PLUS_FILE(ipath,"info.png"), wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(DIR_PLUS_FILE(ipath,"error.png"),wxBITMAP_TYPE_PNG));
 	results_tree_ctrl->AssignImageList(imglist);
 	results_root = results_tree_ctrl->AddRoot(wxString(_Z("PSeInt "))<<VERSION, 0);
 	aui_manager.AddPane(results_tree_ctrl, wxAuiPaneInfo().Name("results_tree").Caption(_Z("Resultados")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(prtr[0]).Row(prtr[1]).Position(prtr[2]));	
@@ -1372,6 +1370,17 @@ void mxMainWindow::OnConfigUseDarkPSTerm(wxCommandEvent &evt) {
 	}
 }
 
+void mxMainWindow::OnConfigBigIcons(wxCommandEvent &evt) {
+	if (!mi_big_icons->IsChecked()) {
+		mi_big_icons->Check(false);
+		config->big_icons=false;
+	} else {
+		mi_big_icons->Check(true);
+		config->big_icons=true;
+	}
+	wxMessageBox(_Z("Deberá reiniciar PSeInt para que se aplique este cambio"),_Z("Íconos más grandes"));
+}
+
 void mxMainWindow::OnConfigUseDarkTheme(wxCommandEvent &evt) {
 	if (!mi_use_dark_theme->IsChecked()) {
 		mi_use_dark_theme->Check(false);
@@ -1646,7 +1655,7 @@ void mxMainWindow::CreateButtonSubProceso(wxPanel *panel, wxSizer *sizer){
 	if (button_subproc) { sizer->Detach(button_subproc); button_subproc->Destroy(); }
 	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
 		wxString but_label = cfg_lang[LS_PREFER_FUNCION]?_Z("Función"):(cfg_lang[LS_PREFER_ALGORITMO]?_Z("SubAlgoritmo"):_Z("SubProceso"));
-		button_subproc = utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,"subproceso.png",but_label);
+		button_subproc = utils->AddImgButton(sizer,panel,mxID_CMD_SUBPROCESO,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","funcion.png"),but_label);
 	} else 
 		button_subproc = NULL;
 }

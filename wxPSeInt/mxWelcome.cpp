@@ -17,7 +17,7 @@ BEGIN_EVENT_TABLE(mxWelcome,wxDialog)
 END_EVENT_TABLE()
 
 mxWelcome::mxWelcome(wxWindow *parent) 
-	: wxDialog(parent,wxID_ANY,_Z("Bienvenido a PSeInt"))
+	: wxDialog(parent,wxID_ANY,_Z("Bienvenido a PSeInt"),wxDefaultPosition,wxDefaultSize)
 {
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	

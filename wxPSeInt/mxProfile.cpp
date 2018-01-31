@@ -100,7 +100,7 @@ mxProfile::mxProfile(wxWindow *parent) :
 
 	sizer->AddSpacer(10);
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.next, _Z("Personalizar..."));
+	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.options, _Z("Personalizar..."));
 	wxButton *load_button = new mxBitmapButton (this, wxID_OPEN, bitmaps->buttons.load, _Z("Cargar..."));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _Z("Aceptar"));
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _Z("Cancelar"));

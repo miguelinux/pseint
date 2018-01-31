@@ -35,8 +35,10 @@ int line_width_flechas=2, line_width_bordes=1;
 Entity *entity_to_del=NULL; // para un delayed delete (cuando suelta uno que sale del shapebar y no queda en ningun lado)
 Entity *all_any=NULL;
 
-// constantes con tamaños predefinidos
-int win_h=400,win_w=600; // tamaño de la ventana
+// constantes con tamaños predefinidos (se inicializan en GlobalInit porque dependen de los DPI)
+bool big_icons = false;
+int win_h/*=400*/,win_w/*=600*/; // tamaño de la ventana
+wxString imgs_path/* = "imgs/flow/24"*/;
 
 // colores
 float color_border[ET_COUNT+1][3]={0}; // borde de la forma de una entidad
@@ -66,7 +68,7 @@ Entity *debug_current=NULL; // la entidad que se esta ejecutando actualmente en 
 
 bool loading=false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
 
-void GlobalInit( ) {
+void GlobalInitPre( ) {
 	
 	for(int i=0;i<ET_COUNT;i++)
 		Entity::max_label_len[i]=15;
@@ -117,5 +119,11 @@ void GlobalInit( ) {
 			color_border[i][j]=pow(color_shape[i][j],7)*.75;
 	}
 	
+}
+
+void GlobalInitPost() {
+	win_h = big_icons ? 800 : 600;
+	win_w = big_icons ? 1200 : 800; // tamaño de la ventana
+	imgs_path = big_icons ? "imgs/flow/32/" : "imgs/flow/24/";
 }
 

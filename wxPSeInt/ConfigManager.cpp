@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "string_conversions.h"
 #include "error_recovery.h"
+#include "osdep.h"
 
 ConfigManager *config;
 
@@ -67,9 +68,10 @@ void ConfigManager::LoadDefaults() {
 	size_x = size_y = 0;
 	images_path = "imgs";
 	tabw = 4;
-	stepstep_tspeed=50;
-	debug_port=55374;
+	stepstep_tspeed = 50;
+	debug_port  =55374;
 	comm_port=55375;
+	big_icons = OSDep::GetDPI()>=120;
 	use_dark_theme = false;
 	use_dark_psterm = false;
 	use_psterm = true;
@@ -96,10 +98,10 @@ void ConfigManager::LoadDefaults() {
 	pseval_command = "./pseval";
 	tty_command = _no_tty;
 #endif
-	wx_font_name = wxFont(10,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
-	term_font_name = wxFont(11,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
-	wx_font_size = 10;
-	term_font_size = 11;
+	wx_font_size = /*big_icons?12:*/10;
+	wx_font_name = wxFont(wx_font_size,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
+	term_font_size = /*big_icons?14:*/11;
+	term_font_name = wxFont(term_font_size,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
 	
 	help_dir = "help";
 	proxy = "";
@@ -165,6 +167,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("use_psterm=")<<(use_psterm?1:0));	
 	fil.AddLine(wxString("use_dark_theme=")<<(use_dark_theme?1:0));	
 	fil.AddLine(wxString("use_dark_psterm=")<<(use_dark_psterm?1:0));	
+	fil.AddLine(wxString("big_icons=")<<big_icons);
 	fil.AddLine(wxString("check_for_updates=")<<(check_for_updates?1:0));	
 	fil.AddLine(wxString("fixed_port=")<<(fixed_port?1:0));	
 	for (unsigned int i=0;i<last_files.GetCount();i++)
@@ -208,6 +211,7 @@ void ConfigManager::Read() {
 			else if (key=="debug_port") { value.ToLong(&l); debug_port=l; }
 			else if (key=="comm_port") { value.ToLong(&l); comm_port=l; }
 			else if (key=="use_psterm") use_psterm=utils->IsTrue(value);
+			else if (key=="big_icons") big_icons=utils->IsTrue(value);
 			else if (key=="use_dark_theme") use_dark_theme=utils->IsTrue(value);
 			else if (key=="use_dark_psterm") use_dark_psterm=utils->IsTrue(value);
 			else if (key=="check_for_updates") check_for_updates=utils->IsTrue(value);

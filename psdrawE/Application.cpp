@@ -13,7 +13,7 @@
 #include "../psdraw3/Global.h"
 #include "../psdraw3/Entity.h"
 #include "../pseint/LangSettings.h"
-#include "../wxPSeInt/mac-stuff.h"
+#include "../wxPSeInt/osdep.h"
 #include "GLtoWX.h"
 #include "Version.h"
 #include "mxConfig.h"
@@ -47,7 +47,7 @@ bool mxApplication::OnInit() {
 	
 	_handle_version_query("psDrawE");
 	
-	fix_mac_focus_problem();
+	OSDep::AppInit();
 	
 	if (argc==1) {
 		cerr<<"Use: "<<argv[0]<<" [--use_nassi_shneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
@@ -82,7 +82,7 @@ bool mxApplication::OnInit() {
 	lang.Fix();
 	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
-	GlobalInit();
+	GlobalInitPre(); GlobalInitPost();
 	if (!Load(fin)) {
 		wxMessageBox("Error al leer pseudocódigo"); return false;
 	}

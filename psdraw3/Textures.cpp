@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Text.h"
 #include <iostream>
+#include "Global.h"
 using namespace std;
 
 // función basada en código tomado de http://wiki.wxwidgets.org/Using_wxImage_to_load_textures_for_OpenGL
@@ -184,7 +185,7 @@ Texture texture_font;
 set<Texture*> Texture::m_to_load;
 bool Texture::LoadTextures() {
 #ifdef _USE_FONT
-	texture_font.SetTexture("imgs/flow/font.png");
+	texture_font.SetTexture(imgs_path+"font.png");
 #endif
 	
 	bool all_ok = true;

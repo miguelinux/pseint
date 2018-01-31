@@ -9,7 +9,7 @@ Trash *trash = NULL;
 #define trash_size_min 30
 
 Trash::Trash() 
-	: m_texture("imgs/flow/trash.png"),
+	: m_texture(imgs_path+"trash.png"),
 	  m_visible(false), m_extended(false), m_size(0) 
 {
 	

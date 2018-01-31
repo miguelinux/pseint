@@ -39,25 +39,25 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	color_menu_sel[1] = color_sel.Green()/255.f;
 	color_menu_sel[2] = color_sel.Blue()/255.f;
 	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
-//	toolbar->AddTool(MID_SETTINGS,"","imgs/floaw/tb_settings.png");
+//	toolbar->AddTool(MID_SETTINGS,"",imgs_path+"tb_settings.png");
 	if (lang[LS_ENABLE_USER_FUNCTIONS]) {
-		toolbar->AddTool(MID_SUB  ,"",wxBitmap("imgs/flow/tb_sub.png",wxBITMAP_TYPE_PNG));
+		toolbar->AddTool(MID_SUB  ,"",wxBitmap(imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG));
 		toolbar->AddSeparator();
 	}
-	toolbar->AddTool(MID_RUN  ,"",wxBitmap("imgs/flow/tb_run.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_DEBUG,"",wxBitmap("imgs/flow/tb_debug.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_EXPORT ,"",wxBitmap("imgs/flow/tb_save.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_RUN  ,"",wxBitmap(imgs_path+"tb_run.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_DEBUG,"",wxBitmap(imgs_path+"tb_debug.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_EXPORT ,"",wxBitmap(imgs_path+"tb_save.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_ZOOM ,"",wxBitmap("imgs/flow/tb_zoom.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_FULLSCREEN ,"",wxBitmap("imgs/flow/tb_fullscreen.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_ZOOM ,"",wxBitmap(imgs_path+"tb_zoom.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_FULLSCREEN ,"",wxBitmap(imgs_path+"tb_fullscreen.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_STYLE ,"",wxBitmap("imgs/flow/tb_style.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_COMMENTS ,"",wxBitmap("imgs/flow/tb_comments.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_CROPLABEL ,"",wxBitmap("imgs/flow/tb_crop.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_COLORS,"",wxBitmap("imgs/flow/tb_colors.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_STYLE ,"",wxBitmap(imgs_path+"tb_style.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COMMENTS ,"",wxBitmap(imgs_path+"tb_comments.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CROPLABEL ,"",wxBitmap(imgs_path+"tb_crop.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COLORS,"",wxBitmap(imgs_path+"tb_colors.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_HELP ,"",wxBitmap("imgs/flow/tb_help.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_CLOSE,"",wxBitmap("imgs/flow/tb_close.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_HELP ,"",wxBitmap(imgs_path+"tb_help.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CLOSE,"",wxBitmap(imgs_path+"tb_close.png",wxBITMAP_TYPE_PNG));
 	toolbar->Realize();
 	sizer->Add(new Canvas(this),wxSizerFlags().Expand().Proportion(1));
 	SetSizer(sizer);

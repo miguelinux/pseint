@@ -30,9 +30,12 @@ END_EVENT_TABLE()
 
 mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	
-	wxBitmap bmp_pausar("imgs/paso_pausar.png",wxBITMAP_TYPE_PNG), bmp_comenzar("imgs/paso_iniciar.png",wxBITMAP_TYPE_PNG), 
-		     bmp_un_paso("imgs/paso_un_paso.png",wxBITMAP_TYPE_PNG), bmp_detener("imgs/paso_detener.png",wxBITMAP_TYPE_PNG),
-		     bmp_cerrar("imgs/paso_cerrar.png",wxBITMAP_TYPE_PNG);
+	wxString ipath = DIR_PLUS_FILE_2(config->images_path,"paso",config->big_icons?"30":"20");
+	wxBitmap bmp_pausar  (DIR_PLUS_FILE(ipath,"pausar.png"), wxBITMAP_TYPE_PNG), 
+		     bmp_comenzar(DIR_PLUS_FILE(ipath,"iniciar.png"),wxBITMAP_TYPE_PNG), 
+		     bmp_un_paso (DIR_PLUS_FILE(ipath,"un_paso.png"),wxBITMAP_TYPE_PNG), 
+		     bmp_detener (DIR_PLUS_FILE(ipath,"detener.png"),wxBITMAP_TYPE_PNG),
+		     bmp_cerrar  (DIR_PLUS_FILE(ipath,"cerrar.png"), wxBITMAP_TYPE_PNG);
 	
 	dp_bmps[BMP_COMENZAR] = mxBitmapButton::GenerateButtonImage("Comenzar",&bmp_comenzar);
 	dp_bmps[BMP_PAUSAR] = mxBitmapButton::GenerateButtonImage("Pausar",&bmp_pausar);

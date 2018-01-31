@@ -6,6 +6,8 @@
 #include <wx/treebase.h>
 
 #define DIR_PLUS_FILE(dir,file) utils->JoinDirAndFile(dir,file)
+#define DIR_PLUS_FILE_2(dir1,dir2,file) utils->JoinDirAndFile(dir1,utils->JoinDirAndFile(dir2,file))
+#define DIR_PLUS_FILE_3(dir1,dir2,dir3,file) utils->JoinDirAndFile(dir1,utils->JoinDirAndFile(dir2,utils->JoinDirAndFile(dir3,file)))
 
 WX_DECLARE_STRING_HASH_MAP( wxString, mxHashStringString );
 WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );

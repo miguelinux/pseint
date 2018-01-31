@@ -233,6 +233,7 @@ bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	wxString command;
 	command<<config->psdraw3_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
+	if (config->big_icons) command<<" --bigicons";
 	if (source->GetReadOnly()) command<<" --noedit";
 	command<<" "<<GetDrawPostArgs();
 	command<<_T(" \"")<<source->GetTempFilenamePSD()<<_T("\"");

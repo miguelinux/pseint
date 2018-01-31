@@ -1,10 +1,10 @@
+#include <iostream>
+#include <cstdlib>
 #include "Application.h"
 #include "mxMainWindow.h"
 #include "version.h"
-#include <iostream>
-#include <cstdlib>
 #include "mxCreatorWindow.h"
-#include "../wxPSeInt/mac-stuff.h"
+#include "../wxPSeInt/osdep.h"
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -15,7 +15,7 @@ bool mxApplication::OnInit() {
 	srand(time(0));
 	_handle_version_query("psEval");
 	
-	fix_mac_focus_problem();
+	OSDep::AppInit();
 	
 	if (argc<4) {
 		std::cerr<<"Use "<<argv[0]<<" <archivo_de_ejercicio> <clave> <comando pseint...>"<<std::endl;

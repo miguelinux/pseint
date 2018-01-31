@@ -7,23 +7,25 @@
 #include "Draw.h"
 #include "Text.h"
 
-#define shapebar_size_min 25
-#define shapebar_size_max 150
+//#define shapebar_size_min 25
+//#define shapebar_size_max 150
 #define no_selection 0
 #define cant_shapes_in_bar 9
 
 ShapesBar *shapes_bar = NULL;
 
 ShapesBar::ShapesBar() 
-	: m_texture_retracted("imgs/flow/commands.png"),
+	: m_texture_retracted(imgs_path+"commands.png"),
 	  m_texture_extended( Entity::nassi_shneiderman 
-							? "imgs/flow/shapes_ns.png"
+							? imgs_path+"shapes_ns.png"
 							: ( Entity::alternative_io 
-								  ? "imgs/flow/shapes_alt.png"
-								  : "imgs/flow/shapes.png" ) ),
+								  ? imgs_path+"shapes_alt.png"
+								  : imgs_path+"shapes.png" ) ),
 	  m_visible(true), m_extended(false), m_fixed(false), m_width(0),
 	  m_has_mouse(false), m_current_selection(no_selection)
 {
+	shapebar_size_min = big_icons ? 34 : 25;
+	shapebar_size_max = big_icons ? 200 : 150;
 }
 
 void ShapesBar::ProcessMotion (int x, int y) {

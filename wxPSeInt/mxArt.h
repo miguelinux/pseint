@@ -12,21 +12,13 @@ public:
 	struct {
 		wxBitmap *ok;
 		wxBitmap *cancel;
-		wxBitmap *stop;
 		wxBitmap *help;
-		wxBitmap *next;
-		wxBitmap *prev;
+		wxBitmap *options;
 		wxBitmap *find;
 		wxBitmap *replace;
 		wxBitmap *load;
 		wxBitmap *save;
 	} buttons;
-//	struct {
-//		wxBitmap *question;
-//		wxBitmap *warning;
-//		wxBitmap *info;
-//		wxBitmap *error;
-//	} icons;
 	mxArt(wxString img_dir);
 	~mxArt();
 };

@@ -1,8 +1,9 @@
+#include <iostream>
 #include <wx/image.h>
 #include <wx/socket.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
-#include <iostream>
+#include <wx/textfile.h>
 #include "Logger.h"
 #include "string_conversions.h"
 #include "Application.h"
@@ -17,11 +18,10 @@
 #include "mxUpdatesChecker.h"
 #include "mxIconInstaller.h"
 #include "CommunicationsManager.h"
-#include "mac-stuff.h"
 #include "error_recovery.h"
-#include <wx/textfile.h>
 #include "mxWelcome.h"
 #include "mxStatusBar.h"
+#include "osdep.h"
 using namespace std;
 
 IMPLEMENT_APP(mxApplication)
@@ -32,7 +32,7 @@ bool mxApplication::OnInit() {
 	
 	_handle_version_query("wxPSeInt");
 	
-	fix_mac_focus_problem();
+	OSDep::AppInit();
 	
 	utils = new mxUtils;
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);

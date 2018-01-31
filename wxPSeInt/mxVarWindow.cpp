@@ -33,34 +33,35 @@ mxVarWindow::mxVarWindow(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosi
 	
 	wxArrayString img_files(LV_MAX+2,""); // +2 por proc y sub
 	// tipos conocidos
-	img_files[             LV_LOGICA                        ] = "vt_log.png";
-	img_files[LV_DEFINIDA| LV_LOGICA                        ] = "vt_log_def.png";
-	img_files[                       LV_NUMERICA            ] = "vt_num.png";
-	img_files[LV_DEFINIDA|           LV_NUMERICA            ] = "vt_num_def.png";
-	img_files[                                   LV_CARACTER] = "vt_car.png";
-	img_files[LV_DEFINIDA|                       LV_CARACTER] = "vt_car_def.png";
+	img_files[             LV_LOGICA                        ] = "log.png";
+	img_files[LV_DEFINIDA| LV_LOGICA                        ] = "log_def.png";
+	img_files[                       LV_NUMERICA            ] = "num.png";
+	img_files[LV_DEFINIDA|           LV_NUMERICA            ] = "num_def.png";
+	img_files[                                   LV_CARACTER] = "car.png";
+	img_files[LV_DEFINIDA|                       LV_CARACTER] = "car_def.png";
 	
 	// tipos desconocidos, pero factibles
-	img_files[0                                             ] = "vt_desc.png";
-	img_files[             LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "vt_desc.png";
-	img_files[             LV_LOGICA|LV_NUMERICA            ] = "vt_log_num.png";
-	img_files[             LV_LOGICA|            LV_CARACTER] = "vt_log_car.png";
-	img_files[                       LV_NUMERICA|LV_CARACTER] = "vt_car_num.png";
+	img_files[0                                             ] = "desc.png";
+	img_files[             LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "desc.png";
+	img_files[             LV_LOGICA|LV_NUMERICA            ] = "log_num.png";
+	img_files[             LV_LOGICA|            LV_CARACTER] = "log_car.png";
+	img_files[                       LV_NUMERICA|LV_CARACTER] = "car_num.png";
 	
 	// tipos imposibles (error del intérprete)
-	img_files[LV_DEFINIDA                                   ] = "vt_error.png";
-	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA            ] = "vt_error.png";
-	img_files[LV_DEFINIDA| LV_LOGICA            |LV_CARACTER] = "vt_error.png";
-	img_files[LV_DEFINIDA|           LV_NUMERICA|LV_CARACTER] = "vt_error.png";
-	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "vt_error.png";
+	img_files[LV_DEFINIDA                                   ] = "error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA            ] = "error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA            |LV_CARACTER] = "error.png";
+	img_files[LV_DEFINIDA|           LV_NUMERICA|LV_CARACTER] = "error.png";
+	img_files[LV_DEFINIDA| LV_LOGICA|LV_NUMERICA|LV_CARACTER] = "error.png";
 	
 	// proceso y subproceso
-	img_files[LV_MAX] = "vt_proc.png";
-	img_files[LV_MAX+1] = "vt_sub.png";
+	img_files[LV_MAX]   = "proc.png";
+	img_files[LV_MAX+1] = "sub.png";
 	
-	wxImageList* imglist = new wxImageList(16, 16,true,img_files.GetCount());
+	int isize = config->big_icons ? 24 : 16;
+	wxImageList* imglist = new wxImageList(isize,isize,true,img_files.GetCount());
 	for(unsigned int i=0;i<img_files.GetCount();i++)
-		imglist->Add(wxBitmap(utils->JoinDirAndFile(config->images_path,img_files[i]),wxBITMAP_TYPE_PNG));
+		imglist->Add(wxBitmap(DIR_PLUS_FILE_3(config->images_path,"vars",config->big_icons?"24":"16",img_files[i]),wxBITMAP_TYPE_PNG));
 	tree->AssignImageList(imglist);
 	tree_root=tree_current=tree->AddRoot("");
 	tree->SetToolTip(tooltip=utils->FixTooltip(_Z("En esta sección se listan las variables que utiliza un algoritmo. El ícono a la izquierda del nombre indica los potenciales tipos de datos que determina el intérprete en caso de que el tipo de variable pueda deducirse antes de ejecutar el algoritmo. Puede seleccionar una para resaltarla en el pseudocódigo.")));

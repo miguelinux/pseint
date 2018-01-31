@@ -5,6 +5,7 @@
 #include <map>
 #include "Entity.h"
 #include "../pseint/LangSettings.h"
+#include <wx/string.h>
 using namespace std;
 
 
@@ -82,7 +83,11 @@ extern Entity *debug_current;  // la entidad que se esta ejecutando actualmente 
 
 extern bool loading; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
 
-void GlobalInit(); // inicializaciones globales que no pueden ser estáticas	
+extern bool big_icons;
+extern wxString imgs_path;
+
+void GlobalInitPre(); // inicializaciones globales que no pueden ser estáticas	
+void GlobalInitPost(); // inicializaciones globales que no pueden ser estáticas	
 
 #endif
 

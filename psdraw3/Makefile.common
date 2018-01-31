@@ -1,6 +1,6 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Text.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/uglyfont.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/ShapesBar.o ${OBJS_DIR}/ToolBar.o ${OBJS_DIR}/Trash.o ${OBJS_DIR}/ProcessSelector.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Text.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/uglyfont.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/ShapesBar.o ${OBJS_DIR}/ToolBar.o ${OBJS_DIR}/Trash.o ${OBJS_DIR}/ProcessSelector.o ${OBJS_DIR}/osdep.o 
 
-${OBJS_DIR}/Application.o: Application.cpp Application.h GLstuff.h MainWindow.h Version.h ../pseint/version_common.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Comm.h Load.h ../wxPSeInt/mac-stuff.h ShapesBar.h Textures.h ToolBar.h Trash.h ProcessSelector.h
+${OBJS_DIR}/Application.o: Application.cpp Application.h GLstuff.h MainWindow.h Version.h ../pseint/version_common.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Comm.h Load.h ../wxPSeInt/osdep.h ShapesBar.h Textures.h ToolBar.h Trash.h ProcessSelector.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
 
 ${OBJS_DIR}/Canvas.o: Canvas.cpp Events.h Draw.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Textures.h GLstuff.h Canvas.h
@@ -30,10 +30,10 @@ ${OBJS_DIR}/Events.o: Events.cpp GLstuff.h Events.h Entity.h EntityLinking.h Vec
 ${OBJS_DIR}/Global.o: Global.cpp Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h
 	${GPP} ${CXXFLAGS} -c Global.cpp -o $@
 
-${OBJS_DIR}/Load.o: Load.cpp Load.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Events.h ProcessSelector.h
+${OBJS_DIR}/Load.o: Load.cpp Load.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Events.h ProcessSelector.h ../wxPSeInt/CommonParsingFunctions.h
 	${GPP} ${CXXFLAGS} -c Load.cpp -o $@
 
-${OBJS_DIR}/Textures.o: Textures.cpp Textures.h GLstuff.h Entity.h EntityLinking.h Vector.h Text.h
+${OBJS_DIR}/Textures.o: Textures.cpp Textures.h GLstuff.h Entity.h EntityLinking.h Vector.h Text.h Global.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h
 	${GPP} ${CXXFLAGS} -c Textures.cpp -o $@
 
 ${OBJS_DIR}/zockets.o: ../pseint/zockets.cpp ../pseint/zockets.h
@@ -62,4 +62,7 @@ ${OBJS_DIR}/Trash.o: Trash.cpp Trash.h Textures.h GLstuff.h Global.h Entity.h En
 
 ${OBJS_DIR}/ProcessSelector.o: ProcessSelector.cpp ProcessSelector.h Trash.h Textures.h GLstuff.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Text.h Load.h Events.h Draw.h
 	${GPP} ${CXXFLAGS} -c ProcessSelector.cpp -o $@
+
+${OBJS_DIR}/osdep.o: ../wxPSeInt/osdep.cpp ../wxPSeInt/osdep.h
+	${GPP} ${CXXFLAGS} -c ../wxPSeInt/osdep.cpp -o $@
 
