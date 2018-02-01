@@ -17,6 +17,7 @@
 #include "GLtoWX.h"
 #include "Version.h"
 #include "mxConfig.h"
+#include "../wxPSeInt/string_conversions.h"
 using namespace std;
 
 void ProcessMenu(int) {}
@@ -84,7 +85,7 @@ bool mxApplication::OnInit() {
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInitPre(); GlobalInitPost();
 	if (!Load(fin)) {
-		wxMessageBox("Error al leer pseudocódigo"); return false;
+		wxMessageBox(_Z("Error al leer pseudocódigo")); return false;
 	}
 	edit_on=false;
 	if ((new mxConfig())->ShowModal()==wxID_CANCEL) return 0; // opciones del usuairo
@@ -146,8 +147,8 @@ bool mxApplication::OnInit() {
 	// guardar
 	if (!force) {
 		wxFileName fn(fout);
-		wxFileDialog fd(NULL,"Guardar imagen",fn.GetPath(),fn.GetName()+".png",
-			_IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP",
+		wxFileDialog fd(NULL,_Z("Guardar imagen"),fn.GetPath(),fn.GetName()+".png",
+			_Z( _IF_PNG("Imagen PNG|*.png;*.PNG|") _IF_JPG("Imagen jpeg|*.jpg;*.jpeg;*.JPG;*.JPEG|") "Imagen BMP|*.bmp;*.BMP"),
 			wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (fd.ShowModal()!=wxID_OK) { return false;  }
 		fout=fd.GetPath();
@@ -158,8 +159,8 @@ bool mxApplication::OnInit() {
 	_IF_PNG(if (fout.Lower().EndsWith(".png")) type=wxBITMAP_TYPE_PNG;)
 	_IF_JPG(else if (fout.Lower().EndsWith(".jpg")||fout.Lower().EndsWith(".jpeg")) type=wxBITMAP_TYPE_JPEG;)
 	if (bmp.SaveFile(fout,type)) {
-		if (force) cerr << "Guardado: "<<fout<<endl;
-		else wxMessageBox("Diagrama guardado","PSeInt");
+		if (force) cerr << _Z("Guardado: ")<<fout<<endl;
+		else wxMessageBox(_Z("Diagrama guardado"),_Z("PSeInt"));
 	}
 	
 	return false;

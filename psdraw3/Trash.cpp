@@ -1,3 +1,4 @@
+#include "../wxPSeInt/string_conversions.h"
 #include "Trash.h"
 #include "Global.h"
 #include "Text.h"
@@ -19,7 +20,7 @@ void Trash::Draw ( ) {
 	if (!m_size) return;
 	
 	if (m_extended) {
-		DrawTextRaster(color_selection,10+trash_size_max,10,"Eliminar");
+		DrawTextRaster(color_selection,10+trash_size_max,10,_Z("Eliminar"));
 		mouse_cursor = Z_CURSOR_DESTROY;
 	}
 	

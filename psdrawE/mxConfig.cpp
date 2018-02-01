@@ -7,6 +7,7 @@
 #include <wx/button.h>
 #include "../psdraw3/Global.h"
 #include "../psdraw3/Load.h"
+#include "../wxPSeInt/string_conversions.h"
 
 enum { MID_NULL = wxID_HIGHEST, MID_ANCHO, MID_ALTO, MID_ZOOM, MID_CROP, MID_COMMENTS, MID_COLORS, MID_STYLE, MID_PROC };
 
@@ -30,44 +31,44 @@ static void AddWithLabel(wxWindow *parent, wxSizer *sizer, wxString text, wxWind
 	sizer->Add (aux_sizer, szflag);
 }
 
-mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,"Guardar diagrama de flujo",wxDefaultPosition,wxDefaultSize) {
+mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,_Z("Guardar diagrama de flujo"),wxDefaultPosition,wxDefaultSize) {
 	ignore_events=true;
 	
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	szflag = wxSizerFlags().Border(wxALL,4).Center();
 	
 	wxArrayString astyles;
-	astyles.Add("Clásico");
-	astyles.Add("Clásico (i/o alternativa)");
-	astyles.Add("Nassi-Shneiderman");
-	cm_style = new wxComboBox(this,MID_STYLE,"",wxDefaultPosition,wxDefaultSize,astyles,wxCB_READONLY|wxCB_SIMPLE);
+	astyles.Add(_Z("Clásico"));
+	astyles.Add(_Z("Clásico (i/o alternativa)"));
+	astyles.Add(_Z("Nassi-Shneiderman"));
+	cm_style = new wxComboBox(this,MID_STYLE,_Z(""),wxDefaultPosition,wxDefaultSize,astyles,wxCB_READONLY|wxCB_SIMPLE);
 	cm_style->SetSelection(Entity::nassi_shneiderman?2:(Entity::alternative_io?1:0));
-	AddWithLabel(this,sizer,"Estilo:",cm_style);
+	AddWithLabel(this,sizer,_Z("Estilo:"),cm_style);
 	
 	wxArrayString procs;
 	for(unsigned int i=0;i<procesos.size();i++) 
 		procs.Add((procesos[i]->lpre+procesos[i]->label).c_str());
-	cm_proc = new wxComboBox(this,MID_PROC,"",wxDefaultPosition,wxDefaultSize,procs,wxCB_READONLY|wxCB_SIMPLE);
-	AddWithLabel(this,sizer,"(Sub)Proceso:",cm_proc);
+	cm_proc = new wxComboBox(this,MID_PROC,_Z(""),wxDefaultPosition,wxDefaultSize,procs,wxCB_READONLY|wxCB_SIMPLE);
+	AddWithLabel(this,sizer,_Z("(Sub)Proceso:"),cm_proc);
 	
-	tx_zoom = new wxTextCtrl(this,MID_ZOOM,"100");
-	AddWithLabel(this,sizer,"Zoom(%):",tx_zoom);
-	tx_ancho = new wxTextCtrl(this,MID_ANCHO,"");
-	AddWithLabel(this,sizer,"Ancho(px):",tx_ancho);
-	tx_alto = new wxTextCtrl(this,MID_ALTO,"");
-	AddWithLabel(this,sizer,"Alto(px):",tx_alto);
+	tx_zoom = new wxTextCtrl(this,MID_ZOOM,_Z("100"));
+	AddWithLabel(this,sizer,_Z("Zoom(%):"),tx_zoom);
+	tx_ancho = new wxTextCtrl(this,MID_ANCHO,_Z(""));
+	AddWithLabel(this,sizer,_Z("Ancho(px):"),tx_ancho);
+	tx_alto = new wxTextCtrl(this,MID_ALTO,_Z(""));
+	AddWithLabel(this,sizer,_Z("Alto(px):"),tx_alto);
 	
-	ch_comments = new wxCheckBox(this,MID_COMMENTS,"Incluir comentarios");
+	ch_comments = new wxCheckBox(this,MID_COMMENTS,_Z("Incluir comentarios"));
 	ch_comments->SetValue(Entity::show_comments);
 	sizer->Add (ch_comments,szflag);
-	ch_colors = new wxCheckBox(this,MID_COLORS,"Utilizar colores");
+	ch_colors = new wxCheckBox(this,MID_COLORS,_Z("Utilizar colores"));
 	ch_colors->SetValue(Entity::shape_colors);
 	sizer->Add (ch_colors,szflag);
-	ch_crop  = new wxCheckBox(this,MID_CROP,"Cortar textos largos");
+	ch_crop  = new wxCheckBox(this,MID_CROP,_Z("Cortar textos largos"));
 	sizer->Add (ch_crop,szflag);
 	
-	wxButton *ok = new wxButton(this,wxID_OK,"Guardar");
-	wxButton *cancel = new wxButton(this,wxID_CANCEL,"Cancelar");
+	wxButton *ok = new wxButton(this,wxID_OK,_Z("Guardar"));
+	wxButton *cancel = new wxButton(this,wxID_CANCEL,_Z("Cancelar"));
 	wxSizer *aux_sizer = new wxBoxSizer(wxHORIZONTAL);
 	aux_sizer->Add(cancel,szflag);
 	aux_sizer->Add(ok,szflag);

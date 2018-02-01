@@ -51,7 +51,7 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 		return false;
 	}
 	wxString req_profile = pack.GetConfigStr("perfil requerido");
-	if (!req_profile.IsEmpty() && req_profile.Upper()!=wxString(cfg_lang.name).Upper()) {
+	if (!req_profile.IsEmpty() && req_profile.Upper()!=wxString(_S2W(cfg_lang.name)).Upper()) {
 		wxMessageBox(_ZZ("Debe utilizar el perfil \"")+req_profile+_Z("\" para este ejercicio.\n\nVaya al menú \"Configurar\" y seleccione \"Opciones\ndel lenguaje\" para cambiar su perfil."),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 		return false;
 	}

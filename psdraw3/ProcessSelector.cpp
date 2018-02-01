@@ -1,13 +1,13 @@
-#include "ProcessSelector.h"
 #include <cstddef>
-
-#define no_selection -1
+#include "ProcessSelector.h"
 #include "Trash.h"
 #include "Global.h"
 #include "Text.h"
 #include "Load.h"
 #include "Events.h"
 #include "Draw.h"
+
+#define no_selection -1
 
 ProcessSelector *process_selector = NULL;
 

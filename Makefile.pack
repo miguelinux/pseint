@@ -15,7 +15,7 @@ w32:
 	make -f Makefile.pack clean
 	make -f Makefile.wine
 	rm -rf dist/pseint 
-	mkdir dist/pseint 
+	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/
 # 	cp dist/*.dll dist/pseint/
 	find bin -type f | sed 's/bin/delete $$INSTDIR/' | sed 's/\//\\/g' > dist/uninstall.nsh
@@ -38,7 +38,7 @@ lnx:
 	make -f Makefile.lnx -C psexport
 	make -f Makefile.lnx -C updatem
 	rm -rf dist/pseint 
-	mkdir dist/pseint 
+	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/
 	cp dist/log.sh dist/pseint/
 	cd dist && tar -czvf pseint-`./get_arch`-`cat pseint/version`.tgz pseint 
@@ -48,23 +48,23 @@ lnx:
 	@echo
 
 dist/mnt:
-	mkdir -f dist/mnt
+	mkdir -p dist/mnt
 
 m32: dist/mnt
 	make -f Makefile.pack clean
 	make -f Makefile.m32
 	rm -rf dist/pseint.app
-	mkdir dist/pseint.app
-	mkdir dist/pseint.app/Contents
-	mkdir dist/pseint.app/Contents/MacOS
-	mkdir dist/pseint.app/Contents/Resources
+	mkdir -p dist/pseint.app
+	mkdir -p dist/pseint.app/Contents
+	mkdir -p dist/pseint.app/Contents/MacOS
+	mkdir -p dist/pseint.app/Contents/Resources
 	cp -r bin/* dist/pseint.app/Contents/Resources
 	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
 	cp dist/Info.plist dist/pseint.app/Contents/
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
 	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=52
+	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=53
 	mkfs.hfsplus -v PSeInt dist/pseint-m32-`cat bin/version`.dmg
 	sudo mount -o loop dist/pseint-m32-`cat bin/version`.dmg dist/mnt
 	sudo cp -r dist/pseint.app dist/mnt
@@ -78,17 +78,17 @@ ppc: dist/mnt
 	make -f Makefile.pack clean
 	make -f Makefile.ppc
 	rm -rf dist/pseint.app
-	mkdir dist/pseint.app
-	mkdir dist/pseint.app/Contents
-	mkdir dist/pseint.app/Contents/MacOS
-	mkdir dist/pseint.app/Contents/Resources
+	mkdir -p dist/pseint.app
+	mkdir -p dist/pseint.app/Contents
+	mkdir -p dist/pseint.app/Contents/MacOS
+	mkdir -p dist/pseint.app/Contents/Resources
 	cp -r bin/* dist/pseint.app/Contents/Resources
 	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
 	cp dist/Info.plist dist/pseint.app/Contents/
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
 	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=53
+	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=54
 	mkfs.hfsplus -v PSeInt dist/pseint-ppc-`cat bin/version`.dmg
 	sudo mount -o loop dist/pseint-ppc-`cat bin/version`.dmg dist/mnt
 	sudo cp -r dist/pseint.app dist/mnt

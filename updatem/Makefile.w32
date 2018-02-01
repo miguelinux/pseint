@@ -14,7 +14,7 @@ ${OBJS_DIR}\manifest.o: manifest.xml manifest.rc
 	${WINDRES} -i manifest.rc -o $@
 
 ..\bin\updatem.exe: ${OBJS_DIR}\manifest.o ${OBJS}
-	${GPP} ${OBJS} ${LIBS} ${OBJS_DIR}\manifest.o -o $@
+	${GPP} -O0 ${OBJS} ${LIBS} ${OBJS_DIR}\manifest.o -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}

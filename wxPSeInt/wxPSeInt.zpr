@@ -13,7 +13,7 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=../../pseint
 inherits_from=
-current_source=../bin/help/cambios.html
+current_source=../pseint/LangSettings.cpp
 path_char=/
 [source]
 path=DebugManager.cpp
@@ -32,7 +32,7 @@ path=mxUtils.cpp
 cursor=32:12
 [source]
 path=ConfigManager.cpp
-cursor=87:16
+cursor=349:36
 [source]
 path=mxSource.cpp
 cursor=2231:1
@@ -74,7 +74,8 @@ path=mxDropTarget.cpp
 cursor=36:6
 [source]
 path=../pseint/LangSettings.cpp
-cursor=192:0
+cursor=121:30
+open=true
 [source]
 path=mxDesktopTestGrid.cpp
 cursor=70:1
@@ -94,7 +95,7 @@ path=mxConfig.cpp
 cursor=65:18
 [source]
 path=mxProfile.cpp
-cursor=102:83
+cursor=210:64
 marker=126
 [source]
 path=mxArt.cpp
@@ -128,7 +129,7 @@ breakpoint=41
 breakpoint_annotation=
 [source]
 path=mxStatusBar.cpp
-cursor=25:24
+cursor=100:79
 [source]
 path=CommunicationsManager.cpp
 cursor=182:10
@@ -154,7 +155,7 @@ path=../pseval/Package.cpp
 cursor=216:11
 [source]
 path=mxTestPanel.cpp
-cursor=53:52
+cursor=53:80
 [source]
 path=Application.cpp
 cursor=11:20
@@ -174,7 +175,7 @@ path=mxWelcome.cpp
 cursor=19:85
 [source]
 path=osdep.cpp
-cursor=4:0
+cursor=86:0
 [header]
 path=Application.h
 cursor=8:0
@@ -196,7 +197,7 @@ path=mxProcess.h
 cursor=31:33
 [header]
 path=version.h
-cursor=2:0
+cursor=0:24
 [header]
 path=ids.h
 cursor=71:23
@@ -238,7 +239,7 @@ path=mxConfig.h
 cursor=12:19
 [header]
 path=mxProfile.h
-cursor=28:19
+cursor=9:0
 [header]
 path=mxArt.h
 cursor=14:0
@@ -283,7 +284,7 @@ path=mxPanelHelper.h
 cursor=14:11
 [header]
 path=string_conversions.h
-cursor=32:11
+cursor=16:13
 [header]
 path=../pseint/new_memoria_inter.h
 cursor=7:14
@@ -319,8 +320,7 @@ path=osdep.h
 cursor=10:0
 [other]
 path=../bin/help/cambios.html
-cursor=4:63
-open=true
+cursor=3:32
 [other]
 path=../bin/help/errores.hlp
 cursor=-1:0

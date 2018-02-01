@@ -166,7 +166,7 @@ void mxProfile::UpdateDetails() {
 	if (!text) return;
 	if (lang.source==LS_FILE) {
 		text->SetValue(wxString()
-					   <<_Z("Su personalización actual ha sido cargada desde el archivo: ") << lang.name); 
+					   <<_Z("Su personalización actual ha sido cargada desde el archivo: ") << _S2W(lang.name)); 
 	} else if (lang.source==LS_LIST) {
 		int p = perfiles.Index(GetListSelection());
 		text->SetValue(p==wxNOT_FOUND 
@@ -208,7 +208,7 @@ void mxProfile::Search ( ) {
 	list->DeleteAllItems();
 	int sel=-1, cont=0;
 	wxString pat=normalize(search->GetValue());
-	wxString name = lang.source==LS_LIST ? wxString(lang.name).Lower() : "";
+	wxString name = lang.source==LS_LIST ? wxString(_S2W(lang.name)).Lower() : "";
 	for(unsigned int i=0;i<perfiles.GetCount();i++) {
 		if (pat.Len()==0 || perfiles[i].Lower().Contains(pat) || normalize(descripciones[i]).Contains(pat)) {
 			list->InsertItem(cont,perfiles[i],i);

@@ -119,7 +119,7 @@ void LangSettings::init() {
 			"\"Proceso\" y \"FinProceso\" (o \"Algoritmo\" y \"FinAlgoritmo\") respectivamente."
 		);
 	data[LS_PREFER_REPEAT_WHILE].Set("prefer_repeat_while",					false,
-		"Preferir \"Repetir ... Mietras Que...\" en lugar de \"Repetir ... Hasta Que...\"",
+		"Preferir \"Repetir ... Mientras Que...\" en lugar de \"Repetir ... Hasta Que...\"",
 			"Con esta opción activada, al seleccionar la estructura de control \"Repetir\" desde "
 			"el panel de comandos (tanto del editor de pseudocódigo como del editor de diagramas "
 			"de flujo) se insertará la versión \"Repetir ... Mientras que\" (que itera por "

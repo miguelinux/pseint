@@ -17,7 +17,7 @@ ${OBJS_DIR}\icon.o: icon.rc ..\bin\imgs\icon.ico manifest.xml
 	${GPP} ${OBJS} ${LIBS} ${OBJS_DIR}\icon.o -o $@
 
 ..\bin\log.exe: log-launcher.cpp
-	${GPP} -mwindows -static-libgcc -static-libstdc++ log-launcher.cpp -o $@
+	${GPP} -O0 -mwindows -static-libgcc -static-libstdc++ log-launcher.cpp -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}

@@ -1,5 +1,5 @@
-#include "ToolBar.h"
 #include <cstddef>
+#include "ToolBar.h"
 #include "Events.h"
 #include "Global.h"
 #include "Draw.h"

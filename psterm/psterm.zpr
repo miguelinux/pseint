@@ -13,12 +13,10 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=
 inherits_from=
-current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
 cursor=17:6
-open=true
 [source]
 path=mxFrame.cpp
 cursor=172:1
@@ -27,7 +25,7 @@ breakpoint_annotation=
 marker=96
 [source]
 path=mxConsole.cpp
-cursor=360:12
+cursor=637:36
 marker=461
 [source]
 path=../wxPSeInt/osdep.cpp

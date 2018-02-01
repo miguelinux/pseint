@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "mxSingleCaseWindow.h"
 #include "Package.h"
+#include "../wxPSeInt/string_conversions.h"
 
 BEGIN_EVENT_TABLE(mxSingleCaseWindow,wxFrame)
 	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxSingleCaseWindow::OnList)
@@ -16,7 +17,7 @@ BEGIN_EVENT_TABLE(mxSingleCaseWindow,wxFrame)
 	EVT_CLOSE(mxSingleCaseWindow::OnClose)
 END_EVENT_TABLE()
 
-mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, bool only_first, bool show_solution) : wxFrame(parent,wxID_ANY,"Resultados",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
+mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, bool only_first, bool show_solution) : wxFrame(parent,wxID_ANY,_Z("Resultados"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) {
 	
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	
@@ -29,36 +30,36 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, bool only_first, bool 
 	if (show_solution) {
 		wxSizer *solution_sizer = new wxBoxSizer(wxVERTICAL);
 		solution = new wxStyledTextCtrl(this);
-		solution_sizer->Add(new wxStaticText(this,wxID_ANY,"Solución correcta:"),wxSizerFlags().Border(wxALL,5));
+		solution_sizer->Add(new wxStaticText(this,wxID_ANY,_Z("Solución correcta:")),wxSizerFlags().Border(wxALL,5));
 		solution_sizer->Add(solution,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 		sizer->Add(solution_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
 	} else {
 		wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
 		input = new wxStyledTextCtrl(this);
-		input_sizer->Add(new wxStaticText(this,wxID_ANY,"Datos de entrada:"),wxSizerFlags().Border(wxALL,5));
+		input_sizer->Add(new wxStaticText(this,wxID_ANY,_Z("Datos de entrada:")),wxSizerFlags().Border(wxALL,5));
 		input_sizer->Add(input,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 		sizer->Add(input_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
 	}
 	
 	wxSizer *output_sizer = new wxBoxSizer(wxVERTICAL);
 	output = new wxStyledTextCtrl(this);
-	output_sizer->Add(new wxStaticText(this,wxID_ANY,"Tu solución:"),wxSizerFlags().Border(wxALL,5));
+	output_sizer->Add(new wxStaticText(this,wxID_ANY,_Z("Tu solución:")),wxSizerFlags().Border(wxALL,5));
 	output_sizer->Add(output,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	sizer->Add(output_sizer,wxSizerFlags().Proportion(1).Expand()/*.Border(wxALL,5)*/);
 	
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxLC_LIST|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
-	list->InsertColumn(0,"Casos");
+	list->InsertColumn(0,_Z("Casos"));
 	
 	wxSizer *but_sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *but_copy = new wxButton(this,wxID_OK,"Copiar Entrada");
-	wxButton *but_close  = new wxButton(this,wxID_CANCEL,"Cerrar");
+	wxButton *but_copy = new wxButton(this,wxID_OK,_Z("Copiar Entrada"));
+	wxButton *but_close  = new wxButton(this,wxID_CANCEL,_Z("Cerrar"));
 	but_sizer->Add(but_copy,wxSizerFlags().Left());
 	but_sizer->AddStretchSpacer();
 	but_sizer->Add(but_close,wxSizerFlags().Left());
 	
 	if (!only_first) 
-		main_sizer->Add(new wxStaticText(this,wxID_ANY,"Seleccione un caso de prueba:"),wxSizerFlags().Border(wxALL,5));
+		main_sizer->Add(new wxStaticText(this,wxID_ANY,_Z("Seleccione un caso de prueba:")),wxSizerFlags().Border(wxALL,5));
 	main_sizer->Add(list,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
 	if (only_first) list->Hide(); 
 	else main_sizer->Add(new wxStaticLine(this,wxID_ANY),wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));

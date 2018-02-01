@@ -173,7 +173,7 @@ void ConfigManager::Save() {
 	for (unsigned int i=0;i<last_files.GetCount();i++)
 		fil.AddLine(wxString("history=")<<last_files[i]);
 	fil.AddLine("");
-	fil.AddLine(wxString("profile=")<<lang.name);
+	fil.AddLine(wxString("profile=")<<_S2W(lang.name));
 	if (lang.source==LS_FILE)      fil.AddLine(wxString("profile:source=file"));
 	else if (lang.source==LS_LIST) fil.AddLine(wxString("profile:source=list"));
 	else                           fil.AddLine(wxString("profile:source=custom"));
@@ -260,7 +260,7 @@ void ConfigManager::Read() {
 	if (lang.source==LS_LIST) {
 		// si era de la lista, luego de una actualización el perfil
 		// puede haber cambiado... o la interpretación del mismo
-		if (!LoadListedProfile(lang.name)) lang.Fix();
+		if (!LoadListedProfile(_S2W(lang.name))) lang.Fix();
 	}
 	if (version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
@@ -347,7 +347,7 @@ wxString ConfigManager::GetTTYCommand ( ) {
 void ConfigManager::Log ( ) const {
 	_LOG("ConfigManager");
 	_LOG("   filename="<<filename);
-	_LOG("   profile="<<lang.name);
+	_LOG("   profile="<<_S2W(lang.name));
 	_LOG("   pseint_dir="<<pseint_dir);
 	_LOG("   home_dir="<<home_dir);
 	_LOG("   psdraw3_command="<<psdraw3_command);

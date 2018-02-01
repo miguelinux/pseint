@@ -14,6 +14,7 @@ static wxCSConv cscMAC("MAC");
 #		define _Z(x) x
 #		define _FixW(x) x
 #	endif
+#	define _S2W(stds) stds.c_str()
 #	define _W2S(wxs) wxs.c_str()
 #	define _W2S_Len(wxs) wxs.Len()
 #	define _C(wxchar) wxchar

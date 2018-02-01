@@ -32,7 +32,8 @@ int main (int argc, char *argv[]) {
 		} else if (sarg=="--child") {
 			child=argv[++iarg]; child_mode=true;
 		} else if (sarg=="--proxy") {
-			proxy=true; proxy_dir=argv[++iarg];
+			if (++iarg<argc) return 1;
+			proxy=true; proxy_dir=argv[iarg];
 			size_t p=proxy_dir.find(":",0);
 			if (p!=string::npos) {
 				proxy_port=atoi(proxy_dir.substr(p+1).c_str());
@@ -43,7 +44,7 @@ int main (int argc, char *argv[]) {
 		}
 	}
 	if (!pname.length()) return 1;
-	string web=pname+".sourceforge.net";
+	string web = pname+".sourceforge.net";
 	ZOCKET z = zocket_llamar(proxy_port,(proxy?proxy_dir:web).c_str());
 	if (z==ZOCKET_ERROR) {
 		if (child_mode) {
@@ -59,7 +60,7 @@ int main (int argc, char *argv[]) {
 	request+="/version HTTP/1.1\nhost:";
 	request+=web+"\n\n"; // agregar "Cache-control: no-cache"?
 	zocket_escribir(z,request.c_str(),request.size());
-	char data[1024]; int c=1024;
+	char data[1025]; int c=1024;
 	string all_data, site_ver;
 	for (int i=0;i<100;i++) {
 		c=1024; Sleep(150);

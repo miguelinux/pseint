@@ -16,7 +16,7 @@ clean:
 	${WINDRES} -i manifest.rc -o $@
 
 ../bin/updatem.exe: ../temp/upd_w32_rls/manifest.o ${OBJS}
-	${GPP} ${OBJS} ${LIBS} ../temp/upd_w32_rls/manifest.o -o $@
+	${GPP} -O0 ${OBJS} ${LIBS} ../temp/upd_w32_rls/manifest.o -o $@
 
 ${OBJS_DIR}:
 	mkdir -p ${OBJS_DIR}
