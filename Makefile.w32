@@ -1,9 +1,9 @@
 all: 
 	${MAKE} -C pseint -f Makefile.w32
+	${MAKE} -C psexport -f Makefile.w32
 	${MAKE} -C hoewrap -f Makefile.w32
 	${MAKE} -C wxPSeInt -f Makefile.w32
 	${MAKE} -C pseval -f Makefile.w32
-	${MAKE} -C psexport -f Makefile.w32
 	${MAKE} -C updatem -f Makefile.w32
 	${MAKE} -C psterm -f Makefile.w32
 	${MAKE} -C psdrawE -f Makefile.w32
@@ -11,10 +11,10 @@ all:
 
 clean: 
 	${MAKE} -C pseint -f Makefile.w32 clean
+	${MAKE} -C psexport -f Makefile.w32 clean
 	${MAKE} -C hoewrap -f Makefile.w32 clean
 	${MAKE} -C wxPSeInt -f Makefile.w32 clean
 	${MAKE} -C pseval -f Makefile.w32 clean
-	${MAKE} -C psexport -f Makefile.w32 clean
 	${MAKE} -C updatem -f Makefile.w32 clean
 	${MAKE} -C psterm -f Makefile.w32 clean
 	${MAKE} -C psdrawE -f Makefile.w32 clean

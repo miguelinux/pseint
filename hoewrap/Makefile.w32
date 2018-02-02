@@ -1,15 +1,15 @@
-include ../mingw.conf
-OBJS_DIR=../temp/hoew_w32_rls
+include ..\mingw.conf
+OBJS_DIR=..\temp\hoew_w32_rls
 CFLAGS= -fshow-column -fno-diagnostics-show-caret   -O3
 CXXFLAGS= -fshow-column -fno-diagnostics-show-caret   -O3
 LDFLAGS=  -s  
 
-all: ${OBJS_DIR}/libhoewrap.a
+all: ${OBJS_DIR} ${OBJS_DIR}/libhoewrap.a
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ${LIBS_OBJS}
+	del ${OBJS} ${OBJS_DIR}\libhoewrap.a 
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}

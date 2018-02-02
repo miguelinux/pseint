@@ -9,6 +9,14 @@
 #	include <stdlib.h>
 #	include <cstdio>
 
+	typedef enum _MONITOR_DPI_TYPE { 
+		MDT_EFFECTIVE_DPI  = 0,
+		MDT_ANGULAR_DPI    = 1,
+		MDT_RAW_DPI        = 2,
+		MDT_DEFAULT        = MDT_EFFECTIVE_DPI
+	} MONITOR_DPI_TYPE; // DWORD?
+
+
 	void OSDep::AppInit() {
 		HMODULE user32 = LoadLibrary("user32.dll");
 		typedef BOOL (*SetProcessDPIAwareFunc)();
@@ -20,11 +28,11 @@
 	static int GetDPI_impl() {
 		HMODULE shcore = LoadLibrary("Shcore.dll");
 		if (!shcore) return 0;
-		typedef HRESULT (*GetDpiForMonitorFunc)(HMONITOR,DWORD,UINT*,UINT*);
+		typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR,_MONITOR_DPI_TYPE,UINT*,UINT*);
 		GetDpiForMonitorFunc GetDpiForMonitor = (GetDpiForMonitorFunc)GetProcAddress(shcore,"GetDpiForMonitor");
 		UINT x=0,y=0;
 		if (GetDpiForMonitor)
-			GetDpiForMonitor( MonitorFromWindow(GetDesktopWindow(),MONITOR_DEFAULTTOPRIMARY),0, &x, &y);
+			GetDpiForMonitor( MonitorFromWindow(GetDesktopWindow(),MONITOR_DEFAULTTOPRIMARY),MDT_EFFECTIVE_DPI, &x, &y);
 		FreeLibrary(shcore);
 		return x;
 	}
