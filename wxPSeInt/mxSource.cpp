@@ -270,8 +270,10 @@ void mxSource::SetStyling(bool colour) {
 	const char *CL_ALT_FORE  = config->use_dark_theme ? "#999999" : "#969696" ;
 	const char *CL_ALT_BACK  = config->use_dark_theme ? "#606060" : "#D3D3D3" ;
 	const char *CL_HLG_BACK  = config->use_dark_theme ? "#335050" : "#AACCFF" ;
+#ifdef WX3
 	const char *CL_ANOT_FORE = config->use_dark_theme ? "#FA9999" : "#800000" ;
 	const char *CL_ANOT_BACK = config->use_dark_theme ? "#454545" : "#FAFAD7" ;
+#endif
 	
 	StyleSetForeground (wxSTC_STYLE_LINENUMBER, CL_ALT_FORE);
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, CL_REG_BACK);

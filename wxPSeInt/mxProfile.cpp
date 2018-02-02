@@ -32,7 +32,7 @@ static int comp_nocase(const wxString& first, const wxString& second) {
 
 mxProfile::mxProfile(wxWindow *parent) : 
 	wxDialog(parent,wxID_ANY,_Z("Opciones del Lenguaje"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),
-	lang(cfg_lang), text(NULL) 
+	text(NULL), lang(cfg_lang)
 {
 
 	_LOG("mxProfile::mxProfile Start");

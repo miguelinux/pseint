@@ -17,8 +17,9 @@ BEGIN_EVENT_TABLE(mxFontsConfig,wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxFontsConfig::OnButtonCancel)
 END_EVENT_TABLE()
 
-mxFontsConfig::mxFontsConfig() : m_constructed(false),
-	wxDialog(main_window, wxID_ANY, _Z("Configurar Fuentes"), wxDefaultPosition,wxDefaultSize)
+mxFontsConfig::mxFontsConfig() 
+	: wxDialog(main_window, wxID_ANY, _Z("Configurar Fuentes"), wxDefaultPosition,wxDefaultSize),
+	  m_constructed(false)
 {
 	
 	class mxFontEnumerator: public wxFontEnumerator {

@@ -29,8 +29,8 @@ public:
 			QHM_OUTPUT, // error list, or runtime error
 			QHM_NULL 
 		} m_mode;
-		mxHtmlWindow *m_ctrl;
 		bool m_visible;
+		mxHtmlWindow *m_ctrl;
 		int m_last_code;
 	public:
 		QuickHelpPanelPolicy() : m_mode(QHM_NULL), m_visible(false), m_ctrl(NULL), m_last_code(-1) {}
