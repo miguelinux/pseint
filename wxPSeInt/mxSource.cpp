@@ -132,7 +132,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 {
 
 	_LOG("mxSource::mxSource "<<this);
-	
+
 	id=++last_id;
 	temp_filename_prefix=DIR_PLUS_FILE(config->temp_dir,wxString("temp_")<<id);	
   
@@ -146,6 +146,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	
 	page_text=ptext;
 	
+	brace_1=brace_2=-1;
 	last_s1=last_s2=0;
 	is_example=false;
 	just_created=true;

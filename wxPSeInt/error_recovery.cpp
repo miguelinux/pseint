@@ -104,6 +104,7 @@ void er_uninit() {
 }
 
 const char * er_get_recovery_fname( ) {
-	return (er_dir+"recovery_log").c_str();
+	static string rec_fname = er_dir+"recovery_log";
+	return er_dir.c_str();
 }
 

@@ -188,6 +188,7 @@ public:
 	struct current_calltip_info {
 		int pos;
 		bool is_error;
+		current_calltip_info() : pos(-1), is_error(false) { }
 	};
 	current_calltip_info current_calltip;
 	void ShowCalltip(int pos, const wxString &l, bool is_error=false);
