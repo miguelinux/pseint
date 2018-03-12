@@ -19,7 +19,7 @@
 
 	void OSDep::AppInit() {
 		HMODULE user32 = LoadLibrary("user32.dll");
-		typedef BOOL (*SetProcessDPIAwareFunc)();
+		typedef BOOL (WINAPI *SetProcessDPIAwareFunc)();
 		SetProcessDPIAwareFunc setDPIAware = (SetProcessDPIAwareFunc)GetProcAddress(user32,"SetProcessDPIAware");
 		if (setDPIAware) setDPIAware();
 		FreeLibrary(user32);

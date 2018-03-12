@@ -1,7 +1,6 @@
 #include "GLtoWX.h"
 #include <stack>
 #include <wx/dc.h>
-using namespace std;
 
 struct matrix {
 	double sx,sy; // scale
@@ -22,7 +21,7 @@ struct matrix {
 };
 
 static matrix m; // la matriz de transformacion actual
-static stack<matrix> ms; // el stack de matrices
+static std::stack<matrix> ms; // el stack de matrices
 int cb=GL_NONE; // current glbegin value
 int lw=0; // line width
 int p[100][2], np=0; // vertices enviados por glvertex
@@ -130,6 +129,13 @@ void glLineWidth(float w) {
 	lw=w; if (lw<1) lw=1;
 }
 
+static wxFont &get_font() {
+	static bool initialized = false;
+	static wxFont font(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+	if (!initialized) { font.SetPixelSize(wxSize(0,250*m.sx)); initialized=true; }
+	return font;
+}
+
 void dibujar_caracter(char _c) {
 	if (_c==(unsigned char)(27)) {
 		// asignacion... el char 27 lo pone el beautify_label... siempre rodeado por espacios
@@ -145,7 +151,9 @@ void dibujar_caracter(char _c) {
 		m.tx -= 50*m.sx*8/7;
 		return;
 	}
-	dc->SetFont(wxFont(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL));
+	
+	
+	dc->SetFont(get_font());
 	dc->SetTextForeground(c);
 	wxString s(" "); s[0]=_c;
 	int w=100*m.sx,tw,th;
