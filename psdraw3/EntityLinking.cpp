@@ -90,6 +90,7 @@ void EntityLinkingBase::SetChildCount(int new_count) {
 
 #ifdef _VERIFY_LINKS
 void EntityLinkingBase::VerifyLinks(bool recursive) {
+	Ensure(this!=this->m_parent);
 	if (this->m_prev) {
 		Ensure( this->m_prev->m_next == this );
 		Ensure( this->m_parent == this->m_prev->m_parent );
@@ -171,5 +172,12 @@ void EntityLinkingBase::LinkChild (int id, EntityLinkingBase * e) {
 		e->m_next = old_child; 
 		if (old_child) old_child->m_child_id = -1;
 	}
+}
+
+bool EntityLinkingBase::Contains (EntityLinkingBase * aux) const {
+	if (this==aux) return true;
+	for (int i=0;i<m_childs.Count();i++)
+		if (m_childs[i] && m_childs[i]->Contains(aux)) return true;
+	return false;
 }
 

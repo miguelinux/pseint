@@ -151,7 +151,7 @@ void display_cb() {
 	glScalef(d_zoom,d_zoom,1);
 	do {
 		if (!found && mouse && mouse->type!=ET_OPCION && (cur_x-mouse_link_x)*(cur_x-mouse_link_x)+(cur_y-mouse_link_y)*(cur_y-mouse_link_y)>mouse_link_delta) {
-			if (aux!=mouse && aux->CheckLinkNext(cur_x,cur_y)) {
+			if (aux->CheckLinkNext(cur_x,cur_y) && !mouse->Contains(aux)) {
 				mouse_link_x = cur_x; mouse_link_y = cur_y;
 				MoveToNext(mouse,aux);
 				found=true;

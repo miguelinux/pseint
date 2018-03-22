@@ -10,7 +10,8 @@ class Vector {
 public:
 	Vector() : m_data(NULL), m_size(0), m_capacity(0) {}
 	T &operator[](int i) { return m_data[i]; }
-	int Count() { return m_size; }
+	const T &operator[](int i) const { return m_data[i]; }
+	int Count() const { return m_size; }
 	void Resize(int n) {
 		if (!m_data) {
 			m_data = reinterpret_cast<T*>(malloc(n*sizeof(T)));

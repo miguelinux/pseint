@@ -39,6 +39,7 @@ public:
 	void VerifyLinks(bool recursive);
 	void RemoveChild(int id, bool also_delete = true);
 	void InsertChild(int id, EntityLinkingBase *e);
+	bool Contains(EntityLinkingBase *aux) const;
 	static void VerifyAll();
 	
 	enum LnkEvtType { EVT_UNLINK, EVT_SETCHILDCOUNT, EVT_INSERTCHILD, EVT_REMOVECHILD };
