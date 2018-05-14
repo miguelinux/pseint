@@ -119,6 +119,7 @@ public:
 	void OnHelpIndex(wxCommandEvent &evt);
 	void OnHelpQuickHelp(wxCommandEvent &evt);
 	void OnHelpExamples(wxCommandEvent &evt);
+	void OnHelpLogger (wxCommandEvent &event);
 	void OnHelpUpdates (wxCommandEvent &event);
 
 	void OnViewNotebookNext (wxCommandEvent &event);

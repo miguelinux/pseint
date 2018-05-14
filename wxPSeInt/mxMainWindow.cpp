@@ -160,6 +160,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_HELP_ABOUT, mxMainWindow::OnHelpAbout)
 	EVT_MENU(mxID_HELP_EXAMPLES, mxMainWindow::OnHelpExamples)
 	EVT_MENU(mxID_HELP_UPDATES, mxMainWindow::OnHelpUpdates)
+	EVT_MENU(mxID_HELP_LOGGER, mxMainWindow::OnHelpLogger)
 	
 	EVT_MENU(mxID_VIEW_NOTEBOOK_PREV, mxMainWindow::OnViewNotebookPrev)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_NEXT, mxMainWindow::OnViewNotebookNext)
@@ -351,6 +352,8 @@ void mxMainWindow::CreateMenus() {
 //	utils->AddItemToMenu(help,mxID_HELP_REFERENCE, _Z("Referencia...","","referencia.png");
 	utils->AddItemToMenu(help,mxID_HELP_QUICKHELP, _Z("Ayuda Rapida\tShift+F1"),"","referencia.png");
 	utils->AddItemToMenu(help,mxID_HELP_EXAMPLES, _Z("&Ejemplos..."),"","abrir.png");
+	help->AppendSeparator();
+	utils->AddItemToMenu(help,mxID_HELP_LOGGER, _Z("Reiniciar en modo \"Logging\"...\t"),_Z("Reinicia PSeInt de un modo especial que recaba información para depuración en un archivo de texto"),"");
 	help->AppendSeparator();
 	utils->AddItemToMenu(help,mxID_HELP_UPDATES, _Z("&Buscar actualizaciones...\t"),_Z("Comprueba a traves de Internet si hay versiones mas recientes de PSeInt disponibles..."),"updates.png");
 	utils->AddItemToMenu(help,mxID_HELP_ABOUT, _Z("Acerca de..."),"","acerca_de.png");
@@ -1505,6 +1508,24 @@ bool mxMainWindow::SelectFirstError() {
 	return true;
 }
 
+void mxMainWindow::OnHelpLogger(wxCommandEvent &evt) {
+	wxFileDialog dlg (this, _Z("Generar Log"),"","pseint-log.txt","*", wxFD_SAVE);
+	if (dlg.ShowModal() != wxID_OK) return;
+	wxString dir = config->pseint_dir;
+#if defined(__WIN32__)
+	wxString bin = "\\wxPSeInt.exe";
+#elif defined(__APPLE__)
+	wxString bin = "/../MacOS/pseint";
+#else
+	wxString bin = "/wxPSeInt";
+#endif
+	wxString command = dir+bin;
+	command << " --logger \"" << dlg.GetPath() << "\"";
+	config->Save();
+	int res = wxMessageBox(_Z("PSeInt se reiniciará y se perderán los cambios sin guardar. ¿Contiuar?"), "Reiniciar en modo Logger", wxICON_EXCLAMATION|wxYES_NO,this);
+	if (res==wxYES) { wxExecute( command ); wxExit(); }
+}
+	
 void mxMainWindow::OnHelpUpdates(wxCommandEvent &evt) {
 	new mxUpdatesChecker(true);
 }

@@ -754,6 +754,10 @@
   * Verifique que la expresión ingresada sea correcta considerando la presedencia de los operadores involucrados, y analizando el tipo de operandos y de resultados para cada uno de ellos.
   * Por ejemplo, la expresión "3 &lt; x &lt; 7" es incorrecta, porque equivale a "(3 &lt; x) &lt; 7". Entonces primero se resuelve 3 &lt; x, lo cual puede arrojar Verdadaro o Falso, y luego se intenta compara ese resultado (de tipo lógico), con 7.
 
+298  
+  El operador mod arroja como resultado el resto de la división "entera", y por ello los operandos deben ser números enteros. Es decir, las variables o expresiones a izquierda y derecha del operador deben ser ambas de tipo numérico y arrojar por resultado un numero entero. 
+  * Si uno de los operandos no lo es, pero usted quiere utilizar solo la parte entera de ese resultado puede utilizar la función <A href="funciones.html">Trunc</A>.
+
 308
   Se encontró la palabra clave FINPROCESO en un lugar donde no se esperaba. Esto puede deberse a uno de los siguientes tres motivos:
   * Faltan cerrar estructuras de control abiertas dentro del proceso antes de cerrar el proceso. Verifique que las estructuras de control del proceso estén anidadas y cerradas con sus respectivos FINXXX correctamente.

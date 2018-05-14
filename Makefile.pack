@@ -63,15 +63,10 @@ m32: dist/mnt
 	cp dist/Info.plist dist/pseint.app/Contents/
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
-	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-m32-`cat bin/version`.dmg bs=512k count=53
-	mkfs.hfsplus -v PSeInt dist/pseint-m32-`cat bin/version`.dmg
-	sudo mount -o loop dist/pseint-m32-`cat bin/version`.dmg dist/mnt
-	sudo cp -r dist/pseint.app dist/mnt
-	sudo umount dist/mnt
+	tar -czvf dist/pseint-m32-`cat bin/version`.tgz -C dist pseint.app
 	@echo 
 	@echo -n "DONE: "
-	@ls -sh dist/pseint-m32-`cat bin/version`.dmg
+	@ls -sh dist/pseint-m32-`cat bin/version`.tgz
 	@echo
 
 ppc: dist/mnt
@@ -87,15 +82,10 @@ ppc: dist/mnt
 	cp dist/Info.plist dist/pseint.app/Contents/
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
 
-	if mount|grep dist/mnt; then sudo umount dist/mnt; fi
-	dd if=/dev/zero of=dist/pseint-ppc-`cat bin/version`.dmg bs=512k count=54
-	mkfs.hfsplus -v PSeInt dist/pseint-ppc-`cat bin/version`.dmg
-	sudo mount -o loop dist/pseint-ppc-`cat bin/version`.dmg dist/mnt
-	sudo cp -r dist/pseint.app dist/mnt
-	sudo umount dist/mnt
+	tar -czvf dist/pseint-ppc-`cat bin/version`.tgz -C dist pseint.app
 	@echo 
 	@echo -n "DONE: "
-	@ls -sh dist/pseint-ppc-`cat bin/version`.dmg
+	@ls -sh dist/pseint-ppc-`cat bin/version`.tgz
 	@echo
 
 clean:
