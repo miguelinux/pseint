@@ -484,6 +484,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					memoria->EscribirValor(contador,DataValue::MakeReal(res_cont.GetAsReal()+res_paso.GetAsReal()));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
 				} while(true);
+				memoria->Desinicializar(contador);
 				line=line_finpara;
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para.");
@@ -534,6 +535,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 					memoria->DefinirTipo(elemento,memoria->LeerTipo(aux1));
 					memoria->EscribirValor(elemento,memoria->LeerValor(aux1));
 				}
+				memoria->Desinicializar(aux1);
 				line=line_finpara; // linea del finpara
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para Cada.");

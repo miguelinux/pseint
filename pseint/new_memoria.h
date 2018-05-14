@@ -174,6 +174,11 @@ public:
 //		tipo_var &vi=it_info->second;
 		return  var_info[nombre].defined;
 	}
+	void Desinicializar(string nombre) {
+		QuitarIndices(nombre);
+		if (EsAlias(nombre)) return alias_mem->Desinicializar(alias_nom);
+		var_value.erase(nombre);
+	}
 	DataValue LeerValor(const string &nombre) {
 		if (EsAlias(nombre,true)) return alias_mem->LeerValor(alias_nom);
 		DataValue ret = var_value[nombre];
