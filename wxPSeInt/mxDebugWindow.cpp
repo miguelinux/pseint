@@ -15,7 +15,7 @@
 #include "mxSubtitles.h"
 #include "mxBitmapButton.h"
 
-mxDebugWindow *debug_panel=NULL;
+mxDebugWindow *debug_panel = NULL;
 
 BEGIN_EVENT_TABLE(mxDebugWindow,wxPanel)
 	EVT_BUTTON(mxID_DEBUG_BUTTON, mxDebugWindow::OnDebugButton)
@@ -45,7 +45,7 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 	dp_bmps[BMP_UN_PASO] = mxBitmapButton::GenerateButtonImage("Avanzar un Paso",&bmp_un_paso);
 	dp_bmps[BMP_CERRAR] = mxBitmapButton::GenerateButtonImage("Cerrar",&bmp_cerrar);
 	
-	evaluate_window=NULL;
+	evaluate_window = NULL;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->AddSpacer(5);
 //	sizer->Add(new wxStaticText(this,wxID_ANY,_T(" Estado:")),wxSizerFlags().Proportion(0).Expand().Border(wxTOP,10));

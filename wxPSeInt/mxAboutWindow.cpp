@@ -150,6 +150,6 @@ void mxAboutWindow::Run (wxWindow *parent) {
 	else the_about_win->Show(); 
 }
 mxAboutWindow::~mxAboutWindow ( ) {
-	the_about_win=NULL;
+	the_about_win = NULL;
 }
 

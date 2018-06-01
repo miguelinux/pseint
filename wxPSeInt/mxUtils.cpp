@@ -9,7 +9,7 @@
 #include "string_conversions.h"
 #include "ids.h"
 
-mxUtils *utils;
+mxUtils *utils = NULL;
 
 wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString help, wxString filename) {
 	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);

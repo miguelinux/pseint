@@ -11,7 +11,7 @@
 #include <iostream>
 using namespace std;
 	
-mxArt *bitmaps;
+mxArt *bitmaps = NULL;
 
 mxArt::mxArt(wxString img_dir) {
 	

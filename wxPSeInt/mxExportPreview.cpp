@@ -13,7 +13,7 @@
 #include <wx/settings.h>
 #include <wx/filedlg.h>
 
-//mxExportPreview *export_preview=NULL;
+//mxExportPreview *export_preview = NULL;
 
 BEGIN_EVENT_TABLE(mxExportPreview,wxFrame)
 	EVT_BUTTON(mxID_EXPPREV_SAVE,mxExportPreview::OnButtonSave)

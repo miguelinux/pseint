@@ -12,7 +12,7 @@ using namespace std;
 
 enum {MXS_TYPE_UNKNOWN, MXS_TYPE_DEBUG, MXS_TYPE_FLOW, MXS_TYPE_RUN};
 
-CommunicationsManager *comm_manager=NULL;
+CommunicationsManager *comm_manager = NULL;
 
 
 mxSocketClient::mxSocketClient(wxSocketBase *s)
@@ -136,8 +136,8 @@ void mxSocketClient::ProcessCommandFlow() {
 }
 
 CommunicationsManager::CommunicationsManager() {
-	server_port=-1;
-	server=NULL;
+	server_port = -1;
+	server = NULL;
 	_LOG("CommunicationsManager::CommunicationsManager in "<<server_port);
 	do {
 		wxIPV4address adrs;
@@ -197,6 +197,6 @@ int CommunicationsManager::GetServerPort ( ) {
 }
 
 CommunicationsManager::~CommunicationsManager() {
-	comm_manager=NULL; server->Destroy();
+	comm_manager = NULL; server->Destroy();
 }
 

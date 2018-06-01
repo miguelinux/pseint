@@ -10,8 +10,7 @@
 #include "error_recovery.h"
 #include "osdep.h"
 
-ConfigManager *config;
-
+ConfigManager *config = NULL;
 
 ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 	
@@ -280,7 +279,7 @@ void ConfigManager::Read() {
 }
 
 ConfigManager::~ConfigManager() {
-	config=NULL;
+	config = NULL;
 }
 
 bool ConfigManager::LoadProfileFromFile(wxString path) {
@@ -345,7 +344,9 @@ wxString ConfigManager::GetTTYCommand ( ) {
 }
 
 void ConfigManager::Log ( ) const {
+	Logger::DumpVersions();
 	_LOG("ConfigManager");
+	_LOG("   cwd="<<wxGetCwd());
 	_LOG("   filename="<<filename);
 	_LOG("   profile="<<_S2W(lang.name));
 	_LOG("   pseint_dir="<<pseint_dir);

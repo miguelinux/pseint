@@ -10,7 +10,7 @@
 #include "string_conversions.h"
 using namespace std;
 
-RTSyntaxManager *RTSyntaxManager::the_one=NULL;
+RTSyntaxManager *RTSyntaxManager::the_one = NULL;
 RTSyntaxManager::Info RTSyntaxManager::extra_args;
 int RTSyntaxManager::lid=0;
 

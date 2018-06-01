@@ -36,6 +36,16 @@ bool mxApplication::OnInit() {
 	
 	utils = new mxUtils;
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);
+#ifdef FORCE_LOG
+	new Logger(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"pseint-log.txt"));
+#endif
+	_LOG("Application::OnInit");
+	_LOG("   cwd="<<wxGetCwd());
+	_LOG("   argc: "<<argc);
+	for(int i=0;i<argc;i++) 
+	{ _LOG("      argv["<<i<<"]: "<<argv[i]); }
+	
+	
 	
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();
@@ -58,20 +68,19 @@ bool mxApplication::OnInit() {
 		else 
 			zpath = cmd_path;
 	}
-	if (!flag && !wxFileName::FileExists(_T("pseint.dir")) && !wxFileName::FileExists(_T("PSeInt.dir")))
+	if (!flag && !wxFileName::FileExists(_T("pseint.dir")) && !wxFileName::FileExists(_T("PSeInt.dir"))) {
+		_LOG("Error: pseint.dir not found");
 		wxMessageBox(_Z("PSeInt no pudo determinar el directorio donde fue instalado. Compruebe que el directorio de trabajo actual sea el correcto."),_T("Error"));
+	}
 	
 	srand(time(0));
 	
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxXPMHandler);
 	
+	// load config
 	config = new ConfigManager(zpath);
-	if (logger) {
-		logger->DumpVersions();
-		config->Log();
-	}
-	
+	if (logger) config->Log();
 	
 	wxSocketBase::Initialize();
 	

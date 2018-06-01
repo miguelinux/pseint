@@ -8,7 +8,7 @@
 #include <wx/menu.h>
 using namespace std;
 
-mxDesktopTestGrid *desktop_test=NULL;
+mxDesktopTestGrid *desktop_test = NULL;
 
 BEGIN_EVENT_TABLE(mxDesktopTestGrid, wxGrid)
 	EVT_GRID_LABEL_RIGHT_CLICK(mxDesktopTestGrid::OnLabelRightClick)

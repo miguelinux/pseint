@@ -4,8 +4,6 @@
 #include <wx/app.h>
 #include <wx/splash.h>
 
-extern wxSplashScreen *splash;
-
 class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();

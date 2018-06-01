@@ -11,7 +11,7 @@ protected:
 public:
 	Logger(const char *where);
 	void Write(const wxString &s);
-	void DumpVersions();
+	static void DumpVersions();
 	~Logger();
 };
 

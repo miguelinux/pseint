@@ -18,7 +18,7 @@
 #include <wx/filedlg.h>
 using namespace std;
 
-mxProcess *proc_list;
+mxProcess *proc_list = NULL;
 
 enum { mxPW_NULL=0, 
 	mxPW_RUN, mxPW_DEBUG, 
@@ -29,9 +29,9 @@ enum { mxPW_NULL=0,
 	mxPW_CHECK_AND_SAVEDRAW, mxPW_SAVEDRAW 
 	};
 	
-mxProcess *proc_for_killing=NULL;
+mxProcess *proc_for_killing = NULL;
 
-int mxProcess::cont=0;
+int mxProcess::cont = 0;
 
 static void CheckDeps(wxString cmd) {
 	_LOG("mxProcess::CheckDeps cmd="<<cmd);

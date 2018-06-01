@@ -21,7 +21,7 @@ struct st_aux {
 };
 
 static st_aux texts[STATUS_COUNT];
-mxStatusBar *status_bar=NULL;
+mxStatusBar *status_bar = NULL;
 	
 mxStatusBar::mxStatusBar(wxWindow *parent):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
 	wxColour negro(0,0,0),rojo(128,0,0),verde(0,75,0),azul(0,0,128);

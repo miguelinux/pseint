@@ -56,7 +56,7 @@
 #include "mxFontsConfig.h"
 using namespace std;
 
-mxMainWindow *main_window;
+mxMainWindow *main_window = NULL;
 
 //#define _debug_speed_h 80
 //#define _debug_speed_m 55

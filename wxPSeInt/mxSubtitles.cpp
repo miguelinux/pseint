@@ -9,7 +9,7 @@
 #include "string_conversions.h"
 using namespace std;
 
-mxSubtitles *subtitles=NULL;
+mxSubtitles *subtitles = NULL;
 
 BEGIN_EVENT_TABLE(mxSubtitles,wxPanel)
 	EVT_BUTTON(wxID_OK,mxSubtitles::OnButtonNext)

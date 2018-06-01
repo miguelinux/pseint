@@ -3,7 +3,7 @@
 #include "ConfigManager.h"
 #include "string_conversions.h"
 
-HelpManager *help;
+HelpManager *help = NULL;
 
 HelpManager::HelpManager() {
 	LoadErrors();

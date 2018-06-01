@@ -12,7 +12,7 @@
 #include "Logger.h"
 using namespace std;
 
-DebugManager *debug;
+DebugManager *debug = NULL;
 
 DebugManager::DebugManager() {
 	do_desktop_test=false;

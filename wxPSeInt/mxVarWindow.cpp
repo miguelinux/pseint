@@ -12,7 +12,7 @@
 #include "string_conversions.h"
 #include "mxDesktopTestGrid.h"
 
-mxVarWindow *vars_window=NULL;
+mxVarWindow *vars_window = NULL;
 
 BEGIN_EVENT_TABLE(mxVarWindow,wxPanel) 
 	EVT_TREE_SEL_CHANGED(wxID_ANY,mxVarWindow::OnTreeClick)
