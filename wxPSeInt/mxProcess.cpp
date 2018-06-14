@@ -229,7 +229,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 
 bool mxProcess::DrawAndEdit(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DRAWEDIT:mxPW_DRAWEDIT;
-	if (check_first) return CheckSyntax(file,GetDrawPreArgs()+"--writepositions \""+source->GetTempFilenamePSD()+"\"");
+	if (check_first) return CheckSyntax(file,GetDrawPreArgs()+" --writepositions \""+source->GetTempFilenamePSD()+"\"");
 	wxString command;
 	command<<config->psdraw3_command;
 	command<<" --port="<<comm_manager->GetServerPort()<<" --id="<<source->GetId();
