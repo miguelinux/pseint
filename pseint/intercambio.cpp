@@ -132,16 +132,16 @@ void Intercambio::SendPositionToGUI () {
 }
 
 void Intercambio::SendIOPositionToTerminal (int argNumber) {
-	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<</*':'<<argNumber<<*/';';
+	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<</*':'<<argNumber<<*/	';';
 }
 
 void Intercambio::SendErrorPositionToTerminal () {
 	cout<<"\033[ze"<<lineNumber<<':'<<instNumber<<';';
 }
-
-void Intercambio::SendLoopPositionToTerminal() {
-	cout<<"\033[zs"<<lineNumber<<':'<<instNumber<<';';
-}
+//
+//void Intercambio::SendLoopPositionToTerminal() {
+//	cout<<"\033[zs"<<lineNumber<<':'<<instNumber<<';';
+//}
 
 
 void Intercambio::ChatWithGUI () {
