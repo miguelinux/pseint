@@ -336,7 +336,7 @@ void mxConsole::Process (wxString input, bool record/*, bool do_print*/) {
 			if (i>i0) Print(input.Mid(i0,i-i0),record/*,do_print*/);	
 			if (input[i+2]=='z' && (input[i+3]=='p'||input[i+3]=='e')) { // receives code location
 				cur_loc.is_error = input[i+3]=='e';
-				int j=i+4, i0=i; 
+				int j=i+4, i0=i;
 				cur_loc.line=0, cur_loc.inst=0;
 				while (input[j]>='0'&&input[j]<='9') {
 					cur_loc.line=cur_loc.line*10+(input[j]-'0');

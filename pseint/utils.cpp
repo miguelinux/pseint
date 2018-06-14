@@ -10,14 +10,14 @@
 void show_user_info(string msg) {
 	if (fix_win_charset) fixwincharset(msg);
 	if (colored_output) setForeColor(COLOR_INFO);
-	if (with_io_references) Inter.SendPositionToTerminal();
+	if (with_io_references) Inter.SendErrorPositionToTerminal(); // para que no asocie el error/mensaje con la última entrada/salida
 	cout<<msg<<endl;
 }
 
 void show_user_info(string msg1, int num, string msg2) {
 	if (fix_win_charset) { fixwincharset(msg1); fixwincharset(msg2); }
 	if (colored_output) setForeColor(COLOR_INFO);
-	if (with_io_references) Inter.SendPositionToTerminal();
+	if (with_io_references) Inter.SendErrorPositionToTerminal(); // para que no asocie el error/mensaje con la última entrada/salida
 	cout<<msg1<<num<<msg2<<endl;
 }
 
@@ -90,7 +90,7 @@ void SynError(int num,string s, int line, int inst) {
 		Inter.SetError(string("<<")+s+">>");
 	} else {
 		if (colored_output) setForeColor(COLOR_ERROR);
-		if (with_io_references) Inter.SendPositionToTerminal();
+		if (with_io_references) Inter.SendErrorPositionToTerminal(); // para que no asocie el error con la última entrada/salida
 		cout<<"Lin "<<line;
 		if (inst>0) cout<<" (inst "<<inst<<")";
 		cout<<": ERROR "<<num<<": "<<s<<endl;

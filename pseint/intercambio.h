@@ -75,7 +75,8 @@ public:
 #endif
 	void SetLineAndInstructionNumber(int _i); // define cual es la instruccion que se va a ejecutar a continuacion
 	void SendPositionToGUI(); // avisa a la gui en que instruccion va
-	void SendPositionToTerminal(); // avisa a la terminal en que instruccion va
+	void SendIOPositionToTerminal(int argNumber); // avisa a la terminal en que instruccion va
+	void SendLoopPositionToTerminal(); // avisa a la terminal en que instruccion va
 	void SendErrorPositionToTerminal(); // avisa a la terminal en que instruccion va
 	void ChatWithGUI(); // espera respuesta de la gui para avanzar
 	void SendSubtitle(string _str); // envia el texto para el subtitulo a la gui

@@ -131,14 +131,19 @@ void Intercambio::SendPositionToGUI () {
 #endif	
 }
 
-void Intercambio::SendPositionToTerminal () {
-	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<<';';
+void Intercambio::SendIOPositionToTerminal (int argNumber) {
+	cout<<"\033[zp"<<lineNumber<<':'<<instNumber<</*':'<<argNumber<<*/';';
 }
 
 void Intercambio::SendErrorPositionToTerminal () {
 	cout<<"\033[ze"<<lineNumber<<':'<<instNumber<<';';
 }
-		
+
+void Intercambio::SendLoopPositionToTerminal() {
+	cout<<"\033[zs"<<lineNumber<<':'<<instNumber<<';';
+}
+
+
 void Intercambio::ChatWithGUI () {
 #ifdef USE_ZOCKETS
 	if (zocket!=ZOCKET_ERROR  && (!debugLevel || backtraceLevel<=debugLevel)) {

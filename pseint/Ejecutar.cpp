@@ -71,24 +71,20 @@ void Ejecutar(int LineStart, int LineEnd) {
 				bool saltar=instruction_type==IT_ESCRIBIR;
 				cadena.erase(0,9);
 				cadena.erase(cadena.size()-1,1);
-				int tmp1=-1,tmp2=0,tmp3=0;
 				// Separar parametros
-				while (tmp3<(int)cadena.size()) {
-					while (tmp3<(int)cadena.size() && !(tmp1<0 && tmp2==0 && cadena[tmp3]==',')) {
-						if (cadena[tmp3]=='\'') tmp1=-tmp1;
-						if (tmp1<0) {
-							if (cadena[tmp3]=='(') tmp2++;
-							if (cadena[tmp3]==')') tmp2--;
-						}
-						tmp3++;
+				for(size_t i=0, arg_num=1;i<cadena.size();++arg_num) {
+					for(int par_level = 0; i<(int)cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
+						if (cadena[i]=='\'') while (cadena[++i]!='\'');
+						else if (cadena[i]=='(') par_level++;
+						else if (cadena[i]==')') par_level--;
 					}
-					string aux1=cadena;
-					aux1.erase(tmp3,aux1.size()-tmp3);
-					tmp3-=aux1.size();
+					string aux1 = cadena;
+					aux1.erase(i,aux1.size()-i);
+					i -= aux1.size();
 					cadena.erase(0,aux1.size()+1);
 					
 					if (colored_output) setForeColor(COLOR_OUTPUT);
-					if (with_io_references) Inter.SendPositionToTerminal();
+					if (with_io_references) Inter.SendIOPositionToTerminal(arg_num);
 					_sub(line,string("Se evalúa la expresion: ")+aux1);
 					DataValue res = Evaluar(aux1);
 					if (res.IsOk()) {
@@ -103,19 +99,18 @@ void Ejecutar(int LineStart, int LineEnd) {
 			if (instruction_type==IT_LEER) {
 				cadena.erase(0,5);
 				cadena.erase(cadena.size()-1,1);
-				int tmp1=0,tmp2=0;
-				while (tmp2<(int)cadena.size()) {
-					while (tmp2<(int)cadena.size() && !(tmp1==0 && cadena[tmp2]==',')) {
-						tmp2++;
-						if (cadena[tmp2]=='(') tmp1++;
-						if (cadena[tmp2]==')') tmp1--;
+				for(size_t i=0, arg_num=1; i<cadena.size();++arg_num) {
+					for(int par_level=0;i<(int)cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
+						if (cadena[i]=='\'') while(cadena[++i]!='\'');
+						else if (cadena[i]=='(') par_level++;
+						else if (cadena[i]==')') par_level--;
 					}
 					// Cortar el nombre de la variable a leer
 					string aux2=cadena;
-					aux2.erase(tmp2,cadena.size()-tmp2);
+					aux2.erase(i,cadena.size()-i);
 					cadena.erase(0,aux2.size()+1);
-					tmp2-=aux2.size();
-
+					i-=aux2.size();
+					
 					if (lang[LS_FORCE_DEFINE_VARS] && !memoria->EstaDefinida(aux2)) {
 						ExeError(208,"Variable no definida ("+aux2+").");
 					}
@@ -127,12 +122,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 					else if (!dims && pp!=string::npos)
 						ExeError(201,"La variable ("+aux2.substr(0,pp)+") no es un arreglo.");
 					if (dims) {
-						_sub(line,string("Se alizan las dimensiones de ")+aux2);
+						_sub(line,string("Se analizan las dimensiones de ")+aux2);
 						CheckDims(aux2);
 						_sub(line,string("El resultado es ")+aux2);
 					}
 					
-					if (with_io_references) Inter.SendPositionToTerminal();
+					if (with_io_references) Inter.SendIOPositionToTerminal(arg_num);
 					if (colored_output) setForeColor(COLOR_INFO);
 					cout<<"> "<<flush;
 					if (colored_output) setForeColor(COLOR_INPUT);
