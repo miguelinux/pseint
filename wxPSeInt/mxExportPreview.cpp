@@ -88,15 +88,16 @@ void mxExportPreview::UpdatePrev ( ) {
 	if (!src) { SetMessage(_Z("No hay pseudocódigo para exportar")); state=mxEP_NONE; return; }
 	
 	wxString command;
-command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
-command<<mxProcess::GetProfileArgs();
-command<<" --export \""<<temp_filename<<".psd"<<"\"";
-
-_LOG("mxExportPreview, command="<<command);
-pid = wxExecute(command,wxEXEC_ASYNC,the_process);
-if (pid<=0) { SetMessage(_Z("Error al intentar exportar.")); return; }
-SetMessage("Actualizando...");
-state=mxEP_CHECK;
+	command<<config->pseint_command<<_T(" --preservecomments --nouser --norun \"")<<src->SaveTemp()<<_T("\" ");
+	command<<mxProcess::GetProfileArgs();
+	command<<" --export \""<<temp_filename<<".psd"<<"\"";
+	
+	_LOG("mxExportPreview, command="<<command);
+	the_process->Redirect(); // no necesito la salida, pero sin esto en mac y con wx8 execute no funciona
+	pid = wxExecute(command,wxEXEC_ASYNC,the_process);
+	if (pid<=0) { SetMessage(_Z("Error al intentar exportar.")); return; }
+	SetMessage("Actualizando...");
+	state=mxEP_CHECK;
 }
 
 mxExportPreview::~mxExportPreview ( ) {
@@ -124,6 +125,7 @@ _LOG("mxExportPreview::OnProcessTerminate");
 		command<<" --lang="<<utils->GetExportLangCode(lang_id);
 		
 		the_process = new wxProcess(this->GetEventHandler());
+		the_process->Redirect(); // no necesito la salida, pero sin esto en mac y con wx8 execute no funciona
 		_LOG("mxExportPreview, command="<<command);
 		pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 		state = mxEP_EXP;

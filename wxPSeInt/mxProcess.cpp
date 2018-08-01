@@ -56,7 +56,13 @@ static void CheckDeps(wxString cmd) {
 	wxMessageBox(msg,"Error",wxOK|wxICON_ERROR);
 }
 
-mxProcess::mxProcess(mxSource *src) {
+
+mxProcess::mxProcess(mxSource *src) 
+	// El redirect que sigue en teoría no debería ser necesario... pero sin esto
+	// no funciona el wxExecute en Mac OS 10.13 en adelante con wx 2.8
+	// Tal vez pueda sacarlo cuando migre a wx3??
+	: wxProcess(wxPROCESS_REDIRECT) 
+{
 	
 	_LOG("mxProcess::mxProcess this="<<this<<" src="<<src);
 	
