@@ -21,6 +21,7 @@ w32:
 	find bin -type f | sed 's/bin/delete $$INSTDIR/' | sed 's/\//\\/g' > dist/uninstall.nsh
 	find bin -type d | sed 's/bin/rmdir $$INSTDIR/'  | sed 's/\//\\/g' | sort -r >>dist/uninstall.nsh
 	cd dist && wine c:/nsis/makensis.exe /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
+	cp dist/config.here dist/pseint/config.here
 	cd dist && zip -qr -9 -Z bzip2 pseint-w32-`cat pseint/version`.zip pseint
 #	ls -sh pseint-w32-`cat pseint/version`.*
 	@echo 

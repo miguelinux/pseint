@@ -107,8 +107,6 @@ void ConfigManager::LoadDefaults() {
 	profiles_dir = "perfiles";
 	examples_dir = "ejemplos";
 	temp_dir = home_dir;
-	if (!wxFileName::DirExists(temp_dir))
-		wxFileName::Mkdir(temp_dir);
 }
 
 void ConfigManager::Save() {
@@ -261,7 +259,7 @@ void ConfigManager::Read() {
 		// puede haber cambiado... o la interpretación del mismo
 		if (!LoadListedProfile(_S2W(lang.name))) lang.Fix();
 	}
-	if (version<20160321) temp_dir = home_dir;
+	if (version!=0 && version<20160321) temp_dir = home_dir;
 	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
 	// asegurarse de que tamaños y posiciones de la ventana estén en el rango de 
@@ -276,6 +274,7 @@ void ConfigManager::Read() {
 		if (pos_x+size_x>screen_w) pos_x = screen_w-size_x;
 		if (pos_y+size_y>screen_h) pos_y = screen_h-size_y;
 	}
+	if (!wxFileName::DirExists(temp_dir)) wxFileName::Mkdir(temp_dir);
 }
 
 ConfigManager::~ConfigManager() {
