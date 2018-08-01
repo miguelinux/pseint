@@ -31,7 +31,7 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
-	wxToolBar *toolbar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT);
+	wxToolBar *toolbar = CreateToolBar(wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT,wxID_ANY);
 	color_menu_back[0] = toolbar->GetBackgroundColour().Red()/255.f;
 	color_menu_back[1] = toolbar->GetBackgroundColour().Green()/255.f;
 	color_menu_back[2] = toolbar->GetBackgroundColour().Blue()/255.f;
@@ -39,7 +39,8 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	color_menu_sel[0] = color_sel.Red()/255.f;
 	color_menu_sel[1] = color_sel.Green()/255.f;
 	color_menu_sel[2] = color_sel.Blue()/255.f;
-	sizer->Add(toolbar,wxSizerFlags().Expand().Proportion(0));
+	wxBitmap abmp(imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG);
+	toolbar->SetToolBitmapSize(wxSize(abmp.GetWidth(),abmp.GetHeight()));
 //	toolbar->AddTool(MID_SETTINGS,"",imgs_path+"tb_settings.png");
 	if (lang[LS_ENABLE_USER_FUNCTIONS]) {
 		toolbar->AddTool(MID_SUB  ,"",wxBitmap(imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG));

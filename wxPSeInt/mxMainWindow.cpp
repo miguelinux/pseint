@@ -365,7 +365,7 @@ void mxMainWindow::CreateMenus() {
 
 void mxMainWindow::CreateToolbars() {
 	
-	toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+	toolbar = CreateToolBar(wxTB_FLAT | wxTB_NODIVIDER, wxID_ANY);
 	int isize = config->big_icons ? 32 : 24;
 	toolbar->SetToolBitmapSize(wxSize(isize,isize));
 	utils->AddTool(toolbar,mxID_FILE_NEW,_Z("Nuevo"),"nuevo.png","");
@@ -387,18 +387,14 @@ void mxMainWindow::CreateToolbars() {
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_RUN_RUN,_Z("Ejecutar..."),"ejecutar.png","");
 	utils->AddTool(toolbar,mxID_RUN_STEP_STEP,_Z("Ejecutar paso a paso..."),"paso.png","");
-//#ifdef __APPLE__
-//	utils->AddTool(toolbar,mxID_RUN_DRAW_FLOW,_Z("Dibujar Diagrama de Flujo..."),"flujo.png","");
-//#else
 	utils->AddTool(toolbar,mxID_FILE_EDIT_FLOW,_Z("Dibujar Diagrama de Flujo..."),"flujo.png","");
-//#endif
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_HELP_INDEX,_Z("Ayuda..."),"ayuda.png","");
 //	utils->AddTool(toolbar,mxID_FILE_EXIT,"Salir","salir.png","");
 	toolbar->Realize();
 	wxAuiPaneInfo info; info.Name("toolbar").Caption("Toolbar").ToolbarPane().Top().Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]).LeftDockable(false).RightDockable(false).Layer(ptlb[0]).Row(ptlb[1]).Position(ptlb[2]);
 	/*if (config->show_toolbar)*/ info.Show(); /*else info.Hide();*/
-	aui_manager.AddPane(toolbar, info);
+//	aui_manager.AddPane(toolbar, info);
 	
 }
 

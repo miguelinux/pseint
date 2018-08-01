@@ -1,4 +1,4 @@
-#define VERSION 20180601
+#define VERSION 20180801
 #include "../pseint/version_common.h"
 #ifdef __APPLE__
 #	define FORCE_LOG
