@@ -160,7 +160,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_HELP_ABOUT, mxMainWindow::OnHelpAbout)
 	EVT_MENU(mxID_HELP_EXAMPLES, mxMainWindow::OnHelpExamples)
 	EVT_MENU(mxID_HELP_UPDATES, mxMainWindow::OnHelpUpdates)
-	EVT_MENU(mxID_HELP_LOGGER, mxMainWindow::OnHelpLogger)
+//	EVT_MENU(mxID_HELP_LOGGER, mxMainWindow::OnHelpLogger)
 	
 	EVT_MENU(mxID_VIEW_NOTEBOOK_PREV, mxMainWindow::OnViewNotebookPrev)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_NEXT, mxMainWindow::OnViewNotebookNext)
@@ -352,8 +352,8 @@ void mxMainWindow::CreateMenus() {
 //	utils->AddItemToMenu(help,mxID_HELP_REFERENCE, _Z("Referencia...","","referencia.png");
 	utils->AddItemToMenu(help,mxID_HELP_QUICKHELP, _Z("Ayuda Rapida\tShift+F1"),"","referencia.png");
 	utils->AddItemToMenu(help,mxID_HELP_EXAMPLES, _Z("&Ejemplos..."),"","abrir.png");
-	help->AppendSeparator();
-	utils->AddItemToMenu(help,mxID_HELP_LOGGER, _Z("Reiniciar en modo \"Logging\"...\t"),_Z("Reinicia PSeInt de un modo especial que recaba información para depuración en un archivo de texto"),"");
+//	help->AppendSeparator();
+//	utils->AddItemToMenu(help,mxID_HELP_LOGGER, _Z("Reiniciar en modo \"Logging\"...\t"),_Z("Reinicia PSeInt de un modo especial que recaba información para depuración en un archivo de texto"),"");
 	help->AppendSeparator();
 	utils->AddItemToMenu(help,mxID_HELP_UPDATES, _Z("&Buscar actualizaciones...\t"),_Z("Comprueba a traves de Internet si hay versiones mas recientes de PSeInt disponibles..."),"updates.png");
 	utils->AddItemToMenu(help,mxID_HELP_ABOUT, _Z("Acerca de..."),"","acerca_de.png");
@@ -519,21 +519,24 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 }
 
 mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
-	mxSource *src = NewProgram("<Ejercicio>");
 	if (test_panel) CloseTestPackage();
 	test_panel = new mxTestPanel(this);
 	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
 	aui_manager.GetPane(test_panel).Show();
-	aui_manager.Update(); wxYield();
-	wxString key = path.Lower().EndsWith(".psx")?wxGetTextFromUser(_Z("Ingrese la clave:"),_Z("PSeInt"),"",this):"";
-	if (!test_panel->Load(path,key,src)) {
+	wxString key = "";
+	if (path.Lower().EndsWith(".psx")) {
+		aui_manager.Update(); wxYield();
+		key = wxGetTextFromUser(_Z("Ingrese la clave:"),_Z("PSeInt"),"",this);
+	}
+	if (!test_panel->Load(path,key)) {
 		CloseTestPackage();
-		aui_manager.Update(); 
+		aui_manager.Update();
+		return NULL;
 	} else {
 		if (!test_panel->GetHelp().IsEmpty())
 			QuickHelp().ShowTestHelp(test_panel->GetHelp());
+		return test_panel->GetSrc();
 	}
-	return src;
 }
 
 void mxMainWindow::CloseTestPackage() {
@@ -1508,7 +1511,10 @@ bool mxMainWindow::SelectFirstError() {
 	return true;
 }
 
-void mxMainWindow::OnHelpLogger(wxCommandEvent &evt) {
+//void mxMainWindow::OnHelpLogger(wxCommandEvent &evt) {
+//	ResetInLogMode();
+//}
+void mxMainWindow::ResetInLogMode() {
 	wxFileDialog dlg (this, _Z("Generar Log"),"","pseint-log.txt","*", wxFD_SAVE);
 	if (dlg.ShowModal() != wxID_OK) return;
 	wxString dir = config->pseint_dir;
@@ -1522,8 +1528,13 @@ void mxMainWindow::OnHelpLogger(wxCommandEvent &evt) {
 	wxString command = dir+bin;
 	command << " --logger \"" << dlg.GetPath() << "\"";
 	config->Save();
-	int res = wxMessageBox(_Z("PSeInt se reiniciará y se perderán los cambios sin guardar. ¿Contiuar?"), "Reiniciar en modo Logger", wxICON_EXCLAMATION|wxYES_NO,this);
-	if (res==wxYES) { wxExecute( command ); wxExit(); }
+	Close(); wxYield();
+	if (notebook->GetPageCount()!=0) return;
+#if defined(__APPLE__)
+	system((command+" &").c_str());
+#else
+	wxExecute( command ); 
+#endif
 }
 	
 void mxMainWindow::OnHelpUpdates(wxCommandEvent &evt) {

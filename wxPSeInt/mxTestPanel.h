@@ -20,7 +20,7 @@ private:
 public:
 	mxTestPanel(wxWindow *parent);
 	bool Destroy();
-	bool Load(const wxString &path, const wxString &key, mxSource *src);
+	bool Load(const wxString &path, const wxString &key);
 	mxSource *GetSrc() { return src; }
 	const wxString &GetHelp() { return pack.GetHelp(); }
 private:

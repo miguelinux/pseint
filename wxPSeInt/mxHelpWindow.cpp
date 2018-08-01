@@ -267,6 +267,10 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
+	} else if (event.GetLinkInfo().GetHref().StartsWith("cmd:")){
+		wxString cmd = event.GetLinkInfo().GetHref().AfterFirst(':');
+		if (cmd=="creator") main_window->OpenProgram("creator.psz");
+		else if (cmd=="log") { main_window->ResetInLogMode(); return; }
 	} else if (event.GetLinkInfo().GetHref().StartsWith("http://")) {
 		wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 	} else {

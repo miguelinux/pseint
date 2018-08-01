@@ -119,7 +119,7 @@ public:
 	void OnHelpIndex(wxCommandEvent &evt);
 	void OnHelpQuickHelp(wxCommandEvent &evt);
 	void OnHelpExamples(wxCommandEvent &evt);
-	void OnHelpLogger (wxCommandEvent &event);
+//	void OnHelpLogger (wxCommandEvent &event);
 	void OnHelpUpdates (wxCommandEvent &event);
 
 	void OnViewNotebookNext (wxCommandEvent &event);
@@ -247,6 +247,8 @@ public:
 	void RTreeDone(bool show, bool error);
 	
 	void OnKillFocus(wxFocusEvent &event);
+	
+	void ResetInLogMode();
 	
 	DECLARE_EVENT_TABLE();
 };

@@ -12,6 +12,8 @@
 #include "version.h"
 #include <wx/fs_mem.h>
 #include <wx/msgdlg.h>
+#include <cstdlib>
+using namespace std;
 
 BEGIN_EVENT_TABLE(mxTestPanel,wxPanel)
 	EVT_BUTTON(mxID_TESTPACK_RUN,mxTestPanel::OnRun)
@@ -36,8 +38,8 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 	SetSizerAndFit(sizer);
 }
 
-bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *src) {
-	this->path=path; this->key=key; this->src=src;
+bool mxTestPanel::Load (const wxString & path, const wxString &key) {
+	this->path=path; this->key=key; src=NULL;
 	if (!pack.Load(path,key)) {
 		wxMessageBox(_Z("No se pudo cargar correctamente el ejercicio"),_Z("Error"),wxOK|wxICON_ERROR,this);
 		return false;
@@ -63,6 +65,7 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key, mxSource *sr
 		help_button->Show();
 	}
 	sizer->Layout();
+	src = main_window->NewProgram("<Ejercicio>");
 	src->SetText(pack.GetBaseSrc());
 	return true;
 }
@@ -81,7 +84,11 @@ void mxTestPanel::Run (const wxString & source_fname) {
 	wxString cmd = config->pseval_command +" \""+path+"\" \""+(key.Len()?key:"--nokey")+"\" "+ config->pseint_command+" "+mxProcess::GetProfileArgs() + " \""+source_fname+"\"";
 	_LOG("mxTestPanel::Run");
 	_LOG("    "<<cmd);
+#ifdef __APPLE__
+	system((cmd+" &").c_str());
+#else
 	wxExecute(cmd,wxEXEC_ASYNC);
+#endif
 }
 
 bool mxTestPanel::Destroy ( ) {
