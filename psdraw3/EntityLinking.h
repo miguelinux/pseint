@@ -70,6 +70,7 @@ struct EntityLinking : public EntityLinkingBase {
 		AllIterator &operator++() { 
 			if (!m_first) m_first = m_current;
 			m_current = m_current->m_all_next;
+			return *this;
 		}
 		Entity *GetPtr() { return reinterpret_cast<Entity*>(m_current); }
 		void SetPtr(Entity *e) { m_current = e; }
