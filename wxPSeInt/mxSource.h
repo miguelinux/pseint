@@ -243,6 +243,8 @@ public:
 	
 	void ShowUserList(wxArrayString &arr, int p1, int p2);
 	
+	void FocusKilled();
+	
 	er_source_register *er_register;
 	
 	DECLARE_EVENT_TABLE();

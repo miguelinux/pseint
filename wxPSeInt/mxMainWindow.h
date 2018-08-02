@@ -247,6 +247,7 @@ public:
 	void RTreeDone(bool show, bool error);
 	
 	void OnKillFocus(wxFocusEvent &event);
+	void OnActivate(wxActivateEvent &event);
 	
 	void ResetInLogMode();
 	

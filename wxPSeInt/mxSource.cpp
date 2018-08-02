@@ -2235,3 +2235,8 @@ void mxSource::SetJustCreated ( ) {
 	just_created = true;
 }
 
+void mxSource::FocusKilled ( ) {
+	if (CallTipActive()) HideCalltip();
+	if (AutoCompActive()) AutoCompCancel();
+}
+

@@ -182,6 +182,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_TIMER(mxID_RT_TIMER,mxMainWindow::OnRTSyntaxAuxTimer)
 	
 	EVT_KILL_FOCUS(mxMainWindow::OnKillFocus)
+	EVT_ACTIVATE(mxMainWindow::OnActivate)
 END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
@@ -2143,7 +2144,17 @@ void mxMainWindow::RTreeDone (bool show, bool error) {
 
 void mxMainWindow::OnKillFocus (wxFocusEvent &event) {
 	_LOG("mxMainWindow::OnKillFocus");
-	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->FocusKilled();
+}
+
+void mxMainWindow::OnActivate(wxActivateEvent&event) {
+	if (event.GetActive()) {
+		_LOG("mxMainWindow::OnActivated");
+	} else {
+		_LOG("mxMainWindow::OnDeactivated");
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->FocusKilled();
+	}
 }
 
 void mxMainWindow::OnFileExportPreview (wxCommandEvent & evt) {
