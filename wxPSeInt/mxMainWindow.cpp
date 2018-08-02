@@ -517,8 +517,7 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 	if (test_panel) CloseTestPackage();
 	test_panel = new mxTestPanel(this);
-	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Show().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
-	aui_manager.GetPane(test_panel).Show();
+	aui_manager.AddPane(test_panel, wxAuiPaneInfo().Name("ejercicio").Caption(_Z("Ejercicio")).Bottom().CaptionVisible(false).Hide().Layer(pevl[0]).Row(pevl[1]).Position(pevl[2]));	
 	wxString key = "";
 	if (path.Lower().EndsWith(".psx")) {
 		aui_manager.Update(); wxYield();
@@ -529,8 +528,10 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		aui_manager.Update();
 		return NULL;
 	} else {
+		aui_manager.GetPane(test_panel).Show();
 		if (!test_panel->GetHelp().IsEmpty())
 			QuickHelp().ShowTestHelp(test_panel->GetHelp());
+		aui_manager.Update();
 		return test_panel->GetSrc();
 	}
 }
