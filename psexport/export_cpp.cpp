@@ -224,6 +224,10 @@ string CppExporter::function(string name, string args) {
 	} else if (name=="AZAR") {
 		include_cstdlib=true;
 		return string("(rand()%")+colocarParentesis(get_arg(args,1))+")";
+	} else if (name=="ALEATORIO") {
+		include_cstdlib=true;
+		string diff = sumarOrestarUno(colocarParentesis(get_arg(args,2))+"-"+colocarParentesis(get_arg(args,1)),true);
+		return string("(")+get_arg(args,1)+"+rand()%"+colocarParentesis(diff)+")";
 	} else if (name=="ATAN") {
 		include_cmath=true;
 		return string("atan")+args;
@@ -494,7 +498,7 @@ string CppExporter::get_operator(string op, bool for_string) {
 	if (op=="-") return "-"; 
 	if (op=="/") return "/"; 
 	if (op=="*") return "*";
-	if (op=="^") return "func pow(arg1,arg2)";
+	if (op=="^") { include_cmath=true; return "func pow(arg1,arg2)"; }
 	if (op=="%") return "%";
 	if (op=="=") return "=="; 
 	if (op=="<>") return "!="; 
