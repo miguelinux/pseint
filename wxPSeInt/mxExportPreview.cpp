@@ -42,11 +42,12 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	combo_lang = new wxComboBox(this,mxID_EXPPREV_LANG,"",wxDefaultPosition,wxDefaultSize,langs_list,wxCB_READONLY);
 	combo_lang->Select(mxID_FILE_EXPORT_LANG_CPP03-mxID_FILE_EXPORT_LANG_FIRST-1);
 	
+	wxString img_path = DIR_PLUS_FILE_2(config->images_path,"tools",config->big_icons?"32":"24");
 	top_sizer->Add(combo_lang,sz);
 	top_sizer->Add(new wxButton(this,mxID_EXPPREV_UPDATE,_Z("Actualizar")),sz);
 	top_sizer->AddStretchSpacer();
-	top_sizer->Add(	new wxBitmapButton(this,mxID_EXPPREV_COPY,wxBitmap(DIR_PLUS_FILE(config->images_path,"tools/copiar.png"),wxBITMAP_TYPE_PNG)), sz);
-	top_sizer->Add(	new wxBitmapButton(this,mxID_EXPPREV_SAVE,wxBitmap(DIR_PLUS_FILE(config->images_path,"tools/guardar.png"),wxBITMAP_TYPE_PNG)), sz);
+	top_sizer->Add(	new wxBitmapButton(this,mxID_EXPPREV_COPY,wxBitmap(DIR_PLUS_FILE(img_path,"copiar.png"),wxBITMAP_TYPE_PNG)), sz);
+	top_sizer->Add(	new wxBitmapButton(this,mxID_EXPPREV_SAVE,wxBitmap(DIR_PLUS_FILE(img_path,"guardar.png"),wxBITMAP_TYPE_PNG)), sz);
 	main_sizer->Add(top_sizer,wxSizerFlags().Proportion(0).Expand());
 	
 	code_ctrl = new wxStyledTextCtrl(this,wxID_ANY);
