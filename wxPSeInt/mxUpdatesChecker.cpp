@@ -86,7 +86,9 @@ void mxUpdatesChecker::CheckNow() {
 	
 	if (process) process->Detach();
 	process = new wxProcess(this->GetEventHandler(),wxID_ANY);
+#ifdef __APPLE__
 	process->Redirect(); // no necesito la salida, pero sin esto en mac y con wx8 execute no funciona
+#endif
 	_LOG("mxUpdatesChecker::CheckNow "<<command);
 	if (wxExecute(command,wxEXEC_ASYNC,process)<=0) {
 		if (shown) {

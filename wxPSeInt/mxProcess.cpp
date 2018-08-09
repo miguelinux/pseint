@@ -58,10 +58,15 @@ static void CheckDeps(wxString cmd) {
 
 
 mxProcess::mxProcess(mxSource *src) 
+#ifdef __APPLE__
 	// El redirect que sigue en teoría no debería ser necesario... pero sin esto
 	// no funciona el wxExecute en Mac OS 10.13 en adelante con wx 2.8
 	// Tal vez pueda sacarlo cuando migre a wx3??
 	: wxProcess(wxPROCESS_REDIRECT) 
+	// por otro lado, parece que a linux le es indiferente, pero en windows sí
+	// molesta el redirect si no corresponde (por alguna extraña razón hay que 
+	// lanzar 2 veces los procesos, solo la segunda funciona)
+#endif
 {
 	
 	_LOG("mxProcess::mxProcess this="<<this<<" src="<<src);

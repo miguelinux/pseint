@@ -53,7 +53,7 @@ path=../pseint/new_programa.cpp
 cursor=0:0
 [source]
 path=export_cpp.cpp
-cursor=225:47
+cursor=241:31
 open=true
 [source]
 path=exportexp.cpp

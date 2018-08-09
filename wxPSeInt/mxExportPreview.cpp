@@ -94,7 +94,9 @@ void mxExportPreview::UpdatePrev ( ) {
 	command<<" --export \""<<temp_filename<<".psd"<<"\"";
 	
 	_LOG("mxExportPreview, command="<<command);
+#ifdef __APPLE__
 	the_process->Redirect(); // no necesito la salida, pero sin esto en mac y con wx8 execute no funciona
+#endif
 	pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 	if (pid<=0) { SetMessage(_Z("Error al intentar exportar.")); return; }
 	SetMessage("Actualizando...");
@@ -126,7 +128,9 @@ _LOG("mxExportPreview::OnProcessTerminate");
 		command<<" --lang="<<utils->GetExportLangCode(lang_id);
 		
 		the_process = new wxProcess(this->GetEventHandler());
+#ifdef __APPLE__
 		the_process->Redirect(); // no necesito la salida, pero sin esto en mac y con wx8 execute no funciona
+#endif
 		_LOG("mxExportPreview, command="<<command);
 		pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 		state = mxEP_EXP;
