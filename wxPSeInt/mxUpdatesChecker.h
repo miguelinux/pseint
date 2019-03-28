@@ -1,5 +1,8 @@
 #ifndef MXUPDATESCHECKER_H
 #define MXUPDATESCHECKER_H
+
+#ifndef DISABLE_UPDATES_CHECKER
+
 #include <wx/dialog.h>
 #include <wx/timer.h>
 #include <wx/process.h>
@@ -41,6 +44,8 @@ public:
 	void OnProcessEnds(wxProcessEvent &evt);
 	DECLARE_EVENT_TABLE();
 };
+
+#endif
 
 #endif
 

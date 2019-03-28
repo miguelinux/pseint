@@ -185,7 +185,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	}
 	if (config->use_psterm) command<<_T(" --port=")<<comm_manager->GetServerPort()<<" --id="<<source->GetId()<<" ";
 	temp = source->GetTempFilenameOUT();
-	command<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
+	command<<"-- "<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
 	if (config->use_psterm) command<<_T(" --forpseintterminal --withioreferences");
 #ifdef __WIN32__
@@ -225,7 +225,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	int port=comm_manager->GetServerPort();
 	int delay=_calc_delay(config->stepstep_tspeed);
 	debug_panel->SetSpeed(debug->GetSpeed(delay));
-	command<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
+	command<<"-- "<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
 	if (config->use_psterm) command<<_T(" --forpseintterminal");
 	command<<" "<<GetProfileArgs()<<" "<<GetInputArgs();

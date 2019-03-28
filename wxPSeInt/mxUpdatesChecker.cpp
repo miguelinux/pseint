@@ -1,3 +1,5 @@
+#ifndef DISABLE_UPDATES_CHECKER
+
 #include "mxUpdatesChecker.h"
 #include "ids.h"
 #include "mxMainWindow.h"
@@ -180,3 +182,5 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 	}
 	fil.Close();
 }
+
+#endif

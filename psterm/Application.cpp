@@ -50,29 +50,34 @@ bool mxApplication::OnInit() {
 				} else if (arg=="--alwaysontop") {
 					props.always_on_top=true;
 				} else if (arg.StartsWith("--id=")) {
-					arg.AfterFirst('=').ToLong(&src_id);
+					if (!arg.AfterFirst('=').ToLong(&src_id)) return false;
 				} else if (arg.StartsWith("--left=")) {
-					props.set_left=arg.AfterFirst('=').ToLong(&props.left);
+					if (!arg.AfterFirst('=').ToLong(&props.left)) return false;
+					props.set_left=true;
 				} else if (arg.StartsWith("--right=")) {
-					props.set_right=arg.AfterFirst('=').ToLong(&props.right);
+					if (!arg.AfterFirst('=').ToLong(&props.right)) return false;
+					props.set_right=true;
 				} else if (arg.StartsWith("--top=")) {
-					props.set_top=arg.AfterFirst('=').ToLong(&props.top);
+					if (!arg.AfterFirst('=').ToLong(&props.top)) return false;
+					props.set_top=true;
 				} else if (arg.StartsWith("--bottom=")) {
-					props.set_bottom=arg.AfterFirst('=').ToLong(&props.bottom);
+					if (!arg.AfterFirst('=').ToLong(&props.bottom)) return false;
+					props.set_bottom=true;
 				} else if (arg.StartsWith("--width=")) {
-					arg.AfterFirst('=').ToLong(&props.width);
+					if (!arg.AfterFirst('=').ToLong(&props.width)) return false;
 				} else if (arg.StartsWith("--height=")) {
-					arg.AfterFirst('=').ToLong(&props.height);
+					if (!arg.AfterFirst('=').ToLong(&props.height)) return false;
 				} else if (arg.StartsWith("--port=")) {
-					arg.AfterFirst('=').ToLong(&port);
+					if (!arg.AfterFirst('=').ToLong(&port)) return false;
 				} else if (arg.StartsWith("--font=")) {
 					wxString fontspec = arg.AfterFirst('=');
 					props.font_name = fontspec.BeforeLast(':');
-					fontspec.AfterLast(':').ToLong(&props.font_size);
+					if (!fontspec.AfterLast(':').ToLong(&props.font_size)) return false;
 				}
 			} else {
+				if (!no_arg) return false;
 				command=EscapeString(argv[i]);
-				no_arg=true;
+//				no_arg=true;
 			}
 		}
 	}

@@ -17,11 +17,14 @@ w32:
 	rm -rf dist/pseint 
 	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/
+	rm -f dist/pseint/log.exe
+	rm -f dist/pseint/updatem.exe
 # 	cp dist/*.dll dist/pseint/
 	find bin -type f | sed 's/bin/delete $$INSTDIR/' | sed 's/\//\\/g' > dist/uninstall.nsh
 	find bin -type d | sed 's/bin/rmdir $$INSTDIR/'  | sed 's/\//\\/g' | sort -r >>dist/uninstall.nsh
 	cd dist && wine c:/nsis/makensis.exe /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
 	cp dist/config.here dist/pseint/config.here
+	rm -f dist/pseint-w32-`cat dist/pseint/version`.zip
 	cd dist && zip -qr -9 -Z bzip2 pseint-w32-`cat pseint/version`.zip pseint
 #	ls -sh pseint-w32-`cat pseint/version`.*
 	@echo 

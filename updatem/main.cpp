@@ -15,32 +15,32 @@
 using namespace std;
 
 int main (int argc, char *argv[]) {
-	int iarg=0, proxy_port=80;
-	bool proxy=false;
-	string proxy_dir, pname, postfix, child;
-	bool child_mode = false;
-	int lver=0;
-	while (++iarg<argc) {
+	int proxy_port = 80, lver = 0;
+	bool proxy = false, child_mode = false;
+	string proxy_dir, pname, child;
+	for(int iarg=1;iarg<argc;++iarg) {
 		string sarg(argv[iarg]);
 		if (sarg=="--version") {
 			_print_version_info("updatem");
 			return 0;
-		} else if (sarg=="--postfix") {
-			postfix=argv[++iarg];
 		} else if (sarg=="--version") {
-			lver=atoi(argv[++iarg]);
+			if (++iarg<argc) return 1;
+			lver = atoi(argv[++iarg]);
 		} else if (sarg=="--child") {
-			child=argv[++iarg]; child_mode=true;
+			if (++iarg<argc) return 1;
+			child = argv[++iarg]; 
+			child_mode = true;
 		} else if (sarg=="--proxy") {
 			if (++iarg<argc) return 1;
-			proxy=true; proxy_dir=argv[iarg];
-			size_t p=proxy_dir.find(":",0);
+			proxy = true; 
+			proxy_dir = argv[iarg];
+			size_t p = proxy_dir.find(":",0);
 			if (p!=string::npos) {
-				proxy_port=atoi(proxy_dir.substr(p+1).c_str());
-				proxy_dir=proxy_dir.substr(0,p);
+				proxy_port = atoi(proxy_dir.substr(p+1).c_str());
+				proxy_dir = proxy_dir.substr(0,p);
 			}
 		} else {
-			pname=sarg;
+			pname = sarg;
 		}
 	}
 	if (!pname.length()) return 1;
@@ -60,10 +60,10 @@ int main (int argc, char *argv[]) {
 	request+="/version HTTP/1.1\nhost:";
 	request+=web+"\n\n"; // agregar "Cache-control: no-cache"?
 	zocket_escribir(z,request.c_str(),request.size());
-	char data[1025]; int c=1024;
+	char data[1025];
 	string all_data, site_ver;
 	for (int i=0;i<100;i++) {
-		c=1024; Sleep(150);
+		int c=1024; Sleep(150);
 		zocket_leer(z,data,c);
 		data[c]='\0';
 		all_data+=data;

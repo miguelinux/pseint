@@ -1,8 +1,8 @@
 include ../mingw.conf
 OBJS_DIR=../temp/upd_w32_rls
 GPP=wine ${MINGW_DIR}\\bin\\mingw32-g++.exe
-CXXFLAGS=-O2
-LIBS=-s -lwsock32 -static-libgcc -mwindows -static-libstdc++
+CXXFLAGS=-O0 -s
+LIBS=-mwindows -lwsock32 -static-libgcc -static-libstdc++
 WINDRES=wine ${MINGW_DIR}\\bin\\windres.exe
 
 all: ../temp/upd_w32_rls ../bin/updatem.exe
@@ -16,7 +16,8 @@ clean:
 	${WINDRES} -i manifest.rc -o $@
 
 ../bin/updatem.exe: ../temp/upd_w32_rls/manifest.o ${OBJS}
-	${GPP} -O0 ${OBJS} ${LIBS} ../temp/upd_w32_rls/manifest.o -o $@
+	${GPP} ${CXXFLAGS} ${OBJS} ${LIBS} ../temp/upd_w32_rls/manifest.o -o $@
+
 
 ${OBJS_DIR}:
 	mkdir -p ${OBJS_DIR}

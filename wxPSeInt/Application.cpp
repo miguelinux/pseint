@@ -127,8 +127,25 @@ bool mxApplication::OnInit() {
 		main_window->NewProgram();
 		main_window->ProfileChanged();
 	} else {
+#ifndef DISABLE_UPDATES_CHECKER
 		if (config->check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();
+#else
+		if (config->version && config->version<20190311) {
+			wxMessageBox("A partir de esta versión la búsqueda\n"
+						 "de actualizaciones automática ya no está\n"
+						 "disponible en sistemas Windows debido a\n"
+						 "varios antivirus confunden al módulo que\n"
+						 "se encarga de esta tarea con un virus y\n"
+						 "generan falsas alarmas.\n"
+						 "\n"
+						 "Por favor, para mantener PSeInt actualizado\n"
+						 "y poder disfrutar de las futuras mejoras y\n"
+						 "correcciones, visite regularmente\n"
+						 "http://pseint.sourceforge.net",
+						 "Actualizaciones Desactivadas",wxID_OK|wxICON_EXCLAMATION);
+		}
+#endif
 	}
 	
 	comm_manager=new CommunicationsManager();

@@ -440,7 +440,7 @@ void mxConsole::CalcResize() {
 }
 
 void mxConsole::Run (wxString command) {
-	this->command=command;
+	this->command = command;
 	command << " --seed=" << fixed_rand_seed;
 	KillProcess();
 	the_process=new wxProcess(this->GetEventHandler(),wxID_ANY);

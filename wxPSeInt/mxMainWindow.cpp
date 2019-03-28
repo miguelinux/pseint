@@ -1536,7 +1536,28 @@ void mxMainWindow::ResetInLogMode() {
 }
 	
 void mxMainWindow::OnHelpUpdates(wxCommandEvent &evt) {
+#ifdef DISABLE_UPDATES_CHECKER
+	wxMessageBox("Esta funcionalidad ya no está disponible en\n"
+				 "sistemas Windows debido a que muchos antivirus\n"
+				 "confunden el módulo encargado de realizar esta\n"
+				 "consulta con un virus e impiden el funcionamiento\n"
+				 "de PSeInt, o hasta su descarga; dañando además la\n"
+				 "reputación del proyecto.\n"
+				 "\n"
+				 "Dado que no tengo el tiempo necesario para\n"
+				 "continuar lidiando con esta estupidez (ya he\n"
+				 "perdido demsiados días intentandolo), y que el\n"
+				 "volumen de mensaje de usuarios que me escriben\n"
+				 "(con motivos más que razonables) preocupados por\n"
+				 "las alertas sigue creciendo, lamentablemente no\n"
+				 "me ha quedado otra opción por el momento.\n"
+				 "\n\n"
+				 "Puede visitar http://pseint.sourceforge.net para\n"
+				 "verificar si existen nuevas versiones.",
+				 "Búsqueda de Actualizaciones Deshabilitada",wxOK|wxICON_EXCLAMATION,this);
+#else
 	new mxUpdatesChecker(true);
+#endif
 }
 
 void mxMainWindow::OnConfigLanguage(wxCommandEvent &evt) {
