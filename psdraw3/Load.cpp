@@ -343,7 +343,7 @@ bool Save(const char *filename) {
 	int line=1;
 	for(unsigned int i=0;i<procesos.size();i++) {
 		procesos[i]->GetTopEntity()->Print(fout,"",procesos[i],line);
-		fout<<endl; line++;
+		if (i+1!=procesos.size()) { fout<<endl; line++; }
 	}
 	fout.close();
 	modified=false;

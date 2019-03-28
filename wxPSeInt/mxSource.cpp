@@ -262,6 +262,7 @@ void mxSource::SetStyling(bool colour) {
 	
 	const char *CL_REG_BACK  = config->use_dark_theme ? "#333333" : "#FFFFFF" ;
 	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
+	const char *CL_DIMM_FORE = config->use_dark_theme ? "#888888" : "#888888" ;
 	const char *CL_KEYWORD   = config->use_dark_theme ? "#9999FA" : "#000080" ;
 	const char *CL_STRING    = config->use_dark_theme ? "#FA9999" : "#FF0000" ;
 	const char *CL_NUMBER    = config->use_dark_theme ? "#FAFA99" : "#A0522D" ;
@@ -282,8 +283,8 @@ void mxSource::SetStyling(bool colour) {
 	
 	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
 	SetWords();
-	SetStyle(wxSTC_STYLE_DEFAULT,            CL_REG_FORE,       CL_REG_BACK,        0);               // default
-	SetStyle(wxSTC_C_DEFAULT,                CL_REG_FORE,       CL_REG_BACK,        0);               // default
+	SetStyle(wxSTC_STYLE_DEFAULT,            CL_DIMM_FORE,      CL_REG_BACK,        0);               // default
+	SetStyle(wxSTC_C_DEFAULT,                CL_DIMM_FORE,       CL_REG_BACK,        0);               // default
 	SetStyle(wxSTC_C_COMMENT,                CL_COMMENT_1,      CL_REG_BACK,        0);               // comment
 	SetStyle(wxSTC_C_COMMENTLINE,            CL_COMMENT_1,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment line
 	SetStyle(wxSTC_C_COMMENTDOC,             CL_COMMENT_2,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment doc
@@ -1234,6 +1235,7 @@ void mxSource::ReloadFromTempPSD (bool check_syntax) {
 	wxString file=GetTempFilenamePSD();
 	bool isro=GetReadOnly();
 	if (isro) SetReadOnly(false);
+	SetStatus(STATUS_FLOW); // antes de LoadFile
 	LoadFile(file);
 	// convertir en campos lo que esté incompleto
 	for (int i=0;i<GetLineCount();i++) {
@@ -1286,7 +1288,7 @@ void mxSource::SetFlowSocket ( wxSocketBase *s ) {
 	} else {
 		if (!is_example) SetReadOnly(false);
 		status_should_change=true; 
-		SetStatus();
+		SetStatus(); Colourise(0,GetLength()); 
 	}
 }
 
@@ -1670,6 +1672,7 @@ void mxSource::SetStatus (int cual) {
 	if (cual!=-1) {
 		status_should_change=false;
 		status_bar->SetStatus(status=cual);
+		if (cual==STATUS_FLOW_CHANGED) ClearDocumentStyle();
 		return;
 	}
 	
@@ -1687,7 +1690,7 @@ void mxSource::SetStatus (int cual) {
 	
 }
 
-void mxSource::OnChange (wxStyledTextEvent & event) {
+void mxSource::OnChange(wxStyledTextEvent & event) {
 	just_created=false; status_should_change=true; event.Skip();
 	if (run_socket && status!=STATUS_RUNNING_CHANGED && status!=STATUS_SYNTAX_ERROR) {
 		run_socket->Write("dimm\n",5);

@@ -124,7 +124,8 @@ void mxSocketClient::ProcessCommandFlow() {
 	mxSource *src=main_window->FindSourceById(src_id);
 	if (!src) { _LOG("mxSocketClient::ProcessCommandFlow src error"); return; }
 	if (buffer=="modified") {
-		if (src==main_window->GetCurrentSource()) src->SetStatus(STATUS_FLOW_CHANGED);
+		if (src==main_window->GetCurrentSource()) 
+			src->SetStatus(STATUS_FLOW_CHANGED);
 	} else if (buffer=="update"||buffer=="reload"||buffer=="run"||buffer=="export"||buffer=="debug") {
 		src->ReloadFromTempPSD(buffer=="update"||buffer=="reload");
 		if (buffer=="update") return;

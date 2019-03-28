@@ -600,7 +600,8 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (GetNext()) {
 			if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
-			if (GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
+			if (GetNext()->GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
+			else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
 			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
 			return;
 		}
@@ -613,10 +614,12 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_MIENTRAS) {
 		out<<tab<<"Mientras "<<_fix(label,"{condicion}")<<" Hacer"<<_endl_this;
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
+		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
 		out<<tab<<"FinMientras"<<_endl_prev;
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<_endl_prev;
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
+		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
 		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<_fix(label,"{condicion}")<<_endl_this;
 	} else if (type==ET_PARA) {
 		if (variante) {
@@ -627,6 +630,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 				<<(has_paso?" Con Paso ":"")<<(has_paso?_fix(GetChild(2)->label,"{paso}"):"") <<" Hacer"<<_endl_this;
 		}
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
+		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
 		out<<tab<<"FinPara"<<_endl_prev;
 	} else if (type==ET_SELECTION) {
 		GetChild(0)->Print(out,_tabs,process,line_num);
@@ -645,6 +649,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<_fix(label,"{condicion}")<<" Entonces"<<_endl_this;
 		if (GetChild(1)) { GetChild(1)->Print(out,tab+_tabs,process,line_num); }
+		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
 		if (GetChild(0)) { out<<tab<<"SiNo"<<_endl_prev; }
 		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
 		out<<tab<<"FinSi"<<_endl_prev;
