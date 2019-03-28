@@ -2,6 +2,7 @@
 #include "GLstuff.h"
 #include "Textures.h"
 #include <iostream>
+#include "Global.h"
 
 bool use_textures_font = 
 #ifdef _USE_FONT
@@ -49,7 +50,8 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	}
 	for(int i=0;t[i]!='\0';++i) {
 		char_info &ci = char_map[c2i(t[i])];
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,ci.c);
+		glutBitmapCharacter(big_icons?GLUT_BITMAP_TIMES_ROMAN_24:GLUT_BITMAP_9_BY_15,ci.c);
+//		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,ci.c);
 		if (ci.acento) {
 			glLineWidth(1);
 			glBegin(GL_LINES);
@@ -94,8 +96,11 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 //}
 
 void ys_dibujar_caracter(const char chr);
+void ys_dibujar_caracter(const char chr, bool extra);
 
+#ifdef _USE_FONT
 static float x_texto = 0;
+#endif
 
 void begin_texto( ) {
 #ifdef _USE_FONT
@@ -137,22 +142,9 @@ void dibujar_caracter(const char chr) {
 #endif
 	{
 		ys_dibujar_caracter(chr); return;
-		glTranslated(800.0/7.0,0.0,0.0);
 	}
 
 	
 	
-}
-
-void dibujar_caracter(const char chr, bool extra) { 
-#ifdef _USE_FONT
-	if (use_textures_font) { 
-		dibujar_caracter(chr);
-	} else 
-#endif
-	{
-		x_texto += 150.0/7.0;
-		glTranslated(150.0/7.0,0.0,0.0);
-	}
 }
 

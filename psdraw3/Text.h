@@ -7,7 +7,6 @@ extern bool use_textures_font;
 
 void begin_texto(); 
 void dibujar_caracter(const char chr); 
-void dibujar_caracter(const char chr, bool extra);
 void end_texto(); 
 
 void GetTextSize(const string &label, int &w, int &h);

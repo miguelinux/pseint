@@ -20,7 +20,7 @@ ProcessSelector::ProcessSelector()
 
 void ProcessSelector::Show ( ) {
 	m_anim_base = m_anim_delta = 0;
-	m_state = 1; 
+	m_state = 1; m_selection = no_selection;
 }
 
 void ProcessSelector::Hide ( ) {
@@ -64,31 +64,36 @@ void ProcessSelector::Draw ( ) {
 							 :"Agregar Nuevo SubProceso") );
 		} else {
 			
-			string &s=procesos[i]->label;
-			int l=s.size(),p=0; size_t f=s.find('<');
-			if (f==string::npos) f=s.find('='); else f++;
-			if (f==string::npos) f=0; else f++;
-			int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
-			
-			glColor3fv(m_selection==i?color_selection:color_menu);
+			const float *color = m_selection==i?color_selection:color_menu;
+			glColor3fv(color);
 			glPushMatrix();
 			int px=20, py=base+10;
 			if (m_state==3 && m_selection==i) glTranslated(cur_x+(px-m_x0),cur_y+(py-m_y0),0);
 			else glTranslated(px,py,0);
-			glScaled(.08,.12,.1);
+			double sf = big_icons ? 1.5 : 1; glScaled(.08*sf,.12*sf,.1*sf);
 			
+			glLineWidth(big_icons?2:1);
 			begin_texto();
-			string &sp=procesos[i]->lpre;
-			p=0; l=sp.size();
-			while (p<l)
-				dibujar_caracter(sp[p++]);
-			
-			p=0; l=s.size();
-			while (p<l) {
-				if (p==int(f)) glLineWidth(2);
-				if (p==t) glLineWidth(1);
-				dibujar_caracter(s[p++],true);
+			{
+				string &sp=procesos[i]->lpre;
+				int p=0; int l=sp.size();
+				while (p<l)
+					dibujar_caracter(sp[p++]);
 			}
+			
+			{
+				string &s=procesos[i]->label;
+				int l=s.size(),p=0; size_t f=s.find('<');
+				if (f==string::npos) f=s.find('='); else f++;
+				if (f==string::npos) f=0; else f++;
+				int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
+				while (p<l) {
+					if (p==int(f)) glColor3fv(color_menu_bold);
+					if (p==t) glColor3fv(color);
+					dibujar_caracter(s[p++]);
+				}
+			}
+			
 			end_texto();
 			glPopMatrix();		
 		}
@@ -109,7 +114,8 @@ void ProcessSelector::ProcessMotion (int x, int y) {
 		cur_x = x; cur_y = win_h-y;
 		if (m_state<3 && m_anim_delta) {
 			m_selection=(y-m_anim_base)/m_anim_delta;
-			if (m_selection<0||m_selection>int(procesos.size()-(edit_on?0:1))) m_selection=no_selection;
+			if (y<m_anim_base||m_selection<0||m_selection>int(procesos.size()-(edit_on?0:1))) m_selection=no_selection;
+			
 		}
 		return;
 	}
@@ -143,7 +149,12 @@ void ProcessSelector::Initialize ( ) {
 }
 
 void ProcessSelector::ProcessIddle ( ) {
-	interpolate_good(m_anim_base,40);
-	interpolate_good(m_anim_delta,30);
+	if (big_icons) {
+		interpolate_good(m_anim_base,50);
+		interpolate_good(m_anim_delta,40);
+	} else {
+		interpolate_good(m_anim_base,40);
+		interpolate_good(m_anim_delta,30);
+	}
 }
 
