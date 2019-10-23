@@ -530,8 +530,9 @@ mxSource *mxMainWindow::OpenTestPackage(const wxString &path) {
 		return NULL;
 	} else {
 		aui_manager.GetPane(test_panel).Show();
-		if (!test_panel->GetHelp().IsEmpty())
+		if (!test_panel->GetHelp().IsEmpty()) {
 			QuickHelp().ShowTestHelp(test_panel->GetHelp());
+		}
 		aui_manager.Update();
 		return test_panel->GetSrc();
 	}
@@ -1813,6 +1814,7 @@ void mxMainWindow::ShowQuickHelp(bool show) {
 	} else {
 		HidePanel(m_quick_help.m_ctrl,!aui_manager.GetPane(results_tree_ctrl).IsShown());
 		m_quick_help.m_mode = QuickHelpPanelPolicy::QHM_NULL;
+		if (test_panel) test_panel->OnShowHideHelp(false);
 	}
 }
 
@@ -2254,6 +2256,8 @@ void mxMainWindow::QuickHelpPanelPolicy::Hide ( ) {
 
 void mxMainWindow::QuickHelpPanelPolicy::EnsureVisible ( ) {
 	if (!m_visible) main_window->ShowQuickHelp(true);
+	if (main_window->GetTestPanel()) 
+		main_window->GetTestPanel()->OnShowHideHelp(m_mode==QHM_TEST);
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowRTError (int code, wxString msg, bool force) {

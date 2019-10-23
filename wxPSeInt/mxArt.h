@@ -18,6 +18,7 @@ public:
 		wxBitmap *replace;
 		wxBitmap *load;
 		wxBitmap *save;
+		wxBitmap *eval;
 	} buttons;
 	mxArt(wxString img_dir);
 	~mxArt();

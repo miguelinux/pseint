@@ -14,7 +14,7 @@
    height="1052.3622047"
    id="svg7743"
    version="1.1"
-   inkscape:version="0.92+devel (a137093a10, 2017-11-17)"
+   inkscape:version="0.92+devel (445cca4041, 2018-09-20)"
    sodipodi:docname="bot.svg">
   <defs
      id="defs7745">
@@ -746,6 +746,16 @@
        y1="410.57993"
        x2="-850.87592"
        y2="410.44183" />
+    <linearGradient
+       gradientTransform="matrix(1.1278181,0,0,1.1278181,76.123556,-4.6852436)"
+       gradientUnits="userSpaceOnUse"
+       y2="212.36218"
+       x2="65.089287"
+       y1="200.75504"
+       x1="69.910713"
+       id="linearGradient3258-4"
+       xlink:href="#linearGradient3250-54"
+       inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -754,9 +764,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="104.73027"
-     inkscape:cy="928.99842"
+     inkscape:zoom="5.6"
+     inkscape:cx="160.81555"
+     inkscape:cy="224.5033"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -766,7 +776,8 @@
      inkscape:window-y="0"
      inkscape:window-maximized="0"
      showguides="false"
-     inkscape:document-rotation="0" />
+     inkscape:document-rotation="0"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata7748">
     <rdf:RDF>
@@ -1346,5 +1357,33 @@
        height="38.08588"
        x="35.242775"
        y="227.03354" />
+    <path
+       style="vector-effect:none;fill:#ffffff;stroke:#4d4d4d;stroke-width:2.35218096;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers stroke fill"
+       d="m 131.65531,217.00066 c 8.79536,-0.59241 17.43831,-1.33725 28.16333,0 0.67774,10.41768 0.16666,18.04258 -0.19966,24.73092 -9.12323,2.27306 -18.50465,-0.12822 -27.96398,-0.74324 -0.6219,-8.17354 -2.45612,-16.69346 0,-23.98768 z"
+       id="rect1720-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <g
+       id="g1808"
+       transform="matrix(1.4692193,0,0,1.4692193,-276.12011,-156.76367)" />
+    <path
+       inkscape:export-ydpi="48.188728"
+       inkscape:export-xdpi="48.188728"
+       inkscape:export-filename="/mnt/sh/zinjai/imgs/boton_ok.png"
+       sodipodi:nodetypes="czsscc"
+       id="path3588-2"
+       d="m 148.23232,232.71457 c -14.91461,-13.36068 -14.63436,-3.26073 -7.73356,2.40078 6.63707,5.44514 4.74548,4.68943 8.79789,5.20463 1.13683,0.14439 3.38692,-0.46715 3.66416,-2.60617 1.80789,-13.95085 13.07758,-24.43398 11.23812,-25.96811 -7.90757,-1.71308 -13.83237,12.68452 -15.96661,20.96887 z"
+       style="fill:url(#linearGradient3258-4);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.02857018;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:connector-curvature="0" />
+    <rect
+       inkscape:export-ydpi="78.800003"
+       inkscape:export-xdpi="78.800003"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/updates.png"
+       y="209.5157"
+       x="128.70349"
+       height="36.547398"
+       width="36.547398"
+       id="id_eval"
+       style="opacity:0.75;fill:none;stroke:none" />
   </g>
 </svg>

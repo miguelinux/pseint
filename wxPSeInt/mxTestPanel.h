@@ -23,6 +23,7 @@ public:
 	bool Load(const wxString &path, const wxString &key);
 	mxSource *GetSrc() { return src; }
 	const wxString &GetHelp() { return pack.GetHelp(); }
+	void OnShowHideHelp(bool show);
 private:
 	void Run(const wxString &source_fname);
 	void OnRun(wxCommandEvent &event);

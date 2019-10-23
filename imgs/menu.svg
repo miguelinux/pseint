@@ -14,7 +14,7 @@
    height="1052.3622047"
    id="svg7743"
    version="1.1"
-   inkscape:version="0.92+devel (a137093a10, 2017-11-17)"
+   inkscape:version="0.92+devel (445cca4041, 2018-09-20)"
    sodipodi:docname="menu.svg">
   <defs
      id="defs7745">
@@ -1712,6 +1712,28 @@
        y1="310.1886"
        x2="131.05484"
        y2="299.42966" />
+    <linearGradient
+       id="linearGradient3250-54">
+      <stop
+         id="stop3252-4"
+         offset="0"
+         style="stop-color:#00ca00;stop-opacity:1;" />
+      <stop
+         id="stop3254-0"
+         offset="1"
+         style="stop-color:#007a00;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3260-3">
+      <stop
+         id="stop3262-0"
+         offset="0"
+         style="stop-color:#ff1a00;stop-opacity:1;" />
+      <stop
+         id="stop3264-8"
+         offset="1"
+         style="stop-color:#9f0000;stop-opacity:1;" />
+    </linearGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1720,9 +1742,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.7414239"
-     inkscape:cx="84.019739"
-     inkscape:cy="848.75847"
+     inkscape:zoom="3.4828478"
+     inkscape:cx="40.165832"
+     inkscape:cy="333.71385"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
