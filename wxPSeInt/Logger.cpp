@@ -12,7 +12,7 @@ Logger::Logger(const char *where) {
 	file.open(where,ios::app);
 	if (file.is_open()) logger=this; else wxMessageBox(wxString("No se pudo abrir el archivo de log: ")<<where);
 	file<<endl<<"LOG START"<<endl;
-	Write(wxString()<<"version "<<VERSION<<"-"<<ARCHITECTURE);
+	Write(wxString()<<"version "<<VERSION<<"-"<<ARCHITECTURE ARCH_EXTRA);
 }
 
 Logger::~Logger() {

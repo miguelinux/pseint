@@ -1,0 +1,20 @@
+OBJS_DIR=../temp/drwE_lnx2_rls
+GPP=g++
+CXXFLAGS_OPT=-O2
+CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8` -D_FOR_EXPORT -I.
+LDFLAGS_OPT=-s
+LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=no --version=2.8` -lX11
+
+all: ${OBJS_DIR} ../bin/psdrawE
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psdrawE
+
+../bin/psdrawE: ${OBJS}
+	${GPP} ${OBJS} ${LDFLAGS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+

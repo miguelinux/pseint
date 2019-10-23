@@ -1,9 +1,9 @@
-OBJS_DIR=../temp/drwE_lnx_rls
+OBJS_DIR=../temp/drwE_lnx3_rls
 GPP=g++
 CXXFLAGS_OPT=-O2
-CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8` -D_FOR_EXPORT -I.
+CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -D_FOR_EXPORT -I. -DWX3
 LDFLAGS_OPT=-s
-LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=no --version=2.8` -lX11
+LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=yes --version=3.1` -lX11
 
 all: ${OBJS_DIR} ../bin/psdrawE
 

@@ -1,9 +1,9 @@
-OBJS_DIR=../temp/wx_lnx_rls
+OBJS_DIR=../temp/wx_lnx3_rls
 GPP=g++
-CXXFLAGS_OPT=-O2 -DFOR_WXPSEINT
-CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=no --version=2.8`
+CXXFLAGS_OPT=-O2
+CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -DFOR_WXPSEINT -DWX3
 LDFLAGS_OPT=-s
-LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=no --version=2.8` -lwx_gtk2_stc-2.8 -lX11
+LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=yes --version=3.1` `wx-config --libs stc aui --unicode=yes --version=3.1` -lX11
 
 all: ${OBJS_DIR} ../bin/wxPSeInt.bin ../bin/wxPSeInt
 

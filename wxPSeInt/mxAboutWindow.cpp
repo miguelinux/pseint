@@ -96,7 +96,7 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	
 	text<<"<BR><BR> Versiones individuales:<BR>";
 	
-	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt "<<VERSION<<"-" ARCHITECTURE "<BR>";
+	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt "<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA"<BR>";
 	
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->pseint_command)<<"<BR>";
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psterm_command)<<"<BR>";

@@ -73,7 +73,7 @@ bool mxApplication::OnInit() {
 			Entity::shape_colors=true;
 		} else if (arg=="--nocroplabels") {
 			; // siempre es asi, parsear esto es solo para que no genere error
-		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(arg.Mid(2).c_str())) {
+		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(_W2S(arg.Mid(2)))) {
 			; // procesado en lang.ProcessConfigLine
 		} else if (arg.Len()) {
 			if (fin.Len()) fout=arg;

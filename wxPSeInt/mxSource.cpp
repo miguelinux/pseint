@@ -132,7 +132,19 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 {
 
 #ifdef WX3
-	CmdKeyClearAll(); // si no los atajos del control parecen tener precedencia por sobre los de la ventana
+//	CmdKeyClearAll(); // desactiva hasta delete, backspace, flechas, tabas, etc
+	for(char c='A';c<='Z';++c) {
+		// no es lo mismo hacerles clear que asignar null...
+		// el clear les asigna el msg STC_NULL que no es 0, y entonces el
+		// wrapper cree que hizo algo y no deja que siga el evento hacia el padre
+		CmdKeyAssign(c,                                    wxSTC_KEYMOD_CTRL,0);
+		CmdKeyAssign(c,                 wxSTC_KEYMOD_SHIFT                  ,0);
+		CmdKeyAssign(c,                 wxSTC_KEYMOD_SHIFT|wxSTC_KEYMOD_CTRL,0);
+		CmdKeyAssign(c,wxSTC_KEYMOD_ALT                                     ,0);
+		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|                   wxSTC_KEYMOD_CTRL,0);
+		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|wxSTC_KEYMOD_SHIFT                  ,0);
+		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|wxSTC_KEYMOD_SHIFT|wxSTC_KEYMOD_CTRL,0);
+	}
 #endif
 	
 	_LOG("mxSource::mxSource "<<this);

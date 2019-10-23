@@ -6,10 +6,11 @@
 #include "Global.h"
 #include "Textures.h"
 #include "Canvas.h"
+#include "../wxPSeInt/string_conversions.h"
 static int gl_attrib[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
 using namespace std;
 
-Canvas *canvas=NULL;
+Canvas *canvas = nullptr;
 
 BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_SIZE(Canvas::OnSize)
@@ -31,20 +32,28 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_KEY_UP(Canvas::OnKeyUp)
 END_EVENT_TABLE()
 	
-Canvas::Canvas(wxWindow *parent) : wxGLCanvas(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE,"canvas",gl_attrib) {
-	canvas=this;
+Canvas::Canvas(wxWindow *parent)
+#ifdef WX3
+	: wxGLCanvas(parent,wxGLAttributes().DoubleBuffer().RGBA(),wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
+#else
+	: wxGLCanvas(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE,"canvas",gl_attrib)
+#endif
+{
+	
+	canvas=this; _if_wx3(m_context = new wxGLContext(this));
 	redraw_timer = new wxTimer(GetEventHandler(),wxID_ANY);
 	mouse_buttons=modifiers=0;
 }
 
 Canvas::~Canvas() {
-	
+	_if_wx3(delete m_context);
 }
 
 void Canvas::OnPaint(wxPaintEvent& event) {
-	if (!IsShown()) return;
-	wxGLCanvas::SetCurrent();
-	wxPaintDC(this);
+	if (!IsShownOnScreen()) return;
+	wxPaintDC dc(this); // no se usa el objeto pero es necesario que esté construido
+	wxGLCanvas::SetCurrent(_if_wx3(*m_context));
+	
 	static wxCursor *cursores=NULL;
 	static CURSORES old_cursor=Z_CURSOR_COUNT;
 	if (!cursores) {
@@ -72,12 +81,18 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 	
 	display_cb();
 	if (old_cursor!=mouse_cursor) wxSetCursor(cursores[mouse_cursor]);
+	
 	glFlush();
 	SwapBuffers();
 }
 
 void Canvas::OnSize(wxSizeEvent& event) {
+	if (!IsShownOnScreen()) return;
+#ifdef WX3
+	SetCurrent(*m_context);
+#else
 	wxGLCanvas::OnSize(event);
+#endif
 	int win_w,win_h;
 	GetClientSize(&win_w, &win_h);
 	reshape_cb(win_w,win_h);
@@ -89,7 +104,7 @@ void Canvas::OnRedrawTime(wxTimerEvent &evt) {
 }
 
 void Canvas::OnEraseBackground(wxEraseEvent& event) {
-	
+	// no hacer nada, evita flashing en MSW
 }
 
 void Canvas::OnMouseMove(wxMouseEvent& event) {

@@ -266,7 +266,7 @@ bool Package::SaveConfig (const wxString & fname) {
 	else fil.Create();
 	fil.Clear();
 	std::map<wxString,wxString>::iterator it = m_config.begin();
-	fil.AddLine(wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE);
+	fil.AddLine(wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA);
 	while (it!=m_config.end()) {
 		fil.AddLine(wxString()+it->first+" = "+it->second);
 		++it;
@@ -278,7 +278,7 @@ bool Package::SaveConfig (const wxString & fname) {
 
 wxString Package::GetFullConfig() {
 	SetConfigInt  ( "version requerida" , PACKAGE_VERSION );
-	wxString ret = wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE<<"\n";
+	wxString ret = wxString("# generado por psEval ")<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA<<"\n";
 	std::map<wxString,wxString>::iterator it = m_config.begin();
 	while (it!=m_config.end()) {
 		ret<<wxString()<<it->first<<" = "<<it->second<<"\n";

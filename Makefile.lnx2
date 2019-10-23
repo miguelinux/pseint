@@ -1,0 +1,21 @@
+all: 
+	${MAKE} -C pseint -f Makefile.lnx
+	${MAKE} -C psexport -f Makefile.lnx
+	${MAKE} -C hoewrap -f Makefile.lnx
+	${MAKE} -C wxPSeInt -f Makefile.lnx2
+	${MAKE} -C pseval -f Makefile.lnx2
+	${MAKE} -C updatem -f Makefile.lnx
+	${MAKE} -C psterm -f Makefile.lnx2
+	${MAKE} -C psdrawE -f Makefile.lnx2
+	${MAKE} -C psdraw3 -f Makefile.lnx2
+
+clean: 
+	${MAKE} -C pseint -f Makefile.lnx clean
+	${MAKE} -C psexport -f Makefile.lnx clean
+	${MAKE} -C hoewrap -f Makefile.lnx clean
+	${MAKE} -C wxPSeInt -f Makefile.lnx2 clean
+	${MAKE} -C pseval -f Makefile.lnx2 clean
+	${MAKE} -C updatem -f Makefile.lnx clean
+	${MAKE} -C psterm -f Makefile.lnx2 clean
+	${MAKE} -C psdrawE -f Makefile.lnx2 clean
+	${MAKE} -C psdraw3 -f Makefile.lnx2 clean

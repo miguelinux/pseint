@@ -2,6 +2,11 @@
 #define STRING_CONVERSIONS_H
 #include <wx/string.h>
 
+// _C:  wxchar a char
+// _S2W std::string a wxSring
+// _W2S wxString a cons char *
+// _Z/_ZZ char* a wxString
+
 #if wxABI_VERSION<30000
 #	ifdef __APPLE__
 static wxCSConv cscUTF8("utf8");

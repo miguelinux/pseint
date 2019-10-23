@@ -9,7 +9,7 @@ class MainWindow : public wxFrame {
 public:
 	MainWindow(wxString title);
 //	void SetAccelerators();
-//	void OnChar(wxKeyEvent &event);
+	void OnChar(wxKeyEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnMouseWheel(wxMouseEvent &event);
 	void OnToolOver(wxCommandEvent &event);

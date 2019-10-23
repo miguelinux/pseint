@@ -19,17 +19,23 @@
 #	define ARCHITECTURE "???"
 #endif
 
+#ifdef WX3
+#	define ARCH_EXTRA "-wx3"
+#else
+#	define ARCH_EXTRA ""
+#endif
+
 #include <iostream>
 #include <fstream>
 #define _print_version_info(what) \
-	std::cout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<"\n" \
+	std::cout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<ARCH_EXTRA<<"\n" \
 		"  http://pseint.sourceforge.net\n" \
 		"  by Pablo Novara (zaskar_84@yahoo.com.ar)"<<std::endl
 
 #define _write_version_info(what,where) \
 	std::ofstream fout(where); \
 	if (fout.is_open()) \
-		fout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<std::endl; \
+		fout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<ARCH_EXTRA<<std::endl; \
 	fout.close()
 
 #define _handle_version_query(what) \

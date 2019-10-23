@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 END_EVENT_TABLE()
 
 MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(win_w,win_h),wxDEFAULT_FRAME_STYLE) {
+	
 	main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
@@ -79,12 +80,12 @@ void MainWindow::OnClose (wxCloseEvent & evt) {
 //	SetAcceleratorTable(accel);
 //}
 
-//void MainWindow::OnChar (wxKeyEvent & event) {
-////	canvas->OnChar(event);
-//}
+void MainWindow::OnChar (wxKeyEvent & event) {
+//	canvas->OnChar(event);
+}
 
 void MainWindow::OnMouseWheel (wxMouseEvent & event) {
-	canvas->OnMouseWheel(event);
+//	canvas->OnMouseWheel(event);
 }
 
 void MainWindow::ToggleFullScreen ( ) {
@@ -132,6 +133,6 @@ int MainWindow::MIDtoMO (int mid) {
 
 void MainWindow::OnActivated(wxActivateEvent &event) {
 	event.Skip();
-	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
+//	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
 }
 

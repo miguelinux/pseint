@@ -18,6 +18,9 @@ private:
 	unsigned int mouse_buttons;
 	unsigned int modifiers;
 	wxTimer *redraw_timer;
+#ifdef WX3
+	wxGLContext *m_context;
+#endif
 public:
 	Canvas(wxWindow *parent);
 	~Canvas();

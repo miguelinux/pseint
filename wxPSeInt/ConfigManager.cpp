@@ -121,7 +121,7 @@ void ConfigManager::Save() {
 		fil.Create();
 	fil.Clear();
 	
-	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-" ARCHITECTURE);
+	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA);
 	fil.AddLine(wxString("version=")<<VERSION);
 	fil.AddLine(wxString("images_path=")<<images_path);
 	if (tty_command!=_no_tty) fil.AddLine(wxString("terminal=")<<tty_command);

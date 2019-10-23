@@ -50,12 +50,12 @@ void mxSocketClient::ProcessLostFlow() {
 void mxSocketClient::ProcessInput (wxSocketEvent & evt) {
 	is_working++;
 	// leer datos y procesar
-	wxChar buf[256];
+	char buf[256];
 	socket->Read(buf,255);
 	int n = socket->LastCount();
 	while (n>0) {
 		buf[n]='\0';
-		wxChar *aux=buf;
+		char *aux=buf;
 		for (int i=0;i<n;i++)
 			if (buf[i]=='\n') {
 				buf[i]='\0';

@@ -9,6 +9,7 @@
 #include "mxSingleCaseWindow.h"
 #include "Package.h"
 #include "../wxPSeInt/string_conversions.h"
+#include <wx/button.h>
 
 BEGIN_EVENT_TABLE(mxSingleCaseWindow,wxFrame)
 	EVT_LIST_ITEM_SELECTED(wxID_ANY,mxSingleCaseWindow::OnList)
@@ -142,20 +143,20 @@ public:
 		for (unsigned int i=0;i<output.GetCount();i++) {
 			int n1=0,n2=0,n3=0,n4=0,p=0;
 			while (output[i][p]>='0' && output[i][p]<='9')
-				n1 = n1*10 + output[i][p++]-'0' ;
+				n1 = n1*10 + _C(output[i][p++])-'0' ;
 			if (output[i][p]==',') {
 				p++;
 				while (output[i][p]>='0' && output[i][p]<='9')
-					n2 = n2*10 + output[i][p++]-'0' ;
+					n2 = n2*10 + _C(output[i][p++])-'0' ;
 			} else
 				n2=n1;
 			char c=output[i][p++];
 			while (output[i][p]>='0' && output[i][p]<='9')
-				n3 = n3*10 + output[i][p++]-'0' ;
+				n3 = n3*10 + _C(output[i][p++])-'0' ;
 			if (output[i][p]==',') {
 				p++;
 				while (output[i][p]>='0' && output[i][p]<='9')
-					n4 = n4*10 + output[i][p++]-'0' ;
+					n4 = n4*10 + _C(output[i][p++])-'0' ;
 			} else
 				n4=n3;
 			n1--; n2--; n3--; n4--;

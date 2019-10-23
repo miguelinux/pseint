@@ -26,7 +26,11 @@ int cb=GL_NONE; // current glbegin value
 int lw=0; // line width
 int p[100][2], np=0; // vertices enviados por glvertex
 wxColour c; // color actual
+#ifdef WX3
+wxPen pt(wxPenInfo(c,0).Style(wxPENSTYLE_TRANSPARENT));
+#else
 wxPen pt(c,0,wxTRANSPARENT);
+#endif
 wxDC *dc=NULL;
 
 void glColor3fv(const float *v) {
@@ -131,7 +135,11 @@ void glLineWidth(float w) {
 
 static wxFont &get_font() {
 	static bool initialized = false;
+#ifdef WX3
+	static wxFont font(wxFontInfo(m.sx*150).Family(wxFONTFAMILY_MODERN));
+#else
 	static wxFont font(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+#endif
 	if (!initialized) { font.SetPixelSize(wxSize(0,250*m.sx)); initialized=true; }
 	return font;
 }
