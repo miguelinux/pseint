@@ -16,6 +16,7 @@ public:
 	void AddCaso(wxString &nombre);
 	mxSingleCaseWindow(wxWindow *parent, bool only_first, bool show_solution);
 	void Show();
+	void Diff();
 protected:
 	void OnClose(wxCloseEvent &event);
 	void OnList(wxListEvent &event);

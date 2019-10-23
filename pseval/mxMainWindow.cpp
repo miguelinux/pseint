@@ -85,6 +85,7 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 		if ((!ok)||for_create) {
 			results_win->AddCaso(tests[i]);
 			if (!for_create && pack.GetConfigStr("mostrar casos fallidos")=="primero") {
+				Hide();
 				wxMessageBox(pack.GetConfigStr("mensaje error")
 					+_Z("\n\nA continuación se mostrará un caso de prueba en el que falla."),_Z("Resultado"),wxOK|wxICON_ERROR,NULL);
 					results_win->Show();
@@ -137,11 +138,11 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	process_finished=false;
 	process_pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 	if (!process_pid) return false;
-	wxString &input=test.input, &output=test.output, &solution=test.solution;
+	wxString &input = test.input, &output=test.output, &solution=test.solution;
 	wxTextOutputStream in(*the_process->GetOutputStream());
 	wxTextInputStream out(*the_process->GetInputStream());
 	input.Replace("\r","",true);
-	wxYield(); if (!process_finished) in<<input; // the yield and the if for mac, if the process doesn't wait for a input an finishes inmediatly at the time of sending the input it might be already terminate and so the input is closed an it causes a segfault
+	wxYield(); if (!process_finished) in<<input<<"<{[END_OF_INPUT]}>\n"; // the yield and the if for mac, if the process doesn't wait for a input an finishes inmediatly at the time of sending the input it might be already terminate and so the input is closed an it causes a segfault
 	while(!process_finished) {
 		while (the_process->IsInputAvailable()) 
 			{ char aux; aux=out.GetChar(); if (aux) output<<aux; }

@@ -141,6 +141,7 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 			ProcessFile(name,content);
 		}
 	}
+//	SetConfigStr("mostrar casos fallidos","todos");
 	return m_is_ok=read_something;
 }
 
