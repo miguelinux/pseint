@@ -26,7 +26,11 @@ mxSubtitles::mxSubtitles(wxWindow *parent):wxPanel(parent) {
 	sizer->Add(sizer_bt,wxSizerFlags().Center());
 	text->SetBackgroundColour(wxColour(255,255,150));
 	text->SetForegroundColour(wxColour(0,0,100));
+#ifdef WX3
+	text->SetFont(wxFont(wxFontInfo(11).Family(wxFONTFAMILY_MODERN).Style(wxFONTSTYLE_NORMAL).Weight(wxFONTWEIGHT_BOLD)));
+#else
 	text->SetFont(wxFont(11,wxMODERN,wxFONTSTYLE_NORMAL,wxBOLD));
+#endif
 	SetSizer(sizer);
 	SetSize(100,button_next->GetSize().GetHeight()*3);
 }

@@ -26,14 +26,15 @@ static wxCSConv cscMAC("MAC");
 #else	
 //#	define _FixW(x) cscMAC.cWC2MB(x.wchar_str())
 #	define _FixW(x) x
-#	define WX3
+//#	define WX3
+#	define _S2W(x) wxString::From8BitData(x.c_str())
 #	define _Z(x) wxString::From8BitData(x)
 #	define _ZZ(x) wxString::From8BitData(x)
 #	define _W2S(wxstring) ((const char*)(wxstring.mb_str()))
-#	define _W2S_Len(wxstring) strlen((const char*)(wxstring.mb_str()))
+//#	define _W2S_Len(wxstring) strlen((const char*)(wxstring.mb_str()))
 #	define _C(wxchar) ((wxchar).GetValue())
 #	define _wxEvtTimer_to_wxTimerPtr(evt) &(evt.GetTimer())
-#	define _if_wx2(a)
+//#	define _if_wx2(a)
 #	define _if_wx3(a) a
 #	define _if_wx3_else(a,b) a
 # 	ifdef UNICODE

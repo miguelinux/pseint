@@ -13,7 +13,7 @@ inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
 		(incluir_nros&&c>='0'&&c<='9');
 }
 
-#if wxABI_VERSION>=30000
+#ifdef WX3
 template<>
 inline bool EsLetra(const wxUniCharRef &c, bool incluir_nros) {
 	return EsLetra(c.GetValue(),incluir_nros);

@@ -98,7 +98,11 @@ void ConfigManager::LoadDefaults() {
 	tty_command = _no_tty;
 #endif
 	wx_font_size = /*big_icons?12:*/10;
+#ifdef WX3
+	wx_font_name = wxFont(wxFontInfo(wx_font_size).Family(wxFONTFAMILY_MODERN)).GetFaceName();
+#else
 	wx_font_name = wxFont(wx_font_size,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
+#endif
 	term_font_size = /*big_icons?14:*/11;
 	term_font_name = wxFont(term_font_size,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
 	

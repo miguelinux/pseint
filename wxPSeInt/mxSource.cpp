@@ -131,6 +131,10 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) 
 {
 
+#ifdef WX3
+	CmdKeyClearAll(); // si no los atajos del control parecen tener precedencia por sobre los de la ventana
+#endif
+	
 	_LOG("mxSource::mxSource "<<this);
 
 	id=++last_id;
@@ -157,7 +161,12 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	SetTabWidth(config->tabw);
 	SetUseTabs (true);
 	
+#ifdef WX3
+	wxFont font (wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
+#else
 	wxFont font (config->wx_font_size, wxMODERN, wxNORMAL, wxNORMAL);
+#endif
+	
 	StyleSetFont (wxSTC_STYLE_DEFAULT, font);
 	
 	AutoCompSetSeparator('|');
@@ -226,8 +235,16 @@ mxSource::~mxSource() {
 }
 
 void mxSource::SetStyle(int idx, const char *foreground, const char *background, int fontStyle){
+
+#ifdef WX3
+	wxFont font (wxFontInfo(config->wx_font_size-((fontStyle&mxSOURCE_SMALLER)?1:0))
+				 .Family(wxFONTFAMILY_MODERN).FaceName(config->wx_font_name));
+#else
 	wxFont font (config->wx_font_size- ((fontStyle&mxSOURCE_SMALLER)?1:0),
 				 wxMODERN, wxNORMAL, wxNORMAL, false, config->wx_font_name);
+#endif
+	
+	
 	StyleSetFont (idx, font);
 	if (foreground) StyleSetForeground (idx, wxColour (foreground));
 	if (background)  StyleSetBackground (idx, wxColour (background));

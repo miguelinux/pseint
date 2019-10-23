@@ -94,8 +94,13 @@ void mxFontsConfig::ApplyToSamples ( ) {
 	long wx_size = 10, term_size = 11;
 	m_wx_font_size->GetValue().ToLong(&wx_size);
 	m_term_font_size->GetValue().ToLong(&term_size);
+#ifdef WX3
+	wxFont wx_font   (wxFontInfo(wx_size  ).Family(wxFONTFAMILY_MODERN).FaceName(m_wx_font_name->GetValue())  );
+	wxFont term_font (wxFontInfo(term_size).Family(wxFONTFAMILY_MODERN).FaceName(m_term_font_name->GetValue()));
+#else
 	wxFont wx_font (wx_size, wxMODERN, wxNORMAL, wxNORMAL, false, m_wx_font_name->GetValue());
 	wxFont term_font (term_size, wxMODERN, wxNORMAL, wxNORMAL, false, m_term_font_name->GetValue());
+#endif
 	m_wx_sample->StyleSetFont (wxSTC_STYLE_DEFAULT, wx_font);
 	m_term_sample->StyleSetFont (wxSTC_STYLE_DEFAULT, term_font);
 }
