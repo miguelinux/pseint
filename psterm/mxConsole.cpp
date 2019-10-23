@@ -140,14 +140,14 @@ void mxConsole::Reset (bool hard) {
 	blinking_caret_aux=false;
 	ClearBuffer();
 }
-
-static string int2str(int x) {
-	int cf=0, x2=x;
-	while(x2) { x2=x2/10; cf++; }
-	string r(cf,'0');
-	while(x) { r[--cf]+=(x%10); x=x/10; }
-	return r;
-}
+//
+//static string int2str(int x) {
+//	int cf=0, x2=x;
+//	while(x2) { x2=x2/10; cf++; }
+//	string r(cf,'0');
+//	while(x) { r[--cf]+=(x%10); x=x/10; }
+//	return r;
+//}
 
 void mxConsole::OnPaint (wxPaintEvent & event) {
 	if (!buffer) CalcResize();
@@ -470,7 +470,7 @@ void mxConsole::GetProcessOutput (bool refresh) {
 	if (line.Len()) { 
 		if (cur_event!=-1) SetTime(int(events.size()));
 		Process(line,true/*,cur_event==-1*/); 
-		if (refresh) Refresh(); Yield(); 
+		if (refresh) { Refresh(); Yield(); }
 		// el wxYield es neceasario para procesos tipo "mientras verdero hacer escribir "Hola"; finmientras" porque sino no tiene oportunidad de redibujar por el intenso procesamiento
 	}
 }
@@ -687,7 +687,7 @@ void mxConsole::OnPopupCopy (wxCommandEvent & evt) {
 			aux<<_buffer(j,k).the_char;
 		}
 		while (aux.Len() && aux.Last()==' ') aux.RemoveLast();
-		if (j!=j1) aux<<"\n"; res<<aux; 
+		{ if (j!=j1) aux<<"\n"; } res<<aux;
 	}
 	wxTheClipboard->Open();
 	wxTheClipboard->SetData(new wxTextDataObject(res));
@@ -731,7 +731,7 @@ int mxConsole::GetInputPositionFromBufferPosition (int pos) {
 		cpos--;
 	}
 	// buscar la entrada que corresponde
-	for(int i=input_history.size()-1;i>=0;i--)
+	for(int i=input_history_position-1;i>=0;i--)
 		if (input_history[i].loc==loc)
 			if (--cant_skip==0) return i;
 	return -1;

@@ -73,7 +73,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				cadena.erase(cadena.size()-1,1);
 				// Separar parametros
 				for(size_t i=0, arg_num=1;i<cadena.size();++arg_num) {
-					for(int par_level = 0; i<(int)cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
+					for(int par_level = 0; i<cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
 						if (cadena[i]=='\'') while (cadena[++i]!='\'');
 						else if (cadena[i]=='(') par_level++;
 						else if (cadena[i]==')') par_level--;
@@ -100,7 +100,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				cadena.erase(0,5);
 				cadena.erase(cadena.size()-1,1);
 				for(size_t i=0, arg_num=1; i<cadena.size();++arg_num) {
-					for(int par_level=0;i<(int)cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
+					for(int par_level=0;i<cadena.size() && !(par_level==0 && cadena[i]==',');++i) {
 						if (cadena[i]=='\'') while(cadena[++i]!='\'');
 						else if (cadena[i]=='(') par_level++;
 						else if (cadena[i]==')') par_level--;
@@ -142,7 +142,12 @@ void Ejecutar(int LineStart, int LineEnd) {
 						_sub_wait();
 					} else {
 						aux1=getLine();  
-						if (for_eval) cout<<aux1<<endl; // la entrada en psEval es un stream separado de la salida, entonces la reproducimos alli para que la salida contenga todo el "dialogo"
+						if (for_eval) {
+							if (aux1=="<{[END_OF_INPUT]}>") {
+								cout << "<<No hay más datos de entrada>>" << endl; exit(0);
+							}
+							cout<<aux1<<endl; // la entrada en psEval es un stream separado de la salida, entonces la reproducimos alli para que la salida contenga todo el "dialogo"
+						}
 					}
 					
 					fixwincharset(aux1,true); // "descorrige" para que al corregir no traiga problemas
