@@ -1,0 +1,18 @@
+OBJS_DIR=../temp/int_m64_rls
+GPP=x86_64-apple-darwin18-clang++
+CXXFLAGS= -O3 -DUSE_ZOCKETS -DNDEBUG
+LIBS=
+
+all: ${OBJS_DIR} ../bin/pseint
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/pseint
+
+../bin/pseint: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+

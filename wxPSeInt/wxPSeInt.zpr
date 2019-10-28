@@ -9,7 +9,7 @@ default_fext_header=h
 autocomp_extra=wxWidgets3
 active_configuration=Linux3_Debug
 version_saved=20191006
-version_required=20130729
+version_required=20140318
 tab_width=4
 tab_use_spaces=0
 explorer_path=../../pseint
@@ -31,15 +31,15 @@ path=mxUtils.cpp
 cursor=118:11
 [source]
 path=ConfigManager.cpp
-cursor=103:7
+cursor=123:74
 [source]
 path=mxSource.cpp
-cursor=134:104
-breakpoint=772
+cursor=1483:72
+breakpoint=784
 breakpoint_annotation=
-breakpoint=747
+breakpoint=759
 breakpoint_annotation=
-marker=1688
+marker=1700
 open=true
 [source]
 path=mxProcess.cpp
@@ -57,7 +57,7 @@ path=mxFindDialog.cpp
 cursor=44:1
 [source]
 path=mxAboutWindow.cpp
-cursor=71:33
+cursor=98:75
 marker=71
 [source]
 path=mxHelpWindow.cpp
@@ -81,7 +81,7 @@ path=mxEvaluateDialog.cpp
 cursor=27:68
 [source]
 path=mxUpdatesChecker.cpp
-cursor=15:19
+cursor=127:95
 [source]
 path=mxConfig.cpp
 cursor=65:18
@@ -122,7 +122,7 @@ path=mxStatusBar.cpp
 cursor=8:24
 [source]
 path=CommunicationsManager.cpp
-cursor=127:8
+cursor=56:10
 marker=133
 [source]
 path=HtmlExporter.cpp
@@ -132,7 +132,7 @@ path=mxOpersWindow.cpp
 cursor=0:0
 [source]
 path=Logger.cpp
-cursor=31:34
+cursor=14:68
 [source]
 path=mxPanelHelper.cpp
 cursor=0:0
@@ -142,7 +142,7 @@ cursor=60:6
 marker=63
 [source]
 path=../pseval/Package.cpp
-cursor=216:11
+cursor=263:23
 [source]
 path=mxTestPanel.cpp
 cursor=59:65
@@ -180,13 +180,12 @@ cursor=76:6
 [header]
 path=mxSource.h
 cursor=0:13
-open=true
 [header]
 path=mxProcess.h
 cursor=30:28
 [header]
 path=version.h
-cursor=0:24
+cursor=1:29
 [header]
 path=ids.h
 cursor=83:19
@@ -258,7 +257,7 @@ path=mxStatusBar.h
 cursor=9:40
 [header]
 path=CommunicationsManager.h
-cursor=43:2
+cursor=14:16
 [header]
 path=HtmlExporter.h
 cursor=-1:477
@@ -321,7 +320,7 @@ name=Linux2_Debug
 toolchain=
 working_folder=../bin
 always_ask_args=0
-args=--logger /mnt/rm/psok.log
+args=
 exec_method=0
 exec_script=
 env_vars=
@@ -541,8 +540,5 @@ suppress_ids=unusedFunction cstyleCast
 inline_suppr=1
 additional_files=
 exclude_list=
-[inspections]
-expr=cual
-expr=what
 [custom_tools]
 [end]

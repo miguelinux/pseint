@@ -1,0 +1,21 @@
+all: 
+	${MAKE} -C pseint   -f Makefile.m64
+	${MAKE} -C psexport -f Makefile.m64
+	${MAKE} -C hoewrap  -f Makefile.m64
+	${MAKE} -C wxPSeInt -f Makefile.m64
+	${MAKE} -C pseval   -f Makefile.m64
+	${MAKE} -C updatem  -f Makefile.m64
+	${MAKE} -C psterm   -f Makefile.m64
+	${MAKE} -C psdraw3  -f Makefile.m64
+	${MAKE} -C psdrawE  -f Makefile.m64
+
+clean: 
+	${MAKE} -C pseint   -f Makefile.m64 clean
+	${MAKE} -C psexport -f Makefile.m64 clean
+	${MAKE} -C hoewrap  -f Makefile.m34 clean
+	${MAKE} -C wxPSeInt -f Makefile.m64 clean
+	${MAKE} -C pseval   -f Makefile.m64 clean
+	${MAKE} -C updatem  -f Makefile.m64 clean
+	${MAKE} -C psterm   -f Makefile.m64 clean
+	${MAKE} -C psdraw3  -f Makefile.m64 clean
+	${MAKE} -C psdrawE  -f Makefile.m64 clean

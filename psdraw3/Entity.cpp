@@ -15,7 +15,7 @@
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
-static unsigned char flechita = 27;
+static const unsigned char flechita = 27;
 
 bool Entity::nassi_shneiderman=false;
 bool Entity::alternative_io=false; 

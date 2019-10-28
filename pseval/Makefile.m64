@@ -1,0 +1,17 @@
+OBJS_DIR=../temp/eval_m64_rls
+GPP=x86_64-apple-darwin18-clang++
+CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -DALLOW_MARKDOWN -DWX3
+LIBS=`/opt/mac/local/bin/wx-config --libs std,stc` -L../temp/hoew_m64_rls -lhoewrap
+
+all: ${OBJS_DIR} ../bin/pseval
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/pseval
+
+../bin/pseval: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}

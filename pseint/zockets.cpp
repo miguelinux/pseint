@@ -68,7 +68,7 @@ ZOCKET zocket_esperar_llamada(short int port) {
 	dir.sin_family = AF_INET;
 	dir.sin_port = htons(port);
 	//	dir.sin_addr.s_addr = INADDR_ANY;
-	if (bind (desc_srv, (struct sockaddr *)&dir, sizeof (dir)) == -1)
+	if (::bind (desc_srv, (struct sockaddr *)&dir, sizeof (dir)) == -1)
 		return ZOCKET_ERROR;
 	if (listen(desc_srv,1)==-1)
 		return ZOCKET_ERROR;

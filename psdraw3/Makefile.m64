@@ -1,0 +1,18 @@
+OBJS_DIR=../temp/drw3_m64_rls
+GPP=x86_64-apple-darwin18-clang++
+CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -D_USE_TEXTURES -D_USE_FONT -DWX3
+LIBS=-framework OpenGL -framework GLUT  `/opt/mac/local/bin/wx-config --libs std,gl`
+
+all: ${OBJS_DIR} ../bin/psdraw3
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psdraw3
+
+../bin/psdraw3: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
+

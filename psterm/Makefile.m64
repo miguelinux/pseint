@@ -1,0 +1,17 @@
+OBJS_DIR=../temp/trm_m64_rls
+GPP=x86_64-apple-darwin18-clang++
+CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -DWX3
+LIBS=`/opt/mac/local/bin/wx-config --libs std,stc`
+
+all: ${OBJS_DIR} ../bin/psterm
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../bin/psterm
+
+../bin/psterm: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir -p ${OBJS_DIR}
