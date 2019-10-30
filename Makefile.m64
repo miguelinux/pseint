@@ -12,7 +12,7 @@ all:
 clean: 
 	${MAKE} -C pseint   -f Makefile.m64 clean
 	${MAKE} -C psexport -f Makefile.m64 clean
-	${MAKE} -C hoewrap  -f Makefile.m34 clean
+	${MAKE} -C hoewrap  -f Makefile.m64 clean
 	${MAKE} -C wxPSeInt -f Makefile.m64 clean
 	${MAKE} -C pseval   -f Makefile.m64 clean
 	${MAKE} -C updatem  -f Makefile.m64 clean

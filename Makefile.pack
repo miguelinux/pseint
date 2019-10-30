@@ -56,6 +56,27 @@ lnx:
 dist/mnt:
 	mkdir -p dist/mnt
 
+m64: dist/mnt
+	make -f Makefile.pack clean
+	make -f Makefile.m64
+	rm -rf dist/pseint.app
+	mkdir -p dist/pseint.app
+	mkdir -p dist/pseint.app/Contents
+	mkdir -p dist/pseint.app/Contents/MacOS
+	mkdir -p dist/pseint.app/Contents/Resources
+	cp -r bin/* dist/pseint.app/Contents/Resources
+	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
+	cp dist/Info.plist dist/pseint.app/Contents/
+	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns
+
+	bash dist/fix_dylibs.sh	dist/pseint.app
+	
+	tar -czvf dist/pseint-m64-`cat bin/version`.tgz -C dist pseint.app
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-m64-`cat bin/version`.tgz
+	@echo
+
 m32: dist/mnt
 	make -f Makefile.pack clean
 	make -f Makefile.m32
