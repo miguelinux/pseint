@@ -30,8 +30,6 @@
 #define IF_THERE_IS_SOURCE if (notebook->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook->GetPage(notebook->GetSelection()))
 #include "mxInputDialog.h"
-#include "FlowEditionManager.h"
-#include <iostream>
 #include "RTSyntaxManager.h"
 #include "mxVarWindow.h"
 #include "mxDebugWindow.h"

@@ -9,10 +9,8 @@
 #include "DebugManager.h"
 #include <wx/filename.h>
 #include "mxInputDialog.h"
-#include "FlowEditionManager.h"
 #include "mxDebugWindow.h"
 #include "CommunicationsManager.h"
-#include <iostream>
 #include "Logger.h"
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>

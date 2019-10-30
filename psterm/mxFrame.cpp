@@ -122,12 +122,12 @@ void mxFrame::OnSocketEvent (wxSocketEvent & event) {
 			socket->Write(tosend_after_hello.c_str(),tosend_after_hello.Len());
 	} if (event.GetSocketEvent()==wxSOCKET_INPUT) {
 		// leer datos y procesar
-		wxChar buf[256];
+		char buf[256];
 		socket->Read(buf,255);
 		int n = socket->LastCount();
 		while (n>0) {
 			buf[n]='\0';
-			wxChar *aux=buf;
+			char *aux=buf;
 			for (int i=0;i<n;i++)
 				if (buf[i]=='\n') {
 					buf[i]='\0';

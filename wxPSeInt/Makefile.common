@@ -3,7 +3,7 @@ OBJS=${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxUtils.o
 ${OBJS_DIR}/DebugManager.o: DebugManager.cpp DebugManager.h mxSource.h RTSyntaxManager.h mxMainWindow.h mxProcess.h mxDesktopTestGrid.h mxEvaluateDialog.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxDebugWindow.h mxSubtitles.h Logger.h
 	${GPP} ${CXXFLAGS} -c DebugManager.cpp -o $@
 
-${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h RTSyntaxManager.h ids.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTestPanel.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h FlowEditionManager.h mxVarWindow.h ../pseint/new_memoria_inter.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h mxOpersWindow.h mxPanelHelper.h Logger.h mxExportPreview.h mxIconInstaller.h mxTestPanel.h ../pseval/Package.h mxHtmlWindow.h error_recovery.h mxFontsConfig.h
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxUtils.h mxMainWindow.h mxSource.h RTSyntaxManager.h ids.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxProcess.h version.h ../pseint/version_common.h HelpManager.h mxBitmapButton.h mxFindDialog.h mxAboutWindow.h mxHelpWindow.h mxDropTarget.h DebugManager.h mxDesktopTestPanel.h mxEvaluateDialog.h mxUpdatesChecker.h mxConfig.h mxProfile.h mxPrintOut.h mxInputDialog.h mxVarWindow.h ../pseint/new_memoria_inter.h mxDebugWindow.h mxSubtitles.h mxStatusBar.h CommunicationsManager.h HtmlExporter.h mxOpersWindow.h mxPanelHelper.h Logger.h mxExportPreview.h mxIconInstaller.h mxTestPanel.h ../pseval/Package.h mxHtmlWindow.h error_recovery.h mxFontsConfig.h
 	${GPP} ${CXXFLAGS} -c mxMainWindow.cpp -o $@
 
 ${OBJS_DIR}/mxUtils.o: mxUtils.cpp mxUtils.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxBitmapButton.h ids.h
@@ -15,7 +15,7 @@ ${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h ../pseint/LangSet
 ${OBJS_DIR}/mxSource.o: mxSource.cpp HelpManager.h mxUtils.h Logger.h string_conversions.h mxVarWindow.h ../pseint/new_memoria_inter.h mxDesktopTestGrid.h error_recovery.h mxSource.h RTSyntaxManager.h mxStatusBar.h ConfigManager.h ../pseint/LangSettings.h ids.h mxProcess.h mxDropTarget.h DebugManager.h mxMainWindow.h CommonParsingFunctions.h
 	${GPP} ${CXXFLAGS} -c mxSource.cpp -o $@
 
-${OBJS_DIR}/mxProcess.o: mxProcess.cpp mxProcess.h mxSource.h RTSyntaxManager.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxUtils.h mxMainWindow.h mxStatusBar.h DebugManager.h mxInputDialog.h FlowEditionManager.h mxDebugWindow.h CommunicationsManager.h Logger.h
+${OBJS_DIR}/mxProcess.o: mxProcess.cpp mxProcess.h mxSource.h RTSyntaxManager.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h mxUtils.h mxMainWindow.h mxStatusBar.h DebugManager.h mxInputDialog.h mxDebugWindow.h CommunicationsManager.h Logger.h
 	${GPP} ${CXXFLAGS} -c mxProcess.cpp -o $@
 
 ${OBJS_DIR}/HelpManager.o: HelpManager.cpp HelpManager.h mxUtils.h ConfigManager.h ../pseint/LangSettings.h string_conversions.h

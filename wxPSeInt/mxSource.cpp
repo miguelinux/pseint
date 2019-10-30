@@ -1424,7 +1424,7 @@ void mxSource::SelectInstruccion (int _l, int _i) {
 	vector<int> &v=FillAuxInstr(_l);
 	_l=PositionFromLine(_l);
 	if (2*_i>int(v.size())) SetSelection(_l+v[0],_l+v[v.size()-1]);
-	else SetSelection(_l+v[2*_i+1],_l+v[2*_i]);
+	else SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
 }
 
 void mxSource::DoRealTimeSyntax (RTSyntaxManager::Info *args) {
