@@ -13,7 +13,7 @@ Package pack;
 bool mxApplication::OnInit() {
 	
 	srand(time(0));
-	_handle_version_query("psEval");
+	_handle_version_query("psEval",false);
 	
 	OSDep::AppInit();
 	

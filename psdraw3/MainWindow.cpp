@@ -17,7 +17,7 @@ MainWindow *main_window=NULL;
 enum { MID_MAIN = wxID_HIGHEST, MID_ZOOM, MID_FULLSCREEN, MID_STYLE, MID_COMMENTS, MID_CROPLABEL, MID_COLORS, MID_SUB, MID_RUN, MID_DEBUG, MID_EXPORT, MID_CLOSE, MID_HELP };
 
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
-//	EVT_CHAR(Canvas::OnChar)
+//	EVT_KEY_DOWN(MainWindow::OnChar) // no hace falta, los agarra directamente el canvas
 #if WIN32
 	EVT_MOUSEWHEEL(MainWindow::OnMouseWheel)
 #endif
@@ -65,7 +65,6 @@ MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosi
 	sizer->Add(new Canvas(this),wxSizerFlags().Expand().Proportion(1));
 	SetSizer(sizer);
 	canvas->SetFocusFromKbd();
-//	SetAccelerators();
 	Show();
 }
 
@@ -80,12 +79,8 @@ void MainWindow::OnClose (wxCloseEvent & evt) {
 //	SetAcceleratorTable(accel);
 //}
 
-void MainWindow::OnChar (wxKeyEvent & event) {
-//	canvas->OnChar(event);
-}
-
 void MainWindow::OnMouseWheel (wxMouseEvent & event) {
-//	canvas->OnMouseWheel(event);
+	canvas->OnMouseWheel(event);
 }
 
 void MainWindow::ToggleFullScreen ( ) {
@@ -133,6 +128,6 @@ int MainWindow::MIDtoMO (int mid) {
 
 void MainWindow::OnActivated(wxActivateEvent &event) {
 	event.Skip();
-//	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
+	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
 }
 

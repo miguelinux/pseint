@@ -392,7 +392,7 @@ void FocusEntity(LineInfo *li) {
 			}
 		}
 		else if (!li->proceso) debug_current=NULL;
-	} else debugging=NULL;
+	} else debug_current=NULL;
 }
 
 void SetModified( ) {

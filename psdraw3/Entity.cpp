@@ -539,7 +539,7 @@ void Entity::CopyPos(Entity *o) {
 }
 
 bool Entity::CheckMouse(int x, int y, bool click) {
-	if (!edit_on || (!showbase&&type==ET_COMENTARIO)) return false;
+	if (!edit_on || (!show_comments&&type==ET_COMENTARIO)) return false;
 	if (click) {
 		if (type==ET_OPCION) {
 			if (x>=d_fx-d_bwl && x<=d_fx-d_bwl+flecha_w && y<=d_fy && y>=d_fy-d_h) { // agregar una opción más
@@ -792,7 +792,8 @@ void Entity::SetLabels() {
 				lpre="";
 			}
 			break;
-	case ET_COUNT: return;
+		case ET_COUNT: return;
+		case ET_SELECTION: break; // nada, pero está para que estén todas las opciones y evitar así un warning
 	}
 	SetLabel(label);
 }

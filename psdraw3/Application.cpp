@@ -18,7 +18,7 @@ LangSettings lang(LS_DO_NOT_INIT);
 
 bool mxApplication::OnInit() {
 	
-	_handle_version_query("psDraw3");
+	_handle_version_query("psDraw3",false);
 	
 	OSDep::AppInit();
 	

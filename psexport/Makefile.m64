@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/exp_m64_rls
 GPP=x86_64-apple-darwin18-clang++
-CXXFLAGS= -O2 -I../pseint -D_FOR_PSEXPORT
+CXXFLAGS= -O2 -I../pseint -D_FOR_PSEXPORT -Wno-invalid-source-encoding -Wno-inconsistent-missing-override
 LIBS=
 
 all: ${OBJS_DIR} ../bin/psexport

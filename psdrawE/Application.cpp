@@ -46,7 +46,7 @@ void SetModified() {}
 
 bool mxApplication::OnInit() {
 	
-	_handle_version_query("psDrawE");
+	_handle_version_query("psDrawE",false);
 	
 	OSDep::AppInit();
 	

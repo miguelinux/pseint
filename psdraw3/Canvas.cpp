@@ -7,6 +7,7 @@
 #include "Textures.h"
 #include "Canvas.h"
 #include "../wxPSeInt/string_conversions.h"
+#include <wx/msgdlg.h>
 static int gl_attrib[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
 using namespace std;
 
@@ -164,7 +165,11 @@ void Canvas::OnKeyDown (wxKeyEvent & event) {
 	default: 
 		if (key>=WXK_F1&&key<=WXK_F12) keyboard_esp_cb(key);
 		else if (key==WXK_LEFT||key==WXK_RIGHT||key==WXK_END||key==WXK_HOME) keyboard_esp_cb(key);
+#if defined(WX3) && defined(__APPLE__)
+		else OnChar(event); // en mac con wx3 no lanza el evento OnChar para las teclas comunes, por eso lo redirecciono desde acá
+#else
 		else event.Skip();
+#endif
 	}
 }
 

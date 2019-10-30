@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
 
 	string fname_in,fname_out;
 
-	_handle_version_query("psExport");
+	_handle_version_query("psExport",0);
 	
 	lang.Reset();
 	

@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/int_m64_rls
 GPP=x86_64-apple-darwin18-clang++
-CXXFLAGS= -O3 -DUSE_ZOCKETS -DNDEBUG
+CXXFLAGS= -O3 -DUSE_ZOCKETS -DNDEBUG -Wno-invalid-source-encoding
 LIBS=
 
 all: ${OBJS_DIR} ../bin/pseint

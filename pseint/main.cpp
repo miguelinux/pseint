@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 	signal(9,on_signal);
 	signal(15,on_signal);
 
-	_handle_version_query("PSeInt");
+	_handle_version_query("PSeInt",0);
 
 	lang.Reset();
 	

@@ -24,7 +24,7 @@ static wxString EscapeString(wxString what) {
 
 bool mxApplication::OnInit() {
 	
-	_handle_version_query("psTerm");
+	_handle_version_query("psTerm",false);
 	
 	OSDep::AppInit();
 	

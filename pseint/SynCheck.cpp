@@ -1024,7 +1024,11 @@ int SynCheck(int linea_from, int linea_to) {
 					for (size_t i=0;i<cadena.size();i++) {
 						if (cadena[i]=='(') parentesis++;
 						if (cadena[i]==')') parentesis--;
-						if (cadena[i]=='\'') { while ((++i)<cadena.size() && cadena[i]!='\''); continue; }
+						if (cadena[i]=='\'') { 
+							while ((++i)<cadena.size() && cadena[i]!='\'')
+								; 
+							continue; 
+						}
 						if (i>0 && i<cadena.size()-1) {
 							if (lang[LS_LAZY_SYNTAX] && cadena[i]==' ') cadena[i]=',';
 							if (cadena[i]==' ' && cadena[i-1]!='&' && cadena[i-1]!='|'  && cadena[i+1]!='&'  && cadena[i+1]!='|')

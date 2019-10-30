@@ -38,11 +38,11 @@
 		fout<<what<<" "<<VERSION<<"-"<<ARCHITECTURE<<ARCH_EXTRA<<std::endl; \
 	fout.close()
 
-#define _handle_version_query(what) \
+#define _handle_version_query(what,retval) \
 	if (argc==2 && std::string(argv[1])=="--version") { \
-		_print_version_info(what); return false; \
+		_print_version_info(what); return retval; \
 	} else if (argc==3 && std::string(argv[1])=="--version") { \
-		_write_version_info(what,argv[2]); return false; \
+		_write_version_info(what,argv[2]); return retval; \
 	}
 
 #endif

@@ -34,7 +34,7 @@ bool mxApplication::OnInit() {
 	_if_wx3(wxDisableAsserts());
 #endif
 	
-	_handle_version_query("wxPSeInt");
+	_handle_version_query("wxPSeInt",false);
 	
 	OSDep::AppInit();
 	
