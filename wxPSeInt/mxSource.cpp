@@ -627,7 +627,56 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				}
 			}
 		} else
-		if (chr==')'||chr==']') HideCalltip();
+		if (chr==')'||chr==']') {
+			HideCalltip();
+		}
+//#if WX3
+//		else {
+//			int p = GetCurrentPos();
+//			if (p>1 && chr=='-' && GetCharAt(p-2)=='<') {
+//				SetSelectionStart(p-2); SetSelectionEnd(p);
+////				ReplaceSelection(L"\u2190");
+//				ReplaceSelection(L"\u27f5");
+//			}
+//			else 
+//			if (p>1 && chr=='=' && GetCharAt(p-2)=='<') {
+//				SetSelectionStart(p-2); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2264");
+//			}
+//			else 
+//			if (p>1 && chr=='=' && GetCharAt(p-2)=='>') {
+//				SetSelectionStart(p-2); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2265");
+//			}
+//			else 
+//			if (p>1 && chr=='=' && GetCharAt(p-2)=='!') {
+//				SetSelectionStart(p-2); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2260");
+//			}
+//			else 
+//			if (p>1 && chr=='>' && GetCharAt(p-2)=='<') {
+//				SetSelectionStart(p-2); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2260");
+//			}
+//			else 
+//			if (chr=='^') {
+//				SetSelectionStart(p-1); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2191");
+//			}
+//			if (chr=='&') {
+//				SetSelectionStart(p-1); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2227");
+//			}
+//			if (chr=='|') {
+//				SetSelectionStart(p-1); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u2228");
+//			}
+//			if (chr=='~' || chr=='!') {
+//				SetSelectionStart(p-1); SetSelectionEnd(p);
+//				ReplaceSelection(L"\u00AC");
+//			}
+//		}
+//#endif
 	}
 }
 

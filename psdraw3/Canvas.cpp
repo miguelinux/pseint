@@ -11,7 +11,7 @@
 static int gl_attrib[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
 using namespace std;
 
-Canvas *canvas = nullptr;
+Canvas *canvas = NULL;
 
 BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_SIZE(Canvas::OnSize)
