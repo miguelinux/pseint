@@ -313,7 +313,7 @@ path=osdep.h
 cursor=10:0
 [other]
 path=../bin/help/cambios.html
-cursor=4:0
+cursor=4:228
 open=true
 [other]
 path=../bin/help/errores.hlp
