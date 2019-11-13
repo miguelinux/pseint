@@ -132,6 +132,7 @@ void MoveToChild(Entity *mouse, Entity *aux, int i){
 }
 
 void display_cb() {
+	
 	mouse_cursor=Z_CURSOR_CROSSHAIR;
 	status_color=NULL;
 	if (entity_to_del) delete entity_to_del;

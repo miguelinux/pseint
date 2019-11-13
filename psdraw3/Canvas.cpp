@@ -1,3 +1,4 @@
+#include "GLstuff.h"
 #include <iostream>
 #include <wx/glcanvas.h>
 #include <wx/dcclient.h>
@@ -35,7 +36,7 @@ END_EVENT_TABLE()
 	
 Canvas::Canvas(wxWindow *parent)
 #ifdef WX3
-	: wxGLCanvas(parent,wxGLAttributes().DoubleBuffer().RGBA(),wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
+	: wxGLCanvas(parent,wxGLAttributes().DoubleBuffer().RGBA()/*.SampleBuffers(1).Samplers(4)*/,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
 #else
 	: wxGLCanvas(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE,"canvas",gl_attrib)
 #endif
@@ -49,6 +50,7 @@ Canvas::Canvas(wxWindow *parent)
 Canvas::~Canvas() {
 	_if_wx3(delete m_context);
 }
+
 
 void Canvas::OnPaint(wxPaintEvent& event) {
 	if (!IsShownOnScreen()) return;
@@ -69,6 +71,8 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 		Texture::LoadTextures();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		
+		/*glEnable(GL_POINT_SMOOTH); */glEnable(GL_LINE_SMOOTH); /*glEnable(GL_POLYGON_SMOOTH);*/
 		cursores=new wxCursor[Z_CURSOR_COUNT];
 		cursores[Z_CURSOR_INHERIT]=wxCursor(wxCURSOR_ARROW);
 		cursores[Z_CURSOR_CROSSHAIR]=wxCursor(wxCURSOR_CROSS);

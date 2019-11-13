@@ -15,7 +15,7 @@ using namespace std;
 #	define circle_steps 200 
 #else
 // menor para tiempo real
-#	define circle_steps 20
+#	define circle_steps 40
 #endif
 
 static double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el DrawShape del Para

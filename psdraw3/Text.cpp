@@ -4,14 +4,6 @@
 #include <iostream>
 #include "Global.h"
 
-bool use_textures_font = 
-#ifdef _USE_FONT
-	true
-#else
-	false
-#endif
-	;
-
 void GetTextSize(const string &label, int &w, int &h) {
 	w=label.size()*10;
 	h=15;
@@ -51,7 +43,6 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	for(int i=0;t[i]!='\0';++i) {
 		char_info &ci = char_map[c2i(t[i])];
 		glutBitmapCharacter(big_icons?GLUT_BITMAP_TIMES_ROMAN_24:GLUT_BITMAP_9_BY_15,ci.c);
-//		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,ci.c);
 		if (ci.acento) {
 			glLineWidth(1);
 			glBegin(GL_LINES);
@@ -76,75 +67,133 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 			glEnd();
 		}
 	}
-//	glPushMatrix();
-//	glTranslatef(x,y,0);
-//	glScalef(.08,.12,1);
-//	while (t[i]!='\0') dibujar_caracter(t[i++]);
-//	glPopMatrix();
 }
 
-//void DrawText(const float *color, int x, int y, const char *t) {
-//	glColor3fv(color);
-//	glPushMatrix();
-//	glTranslated(x,y,0);
-//	glScaled(.08,.12,.1);
-//	begin_texto();
-//	while (*t) 
-//		dibujar_caracter(*(t++));
-//	end_texto();
-//	glPopMatrix();
-//}
 
-void ys_dibujar_caracter(const char chr);
-void ys_dibujar_caracter(const char chr, bool extra);
-
-#ifdef _USE_FONT
 static float x_texto = 0;
-#endif
+
+bool CompilerInfo(GLuint id){
+  int len; glGetShaderiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
+  if (len){
+    char * infoLog=(char *)malloc(sizeof(char)*(len+1));
+    glGetShaderInfoLog(id,len+1,NULL,infoLog);
+    cout << "ERROR COMPILING SHADER: " << infoLog << endl;
+    free(infoLog);
+  }
+  int status; glGetShaderiv(id,GL_COMPILE_STATUS,&status); return status;
+}
+
+// imprime la info del linker de la GPU
+bool LinkerInfo(GLuint id){
+  int len; glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
+  if (len){
+    char * infoLog=(char *)malloc(sizeof(char)*(len+1));
+    glGetProgramInfoLog(id,len+1,NULL,infoLog);
+    cout << "ERROR LINKING SHADER: " << infoLog << endl;
+    free(infoLog);
+  }
+  int status; glGetProgramiv(id,GL_LINK_STATUS,&status); return status;
+}
+GLuint progID;
+bool init_glew() {
+	static bool inited = false;
+	static bool shader_ok = false;
+	if (inited) return shader_ok;
+	
+	glewInit(); inited = true;
+	
+	const char *sf4 = 
+		"#version 110\n"
+		"uniform sampler2D texture1;\n"
+		"void main() {\n"
+		"    gl_FragColor.rgb = gl_Color.rgb;\n"
+		"    vec2 st = gl_TexCoord[0].st;"
+		"	 vec2 d = fwidth(gl_TexCoord[0].st)/2.0; st -= d/2.0;"
+		"    float      a = texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+		"    st.x+=d.x; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+		"    st.y+=d.y; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+		"    st.x-=d.x; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+		"    gl_FragColor.a = a/4.0;\n"
+		"}\n";
+//	const char *sf9 = 
+//		"#version 110\n"
+//		"uniform sampler2D texture1;\n"
+//		"void main() {\n"
+//		"    gl_FragColor.rgb = gl_Color.rgb;\n"
+//		"    vec2 st = gl_TexCoord[0].st;"
+//		"	 vec2 d = fwidth(gl_TexCoord[0].st)/3.0;"
+//		"    float      a = texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.y+=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.x-=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.x-=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.y-=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.y-=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+//		"    gl_FragColor.a = a/9.0;\n"
+//		"}\n";
+	
+	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(f,1,&sf4,NULL);
+	glCompileShader(f);
+	shader_ok = CompilerInfo(f);
+	if (!shader_ok) return false;
+	
+	progID = glCreateProgram();
+	glAttachShader(progID,f);
+	glLinkProgram(progID); 
+	shader_ok = LinkerInfo(progID); 
+	
+	return shader_ok = true;
+}
+
+
 
 void begin_texto( ) {
-#ifdef _USE_FONT
-	if (!use_textures_font) return;
 	x_texto = 0;
 	texture_font.Select();
+#ifdef _USE_DF
+	if (init_glew()) {
+		glUseProgram(progID);
+	} else {
+		glPushAttrib(GL_ALL_ATTRIB_BITS);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER,0.5);
+		glBlendFunc(GL_ONE,GL_ZERO);
+	}
+#endif
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
-#endif
 }
 
 void end_texto( ) {
-#ifdef _USE_FONT
-	if (!use_textures_font) return;
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
-#endif
+# ifdef _USE_DF
+	if (init_glew()) {
+		glUseProgram(0);
+	} else {
+		glPopAttrib();
+	}
+# endif
 }
 
 
-void dibujar_caracter(const char chr) { 
-#ifdef _USE_FONT
-	if (use_textures_font) { 
-		const float f=1.f/16.f;
-		const int w=120, h=150,y0=-25;
-		float x0=x_texto;
-		unsigned char ch=chr;
-		int r=15-ch/16, c=ch%16;
-		glTexCoord2f(c*f,r*f);
-		glVertex2i(x0,y0);
-		glTexCoord2f(c*f+f,r*f);
-		glVertex2i(x0+w,y0);
-		glTexCoord2f(c*f+f,r*f+f);
-		glVertex2i(x0+w,y0+h);
-		glTexCoord2f(c*f,r*f+f);
-		glVertex2i(x0,y0+h);
-		x_texto += 800.0/7.0;
-	} else 
-#endif
-	{
-		ys_dibujar_caracter(chr); return;
-	}
-
-	
-	
+void dibujar_caracter(const char chr) {
+	const float f=1.f/16.f;
+	const int w=120, h=150,y0=-25;
+	float x0=x_texto;
+	unsigned char ch=chr;
+	int r=15-ch/16, c=ch%16;
+	glTexCoord2f(c*f,r*f);
+	glVertex2i(x0,y0);
+	glTexCoord2f(c*f+f,r*f);
+	glVertex2i(x0+w,y0);
+	glTexCoord2f(c*f+f,r*f+f);
+	glVertex2i(x0+w,y0+h);
+	glTexCoord2f(c*f,r*f+f);
+	glVertex2i(x0,y0+h);
+	x_texto += 800.0/7.0;
 }
 

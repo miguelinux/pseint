@@ -3,8 +3,6 @@
 #include <string>
 using namespace std;
 
-extern bool use_textures_font;
-
 void begin_texto(); 
 void dibujar_caracter(const char chr); 
 void end_texto(); 

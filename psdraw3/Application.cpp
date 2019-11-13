@@ -47,6 +47,7 @@ bool mxApplication::OnInit() {
 	GlobalInitPost();
 
 	glutInit (&argc, argv);
+	
 	wxImage::AddHandler(new wxPNGHandler);
 	Trash::Initialize();
 	ToolBar::Initialize();
@@ -60,6 +61,7 @@ bool mxApplication::OnInit() {
 	else Load();
 	
 	new MainWindow(wxString("PSDraw - ")<<start->label.c_str());
+	
 	return true;
 	
 }

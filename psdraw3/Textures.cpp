@@ -1,12 +1,11 @@
-#ifdef _USE_TEXTURES
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 #include <wx/string.h>
 #include <wx/image.h>
 #include "Textures.h"
 #include "Entity.h"
 #include "Text.h"
-#include <iostream>
 #include "Global.h"
 using namespace std;
 
@@ -160,8 +159,6 @@ static bool loadImage(GLuint &ID, wxString path, int* imageWidth, int* imageHeig
 	
 }
 
-bool use_textures=true;
-
 bool Texture::Load () {
 	int tex_w=0, tex_h=0; w=h=0;
 	if (!loadImage(m_id,m_fname.c_str(), &w, &h, &tex_w, &tex_h)) {
@@ -178,15 +175,15 @@ bool Texture::Load () {
 	return true;
 }
 
-#ifdef _USE_FONT
 Texture texture_font;
-#endif
 
 set<Texture*> Texture::m_to_load;
 bool Texture::LoadTextures() {
-#ifdef _USE_FONT
+# ifdef _USE_DF
+	texture_font.SetTexture(imgs_path+"../font.png");
+# else
 	texture_font.SetTexture(imgs_path+"font.png");
-#endif
+# endif
 	
 	bool all_ok = true;
 	for( set<Texture*>::iterator it=m_to_load.begin(); it!=m_to_load.end(); ++it ) { 
@@ -195,7 +192,5 @@ bool Texture::LoadTextures() {
 	m_to_load.clear();
 	return all_ok;
 }
-
-#endif
 
 
