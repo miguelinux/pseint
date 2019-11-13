@@ -100,15 +100,15 @@ void ShapesBar::Draw() {
 	glEnd();
 	if (m_extended||m_fixed) {
 		mouse_cursor = Z_CURSOR_INHERIT;
-		float sh=float(win_h)/cant_shapes_in_bar;
+		double sh=double(win_h)/cant_shapes_in_bar;
 		// resaltado(fondo) de la entidad seleccionada
 		if(m_current_selection!=no_selection) {
 			glColor3fv(color_menu_sel);
 			glBegin(GL_QUADS);
-			glVertex2f(win_w,        win_h-sh*(m_current_selection-1)); 
-			glVertex2f(win_w-m_width,win_h-sh*(m_current_selection-1)); 
-			glVertex2f(win_w-m_width,win_h-sh*(m_current_selection-0)); 
-			glVertex2f(win_w,        win_h-sh*(m_current_selection-0)); 
+			glVertex2d(win_w,        win_h-sh*(m_current_selection-1)); 
+			glVertex2d(win_w-m_width,win_h-sh*(m_current_selection-1)); 
+			glVertex2d(win_w-m_width,win_h-sh*(m_current_selection-0)); 
+			glVertex2d(win_w,        win_h-sh*(m_current_selection-0)); 
 			glEnd();
 		}
 		
@@ -118,21 +118,21 @@ void ShapesBar::Draw() {
 		if (m_visible) glColor3f(1,1,1); 
 		else glColor4f(1,1,1,.5); // dimm when fixed but not enabled
 		glBegin(GL_QUADS);
-		float dy=sh, th0=0, th1=1.0/float(cant_shapes_in_bar), dth=1.0/float(cant_shapes_in_bar);
-		float x0=win_w-m_width, x1=win_w, y0=0, y1=float(win_h)/float(cant_shapes_in_bar); 
-		float ratio=float(m_width)/float(win_h)/float(cant_shapes_in_bar);
+		double dy=sh, th0=0, th1=1.0/double(cant_shapes_in_bar), dth=1.0/double(cant_shapes_in_bar);
+		double x0=win_w-m_width, x1=win_w, y0=0, y1=double(win_h)/double(cant_shapes_in_bar); 
+		double ratio=double(m_width)/double(win_h)/double(cant_shapes_in_bar);
 		if (ratio>(m_texture_extended.r/8)) {
-			float dx=(x1-x0)*(1-(m_texture_extended.r/8)/ratio)/2;
+			double dx=(x1-x0)*(1-(m_texture_extended.r/8)/ratio)/2;
 			x0+=dx; x1-=dx;
 		} else {
-			float dy=(y1-y0)*(1-ratio/(m_texture_extended.r/8))/2;
+			double dy=(y1-y0)*(1-ratio/(m_texture_extended.r/8))/2;
 			y0+=dy; y1-=dy;
 		}
 		for(int i=0;i<cant_shapes_in_bar;i++) {
-			glTexCoord2f(0*m_texture_extended.max_s,th0*m_texture_extended.max_t); glVertex2f(x0,y0);
-			glTexCoord2f(1*m_texture_extended.max_s,th0*m_texture_extended.max_t); glVertex2f(x1,y0);
-			glTexCoord2f(1*m_texture_extended.max_s,th1*m_texture_extended.max_t); glVertex2f(x1,y1);
-			glTexCoord2f(0*m_texture_extended.max_s,th1*m_texture_extended.max_t); glVertex2f(x0,y1);
+			glTexCoord2f(0*m_texture_extended.max_s,th0*m_texture_extended.max_t); glVertex2d(x0,y0);
+			glTexCoord2f(1*m_texture_extended.max_s,th0*m_texture_extended.max_t); glVertex2d(x1,y0);
+			glTexCoord2f(1*m_texture_extended.max_s,th1*m_texture_extended.max_t); glVertex2d(x1,y1);
+			glTexCoord2f(0*m_texture_extended.max_s,th1*m_texture_extended.max_t); glVertex2d(x0,y1);
 			y0+=dy; y1+=dy; th0+=dth; th1+=dth;
 		}
 		glEnd();
@@ -142,8 +142,8 @@ void ShapesBar::Draw() {
 		glColor3fv(color_menu);
 		y0=win_h-dy;
 		for(int i=0;i<cant_shapes_in_bar-1;i++,y0-=dy) {
-			glVertex2f(win_w-m_width,y0);
-			glVertex2f(win_w,y0);
+			glVertex2d(win_w-m_width,y0);
+			glVertex2d(win_w,y0);
 		}
 		glEnd();
 	} else { 

@@ -70,7 +70,7 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 }
 
 
-static float x_texto = 0;
+static double x_texto = 0;
 
 bool CompilerInfo(GLuint id){
   int len; glGetShaderiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
@@ -102,20 +102,34 @@ bool init_glew() {
 	
 	glewInit(); inited = true;
 	
-	const char *sf4 = 
+	const char *sf4 = // 4 muestrar regulares
 		"#version 110\n"
 		"uniform sampler2D texture1;\n"
 		"void main() {\n"
 		"    gl_FragColor.rgb = gl_Color.rgb;\n"
 		"    vec2 st = gl_TexCoord[0].st;"
 		"	 vec2 d = fwidth(gl_TexCoord[0].st)/2.0; st -= d/2.0;"
-		"    float      a = texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-		"    st.x+=d.x; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-		"    st.y+=d.y; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-		"    st.x-=d.x; a+= texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
+		"    float tol = d.x>0.003 ? 0.3 : 0.5; " // si se aleja, bajar la tol para que no queden tan finas
+		"    float      a = texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
+		"    st.x+=d.x; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
+		"    st.y+=d.y; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
+		"    st.x-=d.x; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
 		"    gl_FragColor.a = a/4.0;\n"
 		"}\n";
-//	const char *sf9 = 
+//	const char *sfR = // 4 muestras rotadas... no queda tan bien como debería
+//		"#version 110\n"
+//		"uniform sampler2D texture1;\n"
+//		"void main() {\n"
+//		"    gl_FragColor.rgb = gl_Color.rgb;\n"
+//		"    vec2 st = gl_TexCoord[0].st;"
+//		"	 vec2 d = fwidth(gl_TexCoord[0].st);"
+//		"    float      a = texture2D(texture1, st+vec2(-d.x*0.17,+d.y*0.36)).a >0.5 ? 1.0 : 0.0;\n"
+//		"               a+= texture2D(texture1, st+vec2(+d.x*0.17,-d.y*0.36)).a >0.5 ? 1.0 : 0.0;\n"
+//		"               a+= texture2D(texture1, st+vec2(-d.x*0.36,+d.y*0.17)).a >0.5 ? 1.0 : 0.0;\n"
+//		"               a+= texture2D(texture1, st+vec2(+d.x*0.36,-d.y*0.17)).a >0.5 ? 1.0 : 0.0;\n"
+//		"    gl_FragColor.a = a/4.0;\n"
+//		"}\n";
+//	const char *sf9 = // 9 muestras, queda mejor pero es mas caro
 //		"#version 110\n"
 //		"uniform sampler2D texture1;\n"
 //		"void main() {\n"
@@ -181,9 +195,9 @@ void end_texto( ) {
 
 
 void dibujar_caracter(const char chr) {
-	const float f=1.f/16.f;
+	const double f=1.0/16.0;
 	const int w=120, h=150,y0=-25;
-	float x0=x_texto;
+	double x0=x_texto;
 	unsigned char ch=chr;
 	int r=15-ch/16, c=ch%16;
 	glTexCoord2f(c*f,r*f);

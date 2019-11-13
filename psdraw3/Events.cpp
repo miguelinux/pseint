@@ -49,8 +49,8 @@ void Salir(bool force) {
 void reshape_cb (int w, int h) {
 	if (w==0||h==0) return;
 	if (win_w!=0&&win_h!=0) {
-		float zw=float(w)/win_w;
-		float zh=float(h)/win_h;
+		double zw=double(w)/win_w;
+		double zh=double(h)/win_h;
 		d_dx*=zw/zh;
 //		if (zh>zw) zoom*=zh; else zoom*=zw;
 		zoom*=zh;
@@ -155,14 +155,14 @@ void motion_cb(int x, int y) {
 	}
 }
 
-void ZoomExtend(int x0, int y0, int x1, int y1, float max) {
+void ZoomExtend(int x0, int y0, int x1, int y1, double max) {
 	if (x1<x0) { int aux=x1; x1=x0; x0=aux; }
 	if (y0<y1) { int aux=y1; y1=y0; y0=aux; }
 	if (x1-x0<10||y0-y1<10) return;
 	int h=y0-y1, w=x1-x0;
 	const int margin = 40;
-	double zh=float(win_h-margin)/h; // zoom para ajustar alto
-	double zw=float(win_w-shapes_bar->GetWidth()-margin)/w; // zoom para ajustar ancho
+	double zh=double(win_h-margin)/h; // zoom para ajustar alto
+	double zw=double(win_w-shapes_bar->GetWidth()-margin)/w; // zoom para ajustar ancho
 	if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
 	if (zoom>max) zoom=max;
 	d_dx=(win_w-shapes_bar->GetWidth())/zoom/2-(x1+x0)/2;
@@ -263,7 +263,7 @@ void mouse_cb(int button, int state, int x, int y) {
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
 		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
 		zoom*=f;
-		float dx=x/f-x, dy=y/f-y;
+		double dx=x/f-x, dy=y/f-y;
 		d_dx+=dx; d_dy+=dy;
 	} else if (state==ZMB_DOWN) {
 		if (button==ZMB_MIDDLE) { // click en el menu
@@ -374,8 +374,8 @@ void FocusEntity(LineInfo *li) {
 			if (start!=li->proceso) SetProc(li->proceso);
 			debug_current=li->entidad;
 			if (li->entidad) {
-				float fx=(win_w/2)/zoom;
-				float fy=(win_h/2)/zoom;
+				double fx=(win_w/2)/zoom;
+				double fy=(win_h/2)/zoom;
 				// que se vea el centro en x de la entidad
 				int dx=-li->entidad->x+fx;
 				if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;

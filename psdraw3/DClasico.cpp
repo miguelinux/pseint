@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 #include "GLstuff.h"
 #include "Entity.h"
 #include "Global.h"
 #include "Draw.h"
-#include <cmath>
 using namespace std;
 
 // cantidad de tramos en los que aproximo el circulo para dibujarlo como poligonal
@@ -143,64 +143,56 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 	glLineWidth(line_width_flechas);
 }
 
-inline void DrawTrue(int x, int y) {
-	// V
+inline void DrawTrue(int x, int y) { // V
 	glVertex2i(x,y); glVertex2i(x-margin/2,y+2*vf_size);
 	glVertex2i(x,y); glVertex2i(x+margin/2,y+2*vf_size);
-//	//S
-//	glVertex2i(x,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+2*vf_size-margin/4);
-//	glVertex2i(x-vf_size,y+2*vf_size-margin/4); glVertex2i(x-vf_size,y+vf_size);
-//	glVertex2i(x-vf_size,y+vf_size); glVertex2i(x,y+vf_size);
-//	glVertex2i(x,y+vf_size); glVertex2i(x,y+margin/4);
-//	glVertex2i(x,y+margin/4); glVertex2i(x-vf_size,y+margin/4);
-//	//I
-//	glVertex2i(x+vf_size/2+margin/3,y);
-//	glVertex2i(x+vf_size/2+margin/3,y+2*vf_size);
 }
 
-inline void DrawFalse(int x, int y) {
-	// F
+inline void DrawFalse(int x, int y) { // F
 	glVertex2i(x-vf_size/2,y); glVertex2i(x-vf_size/2,y+2*vf_size);
 	glVertex2i(x-vf_size/2,y+2*vf_size); glVertex2i(x+vf_size/2,y+2*vf_size);
 	glVertex2i(x-vf_size/2,y+vf_size); glVertex2i(x+vf_size/2,y+vf_size);
-//	//N
-//	glVertex2i(x-vf_size-margin/3,y); glVertex2i(x-vf_size-margin/3,y+2*vf_size);
-//	glVertex2i(x-vf_size-margin/3,y+2*vf_size);glVertex2i(x-margin/3,y);
-//	glVertex2i(x-margin/3,y);glVertex2i(x-margin/3,y+2*vf_size);
-//	//O
-//	glVertex2i(x+margin/3,y+margin/4);glVertex2i(x+margin/3,y+2*vf_size-margin/4);
-//	glVertex2i(x+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);
-//	glVertex2i(x+vf_size+margin/3,y+2*vf_size-margin/4);glVertex2i(x+vf_size+margin/3,y+margin/4);
-//	glVertex2i(x+vf_size+margin/3,y+margin/4);glVertex2i(x+margin/3,y+margin/4);
+}
+
+inline void DrawFlechaDownHead(int x, int y2) {
+	glEnd(); glBegin(GL_TRIANGLES);
+	glVertex2i(x,y2);
+	glVertex2i(x-flecha_d,y2+flecha_d);
+	glVertex2i(x+flecha_d,y2+flecha_d);
+	glEnd(); glBegin(GL_LINES);
 }
 
 inline void DrawFlechaDown(int x, int y1, int y2) {
 	glVertex2i(x,y1); glVertex2i(x,y2);
-	glVertex2i(x-flecha_d,y2+flecha_d); glVertex2i(x,y2);
-	glVertex2i(x+flecha_d,y2+flecha_d); glVertex2i(x,y2);
+	DrawFlechaDownHead(x,y2);
 }
 
-inline void DrawFlechaDownHead(int x, int y2) {
-	glVertex2i(x-flecha_d,y2+flecha_d); glVertex2i(x,y2);
-	glVertex2i(x+flecha_d,y2+flecha_d); glVertex2i(x,y2);
-}
 
 inline void DrawFlechaUp(int x, int y1, int y2) {
 	glVertex2i(x,y1); glVertex2i(x,y2);
-	glVertex2i(x-flecha_d,y2-flecha_d); glVertex2i(x,y2);
-	glVertex2i(x+flecha_d,y2-flecha_d); glVertex2i(x,y2);
+	glEnd(); glBegin(GL_TRIANGLES);
+	glVertex2i(x,y2);
+	glVertex2i(x-flecha_d,y2-flecha_d);
+	glVertex2i(x+flecha_d,y2-flecha_d);
+	glEnd(); glBegin(GL_LINES);
 }
 
 inline void DrawFlechaR(int x1, int x2, int y) {
 	glVertex2i(x1,y); glVertex2i(x2,y);
-	glVertex2i(x2-flecha_d,y-flecha_d); glVertex2i(x2,y);
-	glVertex2i(x2-flecha_d,y+flecha_d); glVertex2i(x2,y);
+	glEnd(); glBegin(GL_TRIANGLES);
+	glVertex2i(x2-flecha_d,y-flecha_d);
+	glVertex2i(x2-flecha_d,y+flecha_d);
+	glVertex2i(x2,y);
+	glEnd(); glBegin(GL_LINES);
 }
 
 inline void DrawFlechaL(int x1, int x2, int y) {
 	glVertex2i(x1,y); glVertex2i(x2,y);
-	glVertex2i(x2+flecha_d,y-flecha_d); glVertex2i(x2,y);
-	glVertex2i(x2+flecha_d,y+flecha_d); glVertex2i(x2,y);
+	glEnd(); glBegin(GL_TRIANGLES);
+	glVertex2i(x2+flecha_d,y-flecha_d);
+	glVertex2i(x2+flecha_d,y+flecha_d);
+	glVertex2i(x2,y);
+	glEnd(); glBegin(GL_LINES);
 }
 
 void Entity::DrawClasico(bool force) {

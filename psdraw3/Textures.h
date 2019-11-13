@@ -18,7 +18,7 @@ public:
 	Texture(wxString fname) : m_fname(fname), m_id(-1) { m_to_load.insert(this); }
 	~Texture() { m_to_load.erase(this); }
 	int w,h; 
-	float r, max_s, max_t;
+	double r, max_s, max_t;
 	void Select() { glBindTexture(GL_TEXTURE_2D,m_id); }
 	static bool LoadTextures();
 };

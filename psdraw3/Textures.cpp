@@ -29,8 +29,8 @@ static bool loadImage(GLuint &ID, wxString path, int* imageWidth, int* imageHeig
 	* If your texture sizes are not restricted to power of 2s, you can
 	* of course adapt the bit below as needed.
 	*/
-	float power_of_two_that_gives_correct_width=std::log((float)(*imageWidth))/std::log(2.0);
-	float power_of_two_that_gives_correct_height=std::log((float)(*imageHeight))/std::log(2.0);
+	double power_of_two_that_gives_correct_width=std::log((double)(*imageWidth))/std::log(2.0);
+	double power_of_two_that_gives_correct_height=std::log((double)(*imageHeight))/std::log(2.0);
 	// check if image dimensions are a power of two
 	if( (int)power_of_two_that_gives_correct_width == power_of_two_that_gives_correct_width &&
 		(int)power_of_two_that_gives_correct_height == power_of_two_that_gives_correct_height) {
@@ -169,9 +169,9 @@ bool Texture::Load () {
 		cerr << "ERROR: EMPTY TEXTURE: " << m_fname << endl;
 		return false;
 	}
-	r=float(w)/h;
-	max_s=float(w)/tex_w;
-	max_t=float(h)/tex_h;
+	r=double(w)/h;
+	max_s=double(w)/tex_w;
+	max_t=double(h)/tex_h;
 	return true;
 }
 

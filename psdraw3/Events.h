@@ -14,7 +14,7 @@ void Salir(bool force=false);
 
 void Raise();
 
-void ZoomExtend(int x0, int y0, int x1, int y1, float max=10);
+void ZoomExtend(int x0, int y0, int x1, int y1, double max=15);
 
 void ProcessMenu(int op);
 

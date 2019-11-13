@@ -40,74 +40,74 @@ void SetStatus(const float *color, const string &text) {
 
 
 // dibuja una marca al lado de la entidad que indica que tiene un error de sintaxis
-void draw_error_mark(Entity *e, float delta) {
-	float x=e->d_fx-e->w/2+delta;//-2*delta;
-	float y=e->d_fy-e->h/2+2*delta;
+void draw_error_mark(Entity *e, double delta) {
+	double x=e->d_fx-e->w/2+delta;//-2*delta;
+	double y=e->d_fy-e->h/2+2*delta;
 	glColor3f(1,.85,.85);
 	glBegin(GL_QUADS);
-		glVertex2f(x+delta,y);
-		glVertex2f(x,y-2*delta);
-		glVertex2f(x-2*delta,y-2*delta);
-		glVertex2f(x,y+2*delta);
-		glVertex2f(x-2*delta,y-2*delta);
-		glVertex2f(x-3*delta,y);
-		glVertex2f(x-2*delta,y+2*delta);
-		glVertex2f(x,y+2*delta);
+		glVertex2d(x+delta,y);
+		glVertex2d(x,y-2*delta);
+		glVertex2d(x-2*delta,y-2*delta);
+		glVertex2d(x,y+2*delta);
+		glVertex2d(x-2*delta,y-2*delta);
+		glVertex2d(x-3*delta,y);
+		glVertex2d(x-2*delta,y+2*delta);
+		glVertex2d(x,y+2*delta);
 	glEnd();
 	glColor3fv(color_error);
 	glBegin(GL_LINE_LOOP);
-		glVertex2f(x+delta,y);
-		glVertex2f(x,y-2*delta);
-		glVertex2f(x-2*delta,y-2*delta);
-		glVertex2f(x-3*delta,y);
-		glVertex2f(x-2*delta,y+2*delta);
-		glVertex2f(x,y+2*delta);
+		glVertex2d(x+delta,y);
+		glVertex2d(x,y-2*delta);
+		glVertex2d(x-2*delta,y-2*delta);
+		glVertex2d(x-3*delta,y);
+		glVertex2d(x-2*delta,y+2*delta);
+		glVertex2d(x,y+2*delta);
 	glEnd();
 	glBegin(GL_LINES);
-		glVertex2f(x,y-delta);
-		glVertex2f(x-2*delta,y+delta);
-		glVertex2f(x,y+delta);
-		glVertex2f(x-2*delta,y-delta);
+		glVertex2d(x,y-delta);
+		glVertex2d(x-2*delta,y+delta);
+		glVertex2d(x,y+delta);
+		glVertex2d(x-2*delta,y-delta);
 	glEnd();
 }
 
-void draw_error_mark_simple(Entity *e, float delta) {
-	float x=e->d_fx-e->w/2-delta;
-	float y=e->d_fy-e->h/2+2*delta;
+void draw_error_mark_simple(Entity *e, double delta) {
+	double x=e->d_fx-e->w/2-delta;
+	double y=e->d_fy-e->h/2+2*delta;
 	glColor3fv(color_error);
 	glBegin(GL_LINES);
-		glVertex2f(x,y-delta);
-		glVertex2f(x-2*delta,y+delta);
-		glVertex2f(x,y+delta);
-		glVertex2f(x-2*delta,y-delta);
+		glVertex2d(x,y-delta);
+		glVertex2d(x-2*delta,y+delta);
+		glVertex2d(x,y+delta);
+		glVertex2d(x-2*delta,y-delta);
 	glEnd();
 }
 
 // dibuja una flecha al lado de la entidad que indica que es el punto actual de la ejecucion paso a paso
-void draw_debug_arrow(Entity *e, float delta) {
-	float x=e->d_fx-e->w/2-2*delta;
-	float y=e->d_fy-e->h/2;
+void draw_debug_arrow(Entity *e, double delta) {
+	double x=e->d_fx-e->w/2-2*delta;
+	double y=e->d_fy-e->h/2;
 	glColor3f(0,1,0);
 	glBegin(GL_TRIANGLES);
-		glVertex2f(x,y-2*delta);
-		glVertex2f(x,y+2*delta);
-		glVertex2f(x+delta,y);
+		glVertex2d(x,y-2*delta);
+		glVertex2d(x,y+2*delta);
+		glVertex2d(x+delta,y);
 	glEnd();
 	glBegin(GL_QUADS);
-		glVertex2f(x-delta,y-delta);
-		glVertex2f(x,y-delta);
-		glVertex2f(x,y+delta);
-		glVertex2f(x-delta,y+delta);
+		glVertex2d(x-delta,y-delta);
+		glVertex2d(x,y-delta);
+		glVertex2d(x,y+delta);
+		glVertex2d(x-delta,y+delta);
 	glEnd();
 	glColor3f(0,.5,0);
 	glBegin(GL_LINE_LOOP);
-		glVertex2f(x-delta,y-delta);
-		glVertex2f(x,y-delta);
-		glVertex2f(x,y-2*delta);
-		glVertex2f(x+delta,y);
-		glVertex2f(x,y+2*delta);
-		glVertex2f(x,y+delta);
-		glVertex2f(x-delta,y+delta);
+		glVertex2d(x-delta,y-delta);
+		glVertex2d(x,y-delta);
+		glVertex2d(x,y-2*delta);
+		glVertex2d(x+delta,y);
+		glVertex2d(x,y+2*delta);
+		glVertex2d(x,y+delta);
+		glVertex2d(x-delta,y+delta);
 	glEnd();
 }
 
@@ -141,7 +141,7 @@ void display_cb() {
 	if (process_selector->IsActive()) { process_selector->Draw(); return; }
 	
 	// dibujar el diagrama
-	float mx=cur_x/zoom, my=cur_y/zoom;
+	double mx=cur_x/zoom, my=cur_y/zoom;
 	Entity *aux = start->GetTopEntity();
 	Entity *my_start=aux;
 	bool found=false;

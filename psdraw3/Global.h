@@ -34,10 +34,10 @@ extern int win_h,win_w; // tamaño de la ventana
 extern bool panning; // indica si se esta moviendo el dibujo, para el motion
 extern bool selecting_entities; // para selecciones múltiples (rectangulares, shift+drag derecho)
 extern bool selecting_zoom; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
-extern float d_dx; // "paning" del dibujo
-extern float d_dy; // "paning" del dibujo
-extern float d_zoom; // zoom del dibujo
-extern float zoom; // zoom final
+extern double d_dx; // "paning" del dibujo
+extern double d_dy; // "paning" del dibujo
+extern double d_zoom; // zoom del dibujo
+extern double zoom; // zoom final
 extern int line_width_flechas, line_width_bordes; // anchos de las lines y flechas
 
 // auxiliares varios
