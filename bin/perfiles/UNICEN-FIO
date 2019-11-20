@@ -12,4 +12,4 @@ allow_word_operators=1
 overload_equal=1
 coloquial_conditions=1
 lazy_syntax=1
-base_zero_arrays=1
+base_zero_arrays=0
