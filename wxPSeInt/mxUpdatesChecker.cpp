@@ -73,17 +73,13 @@ void mxUpdatesChecker::CheckNow() {
 	
 	text->SetLabel(_Z("Consultando web..."));
 
-#ifdef __WIN32__
-	wxString command("updatem.exe ");
-#else
-	wxString command("./updatem.bin ");
-#endif
+	wxString command(config->updatem_command);
 	
 	if (config->proxy.Len())
-		command<<"--proxy "<<config->proxy<<" ";
+		command<<" --proxy "<<config->proxy<<" ";
 	
 	wxString temp_file(DIR_PLUS_FILE(config->temp_dir,"updatem.res"));
-	command<<"--child \""<<temp_file<<"\"";
+	command<<" --child \""<<temp_file<<"\"";
 	command<<" pseint ";
 	
 	if (process) process->Detach();

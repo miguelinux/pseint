@@ -47,7 +47,7 @@ mxAboutWindow::mxAboutWindow(wxWindow *parent)
 	
 	mySizer->Add(
 		//new wxStaticBitmap(this,wxID_ANY, wxBitmap(DIR_PLUS_FILE(config->Files.skin_dir,"about.png"), wxBITMAP_TYPE_PNG))
-		html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500,210))
+		html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(600,300))
 		,wxSizerFlags().Proportion(1).Expand());
 	mySizer->Add(ok_button,wxSizerFlags().Expand());
 	SetSizerAndFit(mySizer);
@@ -66,37 +66,37 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 
 wxString mxAboutWindow::MakePageText(bool full) {
 	wxString text("<HTML><HEAD><TITLE>PSeInt</TITLE></HEAD><BODY>");
-//	text<<"<CENTER><IMG src=\""<<DIR_PLUS_FILE(config->images_path,"about1.png")<<"\"/>";
-//	text<<"<IMG src=\""<<DIR_PLUS_FILE(config->images_path,"about2.png")<<"\"/></CENTER><HR><BR>";
-	text<<"<CENTER><TABLE><TR><TD>";
-	text<<"<A href=\"lala\"><IMG src=\""<<DIR_PLUS_FILE(config->images_path,"logo.png")<<"\"/></A>";
-	text<<"</TD><TD>";
+	text<<_Z("<CENTER><TABLE><TR><TD>");
+	text<<_Z("<A href=\"lala\"><IMG src=\"")<<DIR_PLUS_FILE(config->images_path,"logo.png")<<_Z("\"/></A>");
+	text<<_Z("</TD><TD>");
+	text<<_Z("<CENTER><B>Copyleft 2003-2019<BR>por Pablo Novara<BR>");
+	text<<_Z("zaskar_84@yahoo.com.ar<BR>");
+	text<<_Z("<A href=\"about\">(ver más...)</A><BR><BR>");
+	text<<_Z("Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)");
+	text<<_Z("<BR><BR><B><A href=\"pseint\">http://pseint.sourceforge.net</A></B><BR></CENTER>");
+	text<<_Z("</TD></TR></TABLE></CENTER><HR><BR>");
 	
-	text<<"<CENTER><B>Copyleft 2003-2019<BR>por Pablo Novara<BR>";
-	text<<"zaskar_84@yahoo.com.ar<BR>";
-	text<<"<A href=\"about\">(ver más...)</A><BR><BR>";
-	text<<"Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)";
-	text<<"<BR><BR><B><A href=\"pseint\">http://pseint.sourceforge.net</A></B><BR></CENTER>";
+//	text<<_Z("<A href=\"about\">Click aqui</A> para ver información más detallada sobre la ");
+//	text<<_Z("licencia de PSeInt y de las bibliotecas y otros componentes de terceros que utiliza.");
+//	text<<_Z("<BR><HR>");
 	
-	text<<"</TD></TR></TABLE></CENTER><HR><BR>";
-	
-	version_info="Versión general de la instalación: ";
+	version_info=_Z("Versión general de la instalación: ");
 	wxTextFile fil("version"); 
 	if (fil.Exists()) {
 		fil.Open();
 		version_info<<fil.GetFirstLine();;
 		fil.Close();
 	} else {
-		version_info<<"Error: No se pudo determinar.";
+		version_info<<_Z("Error: No se pudo determinar.");
 	}
 	text<<version_info;
-	version_info<<"\n";
+	version_info<<_Z("\n");
 	
 	if (!full) return text;
 	
-	text<<"<BR><BR> Versiones individuales:<BR>";
+	text<<_Z("<BR><BR> Versiones individuales:<BR>");
 	
-	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt "<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA"<BR>";
+	text<<_Z("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wxPSeInt ")<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA"<BR>";
 	
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->pseint_command)<<"<BR>";
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psterm_command)<<"<BR>";
@@ -105,8 +105,8 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->psexport_command)<<"<BR>";
 	text<<"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<<GetVersion(config->pseval_command)<<"<BR>";
 	
-	text<<"<BR><A href=\"copy\">click aquí para copiar esta información al portapapeles</A>";
-	text<<"<BR><BR>";
+	text<<_Z("<BR><A href=\"copy\">click aquí para copiar esta información al portapapeles</A>");
+	text<<_Z("<BR><BR>");
 	return text;
 }
 

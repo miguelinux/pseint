@@ -5,14 +5,14 @@ CXXFLAGS=${CXXFLAGS_OPT} -DUSE_ZOCKETS -ffloat-store -DNDEBUG
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT}  
 
-all: ${OBJS_DIR} ../bin/pseint
+all: ${OBJS_DIR} ../bin/bin/pseint
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../bin/pseint
+	rm -rf ${OBJS} ../bin/bin/pseint
 
-../bin/pseint: ${OBJS}
+../bin/bin/pseint: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

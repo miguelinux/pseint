@@ -34,8 +34,19 @@ ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 #elif defined(__APPLE__)
 	tty_command="./mac-terminal-wrapper.bin";
 #else
-	wxFileName f_path = wxGetCwd(); 
-	f_path.MakeAbsolute();
+#	ifdef WX3
+	psterm_command.Replace("binX","bin3");
+	psdraw3_command.Replace("binX","bin3");
+	psdrawe_command.Replace("binX","bin3");
+	pseval_command.Replace("binX","bin3");
+#	else
+	psterm_command.Replace("binX","bin2");
+	psdraw3_command.Replace("binX","bin2");
+	psdrawe_command.Replace("binX","bin2");
+	pseval_command.Replace("binX","bin2");
+#	endif
+//	wxFileName f_path = wxGetCwd(); 
+//	f_path.MakeAbsolute();
 //	pseint_command = DIR_PLUS_FILE(f_path.GetFullPath(),"pseint");
 //	if (pseint_command.Contains(" ")) pseint_command=wxString("\"")<<pseint_command<<"\"";
 #endif
@@ -80,23 +91,36 @@ void ConfigManager::LoadDefaults() {
 	rt_annotate= true;
 	smart_indent = true;
 	last_dir=wxFileName::GetHomeDir();
+	
 #if defined(_WIN32) || defined(__WIN32__)
-	pseint_command = "pseint.exe";
-	psterm_command = "psterm.exe";
-	psdrawe_command = "psdrawE.exe";
-	psdraw3_command = "psdraw3.exe";
+	pseint_command   = "pseint.exe";
+	psterm_command   = "psterm.exe";
+	psdrawe_command  = "psdrawE.exe";
+	psdraw3_command  = "psdraw3.exe";
 	psexport_command = "psexport.exe";
-	pseval_command = "pseval.exe";
+	pseval_command   = "pseval.exe";
+	updatem_command  = "updatem.exe";
 	tty_command = "";
-#else
-	pseint_command = "./pseint";
-	psterm_command = "./psterm";
-	psdrawe_command = "./psdrawE";
-	psdraw3_command = "./psdraw3";
+#elif defined(__APPLE__)
+	pseint_command   = "./pseint";
+	psterm_command   = "./psterm";
+	psdrawe_command  = "./psdrawE";
+	psdraw3_command  = "./psdraw3";
 	psexport_command = "./psexport";
-	pseval_command = "./pseval";
+	pseval_command   = "./pseval";
+	updatem_command  = "./updatem";
+	tty_command = _no_tty;
+#else
+	pseint_command   = "./bin/pseint";
+	psterm_command   = "./binX/psterm";
+	psdrawe_command  = "./binX/psdrawE";
+	psdraw3_command  = "./binX/psdraw3";
+	psexport_command = "./bin/psexport";
+	pseval_command   = "./binX/pseval";
+	updatem_command  = "./bin/updatem";
 	tty_command = _no_tty;
 #endif
+	
 	wx_font_size = /*big_icons?12:*/10;
 #ifdef WX3
 	wx_font_name = wxFont(wxFontInfo(wx_font_size).Family(wxFONTFAMILY_MODERN)).GetFaceName();

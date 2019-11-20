@@ -5,14 +5,14 @@ CXXFLAGS=${CXXFLAGS_OPT} -I../pseint -D_FOR_PSEXPORT
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT}
 
-all: ${OBJS_DIR} ../bin/psexport
+all: ${OBJS_DIR} ../bin/bin/psexport
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../bin/psexport
+	rm -rf ${OBJS} ../bin/bin/psexport
 
-../bin/psexport: ${OBJS}
+../bin/bin/psexport: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

@@ -5,14 +5,14 @@ CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -DWX
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=yes --version=3.1` `wx-config --libs stc --unicode=yes --version=3.1`  -lX11 -L../temp/hoew_lnx_rls -lhoewrap
 
-all: ${OBJS_DIR} ../bin/pseval
+all: ${OBJS_DIR} ../bin/bin3/pseval
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../bin/pseval
+	rm -rf ${OBJS} ../bin/bin3/pseval
 
-../bin/pseval: ${OBJS}
+../bin/bin3/pseval: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

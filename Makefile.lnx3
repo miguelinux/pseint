@@ -1,4 +1,4 @@
-all: 
+all: bin/bin bin/bin3
 	${MAKE} -C pseint -f Makefile.lnx
 	${MAKE} -C psexport -f Makefile.lnx
 	${MAKE} -C hoewrap -f Makefile.lnx
@@ -8,6 +8,12 @@ all:
 	${MAKE} -C psterm -f Makefile.lnx3
 	${MAKE} -C psdrawE -f Makefile.lnx3
 	${MAKE} -C psdraw3 -f Makefile.lnx3
+
+bin/bin3:
+	mkdir -p bin/bin3
+
+bin/bin:
+	mkdir -p bin/bin
 
 clean: 
 	${MAKE} -C pseint -f Makefile.lnx clean
