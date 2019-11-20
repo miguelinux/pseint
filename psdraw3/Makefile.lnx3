@@ -5,14 +5,14 @@ CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -D_U
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT} -lGL -lGLU -lglut `wx-config --libs --unicode=yes --version=3.1` `wx-config --gl_libs --unicode=yes --version=3.1` -lX11
 
-all: ${OBJS_DIR} ../bin/psdraw3
+all: ${OBJS_DIR} ../bin/bin3/psdraw3
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../bin/psdraw3
+	rm -rf ${OBJS} ../bin/bin3/psdraw3
 
-../bin/psdraw3: ${OBJS}
+../bin/bin3/psdraw3: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

@@ -72,6 +72,11 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 
 static double x_texto = 0;
 
+#ifdef _USE_DF
+//# ifdef __APPLE__
+//bool init_glew() { return false; } // no tengo glew en osxcross
+//# else
+
 bool CompilerInfo(GLuint id){
   int len; glGetShaderiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
   if (len){
@@ -100,7 +105,7 @@ bool init_glew() {
 	static bool shader_ok = false;
 	if (inited) return shader_ok;
 	
-	glewInit(); inited = true;
+	/*glewInit(); */inited = true;
 	
 	const char *sf4 = // 4 muestrar regulares
 		"#version 110\n"
@@ -162,6 +167,8 @@ bool init_glew() {
 	return shader_ok = true;
 }
 
+//# endif
+#endif
 
 
 void begin_texto( ) {

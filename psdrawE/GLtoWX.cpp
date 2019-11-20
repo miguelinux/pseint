@@ -80,6 +80,16 @@ static void post_vertex() {
 		dc->DrawPolygon(4,v);
 		np=0;
 	} break;
+	case GL_TRIANGLES: if (np==3) {
+		dc->SetPen(pt);
+		dc->SetBrush(wxBrush(c));
+		wxPoint v[3]; 
+		v[0]=wxPoint(p[0][0],p[0][1]); 
+		v[1]=wxPoint(p[1][0],p[1][1]); 
+		v[2]=wxPoint(p[2][0],p[2][1]); 
+		dc->DrawPolygon(3,v);
+		np=0;
+	} break;
 	case GL_QUAD_STRIP: if (np==4) {
 		dc->SetPen(pt);
 		dc->SetBrush(wxBrush(c));

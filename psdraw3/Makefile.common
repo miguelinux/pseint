@@ -1,4 +1,4 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Text.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/uglyfont.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/ShapesBar.o ${OBJS_DIR}/ToolBar.o ${OBJS_DIR}/Trash.o ${OBJS_DIR}/ProcessSelector.o ${OBJS_DIR}/osdep.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/Canvas.o ${OBJS_DIR}/MainWindow.o ${OBJS_DIR}/Comm.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Draw.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Events.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/Textures.o ${OBJS_DIR}/zockets.o ${OBJS_DIR}/Text.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/ShapesBar.o ${OBJS_DIR}/ToolBar.o ${OBJS_DIR}/Trash.o ${OBJS_DIR}/ProcessSelector.o ${OBJS_DIR}/osdep.o 
 
 ${OBJS_DIR}/Application.o: Application.cpp Application.h GLstuff.h MainWindow.h Version.h ../pseint/version_common.h Global.h Entity.h EntityLinking.h Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h Comm.h Load.h ../wxPSeInt/osdep.h ShapesBar.h Textures.h ToolBar.h Trash.h ProcessSelector.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
@@ -44,9 +44,6 @@ ${OBJS_DIR}/Text.o: Text.cpp Text.h GLstuff.h Textures.h
 
 ${OBJS_DIR}/LangSettings.o: ../pseint/LangSettings.cpp ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../wxPSeInt/Logger.h ../wxPSeInt/version.h ../pseint/version_common.h
 	${GPP} ${CXXFLAGS} -c ../pseint/LangSettings.cpp -o $@
-
-${OBJS_DIR}/uglyfont.o: uglyfont.cpp GLstuff.h
-	${GPP} ${CXXFLAGS} -c uglyfont.cpp -o $@
 
 ${OBJS_DIR}/EntityLinking.o: EntityLinking.cpp EntityLinking.h Vector.h Events.h Entity.h
 	${GPP} ${CXXFLAGS} -c EntityLinking.cpp -o $@

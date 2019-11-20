@@ -1,6 +1,6 @@
 OBJS_DIR=../temp/drw3_m64_rls
 GPP=x86_64-apple-darwin18-clang++
-CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -D_USE_TEXTURES -D_USE_FONT -DWX3 -Wno-invalid-source-encoding
+CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -D_USE_DF -DWX3 -Wno-invalid-source-encoding
 LIBS=-framework OpenGL -framework GLUT  `/opt/mac/local/bin/wx-config --libs std,gl` -headerpad_max_install_names
 # el -headerpad_max_install_names en LIBS hace que deje mas espacio para los paths que tiene que reemplazar fix_dylibs.sh con install_names_tool, si no puede que no alcance
 

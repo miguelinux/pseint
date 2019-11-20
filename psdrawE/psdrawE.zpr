@@ -14,14 +14,14 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=GLtoWX.cpp
+current_source=GLtoWX.h
 path_char=/
 [source]
 path=Application.cpp
 cursor=75:78
 [source]
 path=GLtoWX.cpp
-cursor=29:54
+cursor=88:19
 open=true
 [source]
 path=../psdraw3/DClasico.cpp
@@ -52,7 +52,8 @@ path=../wxPSeInt/osdep.cpp
 cursor=78:12
 [header]
 path=GLtoWX.h
-cursor=0:6
+cursor=6:73
+open=true
 [header]
 path=../psdraw3/Entity.h
 cursor=78:16
@@ -64,7 +65,7 @@ path=../psdraw3/Load.h
 cursor=0:0
 [header]
 path=Version.h
-cursor=2:0
+cursor=0:24
 [header]
 path=../pseint/LangSettings.h
 cursor=96:33
