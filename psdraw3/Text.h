@@ -8,7 +8,6 @@ void dibujar_caracter(const char chr);
 void end_texto(); 
 
 void GetTextSize(const string &label, int &w, int &h);
-//void DrawText(const float *color, int x, int y, const char *t);
 void DrawTextRaster(const float *color, int x, int y, const char *t);
 
 #endif

@@ -1,5 +1,7 @@
 #include "Text.h"
+#define GL_LITE_IMPLEMENTATION // antes de incluir GLstuff
 #include "GLstuff.h"
+#undef GL_LITE_IMPLEMENTATION // antes de incluir GLstuff
 #include "Textures.h"
 #include <iostream>
 #include "Global.h"
@@ -73,9 +75,6 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 static double x_texto = 0;
 
 #ifdef _USE_DF
-//# ifdef __APPLE__
-//bool init_glew() { return false; } // no tengo glew en osxcross
-//# else
 
 bool CompilerInfo(GLuint id){
   int len; glGetShaderiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
@@ -89,23 +88,24 @@ bool CompilerInfo(GLuint id){
 }
 
 // imprime la info del linker de la GPU
-bool LinkerInfo(GLuint id){
-  int len; glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
-  if (len){
-    char * infoLog=(char *)malloc(sizeof(char)*(len+1));
-    glGetProgramInfoLog(id,len+1,NULL,infoLog);
-    cout << "ERROR LINKING SHADER: " << infoLog << endl;
-    free(infoLog);
-  }
-  int status; glGetProgramiv(id,GL_LINK_STATUS,&status); return status;
-}
+//bool LinkerInfo(GLuint id){
+//  int len; glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
+//  if (len){
+//    char * infoLog=(char *)malloc(sizeof(char)*(len+1));
+//    glGetProgramInfoLog(id,len+1,NULL,infoLog);
+//    cout << "ERROR LINKING SHADER: " << infoLog << endl;
+//    free(infoLog);
+//  }
+//  int status; glGetProgramiv(id,GL_LINK_STATUS,&status); return status;
+//}
 GLuint progID;
-bool init_glew() {
+bool init_shaders() {
 	static bool inited = false;
 	static bool shader_ok = false;
 	if (inited) return shader_ok;
 	
-	/*glewInit(); */inited = true;
+	if (!gl_lite_init()) return false;
+	inited = true;
 	
 	const char *sf4 = // 4 muestrar regulares
 		"#version 110\n"
@@ -162,7 +162,7 @@ bool init_glew() {
 	progID = glCreateProgram();
 	glAttachShader(progID,f);
 	glLinkProgram(progID); 
-	shader_ok = LinkerInfo(progID); 
+//	shader_ok = LinkerInfo(progID); 
 	
 	return shader_ok = true;
 }
@@ -175,7 +175,7 @@ void begin_texto( ) {
 	x_texto = 0;
 	texture_font.Select();
 #ifdef _USE_DF
-	if (init_glew()) {
+	if (init_shaders()) {
 		glUseProgram(progID);
 	} else {
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -192,7 +192,7 @@ void end_texto( ) {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 # ifdef _USE_DF
-	if (init_glew()) {
+	if (init_shaders()) {
 		glUseProgram(0);
 	} else {
 		glPopAttrib();

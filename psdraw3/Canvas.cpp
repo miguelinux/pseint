@@ -158,6 +158,7 @@ void Canvas::OnMouseLeftUp (wxMouseEvent & event) {
 
 void Canvas::OnIdle (wxIdleEvent & event) {
 	idle_func();
+	event.RequestMore(); // sin esto en gtk3 se lanza un solo idle 
 }
 
 void Canvas::OnKeyDown (wxKeyEvent & event) {

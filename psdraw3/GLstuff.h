@@ -6,7 +6,9 @@
 		#include <OpenGL/glu.h>
 		#include <GLUT/glut.h>
 	#else
-		#include <GL/glew.h>
+		#ifdef _USE_DF
+			#include "gl_lite.h"
+		#endif
 		#include <GL/gl.h>
 		#include <GL/glu.h>
 		#include <GL/glut.h>
