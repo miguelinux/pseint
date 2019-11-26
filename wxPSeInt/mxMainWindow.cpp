@@ -178,6 +178,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_BUTTON(mxID_HELPER_COMMANDS,mxMainWindow::OnHelperCommands)
 	
 	EVT_TIMER(mxID_RT_TIMER,mxMainWindow::OnRTSyntaxAuxTimer)
+	EVT_TIMER(mxID_LAMBDA_TIMER,mxMainWindow::OnLambdaTimer)
 	
 	EVT_KILL_FOCUS(mxMainWindow::OnKillFocus)
 	EVT_ACTIVATE(mxMainWindow::OnActivate)
@@ -186,7 +187,11 @@ END_EVENT_TABLE()
 mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
 	: wxFrame(NULL, wxID_ANY, "PSeInt", pos, size, wxDEFAULT_FRAME_STYLE)
 {
-
+	m_lambda_func = NULL; m_lambda_timer = new wxTimer(GetEventHandler(),mxID_LAMBDA_TIMER);
+#ifdef WX3
+	aui_manager.GetArtProvider()->SetColour(wxAUI_DOCKART_BACKGROUND_COLOUR,wxSystemSettings::GetColour(wxSYS_COLOUR_FRAMEBK));
+#endif
+	
 	wxTheColourDatabase->AddColour("Z LIGHT GRAY",wxColour(240,240,240));
 	wxTheColourDatabase->AddColour("Z LIGHT BLUE",wxColour(240,240,255));
 	wxTheColourDatabase->AddColour("Z LIGHT RED",wxColour(255,220,220));
@@ -2268,5 +2273,22 @@ void mxMainWindow::QuickHelpPanelPolicy::ShowRTError (int code, wxString msg, bo
 
 void mxMainWindow::EnableDebugButton (bool enable) {
 	toolbar->EnableTool(mxID_RUN_STEP_STEP,enable);
+}
+
+void mxMainWindow::SetLamda(void (*lambda_func)()) {
+	_LOG("mxMainWindow::SetLambda");	
+	if (m_lambda_func) {
+		_LOG("mxMainWindow::SetLambda m_lambda_func!=nullptr");	
+		m_lambda_func();
+	}
+	m_lambda_func = lambda_func;
+	m_lambda_timer->Start(20,true);
+}
+
+void mxMainWindow::OnLambdaTimer(wxTimerEvent &event) {
+	_LOG("mxMainWindow::OnLambdaTimer");	
+	void (*faux)() = m_lambda_func;
+	m_lambda_func = NULL;
+	faux();
 }
 

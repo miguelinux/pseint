@@ -203,6 +203,13 @@ public:
 	void UpdateRealTimeSyntax(); // lo llama rtsyntax despues de reiniciarse
 	void OnRTSyntaxAuxTimer(wxTimerEvent &event);
 	
+private:
+	void (*m_lambda_func)();
+	wxTimer *m_lambda_timer;
+public:
+	void SetLamda(void (*lamda_func)());
+	void OnLambdaTimer(wxTimerEvent &event);
+	
 	mxSource *GetCurrentSource();
 	
 	void OnHelperOpers(wxCommandEvent &evt);
