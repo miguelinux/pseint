@@ -1,0 +1,56 @@
+# este script sirve para armar el paquete binario distribuible para GNU/Linux desde 
+# una maquina  virtaul en la maquina real debe estar el paquete de fuentes (se genera 
+# con make -f Makefile.pack src) y a este script se le pasa como argumento la version 
+# de ese paquete hay un 2 argumento opcional "fast" para cuando hay cambios menores, 
+# al descomprimir los fuentes solo reemplaza los archivos mas nuevos que los existentes
+
+if ! test -e ./pseint-packer.cfg; then
+	touch ./pseint-packer.cfg
+	echo '# usuario, ip, y ruta hacia el directorio donde se encuentran los fuentes' >> ./pseint-packer.cfg
+	echo '# de pseint, y donde se va a copiar luego el resultado' >> ./pseint-packer.cfg
+	echo 'SSHSRC="usuario@10.0.2.4:/home/usuario/pseint-src/dist"' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo '# tipo de arquitectura para la que se compila, que se usara para el nombre' >> ./pseint-packer.cfg
+	echo '# del paquete generado (l32 o l64)' >> ./pseint-packer.cfg
+	echo 'ARCH="l64"' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo '# nombre para la arquitectura para la que se compila, que se usara para el' >> ./pseint-packer.cfg
+	echo '# nombre del paquete generado' >> ./pseint-packer.cfg
+	echo 'TAG=$ARCH' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo '# versión de wxWidgets a utilizar (2 o 3)' >> ./pseint-packer.cfg
+	echo 'WXVER=3' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo '# directorio con los .so de a incluir en el paquete... debería haber allí dos' >> ./pseint-packer.cfg
+	echo '# subdirectorios, png y wx, cada uno con sus .sos y un txt con la licencia0' >> ./pseint-packer.cfg
+	echo 'LIBSDIR="libs"' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo '# puede modificar aquí otras variables si fuera necesario' >> ./pseint-packer.cfg
+	echo '#PATH=/home/usuario/wx/bin:$PATH' >> ./pseint-packer.cfg
+	echo '' >> ./pseint-packer.cfg
+	echo "Creado un archivo \"pseint-packer.cfg\" de ejemplo. Verifique su contenido y'vuelva a ejecutar este script."
+	exit 1
+fi
+source ./pseint-packer.cfg
+if [ "$1" == "" ]; then
+	echo "Debe utilizar la version de pseint (por ej: 20191122) como argumento de este scrip."
+	exit 2
+fi
+
+if ! [ "$2" = "fast" ]; then
+	TAR_OPTS=""
+	rm -rf pseint
+else
+	TAR_OPTS="--keep-new-files"
+fi
+scp $SSHSRC/pseint-src-$1.tgz . || exit 3
+tar $TAR_OPTS -xzvf pseint-src-$1.tgz
+
+if ! [ "LIBSDIR" = "" ]; then 	
+	mkdir -p pseint/bin/bin$WXVER/
+	cp -rf "$LIBSDIR"/* pseint/bin/bin$WXVER/
+fi
+
+cd pseint
+make -f Makefile.pack lnx$WXVER
+scp dist/pseint-$ARCH-$1.tgz $SSHSRC/pseint-$TAG-$1.tgz

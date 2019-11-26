@@ -68,6 +68,11 @@ bool mxApplication::OnInit() {
 			zpath = DIR_PLUS_FILE(zpath,_T("../Resources"));
 			wxSetWorkingDirectory(zpath);
 		}
+#elif !defined(__WIN32__)
+		else if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("../pseint.dir"))) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("../PSeInt.dir")))) ) ) {
+			zpath = DIR_PLUS_FILE(zpath,_T(".."));
+			wxSetWorkingDirectory(zpath);
+		}
 #endif
 		else 
 			zpath = cmd_path;

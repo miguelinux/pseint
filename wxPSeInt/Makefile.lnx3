@@ -5,7 +5,7 @@ CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -DFO
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=yes --version=3.1` `wx-config --libs stc aui --unicode=yes --version=3.1` -lX11
 
-all: ${OBJS_DIR} ../bin/bin3/wxPSeInt ../bin/wxPSeInt
+all: ${OBJS_DIR} ../bin/bin3/wxPSeInt ../bin/wxPSeInt ../bin/pseint
 
 include Makefile.common
 

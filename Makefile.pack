@@ -3,9 +3,7 @@ all:
 
 src:
 	make -f Makefile.pack clean
-	rm -f bin/core
-	rm -f bin/gmon.out
-	cd .. && tar -czf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/license.txt pseint/mingw.conf pseint/Makefile pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/pseval pseint/psexport pseint/psdrawE pseint/psdraw3 pseint/bin pseint/dist/license.txt pseint/dist/log.sh pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist pseint/test pseint/hoewrap pseint/dtl
+	cd .. && tar -czf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/license.txt pseint/mingw.conf pseint/Makefile pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/pseval pseint/psexport pseint/psdrawE pseint/psdraw3 pseint/bin pseint/dist/license.txt pseint/dist/log.sh pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist pseint/test pseint/hoewrap pseint/dtl/C* pseint/dtl/R* pseint/dtl/dtl
 	@echo 
 	@echo -n "DONE: "
 	@ls -sh dist/pseint-src-`cat bin/version`.tgz
@@ -32,17 +30,40 @@ w32:
 	@ls -sh dist/pseint-w32-`cat bin/version`.*
 	@echo
 
-lnx:
+lnx2:
 	make -f Makefile.pack clean
-	make -f Makefile.lnx2 -C psterm
-	make -f Makefile.lnx -C hoewrap
-	make -f Makefile.lnx2 -C wxPSeInt
-	make -f Makefile.lnx2 -C pseval
-	make -f Makefile.lnx2 -C psdrawE
-	make -f Makefile.`./dist/get_arch` -C psdraw3
-	make -f Makefile.lnx -C pseint
-	make -f Makefile.lnx -C psexport
-	make -f Makefile.lnx -C updatem
+	make -f Makefile.lnx2
+# 	make -f Makefile.lnx2 -C psterm
+# 	make -f Makefile.lnx -C hoewrap
+# 	make -f Makefile.lnx2 -C wxPSeInt
+# 	make -f Makefile.lnx2 -C pseval
+# 	make -f Makefile.lnx2 -C psdrawE
+# 	make -f Makefile.lnx2 -C psdraw3
+# 	make -f Makefile.lnx -C pseint
+# 	make -f Makefile.lnx -C psexport
+# 	make -f Makefile.lnx -C updatem
+	rm -rf dist/pseint 
+	mkdir -p dist/pseint 
+	cp -r bin/* dist/pseint/
+	cp dist/log.sh dist/pseint/
+	cd dist && tar -czf pseint-`./get_arch`-`cat pseint/version`.tgz pseint 
+	@echo 
+	@echo -n "DONE: "
+	@ls -sh dist/pseint-`dist/get_arch`-`cat bin/version`.tgz
+	@echo
+
+lnx3:
+	make -f Makefile.pack clean
+	make -f Makefile.lnx3
+# 	make -f Makefile.lnx3 -C psterm
+# 	make -f Makefile.lnx -C hoewrap
+# 	make -f Makefile.lnx3 -C wxPSeInt
+# 	make -f Makefile.lnx3 -C pseval
+# 	make -f Makefile.lnx3 -C psdrawE
+# 	make -f Makefile.lnx3 -C psdraw3
+# 	make -f Makefile.lnx -C pseint
+# 	make -f Makefile.lnx -C psexport
+# 	make -f Makefile.lnx -C updatem
 	rm -rf dist/pseint 
 	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/
@@ -139,4 +160,13 @@ clean:
 	rm -f bin/core
 	rm -f bin/gmon.out
 	rm -f bin/*.dll
+	rm -f bin/bin/*
+	rm -f bin/bin2/wxPSeInt
+	rm -f bin/bin2/psterm
+	rm -f bin/bin2/psdraw3
+	rm -f bin/bin2/psdrawE
+	rm -f bin/bin3/wxPSeInt
+	rm -f bin/bin3/psterm
+	rm -f bin/bin3/psdraw3
+	rm -f bin/bin3/psdrawE
 	

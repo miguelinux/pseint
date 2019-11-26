@@ -5,18 +5,22 @@
 #include <cstring>
 #include <unistd.h>
 #include <dlfcn.h>
-using namespace std;
+#include <ctime>
+#include <fstream>
+
+const char LDLP[] = "LD_LIBRARY_PATH";
 
 const char * binname_first  = "bin3/wxPSeInt";
 const char * binname_second = "bin2/wxPSeInt";
 
-const char *my_getenv(const char *varname) {
-	static char empty[]="";
+bool log_on = false;
+
+std::string GetEnv(const char *varname) {
 	const char *res = getenv(varname);
-	return res?res:empty;
+	return res?res:"";
 }
 
-void fix_argv(char *argv[],const char *binname) {
+void FixArgv(char *argv[],const char *binname) {
 	int n=strlen(argv[0])-1;
 	char *argv0=new char[n+15];
 	while (n>0&&argv[0][n]!='/') n--;
@@ -25,51 +29,113 @@ void fix_argv(char *argv[],const char *binname) {
 	argv[0]=argv0;
 }
 
+void AddToLDLP(std::string ldlp_value, const std::string &additional_path) {
+	if (!ldlp_value.empty() && ldlp_value[ldlp_value.size()-1]!=':') ldlp_value+=":";
+	ldlp_value += additional_path;
+	if (log_on) std::cerr << "Setting LDLP = " << ldlp_value << std::endl;
+	setenv(LDLP,ldlp_value.c_str(),1);
+}
 
-void FixMissingLibPNG12(string pseint_path) {
-	void *handle = dlopen ("libpng12.so", RTLD_LAZY);
+void FixMissingLib(const std::string &libdir, const std::string &libfile) {
+	if (log_on) std::cerr << "Checking for " << libfile << std::endl;
+	void *handle = dlopen (libfile.c_str(), RTLD_LAZY);
 	if (!handle) {
-		string ld_library_path = my_getenv("LD_LIBRARY_PATH");
-		if (!ld_library_path.empty()) ld_library_path+=":";
-		if (pseint_path.find('/')==string::npos) pseint_path="";
-		else pseint_path=pseint_path.substr(0,pseint_path.rfind('/')+1);
-		ld_library_path+=pseint_path+"libs";
-		setenv("LD_LIBRARY_PATH",ld_library_path.c_str(),1);
+		if (log_on) std::cerr << "Lib Not Found: " << libfile << std::endl;
+		AddToLDLP(GetEnv(LDLP),libdir);
 	} else {
+		if (log_on) std::cerr << "Lib Found: " << libfile << std::endl;
 		dlclose(handle);
 	}
 }
 
 void TryToRun(char *argv[], const char *binname) {
-	fix_argv(argv,binname);
+	std::time_t tm0 = std::time(NULL); 
+	char *argv0_orig = argv[0];
+	FixArgv(argv,binname);
+	if(!std::ifstream(argv[0]).is_open()) {
+		if (log_on) std::cerr << "File not found: " << binname << std::endl;
+		delete argv[0]; 
+		argv[0] = argv0_orig;
+		return;
+	}
 	pid_t pid=fork();
-		if (pid==0) {
+	if (pid==0) {
+		if (log_on) std::cerr << "Trying to run: " << argv[0] << std::endl;
 		execvp(argv[0],argv);
+		if (log_on) std::cerr << "execvp failed" << std::endl;
 		// ver si es porque no tiene permiso de ejecución, en cuyo caso intentamos cambiarlos
 		struct stat sb;
 		if (stat(argv[0],&sb)!=-1 && !(sb.st_mode&S_IXUSR)) { 
-			string cmd("chmod a+x \""); cmd+=argv[0]; cmd+="\"";
-			system(cmd.c_str());
+			std::string cmd("chmod a+x \""); cmd+=argv[0]; cmd+="\"";
+			if (log_on) std::cerr << "Running: " << cmd << std::endl;
+			int ret = system(cmd.c_str());
+			if (log_on) std::cerr << "Return value: " << ret << std::endl;
+			if (log_on) std::cerr << "Trying to run: " << argv[0] << std::endl;
 			execvp(argv[0],argv);
-			cerr<<"Necesita darle permisos de ejecución al archivo wxPSeInt.bin"<<endl;
-			exit(0);
+			if (log_on) std::cerr << "execvp failed again" << std::endl;
+			std::cerr<<"Necesita darle permisos de ejecución al archivo wxPSeInt.bin"<<std::endl;
 		}
+		exit(0); // que este proceso no contiue, que siga el original
 	} else {
 		int ret=0;
+		if (log_on) std::cerr << "Waiting for pid " << pid << std::endl;
 		waitpid(pid,&ret,0);
-		if (!ret) exit(0);
+		if (log_on) std::cerr << "Retval " << ret << " from pid " << pid << std::endl;
+		std::time_t tm1 = std::time(NULL);
+		// cuando pruebo con wx3, y en caso de fallar paso a wx2, para saber si 
+		// fallo al lanzar o lanzo bien y mas tarde revento, mido el tiempo
+		// desde que lanzo hasta que recibo el "fallo"
+		if (ret==0 || tm1-tm0>5) exit(ret);
+		// reestableces argv (lo cambio el FixArgv del principio) por si hay que probar con otro
+		delete argv[0]; 
+		argv[0] = argv0_orig;
 	}
+}
+
+std::string GetPwd(const std::string &argv0) {
+	size_t p = argv0.find_last_of('/');
+	if (p==std::string::npos) return ".";
+	return argv0.substr(0,p);
+}
+
+bool RemoveFirstArg(std::string arg1, int &argc, char *argv[]) {
+	if (argc<2 || argv[1] != arg1) return false;
+	for(int i=2;i<argc;i++)
+		argv[i-1]=argv[i];
+	argv[--argc] = NULL;
+	return true;
 }
 
 int main(int argc, char *argv[]) {
 	
+	if (RemoveFirstArg("--log",argc,argv)) log_on = true;
+	if (log_on) std::cerr << "Argv[0]: " << argv[0] << std::endl;
+	
+	
+	std::string pwd = GetPwd(argv[0]);
+	if (log_on) std::cerr << "PWD: " << pwd << std::endl;
+	if (log_on) std::cerr << std::endl;
+	
+	std::string ldlp_orig = GetEnv(LDLP);
+	if (!RemoveFirstArg("--wx2",argc,argv)) {
+#ifdef __x86_64__ 
+	// probar primero con wx3
+		if (log_on) std::cerr << "LDLP: " << ldlp_orig << std::endl;
+		AddToLDLP(ldlp_orig,pwd+"/bin3/wx");
+		TryToRun(argv,"bin3/wxPSeInt");
+		if (log_on) std::cerr << std::endl;
+#endif
+	}
+	
+	// si falla, probar con wx2
+	if (log_on) std::cerr << "Disabling Ubuntu's Menu-proxy and Overlay Scrollbars" << std::endl;
 	setenv("UBUNTU_MENUPROXY","",1);
 	setenv("LIBOVERLAY_SCROLLBAR","0",1);
-	TryToRun(argv,"bin3/wxPSeInt");
-	
-	FixMissingLibPNG12(argv[0]);
+	if (log_on) std::cerr << "Setting LANG=C, LC_TYPE=C" << std::endl;
 	setenv("LANG","C",1); // for fixing the problem with utf8 locale and ansi wx build
 	setenv("LC_CTYPE","C",1); // for fixing the problem with utf8 locale and ansi wx build
+	AddToLDLP(ldlp_orig,pwd+"/bin2/wx");
+	FixMissingLib(pwd+"/bin2/png","libpng12.so");
 	TryToRun(argv,"bin2/wxPSeInt");
 
 	return 0;
