@@ -51,7 +51,11 @@ void mxPanelHelper::OnClick(wxMouseEvent &evt) {
 void mxPanelHelper::OnPaint(wxPaintEvent &evt) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
+#ifdef WX3
+	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_BTNHILIGHT:wxSYS_COLOUR_FRAMEBK));
+#else
 	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_HIGHLIGHT:wxSYS_COLOUR_MENU));
+#endif
 	dc.Clear();
 	dc.DrawBitmap(bmp,3,4,true);
 	

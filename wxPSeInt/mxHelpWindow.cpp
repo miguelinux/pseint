@@ -37,7 +37,7 @@ END_EVENT_TABLE();
 
 mxHelpWindow::mxHelpWindow(wxString file)
 	: wxFrame (main_window,mxID_HELPW, "Ayuda de PSeInt", 
-			   wxDefaultPosition, wxSize(700,400),wxDEFAULT_FRAME_STYLE) 
+			   wxDefaultPosition, wxSize(750,500),wxDEFAULT_FRAME_STYLE) 
 {
 
 	wxPanel *panel= new wxPanel(this);
@@ -271,7 +271,7 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		wxString cmd = event.GetLinkInfo().GetHref().AfterFirst(':');
 		if (cmd=="creator") main_window->OpenProgram("creator.psz");
 		else if (cmd=="log") { main_window->ResetInLogMode(); return; }
-	} else if (event.GetLinkInfo().GetHref().StartsWith("http://")) {
+	} else if (event.GetLinkInfo().GetHref().StartsWith("http://")||event.GetLinkInfo().GetHref().StartsWith("https://")) {
 		wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		wxString fname = event.GetLinkInfo().GetHref().BeforeFirst('#');
@@ -285,6 +285,7 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 				event.Skip();
 		} else
 			event.Skip();
+		html->Scroll(0,0);
 	}
 	RepaintButtons();
 }
