@@ -402,26 +402,29 @@ void mxMainWindow::CreateToolbars() {
 	
 }
 
-void mxMainWindow::CreateCommandsPanel() {
-	wxPanel *panel = commands = new wxPanel(this);
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	
-	wxString tt = utils->FixTooltip(
+static void AddCommandButton(wxBoxSizer *sizer, wxPanel *panel, wxWindowID id, wxString image, wxString text) {
+	static wxString tooltip = utils->FixTooltip(
 		_Z("Con estos botones puede insertar instrucciones o estructuras de control "
 		   "en el pseudocódigo. Al seleccionar uno se introduce en el algoritmo dicha "
 		   "instrucción o estructura, se marcan con recuadros los argumentos que debe "
 		   "completar, y se presenta en la parte inferior de la ventana una ayuda "
 		   "rápida acerca de la misma. Puede mantener presionada la tecla shift para "
 		   "insertar versiones alternativas o variantes de estos comandos y estructuras."));
-	
-	utils->AddImgButton(sizer,panel,mxID_CMD_ESCRIBIR,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","escribir.png"),_Z("Escribir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_LEER,    DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","leer.png"),    _Z("Leer"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_ASIGNAR, DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","asignar.png"), _Z("Asignar"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SI,      DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","si.png"),      _Z("Si-Entonces"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_SEGUN,   DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","segun.png"),   _Z("Según"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_MIENTRAS,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","mientras.png"),_Z("Mientras"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_REPETIR, DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","repetir.png"), _Z("Repetir"))->SetToolTip(tt);
-	utils->AddImgButton(sizer,panel,mxID_CMD_PARA,    DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35","para.png"),    _Z("Para"))->SetToolTip(tt);
+	wxButton *but = utils->AddImgButton(sizer,panel,id,DIR_PLUS_FILE_2("inst",config->big_icons?"52":"35",image),text);
+	but->SetToolTip(tooltip); but->SetMinSize(wxSize(but->GetMinSize().GetWidth(),10));
+}
+
+void mxMainWindow::CreateCommandsPanel() {
+	wxPanel *panel = commands = new wxPanel(this);
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	AddCommandButton(sizer,panel,mxID_CMD_ESCRIBIR,"escribir.png",_Z("Escribir"));
+	AddCommandButton(sizer,panel,mxID_CMD_LEER,    "leer.png",    _Z("Leer"));
+	AddCommandButton(sizer,panel,mxID_CMD_ASIGNAR, "asignar.png", _Z("Asignar"));
+	AddCommandButton(sizer,panel,mxID_CMD_SI,      "si.png",      _Z("Si-Entonces"));
+	AddCommandButton(sizer,panel,mxID_CMD_SEGUN,   "segun.png",   _Z("Según"));
+	AddCommandButton(sizer,panel,mxID_CMD_MIENTRAS,"mientras.png",_Z("Mientras"));
+	AddCommandButton(sizer,panel,mxID_CMD_REPETIR, "repetir.png", _Z("Repetir"));
+	AddCommandButton(sizer,panel,mxID_CMD_PARA,    "para.png",    _Z("Para"));
 	button_subproc=NULL; CreateButtonSubProceso(panel,sizer);
 	panel->SetSizerAndFit(sizer);
 	

@@ -1,7 +1,7 @@
-#include "mxBitmapButton.h"
-#include "mxUtils.h"
 #include <wx/dcmemory.h>
 #include <wx/settings.h>
+#include "mxBitmapButton.h"
+#include "mxUtils.h"
 
 #if defined(__APPLE__) || defined(__WIN32__)
 wxColour *mxBitmapButton::background_colour = NULL;
@@ -10,31 +10,13 @@ wxColour *mxBitmapButton::background_colour = NULL;
 mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, wxBitmap *abmp, wxString atext, wxSize size) : wxBitmapButton(parent,id,mxBitmapButton::GenerateButtonImage(atext,abmp),wxDefaultPosition,size) {
 	bmp = abmp;
 	text = atext;
-//	SetLabel(text);
 }
-
-mxBitmapButton::~mxBitmapButton() {
-}
-
-bool mxBitmapButton::SetThings(wxBitmap *abmp,wxString atext) {
-	if (bmp != abmp || text != atext) {
-		bmp = abmp;
-		text = atext;
-		SetBitmapLabel(GenerateButtonImage(atext,abmp));
-//		SetLabel(text);
-		return true;
-	} else
-		return false;
-}
-
 
 wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
-	
 #if defined(__APPLE__) || defined(__WIN32__)
 	if (!background_colour)
 		background_colour = new wxColour(wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour());
 #endif
-	
 	wxColour back_color = wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE );
 	wxBitmap full(200,100,32);
 	wxMemoryDC *dc=new wxMemoryDC(full);
@@ -64,3 +46,4 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
 	return wxBitmap(full.GetSubBitmap(r));
 #endif
 }
+
