@@ -1,8 +1,10 @@
-# este script sirve para armar el paquete binario distribuible para GNU/Linux desde 
-# una maquina  virtaul en la maquina real debe estar el paquete de fuentes (se genera 
-# con make -f Makefile.pack src) y a este script se le pasa como argumento la version 
-# de ese paquete hay un 2 argumento opcional "fast" para cuando hay cambios menores, 
-# al descomprimir los fuentes solo reemplaza los archivos mas nuevos que los existentes
+#!/bin/bash
+
+# Este script sirve para armar el paquete binario distribuible para GNU/Linux desde 
+# una maquina virtual. En la maquina real debe estar el paquete de fuentes (se genera 
+# con "make -f Makefile.pack src") y a este script se le pasa como argumento la version 
+# de ese paquete hay un 2do argumento opcional "fast" para cuando hay cambios menores, 
+# al descomprimir los fuentes solo reemplaza los archivos mas nuevos que los existentes.
 
 if ! test -e ./pseint-packer.cfg; then
 	touch ./pseint-packer.cfg
@@ -22,7 +24,7 @@ if ! test -e ./pseint-packer.cfg; then
 	echo 'WXVER=3' >> ./pseint-packer.cfg
 	echo '' >> ./pseint-packer.cfg
 	echo '# directorio con los .so de a incluir en el paquete... debería haber allí dos' >> ./pseint-packer.cfg
-	echo '# subdirectorios, png y wx, cada uno con sus .sos y un txt con la licencia0' >> ./pseint-packer.cfg
+	echo '# subdirectorios, png y wx, cada uno con sus .sos y un txt con la licencia' >> ./pseint-packer.cfg
 	echo 'LIBSDIR="libs"' >> ./pseint-packer.cfg
 	echo '' >> ./pseint-packer.cfg
 	echo '# puede modificar aquí otras variables si fuera necesario' >> ./pseint-packer.cfg

@@ -1,7 +1,0 @@
-rm -rf pseint
-scp zaskar@10.0.2.4:/mnt/ex/pseint/dist/pseint-src-$1.tgz .
-tar -xzvf pseint-src-$1.tgz
-sh pseint-add-libs.sh
-cd pseint
-make -f Makefile.pack lnx
-scp dist/pseint-l32-$1.tgz zaskar@10.0.2.4:/mnt/ex/pseint/dist/

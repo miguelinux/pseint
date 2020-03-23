@@ -3,7 +3,7 @@ all:
 
 src:
 	make -f Makefile.pack clean
-	cd .. && tar -czf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/license.txt pseint/mingw.conf pseint/Makefile pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/pseval pseint/psexport pseint/psdrawE pseint/psdraw3 pseint/bin pseint/dist/license.txt pseint/dist/log.sh pseint/dist/pseint.nsh pseint/dist/get_arch pseint/dist/Info.plist pseint/test pseint/hoewrap pseint/dtl/C* pseint/dtl/R* pseint/dtl/dtl
+	cd .. && tar -czf pseint/dist/pseint-src-`cat pseint/bin/version`.tgz pseint/license.txt pseint/mingw.conf pseint/Makefile pseint/Makefile.* pseint/fuentes.txt pseint/pseint pseint/updatem pseint/wxPSeInt pseint/psterm pseint/pseval pseint/psexport pseint/psdrawE pseint/psdraw3 pseint/bin pseint/dist/license.txt pseint/dist/log.sh pseint/dist/pseint.nsh pseint/dist/pseint-packer.sh pseint/dist/get_arch pseint/dist/Info.plist pseint/test pseint/hoewrap pseint/dtl/C* pseint/dtl/R* pseint/dtl/dtl
 	@echo 
 	@echo -n "DONE: "
 	@ls -sh dist/pseint-src-`cat bin/version`.tgz
@@ -13,7 +13,10 @@ w32:
 	make -f Makefile.pack clean
 	make -f Makefile.wine
 	rm -rf dist/pseint 
-	mkdir -p dist/pseint 
+	mkdir -p dist/pseint
+	rm -rf bin/bin 
+	rm -rf bin/bin2 
+	rm -rf bin/bin3 
 	cp -r bin/* dist/pseint/
 	rm -f dist/pseint/log.exe
 	rm -f dist/pseint/updatem.exe
@@ -23,7 +26,7 @@ w32:
 	cd dist && wine c:/nsis/makensis.exe /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
 	cp dist/config.here dist/pseint/config.here
 	rm -f dist/pseint-w32-`cat dist/pseint/version`.zip
-	cd dist && zip -qr -9 -Z bzip2 pseint-w32-`cat pseint/version`.zip pseint
+	cd dist && zip -qr -9 pseint-w32-`cat pseint/version`.zip pseint
 #	ls -sh pseint-w32-`cat pseint/version`.*
 	@echo 
 	@echo -n "DONE: "

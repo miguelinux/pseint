@@ -6,7 +6,7 @@ Todo se distribuye bajo licensia GPL (ver help\gpl.html), por lo que está permit
 Esta version no necesita instalarse.
 
 Para cargar el editor del pseint utilice
-    ./wxPSeInt
+    ./pseint
 
 Ante cualquier problema, consulta, sugerencia, etc, puede escribir a zaskar_84@yahoo.com.ar, o dejar un mensaje en el sitio http://pseint.sourceforge.net/contacto.php
 
