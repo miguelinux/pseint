@@ -166,14 +166,14 @@ void ShapesBar::Draw() {
 			SetStatus(color_selection,"Comentario (texto libre que el interprete ignora)"); break;
 		case 2: 
 			if (canvas->GetModifiers()&MODIFIER_SHIFT) 
-				SetStatus(color_selection,"Invocacion de un subproceso");
+				SetStatus(color_selection,"Invocación de un subproceso");
 			else
-				SetStatus(color_selection,"Asignacion/Dimension/Definicion"); 
+				SetStatus(color_selection,"Asignación/Dimensión/Definición"); 
 			break;
-		case 3: SetStatus(color_selection,"Escribir (instruccion para generar salidas)"); break;
-		case 4: SetStatus(color_selection,"Leer (instruccion para obtener entradas)"); break;
+		case 3: SetStatus(color_selection,"Escribir (instrucción para generar salidas)"); break;
+		case 4: SetStatus(color_selection,"Leer (instrucción para obtener entradas)"); break;
 		case 5: SetStatus(color_selection,"Si-Entonces (estructura condicional simple)"); break;
-		case 6: SetStatus(color_selection,"Segun (estructura de seleccion multiple)"); break;
+		case 6: SetStatus(color_selection,"Según (estructura de selección múltiple)"); break;
 		case 7: SetStatus(color_selection,"Mientras (estructura repetitiva)"); break;
 		case 8: 
 			if ((canvas->GetModifiers()&MODIFIER_SHIFT)!=lang[LS_PREFER_REPEAT_WHILE])

@@ -13,6 +13,7 @@
 #include "ShapesBar.h"
 #include "Trash.h"
 #include "ProcessSelector.h"
+#include <wx/timer.h>
 using namespace std;
 
 #define mouse_setted_delta 1000
@@ -72,8 +73,8 @@ void Raise() {
 void idle_func() {
 	ReadComm();
 	const int _delta_t=25000;
-	static int last=glutGet( GLUT_ELAPSED_TIME );
-	int now=glutGet( GLUT_ELAPSED_TIME );
+	static long long last = wxGetLocalTimeMillis().GetValue();
+	long long now = wxGetLocalTimeMillis().GetValue();
 	if (now-last<_delta_t) {
 		wxMicroSleep(_delta_t-(now-last));
 		last=now;

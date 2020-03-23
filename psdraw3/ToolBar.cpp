@@ -29,7 +29,7 @@ void ToolBar::Draw ( ) {
 		case MO_RUN: SetStatus(color_selection,"Ejecuta el algoritmo en la terminal de PSeInt."); break;
 		case MO_DEBUG: SetStatus(color_selection,"Ejecuta el algoritmo paso a paso marcando los pasos sobre el diagrama."); break;
 		case MO_EXPORT: SetStatus(color_selection,"Permite guardar el diagrama como imagen."); break;
-		case MO_CLOSE: SetStatus(color_selection,"Cierra el editor, preguntando antes si se deben aplicar los cambios en el pseudocodigo"); break;
+		case MO_CLOSE: SetStatus(color_selection,"Cierra el editor, preguntando antes si se deben aplicar los cambios en el pseudocódigo"); break;
 		case MO_HELP: SetStatus(color_selection,"Muestra una ventana de ayuda que explica cómo utilizar este editor y cuáles son sus atajos de teclado."); break;
 		default:
 			;

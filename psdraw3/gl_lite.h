@@ -1,8 +1,11 @@
 // Este archivo fue tomado del proyecto Papaya 
 // https://github.com/ApoorvaJ/Papaya, de Apoorva Joshi
 // Llegué a él desde el artículo: http://apoorvaj.io/loading-opengl-without-glew.html
-// Lo que sigue luego de estas 5 lineas de comentarios, es el archivo original, 
-// tomado del repositorio git, commit e24c8570d83f2cadf3add300044156380f7c6764
+
+// El siguiente código fuente se basa en la versión del
+// commit e24c8570d83f2cadf3add300044156380f7c6764
+// pero tiene algunas modificaciones que fueron necesarias 
+// para poder compilarlo con los toolchains que utilizo.
 
 /*
     gl_lite.h - Single-header multi-platform OpenGL function loader
@@ -40,7 +43,7 @@
 #endif // __linux__
 
 #if defined(_WIN32)
-#define NOMINMAX
+//#define NOMINMAX // comentado por zaskar, en mingw32 se vuelve a definir
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #define GLDECL WINAPI
@@ -64,6 +67,9 @@
 #define GL_STREAM_DRAW                    0x88E0
 #define GL_TEXTURE0                       0x84C0
 #define GL_VERTEX_SHADER                  0x8B31
+#ifndef GL_INFO_LOG_LENGTH
+#	define GL_INFO_LOG_LENGTH 0x8B84 // agregado por zaskar, en mingw32 no estaba definido
+#endif
 
 typedef char GLchar;
 typedef ptrdiff_t GLintptr;
@@ -77,7 +83,7 @@ typedef ptrdiff_t GLsizeiptr;
 
 #endif // _WIN32
 
-#include <cstdio>
+#include <cstdio> // agregado por zaskar, para los printfs de más abajo
 #include <GL/gl.h>
 
 

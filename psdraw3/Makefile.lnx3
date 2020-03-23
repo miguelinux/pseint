@@ -3,7 +3,7 @@ GPP=g++
 CXXFLAGS_OPT=-O2
 CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -D_USE_DF -DWX3
 LDFLAGS_OPT=-s
-LDFLAGS=${LDFLAGS_OPT} -lGL -lGLU -lglut -ldl `wx-config --libs --unicode=yes --version=3.1` `wx-config --gl_libs --unicode=yes --version=3.1` -lX11
+LDFLAGS=${LDFLAGS_OPT} -lGL -lGLU -ldl `wx-config --libs --unicode=yes --version=3.1` `wx-config --gl_libs --unicode=yes --version=3.1` -lX11
 
 all: ${OBJS_DIR} ../bin/bin3/psdraw3
 

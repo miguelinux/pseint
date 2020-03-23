@@ -46,8 +46,6 @@ bool mxApplication::OnInit() {
 	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInitPost();
 
-	glutInit (&argc, argv);
-	
 	wxImage::AddHandler(new wxPNGHandler);
 	Trash::Initialize();
 	ToolBar::Initialize();
