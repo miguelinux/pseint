@@ -22,18 +22,7 @@ mxFontsConfig::mxFontsConfig()
 	  m_constructed(false)
 {
 	
-	class mxFontEnumerator: public wxFontEnumerator {
-		wxArrayString *array;
-	public:
-		mxFontEnumerator(wxArrayString &the_array):array(&the_array){ 
-			wxFontEnumerator::EnumerateFacenames(wxFONTENCODING_SYSTEM,true);
-		}
-		bool OnFacename(const wxString& font) {
-			array->Add(font);
-			return true;
-		}
-	};
-	wxArrayString fonts; mxFontEnumerator f(fonts); fonts.Sort();
+	wxArrayString fonts = wxFontEnumerator::GetFacenames(wxFONTENCODING_SYSTEM,true);
 	
 	wxStaticText *wx_label = new wxStaticText(this,wxID_ANY,_Z("Fuente del editor:"));
 	m_wx_font_name = new wxComboBox(this,wxID_ANY,config->wx_font_name,wxDefaultPosition,wxDefaultSize,fonts);

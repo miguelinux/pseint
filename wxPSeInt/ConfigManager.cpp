@@ -2,6 +2,8 @@
 #include <wx/settings.h>
 #include <wx/textfile.h>
 #include <wx/msgdlg.h>
+#include <wx/stc/stc.h>
+#include <wx/fontenum.h>
 #include "ConfigManager.h"
 #include "mxUtils.h"
 #include "version.h"
@@ -120,15 +122,18 @@ void ConfigManager::LoadDefaults() {
 	updatem_command  = "./bin/updatem";
 	tty_command = _no_tty;
 #endif
-	
-	wx_font_size = /*big_icons?12:*/10;
-#ifdef WX3
-	wx_font_name = wxFont(wxFontInfo(wx_font_size).Family(wxFONTFAMILY_MODERN)).GetFaceName();
-#else
-	wx_font_name = wxFont(wx_font_size,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
+
+	wx_font_size = big_icons?12:10;
+	wx_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
+	term_font_size = big_icons?14:11;
+	term_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
+#if defined(__APPLE__) && defined(WX3)
+	// la fuente por defecto en mac es fea y muy chica...
+	wx_font_size = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetPointSize();
+	term_font_size = wx_font_size+2;
+	if (wxFontEnumerator::GetFacenames(wxFONTENCODING_SYSTEM).Index("Monaco")!=wxNOT_FOUND)
+		term_font_name = wx_font_name  = "Monaco";
 #endif
-	term_font_size = /*big_icons?14:*/11;
-	term_font_name = wxFont(term_font_size,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
 	
 	help_dir = "help";
 	proxy = "";

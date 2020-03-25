@@ -2,6 +2,7 @@
 #include "mxMainWindow.h"
 #include <wx/settings.h>
 #include <wx/dcclient.h>
+#include "ConfigManager.h"
 
 BEGIN_EVENT_TABLE(mxPanelHelper,wxPanel)
 	EVT_ENTER_WINDOW(mxPanelHelper::OnEnter)
@@ -14,6 +15,8 @@ mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, w
 	: wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize),
 	  font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))
 {
+	
+	if (config->big_icons) font.SetPointSize(font.GetPointSize()+2);
 	this->label=label;
 	mid=id; selected=false;
 	
@@ -27,8 +30,6 @@ mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, w
 	text_x = (size.GetWidth()+text_size.GetHeight())/2;
 #ifdef __WIN32__
 	text_x+=2;
-#else
-	text_x-=2;
 #endif
 	
 	SetMinSize(size);
