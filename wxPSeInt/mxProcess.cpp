@@ -14,6 +14,7 @@
 #include "Logger.h"
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
+#include <wx/txtstrm.h>
 using namespace std;
 
 mxProcess *proc_list = NULL;
@@ -124,6 +125,24 @@ void mxProcess::OnTerminate(int pid, int status) {
 	proc_for_killing=this;
 }
 
+
+static void Execute(const wxString &cmd, wxArrayString &output) {
+	// ejecutar usando un wxProcess, y no pasandole el output a wxExecute
+	// porque en ese caso no se puede controlar la codificación de la
+	// salida y wxExecute simplemente se cuelga (al menos en GNU/Linux)
+	// cuando la salida no es utf8
+	wxProcess p; p.Redirect();
+	wxExecute(cmd, wxEXEC_SYNC, &p);
+	wxInputStream *i = p.GetInputStream();
+	if(i) {
+		wxTextInputStream t(*i, "\n",wxCSConv("ISO-8851"));
+		while(!i->Eof()) {
+			wxString s = t.ReadLine();
+			if (!s.IsEmpty()) output.Add(s);
+		}
+	}
+}
+
 bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 	
 	if (what==mxPW_NULL) what=mxPW_CHECK;
@@ -136,7 +155,9 @@ bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
 	wxArrayString output;
 	_LOG("mxProcess::CheckSyntax this="<<this);
 	_LOG("    "<<command);
-	wxExecute(command,output,wxEXEC_SYNC);
+	
+	
+	Execute(command,output);
 	
 	main_window->RTreeReset();
 	main_window->last_source=source;
