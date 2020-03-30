@@ -6,7 +6,7 @@ else
     PSEINT=$2
     shift; shift; 
   else
-    PSEINT=../bin/pseint
+    PSEINT=../bin/bin/pseint
   fi
   
   if ! test -e $1.psc; then
