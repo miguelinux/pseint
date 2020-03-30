@@ -24,7 +24,7 @@ cursor=205:6
 marker=279
 [source]
 path=SynCheck.cpp
-cursor=390:0
+cursor=389:91
 breakpoint=65
 breakpoint_annotation=
 [source]

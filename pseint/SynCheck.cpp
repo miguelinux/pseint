@@ -387,10 +387,12 @@ static void SynCheckAux3(const int &x, string &cadena, int &errores,InstructionT
 					}
 					w=w_operator; wext=op_type;
 				} else {
-					SynError (68,string("Caracter no válido (")+string(1,act)+")."); errores++;
+					if (i==0 or (act!=cadena[i-1])) { // si encuentra algo como "???" que marque un solo ?
+						SynError (68,string("Caracter no válido (")+string(1,act)+")."); errores++;
+					}
 					w = w_operand; // fuerzo a operando para que preserve espacios despues de esto (casos como "mientras ??? hacer", que no pegue ??? con hacer porque eso generar un error adicional "falta hacer").
 				}
-			} 
+			}
 		}
 	}
 	if (w==w_operator) { SynError (236,"Falta operando al final de la expresión"); errores++; }
