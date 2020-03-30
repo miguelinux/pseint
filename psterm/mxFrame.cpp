@@ -27,6 +27,12 @@ mxFrame::mxFrame(wxString command, int port, int id, bool debug, win_props props
 			  wxDefaultPosition, wxSize(props.width,props.height),
 			  wxDEFAULT_FRAME_STYLE|(props.always_on_top?wxSTAY_ON_TOP:0)) 
 {
+	
+	wxIconBundle bundle;
+	wxIcon icon24; icon24.CopyFromBitmap(wxBitmap("imgs/tools/24/ejecutar.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon24);
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/tools/32/ejecutar.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon32);
+	SetIcons(bundle);
+	
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	
 	debug_mode=debug;

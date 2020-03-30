@@ -29,6 +29,11 @@ END_EVENT_TABLE()
 
 MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(win_w,win_h),wxDEFAULT_FRAME_STYLE) {
 	
+	wxIconBundle bundle;
+	wxIcon icon24; icon24.CopyFromBitmap(wxBitmap("imgs/tools/24/flujo.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon24);
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/tools/32/flujo.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon32);
+	SetIcons(bundle);
+	
 	main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	

@@ -32,6 +32,12 @@ static void AddWithLabel(wxWindow *parent, wxSizer *sizer, wxString text, wxWind
 }
 
 mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,_Z("Guardar diagrama de flujo"),wxDefaultPosition,wxDefaultSize) {
+	
+	wxIconBundle bundle;
+	wxIcon icon24; icon24.CopyFromBitmap(wxBitmap("imgs/tools/24/guardar.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon24);
+	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/tools/32/guardar.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon32);
+	SetIcons(bundle);
+	
 	ignore_events=true;
 	
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
