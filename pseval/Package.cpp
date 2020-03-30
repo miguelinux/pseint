@@ -136,7 +136,7 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 #endif
 		} else {
 			wxString content;
-			wxStringOutputStream os(&content);
+			wxStringOutputStream os(&content,wxConvISO8859_1);
 			zip.Read(os);
 			ProcessFile(name,content);
 		}
@@ -226,7 +226,7 @@ long Package::GetConfigInt(const wxString & key) {
 
 bool Package::GetConfigBool(const wxString & key) {
 	wxString val = GetConfigStr(key).Lower();
-	return val=="si"||val=="1"||val=="verdadero"||val=="yes"||val=="true"||val=="sí";
+	return val=="si"||val=="1"||val=="verdadero"||val=="yes"||val=="true"||val==_Z("sí");
 }
 
 Package::Package ( ) {
