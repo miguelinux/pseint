@@ -36,6 +36,14 @@ void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxStr
 		toolbar->SetToolLongHelp(id,status_text);
 	}
 }
+void mxUtils::AddCheckTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text, bool checked) {
+	filename = DIR_PLUS_FILE_3(config->images_path,"tools",config->big_icons?"32":"24",filename);
+	if (wxFileName::FileExists(filename)) {
+		toolbar->AddCheckTool(id, caption, wxBitmap(filename,wxBITMAP_TYPE_PNG), wxBitmap(),caption);
+		toolbar->SetToolLongHelp(id,status_text);
+		toolbar->ToggleTool(id,checked);
+	}
+}
 
 wxButton *mxUtils::AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id, wxString file, wxString text) {
 	wxString cfile = DIR_PLUS_FILE(config->images_path,file);

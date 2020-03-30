@@ -126,7 +126,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_PSDRAW_NO_CROP, mxMainWindow::OnConfigPSDrawNoCrop)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
-	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
+//	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_THEME, mxMainWindow::OnConfigUseDarkTheme)
 	EVT_MENU(mxID_CONFIG_BIG_ICONS, mxMainWindow::OnConfigBigIcons)
 	EVT_MENU(mxID_CONFIG_USE_DARK_PSTERM, mxMainWindow::OnConfigUseDarkPSTerm)
@@ -326,7 +326,7 @@ void mxMainWindow::CreateMenus() {
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
-	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
+//	mi_use_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_PSTERM, _Z("Ejecutar en una terminal del sistema"),"",!config->use_psterm);
 	mi_use_dark_theme = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_THEME, _Z("Utilizar fondo negro en este editor"),"",config->use_dark_theme);
 	mi_use_dark_psterm = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_DARK_PSTERM, _Z("Utilizar fondo negro en la terminal"),"",config->use_dark_psterm);
 	mi_use_dark_psterm->Enable(config->use_psterm);
@@ -383,6 +383,8 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_EDIT_COPY,_Z("Copiar"),"copiar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_PASTE,_Z("Pegar"),"pegar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_INDENT_SELECTION,_Z("Corregir Indentado"),"indentar.png","");
+	utils->AddCheckTool(toolbar,mxID_CONFIG_RT_ANNOTATE,_Z("Mostrar mensajes de error"),"annotate.png","",config->rt_annotate);
+	toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,config->rt_syntax);
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_EDIT_FIND,_Z("Buscar"),"buscar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_FIND_PREV,_Z("Buscar Anterior"),"anterior.png","");
@@ -1243,12 +1245,14 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 	if (!mi_rt_syntax->IsChecked()) {
 		mi_rt_syntax->Check(false);
 		config->rt_syntax=false;
+		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,false);
 		for(unsigned int i=0;i<notebook->GetPageCount();i++) {
 			((mxSource*)notebook->GetPage(i))->ClearErrorData();
 			((mxSource*)notebook->GetPage(i))->ClearErrorMarks();
 		}
 	} else {
 		mi_rt_syntax->Check(true);
+		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,true);
 		config->rt_syntax=true;
 		ShowResults(false,true);
 	}
@@ -1256,11 +1260,14 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnConfigRealTimeAnnotate(wxCommandEvent &evt) {
-	if (!mi_rt_annotate->IsChecked()) {
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
+	if (config->rt_annotate) {
 		mi_rt_annotate->Check(false);
+		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,false);
 		config->rt_annotate=false;
 	} else {
 		mi_rt_annotate->Check(true);
+		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,true);
 		config->rt_annotate=true;
 	}
 //	for(unsigned int i=0;i<notebook->GetPageCount();i++) {
@@ -1352,17 +1359,17 @@ void mxMainWindow::OnConfigAnimateGui(wxCommandEvent &evt) {
 	}
 }
 
-void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
-	if (!mi_use_psterm->IsChecked()) {
-		mi_use_psterm->Check(false);
-		mi_use_dark_psterm->Enable(true);
-		config->use_psterm=true;
-	} else {
-		mi_use_psterm->Check(true);
-		mi_use_dark_psterm->Enable(false);
-		config->use_psterm=false;
-	}
-}
+//void mxMainWindow::OnConfigUsePSTerm(wxCommandEvent &evt) {
+//	if (!mi_use_psterm->IsChecked()) {
+//		mi_use_psterm->Check(false);
+//		mi_use_dark_psterm->Enable(true);
+//		config->use_psterm=true;
+//	} else {
+//		mi_use_psterm->Check(true);
+//		mi_use_dark_psterm->Enable(false);
+//		config->use_psterm=false;
+//	}
+//}
 
 void mxMainWindow::OnConfigSelectFonts(wxCommandEvent &evt) {
 	if (mxFontsConfig().ShowModal()) {
