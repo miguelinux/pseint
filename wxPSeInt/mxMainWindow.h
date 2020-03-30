@@ -32,8 +32,9 @@ public:
 		bool m_visible;
 		mxHtmlWindow *m_ctrl;
 		int m_last_code;
+		wxAuiManager *m_aui;
 	public:
-		QuickHelpPanelPolicy() : m_mode(QHM_NULL), m_visible(false), m_ctrl(NULL), m_last_code(-1) {}
+		QuickHelpPanelPolicy() : m_mode(QHM_NULL), m_visible(false), m_ctrl(NULL), m_last_code(-1), m_aui(nullptr) {}
 		void ShowRTResult(bool errors, bool force=false);
 		void ShowRTError(int code, wxString msg, bool force=false);
 		void ShowHelpPage(wxString help_file);

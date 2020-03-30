@@ -914,6 +914,7 @@ void mxMainWindow::OnHelpQuickHelp(wxCommandEvent &evt) {
 void mxMainWindow::CreateQuickHelp() {
 	m_quick_help.m_ctrl = new mxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
 	m_quick_help.m_ctrl->SetPage(wxString(_Z("PSeInt "))<<VERSION);
+	m_quick_help.m_aui = &aui_manager;
 	aui_manager.AddPane(m_quick_help.m_ctrl, wxAuiPaneInfo().Name("quick_html").Caption(_Z("Ayuda Rápida")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Layer(phlp[0]).Row(phlp[1]).Position(phlp[2]));	
 }
 
@@ -1654,8 +1655,6 @@ void mxMainWindow::OnFileEditFlow (wxCommandEvent & evt) {
 		if (source->GetFlowSocket()) { 
 			source->GetFlowSocket()->Write("raise\n",6); 
 			return;
-//		} else if (!source->GetReadOnly() && source->HaveComments()) {
-//			wxMessageBox(_Z("Su algoritmo contiene comentarios. Si edita el diagrama y guarda los cambios perderá los comentarios!"),_Z("Advertencia"),wxOK|wxICON_EXCLAMATION,this);
 		}
 		wxString fname=source->SaveTemp();
 		if (debug->debugging)
@@ -2222,6 +2221,7 @@ void mxMainWindow::OnSourceClose (mxSource * src) {
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowRTResult (bool errors, bool force) {
+	m_aui->GetPane(m_ctrl).Caption("Errores de Sintaxis");
 	if ( (!m_visible || (m_mode!=QHM_RT_ERROR && m_mode!=QHM_RT_RESULT) ) && !force) return;
 	if (m_mode==QHM_RT_RESULT && errors==(m_last_code!=0)) return;
 	m_mode = QHM_RT_RESULT; m_last_code = errors?1:0;
@@ -2233,14 +2233,17 @@ void mxMainWindow::QuickHelpPanelPolicy::ShowRTResult (bool errors, bool force) 
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowHelpPage (wxString help_file) {
+	m_aui->GetPane(m_ctrl).Caption(_Z("Ayuda Rápida"));
 	m_mode = QHM_HELP; m_ctrl->LoadPage(help_file); EnsureVisible();
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowHelpText (wxString html_text) {
+	m_aui->GetPane(m_ctrl).Caption(_Z("Ayuda Rápida"));
 	m_mode = QHM_HELP; m_ctrl->SetPage(html_text); EnsureVisible();
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowTestHelp (wxString html_text) {
+	m_aui->GetPane(m_ctrl).Caption(_Z("Enunciado del Ejercicio"));
 	m_mode = QHM_TEST; m_ctrl->SetPage(html_text); EnsureVisible();
 }
 
@@ -2249,6 +2252,7 @@ void mxMainWindow::QuickHelpPanelPolicy::HideTestHelp () {
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowOutput (wxString html_text) {
+	m_aui->GetPane(m_ctrl).Caption(_Z("Ayuda Acerda del Error"));
 	m_mode = QHM_OUTPUT; m_ctrl->SetPage(html_text); EnsureVisible();
 }
 
@@ -2261,12 +2265,13 @@ void mxMainWindow::QuickHelpPanelPolicy::Hide ( ) {
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::EnsureVisible ( ) {
-	if (!m_visible) main_window->ShowQuickHelp(true);
+	if (!m_visible) main_window->ShowQuickHelp(true); else m_aui->Update(); // el else es para que actualice el caption del panel
 	if (main_window->GetTestPanel()) 
 		main_window->GetTestPanel()->OnShowHideHelp(m_mode==QHM_TEST);
 }
 
 void mxMainWindow::QuickHelpPanelPolicy::ShowRTError (int code, wxString msg, bool force) {
+	m_aui->GetPane(m_ctrl).Caption("Errores de sintaxis");
 	if ( (!m_visible || (m_mode!=QHM_RT_ERROR && m_mode!=QHM_RT_RESULT) ) && !force) return;
 	if (m_mode==QHM_RT_ERROR && m_last_code==code) return;
 	m_mode = QHM_RT_ERROR; m_last_code = code;
