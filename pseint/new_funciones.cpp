@@ -160,7 +160,8 @@ DataValue func_minusculas(DataValue *arg) {
 DataValue func_subcadena(DataValue *arg) {
 	string s = arg[0].GetAsString(); int l=s.length(), f=arg[1].GetAsInt(), t=arg[2].GetAsInt();
 	if (!lang[LS_BASE_ZERO_ARRAYS]) { f--; t--; }
-	if (t>l-1) t=l-1; if (f<0) f=0;
+	if (t>l-1) t=l-1; 
+	if (f<0) f=0;
 	if (t<f) return DataValue::MakeEmpty(vt_caracter);
 	return DataValue::MakeString(s.substr(f,t-f+1));
 }

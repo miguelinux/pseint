@@ -547,7 +547,7 @@
 120
   Acaba de ingresar un valor para una variable que no es correcto.
   * si se trata de un error de tipeo, puede hacer doble click en la terminal sobre el valor ingresado para modificarlo,
-  El valor ingresado es de un cierto tipo (NUMERICO, LOGICO o CARACTER), pero el intérprete a determinado (por cómo se utiliza en otras expresiones) que esta variable no puede ser de ese tipo.
+  El valor ingresado es de un cierto tipo (NUMERICO, LOGICO o CARACTER), pero el intérprete ha determinado (por cómo se utiliza en otras expresiones) que esta variable no puede ser de ese tipo.
   * ejecute nuevamente el algoritmo ingresando un dato del tipo apropiado,
   * o modifique su algoritmo, verificando todas las expresiones en las que interviene esta variable.
 
