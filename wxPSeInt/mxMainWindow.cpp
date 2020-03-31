@@ -138,7 +138,9 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
+#ifdef WX3
 	EVT_MENU(mxID_CONFIG_RT_ANNOTATE, mxMainWindow::OnConfigRealTimeAnnotate)
+#endif
 	EVT_MENU(mxID_CONFIG_NASSI_SHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_ICON_INSTALLER, mxMainWindow::OnInconInstaller)
@@ -383,8 +385,10 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_EDIT_COPY,_Z("Copiar"),"copiar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_PASTE,_Z("Pegar"),"pegar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_INDENT_SELECTION,_Z("Corregir Indentado"),"indentar.png","");
+#ifdef WX3
 	utils->AddCheckTool(toolbar,mxID_CONFIG_RT_ANNOTATE,_Z("Mostrar mensajes de error"),"annotate.png","",config->rt_annotate);
 	toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,config->rt_syntax);
+#endif
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_EDIT_FIND,_Z("Buscar"),"buscar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_FIND_PREV,_Z("Buscar Anterior"),"anterior.png","");
@@ -1245,14 +1249,18 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 	if (!mi_rt_syntax->IsChecked()) {
 		mi_rt_syntax->Check(false);
 		config->rt_syntax=false;
+#ifdef WX3
 		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,false);
+#endif
 		for(unsigned int i=0;i<notebook->GetPageCount();i++) {
 			((mxSource*)notebook->GetPage(i))->ClearErrorData();
 			((mxSource*)notebook->GetPage(i))->ClearErrorMarks();
 		}
 	} else {
 		mi_rt_syntax->Check(true);
+#ifdef WX3
 		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,true);
+#endif
 		config->rt_syntax=true;
 		ShowResults(false,true);
 	}
@@ -1263,11 +1271,15 @@ void mxMainWindow::OnConfigRealTimeAnnotate(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
 	if (config->rt_annotate) {
 		mi_rt_annotate->Check(false);
+#ifdef WX3
 		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,false);
 		config->rt_annotate=false;
+#endif
 	} else {
 		mi_rt_annotate->Check(true);
+#ifdef WX3
 		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,true);
+#endif
 		config->rt_annotate=true;
 	}
 //	for(unsigned int i=0;i<notebook->GetPageCount();i++) {

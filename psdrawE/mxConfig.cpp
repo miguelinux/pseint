@@ -8,6 +8,8 @@
 #include "../psdraw3/Global.h"
 #include "../psdraw3/Load.h"
 #include "../wxPSeInt/string_conversions.h"
+#include <wx/bitmap.h>
+#include <wx/icon.h>
 
 enum { MID_NULL = wxID_HIGHEST, MID_ANCHO, MID_ALTO, MID_ZOOM, MID_CROP, MID_COMMENTS, MID_COLORS, MID_STYLE, MID_PROC };
 

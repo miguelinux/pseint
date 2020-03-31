@@ -136,7 +136,11 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 #endif
 		} else {
 			wxString content;
+#ifdef WX3
 			wxStringOutputStream os(&content,wxConvISO8859_1);
+#else
+			wxStringOutputStream os(&content);
+#endif
 			zip.Read(os);
 			ProcessFile(name,content);
 		}

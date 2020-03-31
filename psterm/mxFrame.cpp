@@ -8,6 +8,7 @@
 #include <wx/checkbox.h>
 #include <wx/settings.h>
 #include "../wxPSeInt/string_conversions.h"
+#include <wx/bitmap.h>
 using namespace std;
 
 enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RUN_AGAIN };

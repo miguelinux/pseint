@@ -126,13 +126,14 @@ void mxProcess::OnTerminate(int pid, int status) {
 }
 
 
-static void Execute(const wxString &cmd, wxArrayString &output) {
+static void Execute(const wxString &command, wxArrayString &output) {
+#ifdef WX3
 	// ejecutar usando un wxProcess, y no pasandole el output a wxExecute
 	// porque en ese caso no se puede controlar la codificación de la
 	// salida y wxExecute simplemente se cuelga (al menos en GNU/Linux)
 	// cuando la salida no es utf8
 	wxProcess p; p.Redirect();
-	wxExecute(cmd, wxEXEC_SYNC, &p);
+	wxExecute(command, wxEXEC_SYNC, &p);
 	wxInputStream *i = p.GetInputStream();
 	if(i) {
 		wxTextInputStream t(*i, "\n",wxCSConv("ISO-8851"));
@@ -141,6 +142,9 @@ static void Execute(const wxString &cmd, wxArrayString &output) {
 			if (!s.IsEmpty()) output.Add(s);
 		}
 	}
+#else
+	wxExecute(command,output,wxEXEC_SYNC);
+#endif
 }
 
 bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
