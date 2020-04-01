@@ -18,7 +18,7 @@
 
 
 	void OSDep::AppInit() {
-		HMODULE user32 = LoadLibrary("user32.dll");
+		HMODULE user32 = LoadLibrary(TEXT("user32.dll"));
 		typedef BOOL (WINAPI *SetProcessDPIAwareFunc)();
 		SetProcessDPIAwareFunc setDPIAware = (SetProcessDPIAwareFunc)GetProcAddress(user32,"SetProcessDPIAware");
 		if (setDPIAware) setDPIAware();
@@ -26,7 +26,7 @@
 	}
 
 	static int GetDPI_impl() {
-		HMODULE shcore = LoadLibrary("Shcore.dll");
+		HMODULE shcore = LoadLibrary(TEXT("Shcore.dll"));
 		if (!shcore) return 0;
 		typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR,_MONITOR_DPI_TYPE,UINT*,UINT*);
 		GetDpiForMonitorFunc GetDpiForMonitor = (GetDpiForMonitorFunc)GetProcAddress(shcore,"GetDpiForMonitor");

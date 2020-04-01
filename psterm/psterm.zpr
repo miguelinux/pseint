@@ -18,12 +18,13 @@ current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=83:9
+cursor=84:5
 open=true
 [source]
 path=mxFrame.cpp
-cursor=32:42
-marker=105
+cursor=34:42
+marker=106
+open=true
 [source]
 path=mxConsole.cpp
 cursor=213:0

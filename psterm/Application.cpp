@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "mxFrame.h"
 #include "version.h"
+#include <wx/image.h>
 
 IMPLEMENT_APP(mxApplication)
 	
@@ -81,6 +82,7 @@ bool mxApplication::OnInit() {
 			}
 		}
 	}
+	wxImage::AddHandler(new wxPNGHandler);
 	new mxFrame(command,port,src_id,debug,props);
 	return true;
 }

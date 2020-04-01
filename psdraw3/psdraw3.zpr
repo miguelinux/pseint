@@ -14,21 +14,21 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=MainWindow.cpp
+current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=48:1
+cursor=49:0
+open=true
 [source]
 path=Canvas.cpp
-cursor=0:18
+cursor=0:16
 marker=61
 [source]
 path=MainWindow.cpp
-cursor=30:0
-marker=36
-marker=113
-open=true
+cursor=64:54
+marker=37
+marker=114
 [source]
 path=Comm.cpp
 cursor=82:22
@@ -54,7 +54,7 @@ path=Events.cpp
 cursor=321:26
 [source]
 path=Global.cpp
-cursor=53:24
+cursor=40:18
 [source]
 path=Load.cpp
 cursor=253:34
@@ -117,10 +117,10 @@ path=Events.h
 cursor=30:11
 [header]
 path=GLstuff.h
-cursor=11:8
+cursor=10:15
 [header]
 path=Global.h
-cursor=37:13
+cursor=87:0
 [header]
 path=Load.h
 cursor=4:0
@@ -130,10 +130,9 @@ cursor=20:7
 [header]
 path=Version.h
 cursor=0:24
-open=true
 [header]
-path=png.h
-cursor=0:0
+path=gl_lite.h
+cursor=46:8
 [header]
 path=../pseint/zockets.h
 cursor=0:0
@@ -164,19 +163,13 @@ path=ProcessSelector.h
 cursor=3:0
 [header]
 path=../wxPSeInt/CommonParsingFunctions.h
-cursor=0:0
+cursor=5:28
 [header]
 path=../wxPSeInt/osdep.h
 cursor=0:0
 [header]
 path=../wxPSeInt/string_conversions.h
 cursor=4:0
-[header]
-path=gl_lite.h
-cursor=91:44
-[other]
-path=manifest.xml
-cursor=-1:0
 [other]
 path=../bin/help/cambios.html
 cursor=14:18
@@ -247,19 +240,19 @@ dont_generate_exe=0
 [config]
 name=Win32_Debug
 toolchain=
-working_folder=
+working_folder=..\bin
 always_ask_args=0
 args=
 exec_method=0
 exec_script=
-env_vars=
+env_vars=PATH+=;${MINGW_DIR}\wx3\bin
 wait_for_key=0
 temp_folder=../temp/drw3_w32_dbg
 output_file=../bin/psdraw3.exe
-icon_file=ghormigat.ico
-manifest_file=manifest.xml
-compiling_extra= -fpermissive
-macros=_USE_DF
+icon_file=..\bin\imgs\icon.ico
+manifest_file=..\wxPSeInt\manifest.xml
+compiling_extra=
+macros=_USE_DF WX3 UNICODE
 warnings_level=1
 warnings_as_errors=0
 pedantic_errors=0
@@ -268,10 +261,10 @@ std_cpp=
 debug_level=2
 optimization_level=0
 enable_lto=0
-headers_dirs=${MINGW_DIR}\wx\include ${MINGW_DIR}\OpenGL\include
+headers_dirs=${MINGW_DIR}\wx3\include ${MINGW_DIR}\OpenGL\include
 linking_extra=
-libraries_dirs=${MINGW_DIR}\wx\lib ${MINGW_DIR}\OpenGL\lib
-libraries=wxmsw28_aui wxmsw28_html wxmsw28_richtext wxmsw28_core wxbase28_net wxbase28 wxmsw28_adv wxmsw28_gl wxtiff wxjpeg wxpng wxzlib wxregex wxexpat glu32 opengl32 winmm shell32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 wsock32 odbc32 kernel32 user32 gdi32 comdlg32 winspool
+libraries_dirs=${MINGW_DIR}\wx3\lib\dynamic ${MINGW_DIR}\OpenGL\lib
+libraries=opengl32 glu32 wxmsw31u_adv wxmsw31u_html wxmsw31u_gl wxmsw31u_core wxbase31u wxtiff wxjpeg wxpng wxzlib  kernel32 user32 gdi32 comdlg32 winspool winmm shell32 shlwapi comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 version wsock32 wininet
 libs_to_use=
 strip_executable=0
 console_program=0
@@ -284,14 +277,14 @@ always_ask_args=0
 args=
 exec_method=0
 exec_script=
-env_vars=
+env_vars=PATH+=;${MINGW_DIR}\wx3\bin
 wait_for_key=0
 temp_folder=../temp/drw3_w32_rls
 output_file=../bin/psdraw3.exe
 icon_file=ghormigat.ico
 manifest_file=manifest.xml
 compiling_extra= -fpermissive
-macros=_USE_DF
+macros=_USE_DF WX UNICODA
 warnings_level=2
 warnings_as_errors=0
 pedantic_errors=0
@@ -300,10 +293,10 @@ std_cpp=
 debug_level=0
 optimization_level=2
 enable_lto=0
-headers_dirs=${MINGW_DIR}\wx\include ${MINGW_DIR}\OpenGL\include
+headers_dirs=${MINGW_DIR}\wx3\include ${MINGW_DIR}\OpenGL\include
 linking_extra=
-libraries_dirs=${MINGW_DIR}\wx\lib ${MINGW_DIR}\opengl\lib
-libraries=wxmsw28_aui wxmsw28_html wxmsw28_richtext wxmsw28_core wxbase28_net wxbase28 wxmsw28_adv wxmsw28_gl wxtiff wxjpeg wxpng wxzlib wxregex wxexpat glu32 opengl32 winmm shell32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 wsock32 odbc32 kernel32 user32 gdi32 comdlg32 winspool
+libraries_dirs=${MINGW_DIR}\wx3\lib\dynamic ${MINGW_DIR}\opengl\lib
+libraries=opengl32 glu32 wxmsw31u_adv wxmsw31u_html wxmsw31u_gl wxmsw31u_core wxbase31u wxtiff wxjpeg wxpng wxzlib  kernel32 user32 gdi32 comdlg32 winspool winmm shell32 shlwapi comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 version wsock32 wininet
 libs_to_use=
 strip_executable=2
 console_program=0

@@ -14,6 +14,7 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
+current_source=new_funciones.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -68,9 +69,8 @@ path=new_memoria.cpp
 cursor=11:0
 [source]
 path=new_funciones.cpp
-cursor=163:1
-breakpoint=110
-breakpoint_annotation=
+cursor=115:20
+open=true
 [source]
 path=new_programa.cpp
 cursor=-1:0

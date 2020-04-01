@@ -1,14 +1,15 @@
-#include "mxFrame.h"
+#include <iostream>
 #include <wx/sizer.h>
-#include "mxConsole.h"
 #include <wx/button.h>
 #include <wx/msgdlg.h>
 #include <wx/app.h>
-#include <iostream>
 #include <wx/checkbox.h>
 #include <wx/settings.h>
-#include "../wxPSeInt/string_conversions.h"
 #include <wx/bitmap.h>
+#include <wx/icon.h>
+#include "../wxPSeInt/string_conversions.h"
+#include "mxFrame.h"
+#include "mxConsole.h"
 using namespace std;
 
 enum { FRAME_ID_BASE=wxID_HIGHEST+1000, FRAME_ID_PLAY, FRAME_ID_RUN_AGAIN };

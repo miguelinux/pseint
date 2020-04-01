@@ -11,6 +11,7 @@
 #include "Load.h"
 #include "Events.h"
 #include "Comm.h"
+#include <wx/icon.h>
 
 MainWindow *main_window=NULL;
 

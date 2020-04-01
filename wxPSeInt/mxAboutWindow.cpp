@@ -69,7 +69,7 @@ wxString mxAboutWindow::MakePageText(bool full) {
 	text<<_Z("<CENTER><TABLE><TR><TD>");
 	text<<_Z("<A href=\"lala\"><IMG src=\"")<<DIR_PLUS_FILE(config->images_path,"logo.png")<<_Z("\"/></A>");
 	text<<_Z("</TD><TD>");
-	text<<_Z("<CENTER><B>Copyleft 2003-2019<BR>por Pablo Novara<BR>");
+	text<<_Z("<CENTER><B>Copyleft 2003-2020<BR>por Pablo Novara<BR>");
 	text<<_Z("zaskar_84@yahoo.com.ar<BR>");
 	text<<_Z("<A href=\"about\">(ver más...)</A><BR><BR>");
 	text<<_Z("Este software es Libre y gratuito.<BR>Se distribuye bajo licencia GPL</B><BR>(<A href=\"gpl\">General Public License</A>)");

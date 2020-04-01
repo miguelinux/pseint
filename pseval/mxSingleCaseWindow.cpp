@@ -50,7 +50,7 @@ mxSingleCaseWindow::mxSingleCaseWindow (wxWindow *parent, bool only_first, bool 
 	
 	
 	list = new wxListCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxLC_LIST|wxLC_NO_HEADER|wxLC_SINGLE_SEL);
-	list->InsertColumn(0,_Z("Casos"));
+//	list->InsertColumn(0,_Z("Casos")); // solo para listas tipo report
 	
 	wxSizer *but_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *but_copy = new wxButton(this,wxID_OK,_Z("Copiar Entrada"));

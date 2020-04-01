@@ -1,6 +1,7 @@
 #include "GLstuff.h"
 #include <iostream>
 #include <wx/glcanvas.h>
+#include <wx/msgdlg.h>
 #include <wx/dcclient.h>
 #include "Events.h"
 #include "Draw.h"
@@ -8,7 +9,6 @@
 #include "Textures.h"
 #include "Canvas.h"
 #include "../wxPSeInt/string_conversions.h"
-#include <wx/msgdlg.h>
 static int gl_attrib[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
 using namespace std;
 
@@ -34,9 +34,17 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_KEY_UP(Canvas::OnKeyUp)
 END_EVENT_TABLE()
 	
+#ifdef WX3
+static wxGLAttributes &glAttribs() {
+	static wxGLAttributes atr;
+	atr.DoubleBuffer().RGBA().EndList();
+	return atr;
+}
+#endif
+
 Canvas::Canvas(wxWindow *parent)
 #ifdef WX3
-	: wxGLCanvas(parent,wxGLAttributes().DoubleBuffer().RGBA()/*.SampleBuffers(1).Samplers(4)*/,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
+	: wxGLCanvas(parent,glAttribs()/*.SampleBuffers(1).Samplers(4)*/,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
 #else
 	: wxGLCanvas(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE,"canvas",gl_attrib)
 #endif

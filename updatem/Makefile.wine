@@ -2,7 +2,8 @@ include ../mingw.conf
 OBJS_DIR=../temp/upd_w32_rls
 GPP=wine ${MINGW_DIR}\\bin\\mingw32-g++.exe
 CXXFLAGS=-O0 -s
-LIBS=-mwindows -lwsock32 -static-libgcc -static-libstdc++
+#LIBS=-mwindows -lwsock32 -static-libgcc -static-libstdc++
+LIBS=-mwindows -lwsock32 
 WINDRES=wine ${MINGW_DIR}\\bin\\windres.exe
 
 all: ../temp/upd_w32_rls ../bin/updatem.exe
