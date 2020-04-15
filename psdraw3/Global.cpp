@@ -46,7 +46,7 @@ const float color_comment[3]={.4,.4,.4}; // borde de la forma de una entidad
 /*const */float color_label_high[6][3] = {
 	{0,0,0}, // identificadores
 	{.60,.40,.15}, // numeros
-	{.7,0,0}, // cadenas
+	{0,.55,0}, // cadenas
 	{0,0,.6}, // palabras claves
 	{.4,.4,.4}, // comentarios
 	{.3,.3,.3} // operadores
