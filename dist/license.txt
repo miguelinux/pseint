@@ -1,4 +1,4 @@
-Pseudo Interprete se distribuye bajo GNU General Public License. 
+PSeInt se distribuye bajo GNU General Public License. 
 
 		   GNU GENERAL PUBLIC LICENSE
 
