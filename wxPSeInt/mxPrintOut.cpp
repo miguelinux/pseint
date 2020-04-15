@@ -26,15 +26,13 @@ mxPrintOut::mxPrintOut (mxSource *src, wxString title) : wxPrintout(title) {
 ////		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 //	}
 	source = src;
-	pages_len = m_printed = 0;
-	pages=NULL;
 }
 
 bool mxPrintOut::OnPrintPage (int page) {
 	wxDC *dc = GetDC();
 	if (!dc) return false;
 	PrintScaling (dc);
-	source->FormatRange (1, pages[page-1], source->GetLength(),
+	source->FormatRange (true, pages[page-1], source->GetLength(),
 		dc, dc, m_printRect, m_pageRect);
 	return true;
 }
@@ -42,11 +40,16 @@ bool mxPrintOut::OnPrintPage (int page) {
 bool mxPrintOut::OnBeginDocument (int startPage, int endPage) {
 	if (!wxPrintout::OnBeginDocument (startPage, endPage))
 		return false;
-	m_printed=0;
 	return true;
 }
 
 void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) {
+	
+	if (!pages.empty()) {
+		*minPage = *selPageFrom = 1;
+		*maxPage = *selPageTo = pages.size();
+		return;
+	}
 	
 	// initialize values
 	*minPage = *maxPage = *selPageFrom = *selPageTo = 0;
@@ -87,12 +90,12 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 		page.y - (top + bottom));
 	
 	// count pages
-	while (HasPage (*maxPage)) {
-		int last = m_printed;
-		SetPageStart(*maxPage,m_printed);
-		m_printed = source->FormatRange (0, m_printed, source->GetLength(), dc, dc, m_printRect, m_pageRect);
+	for(int printed=0; printed < source->GetLength();) {
+		int last = printed;
+		pages.push_back(printed);
+		printed = source->FormatRange (0, printed, source->GetLength(), dc, dc, m_printRect, m_pageRect);
 		*maxPage += 1;
-		if (last==m_printed) {
+		if (last==printed) {
 			wxMessageBox(_Z("Debe configurar la pagina antes de imprimir"),_Z("Error"));
 			break;
 		}
@@ -103,7 +106,7 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 }
 
 bool mxPrintOut::HasPage (int page) {
-	return (m_printed < source->GetLength());
+	return page<=pages.size();
 }
 
 bool mxPrintOut::PrintScaling (wxDC *dc){
@@ -138,29 +141,3 @@ bool mxPrintOut::PrintScaling (wxDC *dc){
 	return true;
 }
 
-/**
-* Recibe un numero de pagina y un entero con la posición dentro del fuente
-* en donde comienza la impresión de esa página, y los alamcena en una arreglo
-* para utilizarlo en OnPrintPage. Maneja además la memoria del arreglo donde
-* se guarda esta información redimensionando e incializando cuando es necesario.
-* Este método es llamado por GetPageInfo.
-* @param page numero de la pagina (wx las maneja en base 1, y asi se guardan)
-* @param start indice dentro del texto fuente (buffer del mxSource) donde 
-*        comienza esta página
-**/
-void mxPrintOut::SetPageStart(int page, int start) {
-	if (!pages) pages=new int[pages_len=10];
-	if (page>=pages_len) {
-		int *p2=new int[pages_len*2];
-		for (int i=0;i<pages_len;i++)
-			p2[i]=pages[i];
-		delete [] pages;
-		pages=p2;
-		pages_len=pages_len*2;
-	}
-	pages[page]=start;
-}
-
-mxPrintOut::~mxPrintOut() {
-	if (pages) delete []pages;
-}

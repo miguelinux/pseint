@@ -29,31 +29,38 @@ mxFontsConfig::mxFontsConfig()
 	m_wx_font_size = new wxTextCtrl(this,wxID_ANY,wxString()<<config->wx_font_size,wxDefaultPosition,wxDefaultSize);
 	m_wx_sample = new wxStyledTextCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0);
 	m_wx_sample->SetText("Ejemplo");
+	
+	wxStaticText *print_label = new wxStaticText(this,wxID_ANY,_Z("Tamaño de fuente para imprimir:"));
+	m_print_font_size = new wxTextCtrl(this,wxID_ANY,wxString()<<config->print_font_size,wxDefaultPosition,wxDefaultSize);
+	
 	wxStaticText *term_label = new wxStaticText(this,wxID_ANY,_Z("Fuente de la terminal:"));
 	m_term_font_name = new wxComboBox(this,wxID_ANY,config->term_font_name,wxDefaultPosition,wxDefaultSize,fonts);
 	m_term_font_size = new wxTextCtrl(this,wxID_ANY,wxString()<<config->term_font_size,wxDefaultPosition,wxDefaultSize);
 	m_term_sample = new wxStyledTextCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0);
 	m_term_sample->SetText("Ejemplo");
 	
-	wxSizerFlags se = wxSizerFlags().Center().Proportion(1).Expand();
+	wxSizerFlags se = wxSizerFlags().Center().Proportion(1);
 	wxSizerFlags sc = wxSizerFlags().Center();
-	wxSizerFlags sb = wxSizerFlags().Border(wxALL,5);;
-	wxSizerFlags seb = wxSizerFlags().Expand().Border(wxALL,5);;
+	wxSizerFlags sb = wxSizerFlags().Border(wxALL,5).Expand();
 	
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *wx_sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *print_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *term_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wx_sizer->Add(m_wx_font_name,se);
 	wx_sizer->Add(m_wx_font_size,sc);
+	print_sizer->Add(print_label,se);
+	print_sizer->Add(m_print_font_size,sc);
 	term_sizer->Add(m_term_font_name,se);
 	term_sizer->Add(m_term_font_size,sc);
 	main_sizer->Add(wx_label,sb);
 	main_sizer->Add(wx_sizer,sb);
-	main_sizer->Add(m_wx_sample,seb);
+	main_sizer->Add(m_wx_sample,sb);
+	main_sizer->Add(print_sizer,sb);
 	main_sizer->AddSpacer(5);
 	main_sizer->Add(term_label,sb);
 	main_sizer->Add(term_sizer,sb);
-	main_sizer->Add(m_term_sample,seb);
+	main_sizer->Add(m_term_sample,sb);
 	main_sizer->AddSpacer(5);
 	
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -97,6 +104,7 @@ void mxFontsConfig::ApplyToSamples ( ) {
 void mxFontsConfig::OnButtonOk (wxCommandEvent & evt) {
 	m_wx_font_size->GetValue().ToLong(&config->wx_font_size);
 	m_term_font_size->GetValue().ToLong(&config->term_font_size);
+	m_print_font_size->GetValue().ToLong(&config->print_font_size);
 	config->wx_font_name = m_wx_font_name->GetValue();
 	config->term_font_name = m_term_font_name->GetValue();
 	EndModal(1);

@@ -76,7 +76,7 @@ public:
 	bool rt_annotate;
 	bool smart_indent;
 	bool big_icons;
-	long wx_font_size, term_font_size;
+	long wx_font_size, print_font_size, term_font_size;
 	wxString wx_font_name, term_font_name;
 	int tabw;
 	int size_x, size_y;

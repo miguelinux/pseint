@@ -1634,8 +1634,9 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		mxSource *src=CURRENT_SOURCE;
 		wxPrinter printer(printDialogData);
 		mxPrintOut printout(src,src->GetPageText());
-		src->SetPrintMagnification(-2);
+		src->SetPrintMagnification(config->print_font_size-config->wx_font_size);
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
+		src->ClearErrorData();
 		if (!printer.Print(this, &printout, true)) {
 			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
 				wxMessageBox(_Z("Ha ocurrido un error al intentar imprimir"),_Z("Error"));

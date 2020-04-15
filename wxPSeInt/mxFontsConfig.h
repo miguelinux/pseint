@@ -14,6 +14,7 @@ class mxFontsConfig : public wxDialog {
 	wxTextCtrl *m_term_font_size;
 	wxStyledTextCtrl *m_wx_sample;
 	wxStyledTextCtrl *m_term_sample;
+	wxTextCtrl *m_print_font_size;
 public:
 	mxFontsConfig();
 	void OnText(wxCommandEvent &evt);

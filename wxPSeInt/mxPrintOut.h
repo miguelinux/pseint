@@ -22,8 +22,6 @@ public:
 	
 	//! constructor
 	mxPrintOut (mxSource *source, wxString title = _T(""));
-	//! destructor
-	~mxPrintOut();
 	
 	//! evento: imprimir una pagina
 	bool OnPrintPage (int page);
@@ -35,14 +33,9 @@ public:
 	//! evento: recuperar información de la impresión
 	void GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 	
-	//! guarda en que indice del texto fuente comienza una determinada pagina
-	void SetPageStart(int page, int start);
-	
 private:
 	mxSource *source; ///< fuente a imprimir
-	int m_printed; ///< variable auxiliar para determinar hasta donde se "imprimió" en GetPageInfo
-	int *pages; ///< guarda en que indice del texto fuente comienza cada pagina
-	int pages_len; ///< tamaño en memoria del arreglo de indices de comienzo para cada pagina
+	std::vector<int> pages;
 	wxRect m_pageRect; ///< area de la página completa
 	wxRect m_printRect; ///< area de impresión
 	

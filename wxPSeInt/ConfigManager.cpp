@@ -125,6 +125,7 @@ void ConfigManager::LoadDefaults() {
 
 	wx_font_size = big_icons?12:10;
 	wx_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
+	print_font_size = wx_font_size-2;
 	term_font_size = big_icons?14:11;
 	term_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
 #if defined(__APPLE__) && defined(WX3)
@@ -181,6 +182,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("reorganize_for_debug=")<<(reorganize_for_debug?1:0));
 	fil.AddLine(wxString("maximized=")<<(maximized?1:0));
 	fil.AddLine(wxString("wx_font_size=")<<wx_font_size);
+	fil.AddLine(wxString("print_font_size=")<<print_font_size);
 	fil.AddLine(wxString("term_font_size=")<<term_font_size);
 	fil.AddLine(wxString("wx_font_name=")<<wx_font_name);
 	fil.AddLine(wxString("term_font_name=")<<term_font_name);
@@ -229,6 +231,7 @@ void ConfigManager::Read() {
 			value=str.AfterFirst('=');
 			if (key=="version") { value.ToLong(&l); version=l; lang.Reset(version); }
 			else if (key=="wx_font_size") { value.ToLong(&l); wx_font_size=l; }
+			else if (key=="print_font_size") { value.ToLong(&l); print_font_size=l; }
 			else if (key=="term_font_size") { value.ToLong(&l); term_font_size=l; }
 			else if (key=="wx_font_name") { wx_font_name=value; }
 			else if (key=="term_font_name") { term_font_name=value; }
