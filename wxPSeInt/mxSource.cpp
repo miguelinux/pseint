@@ -56,6 +56,9 @@ static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
+#ifdef CUSTOM_LEXER
+	EVT_STC_STYLENEEDED(wxID_ANY,mxSource::OnStyleNeeded)
+#endif
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
 #ifdef _AUTOINDENT
 	EVT_STC_MODIFIED(wxID_ANY,mxSource::OnModified)
@@ -132,7 +135,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 {
 
 #ifdef WX3
-//	CmdKeyClearAll(); // desactiva hasta delete, backspace, flechas, tabas, etc
+//	CmdKeyClearAll(); // desactiva hasta delete, backspace, flechas, tabs, etc
 	for(char c='A';c<='Z';++c) {
 		// no es lo mismo hacerles clear que asignar null...
 		// el clear les asigna el msg STC_NULL que no es 0, y entonces el
@@ -293,7 +296,8 @@ void mxSource::SetStyling(bool colour) {
 	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
 	const char *CL_DIMM_FORE = config->use_dark_theme ? "#888888" : "#888888" ;
 	const char *CL_KEYWORD   = config->use_dark_theme ? "#9999FA" : "#000080" ;
-	const char *CL_STRING    = config->use_dark_theme ? "#FA9999" : "#FF0000" ;
+//	const char *CL_STRING    = config->use_dark_theme ? "#FA9999" : "#FF0000" ;
+	const char *CL_STRING    = config->use_dark_theme ? "#99FA99" : "#006400" ;
 	const char *CL_NUMBER    = config->use_dark_theme ? "#FAFA99" : "#A0522D" ;
 	const char *CL_COMMENT_1 = config->use_dark_theme ? "#999999" : "#969696" ;
 	const char *CL_COMMENT_2 = config->use_dark_theme ? "#33FA33" : "#5050FF" ;
@@ -310,7 +314,11 @@ void mxSource::SetStyling(bool colour) {
 	SetCaretForeground (CL_REG_FORE);
 	SetSelBackground(true,CL_ALT_BACK);
 	
+#ifdef CUSTOM_LEXER
+	SetLexer(wxSTC_LEX_CONTAINER); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
+#else
 	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
+#endif
 	SetWords();
 	SetStyle(wxSTC_STYLE_DEFAULT,            CL_DIMM_FORE,      CL_REG_BACK,        0);               // default
 	SetStyle(wxSTC_C_DEFAULT,                CL_DIMM_FORE,       CL_REG_BACK,        0);               // default
@@ -1723,9 +1731,15 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 }
 
 void mxSource::HighLight(wxString words, int from, int to) {
+#ifdef CUSTOM_LEXER
+	m_selected_variable  = words.Upper();
+	m_selected_variable_line_from = from;
+	m_selected_variable_line_to = to;
+#else
 	if (to!=-1) words<<" 0"<<from<<" 1"<<to; // el 0 y 1 son porque scintilla los va a ordernar alfabeticamente, para que queden simpre primero y segundo
 	SetKeyWords(3,words.Lower());
-	Colourise(0,GetLength());
+#endif
+	Colourise(PositionFromLine(from),GetLineEndPosition(to));
 }
 
 void mxSource::ClearBlocks ( ) {
@@ -2320,4 +2334,110 @@ void mxSource::FocusKilled ( ) {
 	if (CallTipActive()) HideCalltip();
 	if (AutoCompActive()) AutoCompCancel();
 }
+#ifdef CUSTOM_LEXER
+void mxSource::StyleLine(int pos, const wxString &text) {
+	enum stl_type { 
+		stl_operator = wxSTC_C_OPERATOR,
+		stl_comment1 = wxSTC_C_COMMENTLINE,
+		stl_comment2 = wxSTC_C_COMMENTDOC 
+	};
+	size_t p = 0, pN = text.Length();
+	int word_count = 0, nesting = 0; // para distinguir "asignar" de "menor menos" (<-)
+	while(p<pN) {
+		size_t p0 = p;
+		char c = text[p];
+		if (EsEspacio(c)) {
+			while (++p<pN and EsEspacio(text[p])) c = text[p];
+			MySetStyle(pos+p0,pos+p,wxSTC_C_DEFAULT);
+		} else if (EsLetra(c,false)) {
+			if (nesting==0) ++word_count;
+			while (++p<pN and EsLetra(text[p],true));
+			wxString word = text.SubString(p0,p-1); word.MakeUpper();
+			MySetStyle(pos+p0,pos+p,
+					   m_keywords.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD : (
+							m_functions.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD2 : (
+								(word==m_selected_variable) ? wxSTC_C_GLOBALCLASS : wxSTC_C_IDENTIFIER ) ) );
+		} else if (EsNumero(c,true)) {
+			while (++p<pN and EsNumero(text[p],true));
+			MySetStyle(pos+p0,pos+p,wxSTC_C_NUMBER);
+		} else if (EsComilla(c)) {
+			while (++p<pN and not EsComilla(text[p]));
+			if (p<pN) ++p;
+			MySetStyle(pos+p0,pos+p,wxSTC_C_STRING);
+		} else {
+			if (c=='/' and p+1<pN and text[p+1]=='/') {
+				MySetStyle(pos+p0,pos+pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
+				break;
+			} else if (word_count==1 and (c=='=' or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
+				++p; if (c!='=') ++p;
+				MySetStyle(pos+p0,pos+p,wxSTC_C_WORD);
+			} else {				if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
+				while (p<pN and not (EsLetra(c,false) or EsNumero(c,true) or EsEspacio(c) or EsComilla(c))) {
+					c = text[++p];
+					if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
+									}
+				MySetStyle(pos+p0,pos+p,wxSTC_C_OPERATOR);
+			}
+		}
+	}
+}
+	
+void mxSource::OnStyleNeeded (wxStyledTextEvent & event) {
+	/*this is called every time the styler detects a line that needs style, so we style that range.
+	This will save a lot of performance since we only style text when needed instead of parsing the whole file every time.*/
+	size_t line_end = LineFromPosition(GetCurrentPos());
+	size_t line_start = LineFromPosition(GetEndStyled());
+	if (line_end<line_start) std::swap(line_end,line_start);
+	for(size_t line = line_start; line<=line_end; ++line)
+		StyleLine(PositionFromLine(line),GetLine(line));
+//	/*fold level: May need to include the two lines in front because of the fold level these lines have- the line above
+//	may be affected*/
+//	if(line_start>1) {
+//		line_start-=2;
+//	} else {
+//		line_start=0;
+//	}
+//	//if it is so small that all lines are visible, style the whole document
+//	if(m_activeSTC->GetLineCount()==m_activeSTC->LinesOnScreen()){
+//		line_start=0;
+//		line_end=m_activeSTC->GetLineCount()-1;
+//	}
+//	if(line_end<line_start) {
+//		//that happens when you select parts that are in front of the styled area
+//		size_t temp=line_end;
+//		line_end=line_start;
+//		line_start=temp;
+//	}
+//	//style the line following the style area too (if present) in case fold level decreases in that one
+//	if(line_end<m_activeSTC->GetLineCount()-1){
+//		line_end++;
+//	}
+//	//get exact start positions
+//	size_t startpos=m_activeSTC->PositionFromLine(line_start);
+//	size_t endpos=(m_activeSTC->GetLineEndPosition(line_end));
+//	int startfoldlevel=m_activeSTC->GetFoldLevel(line_start);
+//	startfoldlevel &= wxSTC_FOLDFLAG_LEVELNUMBERS; //mask out the flags and only use the fold level
+//	wxString text=m_activeSTC->GetTextRange(startpos,endpos).Upper();
+//	//call highlighting function
+//	this->highlightSTCsyntax(startpos,endpos,text);
+//	//calculate and apply foldings
+//	this->setfoldlevels(startpos,startfoldlevel,text);
+}
+
+void mxSource::SetKeyWords(int num, const wxString &list) {
+	if (num==3) { m_selected_variable = list.Upper(); return; }
+	wxArrayString &v = num==0 ? m_keywords : m_functions;
+	v.Clear();
+	size_t p0 = 0, p = 0, pN = list.Length();
+	while(true) {
+		if (p==pN or list[p]==' ') {
+			if (p!=p0+1) v.Add(list.SubString(p0,p-1).Upper());
+			p0 = p+1;
+			if (p==pN) return;
+		}
+		++p;
+	}
+}
+
+#endif
 

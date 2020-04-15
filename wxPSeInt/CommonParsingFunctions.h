@@ -13,6 +13,21 @@ inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
 		(incluir_nros&&c>='0'&&c<='9');
 }
 
+template<typename TChar>
+inline bool EsNumero(const TChar &c, bool incluir_punto=true) {
+	return (c>='0'&&c<='9') || (incluir_punto&&c=='.');
+}
+
+template<typename TChar>
+inline bool EsEspacio(const TChar &c) {
+	return c==' '||c=='\t';
+}
+
+template<typename TChar>
+inline bool EsComilla(const TChar &c) {
+	return c=='\''||c=='\"';
+}
+
 #ifdef WX3
 template<>
 inline bool EsLetra(const wxUniCharRef &c, bool incluir_nros) {

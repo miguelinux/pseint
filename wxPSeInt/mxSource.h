@@ -94,6 +94,17 @@ public:
 //	void OnModify(wxStyledTextEvent &event);
 	void OnCalltipClick(wxStyledTextEvent &event);
 	void OnModifyOnRO(wxStyledTextEvent &event);
+#ifdef CUSTOM_LEXER
+	void SetKeyWords(int num, const wxString &list);
+	wxString m_selected_variable; int m_selected_variable_line_from=-1, m_selected_variable_line_to=-1;
+	wxArrayString m_keywords, m_functions;
+	void MySetStyle(int pfrom, int pto, int style) {
+		wxStyledTextCtrl::StartStyling(pfrom);
+		wxStyledTextCtrl::SetStyling(pto-pfrom,style);
+	}
+	void StyleLine(int pos, const wxString &line);
+	void OnStyleNeeded(wxStyledTextEvent &event);
+#endif
 private:
 	void MakeCompletionFromKeywords(wxArrayString &output, int start_pos, const wxString &typed);
 	void MakeCompletionFromIdentifiers(wxArrayString &output, int start_pos, const wxString &typed);
