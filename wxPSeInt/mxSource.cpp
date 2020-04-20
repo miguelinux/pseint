@@ -349,13 +349,21 @@ void mxSource::SetStyling(bool colour) {
 
 void mxSource::OnEditCut(wxCommandEvent &evt) {
 	if (GetReadOnly()) return MessageReadOnly();
-	if (GetSelectionEnd()-GetSelectionStart() <= 0) return;
-	Cut();
+	int se = GetSelectionEnd(), ss = GetSelectionStart();
+	if (se-ss <= 0) return;
+	wxString data = GetTextRange(ss,se);
+	ToRegularOpers(data);
+	utils->SetClipboardText(data);
+	ReplaceSelection("");
 }
 
 void mxSource::OnEditCopy(wxCommandEvent &evt) {
 	if (GetSelectionEnd()-GetSelectionStart() <= 0) return;
-	Copy();
+	int se = GetSelectionEnd(), ss = GetSelectionStart();
+	if (se-ss <= 0) return;
+	wxString data = GetTextRange(ss,se);
+	ToRegularOpers(data);
+	utils->SetClipboardText(data);
 }
 
 void mxSource::OnEditPaste(wxCommandEvent &evt) {
@@ -636,8 +644,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (chr==')'||chr==']') {
 			HideCalltip();
 		}
-#ifdef UNICODE_OPERS
-		else {
+		else if (config->unicode_opers) {
 			int p = GetCurrentPos();
 			if (p<2 || GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRING) {
 				if (p>1 && chr=='-' && GetCharAt(p-2)=='<') {
@@ -686,7 +693,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				}
 			}
 		}
-#endif
 	}
 }
 
@@ -733,6 +739,7 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		if (text.Mid(0,3)=="Fin" || text=="Hasta Que " || text=="Mientras Que " || text.Mid(0,4)=="SiNo"||text.Last()=='\n')
 			IndentLine(lfp);
 		if (text.Last()=='\n') {
+			StyleLine(lfp);
 			IndentLine(lfp+1);
 			int lip=GetLineIndentPosition(lfp+1);
 			SetSelection(lip,lip);
@@ -1665,43 +1672,43 @@ void mxSource::TryToAutoCloseSomething (int l) {
 	if (btype==BT_PROCESO) {
 		if (sl2.StartsWith("FINPROCESO") || sl2.StartsWith("FIN PROCESO")) return;
 		InsertText(PositionFromLine(l+1),"FinProceso\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_SUBPROCESO) {
 		if (sl2.StartsWith("FINSUBPROCESO") || sl2.StartsWith("FIN SUBPROCESO")) return;
 		InsertText(PositionFromLine(l+1),"FinSubProceso\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	}else if (btype==BT_ALGORITMO) {
 		if (sl2.StartsWith("FINALGORITMO") || sl2.StartsWith("FIN ALGORITMO")) return;
 		InsertText(PositionFromLine(l+1),"FinAlgoritmo\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_SUBALGORITMO) {
 		if (sl2.StartsWith("FINSUBALGORITMO") || sl2.StartsWith("FIN SUBALGORITMO")) return;
 		InsertText(PositionFromLine(l+1),"FinSubAlgoritmo\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_FUNCION) {
 		if (sl2.StartsWith("FINFUNCION") || sl2.StartsWith("FIN FUNCION")) return;
 		InsertText(PositionFromLine(l+1),"FinFuncion\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_PARA) {
 		if (sl2.StartsWith("FINPARA") || sl2.StartsWith("FIN PARA")) return;
 		InsertText(PositionFromLine(l+1),"FinPara\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_SI) {
 		if (sl2.StartsWith("FINSI") || sl2.StartsWith("FIN SI") || sl2.StartsWith("SINO")) return;
 		InsertText(PositionFromLine(l+1),"FinSi\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_REPETIR) {
 		if (sl2.StartsWith("HASTA QUE") || sl2.StartsWith("MIENTRAS QUE")) return;
 		InsertText(PositionFromLine(l+1),"Hasta Que \n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_MIENTRAS) {
 		if (sl2.StartsWith("FINMIENTRAS") || sl2.StartsWith("FIN MIENTRAS")) return;
 		InsertText(PositionFromLine(l+1),"FinMientras\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_SEGUN) {
 		if (sl2.StartsWith("FINSEG") || sl2.StartsWith("FIN SEG")) return;
 		InsertText(PositionFromLine(l+1),"FinSegun\n");
-		IndentLine(l+1,true);
+		IndentLine(l+1,true); StyleLine(l+1);
 	}
 }
 
@@ -2483,8 +2490,6 @@ void mxSource::SetKeyWords(int num, const wxString &list) {
 
 #endif
 
-#ifdef UNICODE_OPERS
-
 void mxSource::ToUnicodeOpers (int line) {
 	
 	const wxString &text = GetLine(line);
@@ -2496,29 +2501,29 @@ void mxSource::ToUnicodeOpers (int line) {
 	for(size_t i=0, l=text.size(); i<l ;i++) {
 		auto c = text[i];
 		if (c=='-' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_WORD)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u27f5"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u27f5"));
 		else if (c=='=' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2264"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2264"));
 		else if (c=='=' and p=='>' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2265"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2265"));
 		else if (c=='=' and p=='!' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2260"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2260"));
 		else if (c=='>' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2260"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2260"));
 		else if (c=='^' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2191"));
+			torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2191"));
 		else if (c=='&' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {
 			if (text[i+1]=='&') {
-				torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2227")); ++i;
+				torep.push(std::make_tuple(vpos[i],vpos[i+2],L"\u2227")); ++i;
 			} else
-				torep.push(std::make_tuple(vpos[i],vpos[i],L"\u2227"));
+				torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2227"));
 		}
 		else if (c=='|' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {			if (text[i+1]=='|') {
-				torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2228")); ++i;
+				torep.push(std::make_tuple(vpos[i],vpos[i+2],L"\u2228")); ++i;
 			} else
-				torep.push(std::make_tuple(vpos[i],vpos[i],L"\u2228"));
+				torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2228"));
 		} else if (c=='~' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u00AC"));
+			torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u00AC"));
 		p = c;
 	}
 	if (torep.empty()) return;
@@ -2532,6 +2537,7 @@ void mxSource::ToUnicodeOpers (int line) {
 }
 
 void mxSource::ToRegularOpers (wxString &s) {
+	if (!config->unicode_opers) return;
 	static auto replace = [](wxString &s, wxString::iterator it, /*int n, */const wchar_t *s2){
 		int p = it - s.begin();
 		s.replace(it,next(it/*,n*/),s2);
@@ -2548,14 +2554,12 @@ void mxSource::ToRegularOpers (wxString &s) {
 		else if (*it==L'\u00AC') it = replace(s,it,L"~");
 	}
 }
-#endif
 
 void mxSource::Analyze (int line) {
-#ifdef UNICODE_OPERS
-	ToUnicodeOpers(line);
-#else
-	StyleLine(line);
-#endif		
+	if (config->unicode_opers)
+		ToUnicodeOpers(line);
+	else
+		StyleLine(line);
 }
 
 void mxSource::Analyze (int line_from, int line_to) {

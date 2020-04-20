@@ -35,6 +35,8 @@ public:
 	wxString GetVersion(wxString exe);
 	wxString GetExportLangName(int id);
 	wxString GetExportLangCode(int id);
+	wxString GetClipboardText();
+	void SetClipboardText(const wxString &text);
 };
 
 extern mxUtils *utils;

@@ -126,6 +126,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_REORGANIZE_FOR_DEBUG, mxMainWindow::OnConfigReorganizeForDebug)
 	EVT_MENU(mxID_CONFIG_PSDRAW_NO_CROP, mxMainWindow::OnConfigPSDrawNoCrop)
 	EVT_MENU(mxID_CONFIG_USE_COLORS, mxMainWindow::OnConfigUseColors)
+	EVT_MENU(mxID_CONFIG_UNICODE_OPERS, mxMainWindow::OnConfigUnicodeOpers)
 //	EVT_MENU(mxID_CONFIG_USE_PSTERM, mxMainWindow::OnConfigUsePSTerm)
 	EVT_MENU(mxID_CONFIG_USE_DARK_THEME, mxMainWindow::OnConfigUseDarkTheme)
 	EVT_MENU(mxID_CONFIG_BIG_ICONS, mxMainWindow::OnConfigBigIcons)
@@ -325,6 +326,7 @@ void mxMainWindow::CreateMenus() {
 #ifdef WX3
 	mi_rt_annotate = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_RT_ANNOTATE, _Z("Intercalar los mensajes de error en el pseudocódigo"),"",config->rt_annotate);
 #endif
+	mi_unicode_opers = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_UNICODE_OPERS, _Z("Utilizar símbolos unicode para representar operadores"),"",config->unicode_opers);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores en al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
 	mi_psdraw_nocrop = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_PSDRAW_NO_CROP, _Z("Mostrar textos completos en el diagrama de flujo"),_Z(""),config->psdraw_nocrop);	
@@ -690,9 +692,6 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
 	source->LoadFile(path);
-#ifdef UNICODE_OPERS
-	
-#endif
 	source->Analyze();
 	if (is_example) source->SetExample();
 	if (config->rt_syntax) source->DoRealTimeSyntax();
@@ -1344,6 +1343,22 @@ void mxMainWindow::OnConfigUseColors(wxCommandEvent &evt) {
 		mi_use_colors->Check(true);
 		config->use_colors=true;
 	}
+}
+
+void mxMainWindow::OnConfigUnicodeOpers(wxCommandEvent &evt) {
+	if (!mi_unicode_opers->IsChecked()) {
+		mi_unicode_opers->Check(false);
+		for(unsigned int i=0;i<notebook->GetPageCount();i++) {
+			mxSource *src = ((mxSource*)notebook->GetPage(i));
+			wxString text = src->GetText(); src->ToRegularOpers(text); src->SetText(text);
+		}
+		config->unicode_opers=false;
+	} else {
+		mi_unicode_opers->Check(true);
+		config->unicode_opers=true;
+	}
+	for(unsigned int i=0;i<notebook->GetPageCount();i++)
+		((mxSource*)notebook->GetPage(i))->Analyze();
 }
 
 void mxMainWindow::OnConfigPSDrawNoCrop(wxCommandEvent &evt) {

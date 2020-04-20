@@ -1,11 +1,13 @@
-#include "mxUtils.h"
-#include "ConfigManager.h"
 #include <wx/filename.h>
 #include <wx/menu.h>
 #include <wx/toolbar.h>
 #include <wx/sizer.h>
-#include "mxBitmapButton.h"
+#include <wx/dataobj.h>
+#include <wx/clipbrd.h>
 #include <wx/textfile.h>
+#include "mxUtils.h"
+#include "ConfigManager.h"
+#include "mxBitmapButton.h"
 #include "string_conversions.h"
 #include "ids.h"
 
@@ -182,5 +184,22 @@ wxString mxUtils::GetExportLangCode(int id) {
 	case mxID_FILE_EXPORT_LANG_PAS: 	return _T("pas");
 	default: return _Z("???");
 	}
+}
+
+wxString mxUtils::GetClipboardText() {
+	wxString text;
+	if (wxTheClipboard->Open()) {
+		wxTextDataObject clip_data;
+		if (wxTheClipboard->GetData(clip_data))
+			text = clip_data.GetText();
+		wxTheClipboard->Close();
+	}
+	return text;
+}
+
+void mxUtils::SetClipboardText(const wxString &text) {
+	if (!wxTheClipboard->Open()) return;
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+	wxTheClipboard->Close();
 }
 

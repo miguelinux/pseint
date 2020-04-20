@@ -68,6 +68,7 @@ void ConfigManager::LoadDefaults() {
 	psdraw_nocrop = false;
 	shape_colors = true;
 	colour_sintax = true;
+	unicode_opers = true;
 	show_vars = false;
 	show_opers = false;
 	show_commands = true;
@@ -167,6 +168,7 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("psdraw_nocrop=")<<(psdraw_nocrop?1:0));
 	fil.AddLine(wxString("shape_colors=")<<(shape_colors?1:0));
 	fil.AddLine(wxString("colour_sintax=")<<(colour_sintax?1:0));
+	fil.AddLine(wxString("unicode_opers=")<<(unicode_opers?1:0));
 	fil.AddLine(wxString("show_vars=")<<(show_vars?1:0));
 	fil.AddLine(wxString("show_opers=")<<(show_opers?1:0));
 	fil.AddLine(wxString("show_commands=")<<(show_commands?1:0));
@@ -266,6 +268,7 @@ void ConfigManager::Read() {
 			else if (key=="psdraw_nocrop") psdraw_nocrop=utils->IsTrue(value);
 			else if (key=="shape_colors") shape_colors=utils->IsTrue(value);
 			else if (key=="colour_sintax") colour_sintax=utils->IsTrue(value);
+			else if (key=="unicode_opers") unicode_opers=utils->IsTrue(value);
 			else if (key=="use_colors") use_colors=utils->IsTrue(value);
 			else if (key=="animate_gui") animate_gui=utils->IsTrue(value);
 			else if (key=="reorganize_for_debug") reorganize_for_debug=utils->IsTrue(value);
