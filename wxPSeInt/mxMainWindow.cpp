@@ -522,6 +522,7 @@ mxSource *mxMainWindow::NewProgram(const wxString &title) {
 		source->SetFieldIndicator(8,18);
 		source->SetSelection(20,20);
 	}
+	source->Analyze();
 	source->SetJustCreated();
 	status_bar->SetStatus(STATUS_NEW_SOURCE);
 	return source;
@@ -689,6 +690,10 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 	mxSource *source = new mxSource(notebook,wxFileName(path).GetFullName(),path);
 	notebook->AddPage(source,wxFileName(path).GetFullName(),true);
 	source->LoadFile(path);
+#ifdef UNICODE_OPERS
+	
+#endif
+	source->Analyze();
 	if (is_example) source->SetExample();
 	if (config->rt_syntax) source->DoRealTimeSyntax();
 	source->SetStatus(STATUS_NEW_SOURCE);

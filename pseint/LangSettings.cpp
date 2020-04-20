@@ -245,7 +245,7 @@ static const char *mxSourceWords1 =
 	"caracter carácter caracteres texto cadena cadenas "
 	"logico lógico logica lógica logicos lógicos logicas lógicas "
 	"borrar limpiar pantalla borrarpantalla limpiarpantalla esperar tecla esperartecla segundos milisegundos segundo milisegundo sinsaltar sin saltar sinbajar bajar "
-	"según finsegún dimensión "; // scintilla no funciona con los acentos
+	"según finsegún dimensión ";
 
 static const char *mxSourceWords1_op =
 	"y no o mod ";

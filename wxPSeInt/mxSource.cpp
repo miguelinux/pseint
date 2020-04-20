@@ -8,6 +8,7 @@
 #include <wx/menu.h>
 #include <wx/choicdlg.h>
 #include <wx/ffile.h>
+#include <wx/textdlg.h>
 #include "HelpManager.h"
 #include "Logger.h"
 #include "string_conversions.h"
@@ -32,17 +33,11 @@
 #	warning _AUTOINDENT no se lleva bien con Undo/Redo
 #endif
 #include "CommonParsingFunctions.h"
-#include <wx/textdlg.h>
+#include <tuple>
+#include <stack>
 
-#ifdef UNICODE
-bool EsLetra(const wxUniCharRef &k, bool incluir_nros=true) { return EsLetra(_C(k),incluir_nros); }
-bool EsLetra(const wxUniChar &k, bool incluir_nros=true) { return EsLetra(_C(k),incluir_nros); }
-#endif
 
 int mxSource::last_id=0;
-
-//const wxChar* mxSourceWords3 = 
-//	"hacer entonces para ";
 
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
@@ -400,10 +395,13 @@ void mxSource::OnEditPaste(wxCommandEvent &evt) {
 		pos=cp-GetLineIndentPosition(c);
 		if (pos<0) pos=0;
 		Indent(l1,l2);
+		Analyze(l1,l2);
 		pos+=GetLineIndentPosition(c);
 		SetSelection(pos,pos);
-	} else
+	} else {
+		Analyze(l1);
 		SetSelection(cp,cp);
+	}
 	wxTheClipboard->Close();
 	EndUndoAction();
 }
@@ -638,59 +636,65 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (chr==')'||chr==']') {
 			HideCalltip();
 		}
-//#if WX3
-//		else {
-//			int p = GetCurrentPos();
-//			if (p>1 && chr=='-' && GetCharAt(p-2)=='<') {
-//				SetSelectionStart(p-2); SetSelectionEnd(p);
-////				ReplaceSelection(L"\u2190");
-//				ReplaceSelection(L"\u27f5");
-//			}
-//			else 
-//			if (p>1 && chr=='=' && GetCharAt(p-2)=='<') {
-//				SetSelectionStart(p-2); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2264");
-//			}
-//			else 
-//			if (p>1 && chr=='=' && GetCharAt(p-2)=='>') {
-//				SetSelectionStart(p-2); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2265");
-//			}
-//			else 
-//			if (p>1 && chr=='=' && GetCharAt(p-2)=='!') {
-//				SetSelectionStart(p-2); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2260");
-//			}
-//			else 
-//			if (p>1 && chr=='>' && GetCharAt(p-2)=='<') {
-//				SetSelectionStart(p-2); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2260");
-//			}
-//			else 
-//			if (chr=='^') {
-//				SetSelectionStart(p-1); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2191");
-//			}
-//			if (chr=='&') {
-//				SetSelectionStart(p-1); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2227");
-//			}
-//			if (chr=='|') {
-//				SetSelectionStart(p-1); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u2228");
-//			}
-//			if (chr=='~' || chr=='!') {
-//				SetSelectionStart(p-1); SetSelectionEnd(p);
-//				ReplaceSelection(L"\u00AC");
-//			}
-//		}
-//#endif
+#ifdef UNICODE_OPERS
+		else {
+			int p = GetCurrentPos();
+			if (p<2 || GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRING) {
+				if (p>1 && chr=='-' && GetCharAt(p-2)=='<') {
+					StyleLine(GetCurrentLine());
+					if (GetStyleAt(p-1)==wxSTC_C_WORD) {
+						SetSelectionStart(p-2); SetSelectionEnd(p);
+						ReplaceSelection(L"\u27f5");
+					}
+				}
+				else 
+				if (p>1 && chr=='=' && GetCharAt(p-2)=='<') {
+					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2264");
+				}
+				else 
+				if (p>1 && chr=='=' && GetCharAt(p-2)=='>') {
+					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2265");
+				}
+				else 
+				if (p>1 && chr=='=' && GetCharAt(p-2)=='!') {
+					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2260");
+				}
+				else 
+				if (p>1 && chr=='>' && GetCharAt(p-2)=='<') {
+					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2260");
+				}
+				else 
+				if (chr=='^') {
+					SetSelectionStart(p-1); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2191");
+				}
+				if (chr=='&') {
+					SetSelectionStart(p-1); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2227");
+				}
+				if (chr=='|') {
+					SetSelectionStart(p-1); SetSelectionEnd(p);
+					ReplaceSelection(L"\u2228");
+				}
+				if (chr=='~' /*|| chr=='!'*/) {
+					SetSelectionStart(p-1); SetSelectionEnd(p);
+					ReplaceSelection(L"\u00AC");
+				}
+			}
+		}
+#endif
 	}
 }
 
 void mxSource::SetModify (bool modif) {
 	if (is_example) return;
-	if (modif) {
+	if (modif) { 
+		// MarkDirty existe en la api pero no esta implementado (al menos en wx 3.1.2)
+		Freeze();
 		bool ro=GetReadOnly();
 		if (ro) SetReadOnly(false);
 		int p=GetLength()?GetSelectionStart()-1:0;
@@ -704,6 +708,7 @@ void mxSource::SetModify (bool modif) {
 		ReplaceTarget("");
 		EndUndoAction();
 		if (ro) SetReadOnly(true);
+		Thaw();
 	} else 
 		SetSavePoint();
 }
@@ -1356,7 +1361,7 @@ void mxSource::ReloadFromTempPSD (bool check_syntax) {
 	int le=GetLineEndPosition(cl)-pl; if (cp>=le) cp=le-1;
 	SetSelection(pl+cp,pl+cp);
 	
-	SetModify(true);
+	SetModified(true);
 	if (isro) SetReadOnly(true);
 	if (run_socket) UpdateRunningTerminal();
 	if (check_syntax) DoRTSyntaxChecking();
@@ -2261,14 +2266,18 @@ bool mxSource::LoadFile (const wxString & fname) {
 
 bool mxSource::SaveFile (const wxString & fname) {
 #ifdef WX3
-	wxFFile file(fname,_T("w"));
-	wxString full_content = GetText();
-	if (file.Write(full_content,wxCSConv("ISO-8851"))) {
-		SetModify(false);
-		return true;
-	} else 
+	static wxCSConv cs("ISO-8859-1");
+	auto s = GetText(); ToRegularOpers(s);
+	const auto data = cs.cWX2MB(s);
+	if (data.length()!=0) {
+		wxFFile file(fname,_T("w"));
+		bool ok = file.Write(data,data.length());
+		file.Flush(); file.Close();
+		SetSavePoint();
+		if (ok) return true;
+	}
 #endif
-		return wxStyledTextCtrl::SaveFile(fname);
+	return wxStyledTextCtrl::SaveFile(fname);
 }
 #endif
 
@@ -2326,7 +2335,7 @@ void mxSource::OnPainted (wxStyledTextEvent & event) {
 }
 
 void mxSource::SetJustCreated ( ) {
-	SetModify(false);
+	SetModified(false);
 	just_created = true;
 }
 
@@ -2334,8 +2343,29 @@ void mxSource::FocusKilled ( ) {
 	if (CallTipActive()) HideCalltip();
 	if (AutoCompActive()) AutoCompCancel();
 }
+
+const std::vector<int> &mxSource::MapCharactersToPositions(int line, const wxString &text) {
+	static std::vector<int> vpos; 
+	if (line!=-1) {
+		// el wxStyledTextCtrl mide las posiciones en bytes, pero el wxString en 
+		// caracteres... y en utf hay caracteres multibyte... no encontré mejor
+		// forma de mapear, ya que no hay método que retorne el verdadero offset
+		// en wxUniCharRef (es el atrib m_pos, es privado) ni un puntero como para restar
+		int pbeg = wxStyledTextCtrl::PositionFromLine(line);
+		int pend = wxStyledTextCtrl::GetLineEndPosition(line);
+		vpos.clear(); vpos.push_back(pbeg);
+		for(int p,col=0; (p=FindColumn(line,col))!=pend; ++col) 
+			if (p!=vpos.back()) vpos.push_back(p);
+		auto text_len = text.Length();
+		while(vpos.size()<=text_len) vpos.push_back(pend);
+	}
+	return vpos;
+}
+	
+
 #ifdef CUSTOM_LEXER
-void mxSource::StyleLine(int pos, const wxString &text) {
+void mxSource::StyleLine(int line) {
+	const wxString &text = wxStyledTextCtrl::GetLine(line);
 	enum stl_type { 
 		stl_operator = wxSTC_C_OPERATOR,
 		stl_comment1 = wxSTC_C_COMMENTLINE,
@@ -2343,53 +2373,65 @@ void mxSource::StyleLine(int pos, const wxString &text) {
 	};
 	size_t p = 0, pN = text.Length();
 	int word_count = 0, nesting = 0; // para distinguir "asignar" de "menor menos" (<-)
+	
+	
+	auto &vpos = MapCharactersToPositions(line,text);
+	auto MySetStyle = [&](int p0, int p1, int style) {
+		p0 = vpos[p0]; p1 = vpos[p1];
+		wxStyledTextCtrl::StartStyling(p0);
+		wxStyledTextCtrl::SetStyling(p1-p0,style);
+	};
+	
 	while(p<pN) {
 		size_t p0 = p;
-		char c = text[p];
+		auto c = text[p];
 		if (EsEspacio(c)) {
 			while (++p<pN and EsEspacio(text[p])) c = text[p];
-			MySetStyle(pos+p0,pos+p,wxSTC_C_DEFAULT);
+			MySetStyle(p0,p,wxSTC_C_DEFAULT);
 		} else if (EsLetra(c,false)) {
 			if (nesting==0) ++word_count;
 			while (++p<pN and EsLetra(text[p],true));
 			wxString word = text.SubString(p0,p-1); word.MakeUpper();
-			MySetStyle(pos+p0,pos+p,
+			MySetStyle(p0,p,
 					   m_keywords.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD : (
 							m_functions.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD2 : (
 								(word==m_selected_variable) ? wxSTC_C_GLOBALCLASS : wxSTC_C_IDENTIFIER ) ) );
+			if (word=="ENTONCES" or word=="HACER" or word=="SINO" or word=="PARA") word_count = 0;
 		} else if (EsNumero(c,true)) {
 			while (++p<pN and EsNumero(text[p],true));
-			MySetStyle(pos+p0,pos+p,wxSTC_C_NUMBER);
+			MySetStyle(p0,p,wxSTC_C_NUMBER);
 		} else if (EsComilla(c)) {
 			while (++p<pN and not EsComilla(text[p]));
 			if (p<pN) ++p;
-			MySetStyle(pos+p0,pos+p,wxSTC_C_STRING);
+			MySetStyle(p0,p,wxSTC_C_STRING);
 		} else {
 			if (c=='/' and p+1<pN and text[p+1]=='/') {
-				MySetStyle(pos+p0,pos+pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
+				MySetStyle(p0,pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
 				break;
-			} else if (word_count==1 and (c=='=' or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
-				++p; if (c!='=') ++p;
-				MySetStyle(pos+p0,pos+p,wxSTC_C_WORD);
+			} else if (word_count==1 and (c=='=' or c==L'\u2190' or c== L'\u27f5' or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
+				++p; if (c!='=' and c!=L'\u2190' and c!= L'\u27f5') ++p;
+				MySetStyle(p0,p,wxSTC_C_WORD);
 			} else {				if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
+				else if (c==':' || c==';') word_count = 0;
 				while (p<pN and not (EsLetra(c,false) or EsNumero(c,true) or EsEspacio(c) or EsComilla(c))) {
 					c = text[++p];
 					if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
 									}
-				MySetStyle(pos+p0,pos+p,wxSTC_C_OPERATOR);
+				MySetStyle(p0,p,wxSTC_C_OPERATOR);
 			}
 		}
 	}
 }
 	
 void mxSource::OnStyleNeeded (wxStyledTextEvent & event) {
+	// https://wiki.wxwidgets.org/Adding_a_custom_lexer_with_syntax_highlighting_and_folding_to_a_WxStyledTextCtrl
 	/*this is called every time the styler detects a line that needs style, so we style that range.
 	This will save a lot of performance since we only style text when needed instead of parsing the whole file every time.*/
 	size_t line_end = LineFromPosition(GetCurrentPos());
 	size_t line_start = LineFromPosition(GetEndStyled());
 	if (line_end<line_start) std::swap(line_end,line_start);
 	for(size_t line = line_start; line<=line_end; ++line)
-		StyleLine(PositionFromLine(line),GetLine(line));
+		StyleLine(line);
 //	/*fold level: May need to include the two lines in front because of the fold level these lines have- the line above
 //	may be affected*/
 //	if(line_start>1) {
@@ -2431,7 +2473,7 @@ void mxSource::SetKeyWords(int num, const wxString &list) {
 	size_t p0 = 0, p = 0, pN = list.Length();
 	while(true) {
 		if (p==pN or list[p]==' ') {
-			if (p!=p0+1) v.Add(list.SubString(p0,p-1).Upper());
+			if (p!=p0) v.Add(list.SubString(p0,p-1).Upper());
 			p0 = p+1;
 			if (p==pN) return;
 		}
@@ -2440,4 +2482,88 @@ void mxSource::SetKeyWords(int num, const wxString &list) {
 }
 
 #endif
+
+#ifdef UNICODE_OPERS
+
+void mxSource::ToUnicodeOpers (int line) {
+	
+	const wxString &text = GetLine(line);
+	StyleLine(line); // esto ya cachea en MapCharactersToPositions, por eso despues le paso -1, para que no recalcule
+	auto &vpos = MapCharactersToPositions(-1,text);
+	
+	std::stack<std::tuple<int,int,wxString>> torep;
+	decltype(text[0]) p = ' ';
+	for(size_t i=0, l=text.size(); i<l ;i++) {
+		auto c = text[i];
+		if (c=='-' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_WORD)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u27f5"));
+		else if (c=='=' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2264"));
+		else if (c=='=' and p=='>' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2265"));
+		else if (c=='=' and p=='!' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2260"));
+		else if (c=='>' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i]+1,L"\u2260"));
+		else if (c=='^' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2191"));
+		else if (c=='&' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {
+			if (text[i+1]=='&') {
+				torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2227")); ++i;
+			} else
+				torep.push(std::make_tuple(vpos[i],vpos[i],L"\u2227"));
+		}
+		else if (c=='|' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {			if (text[i+1]=='|') {
+				torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u2228")); ++i;
+			} else
+				torep.push(std::make_tuple(vpos[i],vpos[i],L"\u2228"));
+		} else if (c=='~' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
+			torep.push(std::make_tuple(vpos[i],vpos[i]+1,L"\u00AC"));
+		p = c;
+	}
+	if (torep.empty()) return;
+	while (not torep.empty()) {
+		auto t = torep.top(); torep.pop();
+		wxStyledTextCtrl::SetTargetStart(get<0>(t));
+		wxStyledTextCtrl::SetTargetEnd(get<1>(t));
+		wxStyledTextCtrl::ReplaceTarget(get<2>(t));
+	}
+	StyleLine(line);
+}
+
+void mxSource::ToRegularOpers (wxString &s) {
+	static auto replace = [](wxString &s, wxString::iterator it, /*int n, */const wchar_t *s2){
+		int p = it - s.begin();
+		s.replace(it,next(it/*,n*/),s2);
+		return s.begin()+p;
+	};
+	for(auto it=s.begin(); it!=s.end(); ++it) { 
+		if (*it==L'\u27f5')      it = replace(s,it,L"<-");
+		else if (*it==L'\u2264') it = replace(s,it,L"<=");
+		else if (*it==L'\u2265') it = replace(s,it,L">=");
+		else if (*it==L'\u2260') it = replace(s,it,L"<>");
+		else if (*it==L'\u2191') it = replace(s,it,L"^");
+		else if (*it==L'\u2227') it = replace(s,it,L"&");
+		else if (*it==L'\u2228') it = replace(s,it,L"|");
+		else if (*it==L'\u00AC') it = replace(s,it,L"~");
+	}
+}
+#endif
+
+void mxSource::Analyze (int line) {
+#ifdef UNICODE_OPERS
+	ToUnicodeOpers(line);
+#else
+	StyleLine(line);
+#endif		
+}
+
+void mxSource::Analyze (int line_from, int line_to) {
+	for(size_t line=line_from; line<=line_to; line++)
+		Analyze(line);
+}
+
+void mxSource::Analyze ( ) {
+	Analyze(0,GetLineCount()-1);
+}
 

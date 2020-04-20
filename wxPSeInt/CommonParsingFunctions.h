@@ -13,6 +13,19 @@ inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
 		(incluir_nros&&c>='0'&&c<='9');
 }
 
+
+#ifdef WX3
+template<>
+inline bool EsLetra(const wxUniChar &c, bool incluir_nros) {
+	static wxString s = _Z("_áéíóúüñÁÉÍÓÚÜÑ");
+	return ((_C(c)|32)>='a'&&(_C(c)|32)<='z')||s.Contains(c)||(incluir_nros&&_C(c)>='0'&&_C(c)<='9');
+}
+template<>
+inline bool EsLetra(const wxUniCharRef &c, bool incluir_nros) {
+	return EsLetra(wxUniChar(c),incluir_nros);
+}
+#endif
+
 template<typename TChar>
 inline bool EsNumero(const TChar &c, bool incluir_punto=true) {
 	return (c>='0'&&c<='9') || (incluir_punto&&c=='.');
@@ -28,16 +41,6 @@ inline bool EsComilla(const TChar &c) {
 	return c=='\''||c=='\"';
 }
 
-#ifdef WX3
-template<>
-inline bool EsLetra(const wxUniCharRef &c, bool incluir_nros) {
-	return EsLetra(c.GetValue(),incluir_nros);
-}
-template<>
-inline bool EsLetra(const wxUniChar &c, bool incluir_nros) {
-	return EsLetra(c.GetValue(),incluir_nros);
-}
-#endif
 
 template<typename TString>
 int SkipWhite(const TString &s, int i, int l) {
@@ -54,8 +57,9 @@ inline int SkipWord(const TString &s, int i, int l) {
 template<typename TString>
 void MakeUpper(TString &word) {
 	for(unsigned int i=0;i<word.size();i++) { 
-		if (word[i]>='A'||word[i]<='Z') word[i] = toupper(word[i]);
-		else if (word[i]>='0'||word[i]<='9') continue;
+		if (word[i]>='a'&&word[i]<='z') word[i] = toupper(word[i]);
+		else if (word[i]>='A'&&word[i]<='Z') continue;
+		else if (word[i]>='0'&&word[i]<='9') continue;
 		else if (word[i]=='á') word[i]='Á';
 		else if (word[i]=='é') word[i]='É';
 		else if (word[i]=='í') word[i]='Í';
@@ -66,19 +70,27 @@ void MakeUpper(TString &word) {
 	}
 }
 
+#ifdef WX3
+template<>
+void MakeUpper(wxString &word) {
+	for(unsigned int i=0;i<word.size();i++) {
+		auto c = _C(word[i]);
+		if (c>='a'&&c<='z') word[i] = toupper(c);
+		else if (c>='A'&&c<='Z') continue;
+		else if (c>='0'&&c<='9') continue;
+		else {
+			static wxString sl = _Z("_áéíóúüñ");
+			static wxString su = _Z("_ÁÉÍÓÚÜÑ");
+			auto p = sl.Index(word[i]);
+			if (p!=wxNOT_FOUND) word[i] = su[p];
+		}
+	}
+}
+#endif
+	
 template<typename TString>
 TString Upper(TString word) {
-	for(unsigned int i=0;i<word.size();i++) { 
-		if (word[i]>='A'||word[i]<='Z') word[i]=toupper(word[i]);
-		else if (word[i]>='0'||word[i]<='9') continue;
-		else if (word[i]=='á') word[i]='Á';
-		else if (word[i]=='é') word[i]='É';
-		else if (word[i]=='í') word[i]='Í';
-		else if (word[i]=='ó') word[i]='Ó';
-		else if (word[i]=='ú') word[i]='Ú';
-		else if (word[i]=='ü') word[i]='Ü';
-		else if (word[i]=='ñ') word[i]='Ñ';
-	}
+	MakeUpper(word);
 	return word;
 }
 

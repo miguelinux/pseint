@@ -71,6 +71,7 @@ bool mxTestPanel::Load (const wxString & path, const wxString &key) {
 	sizer->Layout();
 	src = main_window->NewProgram("<Ejercicio>");
 	src->SetText(pack.GetBaseSrc());
+	src->Analyze();
 	return true;
 }
 

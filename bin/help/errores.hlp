@@ -315,6 +315,7 @@
   Esta linea contiene alguna carácter llave ( "{" ó "}" ). Estos caracteres no son válidos en pseudocódigo. 
   * Elimine estos caracteres y corrija la(s) expresión(es).
   * Si utilizó el menú de comandos para insertar esta linea debe completar la instrucción reemplazando los campos marcados entre llaves por las expresiones o los identificadores de variable que correspondan.
+  * Algunos perfiles no permiten la utilización de acentos o la letra ñ en identificadores o palabras claves. Si utilizó alguno de estos caracteres pruebe reemplazarlo.
 
 69
   Alguno de los índices utilizados en los arreglos de esta línea no es de tipo numérico. Un índice puede ser cualquier constante, variable o expresión de tipo numérica.

@@ -63,7 +63,7 @@ bool RTSyntaxManager::Process (mxSource *src, Info *args) {
 							  );
 	the_one->processing=true;
 	for(int i=0;i<src->GetLineCount();i++) {
-		wxString s=src->GetLine(i);
+		wxString s=src->GetLine(i); src->ToRegularOpers(s);
 		while (s.Len()&&(s.Last()=='\r'||s.Last()=='\n')) s.RemoveLast();
 		output<<s<<"\n"; wxMilliSleep(0); // el millisleep evita problemas cuando se manda mucho y no alcanza a "flushear" (en wx 2.9 ya hay un .flush(), tendria que probar con eso, en 2.8 no hay caso)
 	}

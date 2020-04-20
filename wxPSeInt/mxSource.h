@@ -98,11 +98,12 @@ public:
 	void SetKeyWords(int num, const wxString &list);
 	wxString m_selected_variable; int m_selected_variable_line_from=-1, m_selected_variable_line_to=-1;
 	wxArrayString m_keywords, m_functions;
-	void MySetStyle(int pfrom, int pto, int style) {
-		wxStyledTextCtrl::StartStyling(pfrom);
-		wxStyledTextCtrl::SetStyling(pto-pfrom,style);
-	}
-	void StyleLine(int pos, const wxString &line);
+//	void MySetStyle(int pfrom, int pto, int style) {
+//		wxStyledTextCtrl::StartStyling(pfrom);
+//		wxStyledTextCtrl::SetStyling(pto-pfrom,style);
+//	}
+	const std::vector<int> &MapCharactersToPositions(int line, const wxString &text);
+	void StyleLine(int line);
 	void OnStyleNeeded(wxStyledTextEvent &event);
 #endif
 private:
@@ -251,6 +252,14 @@ public:
 	bool LoadFile(const wxString &fname);
 	bool SaveFile(const wxString &fname);
 #endif
+	
+#ifdef UNICODE_OPERS
+	void ToUnicodeOpers(int line);
+	void ToRegularOpers(wxString &s);
+#endif
+	void Analyze();
+	void Analyze(int line);
+	void Analyze(int line_from, int line_to);
 	
 	void ShowUserList(wxArrayString &arr, int p1, int p2);
 	
