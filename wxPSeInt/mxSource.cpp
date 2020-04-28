@@ -260,7 +260,7 @@ void mxSource::SetStyle(int idx, const char *foreground, const char *background,
 #ifdef WX3
 	wxFont font (wxFontInfo(1+config->wx_font_size-((fontStyle&mxSOURCE_SMALLER)?1:0))
 				 .Family(wxFONTFAMILY_MODERN).FaceName(config->wx_font_name));
-	// el 1+ es porque la fuente por defecto, inconsolate, tiene caracteres relativamente
+	// el 1+ es porque la fuente por defecto, inconsolata, tiene caracteres relativamente
 	// pequeños, y al dibujar el resto con fuente "normal", cosas como el autocompletado
 	// o los calltips quedan más grandes
 #else
@@ -281,7 +281,7 @@ void mxSource::SetStyle(int idx, const char *foreground, const char *background,
 
 void mxSource::SetStyling(bool colour) {
 	
-	const char *CL_BLOCK_BACK = config->use_dark_theme ? "#222211" : "#FFFFAA" ;
+	const char *CL_BLOCK_BACK = config->use_dark_theme ? "#222211" : "#FFFFCC" ;
 	const char *CL_DEBUG_PAUSE_BACK = config->use_dark_theme ? "#444422" : "#FFFFAA" ;
 	const char *CL_DEBUG_RUN_BACK = config->use_dark_theme ? "#224422" : "#C8FFC8" ;
 	

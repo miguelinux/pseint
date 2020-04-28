@@ -49,7 +49,8 @@ const float color_comment[3]={.4,.4,.4}; // borde de la forma de una entidad
 	{0,.55,0}, // cadenas
 	{0,0,.6}, // palabras claves
 	{.4,.4,.4}, // comentarios
-	{.3,.3,.3} // operadores
+//	{.3,.3,.3} // operadores
+	{0,0,.6} // operadores
 };
 float color_arrow[3]={.8,0,0}; // flechas que guian el flujo y unen entidades
 const float color_selection[3]={0,.4,0}; // texto o borde de forma seleccionada
