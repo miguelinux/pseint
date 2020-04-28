@@ -34,7 +34,6 @@ ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 	Read();
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
-	tty_command="./mac-terminal-wrapper.bin";
 #else
 #	ifdef WX3
 	psterm_command.Replace("binX","bin3");
@@ -74,7 +73,11 @@ void ConfigManager::LoadDefaults() {
 	psdraw_nocrop = false;
 	shape_colors = true;
 	colour_sintax = true;
+#ifdef __APPLE__
+	unicode_opers = false;
+#else
 	unicode_opers = true;
+#endif
 	show_vars = false;
 	show_opers = false;
 	show_commands = true;
@@ -93,7 +96,6 @@ void ConfigManager::LoadDefaults() {
 	big_icons = OSDep::GetDPI()>=120;
 	use_dark_theme = false;
 	use_dark_psterm = false;
-	use_psterm = true;
 	check_for_updates = true;
 	fixed_port = false;
 	rt_syntax = true;
@@ -109,7 +111,6 @@ void ConfigManager::LoadDefaults() {
 	psexport_command = "psexport.exe";
 	pseval_command   = "pseval.exe";
 	updatem_command  = "updatem.exe";
-	tty_command = "";
 #elif defined(__APPLE__)
 	pseint_command   = "./pseint";
 	psterm_command   = "./psterm";
@@ -118,7 +119,6 @@ void ConfigManager::LoadDefaults() {
 	psexport_command = "./psexport";
 	pseval_command   = "./pseval";
 	updatem_command  = "./updatem";
-	tty_command = _no_tty;
 #else
 	pseint_command   = "./bin/pseint";
 	psterm_command   = "./binX/psterm";
@@ -127,7 +127,6 @@ void ConfigManager::LoadDefaults() {
 	psexport_command = "./bin/psexport";
 	pseval_command   = "./binX/pseval";
 	updatem_command  = "./bin/updatem";
-	tty_command = _no_tty;
 #endif
 
 	wx_font_size = big_icons?12:10;
@@ -161,7 +160,6 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("# generado por PSeInt ")<<VERSION<<"-" ARCHITECTURE ARCH_EXTRA);
 	fil.AddLine(wxString("version=")<<VERSION);
 	fil.AddLine(wxString("images_path=")<<images_path);
-	if (tty_command!=_no_tty) fil.AddLine(wxString("terminal=")<<tty_command);
 	if (temp_dir!=home_dir) fil.AddLine(wxString("temp_dir=")<<temp_dir); // evitar rutas absolutas al home, parece que puede cambiar si se renombra el usuario o se migran configuraciones de uno a otro
 	fil.AddLine(wxString("last_dir=")<<last_dir);
 	fil.AddLine(wxString("help_dir=")<<help_dir);
@@ -204,7 +202,6 @@ void ConfigManager::Save() {
 		fil.AddLine(wxString("debug_port=")<<debug_port);	
 		fil.AddLine(wxString("comm_port=")<<comm_port);	
 	}
-	fil.AddLine(wxString("use_psterm=")<<(use_psterm?1:0));	
 	fil.AddLine(wxString("use_dark_theme=")<<(use_dark_theme?1:0));	
 	fil.AddLine(wxString("use_dark_psterm=")<<(use_dark_psterm?1:0));	
 	fil.AddLine(wxString("big_icons=")<<big_icons);
@@ -251,7 +248,6 @@ void ConfigManager::Read() {
 			else if (key=="maximized") { maximized = utils->IsTrue(value); }
 			else if (key=="debug_port") { value.ToLong(&l); debug_port=l; }
 			else if (key=="comm_port") { value.ToLong(&l); comm_port=l; }
-			else if (key=="use_psterm") use_psterm=utils->IsTrue(value);
 			else if (key=="big_icons") big_icons=utils->IsTrue(value);
 			else if (key=="use_dark_theme") use_dark_theme=utils->IsTrue(value);
 			else if (key=="use_dark_psterm") use_dark_psterm=utils->IsTrue(value);
@@ -286,7 +282,6 @@ void ConfigManager::Read() {
 			else if (key=="examples_dir") examples_dir=value;
 			else if (key=="last_dir") last_dir=value;
 			else if (key=="temp_dir") temp_dir=value;
-			else if (key=="terminal") { tty_command=value; }
 			else if (key=="history") last_files.Add(value);
 			
 			// new method
@@ -305,7 +300,6 @@ void ConfigManager::Read() {
 		if (!LoadListedProfile(_S2W(lang.name))) lang.Fix();
 	}
 	if (version!=0 && version<20160321) temp_dir = home_dir;
-	if (version<20130805) use_psterm=true;
 	if (version<20150627) shape_colors = true;
 	// asegurarse de que tamaños y posiciones de la ventana estén en el rango de 
 	// la pantalla actual (por si se guardaron cuando había un segundo monitor que
@@ -362,29 +356,8 @@ int ConfigManager::GetDebugPort ( ) {
 }
 
 wxString ConfigManager::GetTTYCommand ( ) {
-	if (use_psterm) {
-		return psterm_command + (config->use_dark_psterm?" --darktheme":"")
-			+ " \"--font="<<config->term_font_name<<":"<<config->term_font_size<<"\"";
-	}
-	if (tty_command==_no_tty) { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput("xterm -version").Len()) {
-			tty_command = "xterm -T \"$name\" -e";
-		} else if (utils->GetOutput("lxterminal -version").Len()) {
-			tty_command = "lxterminal -T \"$name\" -e";
-		} else if (utils->GetOutput("gnome-terminal --version").Len()) {
-			tty_command = "gnome-terminal --hide-menubar --disable-factory -t \"$name\" -x";
-		} else if (utils->GetOutput("konsole --version").Len()) {
-			if (utils->GetOutput("konsole --version").Find("KDE: 3")==wxNOT_FOUND) {
-				tty_command = "konsole -e";
-				wxMessageBox(_Z("PSeInt requiere de una terminal para ejecutar los algoritmos. La unica terminal conocida encontrada en sus sistema es konosole, de KDE4. Esta genera problemas para ejecutar los algoritmos paso a paso y para obtener correctamente los errores en tiempo de ejecucion. Se recomienda instalar xterm."),_Z("Terminal de ejecucion"));
-			} else {
-				tty_command = "konsole --nomenubar --notoolbar -T \"$name\" -e";
-			}
-		} else {
-			wxMessageBox(_Z("No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\""),_Z("Terminal de ejecucion"));
-		}
-	}
-	return tty_command;
+	return psterm_command + (config->use_dark_psterm?" --darktheme":"")
+		+ " \"--font="<<config->term_font_name<<":"<<config->term_font_size<<"\"";
 }
 
 void ConfigManager::Log ( ) const {
@@ -401,7 +374,6 @@ void ConfigManager::Log ( ) const {
 	_LOG("   pseval_command="<<pseval_command);
 	_LOG("   psexport_command="<<psexport_command);
 	_LOG("   psterm_command="<<psterm_command);
-	_LOG("   tty_command="<<tty_command);
 	_LOG("   temp_dir="<<temp_dir);
 }
 

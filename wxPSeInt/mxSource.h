@@ -113,7 +113,7 @@ private:
 	void MyBraceHighLight (int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);  //< auxiliares para OnPainted
 public:
 	void OnPainted (wxStyledTextEvent & event);
-	void SetModify(bool);
+	void SetModified(bool);
 	void MessageReadOnly();
 	
 	int GetIndent(int line);

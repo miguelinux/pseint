@@ -711,7 +711,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::SetModify (bool modif) {
+void mxSource::SetModified (bool modif) {
 	if (is_example) return;
 	if (modif) { 
 		// MarkDirty existe en la api pero no esta implementado (al menos en wx 3.1.2)
@@ -993,6 +993,8 @@ void mxSource::SetExample() {
 		total+=str;
 	}
 	SetText(total);
+	for(int line=0;line<GetLineCount();line++) 
+		StyleLine(line);
 	SetReadOnly(sin_titulo=is_example=true);
 	SetSavePoint();
 //	SetStatus(STATUS_EXAMPLE); // lo hace el main despues de cargarle el contenido para que se mantenga el status_should_change=false
@@ -1375,6 +1377,7 @@ void mxSource::ReloadFromTempPSD (bool check_syntax) {
 				}
 			}
 		}
+		StyleLine(i);
 	}
 	
 	// reestablecer la posición del cursor en el nuevo código
@@ -1856,7 +1859,7 @@ wxString mxSource::SaveTemp() {
 	wxString fname=GetTempFilenamePSC();
 	bool mod = GetModify();
 	SaveFile(fname);
-	SetModify(mod);
+	SetModified(mod);
 	mask_timers=false;
 	return fname;
 }

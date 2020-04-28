@@ -115,9 +115,6 @@ void mxProcess::OnTerminate(int pid, int status) {
 		if (source) source->DebugMode(false);
 		debug->process=NULL;
 	}
-	if (what==mxPW_RUN) {
-		if (source && !config->use_psterm) main_window->ParseResults(source); // el if es por si el usuario cerro el fuente mientras este corria
-	}
 	if (proc_for_killing) {
 		delete proc_for_killing;
 		proc_for_killing=NULL;
@@ -212,14 +209,11 @@ bool mxProcess::Run(wxString file, bool check_first) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	if (config->use_psterm) command<<_T(" --port=")<<comm_manager->GetServerPort()<<" --id="<<source->GetId()<<" ";
+	command<<_T(" --port=")<<comm_manager->GetServerPort()<<" --id="<<source->GetId()<<" ";
 	temp = source->GetTempFilenameOUT();
 	command<<"-- "<<config->pseint_command<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
-	if (config->use_psterm) command<<_T(" --forpseintterminal --withioreferences");
-#ifdef __WIN32__
-	if (!config->use_psterm) command<<" --fixwincharset";
-#endif
+	command<<_T(" --forpseintterminal --withioreferences");
 	command<<" "<<GetProfileArgs()<<" "<<GetInputArgs();
 	if (source)	source->SetStatus(STATUS_RUNNING);
 	_LOG("mxProcess::Run this="<<this);
@@ -236,18 +230,15 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
 	}
-	if (config->use_psterm) {
-		command<<_T(" --debugmode ");
-		
-		if (config->reorganize_for_debug) {
-			int x,y,h,w, delta=10;
-			main_window->notebook->GetScreenPosition(&x,&y);
-			main_window->notebook->GetSize(&w,&h);
-			command<<_T(" --right=")<<x+w-delta<<_T(" ");
-			command<<_T(" --top=")<<y+delta<<_T(" ");
-			command<<_T(" --alwaysontop ");
-			if (w-500<400) command<<_T("--width=400 ");
-		}
+	command<<_T(" --debugmode ");
+	if (config->reorganize_for_debug) {
+		int x,y,h,w, delta=10;
+		main_window->notebook->GetScreenPosition(&x,&y);
+		main_window->notebook->GetSize(&w,&h);
+		command<<_T(" --right=")<<x+w-delta<<_T(" ");
+		command<<_T(" --top=")<<y+delta<<_T(" ");
+		command<<_T(" --alwaysontop ");
+		if (w-500<400) command<<_T("--width=400 ");
 	}
 	temp = source->GetTempFilenameOUT();
 	debug->Start(this,source);
@@ -256,7 +247,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	debug_panel->SetSpeed(debug->GetSpeed(delay));
 	command<<"-- "<<config->pseint_command<<_T(" --port=")<<port<<_T(" --delay=")<<delay<<_T(" --nocheck \"")<<file<<_T("\" \"")<<temp<<_T("\"");
 	if (config->use_colors) command<<_T(" --color");
-	if (config->use_psterm) command<<_T(" --forpseintterminal");
+	command<<_T(" --forpseintterminal");
 	command<<" "<<GetProfileArgs()<<" "<<GetInputArgs();
 //	was_readonly = source->GetReadOnly();
 //	if (pid) source->SetReadOnly(true);

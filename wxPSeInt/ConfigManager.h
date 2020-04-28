@@ -10,10 +10,7 @@
 #define CUSTOM_PROFILE "<Personalizado>"
 
 class ConfigManager {
-private:
-	wxString tty_command;
 public:
-	bool use_psterm; ///< utilizar psterm en lugar de la terminal del sistema (recomendado)
 	bool use_dark_theme; ///< esquema de colores para el resaltado de sintaxis, true=fondo negro, false=fondo blanco
 	bool use_dark_psterm; ///< esquema de colores de psterm, true=fondo negro, false=fondo blanco
 	wxString GetTTYCommand(); ///< terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)

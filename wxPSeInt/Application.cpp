@@ -195,7 +195,7 @@ void mxApplication::RecoverFromError ( ) {
 		for (unsigned int i=0;i<rec_files.GetCount();i++) {
 			mxSource *src =	main_window->OpenProgram(rec_files[i],false);
 			src->SetPageText(rec_names[i]);
-			src->SetModify(true);
+			src->SetModified(true);
 			src->sin_titulo = true;
 		}
 	}	
