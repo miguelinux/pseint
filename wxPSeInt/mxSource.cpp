@@ -28,6 +28,8 @@
 
 #define RT_DELAY 1000
 #define RELOAD_DELAY 3500
+#define mxSTC_MY_EOL_MODE wxSTC_EOL_LF
+#define wxSTC_C_ASSIGN wxSTC_C_PREPROCESSOR
 
 #ifdef _AUTOINDENT
 #	warning _AUTOINDENT no se lleva bien con Undo/Redo
@@ -35,6 +37,16 @@
 #include "CommonParsingFunctions.h"
 #include <tuple>
 #include <stack>
+
+//#define UOP_ASIGNACION L'\u27f5'
+#define UOP_ASIGNACION L'\u2190'
+#define UOP_LEQUAL L'\u2264'
+#define UOP_GEQUAL L'\u2265'
+#define UOP_NEQUAL L'\u2260'
+#define UOP_AND L'\u2227'
+#define UOP_OR L'\u2228'
+#define UOP_NOT L'\u00AC'
+#define UOP_POWER L'\u2191'
 
 
 int mxSource::last_id=0;
@@ -51,9 +63,7 @@ static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
-#ifdef CUSTOM_LEXER
 	EVT_STC_STYLENEEDED(wxID_ANY,mxSource::OnStyleNeeded)
-#endif
 	EVT_STC_CHANGE(wxID_ANY,mxSource::OnChange)
 #ifdef _AUTOINDENT
 	EVT_STC_MODIFIED(wxID_ANY,mxSource::OnModified)
@@ -170,6 +180,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	SetStyling();
 	SetTabWidth(config->tabw);
 	SetUseTabs (true);
+	SetEOLMode(mxSTC_MY_EOL_MODE);
 	
 #ifdef WX3
 	wxFont font (wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
@@ -247,8 +258,11 @@ mxSource::~mxSource() {
 void mxSource::SetStyle(int idx, const char *foreground, const char *background, int fontStyle){
 
 #ifdef WX3
-	wxFont font (wxFontInfo(config->wx_font_size-((fontStyle&mxSOURCE_SMALLER)?1:0))
+	wxFont font (wxFontInfo(1+config->wx_font_size-((fontStyle&mxSOURCE_SMALLER)?1:0))
 				 .Family(wxFONTFAMILY_MODERN).FaceName(config->wx_font_name));
+	// el 1+ es porque la fuente por defecto, inconsolate, tiene caracteres relativamente
+	// pequeños, y al dibujar el resto con fuente "normal", cosas como el autocompletado
+	// o los calltips quedan más grandes
 #else
 	wxFont font (config->wx_font_size- ((fontStyle&mxSOURCE_SMALLER)?1:0),
 				 wxMODERN, wxNORMAL, wxNORMAL, false, config->wx_font_name);
@@ -291,7 +305,6 @@ void mxSource::SetStyling(bool colour) {
 	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
 	const char *CL_DIMM_FORE = config->use_dark_theme ? "#888888" : "#888888" ;
 	const char *CL_KEYWORD   = config->use_dark_theme ? "#9999FA" : "#000080" ;
-//	const char *CL_STRING    = config->use_dark_theme ? "#FA9999" : "#FF0000" ;
 	const char *CL_STRING    = config->use_dark_theme ? "#99FA99" : "#006400" ;
 	const char *CL_NUMBER    = config->use_dark_theme ? "#FAFA99" : "#A0522D" ;
 	const char *CL_COMMENT_1 = config->use_dark_theme ? "#999999" : "#969696" ;
@@ -309,25 +322,23 @@ void mxSource::SetStyling(bool colour) {
 	SetCaretForeground (CL_REG_FORE);
 	SetSelBackground(true,CL_ALT_BACK);
 	
-#ifdef CUSTOM_LEXER
 	SetLexer(wxSTC_LEX_CONTAINER); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
-#else
-	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
-#endif
+//	SetLexer(wxSTC_LEX_CPPNOCASE); // setear el lexer antes de las keywords!!! sino en wx 3 no tiene efecto
 	SetWords();
 	SetStyle(wxSTC_STYLE_DEFAULT,            CL_DIMM_FORE,      CL_REG_BACK,        0);               // default
-	SetStyle(wxSTC_C_DEFAULT,                CL_DIMM_FORE,       CL_REG_BACK,        0);               // default
+	SetStyle(wxSTC_C_DEFAULT,                CL_DIMM_FORE,      CL_REG_BACK,        0);               // default
 	SetStyle(wxSTC_C_COMMENT,                CL_COMMENT_1,      CL_REG_BACK,        0);               // comment
 	SetStyle(wxSTC_C_COMMENTLINE,            CL_COMMENT_1,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment line
 	SetStyle(wxSTC_C_COMMENTDOC,             CL_COMMENT_2,      CL_REG_BACK,        mxSOURCE_ITALIC); // comment doc
 	SetStyle(wxSTC_C_COMMENTLINEDOC,         CL_COMMENT_2,      CL_REG_BACK,        0);               // special comment 
 	SetStyle(wxSTC_C_NUMBER,                 CL_NUMBER,         CL_REG_BACK,        0);               // number
 	SetStyle(wxSTC_C_WORD,                   CL_KEYWORD,        CL_REG_BACK,        mxSOURCE_BOLD);   // keywords
+	SetStyle(wxSTC_C_ASSIGN,                 CL_KEYWORD,        CL_REG_BACK,        mxSOURCE_BOLD);   // keywords
 	SetStyle(wxSTC_C_IDENTIFIER,             CL_REG_FORE,       CL_REG_BACK,        0);               // identifier 
 	SetStyle(wxSTC_C_CHARACTER,              CL_STRING,         CL_REG_BACK,        0);               // character
 	SetStyle(wxSTC_C_STRINGEOL,              CL_STRING,         CL_ALT_BACK,        0);               // string eol
 	SetStyle(wxSTC_C_STRING,                 CL_STRING,         CL_REG_BACK,        0);               // character
-	SetStyle(wxSTC_C_OPERATOR,               CL_REG_FORE,       CL_REG_BACK,        mxSOURCE_BOLD);   // operator 
+	SetStyle(wxSTC_C_OPERATOR,               CL_KEYWORD,        CL_REG_BACK,        0/*mxSOURCE_BOLD*/);   // operator 
 	SetStyle(wxSTC_C_VERBATIM,               CL_REG_FORE,       CL_REG_BACK,        0);               // default verbatim
 	SetStyle(wxSTC_C_WORD2,                  CL_KEYWORD,        CL_REG_BACK,        0);               // extra words
 	SetStyle(wxSTC_C_GLOBALCLASS,            CL_REG_FORE,       CL_HLG_BACK,        0);               // keywords errors
@@ -443,6 +454,7 @@ void mxSource::OnEditComment(wxCommandEvent &evt) {
 		SetTargetStart(PositionFromLine(i));
 		SetTargetEnd(PositionFromLine(i));
 		ReplaceTarget("//");
+		Analyze(i);
 	}	
 	EndUndoAction();
 }
@@ -465,6 +477,7 @@ void mxSource::OnEditUnComment(wxCommandEvent &evt) {
 			SetTargetEnd(aux+2);
 			ReplaceTarget("");
 		}
+		Analyze(i);
 	}
 	Indent(min,max);
 	EndUndoAction();
@@ -504,6 +517,7 @@ void mxSource::OnEditDuplicate(wxCommandEvent &evt) {
 	BeginUndoAction();
 	if (max==min) {
 		LineDuplicate();
+		Analyze(max+1);
 	} else {
 		if (min>max) { 
 			int aux=min; 
@@ -515,6 +529,7 @@ void mxSource::OnEditDuplicate(wxCommandEvent &evt) {
 		for (int i=min;i<=max;i++)
 			text+=GetLine(i);
 		InsertText(PositionFromLine(max+1),text);
+		Analyze(max+1,2*(max+1)-min);
 		SetSelection(ss,se);
 	}
 	EndUndoAction();
@@ -649,47 +664,47 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			if (p<2 || GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRING) {
 				if (p>1 && chr=='-' && GetCharAt(p-2)=='<') {
 					StyleLine(GetCurrentLine());
-					if (GetStyleAt(p-1)==wxSTC_C_WORD) {
+					if (GetStyleAt(p-1)==wxSTC_C_ASSIGN) {
 						SetSelectionStart(p-2); SetSelectionEnd(p);
-						ReplaceSelection(L"\u27f5");
+						ReplaceSelection(wxString(UOP_ASIGNACION,1));
 					}
 				}
 				else 
 				if (p>1 && chr=='=' && GetCharAt(p-2)=='<') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2264");
+					ReplaceSelection(wxString(UOP_LEQUAL,1));
 				}
 				else 
 				if (p>1 && chr=='=' && GetCharAt(p-2)=='>') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2265");
+					ReplaceSelection(wxString(UOP_GEQUAL,1));
 				}
 				else 
 				if (p>1 && chr=='=' && GetCharAt(p-2)=='!') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2260");
+					ReplaceSelection(wxString(UOP_NEQUAL,1));
 				}
 				else 
 				if (p>1 && chr=='>' && GetCharAt(p-2)=='<') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2260");
+					ReplaceSelection(wxString(UOP_NEQUAL,1));
 				}
 				else 
 				if (chr=='^') {
 					SetSelectionStart(p-1); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2191");
+					ReplaceSelection(wxString(UOP_POWER,1));
 				}
 				if (chr=='&') {
 					SetSelectionStart(p-1); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2227");
+					ReplaceSelection(wxString(UOP_AND,1));
 				}
 				if (chr=='|') {
 					SetSelectionStart(p-1); SetSelectionEnd(p);
-					ReplaceSelection(L"\u2228");
+					ReplaceSelection(wxString(UOP_OR,1));
 				}
 				if (chr=='~' /*|| chr=='!'*/) {
 					SetSelectionStart(p-1); SetSelectionEnd(p);
-					ReplaceSelection(L"\u00AC");
+					ReplaceSelection(wxString(UOP_NOT,1));
 				}
 			}
 		}
@@ -845,7 +860,7 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		EndUndoAction();
 		if (config->smart_indent) {
 			OnEditIndentSelection(event);
-			IndentLine(max);
+			Analyze(max); IndentLine(max);
 		}
 	}
 }
@@ -1743,15 +1758,11 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 }
 
 void mxSource::HighLight(wxString words, int from, int to) {
-#ifdef CUSTOM_LEXER
 	m_selected_variable  = words.Upper();
 	m_selected_variable_line_from = from;
 	m_selected_variable_line_to = to;
-#else
-	if (to!=-1) words<<" 0"<<from<<" 1"<<to; // el 0 y 1 son porque scintilla los va a ordernar alfabeticamente, para que queden simpre primero y segundo
-	SetKeyWords(3,words.Lower());
-#endif
-	Colourise(PositionFromLine(from),GetLineEndPosition(to));
+	for(int line = from; line<=to; ++line) 
+		StyleLine(line);
 }
 
 void mxSource::ClearBlocks ( ) {
@@ -2259,16 +2270,17 @@ bool mxSource::LoadFile (const wxString & fname) {
 //#ifdef WX3
 //	wxFFile file(fname,_T("r"));
 //	wxString full_content;
-//	if (file.ReadAll(&full_content,
-//					 wxCSConv("ISO-8851")
-////					 wxConvUTF8
-//					 )) {
+//	full_content.Replace("\r","",true);
+//	if (file.ReadAll(&full_content)) {
 //		SetText(full_content);
 //		EmptyUndoBuffer();
 //		return true;
 //	} else 
 //#endif
-		return wxStyledTextCtrl::LoadFile(fname);
+	if (wxStyledTextCtrl::LoadFile(fname)) {
+		ConvertEOLs(mxSTC_MY_EOL_MODE);
+		return true;
+	} else return false;
 }
 
 bool mxSource::SaveFile (const wxString & fname) {
@@ -2370,7 +2382,6 @@ const std::vector<int> &mxSource::MapCharactersToPositions(int line, const wxStr
 }
 	
 
-#ifdef CUSTOM_LEXER
 void mxSource::StyleLine(int line) {
 	const wxString &text = wxStyledTextCtrl::GetLine(line);
 	enum stl_type { 
@@ -2415,15 +2426,16 @@ void mxSource::StyleLine(int line) {
 			if (c=='/' and p+1<pN and text[p+1]=='/') {
 				MySetStyle(p0,pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
 				break;
-			} else if (word_count==1 and (c=='=' or c==L'\u2190' or c== L'\u27f5' or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
-				++p; if (c!='=' and c!=L'\u2190' and c!= L'\u27f5') ++p;
-				MySetStyle(p0,p,wxSTC_C_WORD);
+			} else if (nesting==0 and word_count<=1 and (c=='=' or c==UOP_ASIGNACION or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
+				++p; if (c!='=' and c!= UOP_ASIGNACION) ++p;
+				MySetStyle(p0,p,wxSTC_C_ASSIGN);
 			} else {				if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
 				else if (c==':' || c==';') word_count = 0;
-				while (p<pN and not (EsLetra(c,false) or EsNumero(c,true) or EsEspacio(c) or EsComilla(c))) {
-					c = text[++p];
-					if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
-									}
+				while (p<pN and not (EsLetra(c,false) or EsNumero(c,true) or EsEspacio(c) or EsComilla(c) )) {
+					if (nesting==0 and word_count<=1 and (c==']' or c==')')) { ++p; break; } // asignación en arreglos					c = text[++p];
+					if (c=='(' or c=='[') ++nesting; 
+					else if (c==']' or c==')') --nesting;
+				}
 				MySetStyle(p0,p,wxSTC_C_OPERATOR);
 			}
 		}
@@ -2488,42 +2500,40 @@ void mxSource::SetKeyWords(int num, const wxString &list) {
 	}
 }
 
-#endif
-
 void mxSource::ToUnicodeOpers (int line) {
 	
 	const wxString &text = GetLine(line);
 	StyleLine(line); // esto ya cachea en MapCharactersToPositions, por eso despues le paso -1, para que no recalcule
 	auto &vpos = MapCharactersToPositions(-1,text);
 	
-	std::stack<std::tuple<int,int,wxString>> torep;
+	std::stack<std::tuple<int,int,wxChar>> torep;
 	decltype(text[0]) p = ' ';
 	for(size_t i=0, l=text.size(); i<l ;i++) {
 		auto c = text[i];
-		if (c=='-' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_WORD)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u27f5"));
+		if (c=='-' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_ASSIGN)
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],UOP_ASIGNACION));
 		else if (c=='=' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2264"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],UOP_LEQUAL));
 		else if (c=='=' and p=='>' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2265"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],UOP_GEQUAL));
 		else if (c=='=' and p=='!' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2260"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],UOP_NEQUAL));
 		else if (c=='>' and p=='<' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],L"\u2260"));
+			torep.push(std::make_tuple(vpos[i-1],vpos[i+1],UOP_NEQUAL));
 		else if (c=='^' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2191"));
+			torep.push(std::make_tuple(vpos[i],vpos[i+1],UOP_POWER));
 		else if (c=='&' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {
 			if (text[i+1]=='&') {
-				torep.push(std::make_tuple(vpos[i],vpos[i+2],L"\u2227")); ++i;
+				torep.push(std::make_tuple(vpos[i],vpos[i+2],UOP_AND)); ++i;
 			} else
-				torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2227"));
+				torep.push(std::make_tuple(vpos[i],vpos[i+1],UOP_AND));
 		}
 		else if (c=='|' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR) {			if (text[i+1]=='|') {
-				torep.push(std::make_tuple(vpos[i],vpos[i+2],L"\u2228")); ++i;
+				torep.push(std::make_tuple(vpos[i],vpos[i+2],UOP_OR)); ++i;
 			} else
-				torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u2228"));
+				torep.push(std::make_tuple(vpos[i],vpos[i+1],UOP_OR));
 		} else if (c=='~' and GetStyleAt(vpos[i])==wxSTC_C_OPERATOR)
-			torep.push(std::make_tuple(vpos[i],vpos[i+1],L"\u00AC"));
+			torep.push(std::make_tuple(vpos[i],vpos[i+1],UOP_NOT));
 		p = c;
 	}
 	if (torep.empty()) return;
@@ -2531,7 +2541,7 @@ void mxSource::ToUnicodeOpers (int line) {
 		auto t = torep.top(); torep.pop();
 		wxStyledTextCtrl::SetTargetStart(get<0>(t));
 		wxStyledTextCtrl::SetTargetEnd(get<1>(t));
-		wxStyledTextCtrl::ReplaceTarget(get<2>(t));
+		wxStyledTextCtrl::ReplaceTarget(wxString(get<2>(t),1));
 	}
 	StyleLine(line);
 }
@@ -2544,14 +2554,14 @@ void mxSource::ToRegularOpers (wxString &s) {
 		return s.begin()+p;
 	};
 	for(auto it=s.begin(); it!=s.end(); ++it) { 
-		if (*it==L'\u27f5')      it = replace(s,it,L"<-");
-		else if (*it==L'\u2264') it = replace(s,it,L"<=");
-		else if (*it==L'\u2265') it = replace(s,it,L">=");
-		else if (*it==L'\u2260') it = replace(s,it,L"<>");
-		else if (*it==L'\u2191') it = replace(s,it,L"^");
-		else if (*it==L'\u2227') it = replace(s,it,L"&");
-		else if (*it==L'\u2228') it = replace(s,it,L"|");
-		else if (*it==L'\u00AC') it = replace(s,it,L"~");
+		if (*it==UOP_ASIGNACION)      it = replace(s,it,L"<-");
+		else if (*it==UOP_LEQUAL) it = replace(s,it,L"<=");
+		else if (*it==UOP_GEQUAL) it = replace(s,it,L">=");
+		else if (*it==UOP_NEQUAL) it = replace(s,it,L"<>");
+		else if (*it==UOP_POWER)  it = replace(s,it,L"^");
+		else if (*it==UOP_AND)    it = replace(s,it,L"&");
+		else if (*it==UOP_OR)     it = replace(s,it,L"|");
+		else if (*it==UOP_NOT)    it = replace(s,it,L"~");
 	}
 }
 
