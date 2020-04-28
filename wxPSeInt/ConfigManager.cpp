@@ -53,6 +53,12 @@ ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 //	if (pseint_command.Contains(" ")) pseint_command=wxString("\"")<<pseint_command<<"\"";
 #endif
 	
+	bool inconsolata_ok = wxFont::AddPrivateFont("Inconsolata-Regular.ttf");
+	if (version<20200424 && inconsolata_ok) {
+		term_font_name = wx_font_name = "Inconsolata";
+		unicode_opers = true;
+	}
+	
 	lang.Log();
 	
 	er_init(temp_dir);

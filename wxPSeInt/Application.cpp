@@ -38,6 +38,9 @@ bool mxApplication::OnInit() {
 	
 	OSDep::AppInit();
 	
+//	if (not wxFont::AddPrivateFont("FiraMono-Regular.ttf"))
+//		wxMessageBox("foo fm");	
+	
 	utils = new mxUtils;
 	if (argc==3 && wxString(argv[1])=="--logger") new Logger(argv[2]);
 #ifdef FORCE_LOG

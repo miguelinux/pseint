@@ -262,7 +262,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(file,mxID_FILE_SAVE, _Z("&Guardar\tCtrl+S"),"","guardar.png");
 	utils->AddItemToMenu(file,mxID_FILE_SAVE_AS, _Z("Guardar &Como...\tCtrl+Shift+S"),"","guardar_como.png");
 	utils->AddItemToMenu(file,mxID_FILE_EDIT_FLOW, _Z("Editar Diagrama de Flujo...\tF7"),"","flujo.png");
-	utils->AddItemToMenu(file,mxID_FILE_PRINT, _Z("Imprimir..."),"","imprimir.png");
+	utils->AddItemToMenu(file,mxID_FILE_PRINT, _Z("Imprimir...\tCtrl+P"),"","imprimir.png");
 	
 	wxMenu *export_menu=new wxMenu;
 	
