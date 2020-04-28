@@ -201,7 +201,7 @@ int main(int argc, char* argv[]) {
 	if (forced_seed==-1) srand(time(NULL)); else srand(forced_seed);
 	
 	if (real_time_syntax) {
-		while (true) {
+		while (cin) {
 //			memoria->HardReset();
 			programa.HardReset();
 			UnloadSubprocesos();
