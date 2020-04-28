@@ -24,7 +24,7 @@ w32:
 	find bin -type f | sed 's/bin/delete $$INSTDIR/' | sed 's/\//\\/g' > dist/uninstall.nsh
 	find bin -type d | sed 's/bin/rmdir $$INSTDIR/'  | sed 's/\//\\/g' | sort -r >>dist/uninstall.nsh
 	#cd dist && wine c:/nsis/makensis.exe /DPRODUCT_VERSION\=`cat pseint/version` pseint.nsh
-	cd dist && wine C:/Inno/ISCC.exe pseint.iss /DMyAppVersion=20200401
+	cd dist && wine C:/Inno/ISCC.exe pseint.iss /DMyAppVersion=`cat pseint/version`
 	cp dist/config.here dist/pseint/config.here
 	cp dist/dlls/* dist/pseint/
 	rm -f dist/pseint-w32-`cat dist/pseint/version`.zip

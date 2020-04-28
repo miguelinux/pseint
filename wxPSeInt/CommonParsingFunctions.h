@@ -1,6 +1,9 @@
 #ifndef COMMONPARSINGFUNCTIONS_H
 #define COMMONPARSINGFUNCTIONS_H
 #include <wx/string.h>
+#ifdef WX3
+#	include "string_conversions.h"
+#endif
 
 template<typename TChar>
 inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
