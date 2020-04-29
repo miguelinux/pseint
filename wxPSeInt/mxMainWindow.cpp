@@ -14,7 +14,6 @@
 #include "mxProcess.h"
 #include "version.h"
 #include "HelpManager.h"
-#include "mxBitmapButton.h"
 #include "mxFindDialog.h"
 #include "mxAboutWindow.h"
 #include "mxHelpWindow.h"
@@ -52,6 +51,7 @@
 #include "mxHtmlWindow.h"
 #include "error_recovery.h"
 #include "mxFontsConfig.h"
+#include <wx/button.h>
 using namespace std;
 
 mxMainWindow *main_window = NULL;
@@ -138,9 +138,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_CONFIG_CALLTIP_HELPS, mxMainWindow::OnConfigCalltipHelps)
 	EVT_MENU(mxID_CONFIG_SHOW_QUICKHELP, mxMainWindow::OnConfigShowQuickHelp)
 	EVT_MENU(mxID_CONFIG_RT_SYNTAX, mxMainWindow::OnConfigRealTimeSyntax)
-#ifdef WX3
 	EVT_MENU(mxID_CONFIG_RT_ANNOTATE, mxMainWindow::OnConfigRealTimeAnnotate)
-#endif
 	EVT_MENU(mxID_CONFIG_NASSI_SHNEIDERMAN, mxMainWindow::OnConfigNassiScheiderman)
 	EVT_MENU(mxID_CONFIG_SMART_INDENT, mxMainWindow::OnConfigSmartIndent)
 	EVT_MENU(mxID_CONFIG_ICON_INSTALLER, mxMainWindow::OnInconInstaller)
@@ -190,9 +188,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
 	: wxFrame(NULL, wxID_ANY, "PSeInt", pos, size, wxDEFAULT_FRAME_STYLE)
 {
 	m_lambda_func = NULL; m_lambda_timer = new wxTimer(GetEventHandler(),mxID_LAMBDA_TIMER);
-#ifdef WX3
 	aui_manager.GetArtProvider()->SetColour(wxAUI_DOCKART_BACKGROUND_COLOUR,wxSystemSettings::GetColour(wxSYS_COLOUR_FRAMEBK));
-#endif
 	
 	wxTheColourDatabase->AddColour("Z LIGHT GRAY",wxColour(240,240,240));
 	wxTheColourDatabase->AddColour("Z LIGHT BLUE",wxColour(240,240,255));
@@ -232,7 +228,7 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
 	CreateStatusBar();
 	
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG|wxAUI_MGR_LIVE_RESIZE);
-	_if_wx3( aui_manager.GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE,wxAUI_GRADIENT_NONE) );
+	aui_manager.GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE,wxAUI_GRADIENT_NONE);
 	aui_manager.Update();
 
 	SetDropTarget(new mxDropTarget(NULL));
@@ -322,9 +318,7 @@ void mxMainWindow::CreateMenus() {
 	wxMenu *cfg_pres = new wxMenu;
 	mi_animate_gui = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_ANIMATE_GUI, _Z("Animar paneles"),"",config->animate_gui);
 	mi_reorganize_for_debug = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_REORGANIZE_FOR_DEBUG, _Z("Organizar Ventanas al Iniciar Paso a Paso"),"",config->reorganize_for_debug);
-#ifdef WX3
 	mi_rt_annotate = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_RT_ANNOTATE, _Z("Intercalar los mensajes de error en el pseudocódigo"),"",config->rt_annotate);
-#endif
 	mi_unicode_opers = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_UNICODE_OPERS, _Z("Utilizar símbolos unicode para representar operadores"),"",config->unicode_opers);
 	mi_use_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_USE_COLORS, _Z("Utilizar colores al ejecutar en la terminal"),"",config->use_colors);
 	mi_shape_colors = utils->AddCheckToMenu(cfg_pres,mxID_CONFIG_SHAPE_COLORS, _Z("Colorear bloques según tipo en el diagrama de flujo"),_Z(""),config->shape_colors);	
@@ -384,10 +378,8 @@ void mxMainWindow::CreateToolbars() {
 	utils->AddTool(toolbar,mxID_EDIT_COPY,_Z("Copiar"),"copiar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_PASTE,_Z("Pegar"),"pegar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_INDENT_SELECTION,_Z("Corregir Indentado"),"indentar.png","");
-#ifdef WX3
 	utils->AddCheckTool(toolbar,mxID_CONFIG_RT_ANNOTATE,_Z("Mostrar mensajes de error"),"annotate.png","",config->rt_annotate);
 	toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,config->rt_syntax);
-#endif
 	toolbar->AddSeparator();
 	utils->AddTool(toolbar,mxID_EDIT_FIND,_Z("Buscar"),"buscar.png","");
 	utils->AddTool(toolbar,mxID_EDIT_FIND_PREV,_Z("Buscar Anterior"),"anterior.png","");
@@ -1250,18 +1242,14 @@ void mxMainWindow::OnConfigRealTimeSyntax(wxCommandEvent &evt) {
 	if (!mi_rt_syntax->IsChecked()) {
 		mi_rt_syntax->Check(false);
 		config->rt_syntax=false;
-#ifdef WX3
 		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,false);
-#endif
 		for(unsigned int i=0;i<notebook->GetPageCount();i++) {
 			((mxSource*)notebook->GetPage(i))->ClearErrorData();
 			((mxSource*)notebook->GetPage(i))->ClearErrorMarks();
 		}
 	} else {
 		mi_rt_syntax->Check(true);
-#ifdef WX3
 		toolbar->EnableTool(mxID_CONFIG_RT_ANNOTATE,true);
-#endif
 		config->rt_syntax=true;
 		ShowResults(false,true);
 	}
@@ -1272,15 +1260,11 @@ void mxMainWindow::OnConfigRealTimeAnnotate(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip(true,true);
 	if (config->rt_annotate) {
 		mi_rt_annotate->Check(false);
-#ifdef WX3
 		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,false);
 		config->rt_annotate=false;
-#endif
 	} else {
 		mi_rt_annotate->Check(true);
-#ifdef WX3
 		toolbar->ToggleTool(mxID_CONFIG_RT_ANNOTATE,true);
-#endif
 		config->rt_annotate=true;
 	}
 //	for(unsigned int i=0;i<notebook->GetPageCount();i++) {

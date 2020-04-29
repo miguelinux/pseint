@@ -1,18 +1,18 @@
-OBJS_DIR=../temp/trm_lnx3_rls
+OBJS_DIR=../temp/trm_lnx_rls
 GPP=g++
-CXXFLAGS_OPT=-O2
+CXXFLAGS_OPT=-O3 -std=c++14
 CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1` -DWX3
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT}  `wx-config --libs --unicode=yes --version=3.1` -lX11
 
-all: ${OBJS_DIR} ../bin/bin3/psterm
+all: ${OBJS_DIR} ../bin/bin/psterm
 
 include Makefile.common
 
 clean:
 	rm -rf ${OBJS} ../bin/bin3/psterm
 
-../bin/bin3/psterm: ${OBJS}
+../bin/bin/psterm: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

@@ -20,8 +20,8 @@ path=Application.cpp
 cursor=49:0
 [source]
 path=Canvas.cpp
-cursor=0:16
-marker=61
+cursor=171:39
+marker=55
 [source]
 path=MainWindow.cpp
 cursor=64:54
@@ -169,7 +169,7 @@ path=../wxPSeInt/string_conversions.h
 cursor=4:0
 [other]
 path=../bin/help/cambios.html
-cursor=15:5
+cursor=12:0
 [config]
 name=Linux2_Debug
 toolchain=

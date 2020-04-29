@@ -3,8 +3,9 @@
 # Este script sirve para armar el paquete binario distribuible para GNU/Linux desde 
 # una maquina virtual. En la maquina real debe estar el paquete de fuentes (se genera 
 # con "make -f Makefile.pack src") y a este script se le pasa como argumento la version 
-# de ese paquete hay un 2do argumento opcional "fast" para cuando hay cambios menores, 
-# al descomprimir los fuentes solo reemplaza los archivos mas nuevos que los existentes.
+# de ese paquete.
+
+# Es importante correr este script con bash y no con otro shell no compatible
 
 if ! test -e ./pseint-packer.cfg; then
 	touch ./pseint-packer.cfg
@@ -15,13 +16,6 @@ if ! test -e ./pseint-packer.cfg; then
 	echo '# tipo de arquitectura para la que se compila, que se usara para el nombre' >> ./pseint-packer.cfg
 	echo '# del paquete generado (l32 o l64)' >> ./pseint-packer.cfg
 	echo 'ARCH="l64"' >> ./pseint-packer.cfg
-	echo '' >> ./pseint-packer.cfg
-	echo '# nombre para la arquitectura para la que se compila, que se usara para el' >> ./pseint-packer.cfg
-	echo '# nombre del paquete generado' >> ./pseint-packer.cfg
-	echo 'TAG=$ARCH' >> ./pseint-packer.cfg
-	echo '' >> ./pseint-packer.cfg
-	echo '# versión de wxWidgets a utilizar (2 o 3)' >> ./pseint-packer.cfg
-	echo 'WXVER=3' >> ./pseint-packer.cfg
 	echo '' >> ./pseint-packer.cfg
 	echo '# directorio con los .so de a incluir en el paquete... debería haber allí dos' >> ./pseint-packer.cfg
 	echo '# subdirectorios, png y wx, cada uno con sus .sos y un txt con la licencia' >> ./pseint-packer.cfg
@@ -35,7 +29,7 @@ if ! test -e ./pseint-packer.cfg; then
 fi
 source ./pseint-packer.cfg
 if [ "$1" == "" ]; then
-	echo "Debe utilizar la version de pseint (por ej: 20191122) como argumento de este scrip."
+	echo "Debe utilizar la version de pseint (por ej: 20200428) como argumento de este script."
 	exit 2
 fi
 
@@ -49,10 +43,10 @@ scp $SSHSRC/pseint-src-$1.tgz . || exit 3
 tar $TAR_OPTS -xzvf pseint-src-$1.tgz
 
 if ! [ "LIBSDIR" = "" ]; then 	
-	mkdir -p pseint/bin/bin$WXVER/
-	cp -rf "$LIBSDIR"/* pseint/bin/bin$WXVER/
+	mkdir -p pseint/bin/lib/
+	cp -rf "$LIBSDIR"/* pseint/bin/lib/
 fi
 
 cd pseint
-make -f Makefile.pack lnx$WXVER
-scp dist/pseint-$ARCH-$1.tgz $SSHSRC/pseint-$TAG-$1.tgz
+make -f Makefile.pack lnx
+scp dist/pseint-$ARCH-$1.tgz $SSHSRC/pseint-$ARCH-$1.tgz

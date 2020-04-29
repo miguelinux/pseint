@@ -6,7 +6,6 @@
 #include <wx/fontenum.h>
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
-#include "mxBitmapButton.h"
 #include "mxArt.h"
 #include "ConfigManager.h"
 
@@ -64,8 +63,10 @@ mxFontsConfig::mxFontsConfig()
 	main_sizer->AddSpacer(5);
 	
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Aceptar"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
+	wxButton *ok_button = new wxButton (this, wxID_OK, _T("Aceptar"));
+	ok_button->SetBitmap(*bitmaps->buttons.ok);
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, _T("Cancelar"));
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	ok_button->SetDefault();
@@ -90,13 +91,8 @@ void mxFontsConfig::ApplyToSamples ( ) {
 	long wx_size = 10, term_size = 11;
 	m_wx_font_size->GetValue().ToLong(&wx_size);
 	m_term_font_size->GetValue().ToLong(&term_size);
-#ifdef WX3
 	wxFont wx_font   (wxFontInfo(wx_size  ).Family(wxFONTFAMILY_MODERN).FaceName(m_wx_font_name->GetValue())  );
 	wxFont term_font (wxFontInfo(term_size).Family(wxFONTFAMILY_MODERN).FaceName(m_term_font_name->GetValue()));
-#else
-	wxFont wx_font (wx_size, wxMODERN, wxNORMAL, wxNORMAL, false, m_wx_font_name->GetValue());
-	wxFont term_font (term_size, wxMODERN, wxNORMAL, wxNORMAL, false, m_term_font_name->GetValue());
-#endif
 	m_wx_sample->StyleSetFont (wxSTC_STYLE_DEFAULT, wx_font);
 	m_term_sample->StyleSetFont (wxSTC_STYLE_DEFAULT, term_font);
 }

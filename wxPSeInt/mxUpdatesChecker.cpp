@@ -5,7 +5,6 @@
 #include "mxMainWindow.h"
 #include "mxUtils.h"
 #include "ConfigManager.h"
-#include "mxBitmapButton.h"
 #include "mxHelpWindow.h"
 #include <wx/utils.h>
 #include <wx/bitmap.h>
@@ -48,9 +47,12 @@ mxUpdatesChecker::mxUpdatesChecker(bool show) : wxDialog(main_window, wxID_ANY, 
 //	mySizer->Add(pSizer,sizers->BA5);
 	
 	
-	close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,"&Cerrar");
-	changes_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,"Ir al &sitio...");
-	proxy_button = new mxBitmapButton (this,wxID_FIND,bitmaps->buttons.ok,"Conf. Proxy...");
+	close_button = new wxButton (this,wxID_CANCEL,"&Cerrar");
+	close_button->SetBitmap(*bitmaps->buttons.cancel);
+	changes_button = new wxButton (this,wxID_OK,"Ir al &sitio...");
+	changes_button->SetBitmap(*bitmaps->buttons.ok);
+	proxy_button = new wxButton (this,wxID_FIND,"Conf. Proxy...");
+	proxy_button->SetBitmap(*bitmaps->buttons.options);
 	buttonSizer->Add(changes_button,wxSizerFlags().Border(wxALL,5));
 	buttonSizer->Add(proxy_button,wxSizerFlags().Border(wxALL,5));
 	buttonSizer->Add(close_button,wxSizerFlags().Border(wxALL,5));

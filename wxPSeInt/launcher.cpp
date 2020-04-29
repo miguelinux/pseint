@@ -8,19 +8,16 @@
 #include <ctime>
 #include <fstream>
 
-const char LDLP[] = "LD_LIBRARY_PATH";
+static const char LDLP[] = "LD_LIBRARY_PATH";
 
-const char * binname_first  = "bin3/wxPSeInt";
-const char * binname_second = "bin2/wxPSeInt";
+static bool log_on = false;
 
-bool log_on = false;
-
-std::string GetEnv(const char *varname) {
+static std::string GetEnv(const char *varname) {
 	const char *res = getenv(varname);
 	return res?res:"";
 }
 
-void FixArgv(char *argv[],const char *binname) {
+static void FixArgv(char *argv[],const char *binname) {
 	int n=strlen(argv[0])-1;
 	char *argv0=new char[n+15];
 	while (n>0&&argv[0][n]!='/') n--;
@@ -29,14 +26,14 @@ void FixArgv(char *argv[],const char *binname) {
 	argv[0]=argv0;
 }
 
-void AddToLDLP(std::string ldlp_value, const std::string &additional_path) {
+static void AddToLDLP(std::string ldlp_value, const std::string &additional_path) {
 	if (!ldlp_value.empty() && ldlp_value[ldlp_value.size()-1]!=':') ldlp_value+=":";
 	ldlp_value += additional_path;
 	if (log_on) std::cerr << "Setting LDLP = " << ldlp_value << std::endl;
 	setenv(LDLP,ldlp_value.c_str(),1);
 }
 
-void FixMissingLib(const std::string &libdir, const std::string &libfile) {
+static void FixMissingLib(const std::string &libdir, const std::string &libfile) {
 	if (log_on) std::cerr << "Checking for " << libfile << std::endl;
 	void *handle = dlopen (libfile.c_str(), RTLD_LAZY);
 	if (!handle) {
@@ -48,7 +45,7 @@ void FixMissingLib(const std::string &libdir, const std::string &libfile) {
 	}
 }
 
-void TryToRun(char *argv[], const char *binname) {
+static void TryToRun(char *argv[], const char *binname) {
 	std::time_t tm0 = std::time(NULL); 
 	char *argv0_orig = argv[0];
 	FixArgv(argv,binname);
@@ -92,13 +89,13 @@ void TryToRun(char *argv[], const char *binname) {
 	}
 }
 
-std::string GetPwd(const std::string &argv0) {
+static std::string GetPwd(const std::string &argv0) {
 	size_t p = argv0.find_last_of('/');
 	if (p==std::string::npos) return ".";
 	return argv0.substr(0,p);
 }
 
-bool RemoveFirstArg(std::string arg1, int &argc, char *argv[]) {
+static bool RemoveFirstArg(std::string arg1, int &argc, char *argv[]) {
 	if (argc<2 || argv[1] != arg1) return false;
 	for(int i=2;i<argc;i++)
 		argv[i-1]=argv[i];
@@ -111,32 +108,37 @@ int main(int argc, char *argv[]) {
 	if (RemoveFirstArg("--log",argc,argv)) log_on = true;
 	if (log_on) std::cerr << "Argv[0]: " << argv[0] << std::endl;
 	
-	
 	std::string pwd = GetPwd(argv[0]);
 	if (log_on) std::cerr << "PWD: " << pwd << std::endl;
 	if (log_on) std::cerr << std::endl;
 	
 	std::string ldlp_orig = GetEnv(LDLP);
-	if (!RemoveFirstArg("--wx2",argc,argv)) {
-#ifdef __x86_64__ 
-	// probar primero con wx3
-		if (log_on) std::cerr << "LDLP: " << ldlp_orig << std::endl;
-		AddToLDLP(ldlp_orig,pwd+"/bin3/wx");
-		TryToRun(argv,"bin3/wxPSeInt");
-		if (log_on) std::cerr << std::endl;
-#endif
-	}
+	
+	if (log_on) std::cerr << "LDLP: " << ldlp_orig << std::endl;
+	AddToLDLP(ldlp_orig,pwd+"/lib");
+	TryToRun(argv,"bin/wxPSeInt");
+	if (log_on) std::cerr << std::endl;
+		
+//	if (!RemoveFirstArg("--wx2",argc,argv)) {
+//#ifdef __x86_64__ 
+//	// probar primero con wx3
+//		if (log_on) std::cerr << "LDLP: " << ldlp_orig << std::endl;
+//		AddToLDLP(ldlp_orig,pwd+"/bin3/wx");
+//		TryToRun(argv,"bin3/wxPSeInt");
+//		if (log_on) std::cerr << std::endl;
+//#endif
+//	}
 	
 	// si falla, probar con wx2
-	if (log_on) std::cerr << "Disabling Ubuntu's Menu-proxy and Overlay Scrollbars" << std::endl;
-	setenv("UBUNTU_MENUPROXY","",1);
-	setenv("LIBOVERLAY_SCROLLBAR","0",1);
-	if (log_on) std::cerr << "Setting LANG=C, LC_TYPE=C" << std::endl;
-	setenv("LANG","C",1); // for fixing the problem with utf8 locale and ansi wx build
-	setenv("LC_CTYPE","C",1); // for fixing the problem with utf8 locale and ansi wx build
-	AddToLDLP(ldlp_orig,pwd+"/bin2/wx");
-	FixMissingLib(pwd+"/bin2/png","libpng12.so");
-	TryToRun(argv,"bin2/wxPSeInt");
+//	if (log_on) std::cerr << "Disabling Ubuntu's Menu-proxy and Overlay Scrollbars" << std::endl;
+//	setenv("UBUNTU_MENUPROXY","",1);
+//	setenv("LIBOVERLAY_SCROLLBAR","0",1);
+//	if (log_on) std::cerr << "Setting LANG=C, LC_TYPE=C" << std::endl;
+//	setenv("LANG","C",1); // for fixing the problem with utf8 locale and ansi wx build
+//	setenv("LC_CTYPE","C",1); // for fixing the problem with utf8 locale and ansi wx build
+//	AddToLDLP(ldlp_orig,pwd+"/bin2/wx");
+//	FixMissingLib(pwd+"/bin2/png","libpng12.so");
+//	TryToRun(argv,"bin2/wxPSeInt");
 
 	return 0;
 }

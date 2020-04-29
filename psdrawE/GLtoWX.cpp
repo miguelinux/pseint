@@ -26,11 +26,7 @@ static int cb=GL_NONE; // current glbegin value
 static int lw=0; // line width
 static int p[100][2], np=0; // vertices enviados por glvertex
 static wxColour c(0,0,0); // color actual
-#ifdef WX3
 static wxPen pt(wxPenInfo(c,0).Style(wxPENSTYLE_TRANSPARENT));
-#else
-static wxPen pt(c,0,wxTRANSPARENT);
-#endif
 wxDC *dc=NULL;
 
 void glColor3fv(const float *v) {
@@ -145,15 +141,13 @@ void glLineWidth(float w) {
 
 static wxFont &get_font() {
 	static bool initialized = false;
-#ifdef WX3
 	static wxFont font(wxFontInfo(m.sx*150).Family(wxFONTFAMILY_MODERN));
-#else
-	static wxFont font(m.sx*150,wxMODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
-#endif
 	if (!initialized) { 
 		font.SetPixelSize(wxSize(0,250*m.sx)); initialized=true; 
+#ifndef __APPLE__
 		if (wxFont::AddPrivateFont("Inconsolata-Regular.ttf"))
 			font.SetFaceName("Inconsolata");
+#endif
 	}
 	return font;
 }
@@ -173,7 +167,6 @@ void dibujar_caracter(char _c) {
 		m.tx -= 50*m.sx*8/7;
 		return;
 	}
-	
 	
 	dc->SetFont(get_font());
 	dc->SetTextForeground(c);

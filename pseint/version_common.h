@@ -19,11 +19,7 @@
 #	define ARCHITECTURE "???"
 #endif
 
-#ifdef WX3
-#	define ARCH_EXTRA "-wx3"
-#else
-#	define ARCH_EXTRA ""
-#endif
+#define ARCH_EXTRA "-wx3"
 
 #include <iostream>
 #include <fstream>

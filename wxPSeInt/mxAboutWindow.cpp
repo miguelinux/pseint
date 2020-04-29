@@ -7,7 +7,6 @@
 
 #include "mxAboutWindow.h"
 #include "ConfigManager.h"
-#include "mxBitmapButton.h"
 #include "mxUtils.h"
 #include "version.h"
 #include <wx/html/htmlwin.h>

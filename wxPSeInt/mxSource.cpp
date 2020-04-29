@@ -54,12 +54,8 @@ int mxSource::last_id=0;
 enum {MARKER_BLOCK_HIGHLIGHT=0,MARKER_DEBUG_RUNNING_ARROW,MARKER_DEBUG_RUNNING_BACK,MARKER_DEBUG_PAUSE_ARROW,MARKER_DEBUG_PAUSE_BACK,MARKER_ERROR_LINE};
 
 enum {INDIC_FIELD=0, INDIC_ERROR_1, INDIC_ERROR_2};
-#ifdef WX3
 static int indic_to_mask[] = { 1, 2, 4, 8, 16 };
 const int ANNOTATION_STYLE = wxSTC_STYLE_LASTPREDEFINED + 1;
-#else
-static int indic_to_mask[] = { wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, wxSTC_INDIC2_MASK };
-#endif
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
@@ -95,13 +91,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_SAVEPOINTREACHED(wxID_ANY, mxSource::OnSavePointReached)
 	EVT_STC_SAVEPOINTLEFT(wxID_ANY, mxSource::OnSavePointLeft)
 	EVT_STC_MARGINCLICK (wxID_ANY, mxSource::OnMarginClick)
-#ifdef WX3
-#	define Z_EVT_STC_CALLTIP_CLICK EVT_STC_CALLTIP_CLICK
-#else
-#	define Z_EVT_STC_CALLTIP_CLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY( wxEVT_STC_CALLTIP_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxStyledTextEventFunction, & fn ), (wxObject *) NULL ),
-#endif
 	// la siguiente linea va sin el prefijo "Z_", pero genera un error, hay que parchear wx/stc/stc.h, quitando un paréntesis izquierdo que sobra en la definicion de la macro EVT_STC_CALLTIP_CLICK (justo despues de los argumentos)
-	Z_EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
+	EVT_STC_CALLTIP_CLICK(wxID_ANY, mxSource::OnCalltipClick)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
 	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
 	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
@@ -139,7 +130,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) 
 {
 
-#ifdef WX3
 //	CmdKeyClearAll(); // desactiva hasta delete, backspace, flechas, tabs, etc
 	for(char c='A';c<='Z';++c) {
 		// no es lo mismo hacerles clear que asignar null...
@@ -153,7 +143,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|wxSTC_KEYMOD_SHIFT                  ,0);
 		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|wxSTC_KEYMOD_SHIFT|wxSTC_KEYMOD_CTRL,0);
 	}
-#endif
 	
 	_LOG("mxSource::mxSource "<<this);
 
@@ -182,11 +171,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	SetUseTabs (true);
 	SetEOLMode(mxSTC_MY_EOL_MODE);
 	
-#ifdef WX3
 	wxFont font (wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
-#else
-	wxFont font (config->wx_font_size, wxMODERN, wxNORMAL, wxNORMAL);
-#endif
 	
 	StyleSetFont (wxSTC_STYLE_DEFAULT, font);
 	
@@ -257,17 +242,11 @@ mxSource::~mxSource() {
 
 void mxSource::SetStyle(int idx, const char *foreground, const char *background, int fontStyle){
 
-#ifdef WX3
 	wxFont font (wxFontInfo(1+config->wx_font_size-((fontStyle&mxSOURCE_SMALLER)?1:0))
 				 .Family(wxFONTFAMILY_MODERN).FaceName(config->wx_font_name));
 	// el 1+ es porque la fuente por defecto, inconsolata, tiene caracteres relativamente
 	// pequeños, y al dibujar el resto con fuente "normal", cosas como el autocompletado
 	// o los calltips quedan más grandes
-#else
-	wxFont font (config->wx_font_size- ((fontStyle&mxSOURCE_SMALLER)?1:0),
-				 wxMODERN, wxNORMAL, wxNORMAL, false, config->wx_font_name);
-#endif
-	
 	
 	StyleSetFont (idx, font);
 	if (foreground) StyleSetForeground (idx, wxColour (foreground));
@@ -312,10 +291,8 @@ void mxSource::SetStyling(bool colour) {
 	const char *CL_ALT_FORE  = config->use_dark_theme ? "#999999" : "#969696" ;
 	const char *CL_ALT_BACK  = config->use_dark_theme ? "#606060" : "#D3D3D3" ;
 	const char *CL_HLG_BACK  = config->use_dark_theme ? "#335050" : "#AACCFF" ;
-#ifdef WX3
 	const char *CL_ANOT_FORE = config->use_dark_theme ? "#FA9999" : "#800000" ;
 	const char *CL_ANOT_BACK = config->use_dark_theme ? "#454545" : "#FAFAD7" ;
-#endif
 	
 	StyleSetForeground (wxSTC_STYLE_LINENUMBER, CL_ALT_FORE);
 	StyleSetBackground (wxSTC_STYLE_LINENUMBER, CL_REG_BACK);
@@ -344,18 +321,14 @@ void mxSource::SetStyling(bool colour) {
 	SetStyle(wxSTC_C_GLOBALCLASS,            CL_REG_FORE,       CL_HLG_BACK,        0);               // keywords errors
 	SetStyle(wxSTC_STYLE_BRACELIGHT,         CL_REG_FORE,       CL_ALT_BACK,        mxSOURCE_BOLD); 
 	SetStyle(wxSTC_STYLE_BRACEBAD,           CL_STRING,         CL_ALT_BACK,        mxSOURCE_BOLD); 
-#ifdef WX3
 	SetStyle(ANNOTATION_STYLE,               CL_ANOT_FORE,      CL_ANOT_BACK,       mxSOURCE_ITALIC|mxSOURCE_SMALLER); 
-#endif
 //		SetStyle(wxSTC_C_UUID,                   "ORCHID",          "WHITE",        0);               // uuid
 //		SetStyle(wxSTC_C_PREPROCESSOR,           "FOREST GREEN",    "WHITE",        0);               // preprocessor
 //		SetStyle(wxSTC_C_REGEX,                  "ORCHID",          "WHITE",        0);               // regexp  
 //		SetStyle(wxSTC_C_COMMENTDOCKEYWORD,      "CORNFLOWER BLUE", "WHITE",        0);               // doxy keywords
 //		SetStyle(wxSTC_C_COMMENTDOCKEYWORDERROR, "RED",             "WHITE",        0);               // keywords errors
 //		SetStyle(wxSTC_STYLE_BRACELIGHT,         "RED",             "Z LIGHT BLUE", mxSOURCE_BOLD); 
-#ifdef WX3
 	AnnotationSetVisible(wxSTC_ANNOTATION_INDENTED);
-#endif
 }
 
 void mxSource::OnEditCut(wxCommandEvent &evt) {
@@ -780,7 +753,7 @@ void mxSource::SetFieldIndicator(int p1, int p2, bool select) {
 
 void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	int p = GetCurrentPos();
-	int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
+	int indics = IndicatorAllOnFor(p);
 	if (indics&indic_to_mask[INDIC_FIELD]) {
 		int p2=p;
 		while (GetStyleAt(p2)&indic_to_mask[INDIC_FIELD])
@@ -1524,9 +1497,7 @@ void mxSource::ClearErrorData() {
 	rt_errors.clear();
 	SetIndics(0,GetLength(),INDIC_ERROR_1,false);
 	SetIndics(0,GetLength(),INDIC_ERROR_2,false);
-#ifdef WX3
 	AnnotationClearAll();
-#endif
 }
 
 void mxSource::MarkError(wxString line) {
@@ -1551,7 +1522,7 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	int pos =PositionFromLine(l)+v[2*i], len = v[2*i+1]-v[2*i];
 	// ver que no sea culpa de una plantilla sin completar
 	for(int p=0;p<len;p++) { 
-		int indics = _if_wx3_else(IndicatorAllOnFor(pos+p),GetStyleAt(pos+p));
+		int indics = IndicatorAllOnFor(pos+p);
 		if (indics&indic_to_mask[INDIC_FIELD]) return;
 	}
 	// ok, entonces agregarlo como error
@@ -1566,13 +1537,11 @@ void mxSource::MarkError(int l, int i, int n, wxString str, bool special) {
 	if (int(v.size())<=2*i+1) return;
 	if (!(MarkerGet(l)&(1<<MARKER_ERROR_LINE))) MarkerAdd(l,MARKER_ERROR_LINE);
 	// agregar el error como anotacion y subrayar la instruccion
-#ifdef WX3
 	if (config->rt_annotate) {
 		wxString prev = AnnotationGetText(l); if (!prev.IsEmpty()) prev<<"\n";
-		AnnotationSetText(l,prev<<_if_unicode(wxString(L"\u25ba ")<<)"en inst. "<<i+1<<": "<<str);
+		AnnotationSetText(l,prev<<L"\u25ba en inst. "<<i+1<<": "<<str);
 		AnnotationSetStyle(l,ANNOTATION_STYLE);
 	}
-#endif
 	SetIndics(pos,len,special?INDIC_ERROR_2:INDIC_ERROR_1,true);
 }
 
@@ -1633,7 +1602,7 @@ void mxSource::OnTimer (wxTimerEvent & te) {
 }
 
 void mxSource::ShowCalltip (int pos, const wxString & l, bool is_error) {
-	if (_if_wx3_else(!is_error||!config->rt_annotate,true)) {
+	if (!is_error||!config->rt_annotate) {
 		if (!current_calltip.is_error && is_error && CallTipActive()) return; // que un error no tape una ayuda
 		// muestra el tip
 		current_calltip.pos=pos;
@@ -1752,7 +1721,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	} 
 	else if (config->rt_syntax && main_window->IsActive()) {
 		int p = event.GetPosition();
-		int indics = _if_wx3_else(IndicatorAllOnFor(p),GetStyleAt(p));
+		int indics = IndicatorAllOnFor(p);
 		if (indics&(indic_to_mask[INDIC_ERROR_1]|indic_to_mask[INDIC_ERROR_2])) {
 			unsigned int l=LineFromPosition(p);
 			if (rt_errors.size()>l && rt_errors[l].is) ShowRealTimeError(p,rt_errors[l].s);
@@ -2254,23 +2223,13 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 }
 
 void mxSource::SetIndics (int from, int len, int indic, bool on) {
-#ifdef WX3
 	SetIndicatorCurrent(indic);
 	if (on) IndicatorFillRange(from,len);
 	else    IndicatorClearRange(from,len);
-#else
-	indic = indic_to_mask[indic];
-	int lse = GetEndStyled();
-	StartStyling(from,indic);
-	wxStyledTextCtrl::SetStyling(len,on?indic:0);
-	StartStyling(lse,0x1F);
-#endif
 }
 
 
-#ifndef __APPLE__
 bool mxSource::LoadFile (const wxString & fname) {
-//#ifdef WX3
 //	wxFFile file(fname,_T("r"));
 //	wxString full_content;
 //	full_content.Replace("\r","",true);
@@ -2279,7 +2238,6 @@ bool mxSource::LoadFile (const wxString & fname) {
 //		EmptyUndoBuffer();
 //		return true;
 //	} else 
-//#endif
 	if (wxStyledTextCtrl::LoadFile(fname)) {
 		ConvertEOLs(mxSTC_MY_EOL_MODE);
 		return true;
@@ -2287,7 +2245,7 @@ bool mxSource::LoadFile (const wxString & fname) {
 }
 
 bool mxSource::SaveFile (const wxString & fname) {
-#ifdef WX3
+	ConvertEOLs(mxSTC_MY_EOL_MODE); // por alguna razon el copy-paste en mac solo pone CR pero no LF?
 	static wxCSConv cs("ISO-8859-1");
 	auto s = GetText(); ToRegularOpers(s);
 	const auto data = cs.cWX2MB(s);
@@ -2298,10 +2256,8 @@ bool mxSource::SaveFile (const wxString & fname) {
 		SetSavePoint();
 		if (ok) return true;
 	}
-#endif
 	return wxStyledTextCtrl::SaveFile(fname);
 }
-#endif
 
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
@@ -2359,6 +2315,7 @@ void mxSource::OnPainted (wxStyledTextEvent & event) {
 void mxSource::SetJustCreated ( ) {
 	SetModified(false);
 	just_created = true;
+	SetXOffset(0);
 }
 
 void mxSource::FocusKilled ( ) {
@@ -2375,9 +2332,14 @@ const std::vector<int> &mxSource::MapCharactersToPositions(int line, const wxStr
 		// en wxUniCharRef (es el atrib m_pos, es privado) ni un puntero como para restar
 		int pbeg = wxStyledTextCtrl::PositionFromLine(line);
 		int pend = wxStyledTextCtrl::GetLineEndPosition(line);
-		vpos.clear(); vpos.push_back(pbeg);
-		for(int p,col=0; (p=FindColumn(line,col))!=pend; ++col) 
-			if (p!=vpos.back()) vpos.push_back(p);
+		vpos.clear();
+		do {
+			vpos.push_back(pbeg);
+			pbeg = wxStyledTextCtrl::PositionAfter(pbeg);
+		} while(pbeg<pend);
+//		vpos.clear(); vpos.push_back(pbeg);
+//		for(int p,col=0; (p=FindColumn(line,col))!=pend; ++col) 
+//			if (p!=vpos.back()) vpos.push_back(p);
 		auto text_len = text.Length();
 		while(vpos.size()<=text_len) vpos.push_back(pend);
 	}
@@ -2394,7 +2356,6 @@ void mxSource::StyleLine(int line) {
 	};
 	size_t p = 0, pN = text.Length();
 	int word_count = 0, nesting = 0; // para distinguir "asignar" de "menor menos" (<-)
-	
 	
 	auto &vpos = MapCharactersToPositions(line,text);
 	auto MySetStyle = [&](int p0, int p1, int style) {

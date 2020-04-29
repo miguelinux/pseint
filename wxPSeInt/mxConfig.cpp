@@ -2,7 +2,6 @@
 #include <wx/sizer.h>
 #include "ConfigManager.h"
 #include "mxUtils.h"
-#include "mxBitmapButton.h"
 #include "mxArt.h"
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
@@ -33,10 +32,14 @@ mxConfig::mxConfig(wxWindow *parent, LangSettings &settings )
 		chk[i]->SetToolTip(utils->FixTooltip(LangSettings::data[i].long_desc));
 	}
 	
-	wxButton *load_button = new mxBitmapButton (this, wxID_OPEN, bitmaps->buttons.load, "Cargar...");
-	wxButton *save_button = new mxBitmapButton (this, wxID_SAVE, bitmaps->buttons.save, "Guardar...");
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "Aceptar");
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, "Cancelar");
+	wxButton *load_button = new wxButton (this, wxID_OPEN, "Cargar...");
+	load_button->SetBitmap(*bitmaps->buttons.load);
+	wxButton *save_button = new wxButton (this, wxID_SAVE, "Guardar...");
+	save_button->SetBitmap(*bitmaps->buttons.save);
+	wxButton *ok_button = new wxButton (this, wxID_OK, "Aceptar");
+	ok_button->SetBitmap(*bitmaps->buttons.ok);
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, "Cancelar");
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
 	button_sizer->Add(load_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(save_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->AddStretchSpacer(1);

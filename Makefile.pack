@@ -35,40 +35,9 @@ w32:
 	@ls -sh dist/pseint-w32-`cat bin/version`.*
 	@echo
 
-lnx2:
+lnx:
 	make -f Makefile.pack clean
-	make -f Makefile.lnx2
-# 	make -f Makefile.lnx2 -C psterm
-# 	make -f Makefile.lnx -C hoewrap
-# 	make -f Makefile.lnx2 -C wxPSeInt
-# 	make -f Makefile.lnx2 -C pseval
-# 	make -f Makefile.lnx2 -C psdrawE
-# 	make -f Makefile.lnx2 -C psdraw3
-# 	make -f Makefile.lnx -C pseint
-# 	make -f Makefile.lnx -C psexport
-# 	make -f Makefile.lnx -C updatem
-	rm -rf dist/pseint 
-	mkdir -p dist/pseint 
-	cp -r bin/* dist/pseint/
-	cp dist/log.sh dist/pseint/
-	cd dist && tar -czf pseint-`./get_arch`-`cat pseint/version`.tgz pseint 
-	@echo 
-	@echo -n "DONE: "
-	@ls -sh dist/pseint-`dist/get_arch`-`cat bin/version`.tgz
-	@echo
-
-lnx3:
-	make -f Makefile.pack clean
-	make -f Makefile.lnx3
-# 	make -f Makefile.lnx3 -C psterm
-# 	make -f Makefile.lnx -C hoewrap
-# 	make -f Makefile.lnx3 -C wxPSeInt
-# 	make -f Makefile.lnx3 -C pseval
-# 	make -f Makefile.lnx3 -C psdrawE
-# 	make -f Makefile.lnx3 -C psdraw3
-# 	make -f Makefile.lnx -C pseint
-# 	make -f Makefile.lnx -C psexport
-# 	make -f Makefile.lnx -C updatem
+	make -f Makefile.lnx
 	rm -rf dist/pseint 
 	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/

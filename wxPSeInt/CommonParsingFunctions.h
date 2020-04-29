@@ -1,9 +1,7 @@
 #ifndef COMMONPARSINGFUNCTIONS_H
 #define COMMONPARSINGFUNCTIONS_H
 #include <wx/string.h>
-#ifdef WX3
-#	include "string_conversions.h"
-#endif
+#include "string_conversions.h"
 
 template<typename TChar>
 inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
@@ -16,8 +14,6 @@ inline bool EsLetra(const TChar &c, bool incluir_nros=true) {
 		(incluir_nros&&c>='0'&&c<='9');
 }
 
-
-#ifdef WX3
 template<>
 inline bool EsLetra(const wxUniChar &c, bool incluir_nros) {
 	static wxString s = _Z("_·ÈÌÛ˙¸Ò¡…Õ”⁄‹—");
@@ -27,7 +23,6 @@ template<>
 inline bool EsLetra(const wxUniCharRef &c, bool incluir_nros) {
 	return EsLetra(wxUniChar(c),incluir_nros);
 }
-#endif
 
 template<typename TChar>
 inline bool EsNumero(const TChar &c, bool incluir_punto=true) {
@@ -73,7 +68,6 @@ void MakeUpper(TString &word) {
 	}
 }
 
-#ifdef WX3
 template<>
 void MakeUpper(wxString &word) {
 	for(unsigned int i=0;i<word.size();i++) {
@@ -89,8 +83,7 @@ void MakeUpper(wxString &word) {
 		}
 	}
 }
-#endif
-	
+
 template<typename TString>
 TString Upper(TString word) {
 	MakeUpper(word);

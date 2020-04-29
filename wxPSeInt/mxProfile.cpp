@@ -6,7 +6,6 @@
 #include "mxProfile.h"
 #include "ConfigManager.h"
 #include "mxUtils.h"
-#include "mxBitmapButton.h"
 #include "mxConfig.h"
 #include "mxArt.h"
 #include "mxMainWindow.h"
@@ -100,10 +99,14 @@ mxProfile::mxProfile(wxWindow *parent) :
 
 	sizer->AddSpacer(10);
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *options_button = new mxBitmapButton (this, wxID_ABOUT, bitmaps->buttons.options, _Z("Personalizar..."));
-	wxButton *load_button = new mxBitmapButton (this, wxID_OPEN, bitmaps->buttons.load, _Z("Cargar..."));
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _Z("Aceptar"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _Z("Cancelar"));
+	wxButton *options_button = new wxButton (this, wxID_ABOUT, _Z("Personalizar..."));
+	options_button->SetBitmap(*bitmaps->buttons.options);
+	wxButton *load_button = new wxButton (this, wxID_OPEN, _Z("Cargar..."));
+	load_button->SetBitmap(*bitmaps->buttons.load);
+	wxButton *ok_button = new wxButton (this, wxID_OK, _Z("Aceptar"));
+	ok_button->SetBitmap(*bitmaps->buttons.ok);
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, _Z("Cancelar"));
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
 	button_sizer->Add(options_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(load_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->AddStretchSpacer(1);

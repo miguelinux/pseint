@@ -37,13 +37,13 @@ mxDebugWindow::mxDebugWindow(wxWindow *parent):wxPanel(parent,wxID_ANY) {
 		     bmp_detener (DIR_PLUS_FILE(ipath,"detener.png"),wxBITMAP_TYPE_PNG),
 		     bmp_cerrar  (DIR_PLUS_FILE(ipath,"cerrar.png"), wxBITMAP_TYPE_PNG);
 	
-	dp_bmps[BMP_COMENZAR] = mxBitmapButton::GenerateButtonImage("Comenzar",&bmp_comenzar);
-	dp_bmps[BMP_PAUSAR] = mxBitmapButton::GenerateButtonImage("Pausar",&bmp_pausar);
+	dp_bmps[BMP_COMENZAR]    = mxBitmapButton::GenerateButtonImage("Comenzar",&bmp_comenzar);
+	dp_bmps[BMP_PAUSAR]      = mxBitmapButton::GenerateButtonImage("Pausar",&bmp_pausar);
 	dp_bmps[BMP_PRIMER_PASO] = mxBitmapButton::GenerateButtonImage("Primer Paso",&bmp_un_paso);
-	dp_bmps[BMP_FINALIZAR] = mxBitmapButton::GenerateButtonImage("Detener",&bmp_detener);
-	dp_bmps[BMP_CONTINUAR] = mxBitmapButton::GenerateButtonImage("Continuar",&bmp_comenzar);
-	dp_bmps[BMP_UN_PASO] = mxBitmapButton::GenerateButtonImage("Avanzar un Paso",&bmp_un_paso);
-	dp_bmps[BMP_CERRAR] = mxBitmapButton::GenerateButtonImage("Cerrar",&bmp_cerrar);
+	dp_bmps[BMP_FINALIZAR]   = mxBitmapButton::GenerateButtonImage("Detener",&bmp_detener);
+	dp_bmps[BMP_CONTINUAR]   = mxBitmapButton::GenerateButtonImage("Continuar",&bmp_comenzar);
+	dp_bmps[BMP_UN_PASO]     = mxBitmapButton::GenerateButtonImage("Avanzar un Paso",&bmp_un_paso);
+	dp_bmps[BMP_CERRAR]      = mxBitmapButton::GenerateButtonImage("Cerrar",&bmp_cerrar);
 	
 	evaluate_window = NULL;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);

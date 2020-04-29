@@ -2,7 +2,6 @@
 
 #include "mxIconInstaller.h"
 #include "mxUtils.h"
-#include "mxBitmapButton.h"
 #include <wx/stattext.h>
 #include <wx/checkbox.h>
 #include "ConfigManager.h"
@@ -43,8 +42,10 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,"Iconos 
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	mxBitmapButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, "&Cancelar"); 
-	mxBitmapButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "&Aceptar");
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, "&Cancelar");
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
+	wxButton *ok_button = new wxButton (this, wxID_OK, "&Aceptar");
+	ok_button->SetBitmap(*bitmaps->buttons.ok);
 	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
 	ok_button->SetDefault(); 
 	bottomSizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5));

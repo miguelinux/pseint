@@ -22,7 +22,7 @@ path=Application.cpp
 cursor=35:0
 [source]
 path=GLtoWX.cpp
-cursor=33:0
+cursor=152:1
 open=true
 [source]
 path=../psdraw3/DClasico.cpp

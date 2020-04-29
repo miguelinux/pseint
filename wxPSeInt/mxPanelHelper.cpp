@@ -16,7 +16,7 @@ mxPanelHelper::mxPanelHelper(wxWindow *parent, wxWindowID id, wxString bitmap, w
 	  font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))
 {
 	
-	if (config->big_icons) font.SetPointSize(font.GetPointSize()+2);
+//	if (config->big_icons) font.SetPointSize(font.GetPointSize()*1.4);
 	this->label=label;
 	mid=id; selected=false;
 	
@@ -52,14 +52,9 @@ void mxPanelHelper::OnClick(wxMouseEvent &evt) {
 void mxPanelHelper::OnPaint(wxPaintEvent &evt) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-#ifdef WX3
 	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_BTNHILIGHT:wxSYS_COLOUR_FRAMEBK));
-#else
-	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_HIGHLIGHT:wxSYS_COLOUR_MENU));
-#endif
 	dc.Clear();
 	dc.DrawBitmap(bmp,3,4,true);
-	
 	dc.SetFont(font);
 	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	dc.DrawRotatedText(label,text_x,bmp.GetHeight()+10,270);

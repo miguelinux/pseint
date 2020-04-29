@@ -83,6 +83,9 @@ bool mxApplication::OnInit() {
 		}
 	}
 	wxImage::AddHandler(new wxPNGHandler);
+#ifndef __APPLE__
+	wxFont::AddPrivateFont("Inconsolata-Regular.ttf");
+#endif
 	new mxFrame(command,port,src_id,debug,props);
 	return true;
 }

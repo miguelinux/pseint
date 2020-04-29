@@ -3,7 +3,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/checkbox.h>
-#include "mxBitmapButton.h"
 #include "mxArt.h"
 
 BEGIN_EVENT_TABLE(mxInputDialog,wxDialog)
@@ -36,8 +35,10 @@ mxInputDialog::mxInputDialog(wxWindow *parent):wxDialog(parent,wxID_ANY,"Predefi
 	values->Enable(false);
 	
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Aceptar"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _T("Cancelar"));
+	wxButton *ok_button = new wxButton (this, wxID_OK, _T("Aceptar"));
+	ok_button->SetBitmap(*bitmaps->buttons.ok);
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, _T("Cancelar"));
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
 	button_sizer->Add(cancel_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	button_sizer->Add(ok_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	ok_button->SetDefault();

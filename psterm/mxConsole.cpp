@@ -216,11 +216,7 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 	if (the_process) {
 		if (!want_input || cur_event!=-1) return;
 		wxOutputStream *output=the_process->GetOutputStream();
-#ifdef WX3
 		wxChar c = event.GetUnicodeKey();
-#else 
-		char c = char(event.GetKeyCode());
-#endif
 		if (wait_one_key) {
 			if (c=='\r') c='\n';
 		 	wait_one_key=false;
@@ -235,14 +231,10 @@ void mxConsole::OnChar (wxKeyEvent & event) {
 				return;
 			} else if (c=='\r'||c=='\n') { 
 				current_input<<"\n";
-#ifdef WX3
 				string val((const char*)(current_input.mb_str(wxCSConv("ISO-8859"))));
 				cerr << current_input << current_input.size()<<endl;
 				cerr << val << val.size()<<endl;
 				output->Write(val.c_str(),val.size());
-#else
-				output->Write(current_input,current_input.Len());
-#endif
 				RecordInput(current_input);
 				c='\n';
 			} else if (c=='\b') {

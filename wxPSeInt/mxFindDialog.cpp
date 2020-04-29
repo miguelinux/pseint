@@ -5,7 +5,6 @@
 #include <wx/arrstr.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
-#include "mxBitmapButton.h"
 #include "mxSource.h"
 #include "mxMainWindow.h"
 #include "ids.h"
@@ -42,11 +41,16 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	check_case = utils->AddCheckBox(optSizer,this,_Z("Distinguir mayúsculas y minúsculas"),false);
 	check_close = utils->AddCheckBox(optSizer,this,_Z("Cerrar este dialogo después de encontrar"),true);
 	
-	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, _Z("Reemplazar"));
-	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, _Z("Reemplazar Todo"));
-	next_button = new mxBitmapButton (this, mxID_FIND_FIND_NEXT, bitmaps->buttons.find, _Z("Buscar Siguiente"));
-	wxButton *prev_button = new mxBitmapButton (this, mxID_FIND_FIND_PREV, bitmaps->buttons.find, _Z("Buscar Anterior"));
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, _Z("Cancelar"));
+	replace_button = new wxButton (this, mxID_FIND_REPLACE, _Z("Reemplazar"));
+	replace_button->SetBitmap(*bitmaps->buttons.replace);
+	replace_all_button = new wxButton (this, mxID_FIND_REPLACE_ALL, _Z("Reemplazar Todo"));
+	replace_all_button->SetBitmap(*bitmaps->buttons.replace);
+	next_button = new wxButton (this, mxID_FIND_FIND_NEXT, _Z("Buscar Siguiente"));
+	next_button->SetBitmap(*bitmaps->buttons.find);
+	wxButton *prev_button = new wxButton (this, mxID_FIND_FIND_PREV, _Z("Buscar Anterior"));
+	prev_button->SetBitmap(*bitmaps->buttons.find);
+	wxButton *cancel_button = new wxButton (this, wxID_CANCEL, _Z("Cancelar"));
+	cancel_button->SetBitmap(*bitmaps->buttons.cancel);
 	
 	butSizer->Add(replace_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());
 	butSizer->Add(replace_all_button,wxSizerFlags().Border(wxALL,5).Proportion(0).Expand());

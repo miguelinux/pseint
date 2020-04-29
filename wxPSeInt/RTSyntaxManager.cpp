@@ -85,13 +85,13 @@ void RTSyntaxManager::ContinueProcessing() {
 		return;
 	}
 	while(true) {
-		_if_wx3_else ( static string aux_line; aux_line.clear() , wxString aux_line );
+		static string aux_line; aux_line.clear();
 		while (IsInputAvailable()) {
 			char c=input.GetChar();
 			if (c=='\n') break;
 			if (c!='\r') aux_line+=c;
 		}
-		_if_wx3_else( wxString line(_Z(aux_line.c_str())) , wxString &line=aux_line );
+		wxString line(_Z(aux_line.c_str()));;
 		if (line.Len()) {
 			if (line=="<!{[END_OF_OUTPUT]}!>") { 
 				_LOG("RTSyntaxManager::ContinueProcessing fase 1 src="<<src);

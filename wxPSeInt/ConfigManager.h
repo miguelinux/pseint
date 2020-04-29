@@ -4,8 +4,6 @@
 #include <wx/arrstr.h>
 #include "../pseint/LangSettings.h"
 
-#define _no_tty "<<sin configurar>>"
-
 #define DEFAULT_PROFILE "Flexible"
 #define CUSTOM_PROFILE "<Personalizado>"
 
@@ -13,7 +11,7 @@ class ConfigManager {
 public:
 	bool use_dark_theme; ///< esquema de colores para el resaltado de sintaxis, true=fondo negro, false=fondo blanco
 	bool use_dark_psterm; ///< esquema de colores de psterm, true=fondo negro, false=fondo blanco
-	wxString GetTTYCommand(); ///< terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
+	wxString GetTermCommand(); ///< terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
 	
 	int version; ///< version del archivo de configuración que se leyó al inicializar
 	int comm_port;
@@ -34,32 +32,25 @@ public:
 	wxString updatem_command;
 	wxString last_dir;
 	wxString temp_dir;
-//	wxString /*temp*/_file;
 	wxString help_dir;
 	wxString examples_dir;
 	wxString profiles_dir;
 	wxString proxy;
 	
 private:
-//	wxString profile;
 	LangSettings lang;
 public:
 	bool LoadListedProfile(wxString name);
 	bool LoadProfileFromFile(wxString path);
-//	bool SetCustomProfile(LangSettings custom_lang);
 	bool SetProfile(LangSettings a_lang);
-//	wxString GetProfileName() const;
-//	bool IsProfileListed() const;
 	const LangSettings &GetLang() { return lang; }
 	LangSettings &GetWritableLang() { return lang; }
 	
 	bool reorganize_for_debug; ///< si reacomoda o no las ventanas al lanzar la ejecución paso a paso
 	bool animate_gui; ///< si al mostrar u ocultar los paneles laterales lo hace con una animación (true) o de forma instantanea (false)
 	bool use_colors;
-	bool colour_sintax;
 	bool shape_colors; ///< usar diferentes colores de fondo para las distintas estructuras de control
 	bool psdraw_nocrop; ///< no cortar labels largos en el diagrama (por defecto remplaza "xxxxxxxxxx" por "xxx...")
-//	bool show_toolbar;
 	bool show_vars;
 	bool show_opers;
 	bool unicode_opers;

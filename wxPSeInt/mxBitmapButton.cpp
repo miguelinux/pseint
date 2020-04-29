@@ -2,6 +2,7 @@
 #include <wx/settings.h>
 #include "mxBitmapButton.h"
 #include "mxUtils.h"
+#include "ConfigManager.h"
 
 #if defined(__APPLE__) || defined(__WIN32__)
 wxColour *mxBitmapButton::background_colour = NULL;
@@ -26,7 +27,9 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
 	int p = text.Find('&');
 	if (p==wxNOT_FOUND) p=-1;
 	else text.Remove(p++,1);
-	dc->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+//	if (config->big_icons) font.SetPointSize(font.GetPointSize()*1.3);
+	dc->SetFont(font);
 	dc->SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	dc->DrawLabel(wxString(_T(" "))<<text,*bmp,wxRect(wxPoint(0,0),wxPoint(200,100)), wxALIGN_LEFT | wxALIGN_TOP,p,&r);
 	r.height = r.height>bmp->GetHeight()?r.height:bmp->GetHeight()+1;

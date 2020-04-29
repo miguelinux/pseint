@@ -1,18 +1,18 @@
-OBJS_DIR=../temp/wx_lnx3_rls
+OBJS_DIR=../temp/wx_lnx_rls
 GPP=g++
-CXXFLAGS_OPT=-O2 -DFOR_WXPSEINT
+CXXFLAGS_OPT=-O3 -DFOR_WXPSEINT -std=c++14
 CXXFLAGS=${CXXFLAGS_OPT} `wx-config --cppflags --unicode=yes --version=3.1`  -DWX3
 LDFLAGS_OPT=-s
 LDFLAGS=${LDFLAGS_OPT} `wx-config --libs --unicode=yes --version=3.1` `wx-config --libs stc aui --unicode=yes --version=3.1` -lX11
 
-all: ${OBJS_DIR} ../bin/bin3/wxPSeInt ../bin/wxPSeInt ../bin/pseint
+all: ${OBJS_DIR} ../bin/bin/wxPSeInt ../bin/wxPSeInt ../bin/pseint
 
 include Makefile.common
 
 clean:
 	rm -rf ${OBJS} ../bin/bin3/wxPSeInt ../bin/wxPSeInt ../bin/pseint
 
-../bin/bin3/wxPSeInt: ${OBJS}
+../bin/bin/wxPSeInt: ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ../bin/wxPSeInt: launcher.cpp

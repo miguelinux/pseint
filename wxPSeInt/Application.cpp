@@ -31,7 +31,7 @@ wxSplashScreen *splash;
 bool mxApplication::OnInit() {
 	
 #ifndef DEBUG
-	_if_wx3(wxDisableAsserts());
+	wxDisableAsserts();
 #endif
 	
 	_handle_version_query("wxPSeInt",false);

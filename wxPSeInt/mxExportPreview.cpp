@@ -54,11 +54,7 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	code_ctrl->SetMarginType (0, wxSTC_MARGIN_NUMBER);
 	code_ctrl->SetMarginWidth (0, code_ctrl->TextWidth (wxSTC_STYLE_LINENUMBER, " XXXXX"));
 
-#ifdef WX3
 	wxFont font(wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
-#else
-	wxFont font (config->wx_font_size, wxMODERN, wxNORMAL, wxNORMAL);
-#endif
 	code_ctrl->StyleSetFont (wxSTC_STYLE_DEFAULT, font);
 	
 	main_sizer->Add(code_ctrl,wxSizerFlags().Proportion(1).Expand());

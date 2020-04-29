@@ -32,31 +32,14 @@ ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 		filename = DIR_PLUS_FILE(home_dir,"config");
 	LoadDefaults();
 	Read();
-#if defined(__WIN32__)
-#elif defined(__APPLE__)
-#else
-#	ifdef WX3
-	psterm_command.Replace("binX","bin3");
-	psdraw3_command.Replace("binX","bin3");
-	psdrawe_command.Replace("binX","bin3");
-	pseval_command.Replace("binX","bin3");
-#	else
-	psterm_command.Replace("binX","bin2");
-	psdraw3_command.Replace("binX","bin2");
-	psdrawe_command.Replace("binX","bin2");
-	pseval_command.Replace("binX","bin2");
-#	endif
-//	wxFileName f_path = wxGetCwd(); 
-//	f_path.MakeAbsolute();
-//	pseint_command = DIR_PLUS_FILE(f_path.GetFullPath(),"pseint");
-//	if (pseint_command.Contains(" ")) pseint_command=wxString("\"")<<pseint_command<<"\"";
-#endif
 	
+#ifndef __APPLE__
 	bool inconsolata_ok = wxFont::AddPrivateFont("Inconsolata-Regular.ttf");
 	if (version<20200424 && inconsolata_ok) {
 		term_font_name = wx_font_name = "Inconsolata";
 		unicode_opers = true;
 	}
+#endif
 	
 	lang.Log();
 	
@@ -72,16 +55,10 @@ void ConfigManager::LoadDefaults() {
 	maximized = false;
 	psdraw_nocrop = false;
 	shape_colors = true;
-	colour_sintax = true;
-#ifdef __APPLE__
-	unicode_opers = false;
-#else
 	unicode_opers = true;
-#endif
 	show_vars = false;
 	show_opers = false;
 	show_commands = true;
-//	show_toolbar = true;
 	autocomp = true;
 	highlight_blocks = true;
 	autoclose = true;
@@ -104,40 +81,29 @@ void ConfigManager::LoadDefaults() {
 	last_dir=wxFileName::GetHomeDir();
 	
 #if defined(_WIN32) || defined(__WIN32__)
-	pseint_command   = "pseint.exe";
-	psterm_command   = "psterm.exe";
-	psdrawe_command  = "psdrawE.exe";
-	psdraw3_command  = "psdraw3.exe";
-	psexport_command = "psexport.exe";
-	pseval_command   = "pseval.exe";
-	updatem_command  = "updatem.exe";
+	std::string bin_pre="", bin_post=".exe";
 #elif defined(__APPLE__)
-	pseint_command   = "./pseint";
-	psterm_command   = "./psterm";
-	psdrawe_command  = "./psdrawE";
-	psdraw3_command  = "./psdraw3";
-	psexport_command = "./psexport";
-	pseval_command   = "./pseval";
-	updatem_command  = "./updatem";
+	std::string bin_pre="./", bin_post="";
 #else
-	pseint_command   = "./bin/pseint";
-	psterm_command   = "./binX/psterm";
-	psdrawe_command  = "./binX/psdrawE";
-	psdraw3_command  = "./binX/psdraw3";
-	psexport_command = "./bin/psexport";
-	pseval_command   = "./binX/pseval";
-	updatem_command  = "./bin/updatem";
+	std::string bin_pre="./bin/", bin_post="";
 #endif
+	pseint_command   = bin_pre+"pseint"+bin_post;
+	psterm_command   = bin_pre+"psterm"+bin_post;
+	psdrawe_command  = bin_pre+"psdrawE"+bin_post;
+	psdraw3_command  = bin_pre+"psdraw3"+bin_post;
+	psexport_command = bin_pre+"psexport"+bin_post;
+	pseval_command   = bin_pre+"pseval"+bin_post;
+	updatem_command  = bin_pre+"updatem"+bin_post;
 
 	wx_font_size = big_icons?12:10;
 	wx_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
 	print_font_size = wx_font_size-2;
 	term_font_size = big_icons?14:11;
 	term_font_name = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetFaceName();
-#if defined(__APPLE__) && defined(WX3)
+#ifdef __APPLE__
 	// la fuente por defecto en mac es fea y muy chica...
 	wx_font_size = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT).GetPointSize();
-	term_font_size = wx_font_size+2;
+	term_font_size = wx_font_size+1;
 	if (wxFontEnumerator::GetFacenames(wxFONTENCODING_SYSTEM).Index("Monaco")!=wxNOT_FOUND)
 		term_font_name = wx_font_name  = "Monaco";
 #endif
@@ -171,13 +137,11 @@ void ConfigManager::Save() {
 	fil.AddLine(wxString("smart_indent=")<<(smart_indent?1:0));
 	fil.AddLine(wxString("psdraw_nocrop=")<<(psdraw_nocrop?1:0));
 	fil.AddLine(wxString("shape_colors=")<<(shape_colors?1:0));
-	fil.AddLine(wxString("colour_sintax=")<<(colour_sintax?1:0));
 	fil.AddLine(wxString("unicode_opers=")<<(unicode_opers?1:0));
 	fil.AddLine(wxString("show_vars=")<<(show_vars?1:0));
 	fil.AddLine(wxString("show_opers=")<<(show_opers?1:0));
 	fil.AddLine(wxString("show_commands=")<<(show_commands?1:0));
 	fil.AddLine(wxString("show_debug_panel=")<<(show_debug_panel?1:0));
-//	fil.AddLine(wxString("show_toolbar=")<<(show_toolbar?1:0));
 	fil.AddLine(wxString("calltip_helps=")<<(calltip_helps?1:0));
 	fil.AddLine(wxString("autocomp=")<<(autocomp?1:0));
 	fil.AddLine(wxString("highlight_blocks=")<<(highlight_blocks?1:0));
@@ -261,7 +225,6 @@ void ConfigManager::Read() {
 			else if (key=="show_vars") show_vars=utils->IsTrue(value);
 			else if (key=="show_opers") show_opers=utils->IsTrue(value);
 			else if (key=="show_debug_panel") show_debug_panel=utils->IsTrue(value);
-//			else if (key=="show_toolbar") show_toolbar=utils->IsTrue(value);
 			else if (key=="auto_quickhelp") auto_quickhelp=utils->IsTrue(value);
 			else if (key=="calltip_helps") calltip_helps=utils->IsTrue(value);
 			else if (key=="autocomp") autocomp=utils->IsTrue(value);
@@ -269,7 +232,6 @@ void ConfigManager::Read() {
 			else if (key=="autoclose") autoclose=utils->IsTrue(value);
 			else if (key=="psdraw_nocrop") psdraw_nocrop=utils->IsTrue(value);
 			else if (key=="shape_colors") shape_colors=utils->IsTrue(value);
-			else if (key=="colour_sintax") colour_sintax=utils->IsTrue(value);
 			else if (key=="unicode_opers") unicode_opers=utils->IsTrue(value);
 			else if (key=="use_colors") use_colors=utils->IsTrue(value);
 			else if (key=="animate_gui") animate_gui=utils->IsTrue(value);
@@ -335,18 +297,6 @@ bool ConfigManager::SetProfile(LangSettings custom_lang) {
 	return true;
 }
 
-//bool ConfigManager::SetCustomProfile(LangSettings custom_lang) {
-//	lang = custom_lang;
-//	profile = PROFNAME_CUSTOM;
-//	return true;
-//}
-
-//wxString ConfigManager::GetProfileName() const {
-//	if (profile==PROFNAME_CUSTOM) return CUSTOM_PROFILE;
-//	if (profile.IsEmpty()) return DEFAULT_PROFILE;
-//	return profile.AfterFirst(':');
-//}
-
 int ConfigManager::GetCommPort () {
 	if (fixed_port) return comm_port; else return comm_port+rand()%150+150;
 }
@@ -355,7 +305,7 @@ int ConfigManager::GetDebugPort ( ) {
 	if (fixed_port) return debug_port; else return debug_port+rand()%150;
 }
 
-wxString ConfigManager::GetTTYCommand ( ) {
+wxString ConfigManager::GetTermCommand ( ) {
 	return psterm_command + (config->use_dark_psterm?" --darktheme":"")
 		+ " \"--font="<<config->term_font_name<<":"<<config->term_font_size<<"\"";
 }
@@ -376,8 +326,4 @@ void ConfigManager::Log ( ) const {
 	_LOG("   psterm_command="<<psterm_command);
 	_LOG("   temp_dir="<<temp_dir);
 }
-
-//bool ConfigManager::IsProfileListed ( ) const {
-//	return profile.StartsWith(PROFNAME_LIST);
-//}
 

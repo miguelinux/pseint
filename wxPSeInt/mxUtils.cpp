@@ -5,11 +5,12 @@
 #include <wx/dataobj.h>
 #include <wx/clipbrd.h>
 #include <wx/textfile.h>
+#include <wx/button.h>
 #include "mxUtils.h"
 #include "ConfigManager.h"
-#include "mxBitmapButton.h"
 #include "string_conversions.h"
 #include "ids.h"
+#include "mxBitmapButton.h"
 
 mxUtils *utils = NULL;
 
@@ -54,6 +55,9 @@ wxButton *mxUtils::AddImgButton(wxSizer *sizer, wxWindow *parent, wxWindowID id,
 		sizer->Add(btn=new mxBitmapButton(parent,id,new wxBitmap(cfile,wxBITMAP_TYPE_PNG),text,wxDefaultSize),wxSizerFlags().Proportion(1).Expand());
 	else	
 		sizer->Add(btn=new wxButton(parent,id,text),wxSizerFlags().Proportion(1).Expand());
+//	sizer->Add(btn=new wxButton(parent,id,text),wxSizerFlags().Proportion(1).Expand());
+//	if (wxFileName::FileExists(cfile))
+//		btn->SetBitmap(wxBitmap(cfile,wxBITMAP_TYPE_PNG));
 	return btn;
 }
 

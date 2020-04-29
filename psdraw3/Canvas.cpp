@@ -34,36 +34,30 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_KEY_UP(Canvas::OnKeyUp)
 END_EVENT_TABLE()
 	
-#ifdef WX3
 static wxGLAttributes &glAttribs() {
 	static wxGLAttributes atr;
 	atr.DoubleBuffer().RGBA().EndList();
 	return atr;
 }
-#endif
 
 Canvas::Canvas(wxWindow *parent)
-#ifdef WX3
 	: wxGLCanvas(parent,glAttribs()/*.SampleBuffers(1).Samplers(4)*/,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
-#else
-	: wxGLCanvas(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE,"canvas",gl_attrib)
-#endif
 {
 	
-	canvas=this; _if_wx3(m_context = new wxGLContext(this));
+	canvas=this; m_context = new wxGLContext(this);
 	redraw_timer = new wxTimer(GetEventHandler(),wxID_ANY);
 	mouse_buttons=modifiers=0;
 }
 
 Canvas::~Canvas() {
-	_if_wx3(delete m_context);
+	delete m_context;
 }
 
 
 void Canvas::OnPaint(wxPaintEvent& event) {
 	if (!IsShownOnScreen()) return;
 	wxPaintDC dc(this); // no se usa el objeto pero es necesario que esté construido
-	wxGLCanvas::SetCurrent(_if_wx3(*m_context));
+	wxGLCanvas::SetCurrent(*m_context);
 	
 	static wxCursor *cursores=NULL;
 	static CURSORES old_cursor=Z_CURSOR_COUNT;
@@ -101,11 +95,7 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 
 void Canvas::OnSize(wxSizeEvent& event) {
 	if (!IsShownOnScreen()) return;
-#ifdef WX3
 	SetCurrent(*m_context);
-#else
-	wxGLCanvas::OnSize(event);
-#endif
 	int win_w,win_h;
 	GetClientSize(&win_w, &win_h);
 	reshape_cb(win_w,win_h);
@@ -178,7 +168,7 @@ void Canvas::OnKeyDown (wxKeyEvent & event) {
 	default: 
 		if (key>=WXK_F1&&key<=WXK_F12) keyboard_esp_cb(key);
 		else if (key==WXK_LEFT||key==WXK_RIGHT||key==WXK_END||key==WXK_HOME) keyboard_esp_cb(key);
-#if defined(WX3) && defined(__APPLE__)
+#ifdef __APPLE__
 		else OnChar(event); // en mac con wx3 no lanza el evento OnChar para las teclas comunes, por eso lo redirecciono desde acá
 #else
 		else event.Skip();

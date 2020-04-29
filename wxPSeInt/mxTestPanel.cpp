@@ -13,7 +13,6 @@
 #include <wx/fs_mem.h>
 #include <wx/msgdlg.h>
 #include <cstdlib>
-#include "mxBitmapButton.h"
 #include "mxArt.h"
 using namespace std;
 
@@ -30,14 +29,14 @@ mxTestPanel::mxTestPanel(wxWindow *parent) : wxPanel(parent,wxID_ANY) {
 	
 	src = NULL;
 	sizer = new wxBoxSizer(wxHORIZONTAL);
-//	eval_button = new wxButton(this,mxID_TESTPACK_RUN,_Z("Evaluar..."));
-	eval_button = new mxBitmapButton (this, mxID_TESTPACK_RUN, bitmaps->buttons.eval, _Z("Evaluar..."));
+	eval_button = new wxButton (this, mxID_TESTPACK_RUN, _Z("Evaluar..."));
+	eval_button->SetBitmap(*bitmaps->buttons.eval);
 	label = new wxStaticText(this,wxID_ANY,_Z("Cargando ejercicio..."),wxDefaultPosition,wxDefaultSize);
 	sizer->Add(eval_button,wxSizerFlags().Border(wxALL,5));
 	sizer->Add(label,wxSizerFlags().Center().Centre().Border(wxALL,5));
 	sizer->AddStretchSpacer();
 	help_button = new wxButton(this,wxID_HELP,_Z("Mostrar Enunciado"),wxDefaultPosition,wxDefaultSize);
-//	help_button = new mxBitmapButton (this, wxID_HELP, bitmaps->buttons.help, _Z("Mostrar Enunciado"));
+//	help_button->SetBitmap(*bitmaps->buttons.help);
 	sizer->Add(help_button,wxSizerFlags().Border(wxALL,5));
 	SetSizerAndFit(sizer);
 }

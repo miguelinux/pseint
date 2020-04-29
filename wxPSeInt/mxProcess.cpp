@@ -124,7 +124,6 @@ void mxProcess::OnTerminate(int pid, int status) {
 
 
 static void Execute(const wxString &command, wxArrayString &output) {
-#ifdef WX3
 	// ejecutar usando un wxProcess, y no pasandole el output a wxExecute
 	// porque en ese caso no se puede controlar la codificación de la
 	// salida y wxExecute simplemente se cuelga (al menos en GNU/Linux)
@@ -139,9 +138,6 @@ static void Execute(const wxString &command, wxArrayString &output) {
 			if (!s.IsEmpty()) output.Add(s);
 		}
 	}
-#else
-	wxExecute(command,output,wxEXEC_SYNC);
-#endif
 }
 
 bool mxProcess::CheckSyntax(wxString file, wxString extra_args) {
@@ -204,7 +200,7 @@ bool mxProcess::Run(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_RUN:mxPW_RUN;
 	source->StopReloadTimer();
 	if (check_first) return CheckSyntax(file);
-	wxString command, tty_command=config->GetTTYCommand();
+	wxString command, tty_command=config->GetTermCommand();
 	if (tty_command.Len()) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
@@ -225,7 +221,7 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 	what = check_first?mxPW_CHECK_AND_DEBUG:mxPW_DEBUG;
 	if (check_first) 
 		return CheckSyntax(file);
-	wxString command, tty_command=config->GetTTYCommand();
+	wxString command, tty_command=config->GetTermCommand();
 	if (tty_command.Len()) {
 		command<<tty_command<<_T(" ");
 		command.Replace(_T("$name"),_T("Ejecucion"));
