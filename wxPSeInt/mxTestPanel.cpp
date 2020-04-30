@@ -105,3 +105,12 @@ void mxTestPanel::OnShowHideHelp (bool show) {
 	help_button->Enable(!show);
 }
 
+const wxString mxTestPanel::GetHelp ( ) const {
+	wxString s = pack.GetHelp();
+	// wxHtmlWindow no reconoce el tag Q
+	s.Replace("&quot;","\"",true);
+	s.Replace("<q>","\"",true);
+	s.Replace("</q>","\"",true);
+	return s;
+}
+

@@ -84,6 +84,14 @@ protected:
 static int cyper_version_int = 20160401;
 static const char cypher_version_str[] = "ver20160401";
 
+static void WriteTextFile(wxZipOutputStream &zip, const wxString &name, const wxString &content) {
+	zip.PutNextEntry(name);
+	static wxCSConv cs("ISO-8859-1");
+	const auto data = content.mb_str(cs);
+	wxMemoryInputStream is(data,data.length());
+	zip<<is;
+}
+
 bool Package::Load (const wxString & fname, const wxString &passkey) {
 	if (!wxFileName::FileExists(fname)) return false;
 	wxZipEntry *entry = NULL;
@@ -98,12 +106,12 @@ bool Package::Load (const wxString & fname, const wxString &passkey) {
 			int req_ver = 0;
 			for(int i=10,mult=1;i>2;i--,mult*=10) req_ver+=(version_buff[i]-'0')*mult;
 			if (req_ver>cyper_version_int) {
-				wxMessageBox(wxString("Este ejercicio no se puede abrir porque fue\n"
+				wxMessageBox(wxString(_Z("Este ejercicio no se puede abrir porque fue\n"
 									  "creado para una versión de PSeInt más reciente\n"
 									  "que esta. Actualice PSeInt para poder continuar.\n\n"
-									  "La versión mínima necesaria es: ")<<req_ver<<"\n\n"
+									  "La versión mínima necesaria es: "))<<req_ver<<_Z("\n\n"
 									  "Puede descargar las actualizaciones desde:\n"
-									  "http://pseint.sourceforge.net");
+									  "http://pseint.sourceforge.net"));
 				return false;
 			}
 		} else {
@@ -156,8 +164,9 @@ bool Package::Load (const wxString &dir) {
 			if(filename.Lower().EndsWith(".png")) {
 				m_images.Add(mdir+wxFileName::GetPathSeparator()+filename);
 			} else {
+				static wxCSConv cs("ISO-8859-1");
 				wxFile file(mdir+wxFileName::GetPathSeparator()+filename);
-				wxString content; wxStringOutputStream sos(&content);
+				wxString content; wxStringOutputStream sos(&content,cs);
 				wxFileInputStream fis(file); fis.Read(sos);
 				ProcessFile(filename,content);
 			}
@@ -186,7 +195,9 @@ void Package::ProcessFile (wxString name, wxString &content) {
 		m_help_text = content;
 #ifdef ALLOW_MARKDOWN
 	} else if (name=="help.md") {
-		m_help_text = markdown2html(content.c_str(),content.Len());
+		static wxCSConv cs("ISO-8859-1");
+		const auto data = content.mb_str(cs);
+		m_help_text = wxString(markdown2html(data,data.length()),cs);
 #endif
 	} else if (name=="config.ini") {
 		content.Replace("\r","",true);
@@ -271,7 +282,8 @@ bool Package::SaveConfig (const wxString & fname) {
 		fil.AddLine(wxString()+it->first+" = "+it->second);
 		++it;
 	}
-	fil.Write();
+	static wxCSConv cs("ISO-8859-1");
+	fil.Write(wxTextFileType_None,cs);
 	fil.Close();
 	return true;
 }
@@ -292,30 +304,12 @@ bool Package::Save (const wxString & fname, const wxString & passkey, bool old_c
 	if (!old_cypher) out.Write(cypher_version_str,12);
 	mxFilterOutputStream fout(out,passkey,old_cypher);
 	wxZipOutputStream zip(fout);
-	{
-		zip.PutNextEntry("config.ini");
-		wxString conf=GetFullConfig();
-		wxStringInputStream is(conf);
-		zip<<is;
-	}
-	if (!m_base_psc.IsEmpty()) {
-		zip.PutNextEntry("base.psc");
-		wxString conf=GetFullConfig();
-		wxStringInputStream is(m_base_psc);
-		zip<<is;
-	}
-	if (!m_base_psc.IsEmpty()) {
-		zip.PutNextEntry("help.html");
-		wxStringInputStream is(m_help_text);
-		zip<<is;
-	}
+	WriteTextFile(zip,"config.ini",GetFullConfig());
+	if (!m_base_psc.IsEmpty()) WriteTextFile(zip,"base.psc",m_base_psc);
+	if (!m_help_text.IsEmpty()) WriteTextFile(zip,"help.html",m_help_text);
 	for(std::map<wxString,TestCase>::iterator it = m_tests.begin();it!=m_tests.end();++it) {
-		zip.PutNextEntry(wxString("input-")+it->first+".txt");
-		wxStringInputStream is1(it->second.input);
-		zip<<is1;
-		zip.PutNextEntry(wxString("output-")+it->first+".txt");
-		wxStringInputStream is2(it->second.solution);
-		zip<<is2;
+		WriteTextFile(zip,wxString("input-")+it->first+".txt",it->second.input);
+		WriteTextFile(zip,wxString("output-")+it->first+".txt",it->second.solution);
 	}
 	for(unsigned int i=0;i<m_images.GetCount();i++) {
 		wxFileInputStream is(m_images[i]);

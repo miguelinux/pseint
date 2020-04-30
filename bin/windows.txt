@@ -1,15 +1,13 @@
-F Notas sobre la distribución de PSeInt para Windows
-====================================================
-
-Todo se distribuye bajo licencia GPL (ver help\gpl.html), por lo que está permitido copiar y redistribuir libremente bajo los términos de la misma. Para conseguir los fuentes visite pseint.sourceforge.net y en la seccion Descargas seleccione el paquete pseint-src-AAAAMMDD.tgz.
-
-El sistema consta de varios ejecutables (si no sabe como comenzar haga doble click sobre wxPSeInt):
-pseint.exe es el interprete. Funciona en modo consola recibiendo el nombre de un archivo de texto como parametro. Normalmente no debería necesitar utilizar el interprete de esta forma, sino que probablemente prefiera utilizar wxPSeInt
-wxPSeInt.exe es la GUI (editor integrado + funcionalidades extras).
-psdraw.exe y psexport.exe son los programas para generar diagramas de flujo y codigo c++ respectivamente a partir de un algoritmo en pseudocódigo. Al igual que el interprete, puede utilzarlos de forma transparente desde wxPSeInt.
-
-Ante cualquier problema, consulta, sugerencia, etc, puede escribir a zaskar_84@yahoo.com.ar, o dejar un mensaje en el sitio http://pseint.sourceforge.net/contacto.php
-
-Para descargar actualizaciones u obtener mayor documentación consulte la ayuda en línea del programa o visite la página oficial del proyecto (http://pseint.sourceforge.net).
-
-Pablo Novara (zaskar_84@yahoo.com.ar)
+F Notas sobre la distribución de PSeInt para Windows
+====================================================
+
+Este programa se distribuye bajo licencia GPL (ver help\gpl.html), por lo que está permitido copiar y redistribuir libremente bajo los términos de la misma. Para conseguir los fuentes visite pseint.sourceforge.net. Para más detalles sobre el código fuente, sus dependencias y otros recursos utilizados, vea el archivo help/about.html.
+
+El sistema consta de varios ejecutables, el principal (y que se encarga de invocar a los demás) es wxPSeInt.
+
+Ante cualquier problema, consulta, sugerencia, etc, puede escribir a zaskar_84@yahoo.com.ar, o dejar un mensaje en el sitio http://pseint.sourceforge.net/contacto.php
+
+Para descargar actualizaciones u obtener mayor documentación consulte la ayuda en línea del programa o visite la página oficial del proyecto (http://pseint.sourceforge.net).
+
+Por Pablo Novara (zaskar_84@yahoo.com.ar)
+

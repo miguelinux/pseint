@@ -18,6 +18,7 @@ w32:
 	rm -rf bin/bin2 
 	rm -rf bin/bin3 
 	cp -r bin/* dist/pseint/
+	rm -f dist/pseint/linux.txt
 	rm -f dist/pseint/log.exe
 	rm -f dist/pseint/updatem.exe
 	cp dist/dlls/* dist/pseint/
@@ -41,6 +42,7 @@ lnx:
 	rm -rf dist/pseint 
 	mkdir -p dist/pseint 
 	cp -r bin/* dist/pseint/
+	rm -f dist/pseint/windows.txt
 	cp dist/log.sh dist/pseint/
 	cd dist && tar -czf pseint-`./get_arch`-`cat pseint/version`.tgz pseint 
 	@echo 

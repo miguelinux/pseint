@@ -102,10 +102,12 @@ bool mxMainWindow::RunAllTests(const wxString &cmdline, bool for_create) {
 					results_win->Show();
 					return true;
 			} else {
-				wxMessageBox(pack.GetConfigStr("mensaje error"),_Z("Resultado"),wxOK|wxICON_ERROR,this);
+				wxString msg = pack.GetConfigStr("mensaje error"); msg.Replace("\\n","\n");
+				wxMessageBox(msg,_Z("Resultado"),wxOK|wxICON_ERROR,this);
 			}
 		} else {
-			wxMessageBox(pack.GetConfigStr("mensaje exito"),_Z("Resultado"),wxOK|wxICON_EXCLAMATION,this);
+			wxString msg = pack.GetConfigStr("mensaje exito"); msg.Replace("\\n","\n");
+			wxMessageBox(msg,_Z("Resultado"),wxOK|wxICON_EXCLAMATION,this);
 		}
 	}
 	results_win->Destroy();

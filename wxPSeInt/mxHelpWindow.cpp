@@ -267,6 +267,18 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		main_window->OpenProgram(DIR_PLUS_FILE(config->examples_dir,event.GetLinkInfo().GetHref().Mid(8)),true);
 		if (IsMaximized()) Maximize(false);
 		main_window->Raise();
+	} else if (event.GetLinkInfo().GetHref().StartsWith("open:")) {
+		main_window->OpenProgram(DIR_PLUS_FILE(config->pseint_dir,event.GetLinkInfo().GetHref().Mid(5)),false);
+		if (IsMaximized()) Maximize(false);
+		main_window->Raise();
+	} else if (event.GetLinkInfo().GetHref().StartsWith("explore:")) {
+		wxString command = 
+#ifdef __WIN32__
+			"explorer ";
+#else
+			"xdg-open ";
+#endif
+		wxExecute(command+"\""+DIR_PLUS_FILE(config->pseint_dir,event.GetLinkInfo().GetHref().Mid(8)),wxEXEC_ASYNC);
 	} else if (event.GetLinkInfo().GetHref().StartsWith("cmd:")){
 		wxString cmd = event.GetLinkInfo().GetHref().AfterFirst(':');
 		if (cmd=="creator") main_window->OpenProgram("creator.psz");

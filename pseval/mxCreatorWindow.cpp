@@ -152,11 +152,11 @@ void mxCreatorWindow::OnCreate (wxCommandEvent & event) {
 	if (chk_profile->GetValue()) pack.SetConfigStr("perfil requerido",profile->GetValue());
 	else                         pack.SetConfigStr("perfil requerido","");
 	pack.SetConfigInt  ( "version requerida" , chk_profile->GetValue()?PACKAGE_VERSION:PACKAGE_VERSION_NO_PROFILE );
-	
+
 	static wxString fdir;
 	static wxString fname;
 	wxString fext = chk_password->GetValue()?"psx":"psz";
-	wxFileDialog dlg (this, _Z("Guardar"),fdir,fname+"."+fext,wxString(_Z("Ejercicio|*."))+fext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg (this, _Z("Guardar"),fdir,fname,wxString(_Z("Ejercicio|*."))+fext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK) {
 		wxFileName file(dlg.GetPath());
 		fdir=file.GetPath(); fname=file.GetName();

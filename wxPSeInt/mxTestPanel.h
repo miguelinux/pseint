@@ -22,7 +22,7 @@ public:
 	bool Destroy();
 	bool Load(const wxString &path, const wxString &key);
 	mxSource *GetSrc() { return src; }
-	const wxString &GetHelp() { return pack.GetHelp(); }
+	const wxString GetHelp() const;
 	void OnShowHideHelp(bool show);
 private:
 	void Run(const wxString &source_fname);

@@ -586,7 +586,7 @@ void mxMainWindow::OnFileClose(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		if (source->GetModify()) {
-			int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL,this);
+			int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar?"), source->filename, wxYES_NO|wxCANCEL|wxICON_QUESTION,this);
 			if (res==wxCANCEL)
 				return;
 			else if (res==wxYES) {
@@ -671,7 +671,7 @@ mxSource *mxMainWindow::OpenProgram(wxString path, bool is_example) {
 #endif
 	
 	if (!file_exists) {
-		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"));
+		wxMessageBox(wxString(_Z("No se pudo abrir el archivo "))<<path,_Z("Error"),wxOK|wxICON_ERROR);
 		return NULL;
 	}
 		
@@ -810,7 +810,7 @@ void mxMainWindow::OnClose(wxCloseEvent &evt) {
 			mxSource *source = (mxSource*)(notebook->GetPage(i));
 			if (source->GetModify()) {
 				notebook->SetSelection(i);
-				int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL,this);
+				int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de salir?"), source->filename, wxYES_NO|wxCANCEL|wxICON_QUESTION,this);
 				if (res&wxYES) {
 					if (!source->sin_titulo)
 						source->SaveFile(source->filename);
@@ -1180,7 +1180,7 @@ void mxMainWindow::OnEditFind (wxCommandEvent &event) {
 void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindNext())
-			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"));
+			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"),wxOK|wxICON_HAND);
 	} else {
 		OnEditFind(event);
 	}
@@ -1189,7 +1189,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindPrev())
-			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"));
+			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"),wxOK|wxICON_HAND);
 	} else {
 		OnEditFind(event);
 	}
@@ -1398,7 +1398,7 @@ void mxMainWindow::OnConfigBigIcons(wxCommandEvent &evt) {
 		mi_big_icons->Check(true);
 		config->big_icons=true;
 	}
-	wxMessageBox(_Z("Deberá reiniciar PSeInt para que se aplique este cambio"),_Z("Íconos más grandes"));
+	wxMessageBox(_Z("Deberá reiniciar PSeInt para que se aplique este cambio"),_Z("Íconos más grandes"),wxOK|wxICON_INFORMATION);
 }
 
 void mxMainWindow::OnConfigUseDarkTheme(wxCommandEvent &evt) {
@@ -1449,7 +1449,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event)  {
 	mxSource *source = (mxSource*)notebook->GetPage(event.GetSelection());
 	if (source->GetModify()) {
-		int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL,this);
+		int res=wxMessageBox(_Z("Hay cambios sin guardar. ¿Desea guardarlos antes de cerrar el archivo?"), source->filename, wxYES_NO|wxCANCEL|wxICON_QUESTION,this);
 		if (res==wxCANCEL) {
 			event.Veto();
 			return;
@@ -1628,7 +1628,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		src->ClearErrorData();
 		if (!printer.Print(this, &printout, true)) {
 			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-				wxMessageBox(_Z("Ha ocurrido un error al intentar imprimir"),_Z("Error"));
+				wxMessageBox(_Z("Ha ocurrido un error al intentar imprimir"),_Z("Error"),wxOK|wxICON_ERROR);
 		}
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
 	}
