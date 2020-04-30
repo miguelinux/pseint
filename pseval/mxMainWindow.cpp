@@ -21,11 +21,13 @@
 
 BEGIN_EVENT_TABLE(mxMainWindow,wxFrame)
 	EVT_BUTTON(wxID_OK,mxMainWindow::OnButton)
+	EVT_TIMER(wxID_ANY,mxMainWindow::OnTimer)
 	EVT_END_PROCESS(wxID_ANY,mxMainWindow::OnProcessTerminate)
 END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow ( ) 
 	: wxFrame(NULL,wxID_ANY,_Z("PSeInt - Ejercicio"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE) 
+	, m_timer(this,wxID_ANY)
 {
 	
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
@@ -124,7 +126,18 @@ bool mxMainWindow::Start (const wxString &fname, const wxString &passkey, const 
 			wxMessageBox(_Z("Debe actualizar PSeInt para poder abrir este ejercicio"),_Z("Error"),wxID_OK|wxICON_ERROR,this);
 			return false;
 		}
-		return RunAllTests(cmdline);
+		// en windows, si llamo directamente al runall, después los wxYield no funcionan
+		// y entonces la gui no se actualiza correctamente, y el cancelar no anda
+		// creo que el problema empezó con wx3... y podría deberse al hecho de que
+		// si lo llamó acá, se está llamando desde el wxApp::OnInit, y entonces todavía
+		// no estamos en el loop de eventos principal (según la documentación se crea un
+		// loop ad-hoc o algo así dentro del yield); mientras que si dejo que este método
+		// termine, vuelva al OnInit, termine el OnInit, y el loop de eventos principal
+		// lance el RunAllTests mediante el timer, sí funciona
+//		return RunAllTests(cmdline);
+		this->cmdline = cmdline;
+		m_timer.Start(10,true);
+		return true;
 	}
 	return false;
 }
@@ -141,13 +154,14 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	process_pid = wxExecute(command,wxEXEC_ASYNC,the_process);
 	if (!process_pid) return false;
 	wxString &input = test.input, &output=test.output, &solution=test.solution;
-	wxTextOutputStream in(*the_process->GetOutputStream());
-	wxTextInputStream out(*the_process->GetInputStream());
+	static wxCSConv cs("ISO-8859-1");
+	wxTextOutputStream in(*the_process->GetOutputStream(),wxEOL_NATIVE,cs);
+	wxTextInputStream out(*the_process->GetInputStream()," \t",cs);
 	input.Replace("\r","",true);
 	wxYield(); if (!process_finished) in<<input<<"<{[END_OF_INPUT]}>\n"; // the yield and the if for mac, if the process doesn't wait for a input an finishes inmediatly at the time of sending the input it might be already terminate and so the input is closed an it causes a segfault
 	while(!process_finished) {
 		while (the_process->IsInputAvailable()) 
-			{ char aux; aux=out.GetChar(); if (aux) output<<aux; }
+			{ auto aux = out.GetChar(); if (aux) output<<aux; }
 		wxYield();
 	}
 	while (the_process->IsInputAvailable())
@@ -156,6 +170,8 @@ bool mxMainWindow::RunTest(wxString command, TestCase &test, bool for_create) {
 	
 	output.Replace("\r","");
 	solution.Replace("\r","");
+	
+	if (abort_test) output+=_Z("<<<Ejecución interrumpida por el usuario>>>");
 	
 	if (for_create) solution=output;
 	return output==solution;
@@ -173,5 +189,9 @@ void mxMainWindow::OnButton (wxCommandEvent & event) {
 	} else {
 		wxExit();
 	}
+}
+
+void mxMainWindow::OnTimer (wxTimerEvent & evt) {
+	if (!RunAllTests(cmdline,false)) Close();
 }
 
