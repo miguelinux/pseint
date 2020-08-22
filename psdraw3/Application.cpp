@@ -16,8 +16,14 @@
 
 LangSettings lang(LS_DO_NOT_INIT);
 
-bool mxApplication::OnInit() {
+// wxGLCanvas doesn't work on Wayland
+struct FixWaylandAndWXGLProblem { 
+	FixWaylandAndWXGLProblem() { 
+		setenv("GDK_BACKEND", "x11", 1); 
+	} 
+} fix_wayland_and_wxgl_problem;
 	
+bool mxApplication::OnInit() {
 	_handle_version_query("psDraw3",false);
 	
 	OSDep::AppInit();
