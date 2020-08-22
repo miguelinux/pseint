@@ -98,10 +98,10 @@
 
 	void OSDep::AppInit() {
 		// esto es para evitar el problema de no poder hacerle foco a la ventana en Mac sin tener que hacer un application bundle
-		ProcessSerialNumber PSN;
-		GetCurrentProcess(&PSN);
-		TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
-		SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
+//		ProcessSerialNumber PSN;
+//		GetCurrentProcess(&PSN);
+//		TransformProcessType(&PSN,kProcessTransformToForegroundApplication); // este es para que pueda recibir el foco
+//		SetFrontProcess( &PSN ); // este es para que no aparezca en segundo plano
 	}
 
 	int OSDep::GetDPI() { 

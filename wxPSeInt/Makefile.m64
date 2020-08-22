@@ -1,8 +1,8 @@
 OBJS_DIR=../temp/wx_m64_rls
 GPP=x86_64-apple-darwin18-clang++
-CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -DFOR_WXPSEINT -fno-caret-diagnostics -DWX3 -Wno-invalid-source-encoding
+CXXFLAGS= -O2 `wx-config --cppflags` -DFOR_WXPSEINT -fno-caret-diagnostics -DWX3 -Wno-invalid-source-encoding
 # -fexec-charset=MAC
-LIBS=`/opt/mac/local/bin/wx-config --libs std,stc,aui`
+LIBS=`wx-config --libs std,stc,aui`
 
 all: ${OBJS_DIR} ../bin/wxPSeInt ../bin/mac-terminal-wrapper.bin
 

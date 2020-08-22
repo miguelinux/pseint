@@ -1,7 +1,7 @@
 OBJS_DIR=../temp/drwE_m64_rls
 GPP=x86_64-apple-darwin18-clang++
-CXXFLAGS= -O2 `/opt/mac/local/bin/wx-config --cppflags` -D_FOR_EXPORT -I. -DWX3  -Wno-invalid-source-encoding
-LIBS=`/opt/mac/local/bin/wx-config --libs std,stc`
+CXXFLAGS= -O2 `wx-config --cppflags` -D_FOR_EXPORT -I. -DWX3  -Wno-invalid-source-encoding
+LIBS=`wx-config --libs std,stc`
 
 all: ${OBJS_DIR} ../bin/psdrawE
 
