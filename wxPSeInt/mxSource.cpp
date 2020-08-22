@@ -873,11 +873,11 @@ void mxSource::MessageReadOnly() {
 	static wxDateTime last_msg=wxDateTime((time_t)0);
 	if (wxDateTime::Now().Subtract(last_msg).GetSeconds()>0) {
 		if (flow_socket) {
-			wxMessageBox("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo.");
+			wxMessageBox(_Z("Cierre la ventana del editor de diagramas de flujo para este algortimo, antes de continuar editando el pseudocódigo."));
 			flow_socket->Write("raise\n",6); 
 		}
-		else if (!is_example) wxMessageBox("No se puede modificar el pseudocódigo mientras está siendo ejecutado paso a paso.");
-		else wxMessageBox("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo.");
+		else if (!is_example) wxMessageBox(_Z("No se puede modificar el pseudocódigo mientras está siendo ejecutado paso a paso."));
+		else wxMessageBox(_Z("No se permite modificar los ejemplos, pero puede copiarlo y pegarlo en un nuevo archivo."));
 	}
 	last_msg=wxDateTime::Now();
 }
@@ -897,7 +897,7 @@ void mxSource::SetExample() {
 			int p2=aux.Index('}');
 			if (p2==wxNOT_FOUND) {
 				_LOG("mxSource::SetExample ERROR 1 parsing example: "<<page_text);
-				wxMessageBox("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocódigo no sea correcto.");
+				wxMessageBox(_Z("Ha ocurrido un error al procesar el ejemplo. Puede que el pseudocódigo no sea correcto."));
 				break;
 			}
 			if (p1==wxNOT_FOUND||p1>p2) {
@@ -1134,8 +1134,8 @@ void mxSource::SetCalltips() {
 		calltips_instructions.push_back(calltip_text(_Z("IMPRIMIR"),_Z("{una o mas expresiones, separadas por comas}")));
 	}
 	calltips_instructions.push_back(calltip_text(_Z("MIENTRAS"),_Z("{condición, expresion lógica}")));
-	calltips_instructions.push_back(calltip_text(_Z("QUE"),("{condición, expresion lógica}")));
-	calltips_instructions.push_back(calltip_text(_Z("PARA"),("{asignación inicial: variable<-valor}")));
+	calltips_instructions.push_back(calltip_text(_Z("QUE"),_Z("{condición, expresion lógica}")));
+	calltips_instructions.push_back(calltip_text(_Z("PARA"),_Z("{asignación inicial: variable<-valor}")));
 	calltips_instructions.push_back(calltip_text(_Z("DESDE"),_Z("{valor inicial}")));
 	calltips_instructions.push_back(calltip_text(_Z("HASTA"),_Z("{valor final}"),true));
 	calltips_instructions.push_back(calltip_text(_Z("PASO"),_Z("{valor del paso}")));
@@ -1350,7 +1350,7 @@ void mxSource::ReloadFromTempPSD (bool check_syntax) {
 				}
 			}
 		}
-		StyleLine(i);
+		Analyze(i);
 	}
 	
 	// reestablecer la posición del cursor en el nuevo código
@@ -2240,6 +2240,7 @@ bool mxSource::LoadFile (const wxString & fname) {
 //	} else 
 	if (wxStyledTextCtrl::LoadFile(fname)) {
 		ConvertEOLs(mxSTC_MY_EOL_MODE);
+		SetModified(false);
 		return true;
 	} else return false;
 }
@@ -2387,16 +2388,19 @@ void mxSource::StyleLine(int line) {
 			if (p<pN) ++p;
 			MySetStyle(p0,p,wxSTC_C_STRING);
 		} else {
+			decltype(c) prev_c = ' ';
 			if (c=='/' and p+1<pN and text[p+1]=='/') {
 				MySetStyle(p0,pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
 				break;
 			} else if (nesting==0 and word_count<=1 and (c=='=' or c==UOP_ASIGNACION or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
 				++p; if (c!='=' and c!= UOP_ASIGNACION) ++p;
 				MySetStyle(p0,p,wxSTC_C_ASSIGN);
-			} else {				if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
+			} else {
+				if (c=='(' or c=='[') ++nesting; else if (c==']' or c==')') --nesting;
 				else if (c==':' || c==';') word_count = 0;
 				while (p<pN and not (EsLetra(c,false) or EsNumero(c,true) or EsEspacio(c) or EsComilla(c) )) {
-					if (nesting==0 and word_count<=1 and (c==']' or c==')')) { ++p; break; } // asignación en arreglos					c = text[++p];
+					if (c=='/' and prev_c=='/') { --p; break; } // comentario
+					if (nesting==0 and word_count<=1 and (c==']' or c==')')) { ++p; break; } // asignación en arreglos					prev_c = c; c = text[++p];
 					if (c=='(' or c=='[') ++nesting; 
 					else if (c==']' or c==')') --nesting;
 				}
@@ -2542,6 +2546,8 @@ void mxSource::Analyze (int line_from, int line_to) {
 }
 
 void mxSource::Analyze ( ) {
+	int mod = GetModify();
 	Analyze(0,GetLineCount()-1);
+	if (!mod) SetModified(false);
 }
 

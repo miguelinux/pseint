@@ -9,7 +9,6 @@
 #include "Textures.h"
 #include "Canvas.h"
 #include "../wxPSeInt/string_conversions.h"
-static int gl_attrib[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
 using namespace std;
 
 Canvas *canvas = NULL;
@@ -17,6 +16,7 @@ Canvas *canvas = NULL;
 BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_SIZE(Canvas::OnSize)
 	EVT_PAINT(Canvas::OnPaint)
+	EVT_ERASE_BACKGROUND(Canvas::OnEraseBackground)
 	EVT_LEFT_DOWN(Canvas::OnMouseLeftDown)
 	EVT_LEFT_UP(Canvas::OnMouseLeftUp)
 	EVT_RIGHT_DOWN(Canvas::OnMouseRightDown)
@@ -25,8 +25,6 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_MIDDLE_UP(Canvas::OnMouseMiddleUp)
 	EVT_LEFT_DCLICK(Canvas::OnMouseDClick)
 	EVT_MOTION(Canvas::OnMouseMove)
-	EVT_ERASE_BACKGROUND(Canvas::OnEraseBackground)
-	EVT_TIMER(wxID_ANY, Canvas::OnRedrawTime)
 	EVT_MOUSEWHEEL(Canvas::OnMouseWheel)
 	EVT_IDLE(Canvas::OnIdle)
 	EVT_CHAR(Canvas::OnChar)
@@ -45,7 +43,6 @@ Canvas::Canvas(wxWindow *parent)
 {
 	
 	canvas=this; m_context = new wxGLContext(this);
-	redraw_timer = new wxTimer(GetEventHandler(),wxID_ANY);
 	mouse_buttons=modifiers=0;
 }
 
@@ -99,10 +96,6 @@ void Canvas::OnSize(wxSizeEvent& event) {
 	int win_w,win_h;
 	GetClientSize(&win_w, &win_h);
 	reshape_cb(win_w,win_h);
-	Refresh();
-}
-
-void Canvas::OnRedrawTime(wxTimerEvent &evt) {
 	Refresh();
 }
 
@@ -161,6 +154,7 @@ void Canvas::OnIdle (wxIdleEvent & event) {
 
 void Canvas::OnKeyDown (wxKeyEvent & event) {
 	int key=event.GetKeyCode();
+	cout << "OnKeyDown::KeyCode " << key << endl;
 	switch (key) {
 	case WXK_SHIFT: modifiers|=MODIFIER_SHIFT; break;
 	case WXK_ALT: modifiers|=MODIFIER_ALT; break;
@@ -168,11 +162,7 @@ void Canvas::OnKeyDown (wxKeyEvent & event) {
 	default: 
 		if (key>=WXK_F1&&key<=WXK_F12) keyboard_esp_cb(key);
 		else if (key==WXK_LEFT||key==WXK_RIGHT||key==WXK_END||key==WXK_HOME) keyboard_esp_cb(key);
-#ifdef __APPLE__
-		else OnChar(event); // en mac con wx3 no lanza el evento OnChar para las teclas comunes, por eso lo redirecciono desde acá
-#else
 		else event.Skip();
-#endif
 	}
 }
 
@@ -186,6 +176,7 @@ void Canvas::OnKeyUp (wxKeyEvent & event) {
 }
 
 void Canvas::OnChar (wxKeyEvent & event) {
+	cout << "OnChar::KeyCode " << int(event.GetKeyCode()) << endl;
 	keyboard_cb(event.GetKeyCode());
 }
 

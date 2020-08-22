@@ -360,6 +360,7 @@ void ToggleEditable() {
 void keyboard_esp_cb(int key/*, int x, int y*/) {
 	if (key==WXK_F2) ProcessMenu(MO_SAVE);
 	else if (key==WXK_F3) ProcessMenu(MO_FUNCTIONS);
+	else if (key==WXK_F4) ProcessMenu(MO_CLOSE);
 	else if (key==WXK_F5) ProcessMenu(MO_DEBUG);
 	else if (key==WXK_F9) ProcessMenu(MO_RUN);
 	else if (key==WXK_F1) ProcessMenu(MO_HELP);

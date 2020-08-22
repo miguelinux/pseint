@@ -17,7 +17,6 @@ class Canvas : public wxGLCanvas {
 private:
 	unsigned int mouse_buttons;
 	unsigned int modifiers;
-	wxTimer *redraw_timer;
 	wxGLContext *m_context;
 public:
 	Canvas(wxWindow *parent);
@@ -25,7 +24,6 @@ public:
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
-	void OnRedrawTime(wxTimerEvent &evt);
 	void OnMouseRightDown(wxMouseEvent& event);
 	void OnMouseRightUp(wxMouseEvent& event);
 	void OnMouseLeftDown(wxMouseEvent& event);
