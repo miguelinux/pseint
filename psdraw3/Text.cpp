@@ -65,51 +65,22 @@ bool init_shaders() {
 	inited = true;
 	if (!gl_lite_init()) return false;
 	
-	const char *sf4 = // 4 muestrar regulares
+	const char *sf4 = // 4 muestras para anti-aliasing
 		"#version 110\n"
-		"uniform sampler2D texture1;\n"
+		"uniform sampler2D font_texture;\n"
 		"void main() {\n"
 		"    gl_FragColor.rgb = gl_Color.rgb;\n"
 		"    vec2 st = gl_TexCoord[0].st;"
-		"	 vec2 d = fwidth(gl_TexCoord[0].st)/2.0; st -= d/2.0;"
-		"    float tol = d.x>0.003 ? 0.3 : 0.5; " // si se aleja, bajar la tol para que no queden tan finas
-		"    float      a = texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
-		"    st.x+=d.x; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
-		"    st.y+=d.y; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
-		"    st.x-=d.x; a+= texture2D(texture1, st).a >tol ? 1.0 : 0.0;\n"
+		"    vec2 dx = dFdx(gl_TexCoord[0].st);\n" 
+		"    vec2 dy = dFdy(gl_TexCoord[0].st);\n"
+		"    float tol = 0.6;\n"
+	    "    st+=dx/8.0; st+=3.0*dy/8.0;\n"
+	    "    float                   a = texture2D(font_texture, st).a >tol ? 1.0 : 0.0;\n"
+	    "    st-=dx/2.0; st-=dy/4.0; a+= texture2D(font_texture, st).a >tol ? 1.0 : 0.0;\n"
+	    "    st+=dx/4.0; st-=dy/2.0; a+= texture2D(font_texture, st).a >tol ? 1.0 : 0.0;\n"
+	    "    st+=dx/2.0; st+=dy/4.0; a+= texture2D(font_texture, st).a >tol ? 1.0 : 0.0;\n"
 		"    gl_FragColor.a = a/4.0;\n"
 		"}\n";
-//	const char *sfR = // 4 muestras rotadas... no queda tan bien como debería
-//		"#version 110\n"
-//		"uniform sampler2D texture1;\n"
-//		"void main() {\n"
-//		"    gl_FragColor.rgb = gl_Color.rgb;\n"
-//		"    vec2 st = gl_TexCoord[0].st;"
-//		"	 vec2 d = fwidth(gl_TexCoord[0].st);"
-//		"    float      a = texture2D(texture1, st+vec2(-d.x*0.17,+d.y*0.36)).a >0.5 ? 1.0 : 0.0;\n"
-//		"               a+= texture2D(texture1, st+vec2(+d.x*0.17,-d.y*0.36)).a >0.5 ? 1.0 : 0.0;\n"
-//		"               a+= texture2D(texture1, st+vec2(-d.x*0.36,+d.y*0.17)).a >0.5 ? 1.0 : 0.0;\n"
-//		"               a+= texture2D(texture1, st+vec2(+d.x*0.36,-d.y*0.17)).a >0.5 ? 1.0 : 0.0;\n"
-//		"    gl_FragColor.a = a/4.0;\n"
-//		"}\n";
-//	const char *sf9 = // 9 muestras, queda mejor pero es mas caro
-//		"#version 110\n"
-//		"uniform sampler2D texture1;\n"
-//		"void main() {\n"
-//		"    gl_FragColor.rgb = gl_Color.rgb;\n"
-//		"    vec2 st = gl_TexCoord[0].st;"
-//		"	 vec2 d = fwidth(gl_TexCoord[0].st)/3.0;"
-//		"    float      a = texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.y+=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.x-=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.x-=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.y-=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.y-=d.y; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    st.x+=d.x; a += texture2D(texture1, st).a >0.5 ? 1.0 : 0.0;\n"
-//		"    gl_FragColor.a = a/9.0;\n"
-//		"}\n";
 	
 	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(f,1,&sf4,NULL);
@@ -120,13 +91,11 @@ bool init_shaders() {
 	progID = glCreateProgram();
 	glAttachShader(progID,f);
 	glLinkProgram(progID); 
-//	shader_ok = LinkerInfo(progID); 
 	
 	return shader_ok = true;
 #endif
 }
 
-//# endif
 #endif
 
 
