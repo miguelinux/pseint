@@ -1,4 +1,4 @@
-desc=Perfil para el curso "Algoritmia y Programaci√≥n" de la carrera "Tecnolog√≠a Electr√≥nica, Mecatr√≥nica e Instrumentaci√≥n", en la Facultad de Ingenier√≠as de la Instituci√≥n Universitaria Antonio Jos√© Camacho (enviado por el docente Leandro Fl√≥rez Aristiz√°bal).
+desc=Perfil para el curso "Algoritmia y ProgramaciÛn" de la carrera "TecnologÌa ElectrÛnica, MecatrÛnica e InstrumentaciÛn", en la Facultad de IngenierÌas de la InstituciÛn Universitaria Antonio JosÈ Camacho (enviado por el docente Leandro FlÛrez Aristiz·bal).
 version=20160321
 force_init_vars=1
 force_define_vars=1
@@ -19,4 +19,5 @@ use_alternative_io_shapes=1
 allow_accents=0
 prefer_algoritmo=1
 prefer_funcion=1
+allow_repeat_while=1
 prefer_repeat_while=1
