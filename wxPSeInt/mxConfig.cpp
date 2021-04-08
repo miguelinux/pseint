@@ -105,9 +105,14 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 		config->last_dir=wxFileName(dlg.GetPath()).GetPath();
 		LangSettings l(LS_INIT);
 		while(true) {
-			l.descripcion = wxGetTextFromUser(_Z("Ingrese una descripción del perfil (por\n"
-											  "favor incluya materia, carrera, institución\n"
-											  "y nombre del docente)."),_Z("Guardar Perfil"),"",this);
+//			l.descripcion = _W2S( wxGetTextFromUser(_Z("Ingrese una descripción del perfil (\n"
+//									   		           "incluya materia, carrera, institución\n"
+//											           "y nombre del docente)."),_Z("Guardar Perfil"),"",this) );
+			auto desc = wxGetTextFromUser(_Z("Ingrese una descripción del perfil (\n"
+									   		           "incluya materia, carrera, institución\n"
+											           "y nombre del docente)."),_Z("Guardar Perfil"),"",this);
+			l.descripcion = _W2S( desc );
+			l.descripcion = _W2S( desc );;
 			if (l.descripcion.empty()) return;
 			if (l.descripcion.size()<10 || !TodoMayusculas(l.descripcion)) break;
 			wxMessageBox(_Z("¡NO ME GRITE!"),_Z("Por favor"),wxOK|wxICON_ERROR);

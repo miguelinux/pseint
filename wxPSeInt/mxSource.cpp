@@ -720,8 +720,9 @@ void mxSource::OnUserListSelection(wxStyledTextEvent &evt) {
 		if (!cfg_lang[LS_FORCE_SEMICOLON] && text.Last()==';') text.RemoveLast();
 		if (comp_from>5&&text.Last()==' '&&GetTextRange(comp_from-4,comp_from).Upper()=="FIN ")
 			text.Last()='\n';
-		ReplaceTarget(text);
 		last_char = text.Last();
+		if (last_char==' ' and GetCharAt(GetTargetEnd())==' ') what.RemoveLast();
+		ReplaceTarget(text);
 		SetSelection(comp_from+text.Len(),comp_from+text.Len());
 		int lfp=LineFromPosition(comp_from);
 		if (text.Mid(0,3)=="Fin" || text=="Hasta Que " || text=="Mientras Que " || text.Mid(0,4)=="SiNo"||text.Last()=='\n')
@@ -1260,7 +1261,7 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("Repetir","Repetir\n",""));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n",""));
 	comp_list.push_back(comp_list_item("Hasta Que","Hasta Que ",""));
-	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Mientras Que","Mientras Que ",""));
+	if (cfg_lang[LS_ALLOW_REPEAT_WHILE]) comp_list.push_back(comp_list_item("Mientras Que","Mientras Que ",""));
 	
 	comp_list.push_back(comp_list_item("Segun","Segun ",""));
 	if (cfg_lang[LS_LAZY_SYNTAX]) {
@@ -1686,7 +1687,7 @@ void mxSource::TryToAutoCloseSomething (int l) {
 		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_REPETIR) {
 		if (sl2.StartsWith("HASTA QUE") || sl2.StartsWith("MIENTRAS QUE")) return;
-		InsertText(PositionFromLine(l+1),"Hasta Que \n");
+		InsertText(PositionFromLine(l+1),cfg_lang[LS_PREFER_REPEAT_WHILE]?"Mientras Que \n":"Hasta Que \n");
 		IndentLine(l+1,true); StyleLine(l+1);
 	} else if (btype==BT_MIENTRAS) {
 		if (sl2.StartsWith("FINMIENTRAS") || sl2.StartsWith("FIN MIENTRAS")) return;

@@ -574,7 +574,7 @@ int SynCheck(int linea_from, int linea_to) {
 				instruction_type=IT_DIMENSION;
 			} else if (first_word=="HASTA" && FirstWord(cadena)=="QUE") {
 				instruction_type=IT_HASTAQUE; cadena.erase(0,3);
-			} else if (lang[LS_LAZY_SYNTAX]&& (first_word=="MIENTRAS" && FirstWord(cadena)=="QUE")) {
+			} else if (lang[LS_ALLOW_REPEAT_WHILE]&& (first_word=="MIENTRAS" && FirstWord(cadena)=="QUE")) {
 				instruction_type=IT_MIENTRASQUE; cadena.erase(0,3);
 			} else if (first_word=="FINSI") {
 				instruction_type=IT_FINSI;

@@ -68,7 +68,7 @@ void LangSettings::init() {
 		);
 	data[LS_LAZY_SYNTAX				 ].Set("lazy_syntax",				true,
 		"Utilizar sintaxis flexible",
-			"Esta opcion habilita variaciones opcionales en la sintaxis de ciertas instrucciones y estructuras de control. Por ejemplo"
+			"Esta opcion habilita variaciones opcionales en la sintaxis de ciertas instrucciones y estructuras de control. Por ejemplo, "
 			"omitir la palabra HACER en un bucle MIENTRAS o PARA, utilizar la palabra DESDE para indicar el valor de inicio de un ciclo "
 			"PARA, separar la expresiones/variables en una lectura/escritura con espacios en lugar de comas, escribir FinProceso como Fin "
 			"Proceso, FinSi como Fin Si, etc."
@@ -118,8 +118,14 @@ void LangSettings::init() {
 			"se priorizará el uso de las palabras claves \"Función\" y \"FinFunción\" frente a "
 			"\"Proceso\" y \"FinProceso\" (o \"Algoritmo\" y \"FinAlgoritmo\") respectivamente."
 		);
+	data[LS_ALLOW_REPEAT_WHILE].Set("allow_repeat_while",					true,
+		"Permitir la variación \"Repetir ... Mientras Que...\"",
+			"Habilita el uso de \"Mientras que <condición>\" en lugar de \"Hasta que <condición>\" "
+			"para cerrar una estructura RepetirEsta construcción alternativa itera por verdadero "
+			"en lugar de iterar por falso."
+		);
 	data[LS_PREFER_REPEAT_WHILE].Set("prefer_repeat_while",					false,
-		"Preferir \"Repetir ... Mientras Que...\" en lugar de \"Repetir ... Hasta Que...\"",
+		"Preferir \"Repetir ... Mientras Que...\"",
 			"Con esta opción activada, al seleccionar la estructura de control \"Repetir\" desde "
 			"el panel de comandos (tanto del editor de pseudocódigo como del editor de diagramas "
 			"de flujo) se insertará la versión \"Repetir ... Mientras que\" (que itera por "
@@ -213,16 +219,19 @@ std::string LangSettings::GetAsSingleString() const {
 
 
 void LangSettings::Fix ( ) {
-	if (version<20160321) { 
-		settings[LS_ALLOW_ACCENTS]=settings[LS_LAZY_SYNTAX]; // antes LS_ALLOW_ACCENTS era parte de LS_LAZY_SYNTAX
-		settings[LS_PREFER_ALGORITMO]=settings[LS_PREFER_FUNCION]=false; // antes LS_PREFER_ALGORITMO y LS_PREFER_FUNCION no existían
+	if (version<20210407) { 
+		settings[LS_ALLOW_REPEAT_WHILE]=settings[LS_LAZY_SYNTAX]; // LS_ALLOW_REPEAT_WHILE era parte de LS_LAZY_SYNTAX
 	}
-	if (version<20150304) { // antes LS_INTEGER_ONLY_SWITCH y LS_DEDUCE_NEGATIVE_FOR_STEP eran parte de LS_LAZY_SYNTAX
+	if (version<20160321) { 
+		settings[LS_ALLOW_ACCENTS]=settings[LS_LAZY_SYNTAX]; // LS_ALLOW_ACCENTS era parte de LS_LAZY_SYNTAX
+		settings[LS_PREFER_ALGORITMO]=settings[LS_PREFER_FUNCION] = false; // LS_PREFER_ALGORITMO y LS_PREFER_FUNCION no existían
+	}
+	if (version<20150304) { // LS_INTEGER_ONLY_SWITCH y LS_DEDUCE_NEGATIVE_FOR_STEP eran parte de LS_LAZY_SYNTAX
 		settings[LS_INTEGER_ONLY_SWITCH]=!settings[LS_LAZY_SYNTAX];
 		settings[LS_DEDUCE_NEGATIVE_FOR_STEP]=settings[LS_LAZY_SYNTAX];
 	}
-	if (settings[LS_COLOQUIAL_CONDITIONS]) // no se puede usar LS_COLOQUIAL_CONDITIONS sin LS_WORD_OPERATORS
-		settings[LS_WORD_OPERATORS]=true;
+	if (settings[LS_COLOQUIAL_CONDITIONS]) settings[LS_WORD_OPERATORS]=true; // no se puede usar LS_COLOQUIAL_CONDITIONS sin LS_WORD_OPERATORS
+	if (!settings[LS_ALLOW_REPEAT_WHILE]) settings[LS_PREFER_REPEAT_WHILE] = false; // no tiene sentido LS_PREFER_REPEAT_WHILE sin LS_ALLOW_REPEAT_WHILE
 	version=LS_VERSION; // colocar version nueva, para que el fix ya no actualice el perfil en la próxima carga
 }
 

@@ -7,7 +7,7 @@
 #	include "../wxPSeInt/string_conversions.h"
 #endif
 
-#define LS_VERSION 20160321
+#define LS_VERSION 20210407
 #include <cstdlib>
 
 enum LS_INIT_ENUM {
@@ -42,6 +42,7 @@ enum LS_ENUM {
 	LS_ALLOW_ACCENTS,
 	LS_PREFER_ALGORITMO,
 	LS_PREFER_FUNCION,
+	LS_ALLOW_REPEAT_WHILE,
 	LS_PREFER_REPEAT_WHILE,
 	LS_COUNT 
 };
