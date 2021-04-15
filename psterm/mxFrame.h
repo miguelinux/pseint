@@ -20,8 +20,14 @@ struct win_props {
 	long font_size;
 	win_props() {
 		font_size = 11;
-		if (wxFont::AddPrivateFont("Inconsolata-Regular.ttf")) font_name = "Inconsolata";
-		else font_name = wxFont(11,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
+#ifdef __APPLE__
+		if (true)
+#else
+		if (wxFont::AddPrivateFont("Inconsolata-Regular.ttf")) 
+#endif
+			font_name = "Inconsolata";
+		else 
+			font_name = wxFont(11,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL).GetFaceName();
 		dark_theme=false;
 		always_on_top=false;
 		set_left=set_right=set_top=set_bottom=false;

@@ -15,7 +15,7 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=version.h
+current_source=SynCheck.cpp
 path_char=/
 [source]
 path=main.cpp
@@ -27,7 +27,7 @@ cursor=205:6
 marker=279
 [source]
 path=SynCheck.cpp
-cursor=576:40
+cursor=490:3
 breakpoint=65
 breakpoint=390
 open=true

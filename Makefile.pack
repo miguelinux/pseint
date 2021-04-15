@@ -16,8 +16,9 @@ w32:
 	mkdir -p dist/pseint
 	rm -rf bin/bin 
 	rm -rf bin/bin2 
-	rm -rf bin/bin3 
+	rm -rf bin/bin3
 	cp -r bin/* dist/pseint/
+	rm -f dist/pseint/lib
 	rm -f dist/pseint/linux.txt
 	rm -f dist/pseint/log.exe
 	rm -f dist/pseint/updatem.exe
@@ -61,7 +62,9 @@ m64: dist/mnt
 	mkdir -p dist/pseint.app/Contents
 	mkdir -p dist/pseint.app/Contents/MacOS
 	mkdir -p dist/pseint.app/Contents/Resources
+	mkdir -p dist/pseint.app/Contents/Resources/Fonts
 	cp -r bin/* dist/pseint.app/Contents/Resources
+	mv dist/pseint.app/Contents/Resources/*.ttf dist/pseint.app/Contents/Resources/Fonts/
 	mv dist/pseint.app/Contents/Resources/wxPSeInt dist/pseint.app/Contents/MacOS/pseint
 	cp dist/Info.plist dist/pseint.app/Contents/
 	cp bin/imgs/icon.icns dist/pseint.app/Contents/Resources/pseint.icns

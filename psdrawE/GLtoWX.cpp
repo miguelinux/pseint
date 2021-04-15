@@ -146,8 +146,8 @@ static wxFont &get_font() {
 		font.SetPixelSize(wxSize(0,250*m.sx)); initialized=true; 
 #ifndef __APPLE__
 		if (wxFont::AddPrivateFont("Inconsolata-Regular.ttf"))
-			font.SetFaceName("Inconsolata");
 #endif
+			font.SetFaceName("Inconsolata");
 	}
 	return font;
 }

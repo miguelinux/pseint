@@ -33,13 +33,16 @@ ConfigManager::ConfigManager(wxString apath) : lang(LS_INIT) {
 	LoadDefaults();
 	Read();
 	
-#ifndef __APPLE__
+#ifdef __APPLE__
+	if (version<20210407)
+#else
 	bool inconsolata_ok = wxFont::AddPrivateFont("Inconsolata-Regular.ttf");
-	if (version<20200424 && inconsolata_ok) {
+	if (version<20200424 && inconsolata_ok)
+#endif
+	{
 		term_font_name = wx_font_name = "Inconsolata";
 		unicode_opers = true;
 	}
-#endif
 	
 	lang.Log();
 	

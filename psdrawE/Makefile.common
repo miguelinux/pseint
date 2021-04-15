@@ -1,4 +1,4 @@
-OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/GLtoWX.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/osdep.o 
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/GLtoWX.o ${OBJS_DIR}/DClasico.o ${OBJS_DIR}/DNassiSchne.o ${OBJS_DIR}/Entity.o ${OBJS_DIR}/Global.o ${OBJS_DIR}/Load.o ${OBJS_DIR}/LangSettings.o ${OBJS_DIR}/mxConfig.o ${OBJS_DIR}/EntityLinking.o ${OBJS_DIR}/osdep.o ${OBJS_DIR}/string_conversions.o
 
 ${OBJS_DIR}/Application.o: Application.cpp ../psdraw3/Load.h ../psdraw3/Global.h ../psdraw3/Entity.h ../psdraw3/EntityLinking.h ../psdraw3/Vector.h ../pseint/LangSettings.h ../wxPSeInt/string_conversions.h ../wxPSeInt/osdep.h GLtoWX.h Version.h ../pseint/version_common.h mxConfig.h
 	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
@@ -33,3 +33,6 @@ ${OBJS_DIR}/EntityLinking.o: ../psdraw3/EntityLinking.cpp ../psdraw3/EntityLinki
 ${OBJS_DIR}/osdep.o: ../wxPSeInt/osdep.cpp ../wxPSeInt/osdep.h
 	${GPP} ${CXXFLAGS} -c ../wxPSeInt/osdep.cpp -o $@
 
+
+${OBJS_DIR}/string_conversions.o: ../wxPSeInt/string_conversions.cpp ../wxPSeInt/string_conversions.h
+	${GPP} ${CXXFLAGS} -c ../wxPSeInt/string_conversions.cpp -o $@
