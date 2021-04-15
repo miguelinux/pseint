@@ -371,30 +371,31 @@ void keyboard_esp_cb(int key/*, int x, int y*/) {
 }
 
 void FocusEntity(LineInfo *li) {
-	if (li) {
-		if (li->proceso) {
-			if (start!=li->proceso) SetProc(li->proceso);
-			debug_current=li->entidad;
-			if (li->entidad) {
-				double fx=(win_w/2)/zoom;
-				double fy=(win_h/2)/zoom;
-				// que se vea el centro en x de la entidad
-				int dx=-li->entidad->x+fx;
-				if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
-				if (li->entidad->bwl+li->entidad->bwr+fx/20<fx*2) { // si se puede ver todo el ancho... 
-					// ..asegurar que se ven los bordes laterales
-					int dx0=-(li->entidad->x-li->entidad->bwl-fx/40);
-					int dx1=-(li->entidad->x+li->entidad->bwr+fx/40-2*fx);
-					if (dx0>d_dx) d_dx=dx0;
-					else if (dx1<d_dx) d_dx=dx1;
-				}
-				// que se vea el centro en y de la entidad
-				int dy=-li->entidad->y+li->entidad->bh/2+fy;
-				if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
+	if (!li) debug_current=NULL;
+	if (li->proceso) {
+		if (start!=li->proceso) SetProc(li->proceso);
+		debug_current=li->entidad;
+		if (li->entidad) {
+			double fx=(win_w/2)/zoom;
+			double fy=(win_h/2)/zoom;
+			// que se vea el centro en x de la entidad
+			int dx=-li->entidad->x+fx;
+			if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
+			if (li->entidad->bwl+li->entidad->bwr+fx/20<fx*2) { // si se puede ver todo el ancho... 
+				// ..asegurar que se ven los bordes laterales
+				int dx0=-(li->entidad->x-li->entidad->bwl-fx/40);
+				int dx1=-(li->entidad->x+li->entidad->bwr+fx/40-2*fx);
+				if (dx0>d_dx) d_dx=dx0;
+				else if (dx1<d_dx) d_dx=dx1;
 			}
+			// que se vea el centro en y de la entidad
+			int dy=-li->entidad->y+li->entidad->bh/2+fy;
+			if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
 		}
-		else if (!li->proceso) debug_current=NULL;
-	} else debug_current=NULL;
+	}
+	// este else esconde la flecha cuando pasamos por una instruccion
+	// que no tiene entidad en el diagrama (como un finsi)
+//	else if (!li->proceso) debug_current=NULL; 
 }
 
 void SetModified( ) {

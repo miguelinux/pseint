@@ -583,8 +583,11 @@ bool Entity::IsInside(int x0, int y0, int x1, int y1) {
 	return x0<d_fx+t_dx-d_w/2 && x1>d_fx+t_dx+d_w/2 && y0>d_fy && y1<d_fy-d_h;
 }
 
+
 #define _tabs "\t"
 
+// ADVERTENCIA, si estas macros se usan en un if o en un else, deben estar entre
+// llaves, porque contienen más de una instrucción
 #define _endl_this inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(process,this);} line_num++;
 #define _endl_prev inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,this);} line_num++;
 #define _endl_none inline_comments<<endl; inline_comments=""; {stringstream ss; ss<<line_num<<":1"; code2draw[ss.str()]=LineInfo(NULL,NULL);} line_num++;
@@ -592,7 +595,7 @@ bool Entity::IsInside(int x0, int y0, int x1, int y1) {
 #define _fix(label,def) (label.size()?label:def)
 
 void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
-	static string inline_comments; 
+	static string inline_comments;
 	bool add_tab=false;
 	string old_label = label;
 	if (type==ET_PROCESO) {
@@ -601,9 +604,12 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 			if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
 			if (GetNext()->GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
-			else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
-			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
+			else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
+//			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
 			return;
+		} else {
+			tab.erase(tab.size()-1);
+			out<<tab<<lpre<<_endl_this;
 		}
 	} else if (type==ET_ESCRIBIR) {
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
@@ -614,12 +620,12 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_MIENTRAS) {
 		out<<tab<<"Mientras "<<_fix(label,"{condicion}")<<" Hacer"<<_endl_this;
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
-		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
+		else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
 		out<<tab<<"FinMientras"<<_endl_prev;
 	} else if (type==ET_REPETIR) {
 		out<<tab<<"Repetir"<<_endl_prev;
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
-		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
+		else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
 		out<<tab<<(variante?"Mientras Que ":"Hasta Que ")<<_fix(label,"{condicion}")<<_endl_this;
 	} else if (type==ET_PARA) {
 		if (variante) {
@@ -630,7 +636,7 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 				<<(has_paso?" Con Paso ":"")<<(has_paso?_fix(GetChild(2)->label,"{paso}"):"") <<" Hacer"<<_endl_this;
 		}
 		if (GetChild(0)) GetChild(0)->Print(out,tab+_tabs,process,line_num);
-		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
+		else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
 		out<<tab<<"FinPara"<<_endl_prev;
 	} else if (type==ET_SELECTION) {
 		GetChild(0)->Print(out,_tabs,process,line_num);
@@ -649,9 +655,11 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	} else if (type==ET_SI) {
 		out<<tab<<"Si "<<_fix(label,"{condicion}")<<" Entonces"<<_endl_this;
 		if (GetChild(1)) { GetChild(1)->Print(out,tab+_tabs,process,line_num); }
-		else out<<(add_tab?tab+_tabs:tab)<<_endl_none;
-		if (GetChild(0)) { out<<tab<<"SiNo"<<_endl_prev; }
-		if (GetChild(0)) { GetChild(0)->Print(out,tab+_tabs,process,line_num); }
+		else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
+		if (GetChild(0)) {
+			out<<tab<<"SiNo"<<_endl_this;
+			GetChild(0)->Print(out,tab+_tabs,process,line_num); 
+		}
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
 		while (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");

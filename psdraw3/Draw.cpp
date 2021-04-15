@@ -85,8 +85,11 @@ void draw_error_mark_simple(Entity *e, double delta) {
 
 // dibuja una flecha al lado de la entidad que indica que es el punto actual de la ejecucion paso a paso
 void draw_debug_arrow(Entity *e, double delta) {
-	double x=e->d_fx-e->w/2-2*delta;
-	double y=e->d_fy-e->h/2;
+	static double prev_x = 0, prev_y = 0;
+	double cur_x=e->d_fx-e->w/2-2*delta;
+	double cur_y=e->d_fy-e->h/2;
+	double x = (2*prev_x+cur_x)/3; prev_x = x;
+	double y = (2*prev_y+cur_y)/3; prev_y = y;
 	glColor3f(0,1,0);
 	glBegin(GL_TRIANGLES);
 		glVertex2d(x,y-2*delta);
