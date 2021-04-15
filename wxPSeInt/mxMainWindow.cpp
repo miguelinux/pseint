@@ -2269,6 +2269,10 @@ void mxMainWindow::QuickHelpPanelPolicy::HideOutput() {
 	if (m_mode==QHM_OUTPUT) Hide();
 }
 
+void mxMainWindow::QuickHelpPanelPolicy::HideErrors() {
+	if (m_mode==QHM_RT_ERROR or m_mode==QHM_OUTPUT) Hide();
+}
+
 void mxMainWindow::QuickHelpPanelPolicy::Hide ( ) {
 	if (m_visible) main_window->ShowQuickHelp(false);
 }

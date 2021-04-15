@@ -43,6 +43,7 @@ public:
 		void HideTestHelp();
 		void ShowOutput(wxString html_text);
 		void HideOutput();
+		void HideErrors();
 		void Hide();
 		bool IsVisible() const { return m_visible; }
 		void EnsureVisible();

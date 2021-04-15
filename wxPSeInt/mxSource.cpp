@@ -1136,7 +1136,7 @@ void mxSource::SetCalltips() {
 	}
 	calltips_instructions.push_back(calltip_text(_Z("MIENTRAS"),_Z("{condición, expresion lógica}")));
 	calltips_instructions.push_back(calltip_text(_Z("QUE"),_Z("{condición, expresion lógica}")));
-	calltips_instructions.push_back(calltip_text(_Z("PARA"),_Z("{asignación inicial: variable<-valor}")));
+	calltips_instructions.push_back(calltip_text(_Z("PARA"),_Z("{asignación inicial: variable <- valor}")));
 	calltips_instructions.push_back(calltip_text(_Z("DESDE"),_Z("{valor inicial}")));
 	calltips_instructions.push_back(calltip_text(_Z("HASTA"),_Z("{valor final}"),true));
 	calltips_instructions.push_back(calltip_text(_Z("PASO"),_Z("{valor del paso}")));
@@ -1198,15 +1198,21 @@ void mxSource::SetAutocompletion() {
 		comp_list.push_back(comp_list_item("Por Referencia","Por Referencia","SubProceso"));
 		comp_list.push_back(comp_list_item("Por Referencia","Por Referencia","Funcion"));
 	}
-	comp_list.push_back(comp_list_item("Fin Proceso","Fin Proceso\n",""));
 	comp_list.push_back(comp_list_item("FinProceso","FinProceso\n",""));
-	comp_list.push_back(comp_list_item("Fin Algoritmo","Fin Algoritmo\n",""));
 	comp_list.push_back(comp_list_item("FinAlgoritmo","FinAlgoritmo\n",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) {
+		comp_list.push_back(comp_list_item("Fin Proceso","Fin Proceso\n",""));
+		comp_list.push_back(comp_list_item("Fin Algoritmo","Fin Algoritmo\n",""));
+	}
 	if (cfg_lang[LS_ENABLE_USER_FUNCTIONS]) {
-		comp_list.push_back(comp_list_item("Fin SubProceso","Fin SubProceso\n",""));
 		comp_list.push_back(comp_list_item("FinSubProceso","FinSubProceso\n",""));
-		comp_list.push_back(comp_list_item("FinFuncion","FinFuncion\n",""));
 		comp_list.push_back(comp_list_item("FinSubAlgoritmo","FinSubAlgoritmo\n",""));
+		comp_list.push_back(comp_list_item("FinFuncion","FinFuncion\n",""));
+		if (cfg_lang[LS_LAZY_SYNTAX]) {
+			comp_list.push_back(comp_list_item("Fin SubAlgoritmo","Fin SubAlgoritmo\n",""));
+			comp_list.push_back(comp_list_item("Fin Funcion","Fin Fincion\n",""));
+			comp_list.push_back(comp_list_item("Fin SubProceso","Fin SubProceso\n",""));
+		}
 	}
 	
 	comp_list.push_back(comp_list_item("Escribir","Escribir ",""));
@@ -1238,13 +1244,13 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("Entonces","Entonces\n",""));
 	comp_list.push_back(comp_list_item("Entonces","Entonces\n","Si"));
 	comp_list.push_back(comp_list_item("SiNo","SiNo\n",""));
-	comp_list.push_back(comp_list_item("Fin Si","Fin Si\n",""));
 	comp_list.push_back(comp_list_item("FinSi","FinSi\n",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Si","Fin Si\n",""));
 	
 	comp_list.push_back(comp_list_item("Mientras","Mientras ",""));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n","Mientras"));
-	comp_list.push_back(comp_list_item("Fin Mientras","Fin Mientras\n",""));
 	comp_list.push_back(comp_list_item("FinMientras","FinMientras\n",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Mientras","Fin Mientras\n",""));
 	
 	comp_list.push_back(comp_list_item("Para","Para ",""));
 	if (cfg_lang[LS_LAZY_SYNTAX]) {
@@ -1255,8 +1261,8 @@ void mxSource::SetAutocompletion() {
 	comp_list.push_back(comp_list_item("Con Paso","Con Paso ","Para"));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n","Para"));
 	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
-	comp_list.push_back(comp_list_item("Fin Para","Fin Para\n",""));
 	comp_list.push_back(comp_list_item("FinPara","FinPara\n",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Para","Fin Para\n",""));
 	
 	comp_list.push_back(comp_list_item("Repetir","Repetir\n",""));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n",""));
@@ -1270,7 +1276,7 @@ void mxSource::SetAutocompletion() {
 	}
 	comp_list.push_back(comp_list_item("De Otro Modo:","De Otro Modo:\n",""));
 	comp_list.push_back(comp_list_item("FinSegun","FinSegun\n",""));
-	comp_list.push_back(comp_list_item("Fin Segun","Fin Segun\n",""));
+	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Segun","Fin Segun\n",""));
 
 	comp_list.push_back(comp_list_item("Aleatorio","Aleatorio(","*"));
 	if (cfg_lang[LS_ENABLE_STRING_FUNCTIONS]) {
@@ -1775,6 +1781,8 @@ void mxSource::SetStatus (int cual) {
 		else status_bar->SetStatus(status=STATUS_SYNTAX_OK);
 	} else // ...sin verificacion de sintaxis en tiempo real
 		status_bar->SetStatus(status=STATUS_NO_RTSYNTAX);
+	
+	if (status==STATUS_SYNTAX_OK) main_window->QuickHelp().HideErrors();
 	
 }
 
