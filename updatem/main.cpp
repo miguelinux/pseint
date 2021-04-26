@@ -24,14 +24,14 @@ int main (int argc, char *argv[]) {
 			_print_version_info("updatem");
 			return 0;
 		} else if (sarg=="--version") {
-			if (++iarg<argc) return 1;
-			lver = atoi(argv[++iarg]);
+			if (++iarg>=argc) return 1;
+			lver = atoi(argv[iarg]);
 		} else if (sarg=="--child") {
-			if (++iarg<argc) return 1;
-			child = argv[++iarg]; 
+			if (++iarg>=argc) return 1;
+			child = argv[iarg]; 
 			child_mode = true;
 		} else if (sarg=="--proxy") {
-			if (++iarg<argc) return 1;
+			if (++iarg>=argc) return 1;
 			proxy = true; 
 			proxy_dir = argv[iarg];
 			size_t p = proxy_dir.find(":",0);
