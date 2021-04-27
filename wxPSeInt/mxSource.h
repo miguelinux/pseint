@@ -241,6 +241,7 @@ public:
 	
 	void ToUnicodeOpers(int line);
 	void ToRegularOpers(wxString &s);
+	void FixExtraUnicode(wxString &s);
 	void Analyze();
 	void Analyze(int line);
 	void Analyze(int line_from, int line_to);

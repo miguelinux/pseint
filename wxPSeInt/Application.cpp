@@ -189,8 +189,8 @@ void mxApplication::RecoverFromError ( ) {
 	
 	if ( !rec_names.GetCount() ) return;
 	int res =wxMessageBox("PSeInt no se cerró correctamente durante su última ejecución.\n"
-							"Algunos algoritmos en los que trabajaba fueron guardados,\n"
-							"automaticamente y ahora puede recuperarlos. ¿Desea recuperarlos?","PSeInt - Recuperación ante errores",wxYES_NO|wxICON_WARNING);
+						  "Algunos algoritmos en los que trabajaba fueron guardados,\n"
+						  "automaticamente y ahora puede recuperarlos. ¿Desea recuperarlos?","PSeInt - Recuperación ante errores",wxYES_NO|wxICON_WARNING);
 	if (res==wxYES) {
 		for (unsigned int i=0;i<rec_files.GetCount();i++) {
 			mxSource *src =	main_window->OpenProgram(rec_files[i],false);

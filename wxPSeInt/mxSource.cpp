@@ -2254,21 +2254,36 @@ bool mxSource::LoadFile (const wxString & fname) {
 	} else return false;
 }
 
-bool mxSource::SaveFile (const wxString & fname) {
-	ConvertEOLs(mxSTC_MY_EOL_MODE); // por alguna razon el copy-paste en mac solo pone CR pero no LF?
+static void FixExtraUnicode_impl(wxString &s, int i0, int iN) {
 	static wxCSConv cs("ISO-8859-1");
-	auto s = GetText(); ToRegularOpers(s);
-	const auto data = cs.cWX2MB(s);
-	if (data.length()!=0) {
-		wxFFile file(fname,_T("w"));
-		bool ok = file.Write(data,data.length());
-		file.Flush(); file.Close();
-		SetSavePoint();
-		if (ok) return true;
-	}
-	return wxStyledTextCtrl::SaveFile(fname);
+	const auto data = cs.cWX2MB(s.Mid(i0,iN-i0));
+	if (data) return; // al chars ok
+	if (iN-i0==1) { // found the wrong character
+		s = s.Mid(0,i0) + "?" + s.Mid(iN);
+	} else { // more than one, divide
+		int iM = (i0+iN)/2;
+		FixExtraUnicode_impl(s,i0,iM);
+		FixExtraUnicode_impl(s,iM,iN); 
+			}}
+
+void mxSource::FixExtraUnicode(wxString &s) {
+	return FixExtraUnicode_impl(s,0,s.Len());
 }
 
+bool mxSource::SaveFile (const wxString & fname) {
+	ConvertEOLs(mxSTC_MY_EOL_MODE); // por alguna razon el copy-paste en mac solo pone CR pero no LF?
+	auto s = GetText(); ToRegularOpers(s); FixExtraUnicode(s);
+	static wxCSConv cs("ISO-8859-1");
+	const auto data = cs.cWX2MB(s);
+	bool write_ok = data;
+	if (data) {
+		wxFFile file(fname,_T("w"));
+		write_ok = file.Write(data,data.length());
+		file.Flush(); file.Close();
+	}
+	if (not write_ok) wxStyledTextCtrl::SaveFile(fname); // last resourse fallback
+	return write_ok;
+}
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
 	if (evt.GetKeyCode()==WXK_ESCAPE) {
@@ -2290,7 +2305,6 @@ void mxSource::ShowUserList (wxArrayString &arr, int p1, int p2) {
 	UserListShow(1,res);
 	SetCurrentPos(p2);
 }
-
 
 /**
 * Esta funcion esta para evitar el flickering que produce usar el bracehighlight
@@ -2531,7 +2545,7 @@ void mxSource::ToRegularOpers (wxString &s) {
 		return s.begin()+p;
 	};
 	for(auto it=s.begin(); it!=s.end(); ++it) { 
-		if (*it==UOP_ASIGNACION)      it = replace(s,it,L"<-");
+		if (*it==UOP_ASIGNACION)  it = replace(s,it,L"<-");
 		else if (*it==UOP_LEQUAL) it = replace(s,it,L"<=");
 		else if (*it==UOP_GEQUAL) it = replace(s,it,L">=");
 		else if (*it==UOP_NEQUAL) it = replace(s,it,L"<>");
@@ -2539,6 +2553,8 @@ void mxSource::ToRegularOpers (wxString &s) {
 		else if (*it==UOP_AND)    it = replace(s,it,L"&");
 		else if (*it==UOP_OR)     it = replace(s,it,L"|");
 		else if (*it==UOP_NOT)    it = replace(s,it,L"~");
+		else if (*it==L'\u201C')    it = replace(s,it,L"\"");
+		else if (*it==L'\u201D')    it = replace(s,it,L"\"");
 	}
 }
 
