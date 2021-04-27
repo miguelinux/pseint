@@ -715,10 +715,10 @@ int SynCheck(int linea_from, int linea_to) {
 							} 
 						} 
 					}
-					if (lang[LS_LAZY_SYNTAX] && instruction_type!=IT_ASIGNAR) { // definición de tipos alternativa (x es entero)
-						size_t pos=cadena.rfind(' ',cadena.size()-(cadena[cadena.size()-1]==';'?3:2));
+					if ((not cadena.empty()) and lang[LS_LAZY_SYNTAX] and instruction_type!=IT_ASIGNAR) { // definición de tipos alternativa (x es entero)
+						size_t pos = cadena.rfind(' ',cadena.size()-(cadena[cadena.size()-1]==';'?3:2));
 						if (pos!=string::npos) {
-							pos=cadena.rfind(' ',pos-1);
+							pos = cadena.rfind(' ',pos-1);
 							if (pos!=string::npos && cadena.substr(pos+1,4)=="SON ") {
 								instruction_type=IT_DEFINIR; cadena.replace(pos+1,3,"COMO");
 							} else if (pos!=string::npos && cadena.substr(pos+1,3)=="ES ") {
