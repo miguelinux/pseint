@@ -22,6 +22,7 @@
 #include "mxWelcome.h"
 #include "mxStatusBar.h"
 #include "osdep.h"
+#include "mxSplashScreen.h"
 using namespace std;
 
 IMPLEMENT_APP(mxApplication)
@@ -93,6 +94,8 @@ bool mxApplication::OnInit() {
 	// load config
 	config = new ConfigManager(zpath);
 	if (logger) config->Log();
+
+	new mxSplashScreen();
 	
 	wxSocketBase::Initialize();
 	
@@ -113,6 +116,7 @@ bool mxApplication::OnInit() {
 			main_window->OpenProgram(DIR_PLUS_FILE(cmd_path,argv[i]));
 	}
 	SetTopWindow(main_window);
+	
 	wxYield();	
 	main_window->Refresh();
 

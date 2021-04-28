@@ -1755,7 +1755,7 @@ void mxMainWindow::OnNotebookPageChange (wxAuiNotebookEvent & event) {
 	// para que se actualice la lista de variables
 	if (notebook->GetPageCount()) {
 		mxSource *src=CURRENT_SOURCE;
-		if (config->rt_syntax && src->IsJustCreated()) {
+		if (config->rt_syntax/* && src->IsJustCreated()*/) {
 			src->SetStatus();
 			src->StartRTSyntaxChecking();
 		}
