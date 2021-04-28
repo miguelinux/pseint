@@ -152,25 +152,34 @@ static wxFont &get_font() {
 	return font;
 }
 
+// copiar de mxSource.cpp
+#define UOP_ASIGNACION L'\u2190'
+#define UOP_LEQUAL L'\u2264'
+#define UOP_GEQUAL L'\u2265'
+#define UOP_NEQUAL L'\u2260'
+#define UOP_AND L'\u2227'
+#define UOP_OR L'\u2228'
+#define UOP_NOT L'\u00AC'
+#define UOP_POWER L'\u2191'
+
+// copiar de Entity.cpp
+static const unsigned char SC_FLECHA = 27;
+static const unsigned char SC_DISTINTO = 29;
+static const unsigned char SC_MEN_IGUAL = 30;
+static const unsigned char SC_MAY_IGUAL = 31;
+
+
 void dibujar_caracter(char _c) {
-	if (_c==(unsigned char)(27)) {
-		// asignacion... el char 27 lo pone el beautify_label... siempre rodeado por espacios
-		// asi que distribuyo "<---" entre los tres chars, con espacios entre chars reducidos
-		m.tx -= 20*m.sx*8/7;
-		dibujar_caracter('<');
-		m.tx -= 80*m.sx*8/7;
-		dibujar_caracter('-');
-		m.tx -= 70*m.sx*8/7;
-		dibujar_caracter('-');
-		m.tx -= 70*m.sx*8/7;
-		dibujar_caracter('-');
-		m.tx -= 50*m.sx*8/7;
-		return;
-	}
-	
 	dc->SetFont(get_font());
 	dc->SetTextForeground(c);
-	wxString s(" "); s[0]=_c;
+	wxString s(" "); 
+	switch (_c){
+	case SC_FLECHA: s[0]=UOP_ASIGNACION; break;
+	case SC_DISTINTO: s[0]=UOP_NEQUAL; break;
+	case SC_MEN_IGUAL: s[0]=UOP_LEQUAL; break;
+	case SC_MAY_IGUAL: s[0]=UOP_GEQUAL; break;
+	default: s[0] = _c;
+	}
 	int w=100*m.sx,tw,th;
 	dc->GetTextExtent(s,&tw,&th);
 	dc->DrawText(s,m.x(0)+(w-tw)/2,m.y(0)-3*th/4);

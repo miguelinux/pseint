@@ -8,7 +8,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="font.svg"
-   inkscape:version="1.0beta1 (6ae14ec71c, 2019-11-13)"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
    version="1.1"
    id="svg2"
    viewBox="0 0 744.09448819 1052.3622047"
@@ -23,14 +23,14 @@
      inkscape:window-maximized="1"
      inkscape:window-y="0"
      inkscape:window-x="0"
-     inkscape:window-height="1010"
+     inkscape:window-height="1006"
      inkscape:window-width="1920"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="941.55535"
-     inkscape:cx="-251.24252"
-     inkscape:zoom="1.0319672"
+     inkscape:cy="678.8547"
+     inkscape:cx="-203.75028"
+     inkscape:zoom="20.704221"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -376,66 +376,18 @@
          x="-206.13564"
          id="tspan5673"
          sodipodi:role="line">→</tspan></text>
-    <g
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:59.1667px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.12218px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="text5675"
-       transform="matrix(1.3167526,0,0,1.0714762,76.561691,0)"
-       aria-label="←">
-      <path
-         sodipodi:nodetypes="ccccccccccc"
-         inkscape:connector-curvature="0"
-         id="path1956"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:59.1667px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.981016px"
-         d="m -203.31018,604.41442 c 0.83899,1.29042 1.71479,3.18753 2.62738,5.69133 h -2.75525 c -1.86933,-2.86974 -3.85642,-5.0076 -5.96126,-6.41358 v -1.04004 c 2.10484,-1.40597 4.09193,-3.54383 5.96126,-6.41357 h 2.75525 c -0.91259,2.5038 -1.78839,4.40091 -2.62738,5.69133 h 13.38995 v 2.48453 z" />
-    </g>
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-116.35385"
        y="872.30792"
        id="text5679"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
          sodipodi:role="line"
          id="tspan5681"
          x="-116.35385"
-         y="872.30792">M</tspan></text>
-    <text
-       transform="scale(1.3321318,0.75067648)"
-       id="text5683"
-       y="872.30792"
-       x="-92.375481"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-       xml:space="preserve"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         y="872.30792"
-         x="-92.375481"
-         id="tspan5685"
-         sodipodi:role="line">M</tspan></text>
-    <text
-       transform="scale(1.3321318,0.75067648)"
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-       x="-68.397125"
-       y="872.30792"
-       id="text5687"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         sodipodi:role="line"
-         id="tspan5689"
-         x="-68.397125"
-         y="872.30792">M</tspan></text>
-    <text
-       transform="scale(1.3321318,0.75067648)"
-       id="text5691"
-       y="872.30792"
-       x="-44.418747"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-       xml:space="preserve"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         y="872.30792"
-         x="-44.418747"
-         id="tspan5693"
-         sodipodi:role="line">M</tspan></text>
+         y="872.30792">=</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
@@ -463,15 +415,15 @@
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-356.13763"
-       y="909.60742"
+       y="910.87769"
        id="text5703"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
          sodipodi:role="line"
          id="tspan5705"
          x="-356.13763"
-         y="909.60742">&quot;</tspan></text>
+         y="910.87769">&quot;</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        id="text5707"
@@ -523,15 +475,15 @@
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-236.24571"
-       y="909.60742"
+       y="910.87769"
        id="text5723"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
          sodipodi:role="line"
          id="tspan5725"
          x="-236.24571"
-         y="909.60742">'</tspan></text>
+         y="910.87769">'</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
@@ -583,15 +535,16 @@
     <text
        transform="scale(1.3321318,0.75067648)"
        id="text5743"
-       y="917.60016"
+       y="916.96509"
        x="-116.35385"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         y="917.60016"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         y="916.96509"
          x="-116.35385"
          id="tspan5745"
-         sodipodi:role="line">,</tspan></text>
+         sodipodi:role="line"
+         dy="-2.625457">,</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
@@ -751,39 +704,27 @@
     <text
        transform="scale(1.3321318,0.75067648)"
        id="text5799"
-       y="957.56421"
+       y="956.92914"
        x="-164.31065"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         y="957.56421"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         y="956.92914"
          x="-164.31065"
          id="tspan5801"
          sodipodi:role="line">:</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-140.33226"
-       y="957.56421"
+       y="956.92914"
        id="text5803"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
          sodipodi:role="line"
          id="tspan5805"
          x="-140.33226"
-         y="957.56421">;</tspan></text>
-    <text
-       transform="scale(1.3321318,0.75067648)"
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-       x="-116.35385"
-       y="957.56421"
-       id="text5807"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
-         sodipodi:role="line"
-         id="tspan5809"
-         x="-116.35385"
-         y="957.56421">&lt;</tspan></text>
+         y="956.92914">;</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        id="text5811"
@@ -1207,15 +1148,16 @@
     <text
        transform="scale(1.3321318,0.75067648)"
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-size:43.74999989px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-404.09439"
-       y="1077.4558"
+       y="1078.7261"
        id="text5951"><tspan
-         style="font-size:43.74999989px;line-height:1.25;-inkscape-font-specification:'Inconsolata Normal';font-family:Inconsolata;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
          sodipodi:role="line"
          id="tspan5953"
          x="-404.09439"
-         y="1077.4558">'</tspan></text>
+         y="1078.7261"
+         dy="3.580169">'</tspan></text>
     <text
        transform="scale(1.3321318,0.75067648)"
        id="text5955"
@@ -3387,5 +3329,60 @@
        cx="-378.69861"
        id="path5279"
        style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.08157134;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.08157141, 2.08157141000000001;stroke-dashoffset:0;stroke-opacity:1;" />
+    <g
+       aria-label="←"
+       transform="scale(1.3321318,0.75067648)"
+       id="text584"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <path
+         d="m -129.84105,857.95792 h -15.84502 l 6.3,-7.57275 -1.53125,-1.88125 -8.91748,10.679 v 0.9625 l 9.00498,10.0665 1.44375,-2.1875 -6.25625,-7.13525 h 15.80127 z"
+         id="path562"
+         sodipodi:nodetypes="ccccccccccc" />
+    </g>
+    <text
+       transform="scale(1.3321318,0.75067648)"
+       id="text600"
+       y="872.30792"
+       x="-44.243748"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan598"
+         x="-44.243748"
+         y="872.30792">≥</tspan></text>
+    <text
+       transform="scale(1.3321318,0.75067648)"
+       id="text608"
+       y="872.32977"
+       x="-92.3536"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan606"
+         x="-92.3536"
+         y="872.32977">≠</tspan></text>
+    <text
+       transform="scale(1.3321318,0.75067648)"
+       id="text624"
+       y="872.30792"
+       x="-68.222122"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan622"
+         x="-68.222122"
+         y="872.30792">≤</tspan></text>
+    <text
+       transform="scale(1.3321318,0.75067648)"
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:0%;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-116.24448"
+       y="957.56421"
+       id="text562"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:43.75px;line-height:1.25;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         sodipodi:role="line"
+         id="tspan560"
+         x="-116.24448"
+         y="957.56421">&lt;</tspan></text>
   </g>
 </svg>

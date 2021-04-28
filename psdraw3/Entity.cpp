@@ -15,7 +15,10 @@
 using namespace std;
 
 static int edit_pos; // posición del cursor cuando se edita un texto
-static const unsigned char flechita = 27;
+static const unsigned char SC_FLECHA = 27;
+static const unsigned char SC_DISTINTO = 29;
+static const unsigned char SC_MEN_IGUAL = 30;
+static const unsigned char SC_MAY_IGUAL = 31;
 
 bool Entity::nassi_shneiderman=false;
 bool Entity::alternative_io=false; 
@@ -204,14 +207,13 @@ void Entity::Colourize ( ) {
 			}
 			colourized[i] = 'f';
 			// caso especial del op de asignacion
-			static char flechita_s[] = {' ',flechita,' ','\0'};
 			if (first_word && i<l) {
 				if (label[i]=='['||label[i]=='(') {
 					par_level++;
 				} else if (label[i]==']'||label[i]==')') {
 					par_level--;
 				} else if (par_level==0) {
-					if (label[i]==flechita||label[i]=='=') {
+					if (label[i]==SC_FLECHA||label[i]=='=') {
 						colourized[i] = 'd';
 					} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
 						colourized[i] = colourized[i+1] = 'd'; ++i;
@@ -229,56 +231,73 @@ void Entity::Colourize ( ) {
 }
 
 static void beautify_label(ETYPE type, string &label, int &edit_pos) {
-//	if (type==ET_COMENTARIO) return;
-	if (type!=ET_ASIGNAR&&type!=ET_PROCESO) return;
-	bool first_word = true;
-	int par_level = 0;
-	for (int i = 0, l = label.size(); i<l; i++) {
-		// cadenas
-		if (i<l && (label[i]=='\''||label[i]=='\"')) {
-			do { i++; } while (i<l && label[i]!='\'' && label[i]!='\"');
-		} else if (label[i]=='('||label[i]=='[') {
-			par_level++;
-		} else if (label[i]==']'||label[i]==')') {
-			par_level--;
-		} else if (label[i]==';') {
-			if (i+1<l && label[i+1]!=' ') {
-				label.insert(i+1," "); ++l;
-				if (edit_pos>=i+1) ++edit_pos;
-			}
-			first_word = true;
-		} else if (first_word && is_sep(label[i])) {
-			if (label[i]==flechita||label[i]=='=') {
-				if (i+1<l&&label[i+1]!=' ') {
+	if (type==ET_COMENTARIO) return;
+	if (type==ET_ASIGNAR or type==ET_PROCESO) {
+		bool first_word = true;
+		int par_level = 0;
+		for (int i = 0, l = label.size(); i<l; i++) {
+			// cadenas
+			if (i<l && (label[i]=='\''||label[i]=='\"')) {
+				do { i++; } while (i<l && label[i]!='\'' && label[i]!='\"');
+			} else if (label[i]=='('||label[i]=='[') {
+				par_level++;
+			} else if (label[i]==']'||label[i]==')') {
+				par_level--;
+			} else if (label[i]==';') {
+				if (i+1<l && label[i+1]!=' ') {
 					label.insert(i+1," "); ++l;
 					if (edit_pos>=i+1) ++edit_pos;
 				}
-				if (i&&label[i-1]!=' ') {
-					label.insert(i," "); ++l;
-					if (edit_pos>=i-1) ++edit_pos;
+				first_word = true;
+			} else if (first_word && is_sep(label[i])) {
+				if (label[i]==SC_FLECHA||label[i]=='=') {
+					if (i+1<l&&label[i+1]!=' ') {
+						label.insert(i+1," "); ++l;
+						if (edit_pos>=i+1) ++edit_pos;
+					}
+					if (i&&label[i-1]!=' ') {
+						label.insert(i," "); ++l;
+						if (edit_pos>=i-1) ++edit_pos;
+					}
+				} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
+					if (i+2<l&&label[i+2]!=' ') {
+						label.insert(i+2," "); ++l;
+						if (edit_pos>=i+2) ++edit_pos;
+					}
+					label.replace(i,2,1,SC_FLECHA); --l;
+					if (edit_pos>i) --edit_pos;
+					if (i&&label[i-1]!=' ') {
+						label.insert(i," "); ++l;
+						if (edit_pos>=i-1) ++edit_pos;
+					}
+				} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
+					if (i+2<l&&label[i+2]!=' ') {
+						label.insert(i+2," "); ++l;
+						if (edit_pos>=i+2) ++edit_pos;
+					}
+					if (i&&label[i-1]!=' ') {
+						label.insert(i," "); ++l;
+						if (edit_pos>=i-1) ++edit_pos;
+					}
 				}
-			} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
-				if (i+2<l&&label[i+2]!=' ') {
-					label.insert(i+2," "); ++l;
-					if (edit_pos>=i+2) ++edit_pos;
-				}
-				label.replace(i,2,1,flechita); --l;
-				if (edit_pos>i) --edit_pos;
-				if (i&&label[i-1]!=' ') {
-					label.insert(i," "); ++l;
-					if (edit_pos>=i-1) ++edit_pos;
-				}
-			} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
-				if (i+2<l&&label[i+2]!=' ') {
-					label.insert(i+2," "); ++l;
-					if (edit_pos>=i+2) ++edit_pos;
-				}
-				if (i&&label[i-1]!=' ') {
-					label.insert(i," "); ++l;
-					if (edit_pos>=i-1) ++edit_pos;
-				}
+				if (label[i]!=' ') first_word = false;
 			}
-			if (label[i]!=' ') first_word = false;
+		}
+	} else {
+		for (int i = 0, l = label.size(); i<l; i++) {
+			// cadenas
+			if (i<l && (label[i]=='\''||label[i]=='\"')) {
+				do { i++; } while (i<l && label[i]!='\'' && label[i]!='\"');
+			} else if (i+1<l && ( (label[i]=='<' && label[i+1]=='>') or (label[i]=='!' && label[i+1]=='=') )) {
+				label.replace(i,2,1,SC_DISTINTO); --l;
+				if (edit_pos>i) --edit_pos;
+			} else if (i+1<l && label[i]=='<' && label[i+1]=='=') {
+				label.replace(i,2,1,SC_MEN_IGUAL); --l;
+				if (edit_pos>i) --edit_pos;
+			} else if (i+1<l && label[i]=='>' && label[i+1]=='=') {
+				label.replace(i,2,1,SC_MAY_IGUAL); --l;
+				if (edit_pos>i) --edit_pos;
+			}
 		}
 	}
 }
@@ -594,14 +613,25 @@ bool Entity::IsInside(int x0, int y0, int x1, int y1) {
 
 #define _fix(label,def) (label.size()?label:def)
 
+void ReplaceAll(string &label, unsigned char from, const char *to) {
+	size_t pos = label.find(from);
+	while (pos!=string::npos) {
+		label.replace(pos,1,to);
+		pos = label.find(from,pos);
+	}
+}
+
 void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 	static string inline_comments;
 	bool add_tab=false;
 	string old_label = label;
+	ReplaceAll(label,SC_MEN_IGUAL,"<=");
+	ReplaceAll(label,SC_MAY_IGUAL,">=");
+	ReplaceAll(label,SC_FLECHA,"<-");
+	ReplaceAll(label,SC_DISTINTO,"<>");
 	if (type==ET_PROCESO) {
 		add_tab=true;
 		if (GetNext()) {
-			if (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
 			if (GetNext()->GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
 			else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
@@ -662,7 +692,6 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		}
 		out<<tab<<"FinSi"<<_endl_prev;
 	} else if (type==ET_ASIGNAR) {
-		while (label.find(flechita)!=string::npos) label.replace(label.find(flechita),1,"<-");
 		if (lang[LS_FORCE_SEMICOLON] && label[label.size()-1]==';') label=label.erase(label.size()-1);
 		if (label.size()) { out<<tab<<label<<(lang[LS_FORCE_SEMICOLON]?";":"")<<_endl_this; }
 	} else if (type==ET_COMENTARIO) {
