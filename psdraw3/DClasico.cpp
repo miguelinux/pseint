@@ -57,7 +57,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x-w/2,y-h/2); glVertex2i(x,y-h);
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		if (alternative_io) {
+		if (g_config.alternative_io) {
 			if (type==ET_LEER) {
 				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
 				glVertex2i(x-w/2,y-h); glVertex2i(x+w/2,y-h);
@@ -89,7 +89,7 @@ void Entity::DrawShapeSolid(const float *color,int x, int y, int w, int h) {
 
 
 void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
-	glLineWidth(line_width_bordes);
+	glLineWidth(g_constants.line_width_bordes);
 	glColor3fv(color);
 	glBegin(GL_LINE_LOOP);
 	if (type==ET_PARA) {
@@ -108,7 +108,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		glVertex2i(x,y); glVertex2i(x+w/2,y-h/2);
 		glVertex2i(x,y-h); glVertex2i(x-w/2,y-h/2);
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		if (alternative_io) {
+		if (g_config.alternative_io) {
 			if (type==ET_LEER) {
 				glVertex2i(x-w/2,y-margin); glVertex2i(x+w/2,y+margin);
 				glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
@@ -130,9 +130,9 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 	} else {
 		glVertex2i(x-w/2,y); glVertex2i(x+w/2,y);
 		glVertex2i(x+w/2,y-h); glVertex2i(x-w/2,y-h);
-		if (edit_on && type==ET_OPCION && mouse!=this) {
+		if (g_state.edit_on and type==ET_OPCION and g_state.mouse!=this) {
 			glVertex2i(x-w/2,y); glVertex2i(x-w/2+flecha_w,y); glVertex2i(x-w/2+flecha_w,y-h); glVertex2i(x-w/2,y-h);
-		} else if (type==ET_ASIGNAR && variante) {
+		} else if (type==ET_ASIGNAR and variante) {
 			glEnd();
 			glBegin(GL_LINES);
 			glVertex2i(x-w/2+margin,y); glVertex2i(x-w/2+margin,y-h);
@@ -140,7 +140,7 @@ void Entity::DrawShapeBorder(const float *color,int x, int y, int w, int h) {
 		}
 	}
 	glEnd();
-	glLineWidth(line_width_flechas);
+	glLineWidth(g_constants.line_width_flechas);
 }
 
 inline void DrawTrue(int x, int y) { // V
@@ -197,10 +197,10 @@ inline void DrawFlechaL(int x1, int x2, int y) {
 
 void Entity::DrawClasico(bool force) {
 	if (!force && (type==ET_OPCION || type==ET_AUX_PARA)) return;
-	if (this==mouse && (GetPrev()||GetParent())) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
-		DrawShapeBorder(color_ghost,d_dx+x,d_dy+y,bwr+bwl,h);
+	if (this==g_state.mouse and (GetPrev() or GetParent())) // si se esta moviendo con el mouse, dibujar un ghost donde lo agregariamos al soltar
+		DrawShapeBorder(g_colors.ghost,g_view.d_dx+x,g_view.d_dy+y,bwr+bwl,h);
 	glBegin(GL_LINES); 
-	glColor3fv(color_arrow);
+	glColor3fv(g_colors.arrow);
 	if (!nolink) {
 		if (type==ET_OPCION) {
 			DrawLineaVerticalH((GetChild(0)?GetChild(0)->d_x:d_x),d_y-d_h,-flecha_h); 
@@ -210,7 +210,7 @@ void Entity::DrawClasico(bool force) {
 					DrawFlechaDownHead(d_x+child_dx[i],d_y-d_h-GetChild(i)->bh);
 					DrawFlechaDown(d_x+child_dx[i],d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
 				}
-				else if (GetChild(i)!=mouse) {
+				else if (GetChild(i)!=g_state.mouse) {
 					DrawFlechaDown(GetChild(i)->GetChild(0)->d_x,d_y-d_h-child_bh[i],d_y-d_bh+flecha_h); 
 					DrawFlechaDownHead(GetChild(i)->GetChild(0)->d_x,GetChild(i)->GetChild(0)->d_y-GetChild(i)->GetChild(0)->d_bh); 
 				}
@@ -274,20 +274,20 @@ void Entity::DrawClasico(bool force) {
 				Entity *next_nc = GetNextNoComment();
 				bool fuera_de_proceso = IsOutOfProcess(next_nc);
 				if (!fuera_de_proceso) {
-					DrawLineaVerticalH(d_x,d_y,-d_bh); // continuación del flujo
+					DrawLineaVerticalH(d_x,d_y,-d_bh); // continuacion del flujo
 				}
 				if (variante || !fuera_de_proceso) {
 					// linea punteada desde el flujo o desde la siguiente entidad hacia el comentario
 #ifndef _FOR_EXPORT
 					glEnd(); glEnable(GL_LINE_STIPPLE); glBegin(GL_LINES);
 #endif
-					glColor3fv(color_comment);
+					glColor3fv(g_colors.comment);
 					if (variante) { // apunta al siguiente no comentario
 						if (next_nc) DrawLinea(next_nc->d_fx-5*margin,next_nc->d_fy,d_x-d_bwl/2,d_y-d_h);
 					} else {
 						DrawLineaHorizontalW(d_x+margin,d_y-d_h/2,4*margin); 
 					}
-					glColor3fv(color_arrow);
+					glColor3fv(g_colors.arrow);
 #ifndef _FOR_EXPORT
 					glEnd(); glDisable(GL_LINE_STIPPLE); glBegin(GL_LINES);
 #endif
@@ -300,10 +300,10 @@ void Entity::DrawClasico(bool force) {
 			// linea de flecha que va al siguiente
 			if (!(type==ET_PROCESO&&variante)) DrawLineaVerticalH(d_x,d_y-d_bh,flecha_h);
 		}
-	} else if (mouse==this && (GetNext()||GetParent())) {
+	} else if (g_state.mouse==this and (GetNext() or GetParent())) {
 		// flecha que va al siguiente item cuando este esta flotando
-		DrawLineaVerticalH(d_dx+x,d_dy+y-bh,flecha_h);
-		if (type!=ET_OPCION) DrawFlechaDownHead(d_dx+x,d_dy+y); // no en inicio
+		DrawLineaVerticalH(g_view.d_dx+x,g_view.d_dy+y-bh,flecha_h);
+		if (type!=ET_OPCION) DrawFlechaDownHead(g_view.d_dx+x,g_view.d_dy+y); // no en inicio
 	}
 	glEnd();
 	if (type==ET_COMENTARIO||type==ET_SELECTION) {
@@ -311,29 +311,29 @@ void Entity::DrawClasico(bool force) {
 		glEnable(GL_LINE_STIPPLE);
 #endif
 		// borde de la forma
-		DrawShapeBorder(/*mouse==this?color_selection:*/color_comment,d_fx,d_fy,d_w,d_h);
+		DrawShapeBorder(/*mouse==this?color_selection:*/g_colors.comment,d_fx,d_fy,d_w,d_h);
 #ifndef _FOR_EXPORT
 		glDisable(GL_LINE_STIPPLE);
 #endif
 	} else {
 		// relleno de la forma
-		int icolor = Entity::shape_colors?type:ET_COUNT;
+		int icolor = g_config.shape_colors?type:ET_COUNT;
 		float aux_color[3] = {
-			color_shape[icolor][0],
-			color_shape[icolor][1],
-			color_shape[icolor][2]
+			g_colors.shape[icolor][0],
+			g_colors.shape[icolor][1],
+			g_colors.shape[icolor][2]
 		};
-		DrawShapeSolid(color_shape[icolor],d_fx,d_fy,d_w,d_h);
+		DrawShapeSolid(g_colors.shape[icolor],d_fx,d_fy,d_w,d_h);
 		aux_color[0]=pow(aux_color[0],5)*.75;
 		aux_color[1]=pow(aux_color[1],5)*.75;
 		aux_color[2]=pow(aux_color[2],5)*.75;
 		// borde de la forma
-		DrawShapeBorder(/*mouse==this?color_selection:*/(color_border[icolor]),d_fx,d_fy,d_w,d_h);
+		DrawShapeBorder(/*mouse==this?color_selection:*/(g_colors.border[icolor]),d_fx,d_fy,d_w,d_h);
 	}
 	if (type==ET_OPCION) { // + para agregar opciones
-		if (edit_on && mouse!=this) {
+		if (g_state.edit_on and g_state.mouse!=this) {
 			glBegin(GL_LINES);
-			glColor3fv(color_label_high[3]);
+			glColor3fv(g_colors.label_high[3]);
 			DrawLineaHorizontalTo(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2,d_x-d_bwl+1*flecha_w/4);
 			DrawLineaVerticalTo(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3,d_y-2*d_h/3);
 			glEnd();
@@ -341,7 +341,7 @@ void Entity::DrawClasico(bool force) {
 	} else 
 	if (!nolink) {
 		if (type==ET_SELECTION && !nolink) {
-			glColor3fv(color_back);
+			glColor3fv(g_colors.back);
 			int w = margin, x = d_fx+d_w/2, y = d_fy/*-d_h*/;
 			glBegin(GL_QUADS);
 				glVertex2d(x-w,y-w);
@@ -349,8 +349,8 @@ void Entity::DrawClasico(bool force) {
 				glVertex2d(x+w,y+w);
 				glVertex2d(x+w,y-w);
 			glEnd();
-			glLineWidth(line_width_bordes);
-			glColor3fv(color_menu);
+			glLineWidth(g_constants.line_width_bordes);
+			glColor3fv(g_colors.menu);
 			glBegin(GL_LINE_LOOP);
 				glVertex2d(x-w,y-w);
 				glVertex2d(x-w,y+w);
@@ -359,17 +359,17 @@ void Entity::DrawClasico(bool force) {
 			glEnd();
 			w /= 2;
 			glBegin(GL_LINES);
-			glColor3fv(color_arrow);
+			glColor3fv(g_colors.arrow);
 			DrawLinea(x-w,y-w,x+w,y+w);
 			DrawLinea(x+w,y-w,x-w,y+w);
 			glEnd();
-			glLineWidth(line_width_flechas);
+			glLineWidth(g_constants.line_width_flechas);
 		} else
 		if (type==ET_ESCRIBIR||type==ET_LEER) { // flecha en la esquina
 			glBegin(GL_LINES);
-			glColor3fv(color_label_high[3]);
+			glColor3fv(g_colors.label_high[3]);
 			int axl = d_x+d_w/2-margin, axe = d_x+d_w/2+margin;
-			if (Entity::alternative_io&&type==ET_ESCRIBIR) { axl-=h; axe-=h; }
+			if (g_config.alternative_io and type==ET_ESCRIBIR) { axl-=h; axe-=h; }
 			DrawLinea(axl,d_y-margin,axe,d_y+margin);
 			if (type==ET_LEER) {
 				DrawLinea(axl,d_y-margin,axl+margin,d_y-margin);
@@ -390,16 +390,16 @@ void Entity::DrawClasico(bool force) {
 				GetChild(i)->Draw(true);
 			}
 		} else if (type==ET_PARA) {
-			glColor3fv(color_border[shape_colors?ET_PARA:ET_COUNT]);
+			glColor3fv(g_colors.border[g_config.shape_colors?ET_PARA:ET_COUNT]);
 			glBegin(GL_LINES);
 			DrawLinea(d_x-2*margin,d_y-d_bh+flecha_h-margin,d_x+2*margin,d_y-d_bh+flecha_h+margin);
 			DrawLinea(d_x-2*margin,d_y-margin,d_x+2*margin,d_y+margin);
 			glEnd();
-			glLineWidth(line_width_bordes);
+			glLineWidth(g_constants.line_width_bordes);
 			glBegin(GL_LINES);
 			DrawLineaHorizontalW(d_fx-w/2,d_fy-d_h/2,w); // separadores de las cuatro partes del circulo
 			if (!variante) {
-				if (edit_on||GetChild(2)->label.size()) {
+				if (g_state.edit_on or GetChild(2)->label.size()) {
 					DrawLineaVerticalTo(d_x+child_dx[1],d_fy-d_h/2,d_fy-d_h+margin);
 					DrawLineaVerticalTo(d_x+child_dx[2],d_fy-d_h/2,d_fy-d_h+margin);
 				} else {
@@ -413,12 +413,12 @@ void Entity::DrawClasico(bool force) {
 				glEnd();
 				GetChild(2)->DrawText();
 			}
-			glLineWidth(line_width_flechas);
+			glLineWidth(g_constants.line_width_flechas);
 		}
 	}
 }
 
-void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamaño de este item (para armar el tamaño del bloque)
+void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al siguiente y a sus hijos, y acumula en gw,gh el tamano de este item (para armar el tamano del bloque)
 	
 	if (type==ET_SELECTION) {
 		if (!GetChild(0)) return;
@@ -431,12 +431,12 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 		return;
 	}
 	
-	// calcular tamaños de la forma segun el texto
+	// calcular tamanos de la forma segun el texto
 	h=t_h+2*margin; if (!t_w) w=margin*6; else { w=t_w; if (type!=ET_PROCESO) w+=2*margin; else w+=2*(h-margin); }
 	if (type==ET_REPETIR||type==ET_MIENTRAS||type==ET_SI) {
 		w*=2; h*=2;
 	} else if (type==ET_ESCRIBIR||type==ET_LEER) {
-		if (alternative_io) { if (type==ET_ESCRIBIR) { w+=2*(h-margin); }
+		if (g_config.alternative_io) { if (type==ET_ESCRIBIR) { w+=2*(h-margin); }
 		} else { w+=2*margin; }
 	} else if (type==ET_ASIGNAR && variante) {
 		w+=2*margin;
@@ -447,11 +447,11 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	}
 	
 	t_dy=t_dx=0; fx=x; fy=y; bh=h+flecha_h; bwr=bwl=w/2; // esto es si fuera solo la forma
-	if (alternative_io) {
+	if (g_config.alternative_io) {
 		if (type==ET_LEER) { bh+=margin; h+=margin; t_dy-=margin/2; }
 	}
 	if (type==ET_COMENTARIO) { 
-		if (!show_comments) { bwl=bwr=bh=0; return; }
+		if (not g_config.show_comments) { bwl=bwr=bh=0; return; }
 		if (variante || (GetNext() && GetNext()->type==ET_COMENTARIO)) bh-=flecha_h/2;
 		if (variante) {
 			fx-=w/2+5*margin; bwr=0; bwl=w+5*margin;
@@ -464,7 +464,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 	if (!nolink && GetChildCount()) {
 		if (type==ET_OPCION) {
 			bwr=bwl=(w=t_w+2*margin)/2;
-			if (edit_on) 
+			if (g_state.edit_on) 
 			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
 			child_dx[0]=0; child_bh[0]=0;
 			if (GetChild(0)) {
@@ -553,7 +553,7 @@ void Entity::CalculateClasico() { // calcula lo propio y manda a calcular al sig
 			GetChild(3)->Calculate(vl,vr,vh); 
 			int v3=vl+vr;
 			if (variante) { v1=v3=0; GetChild(1)->w=GetChild(3)->w=0; }
-			else if (!edit_on && !GetChild(2)->label.size()) { v2=0; GetChild(2)->w=0; }
+			else if ((not g_state.edit_on) and GetChild(2)->label.empty()) { v2=0; GetChild(2)->w=0; }
 			
 			// calcular el ancho del circulo, puede estar dominado por las tres etiquetas de abajo o por la propia 
 			int v=v1+v2+v3-2*margin;

@@ -17,7 +17,7 @@ public:
 	static void Initialize();
 };
 
-extern Trash *trash;
+extern Trash *g_trash;
 
 #endif
 

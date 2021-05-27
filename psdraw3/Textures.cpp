@@ -175,14 +175,14 @@ bool Texture::Load () {
 	return true;
 }
 
-Texture texture_font;
+Texture g_texture_font;
 
 set<Texture*> Texture::m_to_load;
 bool Texture::LoadTextures() {
 # ifdef _USE_DF
-	texture_font.SetTexture(imgs_path+"../font.png");
+	g_texture_font.SetTexture(g_constants.imgs_path+"../font.png");
 # else
-	texture_font.SetTexture(imgs_path+"font.png");
+	g_texture_font.SetTexture(g_constants.imgs_path+"font.png");
 # endif
 	
 	bool all_ok = true;

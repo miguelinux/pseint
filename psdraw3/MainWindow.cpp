@@ -13,7 +13,7 @@
 #include "Comm.h"
 #include <wx/icon.h>
 
-MainWindow *main_window=NULL;
+MainWindow *g_main_window = nullptr;
 
 enum { MID_MAIN = wxID_HIGHEST, MID_ZOOM, MID_FULLSCREEN, MID_STYLE, MID_COMMENTS, MID_CROPLABEL, MID_COLORS, MID_SUB, MID_RUN, MID_DEBUG, MID_EXPORT, MID_CLOSE, MID_HELP };
 
@@ -28,54 +28,48 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_ACTIVATE(MainWindow::OnActivated)
 END_EVENT_TABLE()
 
-MainWindow::MainWindow(wxString title):wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(win_w,win_h),wxDEFAULT_FRAME_STYLE) {
+MainWindow::MainWindow(wxString title):wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition,wxSize(g_view.win_w,g_view.win_h),wxDEFAULT_FRAME_STYLE) {
 	
 	wxIconBundle bundle;
 	wxIcon icon24; icon24.CopyFromBitmap(wxBitmap("imgs/tools/24/flujo.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon24);
 	wxIcon icon32; icon32.CopyFromBitmap(wxBitmap("imgs/tools/32/flujo.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon32);
 	SetIcons(bundle);
 	
-	main_window=this;
+	g_main_window=this;
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
 	wxToolBar *toolbar = CreateToolBar(wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT,wxID_ANY);
-	color_menu_back[0] = toolbar->GetBackgroundColour().Red()/255.f;
-	color_menu_back[1] = toolbar->GetBackgroundColour().Green()/255.f;
-	color_menu_back[2] = toolbar->GetBackgroundColour().Blue()/255.f;
-	wxColour color_sel = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
-	color_menu_sel[0] = color_sel.Red()/255.f;
-	color_menu_sel[1] = color_sel.Green()/255.f;
-	color_menu_sel[2] = color_sel.Blue()/255.f;
-	wxBitmap abmp(imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG);
+	SetColors(toolbar->GetBackgroundColour(),wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
+	wxBitmap abmp(g_constants.imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG);
 	toolbar->SetToolBitmapSize(wxSize(abmp.GetWidth(),abmp.GetHeight()));
-//	toolbar->AddTool(MID_SETTINGS,"",imgs_path+"tb_settings.png");
-	if (lang[LS_ENABLE_USER_FUNCTIONS]) {
-		toolbar->AddTool(MID_SUB  ,"",wxBitmap(imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG));
+//	toolbar->AddTool(MID_SETTINGS,"",g_constants.imgs_path+"tb_settings.png");
+	if (g_lang[LS_ENABLE_USER_FUNCTIONS]) {
+		toolbar->AddTool(MID_SUB  ,"",wxBitmap(g_constants.imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG));
 		toolbar->AddSeparator();
 	}
-	toolbar->AddTool(MID_RUN  ,"",wxBitmap(imgs_path+"tb_run.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_DEBUG,"",wxBitmap(imgs_path+"tb_debug.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_EXPORT ,"",wxBitmap(imgs_path+"tb_save.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_RUN  ,"",wxBitmap(g_constants.imgs_path+"tb_run.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_DEBUG,"",wxBitmap(g_constants.imgs_path+"tb_debug.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_EXPORT ,"",wxBitmap(g_constants.imgs_path+"tb_save.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_ZOOM ,"",wxBitmap(imgs_path+"tb_zoom.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_FULLSCREEN ,"",wxBitmap(imgs_path+"tb_fullscreen.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_ZOOM ,"",wxBitmap(g_constants.imgs_path+"tb_zoom.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_FULLSCREEN ,"",wxBitmap(g_constants.imgs_path+"tb_fullscreen.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_STYLE ,"",wxBitmap(imgs_path+"tb_style.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_COMMENTS ,"",wxBitmap(imgs_path+"tb_comments.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_CROPLABEL ,"",wxBitmap(imgs_path+"tb_crop.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_COLORS,"",wxBitmap(imgs_path+"tb_colors.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_STYLE ,"",wxBitmap(g_constants.imgs_path+"tb_style.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COMMENTS ,"",wxBitmap(g_constants.imgs_path+"tb_comments.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CROPLABEL ,"",wxBitmap(g_constants.imgs_path+"tb_crop.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_COLORS,"",wxBitmap(g_constants.imgs_path+"tb_colors.png",wxBITMAP_TYPE_PNG));
 	toolbar->AddSeparator();
-	toolbar->AddTool(MID_HELP ,"",wxBitmap(imgs_path+"tb_help.png",wxBITMAP_TYPE_PNG));
-	toolbar->AddTool(MID_CLOSE,"",wxBitmap(imgs_path+"tb_close.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_HELP ,"",wxBitmap(g_constants.imgs_path+"tb_help.png",wxBITMAP_TYPE_PNG));
+	toolbar->AddTool(MID_CLOSE,"",wxBitmap(g_constants.imgs_path+"tb_close.png",wxBITMAP_TYPE_PNG));
 	toolbar->Realize();
 	sizer->Add(new Canvas(this),wxSizerFlags().Expand().Proportion(1));
 	SetSizer(sizer);
-	canvas->SetFocusFromKbd();
+	g_canvas->SetFocusFromKbd();
 	Show();
 }
 
 void MainWindow::OnClose (wxCloseEvent & evt) {
-	if (modified) AskForExit(); else evt.Skip();
+	if (g_state.modified) AskForExit(); else evt.Skip();
 }
 
 //void MainWindow::SetAccelerators() {
@@ -86,16 +80,16 @@ void MainWindow::OnClose (wxCloseEvent & evt) {
 //}
 
 void MainWindow::OnMouseWheel (wxMouseEvent & event) {
-	canvas->OnMouseWheel(event);
+	g_canvas->OnMouseWheel(event);
 }
 
 void MainWindow::ToggleFullScreen ( ) {
-	bool fs = !main_window->IsFullScreen();
-	main_window->ShowFullScreen(fs);
+	bool fs = not g_main_window->IsFullScreen();
+	g_main_window->ShowFullScreen(fs);
 }
 
 void MainWindow::AskForExit ( ) {
-	int ans=wxMessageBox(_Z("Hay cambios sin aplicar al pseudocódigo.\n¿Aplicar los cambios antes de cerrar el editor?"),main_window->GetTitle(),wxYES_NO|wxCANCEL|wxICON_QUESTION,this);
+	int ans=wxMessageBox(_Z("Hay cambios sin aplicar al pseudocódigo.\n¿Aplicar los cambios antes de cerrar el editor?"),g_main_window->GetTitle(),wxYES_NO|wxCANCEL|wxICON_QUESTION,this);
 	if (ans==wxYES) {
 		Save(); SendUpdate(MO_SAVE); Salir(true);
 	} else if (ans==wxNO) {
@@ -106,8 +100,8 @@ void MainWindow::AskForExit ( ) {
 }
 
 void MainWindow::OnToolOver (wxCommandEvent & event) {
-	toolbar->SetSelection( MIDtoMO(event.GetSelection()) ); 
-	canvas->Refresh();
+	g_toolbar->SetSelection( MIDtoMO(event.GetSelection()) ); 
+	g_canvas->Refresh();
 }
 
 void MainWindow::OnTool (wxCommandEvent & event) {
@@ -134,6 +128,6 @@ int MainWindow::MIDtoMO (int mid) {
 
 void MainWindow::OnActivated(wxActivateEvent &event) {
 	event.Skip();
-	canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
+	g_canvas->SetModifiers(0); // para que Alt+Tab no deje el Alt como apretado
 }
 

@@ -9,7 +9,7 @@
 
 #define no_selection -1
 
-ProcessSelector *process_selector = NULL;
+ProcessSelector *g_process_selector = nullptr;
 
 ProcessSelector::ProcessSelector() 
 	: m_state(0), m_selection(no_selection), 
@@ -25,70 +25,70 @@ void ProcessSelector::Show ( ) {
 
 void ProcessSelector::Hide ( ) {
 	m_state = 0;
-	trash->Hide();
+	g_trash->Hide();
 }
 
 void ProcessSelector::Draw ( ) {
-	glLineWidth(menu_line_width);
-	DrawTextRaster(color_menu,10,win_h-25,
-				   (lang[LS_PREFER_FUNCION]
-					? (lang[LS_PREFER_ALGORITMO]
+	glLineWidth(g_constants.menu_line_width);
+	DrawTextRaster(g_colors.menu,10,g_view.win_h-25,
+				   (g_lang[LS_PREFER_FUNCION]
+					? (g_lang[LS_PREFER_ALGORITMO]
 					   ? "Seleccione un algoritmo/funcion para visualizar:"
 					   : "Seleccione un proceso/funcion para visualizar:")
-					: (lang[LS_PREFER_ALGORITMO]
+					: (g_lang[LS_PREFER_ALGORITMO]
 					   ? "Seleccione un proceso/subproceso para visualizar:"
 					   : "Seleccione un algoritmo/subalgoritmo para visualizar:") ) );
 	
-	int base=win_h-m_anim_base, delta=m_anim_delta;
-	glColor3fv(color_menu); 
+	int base=g_view.win_h-m_anim_base, delta=m_anim_delta;
+	glColor3fv(g_colors.menu); 
 	glBegin(GL_LINES); 
-	glVertex2i(0,base); glVertex2i(win_w,base);
+	glVertex2i(0,base); glVertex2i(g_view.win_w,base);
 	glEnd();
-	for(int i=0;i<=int(procesos.size()-(edit_on?0:1));i++) {
+	for(int i=0;i<=int(g_code.procesos.size()-(g_state.edit_on?0:1));i++) {
 		
 		if (m_selection==i) {
-			glColor3fv(color_shape[ET_PROCESO]);
+			glColor3fv(g_colors.shape[ET_PROCESO]);
 			glBegin(GL_QUADS);
 			glVertex2i(0,base);
-			glVertex2i(win_w,base);
-			glVertex2i(win_w,base-delta);
+			glVertex2i(g_view.win_w,base);
+			glVertex2i(g_view.win_w,base-delta);
 			glVertex2i(0,base-delta);
 			glEnd();
 		}
 		base-=delta;
 		
-		if (i==int(procesos.size())) {
-			DrawTextRaster(m_selection==i?color_selection:color_menu,20,base+10,
-						   lang[LS_PREFER_FUNCION]?"Agregar Nueva Funcion"
-						   :(lang[LS_PREFER_ALGORITMO]?"Agregar Nuevo SubAlgoritmo"
+		if (i==int(g_code.procesos.size())) {
+			DrawTextRaster(m_selection==i?g_colors.selection:g_colors.menu,20,base+10,
+						   g_lang[LS_PREFER_FUNCION]?"Agregar Nueva Funcion"
+						   :(g_lang[LS_PREFER_ALGORITMO]?"Agregar Nuevo SubAlgoritmo"
 							 :"Agregar Nuevo SubProceso") );
 		} else {
 			
-			const float *color = m_selection==i?color_selection:color_menu;
+			const float *color = m_selection==i?g_colors.selection:g_colors.menu;
 			glColor3fv(color);
 			glPushMatrix();
 			int px=20, py=base+10;
-			if (m_state==3 && m_selection==i) glTranslated(cur_x+(px-m_x0),cur_y+(py-m_y0),0);
+			if (m_state==3 and m_selection==i) glTranslated(g_state.cur_x+(px-g_state.m_x0),g_state.cur_y+(py-g_state.m_y0),0);
 			else glTranslated(px,py,0);
-			double sf = big_icons ? 1.5 : 1; glScaled(.08*sf,.12*sf,.1*sf);
+			double sf = g_config.big_icons ? 1.5 : 1; glScaled(.08*sf,.12*sf,.1*sf);
 			
-			glLineWidth(big_icons?2:1);
+			glLineWidth(g_config.big_icons?2:1);
 			begin_texto();
 			{
-				string &sp=procesos[i]->lpre;
+				string &sp = g_code.procesos[i]->lpre;
 				int p=0; int l=sp.size();
 				while (p<l)
 					dibujar_caracter(sp[p++]);
 			}
 			
 			{
-				string &s=procesos[i]->label;
+				string &s = g_code.procesos[i]->label;
 				int l=s.size(),p=0; size_t f=s.find('<');
 				if (f==string::npos) f=s.find('='); else f++;
 				if (f==string::npos) f=0; else f++;
 				int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
 				while (p<l) {
-					if (p==int(f)) glColor3fv(color_menu_bold);
+					if (p==int(f)) glColor3fv(g_colors.menu_bold);
 					if (p==t) glColor3fv(color);
 					dibujar_caracter(s[p++]);
 				}
@@ -99,22 +99,22 @@ void ProcessSelector::Draw ( ) {
 		}
 		
 		glLineWidth(1);
-		glColor3fv(color_menu); 
+		glColor3fv(g_colors.menu); 
 		glBegin(GL_LINES); 
-		glVertex2i(0,base); glVertex2i(win_w,base);
+		glVertex2i(0,base); glVertex2i(g_view.win_w,base);
 		glEnd();
 	}
 	glEnd();
 	mouse_cursor = Z_CURSOR_INHERIT;
-	trash->Draw();
+	g_trash->Draw();
 }
 
 void ProcessSelector::ProcessMotion (int x, int y) {
 	if (m_state) {
-		cur_x = x; cur_y = win_h-y;
+		g_state.cur_x = x; g_state.cur_y = g_view.win_h-y;
 		if (m_state<3 && m_anim_delta) {
 			m_selection=(y-m_anim_base)/m_anim_delta;
-			if (y<m_anim_base||m_selection<0||m_selection>int(procesos.size()-(edit_on?0:1))) m_selection=no_selection;
+			if (y<m_anim_base or m_selection<0 or m_selection>int(g_code.procesos.size()-(g_state.edit_on?0:1))) m_selection=no_selection;
 			
 		}
 		return;
@@ -122,34 +122,34 @@ void ProcessSelector::ProcessMotion (int x, int y) {
 }
 
 void ProcessSelector::ProcessClick (int button, int state, int x, int y) {
-	if (m_selection==int(procesos.size())) {
-		CreateEmptyProc(lang[LS_PREFER_FUNCION]?"Funcion":(lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso"));
+	if (m_selection==int(g_code.procesos.size())) {
+		CreateEmptyProc(g_lang[LS_PREFER_FUNCION]?"Funcion":(g_lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo":"SubProceso"));
 	}
 	if (m_selection!=no_selection) {
 		if (state==ZMB_DOWN) {
 			m_state=3;
-			if (edit_on) trash->Show();
-			cur_x=m_x0=x; cur_y=m_y0=win_h-y;
-		} else if (trash->IsSelected()) {
-			if (edit_on && (procesos[m_selection]->lpre!="Proceso "&&procesos[m_selection]->lpre!="Algoritmo "))
-				procesos.erase(procesos.begin()+m_selection); // no lo quita de la memoria, solo del arreglo, con eso alcanza, algun día corregiré el memory leak
+			if (g_state.edit_on) g_trash->Show();
+			g_state.cur_x = g_state.m_x0 = x; g_state.cur_y = g_state.m_y0 = g_view.win_h-y;
+		} else if (g_trash->IsSelected()) {
+			if (g_state.edit_on and (g_code.procesos[m_selection]->lpre!="Proceso " and g_code.procesos[m_selection]->lpre!="Algoritmo "))
+				g_code.procesos.erase(g_code.procesos.begin()+m_selection); // no lo quita de la memoria, solo del arreglo, con eso alcanza, algun día corregiré el memory leak
 			m_state=2;
-			trash->Hide();
+			g_trash->Hide();
 		} else {
-			SetProc(procesos[m_selection]);
+			SetProc(g_code.procesos[m_selection]);
 			m_state=0;
-			trash->Hide();
-			if (button==ZMB_RIGHT) start->SetEdit();
+			g_trash->Hide();
+			if (button==ZMB_RIGHT) g_code.start->SetEdit();
 		}
 	}
 }
 
 void ProcessSelector::Initialize ( ) {
-	process_selector = new ProcessSelector();
+	g_process_selector = new ProcessSelector();
 }
 
 void ProcessSelector::ProcessIddle ( ) {
-	if (big_icons) {
+	if (g_config.big_icons) {
 		interpolate_good(m_anim_base,50);
 		interpolate_good(m_anim_delta,40);
 	} else {

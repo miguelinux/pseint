@@ -40,7 +40,7 @@ IMPLEMENT_APP(mxApplication)
 #	define _IF_JPG(x)
 #endif
 	
-LangSettings lang(LS_DO_NOT_INIT);
+LangSettings g_lang(LS_DO_NOT_INIT);
 
 void SetModified() {}
 
@@ -54,7 +54,7 @@ bool mxApplication::OnInit() {
 		cerr<<"Use: "<<argv[0]<<" [--use_nassi_shneiderman=1] [--use_alternative_io_shapes=1] [--shape_colors] <input_file> <output_file>"<<endl;
 	}
 
-	lang.Reset();
+	g_lang.Reset();
 	
 	_IF_PNG(wxImage::AddHandler(new wxPNGHandler));
 	_IF_JPG(wxImage::AddHandler(new wxJPEGHandler));
@@ -62,54 +62,55 @@ bool mxApplication::OnInit() {
 	
 	// cargar el diagrama
 	bool force=false;
-	Entity::enable_partial_text=false;
-	Entity::show_comments=false;
+	g_config.enable_partial_text=false;
+	g_config.show_comments=false;
 	wxString fin,fout;
 	for(int i=1;i<argc;i++) { 
 		wxString arg(argv[i]);
 		if (arg=="--force") {
 			force=true;
 		} else if (arg=="--shapecolors") {
-			Entity::shape_colors=true;
+			g_config.shape_colors=true;
 		} else if (arg=="--nocroplabels") {
 			; // siempre es asi, parsear esto es solo para que no genere error
-		} else if (arg.StartsWith("--") && lang.ProcessConfigLine(_W2S(arg.Mid(2)))) {
+		} else if (arg.StartsWith("--") && g_lang.ProcessConfigLine(_W2S(arg.Mid(2)))) {
 			; // procesado en lang.ProcessConfigLine
 		} else if (arg.Len()) {
 			if (fin.Len()) fout=arg;
 			else fin=arg;
 		}
 	}
-	lang.Fix();
-	Entity::nassi_shneiderman=lang[LS_USE_NASSI_SHNEIDERMAN];
-	Entity::alternative_io=lang[LS_USE_ALTERNATIVE_IO_SHAPES];
+	g_lang.Fix();
+	g_config.nassi_shneiderman = g_lang[LS_USE_NASSI_SHNEIDERMAN];
+	g_config.alternative_io = g_lang[LS_USE_ALTERNATIVE_IO_SHAPES];
 	GlobalInitPre(); GlobalInitPost();
 	if (!Load(fin)) {
 		wxMessageBox(_Z("Error al leer pseudocódigo")); return false;
 	}
-	edit_on=false;
+	g_state.edit_on=false;
 	if ((new mxConfig())->ShowModal()==wxID_CANCEL) return 0; // opciones del usuairo
 	
-	if (!Entity::shape_colors) {
+	if (not g_config.shape_colors) {
+#warning REVISAR
 		// fondo
-		color_shape[ET_COUNT][0] = .97f;
-		color_shape[ET_COUNT][1] = .97f;
-		color_shape[ET_COUNT][2] = .97f;
+		g_colors.shape[ET_COUNT][0] = .97f;
+		g_colors.shape[ET_COUNT][1] = .97f;
+		g_colors.shape[ET_COUNT][2] = .97f;
 		// flechas
-		color_arrow[0] = .15f;
-		color_arrow[1] = .15f;
-		color_arrow[2] = .15f;
+		g_colors.arrow[0] = .15f;
+		g_colors.arrow[1] = .15f;
+		g_colors.arrow[2] = .15f;
 		// texto
 		for(int j=0;j<6;j++) {
-			color_label_high[j][0] = 0.0f;
-			color_label_high[j][1] = 0.0f;
-			color_label_high[j][2] = 0.0f;
+			g_colors.label_high[j][0] = 0.0f;
+			g_colors.label_high[j][1] = 0.0f;
+			g_colors.label_high[j][2] = 0.0f;
 		}
 	}
 	
 	// calcular tamaño total
 	int h=0,wl=0,wr=0, margin=10;
-	Entity *real_start = start->GetTopEntity();
+	Entity *real_start = g_code.start->GetTopEntity();
 	real_start->Calculate(wl,wr,h); 
 	int x0=real_start->x-wl,y0=real_start->y,x1=real_start->x+wr,y1=real_start->y-h;
 	real_start->Calculate();
@@ -123,8 +124,8 @@ bool mxApplication::OnInit() {
 
 	// generar el bitmap
 //	int margin=10;
-	int bw=((x1-x0)+2*margin)*zoom;
-	int bh=((y0-y1)+2*margin)*zoom;
+	int bw=((x1-x0)+2*margin)*g_view.zoom;
+	int bh=((y0-y1)+2*margin)*g_view.zoom;
 //	cerr<<bw<<","<<bh<<endl;
 	wxBitmap bmp(bw,bh);
 	dc=new wxMemoryDC(bmp);
@@ -133,11 +134,11 @@ bool mxApplication::OnInit() {
 	
 	// dibujar
 	Entity *aux=real_start;
-	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
-	line_width_bordes=1*d_zoom<1?1:int(d_zoom*1);
-	glLineWidth(line_width_flechas);
+	g_constants.line_width_flechas=2*g_view.d_zoom<1?1:int(g_view.d_zoom*2);
+	g_constants.line_width_bordes=1*g_view.d_zoom<1?1:int(g_view.d_zoom*1);
+	glLineWidth(g_constants.line_width_flechas);
 	glPushMatrix();
-	glScaled(d_zoom,-d_zoom,1);
+	glScaled(g_view.d_zoom,-g_view.d_zoom,1);
 	glTranslated(wl+margin,-margin,0);
 	do {
 		aux->Draw();

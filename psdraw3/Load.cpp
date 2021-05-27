@@ -90,23 +90,23 @@ static void ReemplazarOperadores(string &str) {
 	}
 }
 
-#define _new_this(e) if (cur_pos.size()) code2draw[cur_pos]=LineInfo(cur_proc,e)
-#define _new_prev() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,cur_proc)
-#define _new_none() if (cur_pos.size()) code2draw[cur_pos]=LineInfo(NULL,NULL)
+#define _new_this(e) if (cur_pos.size()) g_code.code2draw[cur_pos]=LineInfo(cur_proc,e)
+#define _new_prev()  if (cur_pos.size()) g_code.code2draw[cur_pos]=LineInfo(nullptr,cur_proc)
+#define _new_none()  if (cur_pos.size()) g_code.code2draw[cur_pos]=LineInfo(nullptr,nullptr)
 
 void LoadProc(vector<string> &vproc) {
-	code2draw.clear();
+	g_code.code2draw.clear();
 	string cur_pos; Entity *cur_proc; // para llenar code2draw
 	bool start_done=false;
-	cur_proc = start = new Entity(ET_PROCESO,"SinTitulo");
-	Entity *aux=start, *aux_end=start;
+	cur_proc = g_code.start = new Entity(ET_PROCESO,"SinTitulo");
+	Entity *aux = g_code.start, *aux_end = g_code.start;
 	// child_id guarda en qué lugar de los hijos de la entidad anterior hay que
 	// enlazar la próxima, o -1 si la próxima va como next y no como hijo
 	stack<int> children_stack; children_stack.push(-1);
 	for(size_t iv=0;iv<vproc.size();iv++) { 
 		string str = vproc[iv];
 		if (str.size() && str[str.size()-1]==';') str=str.substr(0,str.size()-1);
-		if (lang[LS_WORD_OPERATORS]) ReemplazarOperadores(str);
+		if (g_lang[LS_WORD_OPERATORS]) ReemplazarOperadores(str);
 		bool comillas=false;
 		for (unsigned int i=0;i<str.size();i++) {
 			if (str[i]=='\''||str[i]=='\"') comillas=!comillas;
@@ -122,13 +122,13 @@ void LoadProc(vector<string> &vproc) {
 			string s1=str.substr(0,str.find(' '));
 			string s2=str.substr(str.find(' ')+1);
 			if (s1=="PROCESO") { 
-				start->lpre=lang[LS_PREFER_ALGORITMO]?"Algoritmo ":"Proceso "; 
-				start->SetLabel(s2); 
+				g_code.start->lpre = g_lang[LS_PREFER_ALGORITMO]?"Algoritmo ":"Proceso "; 
+				g_code.start->SetLabel(s2); 
 			} else if (s1=="SUBPROCESO") { 
-				start->lpre=lang[LS_PREFER_FUNCION]?"Funcion ":(lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo ":"SubProceso "); 
-				start->SetLabel(s2); 
+				g_code.start->lpre = g_lang[LS_PREFER_FUNCION]?"Funcion ":(g_lang[LS_PREFER_ALGORITMO]?"SubAlgoritmo ":"SubProceso "); 
+				g_code.start->SetLabel(s2); 
 			}
-			_new_this(start); /*cur_proc=start;*/ start_done=true;
+			_new_this(g_code.start); /*cur_proc=g_code.start;*/ start_done=true;
 			continue;
 		}
 		else if (str=="FINPROCESO") {
@@ -160,13 +160,13 @@ void LoadProc(vector<string> &vproc) {
 		}
 		else if (StartsWith(str,"#comment ")) {
 			aux=Add(children_stack,aux,new Entity(ET_COMENTARIO,str.substr(9)));
-			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
+			if (not start_done) { g_code.start->UnLink(); aux->LinkNext(g_code.start); aux = g_code.start; }
 		}
 		else if (StartsWith(str,"#comment-inline ")) {
 			if (aux && aux->type==ET_SEGUN) continue;
 			aux=Add(children_stack,aux,new Entity(ET_COMENTARIO,str.substr(16)));
 			aux->variante=true;
-			if (!start_done) { start->UnLink(); aux->LinkNext(start); aux=start; }
+			if (not start_done) { g_code.start->UnLink(); aux->LinkNext(g_code.start); aux = g_code.start; }
 		}
 		else if (StartsWith(str,"ESCRIBIR ")) {
 			aux=Add(children_stack,aux,new Entity(ET_ESCRIBIR,str.substr(9)));
@@ -288,15 +288,15 @@ void LoadProc(vector<string> &vproc) {
 	}
 	Entity *efin=new Entity(ET_PROCESO,""); 
 	efin->variante=true;
-	efin->lpre=string("Fin")+start->lpre.substr(0,start->lpre.size()-1);
+	efin->lpre=string("Fin")+g_code.start->lpre.substr(0,g_code.start->lpre.size()-1);
 	efin->SetLabel("");
 	aux_end->LinkNext(efin);
 }
 
 bool Load(const char *filename) {
 	// cargar todo el algoritmo en un vector
-	loading=true;
-	if (filename) fname=filename;
+	g_state.loading = true;
+	if (filename) g_state.fname = filename;
 	else { New(); return false; }
 	ifstream file(filename);
 	if (!file.is_open()) { New(); return false; }
@@ -310,8 +310,8 @@ bool Load(const char *filename) {
 	for(unsigned int i=0;i<vfile.size();i++) {
 		string &str=vfile[i];
 		if (StartsWith(str,"PROCESO ")||StartsWith(str,"SUBPROCESO ")||StartsWith(str,"FUNCION ")||StartsWith(str,"FUNCIÓN ")) {
-			if (StartsWith(str,"PROCESO ")) imain=procesos.size();
-			Entity::AllSet(start=NULL);
+			if (StartsWith(str,"PROCESO ")) imain = g_code.procesos.size();
+			Entity::AllSet(g_code.start=nullptr);
 			vector<string> vproc;
 			for(int j=i0;;j++) {
 				string &str=vfile[j];
@@ -324,54 +324,54 @@ bool Load(const char *filename) {
 				it->EditLabel(0);
 				++it;
 			}
-			procesos.push_back(start);
+			g_code.procesos.push_back(g_code.start);
 		}
 	}
-	SetProc(procesos[imain]);
-	loading=false; modified=false;
+	SetProc(g_code.procesos[imain]);
+	g_state.loading = g_state.modified = false;
 #ifndef _FOR_EXPORT
-	if (procesos.size()>1?2:0) process_selector->Show();
+	if (g_code.procesos.size()>1?2:0) g_process_selector->Show();
 #endif
 	return true;
 }
 
 bool Save(const char *filename) {
-	if (filename) fname=filename;
-	ofstream fout(fname.c_str());
+	if (filename) g_state.fname=filename;
+	ofstream fout(g_state.fname);
 	if (!fout.is_open()) return false;
-	code2draw.clear(); debug_current=NULL;
+	g_code.code2draw.clear(); g_state.debug_current = nullptr;
 	int line=1;
-	for(unsigned int i=0;i<procesos.size();i++) {
-		procesos[i]->GetTopEntity()->Print(fout,"",procesos[i],line);
-		if (i+1!=procesos.size()) { fout<<endl; line++; }
+	for(unsigned int i=0;i<g_code.procesos.size();i++) {
+		g_code.procesos[i]->GetTopEntity()->Print(fout,"",g_code.procesos[i],line);
+		if (i+1!=g_code.procesos.size()) { fout<<endl; line++; }
 	}
 	fout.close();
-	modified=false;
+	g_state.modified = false;
 	return true;
 }
 
 // inicializa las estructuras de datos con un algoritmo en blanco
 void CreateEmptyProc(string type) {
-	Entity::AllSet(NULL);
-	start = new Entity(ET_PROCESO,"");
+	Entity::AllSet(nullptr);
+	g_code.start = new Entity(ET_PROCESO,"");
 	Entity *aux = new Entity(ET_PROCESO,"");
 	aux->variante=true;
-	start->LinkNext(aux);
-	start->lpre=type+" "; start->SetLabel("SinTitulo");
+	g_code.start->LinkNext(aux);
+	g_code.start->lpre=type+" "; g_code.start->SetLabel("SinTitulo");
 	aux->lpre=string("Fin")+type; aux->SetLabel("");
 	Entity::CalculateAll();
-	procesos.push_back(start);
+	g_code.procesos.push_back(g_code.start);
 }
 
 void New() {
-	fname="temp.psd"; 
-	CreateEmptyProc(lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso");
+	g_state.fname = "temp.psd"; 
+	CreateEmptyProc(g_lang[LS_PREFER_ALGORITMO]?"Algoritmo":"Proceso");
 	ProcessMenu(MO_ZOOM_EXTEND);
-	modified=false;
+	g_state.modified = false;
 }
 
 void SetProc(Entity *proc) {
-	Entity::AllSet(start=proc);
+	Entity::AllSet(g_code.start=proc);
 	Entity::CalculateAll(true);
 	ProcessMenu(MO_ZOOM_EXTEND);
 	Entity::AllIterator it = Entity::AllBegin();

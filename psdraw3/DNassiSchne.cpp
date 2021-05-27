@@ -32,8 +32,8 @@ static void DrawSolidRectangle(const float *color, int x, int y, int wl, int wr,
 //static void DrawBackground() {
 //	int bk_xm=(bk_x0+bk_x1)/2, bk_w=(bk_x1-bk_x0)/2;
 //	DrawSolidRectangle(color_shape[ET_COUNT],bk_xm,bk_y1,bk_w,bk_w,bk_y1-bk_y0);
-//	bk_x0=bk_x1=start->d_x;
-//	bk_y0=bk_y1=start->d_y;
+//	bk_x0=bk_x1=g_code.start->d_x;
+//	bk_y0=bk_y1=g_code.start->d_y;
 //}
 
 static void DrawTextNS(const float *color, int x, int y, string label) {
@@ -50,16 +50,16 @@ static void DrawTextNS(const float *color, int x, int y, string label) {
 
 void Entity::DrawNassiShne(bool force) {
 	if (bwl>2000) cerr << bwl << endl;
-	int icolor=Entity::shape_colors?type:ET_COUNT;
+	int icolor=g_config.shape_colors?type:ET_COUNT;
 	if (icolor==ET_OPCION) icolor=ET_SEGUN;
-//	if (this==start) DrawBackground();
+//	if (this==g_code.start) DrawBackground();
 //	if (mouse==this) DrawSolidRectangle(color_shape[ET_COUNT],d_fx,d_fy,d_bwl,d_bwr,d_bh);
-	if (this==mouse)
-		DrawSolidRectangle(color_ghost,d_dx+fx,d_dy+fy-margin,bwl-margin,bwr-margin,bh-2*margin);
+	if (this==g_state.mouse)
+		DrawSolidRectangle(g_colors.ghost,g_view.d_dx+fx,g_view.d_dy+fy-margin,bwl-margin,bwr-margin,bh-2*margin);
 	if (type!=ET_AUX_PARA&&type!=ET_OPCION) {
-		if (!nolink || mouse==this) {
-			DrawSolidRectangle(color_shape[icolor],d_fx,d_fy,d_bwl,d_bwr,d_bh);
-			DrawRectangle(color_border[icolor],d_fx,d_fy,d_bwl,d_bwr,d_bh);
+		if ((not nolink) or g_state.mouse==this) {
+			DrawSolidRectangle(g_colors.shape[icolor],d_fx,d_fy,d_bwl,d_bwr,d_bh);
+			DrawRectangle(g_colors.border[icolor],d_fx,d_fy,d_bwl,d_bwr,d_bh);
 		}
 	}
 	// guardar bb para el gran retangulo blanco de fondo
@@ -69,7 +69,7 @@ void Entity::DrawNassiShne(bool force) {
 	if (d_fx+d_bwr>bk_x1) bk_x1=d_fx+d_bwr;
 	if (!nolink) {
 		if (type==ET_OPCION) {
-			glColor3fv(color_border[icolor]);
+			glColor3fv(g_colors.border[icolor]);
 			glBegin(GL_LINES);
 //			if (edit_on) { glVertex2i(d_x-d_bwl+flecha_w,d_y); glVertex2i(d_x-d_bwl+flecha_w,d_y-h); }
 			int px=GetParent()->child_dx[GetChildId()]-bwl;
@@ -81,7 +81,7 @@ void Entity::DrawNassiShne(bool force) {
 			if (!GetChild(0)) { glVertex2i(d_x-d_bwl,d_y-h); glVertex2i(d_x+d_bwr,d_y-h); }
 			glEnd();
 		} else if (type==ET_SEGUN) {
-			glColor3fv(color_border[icolor]);
+			glColor3fv(g_colors.border[icolor]);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
@@ -98,9 +98,9 @@ void Entity::DrawNassiShne(bool force) {
 			
 		} else 
 		if (type==ET_SI) {
-			DrawTextNS(color_arrow,d_x-d_bwl+10,d_y-2*h,"Si");
-			DrawTextNS(color_arrow,d_x+d_bwr-35,d_y-2*h,"No");
-			glColor3fv(color_border[icolor]);
+			DrawTextNS(g_colors.arrow,d_x-d_bwl+10,d_y-2*h,"Si");
+			DrawTextNS(g_colors.arrow,d_x+d_bwr-35,d_y-2*h,"No");
+			glColor3fv(g_colors.border[icolor]);
 			glBegin(GL_LINE_STRIP);
 			glVertex2i(d_x-d_bwl,d_y);
 			int px=d_x;
@@ -117,9 +117,9 @@ void Entity::DrawNassiShne(bool force) {
 	}
 
 	if (type==ET_OPCION) { // + para agregar opciones
-		if (edit_on && mouse!=this) {
+		if (g_state.edit_on and g_state.mouse!=this) {
 			glBegin(GL_LINES);
-			glColor3fv(color_label_high[4]);
+			glColor3fv(g_colors.label_high[4]);
 			glVertex2i(d_x-d_bwl+3*flecha_w/4,d_y-d_h/2); glVertex2i(d_x-d_bwl+1*flecha_w/4,d_y-d_h/2);
 			glVertex2i(d_x-d_bwl+flecha_w/2,d_y-1*d_h/3); glVertex2i(d_x-d_bwl+flecha_w/2,d_y-2*d_h/3);
 			glEnd();
@@ -128,14 +128,14 @@ void Entity::DrawNassiShne(bool force) {
 	
 	if (type==ET_SELECTION) { // + para agregar opciones
 		int w = margin, x = d_fx+d_w/2-margin-margin/2, y = d_fy-margin-margin/2;
-		glLineWidth(line_width_bordes);
+		glLineWidth(g_constants.line_width_bordes);
 		w /= 2;
 		glBegin(GL_LINES);
-		glColor3fv(color_arrow);
+		glColor3fv(g_colors.arrow);
 		glVertex2i(x-w,y-w); glVertex2i(x+w,y+w);
 		glVertex2i(x+w,y-w); glVertex2i(x-w,y+w);
 		glEnd();
-		glLineWidth(line_width_flechas);
+		glLineWidth(g_constants.line_width_flechas);
 	}
 //	// texto;
 	DrawText();
@@ -155,7 +155,7 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 	}
 	
 	// calcular tamaños de la forma segun el texto
-	if (type==ET_COMENTARIO && !show_comments) { 
+	if (type==ET_COMENTARIO and (not g_config.show_comments)) { 
 		t_w=bwl=bwr=0; bh=0;
 	} else {
 		if (!t_w) w=margin*6; else { w=t_w; w+=2*margin; } h=t_h+2*margin; 
@@ -165,7 +165,7 @@ void Entity::CalculateNassiShne() { // calcula lo propio y manda a calcular al s
 	if (!nolink && GetChildCount()) {
 		if (type==ET_OPCION) {
 			bwr=bwl=(w=t_w+2*margin)/2;
-			if (edit_on) 
+			if (g_state.edit_on) 
 			{ bwr+=flecha_w; bwl+=flecha_w; } // el + para agregar opciones
 			child_dx[0]=0; child_bh[0]=0;
 			if (GetChild(0)) {

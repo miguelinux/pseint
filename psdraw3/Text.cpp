@@ -17,7 +17,7 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	glColor3fv(color);
 	glPushMatrix();
 	glTranslated(x,y,0);
-	if (big_icons) glScaled(.12,.15,0);
+	if (g_config.big_icons) glScaled(.12,.15,0);
 	else glScaled(.09,.11,0);
 	begin_texto();
 	for(int i=0;t[i]!='\0';++i)
@@ -35,7 +35,7 @@ bool CompilerInfo(GLuint id){
   int len; glGetShaderiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
   if (len){
     char * infoLog=(char *)malloc(sizeof(char)*(len+1));
-    glGetShaderInfoLog(id,len+1,NULL,infoLog);
+    glGetShaderInfoLog(id,len+1,nullptr,infoLog);
     cout << "ERROR COMPILING SHADER: " << infoLog << endl;
     free(infoLog);
   }
@@ -47,7 +47,7 @@ bool CompilerInfo(GLuint id){
 //  int len; glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len); // cant de caracteres
 //  if (len){
 //    char * infoLog=(char *)malloc(sizeof(char)*(len+1));
-//    glGetProgramInfoLog(id,len+1,NULL,infoLog);
+//    glGetProgramInfoLog(id,len+1,nullptr,infoLog);
 //    cout << "ERROR LINKING SHADER: " << infoLog << endl;
 //    free(infoLog);
 //  }
@@ -83,7 +83,7 @@ bool init_shaders() {
 		"}\n";
 	
 	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(f,1,&sf4,NULL);
+	glShaderSource(f,1,&sf4,nullptr);
 	glCompileShader(f);
 	shader_ok = CompilerInfo(f);
 	if (!shader_ok) return false;
@@ -101,7 +101,7 @@ bool init_shaders() {
 
 void begin_texto( ) {
 	x_texto = 0;
-	texture_font.Select();
+	g_texture_font.Select();
 #ifdef _USE_DF
 	if (init_shaders()) {
 		glUseProgram(progID);

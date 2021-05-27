@@ -24,7 +24,7 @@ public:
 	static void Initialize();
 };
 
-extern ShapesBar *shapes_bar;
+extern ShapesBar *g_shapes_bar;
 
 #endif
 

@@ -10,7 +10,7 @@ public:
 	static void Initialize();
 };
 
-extern ToolBar *toolbar;
+extern ToolBar *g_toolbar;
 
 #endif
 

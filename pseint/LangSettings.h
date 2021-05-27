@@ -54,7 +54,7 @@ struct LangSettings {
 #ifdef FOR_WXPSEINT
 		wxString user_desc, long_desc;
 #endif
-		aux_struct(){ nombre=NULL; default_value=false; }
+		aux_struct(){ nombre=nullptr; default_value=false; }
 		void Set(const char *nom, bool val, const char *udesc, const char *ldesc) { 
 			nombre=nom; default_value=val;
 #ifdef FOR_WXPSEINT

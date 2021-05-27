@@ -31,7 +31,7 @@ void NotifyModification() {
 	zocket_escribir(zocket,"modified\n",9);
 }
 bool SendUpdate(int action) {
-	if (!modified && action==MO_UPDATE) return true;
+	if (!g_state.modified && action==MO_UPDATE) return true;
 	if (!Save()) return false;
 	if (zocket==ZOCKET_ERROR) return false;
 	if (action==MO_UPDATE)
@@ -69,7 +69,7 @@ void ReadComm( ) {
 		while (pn!=string::npos) {
 			string sr=sr_full.substr(lpn,pn-lpn); lpn=pn+1;
 			if (sr=="edit") { 
-				edit_on=true; Raise();
+				g_state.edit_on=true; Raise();
 			}
 			else if (sr=="send update") { 
 				SendUpdate(MO_UPDATE);
@@ -96,34 +96,34 @@ void ReadComm( ) {
 			else if (sr.substr(0,11)=="errors add ") {
 				sr=sr.substr(11);
 				size_t p=sr.find(' ');
-				map<string,LineInfo>::iterator it = code2draw.find(sr.substr(0,p));
-				if (it!=code2draw.end()) it->second.entidad->error+=sr.substr(p+1)+"  ";
+				map<string,LineInfo>::iterator it = g_code.code2draw.find(sr.substr(0,p));
+				if (it!=g_code.code2draw.end()) it->second.entidad->error+=sr.substr(p+1)+"  ";
 			}
 			else if (sr.substr(0,5)=="step ") {
 				sr=sr.substr(5);
-				map<string,LineInfo>::iterator it = code2draw.find(sr);
-				if (it!=code2draw.end()) 
+				map<string,LineInfo>::iterator it = g_code.code2draw.find(sr);
+				if (it!=g_code.code2draw.end()) 
 					FocusEntity(&(it->second));
 			}
 			else if (sr=="debug start") { 
-				debugging=true;
-				if (edit_on) ToggleEditable(); 
+				g_state.debugging=true;
+				if (g_state.edit_on) ToggleEditable(); 
 				Raise();
 			}
 			else if (sr.substr(0,4)=="pos ") { 
 				sr.erase(0,4); int p=sr.find(' ',0);
 				int x=atoi(sr.substr(0,p).c_str());
 				int y=atoi(sr.substr(p+1).c_str());
-				main_window->Move(x,y);
+				g_main_window->Move(x,y);
 			} else if (sr.substr(0,5)=="size ") {
 				sr.erase(0,5); int p=sr.find(' ',0);
 				int w=atoi(sr.substr(0,p).c_str());
 				int h=atoi(sr.substr(p+1).c_str());
-				main_window->SetSize(w,h);
+				g_main_window->SetSize(w,h);
 			}
 			else if (sr=="debug stop") {
-				debugging=false;
-				if (!edit_on) ToggleEditable();
+				g_state.debugging=false;
+				if (!g_state.edit_on) ToggleEditable();
 			}
 			pn=sr_full.find('\n',lpn);
 		}

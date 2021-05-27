@@ -28,12 +28,6 @@ Tipos de entidades:
 enum ETYPE { ET_COMENTARIO, ET_LEER, ET_PROCESO, ET_ESCRIBIR, ET_ASIGNAR, ET_SI, ET_SEGUN, ET_OPCION, ET_PARA, ET_MIENTRAS, ET_REPETIR, ET_AUX_PARA, ET_SELECTION, ET_COUNT };
 
 struct Entity : public EntityLinking<Entity> {
-	static bool alternative_io; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
-	static bool nassi_shneiderman; ///< usar diagramas de Nassi-Shneiderman en lugar de "clásico"
-	static bool shape_colors; ///< mostrar los bloques de diferentes colores
-	static bool enable_partial_text; ///< acortar labels largos
-	static bool show_comments; ///< mostrar entidades de tipo ET_COMENTARIO
-	static int max_label_len[ET_COUNT];
 	ETYPE type;
 	// cosas definidas por el constructor al setear la etiqueta
 	int w,h; // tamaño real

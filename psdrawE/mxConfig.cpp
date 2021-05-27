@@ -50,12 +50,12 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,_Z("Guardar diagrama de flujo"),wxDe
 	astyles.Add(_Z("Clásico (i/o alternativa)"));
 	astyles.Add(_Z("Nassi-Shneiderman"));
 	cm_style = new wxComboBox(this,MID_STYLE,_Z(""),wxDefaultPosition,wxDefaultSize,astyles,wxCB_READONLY|wxCB_SIMPLE);
-	cm_style->SetSelection(Entity::nassi_shneiderman?2:(Entity::alternative_io?1:0));
+	cm_style->SetSelection(g_config.nassi_shneiderman?2:(g_config.alternative_io?1:0));
 	AddWithLabel(this,sizer,_Z("Estilo:"),cm_style);
 	
 	wxArrayString procs;
-	for(unsigned int i=0;i<procesos.size();i++) 
-		procs.Add((procesos[i]->lpre+procesos[i]->label).c_str());
+	for(unsigned int i=0;i<g_code.procesos.size();i++) 
+		procs.Add((g_code.procesos[i]->lpre+g_code.procesos[i]->label).c_str());
 	cm_proc = new wxComboBox(this,MID_PROC,_Z(""),wxDefaultPosition,wxDefaultSize,procs,wxCB_READONLY|wxCB_SIMPLE);
 	AddWithLabel(this,sizer,_Z("(Sub)Proceso:"),cm_proc);
 	
@@ -67,10 +67,10 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,_Z("Guardar diagrama de flujo"),wxDe
 	AddWithLabel(this,sizer,_Z("Alto(px):"),tx_alto);
 	
 	ch_comments = new wxCheckBox(this,MID_COMMENTS,_Z("Incluir comentarios"));
-	ch_comments->SetValue(Entity::show_comments);
+	ch_comments->SetValue(g_config.show_comments);
 	sizer->Add (ch_comments,szflag);
 	ch_colors = new wxCheckBox(this,MID_COLORS,_Z("Utilizar colores"));
-	ch_colors->SetValue(Entity::shape_colors);
+	ch_colors->SetValue(g_config.shape_colors);
 	sizer->Add (ch_colors,szflag);
 	ch_crop  = new wxCheckBox(this,MID_CROP,_Z("Cortar textos largos"));
 	sizer->Add (ch_crop,szflag);
@@ -93,10 +93,10 @@ mxConfig::mxConfig():wxDialog(NULL,wxID_ANY,_Z("Guardar diagrama de flujo"),wxDe
 }
 
 static void get_wh(float z, int &rw, int &rh) {
-	zoom=d_zoom=z;
+	g_view.zoom = g_view.d_zoom = z;
 	int h=0,wl=0,wr=0, margin=10;
 	Entity::CalculateAll(true);
-	Entity *real_start = start->GetTopEntity();
+	Entity *real_start = g_code.start->GetTopEntity();
 	real_start->Calculate(wl,wr,h); 
 	int x0=real_start->x-wl,y0=real_start->y,x1=real_start->x+wr,y1=real_start->y-h;
 	rw=( (x1-x0)+2*margin )*z;
@@ -154,7 +154,7 @@ void mxConfig::OnZoom (wxCommandEvent & evt) {
 void mxConfig::OnComments (wxCommandEvent &evt) {
 	evt.Skip();
 	if (ignore_events) return;
-	Entity::show_comments=ch_comments->GetValue();
+	g_config.show_comments = ch_comments->GetValue();
 	Entity::CalculateAll();
 	SetZoom();
 }
@@ -162,13 +162,13 @@ void mxConfig::OnComments (wxCommandEvent &evt) {
 void mxConfig::OnCrop (wxCommandEvent &evt) {
 	evt.Skip();
 	if (ignore_events) return;
-	Entity::enable_partial_text=ch_crop->GetValue();
+	g_config.enable_partial_text = ch_crop->GetValue();
 	Entity::CalculateAll(true);
 	SetZoom();	
 }
 
 void mxConfig::SetProceso (int i) {
-	SetProc(procesos[i]);
+	SetProc(g_code.procesos[i]);
 	SetZoom();
 }
 
@@ -180,14 +180,14 @@ void mxConfig::OnProc (wxCommandEvent & evt) {
 
 void mxConfig::OnColors (wxCommandEvent & evt) {
 	evt.Skip();
-	Entity::shape_colors = ch_colors->GetValue();
+	g_config.shape_colors = ch_colors->GetValue();
 }
 
 void mxConfig::OnStyle (wxCommandEvent & evt) {
 	evt.Skip();
 	int i = cm_style->GetSelection();
-	Entity::nassi_shneiderman = i==2;
-	Entity::alternative_io = i==1;
+	g_config.nassi_shneiderman = i==2;
+	g_config.alternative_io = i==1;
 	Entity::CalculateAll(true);
 	SetZoom();	
 }

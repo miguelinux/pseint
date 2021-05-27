@@ -42,6 +42,6 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern Canvas *canvas;
+extern Canvas *g_canvas;
 
 #endif

@@ -11,7 +11,7 @@
 #include "../wxPSeInt/string_conversions.h"
 using namespace std;
 
-Canvas *canvas = NULL;
+Canvas *g_canvas = nullptr;
 
 BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
 	EVT_SIZE(Canvas::OnSize)
@@ -42,7 +42,7 @@ Canvas::Canvas(wxWindow *parent)
 	: wxGLCanvas(parent,glAttribs()/*.SampleBuffers(1).Samplers(4)*/,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxFULL_REPAINT_ON_RESIZE)
 {
 	
-	canvas=this; m_context = new wxGLContext(this);
+	g_canvas=this; m_context = new wxGLContext(this);
 	mouse_buttons=modifiers=0;
 }
 
@@ -56,13 +56,13 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this); // no se usa el objeto pero es necesario que esté construido
 	wxGLCanvas::SetCurrent(*m_context);
 	
-	static wxCursor *cursores=NULL;
+	static wxCursor *cursores = nullptr;
 	static CURSORES old_cursor=Z_CURSOR_COUNT;
 	if (!cursores) {
-		if(Entity::shape_colors)
-			glClearColor(color_back_alt[0],color_back_alt[1],color_back_alt[2],1.f);
+		if(g_config.shape_colors)
+			glClearColor(g_colors.back[0],g_colors.back[1],g_colors.back[2],1.f);
 		else
-			glClearColor(color_back[0],color_back[1],color_back[2],1.f);
+			glClearColor(g_colors.back[0],g_colors.back[1],g_colors.back[2],1.f);
 		glDisable(GL_DEPTH);
 		int win_w,win_h;
 		GetClientSize(&win_w, &win_h);
@@ -81,7 +81,7 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 		cursores[Z_CURSOR_NONE]=wxCursor(wxCURSOR_SIZING);
 		cursores[Z_CURSOR_MOVE]=wxCursor(wxCURSOR_SIZING);
 	}
-	glLineStipple(zoom,0x0707);
+	glLineStipple(g_view.zoom,0x0707);
 	
 	display_cb();
 	if (old_cursor!=mouse_cursor) wxSetCursor(cursores[mouse_cursor]);

@@ -18,7 +18,7 @@ public:
 	static void Initialize();
 };
 
-extern ProcessSelector *process_selector;
+extern ProcessSelector *g_process_selector;
 
 #endif
 

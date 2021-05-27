@@ -54,7 +54,7 @@ void draw_error_mark(Entity *e, double delta) {
 		glVertex2d(x-2*delta,y+2*delta);
 		glVertex2d(x,y+2*delta);
 	glEnd();
-	glColor3fv(color_error);
+	glColor3fv(g_colors.error);
 	glBegin(GL_LINE_LOOP);
 		glVertex2d(x+delta,y);
 		glVertex2d(x,y-2*delta);
@@ -74,7 +74,7 @@ void draw_error_mark(Entity *e, double delta) {
 void draw_error_mark_simple(Entity *e, double delta) {
 	double x=e->d_fx-e->w/2-delta;
 	double y=e->d_fy-e->h/2+2*delta;
-	glColor3fv(color_error);
+	glColor3fv(g_colors.error);
 	glBegin(GL_LINES);
 		glVertex2d(x,y-delta);
 		glVertex2d(x-2*delta,y+delta);
@@ -136,115 +136,116 @@ void MoveToChild(Entity *mouse, Entity *aux, int i){
 
 void display_cb() {
 	
-	mouse_cursor=Z_CURSOR_CROSSHAIR;
-	status_color=NULL;
-	if (entity_to_del) delete entity_to_del;
+	mouse_cursor = Z_CURSOR_CROSSHAIR;
+	status_color = nullptr;
+	if (g_code.entity_to_del) delete g_code.entity_to_del;
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	if (process_selector->IsActive()) { process_selector->Draw(); return; }
+	if (g_process_selector->IsActive()) { g_process_selector->Draw(); return; }
 	
 	// dibujar el diagrama
-	double mx=cur_x/zoom, my=cur_y/zoom;
-	Entity *aux = start->GetTopEntity();
-	Entity *my_start=aux;
+	double mx = g_state.cur_x/g_view.zoom, my = g_state.cur_y/g_view.zoom;
+	Entity *aux = g_code.start->GetTopEntity();
+	Entity *my_start = aux;
 	bool found=false;
-	line_width_flechas=2*d_zoom<1?1:int(d_zoom*2);
-	line_width_bordes=1*d_zoom<1?1:int(d_zoom*1);
-	glLineWidth(line_width_flechas);
+	g_constants.line_width_flechas = 2*g_view.d_zoom<1?1:int(g_view.d_zoom*2);
+	g_constants.line_width_bordes = 1*g_view.d_zoom<1?1:int(g_view.d_zoom*1);
+	glLineWidth(g_constants.line_width_flechas);
 	glPushMatrix();
-	glScalef(d_zoom,d_zoom,1);
+	glScalef(g_view.d_zoom,g_view.d_zoom,1);
 	do {
-		if (!found && mouse && mouse->type!=ET_OPCION && (cur_x-mouse_link_x)*(cur_x-mouse_link_x)+(cur_y-mouse_link_y)*(cur_y-mouse_link_y)>mouse_link_delta) {
-			if (aux->CheckLinkNext(cur_x,cur_y) && !mouse->Contains(aux)) {
-				mouse_link_x = cur_x; mouse_link_y = cur_y;
-				MoveToNext(mouse,aux);
+		if ((not found) and g_state.mouse and g_state.mouse->type!=ET_OPCION and (g_state.cur_x-mouse_link_x)*(g_state.cur_x-mouse_link_x)+(g_state.cur_y-mouse_link_y)*(g_state.cur_y-mouse_link_y)>mouse_link_delta) {
+			if (aux->CheckLinkNext(g_state.cur_x,g_state.cur_y) and (not g_state.mouse->Contains(aux))) {
+				mouse_link_x = g_state.cur_x; mouse_link_y = g_state.cur_y;
+				MoveToNext(g_state.mouse,aux);
 				found=true;
 			} else if (aux->GetChildCount()) {
-				int i=aux->CheckLinkChild(cur_x,cur_y);
+				int i=aux->CheckLinkChild(g_state.cur_x,g_state.cur_y);
 				if (i!=-1) {
-					mouse_link_x = cur_x; mouse_link_y = cur_y;
-					MoveToChild(mouse,aux,i);
+					mouse_link_x = g_state.cur_x; mouse_link_y = g_state.cur_y;
+					MoveToChild(g_state.mouse,aux,i);
 					found=true;
 				}
 			}
 		}
-		if (edit_on && (mouse?(aux==mouse):aux->CheckMouse(mx,my,false))) {
+		if (g_state.edit_on and (g_state.mouse?(aux==g_state.mouse):aux->CheckMouse(mx,my,false))) {
 			RaiiColorChanger rcc;
-			rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.75); 
-			rcc.Change(color_arrow[1],.5); rcc.Change(color_arrow[2],.5); // rcc.Change(color_arrow[0],1);
-			line_width_bordes*=2;
+			rcc.Change(g_colors.shape[g_config.shape_colors?aux->type:ET_COUNT][2],.75); 
+			rcc.Change(g_colors.arrow[1],.5); rcc.Change(g_colors.arrow[2],.5); // rcc.Change(color_arrow[0],1);
+			g_constants.line_width_bordes*=2;
 			aux->Draw(aux->type==ET_OPCION);
-			line_width_bordes/=2;
-			if (aux->error.size()) SetStatus(color_error,aux->error);
-			else if (!mouse && aux->IsLabelCropped()) SetStatus(color_label_high[0],aux->label);
-		} else if (debugging && debug_current==aux) {
+			g_constants.line_width_bordes/=2;
+			if (aux->error.size()) SetStatus(g_colors.error,aux->error);
+			else if ((not g_state.mouse) and aux->IsLabelCropped()) SetStatus(g_colors.label_high[0],aux->label);
+		} else if (g_state.debugging and g_state.debug_current==aux) {
 			RaiiColorChanger rcc;
-			line_width_bordes*=2;
-			if (!Entity::nassi_shneiderman) {
-				rcc.Change(color_shape[Entity::shape_colors?aux->type:ET_COUNT][2],.65); rcc.Change(color_arrow[1],.4);
-				rcc.Change(color_arrow[2],.4); // rcc.Change(color_arrow[0],1);
+			g_constants.line_width_bordes*=2;
+			if (not g_config.nassi_shneiderman) {
+				rcc.Change(g_colors.shape[g_config.shape_colors?aux->type:ET_COUNT][2],.65); rcc.Change(g_colors.arrow[1],.4);
+				rcc.Change(g_colors.arrow[2],.4); // rcc.Change(color_arrow[0],1);
 			}
 			aux->Draw();
-			line_width_bordes/=2;
-			draw_debug_arrow(debug_current,5);
+			g_constants.line_width_bordes /= 2;
+			draw_debug_arrow(g_state.debug_current,5);
 		} else {
 			aux->Draw();
 		}
-		if (!aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
-		if (!mouse && edit==aux && aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
+		if (not aux->error.empty()) draw_error_mark/*_simple*/(aux,4);
+		if ((not g_state.mouse) and g_state.edit==aux and aux->CheckMouse(mx,my,false)) mouse_cursor=Z_CURSOR_TEXT;
 		aux = Entity::NextEntity(aux);
 	} while (aux);
-	if (mouse && !mouse->GetPrev() && !mouse->GetParent()) 
-		mouse->Draw(); // cuando recien salen de la shapebar no esta linkeadas al algoritmo, no los toma la recorrida anterior
-	if (mouse && mouse->type==ET_OPCION) {
-		Entity *segun = mouse->GetParent();
-		int new_id = segun->CheckLinkOpcion(cur_x,cur_y);
+	if (g_state.mouse and (not g_state.mouse->GetPrev()) and (not g_state.mouse->GetParent())) 
+		g_state.mouse->Draw(); // cuando recien salen de la shapebar no esta linkeadas al algoritmo, no los toma la recorrida anterior
+	if (g_state.mouse and g_state.mouse->type==ET_OPCION) {
+		Entity *segun = g_state.mouse->GetParent();
+		int new_id = segun->CheckLinkOpcion(g_state.cur_x,g_state.cur_y);
 		if (new_id!=-1) {
-			int old_id = mouse->GetChildId();
+			int old_id = g_state.mouse->GetChildId();
 			segun->RemoveChild(old_id,false);
 			if (old_id<new_id) --new_id;
-			segun->InsertChild(new_id,mouse);
+			segun->InsertChild(new_id,g_state.mouse);
 			segun->Calculate();
 		}
 	}
 	
-	if (selecting_zoom||selecting_entities) {
-		glColor3fv(color_menu);
+	if (g_state.selecting_zoom or g_state.selecting_entities) {
+		glColor3fv(g_colors.menu);
 		glBegin(GL_LINE_LOOP);
-			glVertex2i(m_x0,m_y0);
-			glVertex2i(m_x0,cur_y);
-			glVertex2i(cur_x,cur_y);
-			glVertex2i(cur_x,m_y0);
+			glVertex2i(g_state.m_x0,g_state.m_y0);
+			glVertex2i(g_state.m_x0,g_state.cur_y);
+			glVertex2i(g_state.cur_x,g_state.cur_y);
+			glVertex2i(g_state.cur_x,g_state.m_y0);
 		glEnd();
 	}
 	glPopMatrix();
 	// dibujar menues y demases
 	glLineWidth(2);
-	shapes_bar->Draw(); 
-	toolbar->Draw(); 
-	trash->Draw();
-	if (edit && !mouse && !status_color) {
-		switch (edit->type) {
-		case ET_LEER: SetStatus(color_selection,"? Lista de variables a leer, separadas por coma."); break;
-		case ET_PROCESO: SetStatus(color_selection,(edit->lpre=="Proceso "||edit->lpre=="Algoritmo ")?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
-		case ET_COMENTARIO: SetStatus(color_selection,"? Texto libre, será ignorado por el interprete."); break;
-		case ET_ESCRIBIR: SetStatus(color_selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
-		case ET_SI: SetStatus(color_selection,"? Expresión lógica."); break;
-		case ET_SEGUN: SetStatus(color_selection,"? Expresión de control para la estructura."); break;
-		case ET_OPCION: SetStatus(color_selection,"? Posible valor para la expresión de control."); break;
+	g_shapes_bar->Draw(); 
+	g_toolbar->Draw(); 
+	g_trash->Draw();
+	if (g_state.edit and (not g_state.mouse) and (not status_color)) {
+		switch (g_state.edit->type) {
+		case ET_LEER: SetStatus(g_colors.selection,"? Lista de variables a leer, separadas por coma."); break;
+		case ET_PROCESO: SetStatus(g_colors.selection,(g_state.edit->lpre=="Proceso " or g_state.edit->lpre=="Algoritmo ")?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
+		case ET_COMENTARIO: SetStatus(g_colors.selection,"? Texto libre, será ignorado por el interprete."); break;
+		case ET_ESCRIBIR: SetStatus(g_colors.selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
+		case ET_SI: SetStatus(g_colors.selection,"? Expresión lógica."); break;
+		case ET_SEGUN: SetStatus(g_colors.selection,"? Expresión de control para la estructura."); break;
+		case ET_OPCION: SetStatus(g_colors.selection,"? Posible valor para la expresión de control."); break;
 		case ET_PARA: 
-			if (edit->variante)	SetStatus(color_selection,"? Identificador temporal para el elemento del vector/matriz.");
-			else SetStatus(color_selection,"? Identificador de la variable de control (contador)."); 
+			if (g_state.edit->variante)	SetStatus(g_colors.selection,"? Identificador temporal para el elemento del vector/matriz.");
+			else                        SetStatus(g_colors.selection,"? Identificador de la variable de control (contador)."); 
 			break;
-		case ET_MIENTRAS: SetStatus(color_selection,"? Expresión de control (lógica)."); break;
-		case ET_REPETIR: SetStatus(color_selection,"? Expresión de control (lógica)."); break;
-		case ET_ASIGNAR: SetStatus(color_selection,"? Asignación o instruccion secuencial."); break;
+		case ET_MIENTRAS: SetStatus(g_colors.selection,"? Expresión de control (lógica)."); break;
+		case ET_REPETIR: SetStatus(g_colors.selection,"? Expresión de control (lógica)."); break;
+		case ET_ASIGNAR: SetStatus(g_colors.selection,"? Asignación o instruccion secuencial."); break;
 		case ET_AUX_PARA: 
-			if (edit->GetParent()->variante)	SetStatus(color_selection,"? Identificador del vector/matriz a recorrer.");
-			else SetStatus(color_selection,
-						   edit->GetParent()->GetChild(1)==edit
+			if (g_state.edit->GetParent()->variante)	
+				SetStatus(g_colors.selection,"? Identificador del vector/matriz a recorrer.");
+			else SetStatus(g_colors.selection,
+						   g_state.edit->GetParent()->GetChild(1)==g_state.edit
 								? "? Valor inicial para el contador."
-								: ( edit->GetParent()->GetChild(2)==edit
+								: ( g_state.edit->GetParent()->GetChild(2)==g_state.edit
 									? "? Paso, incremento del contador por cada iteración."
 								    : "? Valor final para el contador." ) ); 
 			break;
@@ -252,16 +253,16 @@ void display_cb() {
 		}
 	}
 	// dibujar la seleccion para que quede delante de todo
-	if (mouse && !trash) {
-		glLineWidth(zoom*2);
+	if (g_state.mouse and (not g_trash)) {
+		glLineWidth(g_view.zoom*2);
 		glPushMatrix();
-		glScalef(d_zoom,d_zoom,1);
-		mouse->Draw();
+		glScalef(g_view.d_zoom,g_view.d_zoom,1);
+		g_state.mouse->Draw();
 		glPopMatrix();
 	}
 	// barra de estado
 	if (status_color) {
-		glColor3fv(color_back);
+		glColor3fv(g_colors.back);
 		int w=status_text.size()*9,bh=10,bw=10,h=15;
 		bw-=3; w+=6; h+=6; bh-=6;
 		glBegin(GL_QUADS);
@@ -272,6 +273,6 @@ void display_cb() {
 		glEnd();
 		DrawTextRaster(status_color,10,10,status_text.c_str());
 	}
-	if (mouse) mouse_cursor=Z_CURSOR_NONE;
+	if (g_state.mouse) mouse_cursor=Z_CURSOR_NONE;
 }
 

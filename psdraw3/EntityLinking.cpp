@@ -16,10 +16,10 @@ static T *t_realloc(T *p, int n) {
 	return reinterpret_cast<T*>(realloc(p,n*sizeof(T)));
 }
 
-EntityLinkingBase *EntityLinkingBase::m_all_any = NULL;
+EntityLinkingBase *EntityLinkingBase::m_all_any = nullptr;
 
 EntityLinkingBase::EntityLinkingBase()
-	: m_parent(NULL), m_prev(NULL), m_next(NULL), m_child_id(-1)
+	: m_parent(nullptr), m_prev(nullptr), m_next(nullptr), m_child_id(-1)
 {
 	if (!m_all_any) {
 		m_all_next = m_all_prev = m_all_any = this; 
@@ -46,7 +46,7 @@ EntityLinkingBase::~EntityLinkingBase() {
 	if (m_all_prev) m_all_prev->m_all_next = m_all_next;
 	if (m_all_next) m_all_next->m_all_prev = m_all_prev;
 	if (this==m_all_any) m_all_any = m_all_next; // busca otra...
-	if (this==m_all_any) m_all_any = NULL; // ...si no hay otra esta era la ultima
+	if (this==m_all_any) m_all_any = nullptr; // ...si no hay otra esta era la ultima
 }
 
 void EntityLinkingBase::UnLink() {
@@ -62,7 +62,7 @@ void EntityLinkingBase::UnLink() {
 		}
 	}
 	m_child_id = -1;
-	m_parent = m_next = m_prev = NULL;
+	m_parent = m_next = m_prev = nullptr;
 	if (old_parent && old_id!=-1) 
 		old_parent->OnLinkingEvent(EVT_UNLINK,old_id);
 }
@@ -84,7 +84,7 @@ void EntityLinkingBase::LinkNext(EntityLinkingBase *e) {
 }
 
 void EntityLinkingBase::SetChildCount(int new_count) {
-	m_childs.Resize(new_count,NULL);
+	m_childs.Resize(new_count,nullptr);
 	OnLinkingEvent(EVT_SETCHILDCOUNT,new_count);
 }
 
@@ -146,7 +146,7 @@ void EntityLinkingBase::RemoveChild (int id, bool also_delete) {
 void EntityLinkingBase::InsertChild (int id, EntityLinkingBase * e) {
 	_verify_links_;
 	SetModified();
-	m_childs.Insert(id,NULL);
+	m_childs.Insert(id,nullptr);
 	for (int i=0;i<m_childs.Count();i++)
 		if (m_childs[i]) m_childs[i]->m_child_id = i;
 	if (e) LinkChild(id,e); // agrega al final
@@ -157,9 +157,9 @@ void EntityLinkingBase::InsertChild (int id, EntityLinkingBase * e) {
 void EntityLinkingBase::LinkChild (int id, EntityLinkingBase * e) {
 	SetModified();
 	if (!m_childs.Count()) SetChildCount(id+1);
-	else while (m_childs.Count()<=id) InsertChild(m_childs.Count(),NULL);
+	else while (m_childs.Count()<=id) InsertChild(m_childs.Count(),nullptr);
 	if (e) {
-		e->m_prev = NULL; 
+		e->m_prev = nullptr; 
 		if (m_childs[id]) m_childs[id]->m_prev = e;
 		EntityLinkingBase *old_child = m_childs[id];
 		m_childs[id] = e; 

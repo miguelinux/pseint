@@ -8,7 +8,7 @@ class Vector {
 	T *m_data;
 	int m_size, m_capacity;
 public:
-	Vector() : m_data(NULL), m_size(0), m_capacity(0) {}
+	Vector() : m_data(nullptr), m_size(0), m_capacity(0) {}
 	T &operator[](int i) { return m_data[i]; }
 	const T &operator[](int i) const { return m_data[i]; }
 	int Count() const { return m_size; }

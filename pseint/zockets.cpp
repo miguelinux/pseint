@@ -36,7 +36,7 @@ ZOCKET zocket_llamar(short int port, const char *host) {
 		return ZOCKET_ERROR;
 	}
 #if defined(_WIN32) || defined(__WIN32__)
-	WSAAsyncSelect (conn_socket, NULL, 0 ,0);
+	WSAAsyncSelect (conn_socket, nullptr, 0 ,0);
 	unsigned long ln = 1;
 	ioctlsocket(conn_socket,FIONBIO,&ln);
 #else

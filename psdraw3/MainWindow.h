@@ -19,6 +19,6 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern MainWindow *main_window;
+extern MainWindow *g_main_window;
 #endif
 

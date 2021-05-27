@@ -16,7 +16,7 @@
 #define ZOCKET int
 #include <cstddef>
 
-ZOCKET zocket_llamar(short int port, const char *host=NULL);
+ZOCKET zocket_llamar(short int port, const char *host=nullptr);
 
 ZOCKET zocket_esperar_llamada(short int port);
 

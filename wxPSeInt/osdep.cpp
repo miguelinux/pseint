@@ -64,7 +64,7 @@
 	}
 
 	static int GetDPI_impl() {
-		char *displayname = NULL;
+		char *displayname = nullptr;
 		Display *dpy = XOpenDisplay (displayname);
 		// 25.4 mm = 1 inch
 		double xres = ((((double) DisplayWidth(dpy,0)) * 25.4) / ((double) DisplayWidthMM(dpy,0)));

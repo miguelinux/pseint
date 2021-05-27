@@ -18,7 +18,7 @@ using namespace std;
 
 #define mouse_setted_delta 1000
 static int mouse_setted_x,mouse_setted_y; // posicion del click que va a setear el mouse en una entidad cuando se mueva, con correccion de y y zoom aplicados
-Entity *to_set_mouse=NULL; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
+Entity *to_set_mouse = nullptr; // lo que se va a setear en mouse cuando el cursor se mueva un poco si sigue apretado el botón
 
 static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 	Entity *nueva=new Entity(orig->type,orig->label);
@@ -30,7 +30,7 @@ static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 	nueva->d_fx=orig->d_fx; nueva->d_fy=orig->d_fy;
 	for(int i=0;i<orig->GetChildCount();i++) {
 		if (orig->GetChild(i)) nueva->LinkChild(i,DuplicateEntity(orig->GetChild(i),true));
-		else nueva->LinkChild(i,NULL);
+		else nueva->LinkChild(i,nullptr);
 	}
 	if (and_next_one_too && orig->GetNext()) {
 		nueva->LinkNext(DuplicateEntity(orig->GetNext(),true));
@@ -39,8 +39,8 @@ static Entity *DuplicateEntity(Entity *orig, bool and_next_one_too = false) {
 }
 
 void Salir(bool force) {
-	if (!force && modified) {
-		main_window->AskForExit();
+	if ((not force) and g_state.modified) {
+		g_main_window->AskForExit();
 		return;
 	}
 	CloseComm();
@@ -49,14 +49,14 @@ void Salir(bool force) {
 
 void reshape_cb (int w, int h) {
 	if (w==0||h==0) return;
-	if (win_w!=0&&win_h!=0) {
-		double zw=double(w)/win_w;
-		double zh=double(h)/win_h;
-		d_dx*=zw/zh;
+	if (g_view.win_w!=0 and g_view.win_h!=0) {
+		double zw=double(w)/g_view.win_w;
+		double zh=double(h)/g_view.win_h;
+		g_view.d_dx*=zw/zh;
 //		if (zh>zw) zoom*=zh; else zoom*=zw;
-		zoom*=zh;
+		g_view.zoom*=zh;
 	}	
-	win_h=h; win_w=w;
+	g_view.win_h=h; g_view.win_w=w;
 	glViewport(0,0,w,h);
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
@@ -66,8 +66,8 @@ void reshape_cb (int w, int h) {
 }
 
 void Raise() {
-	if (main_window->IsIconized()) main_window->Iconize(false);
-	else { main_window->Hide(); wxYield(); main_window->Show(); }
+	if (g_main_window->IsIconized()) g_main_window->Iconize(false);
+	else { g_main_window->Hide(); wxYield(); g_main_window->Show(); }
 }
 
 void idle_func() {
@@ -79,77 +79,77 @@ void idle_func() {
 		wxMicroSleep(_delta_t-(now-last));
 		last=now;
 	}
-	d_zoom=1/((2*1/d_zoom+1/zoom)/3);
+	g_view.d_zoom = 1/((2*1/g_view.d_zoom+1/g_view.zoom)/3);
 	Entity::AllIterator it = Entity::AllBegin();
 	while (it!=Entity::AllEnd()) {
 		it->Tick();
 		++it;
 	}
 	
-	if (process_selector->IsActive()) {
-		process_selector->ProcessIddle();
+	if (g_process_selector->IsActive()) {
+		g_process_selector->ProcessIddle();
 	} else {
-		if (mouse) {
+		if (g_state.mouse) {
 			// la corrección de m_x es para que cuando la estructura se colapse, el punto
 			// de agarre no quede fuera de la misma (ej, un segun con muchas opciones)
-			mouse->m_x -= std::max(mouse->m_x-mouse->d_bwr,0);
-			trash->Show();
-			shapes_bar->Hide();
+			g_state.mouse->m_x -= std::max(g_state.mouse->m_x-g_state.mouse->d_bwr,0);
+			g_trash->Show();
+			g_shapes_bar->Hide();
 		} else {
-			trash->Hide();
-			if (edit_on) shapes_bar->Show();
-			else         shapes_bar->Hide();
+			g_trash->Hide();
+			if (g_state.edit_on) g_shapes_bar->Show();
+			else                 g_shapes_bar->Hide();
 		}
-		shapes_bar->ProcessIdle();
+		g_shapes_bar->ProcessIdle();
 	}
-	trash->ProcessIdle();
+	g_trash->ProcessIdle();
 	
-	canvas->Refresh();
+	g_canvas->Refresh();
 }
 
 void passive_motion_cb(int x, int y) {
-	if (process_selector->IsActive()) {	
-		process_selector->ProcessMotion(x,y); return; 
+	if (g_process_selector->IsActive()) {	
+		g_process_selector->ProcessMotion(x,y); return; 
 	} else {
-		if (!win_h || !edit_on) return;
-		if (mouse) {
-			shapes_bar->Hide();
+		if ((not g_view.win_h) or (not g_state.edit_on)) return;
+		if (g_state.mouse) {
+			g_shapes_bar->Hide();
 			return;
 		}
-		if (edit_on) {
-			shapes_bar->ProcessMotion(x,y);
+		if (g_state.edit_on) {
+			g_shapes_bar->ProcessMotion(x,y);
 		}
 	}
-	cur_x=x; cur_y=win_h-y; canvas->Refresh();
+	g_state.cur_x = x; g_state.cur_y = g_view.win_h-y; g_canvas->Refresh();
 }
 void motion_cb(int x, int y) {
-	trash->ProcessMotion(x,y);
-	if (process_selector->IsActive()) {
-		process_selector->ProcessMotion(x,y); return; 
+	g_trash->ProcessMotion(x,y);
+	if (g_process_selector->IsActive()) {
+		g_process_selector->ProcessMotion(x,y); return; 
 	} else {
 		fix_mouse_coords(x,y);
 		if (to_set_mouse && (x-mouse_setted_x)*(x-mouse_setted_x)+(y-mouse_setted_y)*(y-mouse_setted_y)>mouse_setted_delta) { 
 			if (to_set_mouse->type==ET_PROCESO) return; // no permitir mover "proceso" ni "finproceso"
 			to_set_mouse->SetMouse(); Entity::CalculateAll();
 		}
-		if (selecting_zoom||selecting_entities) {
-			cur_x=x; cur_y=y;
+		if (g_state.selecting_zoom or g_state.selecting_entities) {
+			g_state.cur_x = x; g_state.cur_y = y;
 			return;
 		}
-		if (panning) { 
-			d_dx+=x-m_x0; m_x0=x;
-			d_dy+=y-m_y0; m_y0=y;
+		if (g_view.panning) { 
+			g_view.d_dx += x-g_state.m_x0; g_state.m_x0 = x;
+			g_view.d_dy += y-g_state.m_y0; g_state.m_y0 = y;
 		} 
-		if (mouse) { 
-			cur_y=y; cur_x=mouse->d_x;
-			mouse->d_x=x-mouse->m_x;
-			mouse->d_y=y-mouse->m_y;
-			mouse->d_fx=x-mouse->m_x;
-			mouse->d_fy=y-mouse->m_y;
+		if (g_state.mouse) { 
+			g_state.cur_y = y; g_state.cur_x = g_state.mouse->d_x;
+			g_state.mouse->d_x =x-g_state.mouse->m_x;
+			g_state.mouse->d_y =y-g_state.mouse->m_y;
+			g_state.mouse->d_fx =x-g_state.mouse->m_x;
+			g_state.mouse->d_fy =y-g_state.mouse->m_y;
 		}
-		if (trash->IsSelected() && mouse) {
-			if (mouse->type!=ET_OPCION && (mouse->GetParent()||mouse->GetPrev())) {
-				mouse->UnLink();
+		if (g_trash->IsSelected() and g_state.mouse) {
+			if (g_state.mouse->type!=ET_OPCION and (g_state.mouse->GetParent() or g_state.mouse->GetPrev())) {
+				g_state.mouse->UnLink();
 				Entity::CalculateAll();
 			}
 		}
@@ -162,27 +162,27 @@ void ZoomExtend(int x0, int y0, int x1, int y1, double max) {
 	if (x1-x0<10||y0-y1<10) return;
 	int h=y0-y1, w=x1-x0;
 	const int margin = 40;
-	double zh=double(win_h-margin)/h; // zoom para ajustar alto
-	double zw=double(win_w-shapes_bar->GetWidth()-margin)/w; // zoom para ajustar ancho
-	if (zw>zh) zoom=zh; else zoom=zw; // ver cual tamaño manda
-	if (zoom>max) zoom=max;
-	d_dx=(win_w-shapes_bar->GetWidth())/zoom/2-(x1+x0)/2;
-	d_dy=win_h/zoom/2-(y1+y0)/2/*+h/2/zoom*/;
+	double zh = double(g_view.win_h-margin)/h; // zoom para ajustar alto
+	double zw = double(g_view.win_w-g_shapes_bar->GetWidth()-margin)/w; // zoom para ajustar ancho
+	if (zw>zh) g_view.zoom = zh; else g_view.zoom = zw; // ver cual tamaño manda
+	if (g_view.zoom>max) g_view.zoom = max;
+	g_view.d_dx=(g_view.win_w-g_shapes_bar->GetWidth())/g_view.zoom/2-(x1+x0)/2;
+	g_view.d_dy=g_view.win_h/g_view.zoom/2-(y1+y0)/2/*+h/2/zoom*/;
 }
 
 void ProcessMenu(int op) {
-	if (edit) edit->UnsetEdit();
+	if (g_state.edit) g_state.edit->UnsetEdit();
 	if (op==MO_ZOOM_EXTEND) {
 		int h=0,wl=0,wr=0;
-		Entity *real_start = start->GetTopEntity();
+		Entity *real_start = g_code.start->GetTopEntity();
 		real_start->Calculate(wl,wr,h); // calcular tamaño total
 		ZoomExtend(real_start->x-wl,real_start->y,real_start->x+wr,real_start->y-h,1.5);
 	} else if (op==MO_TOGGLE_FULLSCREEN) {
-		main_window->ToggleFullScreen();
+		g_main_window->ToggleFullScreen();
 	} else if (op==MO_FUNCTIONS) {
-		if (edit) edit->UnsetEdit();
-		if (mouse) mouse->UnSetMouse();
-		process_selector->Show();
+		if (g_state.edit) g_state.edit->UnsetEdit();
+		if (g_state.mouse) g_state.mouse->UnSetMouse();
+		g_process_selector->Show();
 	} else if (op==MO_SAVE||op==MO_RUN||op==MO_EXPORT||op==MO_DEBUG) {
 		SendUpdate(op);
 //	} else if (op==MO_SAVE_CLOSE) {
@@ -192,22 +192,22 @@ void ProcessMenu(int op) {
 	} else if (op==MO_HELP) {
 		SendHelp();
 	} else if (op==MO_CROP_LABELS) {
-		Entity::enable_partial_text=!Entity::enable_partial_text;
+		g_config.enable_partial_text = not g_config.enable_partial_text;
 		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COMMENTS) {
-		Entity::show_comments=!Entity::show_comments;
+		g_config.show_comments= not g_config.show_comments;
 		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COLORS) {
-		Entity::shape_colors=!Entity::shape_colors;
+		g_config.shape_colors = not g_config.shape_colors;
 	} else if (op==MO_CHANGE_STYLE) {
-		Entity::nassi_shneiderman = !Entity::nassi_shneiderman;
+		g_config.nassi_shneiderman = not g_config.nassi_shneiderman;
 		Entity::CalculateAll(true);
 		ProcessMenu(MO_ZOOM_EXTEND);
 	}
 }	
 
 void fix_mouse_coords(int &x, int &y) {
-	y=win_h-y; y/=zoom; x/=zoom;
+	y = g_view.win_h-y; y /= g_view.zoom; x /= g_view.zoom;
 }
 
 void mouse_dcb(int x, int y) {
@@ -215,7 +215,7 @@ void mouse_dcb(int x, int y) {
 	Entity::AllIterator it = Entity::AllBegin();
 	while (it!=Entity::AllEnd()) {
 		if (it->CheckMouse(x,y)) {
-			if (it->type==ET_PROCESO && it!=start) break; // para no editar el "FinProceso"
+			if (it->type==ET_PROCESO and it!=g_code.start) break; // para no editar el "FinProceso"
 			it->SetEdit();
 			return;
 		}
@@ -226,9 +226,9 @@ void mouse_dcb(int x, int y) {
 void FinishMultipleSelection(int x0, int y0, int x1, int y1) {
 	if (x0>x1) { int aux = x0; x0 = x1; x1 = aux; }
 	if (y0<y1) { int aux = y0; y0 = y1; y1 = aux; }
-	selecting_entities = false;
+	g_state.selecting_entities = false;
 	// encontrar la primera que entra en la selección
-	Entity *aux = start;
+	Entity *aux = g_code.start;
 	do {
 		if (aux->IsInside(x0,y0,x1,y1))
 			break;
@@ -256,36 +256,38 @@ void FinishMultipleSelection(int x0, int y0, int x1, int y1) {
 }
 
 void mouse_cb(int button, int state, int x, int y) {
-	if (process_selector->IsActive()) { process_selector->ProcessClick(button,state,x,y); return; }
-	to_set_mouse=NULL;
-	if (!panning && !selecting_zoom && !selecting_entities)
-		if (shapes_bar->ProcessMouse(button,state,x,y)) return;
+	if (g_process_selector->IsActive()) { g_process_selector->ProcessClick(button,state,x,y); return; }
+	to_set_mouse = nullptr;
+	if ((not g_view.panning) and (not g_state.selecting_zoom) and (not g_state.selecting_entities))
+		if (g_shapes_bar->ProcessMouse(button,state,x,y)) return;
 	fix_mouse_coords(x,y);
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
-		double f=button==ZMB_WHEEL_UP?1.0/1.12:1.12;
-		zoom*=f;
-		double dx=x/f-x, dy=y/f-y;
-		d_dx+=dx; d_dy+=dy;
+		double k = g_canvas->GetModifiers()==MODIFIER_SHIFT ? 1.01 : 1.10;
+		double f=button==ZMB_WHEEL_UP?1.0/k:k;
+		g_view.zoom *= f;
+		double dx = x/f-x, dy = y/f-y;
+		g_view.d_dx += dx; g_view.d_dy += dy;
 	} else if (state==ZMB_DOWN) {
 		if (button==ZMB_MIDDLE) { // click en el menu
-			cur_x=m_x0=x; cur_y=m_y0=y; selecting_zoom=true;
+			g_state.cur_x = g_state.m_x0 = x; g_state.cur_y = g_state.m_y0 = y; 
+			g_state.selecting_zoom = true;
 			return;
 		}
 		// click en una entidad? izquierdo=mover, derecho=editar label
-		if (mouse) mouse->UnSetMouse();
+		if (g_state.mouse) g_state.mouse->UnSetMouse();
 		Entity::AllIterator it = Entity::AllBegin();
 		while (it!=Entity::AllEnd()) {
 			if (it->CheckMouse(x,y)) {
-				if (it->type==ET_PROCESO && it!=start) break; // para no editar el "FinProceso"
+				if (it->type==ET_PROCESO && it!=g_code.start) break; // para no editar el "FinProceso"
 				if (button==ZMB_RIGHT) {
 					it->SetEdit(); return;
 				} else {
-					if (it->type!=ET_PROCESO && canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
-						mouse = DuplicateEntity(it.GetPtr());
-						it.SetPtr(mouse); it->SetEdit();
+					if (it->type!=ET_PROCESO and g_canvas->GetModifiers()==MODIFIER_SHIFT) { // no duplicar "Proceso..." y "FinProceso"
+						g_state.mouse = DuplicateEntity(it.GetPtr());
+						it.SetPtr(g_state.mouse); it->SetEdit();
 					} 
-					if (it.GetPtr()!=edit) {
-						if (edit) edit->UnsetEdit();
+					if (it.GetPtr()!=g_state.edit) {
+						if (g_state.edit) g_state.edit->UnsetEdit();
 					}
 					to_set_mouse = it.GetPtr(); mouse_setted_x=x; mouse_setted_y=y; // aux->SetMouse(); retrasado
 					if (it->type==ET_AUX_PARA) to_set_mouse=it->GetParent(); // para que no haga drag del hijo del para, sino de todo el para completo
@@ -295,64 +297,65 @@ void mouse_cb(int button, int state, int x, int y) {
 			}
 			++it;
 		}
-		if (button==ZMB_LEFT && canvas->GetModifiers()==MODIFIER_SHIFT) {
-			cur_x=m_x0=x; cur_y=m_y0=y; selecting_entities=true;
+		if (button==ZMB_LEFT and g_canvas->GetModifiers()==MODIFIER_SHIFT) {
+			g_state.cur_x = g_state.m_x0 = x; g_state.cur_y = g_state.m_y0 = y;
+			g_state.selecting_entities=true;
 		} else {
-			m_x0=x; m_y0=y; panning=true;
+			g_state.m_x0 = x; g_state.m_y0=y; g_view.panning = true;
 		}
 	} else {
 		if (button==ZMB_LEFT) {
-			if (mouse) {
-				if (trash->IsSelected() && mouse->type==ET_OPCION) {
-					Entity *p=mouse->GetParent();
-					mouse->UnLink(); 
+			if (g_state.mouse) {
+				if (g_trash->IsSelected() and g_state.mouse->type==ET_OPCION) {
+					Entity *p = g_state.mouse->GetParent();
+					g_state.mouse->UnLink(); 
 					p->Calculate();
 				} 
 			}
-			if (mouse) mouse->UnSetMouse();
-			if (selecting_entities) {
-				FinishMultipleSelection(m_x0,m_y0,cur_x,cur_y);
+			if (g_state.mouse) g_state.mouse->UnSetMouse();
+			if (g_state.selecting_entities) {
+				FinishMultipleSelection(g_state.m_x0,g_state.m_y0,g_state.cur_x,g_state.cur_y);
 			}
 //			// doble click (por alguna extraña razon en mi wx un doble click genera un evento de down y dos de up)
-//			Entity *aux=start;
+//			Entity *aux=g_code.start;
 //			do {
 //				if (aux->CheckMouse(x,y)) {
 //					static int last_click_time=0;
-//					static Entity *last_click_mouse=NULL;
+//					static Entity *last_click_mouse=nullptr;
 //					int click_time=glutGet(GLUT_ELAPSED_TIME);
 //					if (click_time-last_click_time<500 && (last_click_mouse==aux ||  (aux->type==ET_PARA && aux->parent==last_click_mouse)) ) aux->SetEdit();
 //					last_click_mouse=aux; last_click_time=click_time;
 //				}
 //				aux=aux->all_next;
-//			} while (aux!=start);
+//			} while (aux!=g_code.start);
 		} else if (button==ZMB_MIDDLE) {
-			ZoomExtend(m_x0-d_dx,m_y0-d_dy,x-d_dx,y-d_dy);
-			selecting_zoom=false;
+			ZoomExtend(g_state.m_x0-g_view.d_dx,g_state.m_y0-g_view.d_dy,x-g_view.d_dx,y-g_view.d_dy);
+			g_state.selecting_zoom = false;
 			return;
 		}
-		panning=false;
+		g_view.panning = false;
 		Entity::CalculateAll();
 	}
 }
 
 void keyboard_cb(unsigned char key/*, int x, int y*/) {
-	if (key=='\t') shapes_bar->ToggleFixed();
-	if (!edit) {
+	if (key=='\t') g_shapes_bar->ToggleFixed();
+	if (not g_state.edit) {
 		if (key==27) Salir();
 		return;
 	} else {
-//		if (canvas->GetModifiers()&MODIFIER_CTRL) return;
-		edit->EditLabel(key);
+//		if (g_canvas->GetModifiers()&MODIFIER_CTRL) return;
+		g_state.edit->EditLabel(key);
 	}
 }
 
 void ToggleEditable() {
 	static bool old_edit_on;
-	if (edit_on) {
+	if (g_state.edit_on) {
 		old_edit_on=true;
-		edit_on=false; if (edit) edit->UnsetEdit();
+		g_state.edit_on=false; if (g_state.edit) g_state.edit->UnsetEdit();
 	} else {
-		edit_on=old_edit_on;
+		g_state.edit_on = old_edit_on;
 	}
 	Entity::CalculateAll();
 }
@@ -364,43 +367,43 @@ void keyboard_esp_cb(int key/*, int x, int y*/) {
 	else if (key==WXK_F5) ProcessMenu(MO_DEBUG);
 	else if (key==WXK_F9) ProcessMenu(MO_RUN);
 	else if (key==WXK_F1) ProcessMenu(MO_HELP);
-	else if (key==WXK_F7) { if (!debugging) ToggleEditable(); }
+	else if (key==WXK_F7) { if (not g_state.debugging) ToggleEditable(); }
 	else if (key==WXK_F11) ProcessMenu(MO_TOGGLE_FULLSCREEN);
 	else if (key==WXK_F12) ProcessMenu(MO_ZOOM_EXTEND);
-	else if (edit) edit->EditSpecialLabel(key);
+	else if (g_state.edit) g_state.edit->EditSpecialLabel(key);
 }
 
 void FocusEntity(LineInfo *li) {
-	if (!li) debug_current=NULL;
+	if (not li) g_state.debug_current = nullptr;
 	if (li->proceso) {
-		if (start!=li->proceso) SetProc(li->proceso);
-		debug_current=li->entidad;
+		if (g_code.start!=li->proceso) SetProc(li->proceso);
+		g_state.debug_current = li->entidad;
 		if (li->entidad) {
-			double fx=(win_w/2)/zoom;
-			double fy=(win_h/2)/zoom;
+			double fx=(g_view.win_w/2)/g_view.zoom;
+			double fy=(g_view.win_h/2)/g_view.zoom;
 			// que se vea el centro en x de la entidad
 			int dx=-li->entidad->x+fx;
-			if (dx<d_dx-fx||dx>d_dx+fy) d_dx=dx;
+			if (dx<g_view.d_dx-fx or dx>g_view.d_dx+fy) g_view.d_dx = dx;
 			if (li->entidad->bwl+li->entidad->bwr+fx/20<fx*2) { // si se puede ver todo el ancho... 
 				// ..asegurar que se ven los bordes laterales
-				int dx0=-(li->entidad->x-li->entidad->bwl-fx/40);
-				int dx1=-(li->entidad->x+li->entidad->bwr+fx/40-2*fx);
-				if (dx0>d_dx) d_dx=dx0;
-				else if (dx1<d_dx) d_dx=dx1;
+				int dx0 = -(li->entidad->x-li->entidad->bwl-fx/40);
+				int dx1 = -(li->entidad->x+li->entidad->bwr+fx/40-2*fx);
+				if (dx0>g_view.d_dx) g_view.d_dx = dx0;
+				else if (dx1<g_view.d_dx) g_view.d_dx = dx1;
 			}
 			// que se vea el centro en y de la entidad
 			int dy=-li->entidad->y+li->entidad->bh/2+fy;
-			if (dy<d_dy-fy||dy>d_dy+fy) d_dy=dy;
+			if (dy<g_view.d_dy-fy or dy>g_view.d_dy+fy) g_view.d_dy = dy;
 		}
 	}
 	// este else esconde la flecha cuando pasamos por una instruccion
 	// que no tiene entidad en el diagrama (como un finsi)
-//	else if (!li->proceso) debug_current=NULL; 
+//	else if (not li->proceso) debug_current=nullptr; 
 }
 
 void SetModified( ) {
-	if (modified) return;
-	modified=true;
-	if (!loading) NotifyModification();
+	if (g_state.modified) return;
+	g_state.modified = true;
+	if (not g_state.loading) NotifyModification();
 }
 

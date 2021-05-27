@@ -64,8 +64,8 @@ struct EntityLinking : public EntityLinkingBase {
 		friend class EntityLinking;
 		EntityLinkingBase *m_current, *m_first;
 		AllIterator(EntityLinking *current) 
-			: m_current(current), m_first(NULL) {}
-		bool IsNull() { return m_current == NULL || (m_current == m_first); }
+			: m_current(current), m_first(nullptr) {}
+		bool IsNull() { return m_current == nullptr or (m_current == m_first); }
 	public:
 		AllIterator &operator++() { 
 			if (!m_first) m_first = m_current;
@@ -76,10 +76,10 @@ struct EntityLinking : public EntityLinkingBase {
 		void SetPtr(Entity *e) { m_current = e; }
 		Entity *operator->() { return reinterpret_cast<Entity*>(m_current); }
 		bool operator!=(AllIterator &oit) { return m_current==oit.m_current; }
-		bool operator!=(Entity *oit) { return !(oit==NULL&&IsNull()) && m_current!=oit; }
+		bool operator!=(Entity *oit) { return (not (oit==nullptr and IsNull())) and m_current!=oit; }
 	};
 	static AllIterator AllBegin() { return AllIterator(reinterpret_cast<EntityLinking*>(m_all_any)); }
-	static Entity *AllEnd() { return NULL; }
+	static Entity *AllEnd() { return nullptr; }
 	// hay varias listas globales, una por subproceso... cada una se cierra
 	// circularmente sobre sus propias entidades y no hay referencias cruzadas
 	// entre dos diferentes... cambiando el all_any se cambia sobre cual se trabaja

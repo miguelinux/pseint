@@ -23,7 +23,7 @@ public:
 	static bool LoadTextures();
 };
 
-extern Texture texture_font;
+extern Texture g_texture_font;
 
 #endif
 
