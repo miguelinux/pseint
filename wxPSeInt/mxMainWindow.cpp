@@ -921,7 +921,7 @@ void mxMainWindow::SelectError(wxString text) {
 	// elegir el fuente que generó al error
 	int index = notebook->GetPageIndex(last_source);
 	if (index==wxNOT_FOUND) return;
-	notebook->SetSelection(index);
+	if (index!=notebook->GetSelection()) notebook->SetSelection(index);
 	// seleccionar esa esa linea e instruccion
 	long l,i=-1;
 	wxString where=text.AfterFirst(' ').BeforeFirst(':');
@@ -933,7 +933,7 @@ void mxMainWindow::SelectError(wxString text) {
 		where.ToLong(&l); l--;
 		last_source->SetSelection(last_source->GetLineIndentPosition(l),last_source->GetLineEndPosition(l));
 	}
-	last_source->SetFocus();
+	if (main_window->IsActive()) last_source->SetFocus();
 	text = text.AfterFirst(':');
 	if (text.StartsWith(" ERROR ")) {
 		long e=0;
@@ -1508,7 +1508,7 @@ void mxMainWindow::CreateDesktopTestPanel() {
 void mxMainWindow::SelectLine(mxSource *src, int l) {
 	int index = notebook->GetPageIndex(last_source);
 	if (index==wxNOT_FOUND) return;
-	notebook->SetSelection(index);
+	if (index!=notebook->GetSelection()) notebook->SetSelection(index);
 	src->SetSelection(src->GetLineIndentPosition(l-1),src->GetLineEndPosition(l-1));
 }
 
@@ -1884,8 +1884,8 @@ void mxMainWindow::ParseResults(mxSource *source) {
 			source->SetStatus(STATUS_RUNNED_INT);
 			RTreeAdd(source->GetPageText()+_Z(": Ejecución Interrumpida"),0);
 //			Raise(); // comentado porque con la nueva terminal, al presionar f9 se pasa el foco a la terminal, yu si hay error vuelve al editor sin dejar ver que paso
-		} else {
-			source->SetFocus();
+//		} else {
+//			source->SetFocus(); // en linux, con wx2+gtk3 hace activa a la ventana, es muy molesto, no llegamos a ver el resultado en la terminal
 		}
 	}
 	RTreeDone(!happy_ending,true);
@@ -2041,7 +2041,7 @@ void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 	pi.Resizable(); 
 	aui_manager.Update(); 
 	pi.MinSize(_min_size,final_h/2);
-	IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus();
+//	IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus(); // en linux, con wx3 y gt3, activa la ventana, es muy molesto cuando queda la terminal abierta con un error de tipos en ejecucion
 }
 
 void mxMainWindow::HidePanel (wxWindow * panel, bool anim) {

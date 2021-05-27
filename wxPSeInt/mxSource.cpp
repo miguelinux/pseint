@@ -144,6 +144,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 		CmdKeyAssign(c,wxSTC_KEYMOD_ALT|wxSTC_KEYMOD_SHIFT|wxSTC_KEYMOD_CTRL,0);
 	}
 	
+	CmdKeyAssign('+',wxSTC_KEYMOD_CTRL,wxSTC_CMD_ZOOMIN);
+	CmdKeyAssign('-',wxSTC_KEYMOD_CTRL,wxSTC_CMD_ZOOMOUT);
+	
 	_LOG("mxSource::mxSource "<<this);
 
 	id=++last_id;
