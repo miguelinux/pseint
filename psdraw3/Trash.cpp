@@ -20,7 +20,7 @@ void Trash::Draw ( ) {
 	if (!m_size) return;
 	
 	if (m_extended) {
-		DrawTextRaster(g_colors.selection,10+trash_size_max,10,_Z("Eliminar"));
+		DrawTextRaster(g_colors.status,10+trash_size_max,10,_Z("Eliminar"));
 		mouse_cursor = Z_CURSOR_DESTROY;
 	}
 	
@@ -33,7 +33,7 @@ void Trash::Draw ( ) {
 	glVertex2i(m_size,0);
 	glVertex2i(0,0);
 	glEnd();
-	glColor3fv(g_colors.menu);
+	glColor3fv(g_colors.menu_front);
 	glBegin(GL_LINES);
 	glVertex2i(0,m_size); glVertex2i(m_size,m_size);
 	glVertex2i(m_size,0); glVertex2i(m_size,m_size);

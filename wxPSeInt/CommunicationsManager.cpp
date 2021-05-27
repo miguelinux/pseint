@@ -133,6 +133,14 @@ void mxSocketClient::ProcessCommandFlow() {
 		if (buffer=="run") main_window->RunCurrent(true,true);
 		else if (buffer=="debug") { wxCommandEvent evt; debug_panel->DebugStartFromGui(true); }
 		else if (buffer=="export") { wxCommandEvent evt; main_window->OnRunSaveFlow(evt); }
+	} else if (buffer.StartsWith("config:")) {
+		wxString key = buffer.AfterFirst(':').BeforeFirst('=');
+		bool val = buffer.Last()=='1';
+		if      (key=="ns")    config->GetWritableLang()[LS_USE_NASSI_SHNEIDERMAN] = val;
+		else if (key=="dark")  config->use_dark_psdraw = val;
+		else if (key=="color") config->shape_colors = val;
+		else if (key=="crop")  config->psdraw_nocrop = !val;
+		main_window->UpdatePSDrawSettings();
 	}
 }
 

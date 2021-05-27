@@ -5,6 +5,8 @@ bool Connect(int port, int id);
 
 bool SendUpdate(int action);
 
+bool SendConfig(const char *key, bool val);
+
 bool SendHelp();
 
 void CloseComm();

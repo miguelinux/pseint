@@ -39,7 +39,8 @@ MainWindow::MainWindow(wxString title):wxFrame(nullptr,wxID_ANY,title,wxDefaultP
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
 	wxToolBar *toolbar = CreateToolBar(wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT,wxID_ANY);
-	SetColors(toolbar->GetBackgroundColour(),wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
+	SetColors(toolbar->GetBackgroundColour(),
+			  wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
 	wxBitmap abmp(g_constants.imgs_path+"tb_sub.png",wxBITMAP_TYPE_PNG);
 	toolbar->SetToolBitmapSize(wxSize(abmp.GetWidth(),abmp.GetHeight()));
 //	toolbar->AddTool(MID_SETTINGS,"",g_constants.imgs_path+"tb_settings.png");

@@ -36,6 +36,7 @@ bool mxApplication::OnInit() {
 	for(int i=1;i<argc;i++) { 
 		string a(argv[i]);
 		if (a=="--shapecolors") g_config.shape_colors=true;
+		else if (a=="--darktheme") { g_config.dark_theme=true; SetColors(); }
 		else if (a=="--noedit") g_state.edit_on=false;
 		else if (a=="--nocroplabels") g_config.enable_partial_text=false;
 		else if (a=="--bigicons") g_config.big_icons=true;

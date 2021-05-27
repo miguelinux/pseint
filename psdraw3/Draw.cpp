@@ -136,6 +136,7 @@ void MoveToChild(Entity *mouse, Entity *aux, int i){
 
 void display_cb() {
 	
+	glClearColor(g_colors.back[0],g_colors.back[1],g_colors.back[2],1.f);
 	mouse_cursor = Z_CURSOR_CROSSHAIR;
 	status_color = nullptr;
 	if (g_code.entity_to_del) delete g_code.entity_to_del;
@@ -176,7 +177,7 @@ void display_cb() {
 			aux->Draw(aux->type==ET_OPCION);
 			g_constants.line_width_bordes/=2;
 			if (aux->error.size()) SetStatus(g_colors.error,aux->error);
-			else if ((not g_state.mouse) and aux->IsLabelCropped()) SetStatus(g_colors.label_high[0],aux->label);
+			else if ((not g_state.mouse) and aux->IsLabelCropped()) SetStatus(g_config.dark_theme?g_colors.ghost:g_colors.label_high[0],aux->label);
 		} else if (g_state.debugging and g_state.debug_current==aux) {
 			RaiiColorChanger rcc;
 			g_constants.line_width_bordes*=2;
@@ -209,7 +210,7 @@ void display_cb() {
 	}
 	
 	if (g_state.selecting_zoom or g_state.selecting_entities) {
-		glColor3fv(g_colors.menu);
+		glColor3fv(g_colors.menu_front);
 		glBegin(GL_LINE_LOOP);
 			glVertex2i(g_state.m_x0,g_state.m_y0);
 			glVertex2i(g_state.m_x0,g_state.cur_y);
@@ -225,24 +226,24 @@ void display_cb() {
 	g_trash->Draw();
 	if (g_state.edit and (not g_state.mouse) and (not status_color)) {
 		switch (g_state.edit->type) {
-		case ET_LEER: SetStatus(g_colors.selection,"? Lista de variables a leer, separadas por coma."); break;
-		case ET_PROCESO: SetStatus(g_colors.selection,(g_state.edit->lpre=="Proceso " or g_state.edit->lpre=="Algoritmo ")?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
-		case ET_COMENTARIO: SetStatus(g_colors.selection,"? Texto libre, será ignorado por el interprete."); break;
-		case ET_ESCRIBIR: SetStatus(g_colors.selection,"? Lista de expresiones a mostrar, separadas por comas."); break;
-		case ET_SI: SetStatus(g_colors.selection,"? Expresión lógica."); break;
-		case ET_SEGUN: SetStatus(g_colors.selection,"? Expresión de control para la estructura."); break;
-		case ET_OPCION: SetStatus(g_colors.selection,"? Posible valor para la expresión de control."); break;
+		case ET_LEER:       SetStatus(g_colors.status,"? Lista de variables a leer, separadas por coma."); break;
+		case ET_PROCESO:    SetStatus(g_colors.status,(g_state.edit->lpre=="Proceso " or g_state.edit->lpre=="Algoritmo ")?"? Nombre del proceso.":"? Prototipo del subproceso."); break;
+		case ET_COMENTARIO: SetStatus(g_colors.status,"? Texto libre, será ignorado por el interprete."); break;
+		case ET_ESCRIBIR:   SetStatus(g_colors.status,"? Lista de expresiones a mostrar, separadas por comas."); break;
+		case ET_SI:         SetStatus(g_colors.status,"? Expresión lógica."); break;
+		case ET_SEGUN:      SetStatus(g_colors.status,"? Expresión de control para la estructura."); break;
+		case ET_OPCION:     SetStatus(g_colors.status,"? Posible valor para la expresión de control."); break;
 		case ET_PARA: 
-			if (g_state.edit->variante)	SetStatus(g_colors.selection,"? Identificador temporal para el elemento del vector/matriz.");
-			else                        SetStatus(g_colors.selection,"? Identificador de la variable de control (contador)."); 
+			if (g_state.edit->variante)	SetStatus(g_colors.status,"? Identificador temporal para el elemento del vector/matriz.");
+			else                        SetStatus(g_colors.status,"? Identificador de la variable de control (contador)."); 
 			break;
-		case ET_MIENTRAS: SetStatus(g_colors.selection,"? Expresión de control (lógica)."); break;
-		case ET_REPETIR: SetStatus(g_colors.selection,"? Expresión de control (lógica)."); break;
-		case ET_ASIGNAR: SetStatus(g_colors.selection,"? Asignación o instruccion secuencial."); break;
+		case ET_MIENTRAS: SetStatus(g_colors.status,"? Expresión de control (lógica)."); break;
+		case ET_REPETIR: SetStatus(g_colors.status,"? Expresión de control (lógica)."); break;
+		case ET_ASIGNAR: SetStatus(g_colors.status,"? Asignación o instruccion secuencial."); break;
 		case ET_AUX_PARA: 
 			if (g_state.edit->GetParent()->variante)	
-				SetStatus(g_colors.selection,"? Identificador del vector/matriz a recorrer.");
-			else SetStatus(g_colors.selection,
+				SetStatus(g_colors.status,"? Identificador del vector/matriz a recorrer.");
+			else SetStatus(g_colors.status,
 						   g_state.edit->GetParent()->GetChild(1)==g_state.edit
 								? "? Valor inicial para el contador."
 								: ( g_state.edit->GetParent()->GetChild(2)==g_state.edit
@@ -263,7 +264,7 @@ void display_cb() {
 	// barra de estado
 	if (status_color) {
 		glColor3fv(g_colors.back);
-		int w=status_text.size()*9,bh=10,bw=10,h=15;
+		int w=status_text.size()*get_char_width(),bh=10,bw=10,h=15;
 		bw-=3; w+=6; h+=6; bh-=6;
 		glBegin(GL_QUADS);
 			glVertex2i(bw,bh);

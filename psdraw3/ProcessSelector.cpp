@@ -29,8 +29,11 @@ void ProcessSelector::Hide ( ) {
 }
 
 void ProcessSelector::Draw ( ) {
+	glClearColor(g_colors.menu_back[0],g_colors.menu_back[1],g_colors.menu_back[2],1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
 	glLineWidth(g_constants.menu_line_width);
-	DrawTextRaster(g_colors.menu,10,g_view.win_h-25,
+	DrawTextRaster(g_colors.menu_front,10,g_view.win_h-25,
 				   (g_lang[LS_PREFER_FUNCION]
 					? (g_lang[LS_PREFER_ALGORITMO]
 					   ? "Seleccione un algoritmo/funcion para visualizar:"
@@ -40,14 +43,14 @@ void ProcessSelector::Draw ( ) {
 					   : "Seleccione un algoritmo/subalgoritmo para visualizar:") ) );
 	
 	int base=g_view.win_h-m_anim_base, delta=m_anim_delta;
-	glColor3fv(g_colors.menu); 
+	glColor3fv(g_colors.menu_front); 
 	glBegin(GL_LINES); 
 	glVertex2i(0,base); glVertex2i(g_view.win_w,base);
 	glEnd();
 	for(int i=0;i<=int(g_code.procesos.size()-(g_state.edit_on?0:1));i++) {
 		
 		if (m_selection==i) {
-			glColor3fv(g_colors.shape[ET_PROCESO]);
+			glColor3fv(g_colors.menu_sel_back);
 			glBegin(GL_QUADS);
 			glVertex2i(0,base);
 			glVertex2i(g_view.win_w,base);
@@ -58,13 +61,13 @@ void ProcessSelector::Draw ( ) {
 		base-=delta;
 		
 		if (i==int(g_code.procesos.size())) {
-			DrawTextRaster(m_selection==i?g_colors.selection:g_colors.menu,20,base+10,
+			DrawTextRaster(/*m_selection==i?g_colors.selection:*/g_colors.menu_front,20,base+10,
 						   g_lang[LS_PREFER_FUNCION]?"Agregar Nueva Funcion"
 						   :(g_lang[LS_PREFER_ALGORITMO]?"Agregar Nuevo SubAlgoritmo"
 							 :"Agregar Nuevo SubProceso") );
 		} else {
 			
-			const float *color = m_selection==i?g_colors.selection:g_colors.menu;
+			const float *color = /*m_selection==i?g_colors.selection:*/g_colors.menu_front;
 			glColor3fv(color);
 			glPushMatrix();
 			int px=20, py=base+10;
@@ -88,8 +91,8 @@ void ProcessSelector::Draw ( ) {
 				if (f==string::npos) f=0; else f++;
 				int t=f; while (t<l && s[t]!=' ' && s[t]!='(') t++;
 				while (p<l) {
-					if (p==int(f)) glColor3fv(g_colors.menu_bold);
-					if (p==t) glColor3fv(color);
+					if (p==int(f)) glColor3fv(g_colors.menu_front_bold);
+					else if (p==t) glColor3fv(color);
 					dibujar_caracter(s[p++]);
 				}
 			}
@@ -99,7 +102,7 @@ void ProcessSelector::Draw ( ) {
 		}
 		
 		glLineWidth(1);
-		glColor3fv(g_colors.menu); 
+		glColor3fv(g_colors.menu_front); 
 		glBegin(GL_LINES); 
 		glVertex2i(0,base); glVertex2i(g_view.win_w,base);
 		glEnd();

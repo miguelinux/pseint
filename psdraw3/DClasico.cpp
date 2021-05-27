@@ -306,7 +306,7 @@ void Entity::DrawClasico(bool force) {
 		if (type!=ET_OPCION) DrawFlechaDownHead(g_view.d_dx+x,g_view.d_dy+y); // no en inicio
 	}
 	glEnd();
-	if (type==ET_COMENTARIO||type==ET_SELECTION) {
+	if (type==ET_COMENTARIO or type==ET_SELECTION) {
 #ifndef _FOR_EXPORT
 		glEnable(GL_LINE_STIPPLE);
 #endif
@@ -318,15 +318,15 @@ void Entity::DrawClasico(bool force) {
 	} else {
 		// relleno de la forma
 		int icolor = g_config.shape_colors?type:ET_COUNT;
-		float aux_color[3] = {
-			g_colors.shape[icolor][0],
-			g_colors.shape[icolor][1],
-			g_colors.shape[icolor][2]
-		};
+//		float aux_color[3] = {
+//			g_colors.shape[icolor][0],
+//			g_colors.shape[icolor][1],
+//			g_colors.shape[icolor][2]
+//		};
 		DrawShapeSolid(g_colors.shape[icolor],d_fx,d_fy,d_w,d_h);
-		aux_color[0]=pow(aux_color[0],5)*.75;
-		aux_color[1]=pow(aux_color[1],5)*.75;
-		aux_color[2]=pow(aux_color[2],5)*.75;
+//		aux_color[0]=pow(aux_color[0],5)*.75;
+//		aux_color[1]=pow(aux_color[1],5)*.75;
+//		aux_color[2]=pow(aux_color[2],5)*.75;
 		// borde de la forma
 		DrawShapeBorder(/*mouse==this?color_selection:*/(g_colors.border[icolor]),d_fx,d_fy,d_w,d_h);
 	}
@@ -350,7 +350,7 @@ void Entity::DrawClasico(bool force) {
 				glVertex2d(x+w,y-w);
 			glEnd();
 			glLineWidth(g_constants.line_width_bordes);
-			glColor3fv(g_colors.menu);
+			glColor3fv(g_colors.menu_front);
 			glBegin(GL_LINE_LOOP);
 				glVertex2d(x-w,y-w);
 				glVertex2d(x-w,y+w);
@@ -365,9 +365,9 @@ void Entity::DrawClasico(bool force) {
 			glEnd();
 			glLineWidth(g_constants.line_width_flechas);
 		} else
-		if (type==ET_ESCRIBIR||type==ET_LEER) { // flecha en la esquina
+		if (type==ET_ESCRIBIR or type==ET_LEER) { // flecha en la esquina
 			glBegin(GL_LINES);
-			glColor3fv(g_colors.label_high[3]);
+			glColor3fv(g_colors.io_arrow);
 			int axl = d_x+d_w/2-margin, axe = d_x+d_w/2+margin;
 			if (g_config.alternative_io and type==ET_ESCRIBIR) { axl-=h; axe-=h; }
 			DrawLinea(axl,d_y-margin,axe,d_y+margin);

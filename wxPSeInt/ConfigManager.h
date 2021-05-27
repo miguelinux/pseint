@@ -10,6 +10,7 @@
 class ConfigManager {
 public:
 	bool use_dark_theme; ///< esquema de colores para el resaltado de sintaxis, true=fondo negro, false=fondo blanco
+	bool use_dark_psdraw; ///< esquema de colores de psdraw, true=fondo negro, false=fondo blanco
 	bool use_dark_psterm; ///< esquema de colores de psterm, true=fondo negro, false=fondo blanco
 	wxString GetTermCommand(); ///< terminal a usar si no se usa la propia (en GNU/Linux, hay que probar algunas para ver cual hay instalada)
 	

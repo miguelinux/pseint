@@ -18,7 +18,7 @@ void DrawTextRaster(const float *color, int x, int y, const char *t) {
 	glPushMatrix();
 	glTranslated(x,y,0);
 	if (g_config.big_icons) glScaled(.12,.15,0);
-	else glScaled(.09,.11,0);
+	else                    glScaled(.09,.11,0);
 	begin_texto();
 	for(int i=0;t[i]!='\0';++i)
 		dibujar_caracter(t[i]);
@@ -144,5 +144,9 @@ void dibujar_caracter(const char chr) {
 	glTexCoord2f(c*f,r*f+f);
 	glVertex2i(x0,y0+h);
 	x_texto += 800.0/7.0;
+}
+
+double get_char_width( ) {
+	return (800.0/7.0)*(g_config.big_icons ? .12 : .09);
 }
 

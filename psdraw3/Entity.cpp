@@ -120,18 +120,18 @@ void Entity::EditSpecialLabel(int key) {
 
 
 static bool is_sep(char c) {
-	if (c==' '||c==',') return true;
-	if (c>='a'&&c<='z') return false;
-	if (c>='A'&&c<='Z') return false;
-	if (c>='0'&&c<='9') return false;
-	if (c=='_'||c=='.') return false;
-	if (c=='á'||c=='Á') return false;
-	if (c=='é'||c=='É') return false;
-	if (c=='í'||c=='Í') return false;
-	if (c=='ó'||c=='Ó') return false;
-	if (c=='ú'||c=='Ú') return false;
-	if (c=='ü'||c=='Ü') return false;
-	if (c=='ñ'||c=='Ñ') return false;
+	if (c==' ' or c==',') return true;
+	if (c>='a' and c<='z') return false;
+	if (c>='A' and c<='Z') return false;
+	if (c>='0' and c<='9') return false;
+	if (c=='_' or c=='.') return false;
+	if (c=='á' or c=='Á') return false;
+	if (c=='é' or c=='É') return false;
+	if (c=='í' or c=='Í') return false;
+	if (c=='ó' or c=='Ó') return false;
+	if (c=='ú' or c=='Ú') return false;
+	if (c=='ü' or c=='Ü') return false;
+	if (c=='ñ' or c=='Ñ') return false;
 	return true;
 }
 
@@ -158,7 +158,7 @@ void load_keywords() {
 
 void to_lower(string &s){
 	for(size_t i=0;i<s.size();i++) { 
-		if (s[i]>='A'&&s[i]<='Z') s[i] = tolower(s[i]); 
+		if (s[i]>='A' and s[i]<='Z') s[i] = tolower(s[i]); 
 		else if (s[i]=='Á') s[i] = 'á';
 		else if (s[i]=='É') s[i] = 'é';
 		else if (s[i]=='Í') s[i] = 'í';
@@ -170,54 +170,54 @@ void to_lower(string &s){
 }
 
 static char get_color(string s) {
-	if (s[0]=='.'||(s[0]>='0'&&s[0]<='9')) return 'b';
+	if (s[0]=='.' or (s[0]>='0' and s[0]<='9')) return HL_NUMBER;
 	to_lower(s);
-	if (keywords.count(s)) return 'd';
-	return 'a';
+	if (keywords.count(s)) return HL_KEYWORD;
+	return HL_IDENTIFIER;
 }
 
 void Entity::Colourize ( ) {
 	static bool keywords_loaded = false;
 	if (!keywords_loaded) { load_keywords(); keywords_loaded = true; }
-	colourized.replace(0,colourized.size(),label.size(),'e');
+	colourized.replace(0,colourized.size(),label.size(),HL_COMMENT);
 	if (type==ET_COMENTARIO) return;
-	bool first_word = type==ET_ASIGNAR||type==ET_PROCESO;
+	bool first_word = type==ET_ASIGNAR or type==ET_PROCESO;
 	int par_level = 0;
 	for (int i = 0, l = label.size(), lp=0; i<=l; i++) {
 		// cadenas
-		if (i<l && (label[i]=='\''||label[i]=='\"')) {
+		if (i<l and (label[i]=='\'' or label[i]=='\"')) {
 			do {
-				colourized[i++] = 'c';
-			} while (i<l && label[i]!='\'' && label[i]!='\"');
-			colourized[i] = 'c';
+				colourized[i++] = HL_STRING;
+			} while (i<l and label[i]!='\'' and label[i]!='\"');
+			colourized[i] = HL_STRING;
 			lp=i+1; first_word = false;
 		} else 
 			// numeros y palabras claves	
-			if (i==l || is_sep(label[i])) {
+			if (i==l or is_sep(label[i])) {
 			if (i!=lp) {
 				char c = get_color(label.substr(lp,i-lp));
 				for(int j=lp;j<i;j++) 
 					colourized[j] = c;
 			}
-			colourized[i] = 'f';
+			colourized[i] = HL_OPERATOR;
 			// caso especial del op de asignacion
-			if (first_word && i<l) {
-				if (label[i]=='['||label[i]=='(') {
+			if (first_word and i<l) {
+				if (label[i]=='[' or label[i]=='(') {
 					par_level++;
-				} else if (label[i]==']'||label[i]==')') {
+				} else if (label[i]==']' or label[i]==')') {
 					par_level--;
 				} else if (par_level==0) {
-					if (label[i]==SC_FLECHA||label[i]=='=') {
-						colourized[i] = 'd';
-					} else if (i+1<l && label[i]=='<' && label[i+1]=='-') {
-						colourized[i] = colourized[i+1] = 'd'; ++i;
-					} else if (i+1<l && label[i]==':' && label[i+1]=='=') {
-						colourized[i] = colourized[i+1] = 'd'; ++i;
+					if (label[i]==SC_FLECHA or label[i]=='=') {
+						colourized[i] = HL_KEYWORD;
+					} else if (i+1<l and label[i]=='<' and label[i+1]=='-') {
+						colourized[i] = colourized[i+1] = HL_KEYWORD; ++i;
+					} else if (i+1<l and label[i]==':' and label[i+1]=='=') {
+						colourized[i] = colourized[i+1] = HL_KEYWORD; ++i;
 					}
-					if (i==l||label[i]!=' ') first_word = false;
+					if (i==l or label[i]!=' ') first_word = false;
 				}
-			} else if (i<l && label[i]==';') {
-				first_word = type==ET_ASIGNAR||type==ET_PROCESO;
+			} else if (i<l and label[i]==';') {
+				first_word = type==ET_ASIGNAR or type==ET_PROCESO;
 			}
 			lp = i+1;
 		}
@@ -231,14 +231,14 @@ static void beautify_label(ETYPE type, string &label, int &edit_pos) {
 		int par_level = 0;
 		for (int i = 0, l = label.size(); i<l; i++) {
 			// cadenas
-			if (i<l && (label[i]=='\''||label[i]=='\"')) {
-				do { i++; } while (i<l && label[i]!='\'' && label[i]!='\"');
-			} else if (label[i]=='('||label[i]=='[') {
+			if (i<l and (label[i]=='\'' or label[i]=='\"')) {
+				do { i++; } while (i<l and label[i]!='\'' and label[i]!='\"');
+			} else if (label[i]=='(' or label[i]=='[') {
 				par_level++;
-			} else if (label[i]==']'||label[i]==')') {
+			} else if (label[i]==']' or label[i]==')') {
 				par_level--;
 			} else if (label[i]==';') {
-				if (i+1<l && label[i+1]!=' ') {
+				if (i+1<l and label[i+1]!=' ') {
 					label.insert(i+1," "); ++l;
 					if (edit_pos>=i+1) ++edit_pos;
 				}
@@ -441,11 +441,11 @@ void Entity::DrawText() {
 //	glColor3fv(edit==this?color_selection:(type==ET_PROCESO?color_arrow:(type==ET_COMENTARIO?color_comment:color_label)));
 	int llen = label.size(), crop_len = IsLabelCropped();
 	if (crop_len) llen=crop_len-3;
-	int last_color = 'a'; bool syntax = type!=ET_COMENTARIO; 
+	int last_color = 'a'; bool syntax = true;//type!=ET_COMENTARIO; 
 	if (syntax) glColor3fv(g_colors.label_high[last_color-'a']);
 	for (int i=0;i<llen;i++) {
 		if (syntax && colourized[i]!=last_color) 
-			glColor3fv(g_colors.label_high[(last_color=colourized[i])-'a']);
+			glColor3fv(g_colors.label_high[(last_color=colourized[i])]);
 		dibujar_caracter(label[i]);
 	}
 	if (llen!=int(label.size()))

@@ -55,6 +55,14 @@ bool SendHelp() {
 	return true;
 }
 
+bool SendConfig(const char *key, bool val) {
+	if (zocket==ZOCKET_ERROR) return false;
+	string msg = "config:"; msg += key; msg += (val?"=1\n":"=0\n");
+	zocket_escribir(zocket,msg.c_str(),msg.size());
+	if (zocket==ZOCKET_ERROR) return false;
+	return true;
+}
+
 void CloseComm( ) {
 	if (zocket!=ZOCKET_ERROR) {
 		zocket_cerrar(zocket);

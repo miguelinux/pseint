@@ -93,7 +93,7 @@ void ShapesBar::Draw() {
 	glVertex2i(g_view.win_w,0);
 	glEnd();
 	// shapebar
-	glColor3fv(g_colors.menu);
+	glColor3fv(g_colors.menu_front);
 	glBegin(GL_LINES);
 	glVertex2i(g_view.win_w-m_width,0);
 	glVertex2i(g_view.win_w-m_width,g_view.win_h);
@@ -103,7 +103,7 @@ void ShapesBar::Draw() {
 		double sh = double(g_view.win_h)/cant_shapes_in_bar;
 		// resaltado(fondo) de la entidad seleccionada
 		if(m_current_selection!=no_selection) {
-			glColor3fv(g_colors.menu_sel);
+			glColor3fv(g_colors.menu_sel_back);
 			glBegin(GL_QUADS);
 			glVertex2d(g_view.win_w,        g_view.win_h-sh*(m_current_selection-1)); 
 			glVertex2d(g_view.win_w-m_width,g_view.win_h-sh*(m_current_selection-1)); 
@@ -139,7 +139,7 @@ void ShapesBar::Draw() {
 		glDisable(GL_TEXTURE_2D);
 		// lineas que separan las entidades
 		glBegin(GL_LINES);
-		glColor3fv(g_colors.menu);
+		glColor3fv(g_colors.menu_front);
 		y0 = g_view.win_h-dy;
 		for(int i=0;i<cant_shapes_in_bar-1;i++,y0-=dy) {
 			glVertex2d(g_view.win_w-m_width,y0);
@@ -163,29 +163,29 @@ void ShapesBar::Draw() {
 	if (m_visible) {
 		switch(m_current_selection) {
 		case 1: 
-			SetStatus(g_colors.selection,"Comentario (texto libre que el interprete ignora)"); break;
+			SetStatus(g_colors.status,"Comentario (texto libre que el interprete ignora)"); break;
 		case 2: 
 			if (g_canvas->GetModifiers()&MODIFIER_SHIFT) 
-				SetStatus(g_colors.selection,"Invocación de un subproceso");
+				SetStatus(g_colors.status,"Invocación de un subproceso");
 			else
-				SetStatus(g_colors.selection,"Asignación/Dimensión/Definición"); 
+				SetStatus(g_colors.status,"Asignación/Dimensión/Definición"); 
 			break;
-		case 3: SetStatus(g_colors.selection,"Escribir (instrucción para generar salidas)"); break;
-		case 4: SetStatus(g_colors.selection,"Leer (instrucción para obtener entradas)"); break;
-		case 5: SetStatus(g_colors.selection,"Si-Entonces (estructura condicional simple)"); break;
-		case 6: SetStatus(g_colors.selection,"Según (estructura de selección múltiple)"); break;
-		case 7: SetStatus(g_colors.selection,"Mientras (estructura repetitiva)"); break;
+		case 3: SetStatus(g_colors.status,"Escribir (instrucción para generar salidas)"); break;
+		case 4: SetStatus(g_colors.status,"Leer (instrucción para obtener entradas)"); break;
+		case 5: SetStatus(g_colors.status,"Si-Entonces (estructura condicional simple)"); break;
+		case 6: SetStatus(g_colors.status,"Según (estructura de selección múltiple)"); break;
+		case 7: SetStatus(g_colors.status,"Mientras (estructura repetitiva)"); break;
 		case 8: 
 			if ((g_canvas->GetModifiers()&MODIFIER_SHIFT)!=g_lang[LS_PREFER_REPEAT_WHILE])
-				SetStatus(g_colors.selection,"Repetir-Mientras que (estructura repetitiva)"); 
+				SetStatus(g_colors.status,"Repetir-Mientras que (estructura repetitiva)"); 
 			else
-				SetStatus(g_colors.selection,"Repetir-Hasta que (estructura repetitiva)");
+				SetStatus(g_colors.status,"Repetir-Hasta que (estructura repetitiva)");
 			break;
 		case 9: 
 			if (g_canvas->GetModifiers()&MODIFIER_SHIFT)
-				SetStatus(g_colors.selection,"Para Cada (estructura repetitiva)"); 
+				SetStatus(g_colors.status,"Para Cada (estructura repetitiva)"); 
 			else
-				SetStatus(g_colors.selection,"Para (estructura repetitiva)"); 
+				SetStatus(g_colors.status,"Para (estructura repetitiva)"); 
 			break;
 		default:;
 		}

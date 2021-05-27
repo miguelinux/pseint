@@ -59,10 +59,6 @@ void Canvas::OnPaint(wxPaintEvent& event) {
 	static wxCursor *cursores = nullptr;
 	static CURSORES old_cursor=Z_CURSOR_COUNT;
 	if (!cursores) {
-		if(g_config.shape_colors)
-			glClearColor(g_colors.back[0],g_colors.back[1],g_colors.back[2],1.f);
-		else
-			glClearColor(g_colors.back[0],g_colors.back[1],g_colors.back[2],1.f);
 		glDisable(GL_DEPTH);
 		int win_w,win_h;
 		GetClientSize(&win_w, &win_h);

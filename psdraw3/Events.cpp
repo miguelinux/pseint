@@ -136,7 +136,7 @@ void motion_cb(int x, int y) {
 			g_state.cur_x = x; g_state.cur_y = y;
 			return;
 		}
-		if (g_view.panning) { 
+		if (g_state.panning) { 
 			g_view.d_dx += x-g_state.m_x0; g_state.m_x0 = x;
 			g_view.d_dy += y-g_state.m_y0; g_state.m_y0 = y;
 		} 
@@ -193,14 +193,25 @@ void ProcessMenu(int op) {
 		SendHelp();
 	} else if (op==MO_CROP_LABELS) {
 		g_config.enable_partial_text = not g_config.enable_partial_text;
+		SendConfig("crop",g_config.enable_partial_text);
 		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COMMENTS) {
 		g_config.show_comments= not g_config.show_comments;
 		Entity::CalculateAll(true);
 	} else if (op==MO_TOGGLE_COLORS) {
-		g_config.shape_colors = not g_config.shape_colors;
+		if (g_config.dark_theme) {
+			g_config.shape_colors = g_config.dark_theme = false;
+		} else if (g_config.shape_colors) {
+			g_config.dark_theme = true;
+		} else {
+			g_config.shape_colors = true;
+		}
+		SendConfig("dark",g_config.dark_theme);
+		SendConfig("color",g_config.shape_colors);
+		SetColors();
 	} else if (op==MO_CHANGE_STYLE) {
 		g_config.nassi_shneiderman = not g_config.nassi_shneiderman;
+		SendConfig("ns",g_config.nassi_shneiderman);
 		Entity::CalculateAll(true);
 		ProcessMenu(MO_ZOOM_EXTEND);
 	}
@@ -258,7 +269,7 @@ void FinishMultipleSelection(int x0, int y0, int x1, int y1) {
 void mouse_cb(int button, int state, int x, int y) {
 	if (g_process_selector->IsActive()) { g_process_selector->ProcessClick(button,state,x,y); return; }
 	to_set_mouse = nullptr;
-	if ((not g_view.panning) and (not g_state.selecting_zoom) and (not g_state.selecting_entities))
+	if ((not g_state.panning) and (not g_state.selecting_zoom) and (not g_state.selecting_entities))
 		if (g_shapes_bar->ProcessMouse(button,state,x,y)) return;
 	fix_mouse_coords(x,y);
 	if (button==ZMB_WHEEL_DOWN||button==ZMB_WHEEL_UP) {
@@ -301,7 +312,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			g_state.cur_x = g_state.m_x0 = x; g_state.cur_y = g_state.m_y0 = y;
 			g_state.selecting_entities=true;
 		} else {
-			g_state.m_x0 = x; g_state.m_y0=y; g_view.panning = true;
+			g_state.m_x0 = x; g_state.m_y0=y; g_state.panning = true;
 		}
 	} else {
 		if (button==ZMB_LEFT) {
@@ -333,7 +344,7 @@ void mouse_cb(int button, int state, int x, int y) {
 			g_state.selecting_zoom = false;
 			return;
 		}
-		g_view.panning = false;
+		g_state.panning = false;
 		Entity::CalculateAll();
 	}
 }

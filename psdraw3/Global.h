@@ -12,6 +12,7 @@ struct GConfig {
 	bool alternative_io = false; ///< utilizar simbolos alternativos para las instrucciones Leer y Escribir
 	bool nassi_shneiderman = false; ///< usar diagramas de Nassi-Shneiderman en lugar de "clásico"
 	bool shape_colors = true; ///< mostrar los bloques de diferentes colores
+	bool dark_theme = false; ///< usar una combinación de colores claros sobre fondo oscuro
 	bool enable_partial_text = true; ///< acortar labels largos
 	bool show_comments = true; ///< mostrar entidades de tipo ET_COMENTARIO
 	bool big_icons = false;
@@ -24,29 +25,33 @@ struct GConstants {
 	int line_width_flechas = 2, line_width_bordes = 1; // anchos de las lines y flechas
 };
 
+enum { HL_IDENTIFIER, HL_STRING, HL_NUMBER, HL_KEYWORD, HL_COMMENT, HL_OPERATOR, HL_ERROR, HL_COUNT };
 struct GColors {
 	float border[ET_COUNT+1][3]; // borde de la forma de una entidad
 	float comment[3]; // para borde y fuente de las entidades con comentarios
-	float label_high[6][3]; // estilos para el coloreado de sintaxis
+	float label_high[HL_COUNT][3]; // estilos para el coloreado de sintaxis
 	float arrow[3]; // flechas que guian el flujo y unen entidades
-	float selection[3]; // texto o borde de forma seleccionada
+	float status[3]; // texto o borde de forma seleccionada
 	float shape[ET_COUNT+1][3]; // fondo de la forma
 	float back[3]; // fondo de la pantalla
 	float ghost[3]; // borde fantasma cuando se arrastra una forma
-	float menu[3]; // texto de los menues
-	float menu_bold[3]; // texto resaltado de los menues
-	float menu_back[3]; // fondo de los menues
-	float menu_sel[3]; // fondo de elemento de menu seleccionado
+	float menu_back[3]; // fondo del menu
+	float menu_front[3]; // texto del menu
+	float menu_front_bold[3]; // texto resaltado del menu
+	float menu_sel_back[3]; // fondo de la seleccion del menu
+	float menu_sel_front[3]; // texto de la seleccion del menu
+	float io_arrow[3]; // mensajes de error de sintaxis
 	float error[3]; // mensajes de error de sintaxis
 };
 
 
 struct GState {
+	bool big_icons = false;
+	
 	string fname; // archivo que recibe como argumento
 	bool edit_on = true; // indica si se puede editar el diagrama
 	bool debugging = false; // indica si el programa se esta ejecutando paso a paso (en ese caso no se puede modificar edit_on)
 	bool loading = false; // indica si se esta cargando un nuevo algoritmo desde un archivo para desactivar el evento de modificacion
-	bool big_icons = false;
 	bool modified = false; // para saber si hay que preguntar antes de salir sin guardar
 	
 	// estado para pasar entre eventos para la edicion
@@ -58,6 +63,7 @@ struct GState {
 	
 	Entity *debug_current = nullptr;  // la entidad que se esta ejecutando actualmente en el paso a paso
 	
+	bool panning = false; // indica si se esta moviendo el dibujo, para el motion
 	bool selecting_entities = false; // para selecciones múltiples (rectangulares, shift+drag derecho)
 	bool selecting_zoom = false; // para hacer zoom en un area marcada, con el boton del medio, m_x0 y m_y0 guardan la primer esquina
 };
@@ -65,7 +71,6 @@ struct GState {
 struct GView {
 	// zoom y panning
 	int win_h = 0, win_w = 0; // tamaño de la ventana
-	bool panning = false; // indica si se esta moviendo el dibujo, para el motion
 	double d_dx = 0, d_dy = 0; // "paning" del dibujo
 	double d_zoom = 0.1; // zoom del dibujo
 	double zoom = 0.1; // zoom final

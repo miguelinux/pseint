@@ -75,6 +75,7 @@ void ConfigManager::LoadDefaults() {
 	comm_port=55375;
 	big_icons = OSDep::GetDPI()>=120;
 	use_dark_theme = false;
+	use_dark_psdraw = false;
 	use_dark_psterm = false;
 	check_for_updates = true;
 	fixed_port = false;
@@ -170,6 +171,7 @@ void ConfigManager::Save() {
 		fil.AddLine(wxString("comm_port=")<<comm_port);	
 	}
 	fil.AddLine(wxString("use_dark_theme=")<<(use_dark_theme?1:0));	
+	fil.AddLine(wxString("use_dark_psdraw=")<<(use_dark_psdraw?1:0));	
 	fil.AddLine(wxString("use_dark_psterm=")<<(use_dark_psterm?1:0));	
 	fil.AddLine(wxString("big_icons=")<<big_icons);
 	fil.AddLine(wxString("check_for_updates=")<<(check_for_updates?1:0));	
@@ -217,6 +219,7 @@ void ConfigManager::Read() {
 			else if (key=="comm_port") { value.ToLong(&l); comm_port=l; }
 			else if (key=="big_icons") big_icons=utils->IsTrue(value);
 			else if (key=="use_dark_theme") use_dark_theme=utils->IsTrue(value);
+			else if (key=="use_dark_psdraw") use_dark_psdraw=utils->IsTrue(value);
 			else if (key=="use_dark_psterm") use_dark_psterm=utils->IsTrue(value);
 			else if (key=="check_for_updates") check_for_updates=utils->IsTrue(value);
 			else if (key=="fixed_port") fixed_port=utils->IsTrue(value);
