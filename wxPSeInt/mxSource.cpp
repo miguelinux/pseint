@@ -361,43 +361,36 @@ void mxSource::OnEditPaste(wxCommandEvent &evt) {
 		AutoCompCancel();
 	
 	if (GetReadOnly()) return MessageReadOnly();
+	// obtener el string del portapapeles
 	if (!wxTheClipboard->Open()) return;
 	wxTextDataObject data;
-	if (!wxTheClipboard->GetData(data)) {
-		wxTheClipboard->Close();
-		return;
-	}
+	bool clip_ok = wxTheClipboard->GetData(data);
+	wxTheClipboard->Close();
+	if (not clip_ok) return;
 	wxString str = data.GetText();
+	ToRegularOpers(str);
+	FixExtraUnicode(str);
+	
 	BeginUndoAction();
 	// borrar la seleccion previa
 	if (GetSelectionEnd()-GetSelectionStart()!=0)
 		DeleteBack();
 	// insertar el nuevo texto
-	int cp = GetCurrentPos();
-	InsertText(cp,str);
+	int p0 = GetCurrentPos();
+	InsertText(p0,str);
+	int p1 = p0+str.Len();
 	// indentar el nuevo texto
-	int l1 = LineFromPosition(cp);
-	int l2 = LineFromPosition(cp+str.Len());
-	int pos = PositionFromLine(l1);
-	int p=cp-1;
-	while (p>=pos && (GetCharAt(p)==' ' || GetCharAt(p)=='\t'))
-		p--;
-	if (p!=pos && p>=pos) 
-		l1++;
-	cp+=str.Len();
-	if (l2>=l1) {
-		char c=LineFromPosition(cp);
-		pos=cp-GetLineIndentPosition(c);
-		if (pos<0) pos=0;
-		Indent(l1,l2);
-		Analyze(l1,l2);
-		pos+=GetLineIndentPosition(c);
-		SetSelection(pos,pos);
-	} else {
-		Analyze(l1);
-		SetSelection(cp,cp);
-	}
-	wxTheClipboard->Close();
+	int l0 = LineFromPosition(p0);
+	int l1 = LineFromPosition(p1-1);
+	// ya que vamos a corregir el indentado, guardar p0 y p1 respecto al indentado previo
+	p0 -= GetLineIndentPosition(l0);
+	p1 -= GetLineIndentPosition(l1);
+	int l0i = l0; if (p0>0) ++l0i; // l0i en lugar de l0, porque si no pegamos al comienzo de la linea, la 1ra no se indenta
+	if (l0i<=l1) Indent(l0i,l1);
+//		p0 += GetLineIndentPosition(l0);
+	p1 += GetLineIndentPosition(l1);
+	SetSelection(p1,p1); // recuperar la seleccion antes de analizar, Analyze va a corregirla si acorta al reemplazar por caracteres unicode
+	Analyze(l0,l1);
 	EndUndoAction();
 }
 
@@ -527,7 +520,7 @@ void mxSource::MakeCompletionFromKeywords(wxArrayString &output, int start_pos, 
 		for (j=0;j<l;j++)
 			if (typed[j]!=wxTolower(comp_list[i].label[j]))
 				break;
-		if (j==l && (comp_list[i].label[3]!=' '||comp_list[i].label[0]!='F')) {
+		if (j==l and (comp_list[i].label[3]!=' ' or comp_list[i].label[0]!='F')) {
 			output.Add(comp_list[i]);
 		}
 	}
@@ -569,15 +562,51 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		comp_to=GetCurrentPos();
 	} else if (chr==' ' && config->autocomp) {
 		int p2=comp_to=GetCurrentPos(), s=GetStyleAt(p2-2);
-		if (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_STRING || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRINGEOL) return;
-		int p1=comp_from=WordStartPosition(p2-1,true);
-		wxString st=GetTextRange(p1,p2).Lower(); st[0]=toupper(st[0]);
+		if (STYLE_IS_COMMENT(s)) return;
 		wxArrayString res;
-		for (size_t i=0;i<comp_list.size();i++) {
-			if (comp_list[i].label.StartsWith(st))
-				res.Add(comp_list[i]);
+		if (not STYLE_IS_CONSTANT(s)) {
+			int p1=comp_from=WordStartPosition(p2-1,true);
+			wxString st=GetTextRange(p1,p2).Lower(); st[0]=toupper(st[0]);
+			for (size_t i=0;i<comp_list.size();i++) {
+				if (comp_list[i].label.StartsWith(st))
+					res.Add(comp_list[i]);
+				if (not res.IsEmpty()) {
+					ShowUserList(res,p1,p2);
+					return;
+				}
+			}
 		}
-		if (!res.IsEmpty()) ShowUserList(res,p1,p2);
+		// ver que estemos al final de la linea
+		int p = comp_to-1;
+		int line = LineFromPosition(comp_to);
+		int pend = GetLineEndPosition(line)-1;
+		while(pend>p and GetCharAt(pend)==' ') --pend;
+		if (pend==p) {
+			// buscar la ultima palabra clave de esta linea para sabe qué estructra comienza
+			// y asegurarse de que tengamos algo más en medio (o sea, por ej, no sugerir "ENTONCES" 
+			// justo despues de SI)
+			int pbeg = PositionFromLine(line);
+			bool something_between = false; 
+			while(true) {
+				while(p>=pbeg and GetStyleAt(p)!=wxSTC_C_WORD)
+					if (GetCharAt(p--)!=' ') something_between = true;
+				if (something_between and p>=pbeg) {
+					// saltear Y, O y NO, se colorean como palabras clave
+					wxString word = GetTextRange(WordStartPosition(p,true),p+1).Upper();
+					if (word=="Y" or word=="NO" or word=="O") { 
+						p-=word.Len(); continue; 
+					}
+					else if (word=="SI") res.Add("Entonces");
+					else if (word=="PARA") res.Add("Hasta");
+					else if (word=="HASTA") res.Add("Hacer");
+					else if (word=="MIENTRAS") res.Add("Hacer");
+					else if (word=="SEGUN") res.Add("Hacer");
+					comp_from = comp_to;
+					if (not res.IsEmpty()) ShowUserList(res,comp_from,comp_to);
+				}
+				return;
+			}
+		}
 	} else if ( EsLetra(chr,true) && config->autocomp) 
 	{
 		int p2=comp_to=GetCurrentPos();
@@ -590,7 +619,8 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			wxArrayString res;
 			MakeCompletionFromKeywords(res,p1,str);
 			MakeCompletionFromIdentifiers(res,p1,str);
-			if (!res.IsEmpty()) ShowUserList(res,p1,p2);
+			if (res.GetCount()==1 and res[0].Len()==comp_to-comp_from) return; // es molesto cuando sugiere solamente lo que ya está completamente escrito
+			if (not res.IsEmpty()) ShowUserList(res,p1,p2);
 		}
 	} else if (chr==';' && GetStyleAt(GetCurrentPos()-2)!=wxSTC_C_STRINGEOL) HideCalltip(false,true);
 	if (config->calltip_helps) {
@@ -646,8 +676,21 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					}
 				}
 				else 
+				if (chr=='<' && GetCharAt(p)=='-') {
+					StyleLine(GetCurrentLine());
+					if (GetStyleAt(p-1)==wxSTC_C_ASSIGN) {
+						SetSelectionStart(p-1); SetSelectionEnd(p+1);
+						ReplaceSelection(wxString(UOP_ASIGNACION,1));
+					}
+				}
+				else 
 				if (p>1 && chr=='=' && GetCharAt(p-2)=='<') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(wxString(UOP_LEQUAL,1));
+				}
+				else 
+				if (chr=='<' && GetCharAt(p)=='=') {
+					SetSelectionStart(p-1); SetSelectionEnd(p+1);
 					ReplaceSelection(wxString(UOP_LEQUAL,1));
 				}
 				else 
@@ -656,8 +699,18 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					ReplaceSelection(wxString(UOP_GEQUAL,1));
 				}
 				else 
+				if (chr=='>' && GetCharAt(p)=='=') {
+					SetSelectionStart(p-1); SetSelectionEnd(p+1);
+					ReplaceSelection(wxString(UOP_GEQUAL,1));
+				}
+				else 
 				if (p>1 && chr=='=' && GetCharAt(p-2)=='!') {
 					SetSelectionStart(p-2); SetSelectionEnd(p);
+					ReplaceSelection(wxString(UOP_NEQUAL,1));
+				}
+				else 
+				if (chr=='!' && GetCharAt(p)=='=') {
+					SetSelectionStart(p-1); SetSelectionEnd(p+1);
 					ReplaceSelection(wxString(UOP_NEQUAL,1));
 				}
 				else 
@@ -1259,8 +1312,8 @@ void mxSource::SetAutocompletion() {
 	if (cfg_lang[LS_LAZY_SYNTAX]) {
 		comp_list.push_back(comp_list_item("Para Cada","Para Cada ",""));
 		comp_list.push_back(comp_list_item("Desde","Desde ","Para"));
-		comp_list.push_back(comp_list_item("Hasta","Hasta ","Para"));
 	}
+	comp_list.push_back(comp_list_item("Hasta","Hasta ","Para"));
 	comp_list.push_back(comp_list_item("Con Paso","Con Paso ","Para"));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n","Para"));
 	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
@@ -1951,6 +2004,7 @@ void mxSource::RTOuputStarts ( ) {
 
 void mxSource::RTOuputEnds ( ) {
 	if (config->rt_syntax) ClearErrorMarks();
+	if (current_calltip.is_error) CallTipCancel();
 	main_window->QuickHelp().ShowRTResult(!rt_errors.empty());
 	SetStatus(); // para que diga en la barra de estado si hay o no errores
 }
@@ -2284,7 +2338,8 @@ bool mxSource::SaveFile (const wxString & fname) {
 		write_ok = file.Write(data,data.length());
 		file.Flush(); file.Close();
 	}
-	if (not write_ok) wxStyledTextCtrl::SaveFile(fname); // last resourse fallback
+	if (write_ok) SetModified(false);
+	else wxStyledTextCtrl::SaveFile(fname); // last resourse fallback
 	return write_ok;
 }
 
