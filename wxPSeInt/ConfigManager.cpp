@@ -74,9 +74,10 @@ void ConfigManager::LoadDefaults() {
 	debug_port  =55374;
 	comm_port=55375;
 	big_icons = OSDep::GetDPI()>=120;
-	use_dark_theme = false;
-	use_dark_psdraw = false;
-	use_dark_psterm = false;
+	wxColour ref_color = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
+	use_dark_theme = (ref_color.Red()/255.f+ref_color.Green()/255.f+ref_color.Blue()/255.f)/3.f < 0.5f;
+	use_dark_psdraw = use_dark_theme;
+	use_dark_psterm = use_dark_theme;
 	check_for_updates = true;
 	fixed_port = false;
 	rt_syntax = true;
