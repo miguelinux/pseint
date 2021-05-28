@@ -628,8 +628,10 @@ void Entity::Print(ostream &out, string tab, Entity *process, int &line_num) {
 		if (GetNext()) {
 			out<<tab<<lpre<<_fix(label,"{sin_titulo}")<<_endl_this;
 			if (GetNext()->GetNext()) GetNext()->Print(out,add_tab?tab+_tabs:tab,process,line_num);
-			else { out<<(add_tab?tab+_tabs:tab)<<_endl_none; }
-//			out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
+			else { 
+				out<<(add_tab?tab+_tabs:tab)<<_endl_none; 
+				out<<tab<<"Fin"<<lpre.substr(0,lpre.size()-1)<<_endl_none;
+			}
 			return;
 		} else {
 			tab.erase(tab.size()-1);

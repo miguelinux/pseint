@@ -262,7 +262,16 @@ void LoadProc(vector<string> &vproc) {
 			_new_this(aux);
 		}
 		else if (str=="FINPARA"||str=="FINSI"||str=="FINMIENTRAS"||str=="FINSEGUN") {
-			if (str=="FINSEGUN" && aux->type!=ET_SEGUN) { aux=Up(children_stack,aux); aux=Up(children_stack,aux); }
+			// En el caso normal, del segun cuelgan como hijos las opciones, y las opciones
+			// tienen como 1ros hijos a otras instrucciones... Entonces en ese caso, cuando
+			// termina el segun hay que subir a la opcion, y luego al segun... eso hace el 
+			// if que sigue.... Pero cuando el segun está vació, llegamos acá con aux apuntando
+			// al segun, no a una opción ni a una instrucción dentro de una opcion... Pero con
+			// ver que aux se un segun no alcanza, cuando hay dos seguns anidados, y los dos
+			// finseguns seguidos, luego del 1er fin segun aux queda en el 2do segun (el que
+			// le corresponde a ese finsegun), y entonces cuando venga el 2do finsegun sí
+			// hay que subir, para eso se mira children_stack
+			if (str=="FINSEGUN" && (aux->type!=ET_SEGUN or children_stack.top()==-1)) { aux=Up(children_stack,aux); aux=Up(children_stack,aux); }
 			aux=Up(children_stack,aux);
 			_new_prev();
 		}
