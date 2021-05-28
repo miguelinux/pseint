@@ -54,7 +54,7 @@ public:
 	
 private:
 	friend class DebugManager;
-	mxFindDialog *find_replace_dialog;
+	mxFindDialog *find_replace_dialog = nullptr;
 	friend class mxSource; // para el page_text
 	friend class mxProcess;
 	friend class mxFindDialog;
@@ -74,10 +74,10 @@ private:
 	void CreateCommandsPanel();
 	void CreateDebugControlsPanel();
 	void CreateStatusBar();
-	wxAuiNotebook *notebook; 
-	wxButton *button_subproc;
+	wxAuiNotebook *notebook = nullptr; 
+	wxButton *button_subproc = nullptr;
 	
-	mxTestPanel *test_panel;
+	mxTestPanel *test_panel = nullptr;
 	
 public:
 	
@@ -89,7 +89,7 @@ public:
 	void OnSourceClose(mxSource *src);
 	
 	mxMainWindow(wxPoint pos, wxSize size);
-	mxSource *last_source;
+	mxSource *last_source = nullptr;
 	~mxMainWindow();
 	
 	void RegenFileMenu(wxString path);

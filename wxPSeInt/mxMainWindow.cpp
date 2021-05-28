@@ -212,9 +212,10 @@ mxMainWindow::mxMainWindow(wxPoint pos, wxSize size)
 	wxIcon icon128; icon128.CopyFromBitmap(wxBitmap("imgs/icon128.png",wxBITMAP_TYPE_PNG)); bundle.AddIcon(icon128);
 	SetIcons(bundle);
 	
-	find_replace_dialog = new mxFindDialog(this,wxID_ANY);
-	
-	last_source = NULL; test_panel = NULL;
+	// si lo creo acá, por alguna extraña razón, en windows cuando se destruye la
+	// mxSplashScreen se "rompe" también este mxFindDialog... ya no se muestra más
+	// (y tampoco hace nada, no revienta, no muestra error, solo se cierra y ya)
+//	find_replace_dialog = new mxFindDialog(this);
 	
 	CreateMenus();
 	CreateToolbars();
@@ -1172,14 +1173,12 @@ void mxMainWindow::InsertCode(wxArrayString &toins) {
 	}
 }
 void mxMainWindow::OnEditFind (wxCommandEvent &event) {
-	IF_THERE_IS_SOURCE {
-		find_replace_dialog->ShowFind(CURRENT_SOURCE);
-	} else
-		find_replace_dialog->ShowFind(NULL);
-	return;
+	if (not find_replace_dialog) find_replace_dialog = new mxFindDialog(this);
+	IF_THERE_IS_SOURCE find_replace_dialog->ShowFind(CURRENT_SOURCE);
 }
 
 void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
+	if (not find_replace_dialog) find_replace_dialog = new mxFindDialog(this);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindNext())
 			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"),wxOK|wxICON_HAND);
@@ -1189,6 +1188,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
+	if (not find_replace_dialog) find_replace_dialog = new mxFindDialog(this);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindPrev())
 			wxMessageBox(_ZZ("La cadena \"")<<find_replace_dialog->last_search<<_Z("\" no se encontró."), _Z("Buscar"),wxOK|wxICON_HAND);
@@ -1198,10 +1198,8 @@ void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditReplace (wxCommandEvent &event) {
-	IF_THERE_IS_SOURCE {
-		find_replace_dialog->ShowReplace(CURRENT_SOURCE);
-	} else
-		find_replace_dialog->ShowReplace(NULL);
+	if (not find_replace_dialog) find_replace_dialog = new mxFindDialog(this);
+	IF_THERE_IS_SOURCE find_replace_dialog->ShowReplace(CURRENT_SOURCE);
 	return;
 }
 
@@ -1594,14 +1592,15 @@ void mxMainWindow::OnConfigLanguage(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	wxAcceleratorEntry entries[6];
+	wxAcceleratorEntry entries[7];
 	entries[0].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
 	entries[1].Set(wxACCEL_CTRL, WXK_TAB, mxID_VIEW_NOTEBOOK_NEXT);
 	entries[2].Set(wxACCEL_CTRL, WXK_PAGEUP, mxID_VIEW_NOTEBOOK_PREV);
 	entries[3].Set(wxACCEL_CTRL, WXK_PAGEDOWN, mxID_VIEW_NOTEBOOK_NEXT);
 	entries[4].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_F5, mxID_DO_THAT);
 	entries[5].Set(0, WXK_F6, mxID_DEBUG_STEP);
-	wxAcceleratorTable accel(6, entries);
+	entries[6].Set(wxACCEL_ALT|wxACCEL_SHIFT, WXK_RETURN, mxID_VARS_RENAME);
+	wxAcceleratorTable accel(7, entries);
 	SetAcceleratorTable(accel);
 }
 
@@ -1631,18 +1630,13 @@ void mxMainWindow::OnDoThat (wxCommandEvent &event) {
 
 void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
-		if (!printDialogData) printDialogData=new wxPrintDialogData;
-		mxSource *src=CURRENT_SOURCE;
-		wxPrinter printer(printDialogData);
-		mxPrintOut printout(src,src->GetPageText());
-		src->SetPrintMagnification(config->print_font_size-config->wx_font_size);
-		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
-		src->ClearErrorData();
+		static wxPrintDialogData printDialogData;
+		wxPrinter printer(&printDialogData);
+		mxPrintOut printout(CURRENT_SOURCE,CURRENT_SOURCE->GetPageText());
 		if (!printer.Print(this, &printout, true)) {
 			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
 				wxMessageBox(_Z("Ha ocurrido un error al intentar imprimir"),_Z("Error"),wxOK|wxICON_ERROR);
 		}
-		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
 	}
 }
 

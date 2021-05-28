@@ -22,8 +22,9 @@ BEGIN_EVENT_TABLE(mxFindDialog, wxDialog)
 	EVT_BUTTON(mxID_FIND_REPLACE_ALL,mxFindDialog::OnReplaceAllButton)
 END_EVENT_TABLE()
 
-mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, _Z("Buscar"), pos, size, style) {
-	
+mxFindDialog::mxFindDialog(wxWindow* parent)
+	: wxDialog(parent, wxID_ANY, _Z("Buscar"), wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) 
+{
 	wxBoxSizer *mySizer= new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *optSizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxVERTICAL);
