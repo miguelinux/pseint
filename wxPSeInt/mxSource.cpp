@@ -209,6 +209,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	status = STATUS_NEW_SOURCE;
 //	SetStatus(STATUS_NEW_SOURCE);
 	
+//	UsePopUp(wxSTC_POPUP_NEVER);
+	
 	SetMouseDwellTime(500);
 	
 	er_register_source(this);
@@ -2073,7 +2075,10 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	int mp = PositionFromPointClose(evt.GetX(),evt.GetY());
 	if (mp!=wxSTC_INVALID_POSITION && (p1==p2 || (mp<p1 && mp<p2) || (mp>p1 && mp>p2)) )
 		GotoPos(mp);
-	
+	PopupMenu(evt);
+}
+
+void mxSource::PopupMenu(wxMouseEvent &evt) {
 	wxMenu menu("");
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
@@ -2083,7 +2088,7 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 //			menu.Append(mxID_VARS_ADD_ALL_TO_DESKTOP_TEST,_ZZ("Agregar todas las variables a la prueba de escritorio"));
 		} else {
 			menu.Append(mxID_VARS_DEFINE,_ZZ("Definir variable \"")+key+_Z("\""));
-			menu.Append(mxID_VARS_RENAME,_ZZ("Renombrar variable \"")+key+_Z("\""));
+			menu.Append(mxID_VARS_RENAME,_ZZ("Renombrar variable \"")+key+_Z("\"\tAlt+Shift+Enter"));
 			menu.Append(mxID_VARS_ADD_ONE_TO_DESKTOP_TEST,_ZZ("Agregar variable \"")+key+_Z("\" a la prueba de escritorio"));
 		}
 	}
@@ -2101,9 +2106,9 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	menu.Append(mxID_EDIT_CUT,_Z("Cortar"));
 	menu.Append(mxID_EDIT_COPY,_Z("Copiar"));
 	menu.Append(mxID_EDIT_PASTE,_Z("Pegar"));
-
 	
-	main_window->PopupMenu(&menu);
+	auto pos_menu = main_window->ScreenToClient(this->ClientToScreen(wxPoint(evt.GetX(),evt.GetY())));
+	main_window->PopupMenu(&menu,pos_menu);
 	
 }
 
@@ -2248,6 +2253,9 @@ void mxSource::RenameVar(int where, wxString var_name, int line_from, int line_t
 		}
 		p = FindText(p0,GetLength(),var_name,wxSTC_FIND_WHOLEWORD);
 	}
+	for(int l = line_from; l<=line_to; ++l) StyleLine(l);
+	
+	SetFocus();
 }
 
 void mxSource::AddOneToDesktopTest (wxCommandEvent & evt) {
@@ -2344,7 +2352,13 @@ bool mxSource::SaveFile (const wxString & fname) {
 }
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
-	if (evt.GetKeyCode()==WXK_ESCAPE) {
+	int key_code = evt.GetKeyCode();
+	if (key_code==WXK_MENU) {
+		wxMouseEvent evt2;
+		wxPoint pt = PointFromPosition(GetCurrentPos());
+		evt2.m_x = pt.x; evt2.m_y=pt.y+TextHeight(0);
+		PopupMenu(evt2);
+	} else if (key_code==WXK_ESCAPE) {
 		if (CallTipActive()) HideCalltip();
 		else if (AutoCompActive()) AutoCompCancel();
 		else main_window->QuickHelp().Hide();
