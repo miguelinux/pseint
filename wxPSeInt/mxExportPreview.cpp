@@ -55,7 +55,19 @@ mxExportPreview::mxExportPreview():wxFrame(main_window,wxID_ANY,_Z("Exportar - V
 	code_ctrl->SetMarginWidth (0, code_ctrl->TextWidth (wxSTC_STYLE_LINENUMBER, " XXXXX"));
 
 	wxFont font(wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
-	code_ctrl->StyleSetFont (wxSTC_STYLE_DEFAULT, font);
+	
+	const char *CL_REG_BACK  = config->use_dark_theme ? "#333333" : "#FFFFFF" ;
+	const char *CL_REG_FORE  = config->use_dark_theme ? "#FAFAFA" : "#000000" ;
+	const char *CL_ALT_FORE  = config->use_dark_theme ? "#999999" : "#969696" ;
+	const char *CL_ALT_BACK  = config->use_dark_theme ? "#606060" : "#D3D3D3" ;
+	for(int s=0;s<wxSTC_STYLE_MAX;++s) {
+		code_ctrl->StyleSetFont (s, font);
+		code_ctrl->StyleSetBackground (s, CL_REG_BACK);
+		code_ctrl->StyleSetForeground (s, CL_REG_FORE);
+	}
+	code_ctrl->StyleSetForeground (wxSTC_STYLE_LINENUMBER, CL_ALT_FORE);
+	code_ctrl->StyleSetBackground (wxSTC_STYLE_LINENUMBER, CL_REG_BACK);
+	code_ctrl->SetSelBackground(true,CL_ALT_BACK);
 	
 	main_sizer->Add(code_ctrl,wxSizerFlags().Proportion(1).Expand());
 	
