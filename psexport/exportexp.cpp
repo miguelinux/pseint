@@ -204,7 +204,7 @@ string expresion(string exp, tipo_var &tipo) {
 		else if (exp[i]>='a' && exp[i]<='z') exp[i]-=32;
 		else if (exp[i]=='ñ' || exp[i]=='Ñ') exp[i]='N';
 		else if (exp[i]=='á' || exp[i]=='Á') exp[i]='A';
-		else if (exp[i]=='é' || exp[i]=='E') exp[i]='E';
+		else if (exp[i]=='é' || exp[i]=='É') exp[i]='E';
 		else if (exp[i]=='í' || exp[i]=='Í') exp[i]='I';
 		else if (exp[i]=='ó' || exp[i]=='Ó') exp[i]='O';
 		else if (exp[i]=='ú' || exp[i]=='Ú') exp[i]='U';
