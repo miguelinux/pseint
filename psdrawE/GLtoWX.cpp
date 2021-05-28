@@ -1,6 +1,7 @@
 #include "GLtoWX.h"
 #include <stack>
 #include <wx/dc.h>
+#include "../wxPSeInt/string_conversions.h"
 
 struct matrix {
 	double sx,sy; // scale
@@ -172,13 +173,12 @@ static const unsigned char SC_MAY_IGUAL = 31;
 void dibujar_caracter(char _c) {
 	dc->SetFont(get_font());
 	dc->SetTextForeground(c);
-	wxString s(" "); 
+	wxString s = _S2W(std::string(1,_c)); 
 	switch (_c){
-	case SC_FLECHA: s[0]=UOP_ASIGNACION; break;
-	case SC_DISTINTO: s[0]=UOP_NEQUAL; break;
-	case SC_MEN_IGUAL: s[0]=UOP_LEQUAL; break;
-	case SC_MAY_IGUAL: s[0]=UOP_GEQUAL; break;
-	default: s[0] = _c;
+	case SC_FLECHA:    s = wxString(UOP_ASIGNACION,1); break;
+	case SC_DISTINTO:  s = wxString(UOP_NEQUAL,1); break;
+	case SC_MEN_IGUAL: s = wxString(UOP_LEQUAL,1); break;
+	case SC_MAY_IGUAL: s = wxString(UOP_GEQUAL,1); break;
 	}
 	int w=100*m.sx,tw,th;
 	dc->GetTextExtent(s,&tw,&th);
