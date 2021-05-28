@@ -4,7 +4,7 @@
 
 class mxSource;
 
-extern wxPrintDialogData *printDialogData;
+//extern wxPrintDialogData *printDialogData;
 //extern wxPageSetupDialogData *pageSetupData;
 
 /**
@@ -24,18 +24,19 @@ public:
 	mxPrintOut (mxSource *source, wxString title = _T(""));
 	
 	//! evento: imprimir una pagina
-	bool OnPrintPage (int page);
+	bool OnPrintPage (int page) override;
 	//! evento: inicializar la impresión
-	bool OnBeginDocument (int startPage, int endPage);
+	bool OnBeginDocument (int startPage, int endPage) override;
+	void OnEndDocument() override;
 	
 	//! determinar si existe una página (fake)
-	bool HasPage (int page);
+	bool HasPage (int page) override;
 	//! evento: recuperar información de la impresión
-	void GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
+	void GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) override;
 	
 private:
-	mxSource *source; ///< fuente a imprimir
-	std::vector<int> pages;
+	mxSource *m_source; ///< fuente a imprimir
+	std::vector<int> m_pages;
 	wxRect m_pageRect; ///< area de la página completa
 	wxRect m_printRect; ///< area de impresión
 	

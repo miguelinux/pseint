@@ -4,8 +4,9 @@
 #include "mxMainWindow.h"
 #include <wx/msgdlg.h>
 #include "string_conversions.h"
+#include "ConfigManager.h"
 
-wxPrintDialogData *printDialogData = NULL;
+//wxPrintDialogData *printDialogData = NULL;
 //wxPageSetupDialogData *pageSetupData = NULL;
 
 /**
@@ -25,14 +26,14 @@ mxPrintOut::mxPrintOut (mxSource *src, wxString title) : wxPrintout(title) {
 ////		*printData = pageSetupDialog.GetPageSetupData().GetPrintData();
 ////		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 //	}
-	source = src;
+	m_source = src;
 }
 
 bool mxPrintOut::OnPrintPage (int page) {
 	wxDC *dc = GetDC();
 	if (!dc) return false;
 	PrintScaling (dc);
-	source->FormatRange (true, pages[page-1], source->GetLength(),
+	m_source->FormatRange (true, m_pages[page-1], m_source->GetLength(),
 		dc, dc, m_printRect, m_pageRect);
 	return true;
 }
@@ -40,14 +41,32 @@ bool mxPrintOut::OnPrintPage (int page) {
 bool mxPrintOut::OnBeginDocument (int startPage, int endPage) {
 	if (!wxPrintout::OnBeginDocument (startPage, endPage))
 		return false;
+	if (config->use_dark_theme) { 
+		config->use_dark_theme = false; 
+		m_source->SetStyling(true);
+		config->use_dark_theme = true; 
+	}
+	m_source->SetPrintMagnification(config->print_font_size-config->wx_font_size);
+	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
+	m_source->SetWrapVisualFlagsLocation(wxSTC_WRAPVISUALFLAGLOC_START_BY_TEXT|wxSTC_WRAPVISUALFLAGLOC_DEFAULT);
+	m_source->SetWrapIndentMode(wxSTC_WRAPINDENT_INDENT);
+//	m_source->SetMarginWidth (0,0); /// deshabilito los nros de linea porque no los imprime bien (solo en linux?)
+	m_source->ClearErrorData();
 	return true;
+}
+
+void mxPrintOut::OnEndDocument () {
+	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
+	//	m_source->SetMarginWidth (0, m_source->TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
+	if (config->use_dark_theme) m_source->SetStyling(true);
+	wxPrintout::OnEndDocument();
 }
 
 void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) {
 	
-	if (!pages.empty()) {
+	if (not m_pages.empty()) {
 		*minPage = *selPageFrom = 1;
-		*maxPage = *selPageTo = pages.size();
+		*maxPage = *selPageTo = m_pages.size();
 		return;
 	}
 	
@@ -90,10 +109,10 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 		page.y - (top + bottom));
 	
 	// count pages
-	for(int printed=0; printed < source->GetLength();) {
+	for(int printed=0; printed < m_source->GetLength();) {
 		int last = printed;
-		pages.push_back(printed);
-		printed = source->FormatRange (0, printed, source->GetLength(), dc, dc, m_printRect, m_pageRect);
+		m_pages.push_back(printed);
+		printed = m_source->FormatRange (0, printed, m_source->GetLength(), dc, dc, m_printRect, m_pageRect);
 		*maxPage += 1;
 		if (last==printed) {
 			wxMessageBox(_Z("Debe configurar la pagina antes de imprimir"),_Z("Error"));
@@ -106,7 +125,7 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 }
 
 bool mxPrintOut::HasPage (int page) {
-	return page<=pages.size();
+	return page<=m_pages.size();
 }
 
 bool mxPrintOut::PrintScaling (wxDC *dc){
@@ -123,7 +142,7 @@ bool mxPrintOut::PrintScaling (wxDC *dc){
 	}
 	wxSize ppiPrt;
 	GetPPIPrinter (&ppiPrt.x, &ppiPrt.y);
-	if (ppiPrt.x == 0) { // scaling factor to 1
+	if (ppiPrt.x == 0) { // scaling factor to 1
 		ppiPrt.x = ppiScr.x;
 		ppiPrt.y = ppiScr.y;
 	}
