@@ -68,9 +68,7 @@ mxProfile::mxProfile(wxWindow *parent) :
 	list->AssignImageList(iml,wxIMAGE_LIST_SMALL);
 	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	
-	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	
 	
 	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Puede buscar por nombre de la institución, materia, docente, siglas, etc.")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
 	
@@ -86,8 +84,6 @@ mxProfile::mxProfile(wxWindow *parent) :
 	sizer->Add(sizer_prof,wxSizerFlags().Expand()/*.Proportion(3)*/.FixedMinSize());
 	
 	sizer->AddSpacer(10);
-	
-	
 	
 //	sizer->Add(new wxStaticText(this,wxID_ANY,_Z(" Seleccione un perfil para configurar las reglas del lenguaje: ")),wxSizerFlags().Expand().Proportion(0).Border(wxTOP,5));
 //	sizer->Add(list,wxSizerFlags().Expand().Proportion(3).FixedMinSize());

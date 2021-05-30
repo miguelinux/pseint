@@ -46,7 +46,7 @@ void er_sigsev(int sig) {
 	ofstream fil2(er_get_recovery_fname(),ios::trunc);
 	fil2<<"Error date: "<<wxNow()<<endl;
 	er_source_register *sr = er_first_source->next;
-	char kname[]="kabom-aaa.cpp";
+	char kname[]="kabom-aaa.psc";
 	while (sr) {
 		if (!sr->src->IsExample()) {
 			if (kname[6]=='z') {
@@ -105,6 +105,6 @@ void er_uninit() {
 
 const char * er_get_recovery_fname( ) {
 	static string rec_fname = er_dir+"recovery_log";
-	return er_dir.c_str();
+	return rec_fname.c_str();
 }
 

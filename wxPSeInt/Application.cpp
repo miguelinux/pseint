@@ -95,7 +95,7 @@ bool mxApplication::OnInit() {
 	config = new ConfigManager(zpath);
 	if (logger) config->Log();
 
-	new mxSplashScreen();
+	auto splash = new mxSplashScreen();
 	
 	wxSocketBase::Initialize();
 	
@@ -192,17 +192,17 @@ void mxApplication::RecoverFromError ( ) {
 	fil.Close();
 	
 	if ( !rec_names.GetCount() ) return;
-	int res =wxMessageBox("PSeInt no se cerró correctamente durante su última ejecución.\n"
-						  "Algunos algoritmos en los que trabajaba fueron guardados,\n"
-						  "automaticamente y ahora puede recuperarlos. ¿Desea recuperarlos?","PSeInt - Recuperación ante errores",wxYES_NO|wxICON_WARNING);
-	if (res==wxYES) {
-		for (unsigned int i=0;i<rec_files.GetCount();i++) {
-			mxSource *src =	main_window->OpenProgram(rec_files[i],false);
-			src->SetPageText(rec_names[i]);
-			src->SetModified(true);
-			src->sin_titulo = true;
-		}
-	}	
+	wxCommandEvent evt; main_window->OnFileClose(evt);
+	for (unsigned int i=0;i<rec_files.GetCount();i++) {
+		mxSource *src =	main_window->OpenProgram(rec_files[i],false);
+		src->SetPageText(rec_names[i]);
+		src->SetModified(true);
+		src->sin_titulo = true;
+	}
+	wxMessageBox(_Z("PSeInt no se cerró correctamente durante su última ejecución.\n"
+					"Algunos algoritmos en los que trabajaba fueron guardados,\n"
+					"automaticamente y ahora han sido recuperados."),
+				_Z("PSeInt - Recuperación ante errores"),wxOK|wxICON_WARNING);
 	
 	wxRemoveFile(er_get_recovery_fname());
 }
