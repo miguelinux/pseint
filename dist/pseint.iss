@@ -36,6 +36,7 @@ WizardStyle=modern
 DirExistsWarning=no
 ;CreateUninstallRegKey=no
 ;Uninstallable=no
+;UninstallDisplayName=PSeInt
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"

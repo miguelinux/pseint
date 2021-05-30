@@ -24,7 +24,8 @@ path=Canvas.cpp
 cursor=81:6
 [source]
 path=MainWindow.cpp
-cursor=42:5
+cursor=40:82
+open=true
 [source]
 path=Comm.cpp
 cursor=56:0
@@ -172,7 +173,7 @@ path=../wxPSeInt/string_conversions.h
 cursor=4:0
 [other]
 path=../bin/help/cambios.html
-cursor=12:129
+cursor=4:18
 open=true
 [config]
 name=Linux2_Debug
