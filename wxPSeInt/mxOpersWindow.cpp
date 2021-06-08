@@ -34,7 +34,7 @@ mxOpersWindow::mxOpersWindow(wxWindow *parent):wxScrolledWindow(parent,wxID_ANY,
 	Add("~","~","negación","Ej: NO X=5 (Invierte el resultado de la expresión lógica)");
 	AddCaterory("Op. Relacionales");
 	Add("=","=","igual","Ej: A=B");
-	Add("<>","<>","distinto","Ej: A<>B");
+//	Add("<>","<>","distinto","Ej: A<>B");
 	Add("!=","!=","distinto","Ej: A!=B (equivalente a A<>B)");
 	Add("<","<","menor","Ej: A<B");
 	Add("<=","<=","menor o igual","Ej: A<=B");
@@ -68,7 +68,7 @@ mxOpersWindow::mxOpersWindow(wxWindow *parent):wxScrolledWindow(parent,wxID_ANY,
 	Add("PI","PI","","Equivale al valor de la constante (3.1415926...)");
 	Finish();
 	
-	SetWordOperators();
+	AdjustToProfile();
 	
 	SetScrollRate(0,10);
 	SetSizerAndFit(sizer);
@@ -97,12 +97,21 @@ void mxOpersWindow::Replace(oper_item &o, wxString f1, wxString t1, wxString f2,
 	}
 }
 
-void mxOpersWindow::SetWordOperators ( ) {
+void mxOpersWindow::AdjustToProfile ( ) {
+	if (cfg_lang[LS_WORD_OPERATORS]) {
+		for(unsigned int i=0;i<lista.size();i++) {  
+			Replace(lista[i],"&","Y"," & "," Y ",cfg_lang[LS_WORD_OPERATORS]);
+			Replace(lista[i],"|","O"," | "," O ",cfg_lang[LS_WORD_OPERATORS]);
+			Replace(lista[i],"~","NO","~ ","NO ",cfg_lang[LS_WORD_OPERATORS]);
+			Replace(lista[i],"%","MOD","%"," MOD ",cfg_lang[LS_WORD_OPERATORS]);
+		}
+	}
 	for(unsigned int i=0;i<lista.size();i++) {  
-		Replace(lista[i],"&","Y"," & "," Y ",cfg_lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"|","O"," | "," O ",cfg_lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"~","NO","~ ","NO ",cfg_lang[LS_WORD_OPERATORS]);
-		Replace(lista[i],"%","MOD","%"," MOD ",cfg_lang[LS_WORD_OPERATORS]);
+		Replace(lista[i],"<=",_T("\u2264"),"<=",_T("\u2264"),config->unicode_opers);
+		Replace(lista[i],">=",_T("\u2265"),">=",_T("\u2265"),config->unicode_opers);
+		Replace(lista[i],"!=",_T("\u2260"),"!=",_T("\u2260"),config->unicode_opers);
+//		Replace(lista[i],"<>",_T("\u2260"),">=",_T("\u2260"),config->unicode_opers);
+		Replace(lista[i],"^",_T("\u2191"),"^",_T("\u2191"),config->unicode_opers);
 	}
 }
 

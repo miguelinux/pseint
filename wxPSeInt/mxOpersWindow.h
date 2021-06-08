@@ -33,7 +33,7 @@ public:
 	mxOpersWindow(wxWindow *parent);
 	void OnItem(wxCommandEvent &evt);
 	void OnLabel(wxCommandEvent &evt);
-	void SetWordOperators();
+	void AdjustToProfile();
 	DECLARE_EVENT_TABLE();
 };
 
