@@ -21,6 +21,8 @@ public:
 	void EndInput();
 	void OnTreeClick2(wxTreeEvent &evt);
 	void OnTreeClick(wxTreeEvent &evt);
+	void OnTreeDClick(wxTreeEvent &evt);
+	void OnTreeClick_aux(wxTreeEvent &evt, bool select);
 	void OnTreeTooltip(wxTreeEvent &evt);
 	void OnDefinir(wxCommandEvent &evt);
 	void OnRenombrar(wxCommandEvent &evt);

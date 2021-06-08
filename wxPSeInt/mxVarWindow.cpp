@@ -16,6 +16,7 @@ mxVarWindow *vars_window = NULL;
 
 BEGIN_EVENT_TABLE(mxVarWindow,wxPanel) 
 	EVT_TREE_SEL_CHANGED(wxID_ANY,mxVarWindow::OnTreeClick)
+	EVT_TREE_ITEM_ACTIVATED(wxID_ANY,mxVarWindow::OnTreeDClick)
 	EVT_TREE_ITEM_MIDDLE_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxVarWindow::OnTreeClick2)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxVarWindow::OnTreeTooltip)
@@ -95,7 +96,7 @@ void mxVarWindow::AddProc(wxString vname, bool main_process) {
 		vname=vname.BeforeFirst(':');
 	}
 	tree_current=tree->AppendItem(tree_root,vname,LV_MAX+(main_process?0:1),-1,r);
-	if (vname==last_sel && !last_parent.Len()) tree->SelectItem(tree_current);
+	if ((not last_sel.IsEmpty()) and vname==last_sel and last_parent.IsEmpty()) tree->SelectItem(tree_current);
 }
 
 void mxVarWindow::AddVar(wxString vname, wxChar type) {
@@ -103,7 +104,7 @@ void mxVarWindow::AddVar(wxString vname, wxChar type) {
 	int icon = type-LV_BASE_CHAR;
 	vname.Replace("-1","??",true);
 	wxTreeItemId id=tree->AppendItem(tree_current,vname/*+stype*/,icon);
-	if (vname.BeforeFirst('[')==last_sel && last_parent==tree->GetItemText(tree_current)) tree->SelectItem(id);
+	if ((not last_sel.IsEmpty()) and vname.BeforeFirst('[')==last_sel && last_parent==tree->GetItemText(tree_current)) tree->SelectItem(id);
 }
 
 void mxVarWindow::EndInput ( ) {
@@ -111,19 +112,34 @@ void mxVarWindow::EndInput ( ) {
 }
 
 void mxVarWindow::OnTreeClick (wxTreeEvent & evt) {
+	OnTreeClick_aux(evt,false);
+}
+
+void mxVarWindow::OnTreeDClick (wxTreeEvent & evt) {
+	OnTreeClick_aux(evt,true);
+}
+
+void mxVarWindow::OnTreeClick_aux (wxTreeEvent & evt, bool select) {
 	evt.StopPropagation(); // para que no le llegue a main_window y crea que es el arbol de errores
-	evt.Skip(); // para que se seleccione en el arbol
+//	evt.Skip(); // para que se seleccione en el arbol
 	wxTreeItemId it=GetSelection();
 	if (!it.IsOk()) return;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
-	int from=-1, to=-1;
+	int from=-1, to=999999;
 	wxTreeItemId parent=tree->GetItemParent(it);
 	if (parent.IsOk() && parent!=tree->GetRootItem()) {
 		range *r=(range*)tree->GetItemData(parent);
 		if (r) { from=r->from; to=r->to; }
+	} else {
+		range *r=(range*)tree->GetItemData(it);
+		if (r and select) {
+			src->GotoLine(r->to); src->EnsureCaretVisible();
+			src->GotoLine(r->from); src->EnsureCaretVisible();
+		}
 	}
 	src->HighLight(tree->GetItemText(it).BeforeFirst('['),from,to);
+	main_window->SetLambda([](){main_window->GetCurrentSource()->SetFocus();});
 }
 
 void mxVarWindow::OnTreeClick2 (wxTreeEvent & evt) {
