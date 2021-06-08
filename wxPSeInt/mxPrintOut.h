@@ -22,6 +22,7 @@ public:
 	
 	//! constructor
 	mxPrintOut (mxSource *source, wxString title = _T(""));
+	~mxPrintOut();
 	
 	//! evento: imprimir una pagina
 	bool OnPrintPage (int page) override;

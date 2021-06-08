@@ -27,7 +27,22 @@ mxPrintOut::mxPrintOut (mxSource *src, wxString title) : wxPrintout(title) {
 ////		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 //	}
 	m_source = src;
+	
+	m_source->SetPrintMagnification(config->print_font_size-config->wx_font_size);
+	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
+	m_source->SetWrapVisualFlagsLocation(wxSTC_WRAPVISUALFLAGLOC_START_BY_TEXT|wxSTC_WRAPVISUALFLAGLOC_DEFAULT);
+	m_source->SetWrapIndentMode(wxSTC_WRAPINDENT_INDENT);
+//	m_source->SetMarginWidth (0,0); /// deshabilito los nros de linea porque no los imprime bien (solo en linux?)
+	m_source->ClearErrorData();
+	
 }
+
+mxPrintOut::~mxPrintOut() {
+	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
+//	m_source->SetMarginWidth (0, m_source->TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
+	
+}
+
 
 bool mxPrintOut::OnPrintPage (int page) {
 	wxDC *dc = GetDC();
@@ -41,26 +56,21 @@ bool mxPrintOut::OnPrintPage (int page) {
 bool mxPrintOut::OnBeginDocument (int startPage, int endPage) {
 	if (!wxPrintout::OnBeginDocument (startPage, endPage))
 		return false;
+	m_source->ClearErrorData();
 	if (config->use_dark_theme) { 
 		config->use_dark_theme = false; 
 		m_source->SetStyling(true);
 		config->use_dark_theme = true; 
 	}
-	m_source->SetPrintMagnification(config->print_font_size-config->wx_font_size);
-	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
-	m_source->SetWrapVisualFlagsLocation(wxSTC_WRAPVISUALFLAGLOC_START_BY_TEXT|wxSTC_WRAPVISUALFLAGLOC_DEFAULT);
-	m_source->SetWrapIndentMode(wxSTC_WRAPINDENT_INDENT);
-//	m_source->SetMarginWidth (0,0); /// deshabilito los nros de linea porque no los imprime bien (solo en linux?)
-	m_source->ClearErrorData();
 	return true;
 }
 
-void mxPrintOut::OnEndDocument () {
-	m_source->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
-	//	m_source->SetMarginWidth (0, m_source->TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
+void mxPrintOut::OnEndDocument() {
 	if (config->use_dark_theme) m_source->SetStyling(true);
-	wxPrintout::OnEndDocument();
 }
+
+//void mxPrintOut::OnEndDocument () {
+//}
 
 void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) {
 	
