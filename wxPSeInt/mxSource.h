@@ -79,6 +79,8 @@ public:
 	mxSource(wxWindow *parent, wxString ptext, wxString afilename=wxEmptyString);
 	~mxSource();
 	
+	void OnZoomChange(wxStyledTextEvent &evt);
+	
 	void OnEditCut(wxCommandEvent &evt);
 	void OnEditCopy(wxCommandEvent &evt);
 	void OnEditPaste(wxCommandEvent &evt);

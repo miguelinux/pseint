@@ -97,6 +97,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
 	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
 	EVT_STC_PAINTED(wxID_ANY, mxSource::OnPainted)
+	EVT_STC_ZOOM(wxID_ANY,mxSource::OnZoomChange)
 END_EVENT_TABLE()
 
 // para el autocompletado de palabras clave
@@ -169,14 +170,22 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	
 	filename = afilename;
 	sin_titulo = filename==wxEmptyString;
-	SetStyling();
 	SetTabWidth(config->tabw);
 	SetUseTabs (true);
 	SetEOLMode(mxSTC_MY_EOL_MODE);
 	
 	wxFont font (wxFontInfo(config->wx_font_size).Family(wxFONTFAMILY_MODERN));
 	
+	SetMarginType (0, wxSTC_MARGIN_NUMBER);
+	SetMarginSensitive (1, true);
+	//	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
+	//	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
+	
 	StyleSetFont (wxSTC_STYLE_DEFAULT, font);
+	SetStyling(); // aplicarlo luego de definir las demas opciones de estilo, puede
+				  // modificar el resultado
+	
+	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER," XXX")); // este sí despues del estilo, para que use la fuente adecuada para calcular
 	
 	AutoCompSetSeparator('|');
 	AutoCompSetIgnoreCase(true);
@@ -187,12 +196,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxString afilename)
 	if (comp_list.empty()) SetAutocompletion();
 	if (calltips_instructions.empty()) SetCalltips();
 	
-	SetMarginType (0, wxSTC_MARGIN_NUMBER);
-	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
-	SetMarginSensitive (1, true);
-//	StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour ("DARK GRAY"));
-//	StyleSetBackground (wxSTC_STYLE_LINENUMBER, *wxWHITE);
-
 	debug_line=-1;
 	
 	SetDropTarget(new mxDropTarget(this));
@@ -394,6 +397,7 @@ void mxSource::OnEditPaste(wxCommandEvent &evt) {
 	SetSelection(p1,p1); // recuperar la seleccion antes de analizar, Analyze va a corregirla si acorta al reemplazar por caracteres unicode
 	Analyze(l0,l1);
 	EndUndoAction();
+	EnsureCaretVisible();
 }
 
 void mxSource::OnEditUndo(wxCommandEvent &evt) {
@@ -1550,6 +1554,7 @@ void mxSource::SelectInstruccion (int _l, int _i) {
 	_l=PositionFromLine(_l);
 	if (2*_i>int(v.size())) SetSelection(_l+v[0],_l+v[v.size()-1]);
 	else SetSelection(_l+v[2*_i],_l+v[2*_i+1]);
+	EnsureCaretVisible();
 }
 
 void mxSource::DoRealTimeSyntax (RTSyntaxManager::Info *args) {
@@ -1798,7 +1803,8 @@ void mxSource::HighLight(wxString words, int from, int to) {
 	m_selected_variable  = words.Upper();
 	m_selected_variable_line_from = from;
 	m_selected_variable_line_to = to;
-	for(int line = from; line<=to; ++line) 
+//	for(int line = from; line<=to; ++line) 
+	for(int line = 0, count=GetLineCount(); line<=count; ++line) 
 		StyleLine(line);
 }
 
@@ -2451,7 +2457,7 @@ void mxSource::StyleLine(int line) {
 		stl_comment2 = wxSTC_C_COMMENTDOC 
 	};
 	size_t p = 0, pN = text.Length();
-	int word_count = 0, nesting = 0; // para distinguir "asignar" de "menor menos" (<-)
+	int word_count = 0, nesting = 0, function_count = 0; // para distinguir "asignar" de "menor menos" (<-)
 	
 	auto &vpos = MapCharactersToPositions(line,text);
 	auto MySetStyle = [&](int p0, int p1, int style) {
@@ -2470,10 +2476,12 @@ void mxSource::StyleLine(int line) {
 			if (nesting==0) ++word_count;
 			while (++p<pN and EsLetra(text[p],true));
 			wxString word = text.SubString(p0,p-1); word.MakeUpper();
+			if (word=="FUNCION" or word=="SUBPROCESO" or word=="SUBALGORITMO") 
+				function_count = 1;
 			MySetStyle(p0,p,
 					   m_keywords.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD : (
 							m_functions.Index(word)!=wxNOT_FOUND ? wxSTC_C_WORD2 : (
-								(word==m_selected_variable) ? wxSTC_C_GLOBALCLASS : wxSTC_C_IDENTIFIER ) ) );
+								(word==m_selected_variable and line>=m_selected_variable_line_from and line<=m_selected_variable_line_to) ? wxSTC_C_GLOBALCLASS : wxSTC_C_IDENTIFIER ) ) );
 			if (word=="ENTONCES" or word=="HACER" or word=="SINO" or word=="PARA") word_count = 0;
 		} else if (EsNumero(c,true)) {
 			while (++p<pN and EsNumero(text[p],true));
@@ -2487,7 +2495,7 @@ void mxSource::StyleLine(int line) {
 			if (c=='/' and p+1<pN and text[p+1]=='/') {
 				MySetStyle(p0,pN,(p+2<pN and text[p+2]=='/')?wxSTC_C_COMMENTDOC:wxSTC_C_COMMENTLINE);
 				break;
-			} else if (nesting==0 and word_count<=1 and (c=='=' or c==UOP_ASIGNACION or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
+			} else if (nesting==0 and word_count<=1+function_count and (c=='=' or c==UOP_ASIGNACION or (p+1<pN and ( (c=='<' and text[p+1]=='-') or (c==':' and text[p+1]=='=') ) ) ) ) {
 				++p; if (c!='=' and c!= UOP_ASIGNACION) ++p;
 				MySetStyle(p0,p,wxSTC_C_ASSIGN);
 			} else {
@@ -2646,5 +2654,10 @@ void mxSource::Analyze ( ) {
 	int mod = GetModify();
 	Analyze(0,GetLineCount()-1);
 	if (!mod) SetModified(false);
+}
+
+void mxSource::OnZoomChange (wxStyledTextEvent & evt) {
+	evt.Skip();
+	SetMarginWidth (0, TextWidth (wxSTC_STYLE_LINENUMBER," XXX")); // este sí despues del estilo, para que use la fuente adecuada para calcular
 }
 
