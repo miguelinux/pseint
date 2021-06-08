@@ -122,6 +122,8 @@ void RTSyntaxManager::ContinueProcessing() {
 					else if (what!="PROCESO")
 						vars_window->RegisterAutocompKey(what.BeforeFirst('['));
 				}
+				if (what=="PROCESO")
+					src->SetMainProcessTitleFromRTSM(line.AfterFirst(' ').BeforeFirst(':'));
 			} else if (fase_num==2 && config->highlight_blocks) {
 				long l1,l2;
 				if (line.BeforeFirst(' ').ToLong(&l1) && line.AfterFirst(' ').ToLong(&l2)) 

@@ -706,9 +706,12 @@ void mxMainWindow::OnFileSave(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnFileSaveAs(wxCommandEvent &evt) {
+	
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
-		wxFileDialog dlg (this, _Z("Guardar"),source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->filename).GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, _Z("Guardar"),
+						  source->sin_titulo?config->last_dir:wxFileName(source->filename).GetPath(),
+						  source->GetFileName(true), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		dlg.SetWildcard(_Z("Todos los archivos|*|Algoritmos en pseudocódigo|*.psc;*.PSC|Archivos de texto|*.txt;*.TXT"));
 		if (dlg.ShowModal() == wxID_OK) {
 			wxFileName file = dlg.GetPath();

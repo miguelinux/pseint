@@ -22,6 +22,7 @@ enum {BT_NONE,BT_PARA,BT_SEGUN,BT_CASO,BT_REPETIR,BT_MIENTRAS,BT_SI,BT_SINO,BT_P
 
 class mxSource : public wxStyledTextCtrl {
 private:
+	wxString m_main_process_title; // por ahora, solo para sugerir el nombre al guardar por 1ra vez
 	wxString temp_filename_prefix; // ruta y nombre de los temporales para este algoritmo (sin extension, ver GetTempFilename*)
 	
 	bool rt_running; // rt_syntax||highlight_blocks||show_vars
@@ -66,6 +67,7 @@ public:
 	bool sin_titulo;
 	wxString filename;
 	void SetFileName(wxString afilename);
+	wxString GetFileName(bool sugest=false) const;
 	void SetStyling(bool colour=true);
 	void SetWords();
 	static void SetAutocompletion();
@@ -165,6 +167,7 @@ public:
 	void StartRTSyntaxChecking(); // habilita la verificacion de sintaxis en tiempo real para este fuente (coloca rt_running en true y lanza la primer verificacion)
 	void DoRTSyntaxChecking(); // marca que se debe rehacer la verificacion (inicia el timer, pero solo si esta habilitada, segun rt_running)
 	void StopRTSyntaxChecking(); // deshabilita la verificacion de sintaxis en tiempo real para este fuente (coloca rt_running en false, limpia las marcas y detiene el timer)
+	void SetMainProcessTitleFromRTSM(wxString title) { m_main_process_title = title; }
 	
 	void OnTimer(wxTimerEvent &te); // event dispatcher para los timers, mira que timer es e invoca al metodo que le corresponda
 	void OnChange(wxStyledTextEvent &event);
