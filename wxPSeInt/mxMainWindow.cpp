@@ -52,6 +52,7 @@
 #include "error_recovery.h"
 #include "mxFontsConfig.h"
 #include <wx/button.h>
+#include "mxBacktrace.h"
 using namespace std;
 
 mxMainWindow *main_window = NULL;
@@ -61,20 +62,21 @@ mxMainWindow *main_window = NULL;
 //#define _debug_speed_l 20
 
 // organizacion de los elementos de la ventana (layer,row,position para el wxAuiPaneInfo, p es el panel, h es el helper(boton para hacerlo visible))
-static const int hvar[]={2,0,0};
-static const int hopr[]={2,0,1};
-static const int hcmd[]={2,0,0};
-static const int hdbg[]={2,0,1};
-static const int pvar[]={0,1,0}; // LEFT	vars_window
-static const int popr[]={0,2,0}; // LEFT	opers_window
-static const int pdbg[]={0,1,0}; // RIGHT	debug_panel
-static const int pcmd[]={2,1,0}; // RIGHT	commands
-static const int prtr[]={1,1,0}; // BOTTOM	results_tree_ctrl
-static const int phlp[]={1,1,1}; // BOTTOM	help
-static const int pdkt[]={1,1,2}; // BOTTOM	desktop_test_panel
-static const int psub[]={1,2,0}; // BOTTOM	subtitles
-static const int ptlb[]={3,0,0}; // TOP		toolbars
-static const int pevl[]={1,0,0}; // BOTTOM	test_panel
+static const int hvar[]={3,0,0};
+static const int hopr[]={3,0,1};
+static const int hcmd[]={3,0,0};
+static const int hdbg[]={3,0,1};
+static const int pvar[]={1,1,0}; // LEFT	vars_window
+static const int popr[]={1,2,0}; // LEFT	opers_window
+static const int pdbg[]={1,1,0}; // RIGHT	debug_panel
+static const int pcmd[]={3,1,0}; // RIGHT	commands
+static const int prtr[]={2,1,0}; // BOTTOM	results_tree_ctrl
+static const int phlp[]={2,1,1}; // BOTTOM	help
+static const int pdkt[]={2,1,2}; // BOTTOM	desktop_test_panel
+static const int psub[]={2,2,0}; // BOTTOM	subtitles
+static const int pbak[]={0,0,3}; // BOTTOM	backtrace
+static const int ptlb[]={4,0,0}; // TOP		toolbars
+static const int pevl[]={2,0,0}; // BOTTOM	test_panel
 
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_CLOSE(mxMainWindow::OnClose)
@@ -476,6 +478,8 @@ void mxMainWindow::CreateOpersPanel() {
 }
 
 void mxMainWindow::CreateDebugControlsPanel() {
+	backtrace=new mxBacktrace(this); // hay que crearlo antes que el debug
+	aui_manager.AddPane(backtrace, wxAuiPaneInfo().Name(_Z("¿Dónde estoy?")).Bottom().CaptionVisible(false).Hide().Layer(pbak[0]).Row(pbak[1]).Position(pbak[2]));	
 	subtitles=new mxSubtitles(this); // hay que crearlo antes que el debug
 	aui_manager.AddPane(subtitles, wxAuiPaneInfo().Name("subtitles").Bottom().CaptionVisible(false).Hide().Layer(psub[0]).Row(psub[1]).Position(psub[2]));	
 	debug_panel = new mxDebugWindow(this);
@@ -1818,6 +1822,11 @@ void mxMainWindow::ShowSubtitles(bool show, bool anim) {
 	else HidePanel(subtitles,anim);
 }
 
+void mxMainWindow::ShowBacktrace(bool show) {
+	if (show) ShowPanel(backtrace,true);
+	else HidePanel(backtrace,true);
+}
+
 void mxMainWindow::ShowResults(bool show, bool no_error) {
 	if (show) {
 		results_tree_ctrl->ExpandAll();
@@ -2023,7 +2032,7 @@ void mxMainWindow::HidePanel(wxString helper, wxWindow * panel, bool anim) {
 void mxMainWindow::ShowPanel (wxWindow * panel, bool anim) {
 	wxAuiPaneInfo &pi=aui_manager.GetPane(panel);
 	if (pi.IsShown()) return;
-	int final_h= panel->GetSizer()?panel->GetSizer()->Fit(panel).GetHeight()
+	int final_h = panel->GetSizer()?panel->GetSizer()->Fit(panel).GetHeight()
 		         :(GetClientSize().GetHeight()*0.3-aui_manager.GetArtProvider()->GetMetric(wxAUI_DOCKART_CAPTION_SIZE));
 	pi.Show(); 
 	if (anim && config->animate_gui) {
@@ -2302,7 +2311,7 @@ void mxMainWindow::EnableDebugButton (bool enable) {
 	toolbar->EnableTool(mxID_RUN_STEP_STEP,enable);
 }
 
-void mxMainWindow::SetLamda(void (*lambda_func)()) {
+void mxMainWindow::SetLambda(void (*lambda_func)()) {
 	_LOG("mxMainWindow::SetLambda");	
 	if (m_lambda_func) {
 		_LOG("mxMainWindow::SetLambda m_lambda_func!=nullptr");	

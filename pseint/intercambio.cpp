@@ -288,6 +288,14 @@ void Intercambio::OnFunctionOut() {
 #endif
 }
 
+void Intercambio::OnAboutToEndFunction() {
+#ifdef USE_ZOCKETS
+	if (zocket==ZOCKET_ERROR || backtrace.empty()) return;
+	string s="finalizando\n";
+	zocket_escribir(zocket,s.c_str(),s.size());
+#endif
+}
+
 int Intercambio::GetBacktraceLevel ( ) {
 	return backtraceLevel;
 }

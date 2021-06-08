@@ -103,6 +103,7 @@ public:
 	
 	void OnFunctionIn(string nom);
 	void OnFunctionOut();
+	void OnAboutToEndFunction();
 	int GetBacktraceLevel();
 	FrameInfo GetFrame(int level);
 	

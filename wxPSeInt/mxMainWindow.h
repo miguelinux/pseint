@@ -210,7 +210,7 @@ private:
 	void (*m_lambda_func)();
 	wxTimer *m_lambda_timer;
 public:
-	void SetLamda(void (*lamda_func)());
+	void SetLambda(void (*lamda_func)());
 	void OnLambdaTimer(wxTimerEvent &event);
 	
 	mxSource *GetCurrentSource();
@@ -229,6 +229,7 @@ public:
 	void ShowResults(bool show, bool no_error);
 	void ShowQuickHelp(bool show);
 	void ShowSubtitles(bool show, bool anim=false);
+	void ShowBacktrace(bool show);
 	void ShowDesktopTestPanel(bool show, bool anim=false);
 	
 	void ParseResults(mxSource *source); // analiza el archivo de salida que genera una ejecucion, que contiene los errores de la misma

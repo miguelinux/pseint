@@ -106,7 +106,7 @@ void mxProcess::OnTerminate(int pid, int status) {
 	_LOG("mxProcess::OnTerminate this="<<this<<" status="<<status);
 	if (what==mxPW_DRAWEDIT) {
 		// si psdraw3 sale con errores, ver si le faltaban dependencias
-		if (status==127) main_window->SetLamda(lambda_ldd_psdraw);
+		if (status==127) main_window->SetLambda(lambda_ldd_psdraw);
 //		else main_window->GetCurrentSource()->SetStatus(STATUS_BASE);
 	}
 	if (this==debug->process) {

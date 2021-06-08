@@ -23,6 +23,7 @@ private:
 	wxBitmapButton *dp_button_run, *dp_button_step, *dp_button_pause;
 	wxButton *dp_button_evaluate;
 	wxCheckBox *dp_check_step_in;
+	wxCheckBox *dp_check_backtrace;
 	wxCheckBox *dp_check_subtitles;
 	wxCheckBox *dp_check_desktop_test;
 public:
@@ -39,6 +40,7 @@ public:
 	void OnDebugHelp(wxCommandEvent &evt);
 	void OnDebugCheckStepIn(wxCommandEvent &evt);
 	void OnDebugCheckSubtitles(wxCommandEvent &evt);
+	void OnDebugCheckBacktrace(wxCommandEvent &evt);
 	void OnDesktopTestPanelHide();
 	bool IsDesktopTestEnabled();
 	void StartDebugging(mxSource *source, bool paused);

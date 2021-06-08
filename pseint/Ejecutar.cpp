@@ -28,6 +28,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 		InstructionType instruction_type=programa[line].type;
 //cout << LineStart+1 << ":"<<LineEnd+1<< "   " << cadena << endl; // debug
 		if (instruction_type==IT_FINPROCESO || instruction_type==IT_FINSUBPROCESO) {
+			Inter.OnAboutToEndFunction();
 			_pos(line);
 			if (instruction_type==IT_FINSUBPROCESO) {
 				_sub(line,string("Se sale del subproceso ")+cadena);
@@ -39,7 +40,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 		}
 		if (instruction_type==IT_PROCESO || instruction_type==IT_SUBPROCESO) {
 			bool es_proc=instruction_type==IT_PROCESO;
-			size_t p=cadena.find(' '); cadena=cadena.substr(p);
+			size_t p=cadena.find(' '); cadena=cadena.substr(p+1);
 			p=cadena.find('<'); if (p==string::npos) p=cadena.find('='); else p++;
 			if (p==string::npos) p=0; else p++; cadena=cadena.substr(p);
 			p=cadena.find('('); if (p!=string::npos) cadena=cadena.substr(0,p);

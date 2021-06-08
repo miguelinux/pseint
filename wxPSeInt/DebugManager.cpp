@@ -10,6 +10,7 @@
 #include "mxSubtitles.h"
 #include "string_conversions.h"
 #include "Logger.h"
+#include "mxBacktrace.h"
 using namespace std;
 
 DebugManager *debug = NULL;
@@ -33,6 +34,7 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 	on_evaluar.clear();
 	subtitles->Reset();
 	desktop_test->ResetTest();
+	backtrace->Reset();
 	return;
 	
 }
@@ -40,8 +42,11 @@ void DebugManager::Start(mxProcess *proc, mxSource *src) {
 void DebugManager::ProcSocketData(wxString data) {
 	if (data.StartsWith("subtitulo ")) {
 		subtitles->AddMessage(current_line,current_inst,data.Mid(10));
+	} if (data=="finalizando") {
+		backtrace->AboutToPop();
 	} if (data.StartsWith("proceso ")) {
 		current_proc_name=data.Mid(8);
+		backtrace->Push(current_proc_name.AfterFirst(':'),current_line);
 	} else if (data.StartsWith("linea ")) {
 		long l=-1,i=-1;
 		if (data.Contains(":")) {
@@ -140,6 +145,7 @@ bool DebugManager::Pause() {
 }
 
 void DebugManager::Stop() {
+	backtrace->Reset();
 	if (process && process->pid!=0 && process->Exists(process->pid)) {
 		wxProcess::Kill(process->pid,wxSIGKILL,wxKILL_CHILDREN);
 	}
