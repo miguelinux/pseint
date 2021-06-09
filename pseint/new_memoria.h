@@ -179,6 +179,11 @@ public:
 		if (EsAlias(nombre)) return alias_mem->Desinicializar(alias_nom);
 		var_value.erase(nombre);
 	}
+	void SetearSoloLectura(string nombre, bool set) {
+		QuitarIndices(nombre);
+		if (EsAlias(nombre)) return alias_mem->SetearSoloLectura(alias_nom,set);
+		var_info[nombre].read_only = set;
+	}
 	DataValue LeerValor(const string &nombre) {
 		if (EsAlias(nombre,true)) return alias_mem->LeerValor(alias_nom);
 		DataValue ret = var_value[nombre];

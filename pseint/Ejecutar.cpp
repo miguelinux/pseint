@@ -127,6 +127,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 						CheckDims(aux2);
 						_sub(line,string("El resultado es ")+aux2);
 					}
+					if (tipo.read_only)
+						ExeError(322,string("No se puede modificar la variable ")+aux2);
 					
 					if (with_io_references) Inter.SendIOPositionToTerminal(arg_num);
 					if (colored_output) setForeColor(COLOR_INFO);
@@ -304,6 +306,8 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tipo_var tipo_aux1 = memoria->LeerTipo(aux1);
 				if (!tipo_aux1.can_be(result.type))
 					ExeError(125,"No coinciden los tipos.");
+				if (tipo_aux1.read_only)
+					ExeError(322,string("No se puede modificar la variable ")+aux1);
 				else if (tipo_aux1==vt_numerica_entera && tipo_aux1.rounded && result.GetAsInt()!=result.GetAsReal())
 					ExeError(314,"No coinciden los tipos, el valor a asignar debe ser un entero.");
 				_sub(line,string("El resultado es: ")+result.GetForUser());
@@ -434,6 +438,7 @@ void Ejecutar(int LineStart, int LineEnd) {
 				tmp1=aux1.find("<-",0);
 				string contador = aux1.substr(0,tmp1); // variable del para
 				memoria->DefinirTipo(aux1,vt_numerica);
+				if (lang[LS_PROTECT_FOR_COUNTER]) memoria->SetearSoloLectura(contador,true);
 				string expr_ini = aux1.substr(tmp1+2); // valor inicial
 				_sub(line,string("Se evalúa la expresion para el valor inicial: ")+expr_ini);
 				
@@ -485,7 +490,10 @@ void Ejecutar(int LineStart, int LineEnd) {
 					memoria->EscribirValor(contador,DataValue::MakeReal(res_cont.GetAsReal()+res_paso.GetAsReal()));
 					_sub(line,string("Se actualiza el contador, ahora ")+contador+" vale "+aux1+".");
 				} while(true);
-				memoria->Desinicializar(contador);
+				if (lang[LS_PROTECT_FOR_COUNTER]) {
+					memoria->SetearSoloLectura(contador,false);
+					memoria->Desinicializar(contador);
+				}
 				line=line_finpara;
 				_pos(line);
 				_sub(line,"Se sale de la estructura repetitiva Para.");

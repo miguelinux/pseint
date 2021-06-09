@@ -132,6 +132,18 @@ void LangSettings::init() {
 			"verdadero); mientras que si está desactivada se inserta la versión \"Repetir ... "
 			"Hasta que\" (que itera por falso)."
 		);
+	data[LS_ALLOW_FOR_EACH].Set("allow_for_each",				true,
+			"Habilitar estructura \"Para Cada...\"",
+			"Con esta opción habilitada se puede utilizar la versión alternativa de la estructura "
+			"repetitiva \"Para\" que permite recorrer los elementos de un arreglo de forma más "
+			"simple. Ej: \"Para Cada Elemento de V Hacer ... FinPara\"."
+		);
+	data[LS_PROTECT_FOR_COUNTER].Set("protect_for_counter",				false,
+			"Proteger contador del Para",
+			"Con esta opción habilitada no se puede modificar la variable que se utiliza como "
+			"contador dentro de un para, y adicionalmente la variable deja de estar inicializada "
+			"una vez finalizado el bucle."
+		);
 #ifdef DEBUG
 	for(int i=0;i<LS_COUNT;i++) { 
 		if (!data[i].nombre) cerr<<"ERROR!!! campo no inicializado en LangSettings::data["<<i<<"]"<<endl;
@@ -219,6 +231,9 @@ std::string LangSettings::GetAsSingleString() const {
 
 
 void LangSettings::Fix ( ) {
+	if (version<20210609) { 
+		settings[LS_ALLOW_FOR_EACH]=settings[LS_LAZY_SYNTAX]; // LS_ALLOW_FOR_EACH era parte de LS_LAZY_SYNTAX
+	}
 	if (version<20210407) { 
 		settings[LS_ALLOW_REPEAT_WHILE]=settings[LS_LAZY_SYNTAX]; // LS_ALLOW_REPEAT_WHILE era parte de LS_LAZY_SYNTAX
 	}

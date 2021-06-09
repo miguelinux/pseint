@@ -18,7 +18,7 @@ BEGIN_EVENT_TABLE(mxConfig,wxDialog)
 END_EVENT_TABLE()
 
 mxConfig::mxConfig(wxWindow *parent, LangSettings &settings )
-	: wxDialog(parent,wxID_ANY,"Opciones del Lenguaje",wxDefaultPosition,wxDefaultSize),
+	: wxDialog(parent,wxID_ANY,"Opciones del Lenguaje",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),
 	  lang(settings)
 {
 	lang.source = LS_CUSTOM; lang.name = CUSTOM_PROFILE;
@@ -27,9 +27,12 @@ mxConfig::mxConfig(wxWindow *parent, LangSettings &settings )
 	wxBoxSizer *opts_sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	
+	m_list = new wxCheckListBox(this,wxID_ANY,wxDefaultPosition,wxSize(400,400));
+	sizer->Add(m_list,wxSizerFlags().Expand().Proportion(1).Border(wxALL,5));
+	
 	for(int i=0;i<LS_COUNT;i++) { 
-		chk[i] = utils->AddCheckBox(opts_sizer,this,LangSettings::data[i].user_desc,LangSettings::data[i].default_value);
-		chk[i]->SetToolTip(utils->FixTooltip(LangSettings::data[i].long_desc));
+		int item = m_list->Append(LangSettings::data[i].user_desc);
+		m_list->Check(item,LangSettings::data[i].default_value);
 	}
 	
 	wxButton *load_button = new wxButton (this, wxID_OPEN, "Cargar...");
@@ -64,7 +67,7 @@ void mxConfig::OnClose(wxCloseEvent &evt) {
 }
 
 void mxConfig::OnOkButton(wxCommandEvent &evt) {
-	if (!chk[LS_WORD_OPERATORS]->GetValue()&&chk[LS_COLOQUIAL_CONDITIONS]->GetValue())
+	if ((not m_list->IsChecked(LS_WORD_OPERATORS)) and m_list->IsChecked(LS_COLOQUIAL_CONDITIONS))
 		wxMessageBox("No se puede desactivar la opción \"Permitir las palabras Y, O, NO y MOD para los operadores &&, |, ~ y %\" sin desactivar también \"Permitir condiciones en lenguaje coloquial\", por lo que la primera permanecerá activa.");
 	CopyToStruct(lang);
 	EndModal(1);
@@ -108,13 +111,17 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 //			l.descripcion = _W2S( wxGetTextFromUser(_Z("Ingrese una descripción del perfil (\n"
 //									   		           "incluya materia, carrera, institución\n"
 //											           "y nombre del docente)."),_Z("Guardar Perfil"),"",this) );
-			auto desc = wxGetTextFromUser(_Z("Ingrese una descripción del perfil (\n"
-									   		           "incluya materia, carrera, institución\n"
-											           "y nombre del docente)."),_Z("Guardar Perfil"),"",this);
-			l.descripcion = _W2S( desc );
+			
+			wxTextEntryDialog dialog(this, 
+									 _Z("Ingrese una descripción del perfil (incluya materia,\n"
+										"carrera, institución y nombre del docente)."),
+									 _Z("Guardar Perfil"),"", wxOK | wxCANCEL | wxTE_MULTILINE);
+			
+			if (dialog.ShowModal() != wxID_OK) return;
+			wxString desc  = dialog.GetValue();
 			l.descripcion = _W2S( desc );;
 			if (l.descripcion.empty()) return;
-			if (l.descripcion.size()<10 || !TodoMayusculas(l.descripcion)) break;
+			if (l.descripcion.size()<10 or (not TodoMayusculas(l.descripcion))) break;
 			wxMessageBox(_Z("¡NO ME GRITE!"),_Z("Por favor"),wxOK|wxICON_ERROR);
 		}
 		CopyToStruct(l);
@@ -124,10 +131,10 @@ void mxConfig::OnSaveButton (wxCommandEvent & evt) {
 }
 
 void mxConfig::ReadFromStruct (LangSettings l) {
-	for(int i=0;i<LS_COUNT;i++) chk[i]->SetValue(l[LS_ENUM(i)]);
+	for(int i=0;i<LS_COUNT;i++) m_list->Check(i,l[LS_ENUM(i)]);
 }
 
 void mxConfig::CopyToStruct (LangSettings & l) {
-	for(int i=0;i<LS_COUNT;i++) l[LS_ENUM(i)]=chk[i]->GetValue();
+	for(int i=0;i<LS_COUNT;i++) l[LS_ENUM(i)] = m_list->IsChecked(i);
 }
 

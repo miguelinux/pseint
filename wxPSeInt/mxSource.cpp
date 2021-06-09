@@ -1315,14 +1315,14 @@ void mxSource::SetAutocompletion() {
 	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Mientras","Fin Mientras\n",""));
 	
 	comp_list.push_back(comp_list_item("Para","Para ",""));
-	if (cfg_lang[LS_LAZY_SYNTAX]) {
+	if (cfg_lang[LS_ALLOW_FOR_EACH])
 		comp_list.push_back(comp_list_item("Para Cada","Para Cada ",""));
+	if (cfg_lang[LS_LAZY_SYNTAX])
 		comp_list.push_back(comp_list_item("Desde","Desde ","Para"));
-	}
 	comp_list.push_back(comp_list_item("Hasta","Hasta ","Para"));
 	comp_list.push_back(comp_list_item("Con Paso","Con Paso ","Para"));
 	comp_list.push_back(comp_list_item("Hacer","Hacer\n","Para"));
-	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
+	if (cfg_lang[LS_ALLOW_FOR_EACH]) comp_list.push_back(comp_list_item("Cada ","Cada ","Para"));
 	comp_list.push_back(comp_list_item("FinPara","FinPara\n",""));
 	if (cfg_lang[LS_LAZY_SYNTAX]) comp_list.push_back(comp_list_item("Fin Para","Fin Para\n",""));
 	

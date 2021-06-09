@@ -141,6 +141,10 @@ int main(int argc, char* argv[]) {
 				with_io_references=true;
 			} else if (str=="--foreval") {
 				for_eval=true;
+			} else if (str.substr(0,10)=="--profile=") {
+				if (not lang.Load(str.substr(10))) {
+					cerr << "No se pudo leer el archivo de perfil: " << str.substr(10) << endl;
+					exit(1);				}
 			} else if (str.substr(0,2)=="--" && !lang.ProcessConfigLine(str.substr(2))) {
 				error=true;
 			}

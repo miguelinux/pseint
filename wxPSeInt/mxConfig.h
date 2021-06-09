@@ -1,13 +1,13 @@
 #ifndef MXCONFIG_H
 #define MXCONFIG_H
-#include <wx/checkbox.h>
 #include <wx/dialog.h>
+#include <wx/checklst.h>
 #include "ConfigManager.h"
 #include "../pseint/LangSettings.h"
 
 class mxConfig : public wxDialog {
 private:
-	wxCheckBox *chk[LS_COUNT];
+	wxCheckListBox *m_list;
 	void ReadFromStruct(LangSettings l);
 	void CopyToStruct(LangSettings &l);
 	LangSettings &lang;

@@ -60,15 +60,16 @@ inline bool StrToBool(const std::string &s) {
 struct tipo_var {
 	friend class Memoria;
 	//private: // el cliente pseint debe acceder a travez de memoria->LeerDims para que si es alias lo corrija (pero psexport si necesita acceder directo)
-	int *dims; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
+	int *dims = nullptr; // dims[0] es la cantidad de dimensiones, dims[1...] son las dimensiones propiamente dichas
 public:
-	bool enabled; // para que queden registradas luego del primer parseo, pero actue como si no existieran
-	bool cb_log,cb_num,cb_car; // si puede ser logica, numerica o caracter
-	bool rounded; // para cuando se definen como enteras
-	bool defined; // para saber si fueron definidas explicitamente (definir...)
-	bool used; // para saber si fue usada, asignada, leida, algo que no sea dimensionada o definida explicitamente, lo setean Escribir y LeerValor
-	tipo_var():dims(NULL),enabled(true),cb_log(true),cb_num(true),cb_car(true),rounded(false),defined(false),used(false) {}
-	tipo_var(bool l, bool n, bool c, bool r=false):dims(NULL),enabled(true),cb_log(l),cb_num(n),cb_car(c),rounded(r),defined(false),used(false) {}
+	bool enabled = true; // para que queden registradas luego del primer parseo, pero actue como si no existieran
+	bool cb_log = true, cb_num = true, cb_car = true; // si puede ser logica, numerica o caracter
+	bool rounded = false; // para cuando se definen como enteras
+	bool defined = false; // para saber si fueron definidas explicitamente (definir...)
+	bool used = false; // para saber si fue usada, asignada, leida, algo que no sea dimensionada o definida explicitamente, lo setean Escribir y LeerValor
+	bool read_only = false; // para saber si el usuario puede modificarla (ej, el contador de un para sería read-only para el usuario, solo lo modifica el para)
+	tipo_var() {}
+	tipo_var(bool l, bool n, bool c, bool r=false):cb_log(l),cb_num(n),cb_car(c),rounded(r) {}
 	bool set(const tipo_var &v) {
 		enabled=true;
 		cb_log=cb_log&&v.cb_log;
@@ -113,7 +114,7 @@ public:
 		return *this;
 	}
 	void reset() { // para borrar la información que genera el analisis sintáctico antes de la ejecución y que no debe pasar a la ejecución
-		defined=used=enabled=false;
+		read_only=defined=used=enabled=false;
 		if (dims) { delete [] dims; dims=NULL; }
 	}
 };

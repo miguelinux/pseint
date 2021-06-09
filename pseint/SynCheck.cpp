@@ -10,7 +10,7 @@
 #include "case_map.h"
 using namespace std;
 
-// NROS DE ERRORES RESERVADOS PARA FUTUROS USOS: 320
+// ULTIMO NRO DE ERROR UTILIZADO: 322
 
 static int PSeudoFind(const string &s, char x, int from=0, int to=-1) {
 	if (to==-1) to=s.size();
@@ -443,7 +443,7 @@ void InformUnclosedLoops(deque<Instruccion> &bucles, int &errores) {
 	}
 }
 
-static bool SirveParaReferencia(string &s) {
+bool SirveParaReferencia(const string &s) {
 	int p=0, l=s.size(), parentesis=0;
 	bool in_name=true; // si estamos en la primer parte (nombre) o segunda (indices si es un arreglo)
 	while (p<l) {
@@ -560,7 +560,7 @@ int SynCheck(int linea_from, int linea_to) {
 							break;
 						}
 					}
-			} else if (first_word=="MIENTRAS"&&(!lang[LS_LAZY_SYNTAX]||FirstWord(cadena)!="QUE")) { 
+			} else if (first_word=="MIENTRAS"&&(!lang[LS_ALLOW_REPEAT_WHILE]||FirstWord(cadena)!="QUE")) { 
 				instruction_type=IT_MIENTRAS;
 				bucles.push_back(programa.GetLoc(x,IT_MIENTRAS));
 			} else if (first_word=="SEGUN") {
@@ -603,10 +603,10 @@ int SynCheck(int linea_from, int linea_to) {
 				instruction_type=IT_PROCESO;
 			} else if (first_word=="SUBPROCESO"||first_word=="SUBALGORITMO"||first_word=="FUNCION") {
 				instruction_type=IT_SUBPROCESO;
-			} else if (lang[LS_LAZY_SYNTAX] && first_word=="PARACADA") {
+			} else if (lang[LS_ALLOW_FOR_EACH] && first_word=="PARACADA") {
 				instruction_type=IT_PARACADA;
 				bucles.push_back(programa.GetLoc(x,IT_PARACADA));
-			} else if (lang[LS_LAZY_SYNTAX] && first_word=="PARA" && FirstWord(cadena)=="CADA") {
+			} else if (lang[LS_ALLOW_FOR_EACH] && first_word=="PARA" && FirstWord(cadena)=="CADA") {
 				instruction_type=IT_PARACADA; cadena.erase(0,4);
 				bucles.push_back(programa.GetLoc(x,IT_PARACADA));
 			} else if (first_word=="PARA") {
@@ -1396,7 +1396,7 @@ int SynCheck(int linea_from, int linea_to) {
 							pos_coma=BuscarComa(args,pos_coma+1,args_last_pos,',');
 							if (pos_coma==-1) pos_coma=args_last_pos;
 							string arg_actual=args.substr(last_pos_coma+1,pos_coma-last_pos_coma-1);
-							if (!SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
+							if (not SirveParaReferencia(arg_actual)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
 								if (func->pasajes[cant_args+1]==PP_REFERENCIA && !ignore_logic_errors) { SynError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); errores++; }
 								else EvaluarSC(arg_actual,func->tipos[cant_args+1]);
 							}
