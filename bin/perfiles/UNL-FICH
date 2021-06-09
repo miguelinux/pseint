@@ -1,6 +1,5 @@
 desc=Esta es la configuración que se utiliza en la asignatura "Fundamentos de Programación" de la carrera "Ingeniería en Informática" de la "Facultad de Ingeniería y Ciencias Hídricas" de la "Universidad Nacional del Litoral".
-allow_dinamyc_dimensions=1
-version=20160321
+version=20210407
 force_init_vars=1
 force_define_vars=0
 force_semicolon=0
@@ -20,4 +19,7 @@ use_alternative_io_shapes=0
 allow_accents=0
 prefer_algoritmo=1
 prefer_funcion=0
+allow_repeat_while=0
+allow_for_each=0
 prefer_repeat_while=0
+protect_for_counter=1
