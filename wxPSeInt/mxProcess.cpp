@@ -233,9 +233,9 @@ bool mxProcess::Debug(wxString file, bool check_first) {
 		main_window->notebook->GetSize(&w,&h);
 		command<<_T(" --right=")<<x+w-delta<<_T(" ");
 		command<<_T(" --top=")<<y+delta<<_T(" ");
-		command<<_T(" --alwaysontop ");
 		if (w-500<400) command<<_T("--width=400 ");
 	}
+	command<<_T(" --alwaysontop ");
 	temp = source->GetTempFilenameOUT();
 	debug->Start(this,source);
 	int port=comm_manager->GetServerPort();

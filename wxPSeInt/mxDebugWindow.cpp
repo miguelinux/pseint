@@ -103,7 +103,7 @@ void mxDebugWindow::SetState(ds_enum state) {
 	switch (state) {
 	case DS_STARTING:
 		main_window->EnableDebugButton(false);
-		if (dp_check_backtrace) main_window->ShowBacktrace(true);
+		if (dp_check_backtrace and cfg_lang[LS_ENABLE_USER_FUNCTIONS]) main_window->ShowBacktrace(true);
 		dp_button_run->SetBitmapLabel(dp_bmps[BMP_FINALIZAR]);
 		dp_button_run->SetToolTip(utils->FixTooltip(_Z("Utilice este botón para detener definitivamente la ejecución del algoritmo y abandonar el modo de ejecución paso a paso.")));
 		subtitles->text->SetValue(_Z("Haga click en \"Continuar\" para leer en este panel los detalles las próximas acciones que realize el intérprete."));

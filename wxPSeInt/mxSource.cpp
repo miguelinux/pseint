@@ -2666,4 +2666,3 @@ wxString mxSource::GetFileName (bool sugest) const {
 	if (sin_titulo) return sugest ? m_main_process_title+".psc" : wxString();
 	return wxFileName(filename).GetFullName();
 }
-

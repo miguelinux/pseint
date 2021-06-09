@@ -15,7 +15,7 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=../bin/help/cambios.html
+current_source=MainWindow.cpp
 path_char=/
 [source]
 path=Application.cpp
@@ -176,7 +176,7 @@ path=../wxPSeInt/string_conversions.h
 cursor=4:0
 [other]
 path=../bin/help/cambios.html
-cursor=5:41
+cursor=12:18
 open=true
 [config]
 name=Linux2_Debug

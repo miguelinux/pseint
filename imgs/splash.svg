@@ -144,9 +144,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.3603929"
-     inkscape:cx="68.78629"
-     inkscape:cy="168.63706"
+     inkscape:zoom="2.3992109"
+     inkscape:cx="64.403286"
+     inkscape:cy="109.79629"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -566,19 +566,6 @@
        id="path4577"
        inkscape:connector-curvature="0"
        transform="matrix(0.25341682,0,0,0.26427578,1.2858772,13.181011)" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.17298px;line-height:1.25;font-family:sans-serif;fill:#939393;fill-opacity:1;stroke:none;stroke-width:0.0543247;"
-       x="10.776727"
-       y="17.040272"
-       id="text14"
-       inkscape:export-xdpi="361.20435"
-       inkscape:export-ydpi="361.20435"><tspan
-         sodipodi:role="line"
-         id="tspan12"
-         x="10.776727"
-         y="17.040272"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#939393;stroke-width:0.0543247;">v20210427</tspan></text>
     <path
        sodipodi:type="inkscape:offset"
        inkscape:radius="-0.36288399"
@@ -759,7 +746,7 @@
            id="tspan1368"
            x="24.40016"
            y="38.677383"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#000080;fill-opacity:1;stroke-width:0.0463147">v20210531</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#000080;fill-opacity:1;stroke-width:0.0463147">v20210609</tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#333333;fill-opacity:1;stroke:#333333;stroke-width:0.0423428;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -932,7 +919,7 @@
            id="tspan1596"
            x="24.40016"
            y="52.777332"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#ffffff;fill-opacity:1;stroke-width:0.0463147">v20210531</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#ffffff;fill-opacity:1;stroke-width:0.0463147">v20210609</tspan></text>
     </g>
   </g>
 </svg>

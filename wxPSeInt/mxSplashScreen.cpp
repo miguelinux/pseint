@@ -22,8 +22,9 @@ mxSplashScreen::mxSplashScreen() :
 														 ? "splash_dark.png" 
 														 : "splash_light.png") ),wxBITMAP_TYPE_PNG);
 	SetSize(m_bmp.GetWidth(),m_bmp.GetHeight());
-	Move(config->pos_x+(config->size_x-m_bmp.GetWidth() )/2,
-		 config->pos_y +(config->size_y-m_bmp.GetHeight())/2 );
+	if (config->maximized) CenterOnScreen(); 
+	else Move(config->pos_x+(config->size_x-m_bmp.GetWidth() )/2,
+			  config->pos_y +(config->size_y-m_bmp.GetHeight())/2 );
 	
 	
 	Show(true);
