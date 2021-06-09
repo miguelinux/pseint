@@ -693,6 +693,7 @@
   Está intentando utilizar el valor de la variable señalada entre paréntesis para mostrar en pantalla o como parte de una expresión, pero esta variable no tiene ningún valor aún.
   * Verifique que el nombre de la variable esté escrito correctamente.
   * Utilice la instrucción LEER o la asignación para inicializar el contenido de la variable antes de utilizarla.
+  * Si se trata de una variable que se utilizó previamente como contador de un ciclo Para, debe tener en cuenta que la variable podría hacer sido desinicializada para reforzar la idea de que el valor del contador solo tiene sentido dentro del Para, y no debería utilizarse afuera sin reinicializar. 
 
 216
   En la estructura <A href="para.html">PARA</A>, el paso va después del valor final indicado con "HASTA &lt;val_final&gt;".
@@ -743,6 +744,11 @@
   Uno de los argumentos para la acción de lectura está siendo utilizado como si fuera un arreglo (es decir, incluyendo un conjunto de índices entre paréntesis o corchetes), pero no lo es (no está declarado con la directiva DIMENSION en su algoritmo).
   * Declare el arreglo previamente utilizando la palabra clave <A href="dimension.html">Dimensión</A>.
   * O elimine los subíndices en caso de que no lo sea.
+
+268
+  Cuando se realiza pasaje por referencia, la variable que se usa como argumento en la función/subproces será en realidad la misma variable que se indique en la llamada a la función (dos identificadores para una misma variable). Entonces la función/subproceso podrá modificar esa variable. Para que esto tenga sentido, al momento de invocar a la función se debe usar como argumento siempre una variable, y no una constante o cualquier otra expresión (ya que no tendría sentido que la función intente modificar el valor de una "constante" por ejemplo).
+  * Verifique que todos los argumentos que en la función se definen "por referencia", sean variables en la invocación/llamada.
+  * Si necesita pasar a la función una constante o expresión más general, deberá modificar la función para que el argumento en cuestión se reciba por copia.
 
 279
   El subproceso/función indicado entre paréntesis en el error recibe según su declaración una cantidad de argumentos/parámetros diferente a la proporcionada en esta llamada. Al invocar un subproceso debe incluir en la llamada todos los argumentos necesarios separados por comas.
@@ -795,3 +801,8 @@
   La expresión "De Otro Modo" se utiliza solamente dentro de una estructura de selección múltiple (<A href="segun.html">Según</A>). Está utilizando "De Otro Modo" dentro de otro tipo de estructura, o fuera de cualquier estructura.
   * Verifique el anidamiento de sus estructuras de datos y la correcta colocación de sus terminadores FinXXX
   Nota: Esta expresión debe colocarse luego de las diferentes opciones para la variable de control, e indica el camino a seguir cuando el valor de la misma no coincide con ninguna de las opciones. 
+
+322
+  Está intentando modificar mediante una lectura o asignación el valor de una variable que no debería modificar. Este suele ser el caso del conador de una estructura repetitiva Para. Dado que la estructura se encarga de gestionar el contador automáticamente, el programador no debería modificar el mismo.
+  * Verifique que no esté intentando leer o escribir en una variale que funciona como contador de un Para.
+  * Si su intención era efectivamente modificar el contador para alterar el funcionamiento del Para, debería considerar reemplazarlo por una estructura diferente: Mientras o Repetir.
