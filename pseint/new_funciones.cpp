@@ -194,9 +194,13 @@ DataValue func_ftoa(DataValue *arg) {
 DataValue func_pi(DataValue *arg) {
 	return DataValue::MakeReal("3.141592653589793238462643383279502884197169399375105820974944592");
 }
+DataValue func_euler(DataValue *arg) {
+	return DataValue::MakeReal("2.7182818284590452353602874713527");
+}
 
 void LoadFunciones() {
 	funciones["PI"]=new Funcion(vt_numerica,func_pi); 
+	funciones["EULER"]=new Funcion(vt_numerica,func_euler); 
 	funciones["RC"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
 	funciones["RAIZ"]=new Funcion(vt_numerica,func_rc,vt_numerica); 
 	funciones["ABS"]=new Funcion(vt_numerica,func_abs,vt_numerica);

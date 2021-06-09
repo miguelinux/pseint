@@ -1353,6 +1353,7 @@ void mxSource::SetAutocompletion() {
 	
 	comp_list.push_back(comp_list_item("Verdadero","Verdadero","*"));
 	comp_list.push_back(comp_list_item("Falso","Falso","*"));
+	comp_list.push_back(comp_list_item("Euler","Euler","*"));
 	
 	if (cfg_lang[LS_COLOQUIAL_CONDITIONS]) {
 		comp_list.push_back(comp_list_item("Es Cero","Es Cero","*"));
