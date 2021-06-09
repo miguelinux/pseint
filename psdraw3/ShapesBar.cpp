@@ -63,11 +63,11 @@ bool ShapesBar::ProcessMouse (int button, int state, int x, int y) {
 	case 7: new_entity = new Entity(ET_MIENTRAS,""); break;
 	case 8: 
 		new_entity = new Entity(ET_REPETIR,""); 
-		if ( (g_canvas->GetModifiers()&MODIFIER_SHIFT)!=g_lang[LS_PREFER_REPEAT_WHILE] ) new_entity->variante=true;
+		if ( g_lang[LS_ALLOW_REPEAT_WHILE] and (g_canvas->GetModifiers()&MODIFIER_SHIFT)!=g_lang[LS_PREFER_REPEAT_WHILE] ) new_entity->variante=true;
 		break;
 	case 9:
 		new_entity = new Entity(ET_PARA,""); 
-		if (g_canvas->GetModifiers()&MODIFIER_SHIFT) new_entity->variante=true;
+		if (g_lang[LS_ALLOW_FOR_EACH] and (g_canvas->GetModifiers()&MODIFIER_SHIFT)) new_entity->variante=true;
 		break;
 	}
 	if (new_entity) {

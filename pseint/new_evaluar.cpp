@@ -263,11 +263,12 @@ DataValue EvaluarFuncion(const Funcion *func, const string &argumentos, const ti
 				args.pasajes[i] = PP_REFERENCIA;
 				args.values[i] = DataValue::MakeString(arg_actual);
 			} else if (func->pasajes[i+1]==PP_REFERENCIA) {
-				
+#ifndef _FOR_PSEXPORT
 				if ((not SirveParaReferencia(arg_actual)) and (not ignore_logic_errors)) { // puede ser el nombre de un arreglo suelto, para pasar por ref, y el evaluar diria que faltan los subindices
 					WriteError(268,string("No puede utilizar una expresión en un pasaje por referencia (")+arg_actual+(")")); /*errores++;*/
 					return DataValue(forced_tipo);
 				}
+#endif
 				args.pasajes[i] = PP_REFERENCIA;
 				if (arg_actual.find('(')!=string::npos) CheckDims(arg_actual); // evalua las expresiones de los indices
 				args.values[i] = DataValue::MakeString(arg_actual); /// @todo: definirlo aqui como alias cuando datavalue se lo banque
