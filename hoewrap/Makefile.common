@@ -1,4 +1,4 @@
-OBJS=../temp/hoew_lnx_rls/libhoewrap.a 
+OBJS=${OBJS_DIR}/libhoewrap.a 
 LIBS_OBJS= ${OBJS_DIR}/hoewrap.o ${OBJS_DIR}/html.o ${OBJS_DIR}/document.o ${OBJS_DIR}/buffer.o ${OBJS_DIR}/escape.o ${OBJS_DIR}/stack.o ${OBJS_DIR}/autolink.o ${OBJS_DIR}/html_blocks.o
 
 ${OBJS_DIR}/test.o: test.cpp hoewrap.h

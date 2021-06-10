@@ -18,14 +18,16 @@ using namespace std;
 #	define circle_steps 40
 #endif
 
+#define PI 3.14159265358979323846
+
 static double cosx[circle_steps+1], sinx[circle_steps+1]; // para no calcular en el DrawShape del Para
 void make_trig() {
 	static bool make_cos=false;
 	if (!make_cos) {
 		sinx[0]=0; cosx[0]=1;
 		for (int i=1;i<circle_steps;i++) {
-			sinx[i]=sin((i*M_PI)/circle_steps);
-			cosx[i]=cos((i*M_PI)/circle_steps);
+			sinx[i]=sin((i*PI)/circle_steps);
+			cosx[i]=cos((i*PI)/circle_steps);
 		}
 		sinx[circle_steps]=0; cosx[circle_steps]=-1;
 		make_cos=true;

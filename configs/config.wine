@@ -1,0 +1,7 @@
+ARCH=wine
+RM=rm -f
+MKDIR=mkdir -p
+PREFIX=wine 
+
+include ../configs/common.win
+# va con .. porque los includes a config.* se invocan desde los directorios de los modulos

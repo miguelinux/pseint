@@ -1,21 +1,15 @@
-include ../mingw.conf
-OBJS_DIR=../temp/hoew_w32_rls
-AR=wine ${MINGW_DIR}/bin/ar.exe
-GCC=wine ${MINGW_DIR}/bin/mingw32-gcc.exe
-GPP=wine ${MINGW_DIR}/bin/mingw32-g++.exe
-CFLAGS= -fshow-column -fno-diagnostics-show-caret   -O2   
-CXXFLAGS= -fshow-column -fno-diagnostics-show-caret   -O2   
-LDFLAGS=  -s  
+include ../configs/config.${ARCH}
+OBJS_DIR=../${TEMP}/hoewrap
 
 all: ${OBJS_DIR} ${OBJS_DIR}/libhoewrap.a
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ${LIBS_OBJS}
-
-${OBJS_DIR}:
-	mkdir -p ${OBJS_DIR}
+	${RM} ${OBJS} ${LIBS_OBJS}
 
 ${OBJS_DIR}/libhoewrap.a: ${OBJS_DIR}/hoewrap.o ${OBJS_DIR}/html.o ${OBJS_DIR}/document.o ${OBJS_DIR}/buffer.o ${OBJS_DIR}/escape.o ${OBJS_DIR}/stack.o ${OBJS_DIR}/autolink.o ${OBJS_DIR}/html_blocks.o
 	${AR} cr ${OBJS_DIR}/libhoewrap.a ${OBJS_DIR}/hoewrap.o ${OBJS_DIR}/html.o ${OBJS_DIR}/document.o ${OBJS_DIR}/buffer.o ${OBJS_DIR}/escape.o ${OBJS_DIR}/stack.o ${OBJS_DIR}/autolink.o ${OBJS_DIR}/html_blocks.o 
+
+${OBJS_DIR}:
+	${MKDIR} ${OBJS_DIR}

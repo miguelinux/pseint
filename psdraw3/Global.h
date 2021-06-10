@@ -27,12 +27,12 @@ struct GConstants {
 
 enum { HL_IDENTIFIER, HL_STRING, HL_NUMBER, HL_KEYWORD, HL_COMMENT, HL_OPERATOR, HL_ERROR, HL_COUNT };
 struct GColors {
-	float border[ET_COUNT+1][3]; // borde de la forma de una entidad
+	float border[ET_COUNT+2][3]; // borde de la forma de una entidad
 	float comment[3]; // para borde y fuente de las entidades con comentarios
 	float label_high[HL_COUNT][3]; // estilos para el coloreado de sintaxis
 	float arrow[3]; // flechas que guian el flujo y unen entidades
 	float status[3]; // texto o borde de forma seleccionada
-	float shape[ET_COUNT+1][3]; // fondo de la forma
+	float shape[ET_COUNT+2][3]; // fondo de la forma
 	float back[3]; // fondo de la pantalla
 	float ghost[3]; // borde fantasma cuando se arrastra una forma
 	float menu_back[3]; // fondo del menu
